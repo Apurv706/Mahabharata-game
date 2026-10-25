@@ -1,0 +1,126 @@
+/* Act I — Childhood (ages 6–14). PRD §6. */
+(function (K) {
+  "use strict";
+  const homeLine = {
+    hastinapura: "Your father keeps the palace stores. You learn early that everyone in the palace is listening.",
+    panchala: "Your mother makes arrows for the king's archers. In Panchala, people say a good arrow matters more than a good name.",
+    matsya: "Your family keeps horses on the lake shore. Visitors from the big kingdoms rarely come this far.",
+    dwaraka: "Your uncle trades across the sea. Dwaraka smells of salt and cardamom, and everyone argues about everything.",
+    anga: "Your family serves in the Anga guard. Everyone in Anga knows the story of how they got a king.",
+    suta: "Your father drives chariots for the Kuru nobles. He tells you to keep your eyes down and your hands steady.",
+    nishada: "Your village fishes the river and hunts the forest. City people call you Nishada as if it were an insult.",
+    gandhara: "Your family came from Gandhara with Princess Gandhari's household. At court you are still called foreigners."
+  };
+
+  K.scenes([
+    {
+      id: "a1_home", act: 1, age: 6, art: "origin", place: (S) => K.ORIGINS[S.origin].name,
+      title: "Your earliest memory",
+      body: (S) => [homeLine[S.origin], "You are six years old. How do you spend your days?"],
+      choices: [
+        { id: "drills", t: "Follow the soldiers to their drills and copy them", fx: { skill: { mace: 1 }, attr: { might: 1 } } },
+        { id: "stories", t: "Sit with the old storyteller in the evenings", fx: { skill: { lore: 1 }, attr: { wisdom: 1 }, flag: "loved_stories" } },
+        { id: "wild", t: "Run wild by the river and the woods", fx: { skill: { stealth: 1 }, attr: { grace: 1 } } },
+        { id: "home", t: "Help at home with the animals and the little ones", fx: { skill: { healing: 1 }, duty: { family: 1 }, attr: { wisdom: 1 } } }
+      ],
+      next: "a1_princes"
+    },
+    {
+      id: "a1_princes", act: 1, age: 8, canon: true, place: "The palace gardens, Hastinapura", plate: ["#d4a84b", "#3e8c72"], caption: "The palace gardens",
+      title: "The princes at play",
+      witness: [
+        "King Pandu has died in the forest, and his five sons have come to Hastinapura with their mother Kunti. They grow up beside their hundred cousins, the sons of blind King Dhritarashtra.",
+        "Bhima, the second Pandava, wins every game. He holds the Kaurava boys under water until they gasp, and shakes trees until they fall out with the fruit. He means it as play.",
+        "Duryodhana, eldest of the hundred, does not laugh."
+      ],
+      body: ["You are eight, visiting the palace for a festival. The princes are choosing sides for a game of tag by the lotus pond."],
+      choices: [
+        { id: "bhima", t: "Play on Bhima's side", fx: { bond: { bhima: 2, duryodhana: -1 }, flag: "played_bhima" } },
+        { id: "duryo", t: "Join Duryodhana and his brothers", fx: { bond: { duryodhana: 2, bhima: -1 }, flag: "played_duryodhana" } },
+        { id: "arjuna", t: "Slip away and watch Arjuna practise with a borrowed bow", fx: { bond: { arjuna: 1 }, skill: { archery: 1 }, flag: "watched_arjuna" } },
+        { id: "karna", t: "Help the charioteers' boy Karna rub down the horses", req: { origin: ["suta", "anga"] }, locked: "", fx: { bond: { karna: 2 }, skill: { chariot: 1 }, flag: "met_karna_young" } }
+      ],
+      next: "a1_sage"
+    },
+    {
+      id: "a1_sage", act: 1, age: 9, place: "The road home", plate: ["#c9a24a", "#5c3361"], caption: "A dusty road at noon",
+      title: "A sage on the road",
+      body: ["On the way home, an old sage sits by the road. His hair is matted, his body grey with ash, his water pot empty. He holds it out to you without a word."],
+      choices: [
+        { id: "give", t: "Give him water and the best of your food", fx: { rep: { sages: 2 }, duty: { conscience: 1 }, flag: "kind_to_sage" }, text: "He drinks, blesses you, and walks on. You feel watched over for days." },
+        { id: "mock", t: "Make fun of his ash and his matted hair", fx: { curse: "sage", rep: { sages: -2 }, journal: "You mocked a sage on the road. He said you would remember it when you most needed your strength." },
+          text: "He looks at you for a long moment. \"You will remember this,\" he says quietly, \"when you most need your strength.\" You are cursed, and you do not know when it will strike." },
+        { id: "pass", t: "Walk past. Your mother told you not to talk to strangers", fx: {} }
+      ],
+      next: "a1_friend"
+    },
+    {
+      id: "a1_friend", act: 1, age: 10, art: "origin", place: (S) => K.ORIGINS[S.origin].name,
+      title: "A friend for life",
+      body: [
+        "Charu, the blacksmith's child from your lane, has followed you everywhere for a year. Charu is loud, loyal and afraid of nothing except the dark.",
+        "Children choose their friends as if it were nothing. It is the most important choice of your childhood."
+      ],
+      choices: [
+        { id: "charu", t: "Charu, who has never once left your side", fx: { set: { friend: "charu" }, setBond: { charu: 7 }, memory: ["charu", "You chose each other when you were ten."], journal: "Charu became your closest friend." } },
+        { id: "bhima", t: "Bhima, who laughs louder than anyone", req: { flag: "played_bhima" }, locked: "You would have needed to play on Bhima's side.", fx: { set: { friend: "bhima" }, bond: { bhima: 3 }, setBond: { charu: 4 }, journal: "Bhima became your closest friend." } },
+        { id: "duryo", t: "Duryodhana, who remembers every kindness and every slight", req: { flag: "played_duryodhana" }, locked: "You would have needed to join Duryodhana's side.", fx: { set: { friend: "duryodhana" }, bond: { duryodhana: 3 }, setBond: { charu: 4 }, journal: "Duryodhana became your closest friend." } },
+        { id: "arjuna", t: "Arjuna, who practises until his fingers bleed", req: { flag: "watched_arjuna" }, locked: "You would have needed to watch Arjuna practise.", fx: { set: { friend: "arjuna" }, bond: { arjuna: 3 }, setBond: { charu: 4 }, journal: "Arjuna became your closest friend." } },
+        { id: "karna", t: "Karna, the charioteer's son who wants to be more", req: { bond: ["karna", 4] }, locked: "You would need to know Karna already.", fx: { set: { friend: "karna" }, bond: { karna: 3 }, setBond: { charu: 4 }, journal: "Karna became your closest friend." } }
+      ],
+      next: "a1_poison"
+    },
+    {
+      id: "a1_poison", act: 1, age: 12, canon: true, place: "Pramanakoti, on the Ganga", plate: ["#3b5ba9", "#16131f"], caption: "Pavilions by the river",
+      title: "The river at Pramanakoti",
+      witness: [
+        "Duryodhana holds a river festival at Pramanakoti. He feeds Bhima sweets laced with poison, and when Bhima falls asleep he has him tied with vines and rolled into the Ganga.",
+        "Bhima does not come back that night, or the next."
+      ],
+      body: (S) => [
+        "You saw two of Duryodhana's men carrying something heavy to the water at dusk. Nobody else seems to have noticed.",
+        S.friend === "duryodhana" ? { memory: "Duryodhana is your closest friend. He catches your eye across the pavilion and smiles." } : null,
+        S.friend === "bhima" ? { memory: "Bhima is your closest friend. His mother has not slept." } : null
+      ],
+      choices: [
+        { id: "tell", t: "Tell Vidura what you saw", fx: { duty: { conscience: 2 }, bond: { duryodhana: -3, vidura: 2 }, rep: { pandava: 1 }, memory: ["duryodhana", "You told Vidura what his men did at the river."] },
+          text: "Vidura listens without surprise. \"Say this to no one else,\" he tells you. \"Not yet.\"" },
+        { id: "search", t: "Search the riverbank yourself after dark",
+          check: { attr: "grace", skill: "stealth", dc: 7,
+            pass: { fx: { bond: { bhima: 2 }, flag: "found_vines" }, text: "Downstream you find cut vines on a sandbar, and footprints leading out of the water, not in. Whatever happened to Bhima, he walked out alive." },
+            fail: { fx: { bond: { duryodhana: -1 } }, text: "Duryodhana's men find you on the bank. They send you home with a warning and a split lip." } } },
+        { id: "silent", t: "Say nothing. It is not your quarrel", fx: { duty: { conscience: -1 }, bond: { duryodhana: 1 }, memory: ["duryodhana", "You saw, and kept quiet."] } },
+        { id: "ask", t: "Ask Duryodhana to tell the elders it was a prank", req: { friend: "duryodhana" }, locked: "", fx: { bond: { duryodhana: -1 }, duty: { conscience: 1 } },
+          text: "He laughs, then stops laughing. \"You of all people,\" he says, and walks away. He does not speak to you for a month." }
+      ],
+      after: ["Eight days later Bhima walks back into the palace, stronger than before. He says the serpents beneath the river drew out the poison and gave him the strength of a thousand elephants. No one is punished. Everyone remembers."],
+      next: "a1_wrestle"
+    },
+    {
+      id: "a1_wrestle", act: 1, age: 13, art: "origin", place: "The wrestling ground at the spring fair",
+      title: "Ugra at the fair",
+      body: (S) => [
+        "Ugra, the miller's son, is two years older and twice your size. Every fair he takes the smaller children's sweets and dares anyone to stop him.",
+        S.friend === "charu" ? "Today he has Charu's arm twisted behind Charu's back." : "Today he has a little girl's bangles in his fist, and she is crying."
+      ],
+      choices: [
+        { id: "fight", t: "Step into the wrestling ring and challenge him", combat: "e_ugra" },
+        { id: "talk", t: "Shame him in front of the crowd",
+          check: { attr: "command", skill: "lore", dc: 7,
+            pass: { fx: { rep: { common: 1 } }, text: "You turn the crowd's laughter on him. Ugra drops what he took and stalks off." },
+            fail: { fx: {}, text: "The crowd laughs at you instead. Ugra keeps his prize." } } },
+        { id: "leave", t: "Walk away. He is too big", fx: { duty: { conscience: -1 } } }
+      ],
+      next: "a2_teacher"
+    }
+  ]);
+
+  K.encounter({
+    id: "e_ugra", title: "Ugra at the fair", caption: "The wrestling ring", lethal: false,
+    intro: "The crowd makes a ring. Ugra grins and spits on his palms.",
+    enemies: [K.foe("Ugra, the miller's son", 1, { hp: 26, atk: 4 })],
+    win: { fx: { rep: { common: 1 }, bond: { charu: 1 }, flag: ["beat_ugra", "balarama_noticed"], journal: "You beat Ugra in the ring at the spring fair. A giant of a man with a plough on his shoulder asked your name." },
+      text: "Ugra stays down. In the crowd, a huge man with a plough over his shoulder laughs and asks your name. People say afterwards that it was Balarama of the Yadavas." },
+    lose: { fx: { duty: { conscience: 1 } }, text: "You lose, badly. But you stood up to him, and everyone saw." }
+  });
+})(window.K = window.K || {});
