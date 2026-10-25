@@ -1,0 +1,13 @@
+{
+  "name": "kurukshetra-a-life",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Kurukshetra: A Life — a narrative RPG set inside the Mahabharata",
+  "scripts": {
+    "test": "node tests/playthrough.js 300",
+    "test:story": "node tests/playthrough.js 150 --story"
+  },
+  "devDependencies": {
+    "jsdom": "24.1.3"
+  }
+}

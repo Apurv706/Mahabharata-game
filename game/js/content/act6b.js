@@ -184,13 +184,13 @@
     lose: { deathText: "You fell on the eighteenth day, the last day of the war." },
     flee: { text: "You fall back, for the last time." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go. The war is nearly over." }
   });
-  war("e_raid", "Ashwatthama at the gate", [{ name: "Ashwatthama", hp: 150, atk: 14, def: 4, abilities: ["strike", "heavy", "arrows"] }], {
+  war("e_raid", "Ashwatthama at the gate", [{ name: "Ashwatthama", hp: 115, atk: 12, def: 3, abilities: ["strike", "heavy", "arrows"] }], {
     caption: "Fire in the camp", allies: [], spare: false,
     win: { fx: { rep: { pandava: 2 }, flag: "slowed_ashwatthama", journal: "You fought Ashwatthama at the gate of the burning camp, and lived." }, text: "He breaks away from you and vanishes into the smoke. You held him for long enough that some got out." },
     lose: { deathText: "You died at the gate of the Pandava camp, fighting Ashwatthama in the dark." },
     flee: { text: "You run, like everyone else." }
   });
-  war("e_ash", "Standing in Ashwatthama's way", [{ name: "Ashwatthama", hp: 150, atk: 14, def: 4, abilities: ["strike", "heavy", "arrows"] }], {
+  war("e_ash", "Standing in Ashwatthama's way", [{ name: "Ashwatthama", hp: 115, atk: 12, def: 3, abilities: ["strike", "heavy", "arrows"] }], {
     caption: "The road to the sleeping camp", allies: [], spare: false,
     win: { fx: { duty: { conscience: 3 }, flag: "fought_ashwatthama", journal: "You tried to stop Ashwatthama on the road to the sleeping camp." }, text: "He staggers, and then goes around you. You cannot stop him. You slowed him down." },
     lose: { deathText: "You died on the road, trying to stop Ashwatthama from reaching the sleeping camp." },

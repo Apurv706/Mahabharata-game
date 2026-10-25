@@ -96,7 +96,7 @@
   };
 
   // ---------- Conditions ----------
-  const FIELDS = ["origin", "teacher", "path", "court", "side", "friend", "spouse", "temperament", "heirloom", "pronoun", "exile", "endChoice"];
+  const FIELDS = ["origin", "teacher", "path", "court", "side", "friend", "spouse", "child", "temperament", "heirloom", "pronoun", "exile", "endChoice"];
   const TESTS = {
     all: (v, S) => v.every((x) => K.test(x, S)),
     any: (v, S) => v.some((x) => K.test(x, S)),

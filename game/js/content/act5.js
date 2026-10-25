@@ -207,7 +207,7 @@
   });
   K.encounter({
     id: "e_gandharva", title: "The Gandharva ambush", caption: "Forest warriors in the royal camp", lethal: false,
-    enemies: [K.foe("Gandharva warrior", 3), K.foe("Gandharva warrior", 3)],
+    enemies: [K.foe("Gandharva warrior", 3), K.foe("Gandharva warrior", 2)],
     win: { fx: { bond: { duryodhana: 2 }, rep: { kuru: 1 } }, text: "You hold your corner of the camp, but Duryodhana has already been carried off." },
     lose: { fx: { bond: { duryodhana: 1 } }, text: "They knock you down and leave you. At least you stayed." }
   });
