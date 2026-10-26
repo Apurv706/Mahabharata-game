@@ -31,7 +31,8 @@ Ornaments, all in gold line:
 - Labels are sentence case at 14px or more. No tiny uppercase labels, no pill badges above headings.
 - Whether a scene is canon, your life or the war is said in words in the picture's caption.
 - Key numbers on choices are quiet and hidden on touch screens.
-- Every motion uses transform and opacity, and has a reduced-motion fallback.
+- Every motion uses transform, opacity or clip-path, and has a reduced-motion fallback.
+- Story screens reveal in order (`U.stage`): painting, title, each line, then the choices. Never show choices before the scene is set. A tap, Space, Enter or a number key shows everything; the menu can turn it off.
 
 ## Not yet checked
 

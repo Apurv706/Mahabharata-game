@@ -70,7 +70,8 @@
       '<p class="note" id="m-saved"></p></div>' +
       '<div class="field"><span class="lbl">' + U.tr("Settings") + "</span>" +
       '<label class="toggle"><input type="checkbox" id="m-story"' + (S.storyMode ? " checked" : "") + "><span>" + U.tr("Story mode") + "<small>" + U.tr("You cannot die in battle.") + "</small></span></label>" +
-      '<label class="toggle"><input type="checkbox" id="m-big"' + (prefs.bigText ? " checked" : "") + "><span>" + U.tr("Larger text") + "</span></label></div></div>" +
+      '<label class="toggle"><input type="checkbox" id="m-big"' + (prefs.bigText ? " checked" : "") + "><span>" + U.tr("Larger text") + "</span></label>" +
+      '<label class="toggle"><input type="checkbox" id="m-gradual"' + (prefs.gradual !== false ? " checked" : "") + "><span>" + U.tr("Reveal the story line by line") + "<small>" + U.tr("Tap the page or press Space to show everything at once.") + "</small></span></label></div></div>" +
       '<div class="field"><span class="lbl">' + U.tr("Move this life to another device") + '</span><p class="note">' + U.tr("Copy this code and paste it into \u201cLoad a save code\u201d on another device.") + "</p>" +
       '<textarea id="m-code" readonly spellcheck="false">' + U.esc(K.exportCode()) + '</textarea><div class="btnrow"><button class="ghost" id="m-copy" type="button">' + U.tr("Copy code") + "</button></div></div>" +
       '<div class="btnrow"><button class="ghost" id="m-gloss" type="button">' + U.tr("Glossary") + '</button><button class="ghost" id="m-title" type="button">' + U.tr("Return to title") + "</button></div>",
@@ -79,6 +80,7 @@
         U.$("m-save").addEventListener("click", () => { U.$("m-saved").textContent = K.tr(K.save("manual") ? "Saved." : "This browser is not allowing saves. Use the save code instead."); });
         if (manual) U.$("m-load").addEventListener("click", () => { U.closeModal(); K.S = manual; K.go(manual.scene); });
         U.$("m-story").addEventListener("change", (e) => { K.S.storyMode = e.target.checked; K.save("auto"); });
+        U.$("m-gradual").addEventListener("change", (e) => { K.prefs({ gradual: e.target.checked }); });
         U.$("m-big").addEventListener("change", (e) => { K.prefs({ bigText: e.target.checked }); document.body.classList.toggle("big-text", e.target.checked); });
         U.$("m-copy").addEventListener("click", async () => {
           const ta = U.$("m-code");

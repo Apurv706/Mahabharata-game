@@ -1467,6 +1467,8 @@
     "They sing of {name}, born in {origin}, student of {teacher}.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {teacher} {g:का शिष्य|की शिष्या|के शिष्य}।",
     "They sing of {name}, born in {origin}.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}।",
     "{They} fell at Kurukshetra.": "{g:वह|वह|वे} कुरुक्षेत्र में वीरगति को {g:प्राप्त हुआ|प्राप्त हुई|प्राप्त हुए}।",
-    "Ira": "इरा"
+    "Ira": "इरा",
+    "Reveal the story line by line": "कथा पंक्ति-दर-पंक्ति दिखाओ",
+    "Tap the page or press Space to show everything at once.": "सब कुछ एक साथ देखने के लिए पृष्ठ पर छुओ या Space दबाओ।"
   });
 })(window.K = window.K || {});

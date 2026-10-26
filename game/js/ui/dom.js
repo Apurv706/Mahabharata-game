@@ -54,12 +54,59 @@
     U.$("nav").hidden = !on; U.$("game").classList.toggle("wide", !on); U.$("ledger").hidden = !on;
   };
 
+  // ---------- Staged reveal ----------
+  // Story screens bring their parts in one after another: painting, title, each line of the scene,
+  // and only then the choices. The pause after each line follows its length. A tap on the page,
+  // Space, Enter or a number key shows everything at once. Off with reduced motion, in the
+  // automated tests, or when the player turns "Reveal the story line by line" off in the menu.
+  U.motion = function () {
+    if (/jsdom/i.test(navigator.userAgent || "")) return false;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+    return K.prefs().gradual !== false;
+  };
+  let stageRun = null;
+  U.stage = function (items, done) {
+    U.stageFinish(false);
+    items = items.filter(Boolean);
+    if (!U.motion()) { items.forEach((el) => el.classList.remove("staged")); if (done) done(); return; }
+    items.forEach((el) => { el.classList.add("staged"); el.classList.remove("shown"); });
+    const run = { items, i: 0, timer: null, done };
+    stageRun = run;
+    const holdAfter = (el) => {
+      if (el.dataset.hold) return +el.dataset.hold;
+      const n = (el.textContent || "").trim().length;
+      return Math.min(1900, 320 + n * 13);
+    };
+    const step = () => {
+      if (stageRun !== run) return;
+      const el = run.items[run.i++];
+      if (!el) return U.stageFinish(true);
+      el.classList.add("shown");
+      run.timer = setTimeout(step, holdAfter(el));
+    };
+    run.timer = setTimeout(step, 60);
+  };
+  U.staging = () => !!stageRun;
+  U.stageFinish = function (callDone = true) {
+    const run = stageRun;
+    if (!run) return;
+    stageRun = null;
+    clearTimeout(run.timer);
+    run.items.forEach((el) => el.classList.add("shown", "now"));
+    if (callDone && run.done) run.done();
+  };
+  document.addEventListener("click", (e) => {
+    if (!stageRun || e.target.closest("button, a, input, textarea, .scrim")) return;
+    if (e.target.closest("#leaf")) U.stageFinish(true);
+  });
+
   // Number keys map to whatever buttons the current screen registers.
   let keyActions = [];
   U.keys = (list) => { keyActions = list; };
   document.addEventListener("keydown", (e) => {
     if (e.target.closest && e.target.closest("input, textarea, select")) return;
     if (document.querySelector(".scrim")) { if (e.key === "Escape") U.closeModal(); return; }
+    if (stageRun && (e.key === " " || e.key === "Enter" || /^[1-9]$/.test(e.key))) { e.preventDefault(); U.stageFinish(true); return; }
     const n = parseInt(e.key, 10);
     if (n >= 1 && n <= 9 && keyActions[n - 1]) { e.preventDefault(); keyActions[n - 1](); }
   });

@@ -5,9 +5,13 @@
   const C = K.Combat;
   let target = null;
   let onEndCb = null;
+  let lastHp = {};
+  let lastLogLen = 0;
 
   U.startBattle = function (encId, onEnd) {
     target = null;
+    lastHp = {};
+    lastLogLen = 0;
     onEndCb = onEnd;
     C.start(encId, onEnd);
   };
@@ -40,6 +44,22 @@
       '<div class="sides"><div class="side"><span class="lbl">' + U.tr("Your side") + "</span>" + friends.map((u) => unitCard(u, B)).join("") +
       '</div><div class="side"><span class="lbl">' + U.tr("Against you · tap to target") + "</span>" + enemies.map((u) => unitCard(u, B)).join("") + "</div></div>" +
       '<div id="battle-actions"></div><ol class="blog" id="blog" aria-live="polite">' + B.log.slice(-8).map((l) => "<li>" + U.esc(C.line(l)) + "</li>").join("") + "</ol></div>";
+    // Blows land visibly: a card that lost health shakes and shows the damage; healing glows.
+    if (U.motion()) {
+      for (const u of B.units) {
+        const before = lastHp[u.uid];
+        const el = leaf.querySelector('.unit[data-uid="' + u.uid + '"]');
+        if (el && before != null && before !== u.hp) {
+          const d = u.hp - before;
+          el.classList.add(d < 0 ? "hit" : "healed");
+          el.appendChild(U.el('<span class="dmg ' + (d < 0 ? "down" : "up") + '" aria-hidden="true">' + (d > 0 ? "+" : "") + d + "</span>"));
+        }
+      }
+      const last = leaf.querySelector("#blog li:last-child");
+      if (last && B.log.length !== lastLogLen) last.classList.add("fresh");
+    }
+    lastHp = Object.fromEntries(B.units.map((u) => [u.uid, u.hp]));
+    lastLogLen = B.log.length;
     leaf.querySelectorAll(".unit.enemy").forEach((el) => el.addEventListener("click", () => { target = el.dataset.uid; U.renderBattle(B); }));
     const log = U.$("blog");
     log.scrollTop = log.scrollHeight;

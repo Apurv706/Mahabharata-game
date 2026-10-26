@@ -123,14 +123,37 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 .hint { font-size: 14px; color: var(--faint); margin: 0; }
 @media (pointer: coarse) { .choice .k, .hint { display: none; } .choice { grid-template-columns: minmax(0, 1fr); } }
 
-@media (prefers-reduced-motion: no-preference) {
-  .leaf .text > * { animation: rise 0.45s cubic-bezier(.2, .7, .2, 1) both; }
-  .leaf .text > *:nth-child(2) { animation-delay: 70ms; }
-  .leaf .text > *:nth-child(3) { animation-delay: 140ms; }
-  .leaf .text > *:nth-child(n+4) { animation-delay: 210ms; }
-  @keyframes rise { from { opacity: 0.001; transform: translateY(18px); } to { opacity: 1; transform: none; } }
-}
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/* Staged reveal (U.stage): parts wait hidden, then rise in one after another. */
+.staged { opacity: 0; transform: translateY(14px); }
+.staged.shown { opacity: 1; transform: none; transition: opacity 0.55s ease, transform 0.6s cubic-bezier(.2, .7, .2, 1); }
+.staged.shown.now { transition-duration: 0.2s; }
+/* The painting opens like temple doors, then its caption rises. */
+.plate.staged { opacity: 1; transform: none; clip-path: inset(0 50% 0 50%); }
+.plate.staged.shown { clip-path: inset(0 0 0 0); transition: clip-path 0.9s cubic-bezier(.65, 0, .35, 1); }
+.plate.staged .cap { opacity: 0; transform: translateY(10px); }
+.plate.staged.shown .cap { opacity: 1; transform: none; transition: opacity 0.6s ease 0.6s, transform 0.6s ease 0.6s; }
+/* The canon frame draws in: the box appears, then its lines. */
+.witness.staged { transform: scale(0.985); }
+/* Choices slide in from the left. */
+.choice.staged { transform: translateX(-18px); }
+/* Choosing: the picked card glows gold, the others fall away. */
+.choice.chosen { background: var(--hover); box-shadow: 0 0 0 1px var(--data), 0 0 22px rgba(226, 181, 90, 0.35); transition: box-shadow 0.3s, background-color 0.3s; } /* taste-skill-ignore: selection glow, transient */
+.choice.dismiss { opacity: 0; transform: translateX(14px); transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: none; }
+/* Battle: hits shake the card, damage floats up; healing glows. */
+.unit { position: relative; }
+.unit.hit { animation: shake 0.42s cubic-bezier(.36, .07, .19, .97); }
+.unit.healed { animation: glow 0.8s ease; }
+@keyframes shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+@keyframes glow { 40% { background-color: #2f4a37; } }
+.dmg { position: absolute; right: 14px; top: -16px; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); font-weight: 700; font-size: 18px; pointer-events: none; animation: float 1.1s ease-out forwards; }
+.dmg.down { color: var(--negative); } .dmg.up { color: var(--positive); }
+@keyframes float { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-26px); } }
+.blog li.fresh { animation: logIn 0.5s ease both; }
+@keyframes logIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+/* Duty meters: a pip that changes pulses. */
+.pips i.flash, .pips i.lost { animation: pip 0.9s ease 2; }
+@keyframes pip { 50% { transform: scaleY(1.9); } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 
 /* Hindi: Devanagari needs more line room for its vowel signs, and Tiro has a single weight, so
    no faux bold; its letters sit larger than Cormorant's, so the biggest display sizes step down. */

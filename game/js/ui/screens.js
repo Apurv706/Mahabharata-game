@@ -150,8 +150,14 @@
     const again = () => { K.deleteSlot("auto"); U.renderCreate(); };
     U.$("again").addEventListener("click", again);
     U.$("readj").addEventListener("click", () => U.openJournal());
-    U.keys([again]);
     U.renderLedger();
     U.scrollTop();
+    // The bards' telling arrives line by line.
+    const plate = leaf.querySelector(".plate"); if (plate) plate.dataset.hold = 800;
+    const h1 = leaf.querySelector(".text h1"); if (h1) h1.dataset.hold = 900;
+    const lines = [...leaf.querySelectorAll(".telling p")];
+    const fates = leaf.querySelector(".fates");
+    U.keys([]);
+    U.stage([plate, h1, ...lines, fates, ...(fates ? fates.children : []), leaf.querySelector(".text .btnrow")], () => U.keys([again]));
   };
 })(window.K = window.K || {});

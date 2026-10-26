@@ -43,12 +43,34 @@
       box.appendChild(b);
     });
     U.$("keyhint").textContent = rows.length > 1 ? K.tr("Press 1 to {n} to choose.", { n: rows.length }) : "";
-    U.keys(keys);
     U.renderLedger();
     U.scrollTop();
+    // Set the scene first, then offer the choices.
+    const text = leaf.querySelector(".text");
+    const story = [];
+    for (const el of text.children) {
+      if (el.id === "choices" || el.id === "keyhint") continue;
+      if (el.classList.contains("witness")) { el.dataset.hold = 250; story.push(el, ...el.children); }
+      else story.push(el);
+    }
+    const plate = leaf.querySelector(".plate");
+    if (plate) plate.dataset.hold = 700;
+    const h1 = text.querySelector("h1");
+    if (h1) h1.dataset.hold = 650;
+    [...box.children].forEach((b) => { b.dataset.hold = 110; });
+    U.keys([]);
+    U.stage([plate, ...story, ...box.children, U.$("keyhint")], () => U.keys(keys));
   };
 
+  // The chosen card lights up and the others fall away before the result comes in.
   function pick(sc, c, btn) {
+    if (U.motion() && btn && !btn.classList.contains("chosen")) {
+      U.keys([]);
+      btn.classList.add("chosen");
+      U.$("choices").querySelectorAll(".choice").forEach((o) => { if (o !== btn) o.classList.add("dismiss"); o.disabled = true; });
+      setTimeout(() => pick(sc, c, null), 520);
+      return;
+    }
     const res = K.choose(sc, c);
     if (res.combat) {
       U.startBattle(res.combat, (outcome) => {
@@ -85,8 +107,13 @@
     const cont = U.button("cta", U.tr("Continue"), go);
     box.appendChild(cont);
     U.$("keyhint").innerHTML = "";
-    U.keys([go]);
+    U.keys([]);
     U.renderLedger();
-    cont.focus({ preventScroll: true });
+    const parts = [];
+    for (const el of [...box.children].slice(1)) {
+      if (el.classList.contains("witness") || el.classList.contains("result")) { el.dataset.hold = 250; parts.push(el, ...el.children); }
+      else parts.push(el);
+    }
+    U.stage(parts, () => { U.keys([go]); cont.focus({ preventScroll: true }); });
   }
 })(window.K = window.K || {});
