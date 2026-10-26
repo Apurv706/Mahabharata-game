@@ -14,7 +14,7 @@
   const pref = (key) => K.prefs()[key];
   const on = (key) => pref(key) !== false;
   const musicOn = () => on("sound") && on("music") && on("drone"); // "drone" is the older name of the switch
-  const musicLevel = () => { const v = pref("musicVol"); return typeof v === "number" ? Math.max(0, Math.min(1, v)) : 0.45; };
+  const musicLevel = () => { const v = pref("musicVol"); return typeof v === "number" ? Math.max(0, Math.min(1, v)) : 0.7; };
   const available = () => typeof window.AudioContext === "function" || typeof window.webkitAudioContext === "function";
 
   function init() {
@@ -175,7 +175,7 @@
     const t = now() + 0.05;
     S0 = { pluckAt: t, pluckIdx: 0, beatAt: t + 0.2, beatIdx: 0, tala: MOODS[mood].tala, phraseAt: t + 1.5 };
     musicBus.gain.cancelScheduledValues(t);
-    musicBus.gain.setTargetAtTime(musicLevel() * 1.4, t, 1.2);
+    musicBus.gain.setTargetAtTime(musicLevel() * 1.8, t, 1.2);
     timer = setInterval(tick, 60);
     tick();
   }
@@ -295,7 +295,7 @@
     // Called from the Menu switches and the volume slider.
     refresh() {
       if (!ctx) return;
-      if (musicOn()) { if (timer) musicBus.gain.setTargetAtTime(musicLevel() * 1.4, now(), 0.2); else startMusic(); }
+      if (musicOn()) { if (timer) musicBus.gain.setTargetAtTime(musicLevel() * 1.8, now(), 0.2); else startMusic(); }
       else stopMusic();
     },
     supported: available,
@@ -304,17 +304,28 @@
 
   };
 
-  // Unlock on the first gesture, then start the music.
+  // Unlock on the first gesture, then start the music. Browsers let sound start only during a real
+  // user action: a mouse press or key, but on touch screens only the finger lifting (touchend /
+  // click), not the touch going down. So listen to all of them and keep listening until the audio
+  // is really running. On iPhone, "playback" makes the music play even with the ringer switch on silent.
+  const GESTURES = ["pointerdown", "pointerup", "touchend", "click", "keydown"];
   const unlock = () => {
     if (!init()) return;
-    if (ctx.state === "suspended") ctx.resume();
+    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) { /* older browsers */ }
     if (!noise) noise = noiseBuffer(1);
-    K.Sound.refresh();
-    document.removeEventListener("pointerdown", unlock, true);
-    document.removeEventListener("keydown", unlock, true);
+    try { // a silent blip inside the gesture, which old iOS needs before it will play anything
+      const b = ctx.createBuffer(1, 1, ctx.sampleRate), s = ctx.createBufferSource();
+      s.buffer = b; s.connect(ctx.destination); s.start(0);
+    } catch (e) { /* ignore */ }
+    const done = () => {
+      if (ctx.state !== "running") return;
+      GESTURES.forEach((g) => document.removeEventListener(g, unlock, true));
+      K.Sound.refresh();
+    };
+    if (ctx.state !== "running") { const r = ctx.resume(); if (r && r.then) r.then(done, () => {}); }
+    done();
   };
-  document.addEventListener("pointerdown", unlock, true);
-  document.addEventListener("keydown", unlock, true);
+  GESTURES.forEach((g) => document.addEventListener(g, unlock, true));
   document.addEventListener("visibilitychange", () => {
     if (!ctx) return;
     if (document.hidden) { stopMusic(); ctx.suspend(); }
