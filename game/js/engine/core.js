@@ -49,7 +49,8 @@
       bonds: {}, rep: { kuru: 3, pandava: 3, panchala: 3, yadava: 3, sages: 3, common: 3 },
       vows: [], boons: [], curses: [], injuries: [], items: { herbs: 1 },
       flags: [], memories: [], journal: [], dead: [], seen: [], log: [],
-      alive: true, storyMode: false, ending: null, deathText: null, endChoice: null
+      alive: true, storyMode: false, ending: null, deathText: null, endChoice: null,
+      slots: {}, bondAct: {}, karma: null
     };
   };
   K.S = K.newLife();
@@ -173,8 +174,8 @@
   }
   const FX = {
     duty: (o, S, d) => { for (const [k, n] of Object.entries(o)) bump(S.duty, k, n, d, "duty." + k); },
-    bond: (o, S, d) => { for (const [k, n] of Object.entries(o)) bump(S.bonds, k, n, d, "bond." + k, 0, 10, 3); },
-    setBond: (o, S) => { for (const [k, n] of Object.entries(o)) S.bonds[k] = n; },
+    bond: (o, S, d) => { for (const [k, n] of Object.entries(o)) { bump(S.bonds, k, n, d, "bond." + k, 0, 10, 3); if (n > 0) (S.bondAct = S.bondAct || {})[k] = S.act; } },
+    setBond: (o, S) => { for (const [k, n] of Object.entries(o)) { S.bonds[k] = n; (S.bondAct = S.bondAct || {})[k] = S.act; } },
     rep: (o, S, d) => { for (const [k, n] of Object.entries(o)) bump(S.rep, k, n, d, "rep." + k); },
     attr: (o, S, d) => { for (const [k, n] of Object.entries(o)) bump(S.attrs, k, n, d, "attr." + k, 0, 8); },
     skill: (o, S, d) => { for (const [k, n] of Object.entries(o)) bump(S.skills, k, n, d, "skill." + k, 0, 6); },

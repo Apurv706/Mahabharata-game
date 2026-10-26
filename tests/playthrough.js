@@ -35,11 +35,19 @@ function playLife(seed) {
   const { w, d, errors, jsErrors } = boot(seed);
   const K = w.K;
   const problems = K.validate();
+  // Every fourth life remembers a past one from the Book of Lives.
+  const reborn = seed % 4 === 0;
+  if (reborn) {
+    w.localStorage.setItem("kurukshetra.v2.lives", JSON.stringify([{ at: "2026-10-01T10:00:00.000Z", me: { name: "Ira", pronoun: "she", origin: "panchala", teacher: "drona", path: "archer", spouse: "revat", friend: "charu", court: "panchala", child: "vasu" },
+      title: "Beside Karna", art: "war_day17", alive: false, age: 44, side: "kaurava", telling: ["They sing of {name}, born in {origin}."], kept: false, broke: true, karna: true, teller: false, conscience: 4 }]));
+    K.UI.renderTitle();
+  }
   // Create a character through the real creation screen.
   d.getElementById("btn-new").click();
   const pickOpt = (sel) => rnd(w, [...d.querySelectorAll(sel)]).click();
   pickOpt("#origins .origin"); d.getElementById("land-ok").click();
   pickOpt("#pron .opt"); pickOpt("#temps .pick"); pickOpt("#heirs .pick");
+  if (reborn) [...d.querySelectorAll("#pasts .pick")].pop().click();
   if (STORY) { const s = d.getElementById("story"); s.checked = true; s.dispatchEvent(new w.Event("change")); }
   d.getElementById("begin").click();
 
@@ -47,7 +55,12 @@ function playLife(seed) {
   const fights = [];
   K.on("combat", (B) => { if (B.over && !B._counted) { B._counted = true; fights.push([B.enc.id, B.over]); } });
   for (let step = 0; step < 4000; step++) {
-    if (d.getElementById("again")) return { fights, ending: K.S.ending, alive: K.S.alive, age: K.S.age, path: path_, errors, problems, side: K.S.side, steps: step };
+    if (d.getElementById("again")) {
+      const book = K.lives();
+      if (!book.length || book[0].title !== K.S.ending) errors.push("warn: the Book of Lives did not record this life");
+      if (reborn && !K.S.flags.includes("reborn")) errors.push("warn: rebirth did not apply");
+      return { fights, ending: K.S.ending, alive: K.S.alive, age: K.S.age, path: path_, errors, problems, side: K.S.side, steps: step, seen: K.S.seen, flags: K.S.flags };
+    }
     const acts = [...d.querySelectorAll("#battle-actions .act:not([disabled])")];
     const cta = [...d.querySelectorAll("#leaf .cta")].filter((b) => !b.disabled);
     const choices = [...d.querySelectorAll("#choices .choice:not([disabled])")].filter((b) => !b.classList.contains("picked"));
@@ -99,6 +112,11 @@ const fstat = {};
 results.forEach((r) => (r.fights || []).forEach(([id, o]) => { fstat[id] = fstat[id] || { win: 0, lose: 0, flee: 0, spare: 0 }; fstat[id][o]++; }));
 console.log("Battles (win / lose / flee / spare):");
 Object.entries(fstat).forEach(([id, f]) => console.log("  " + id.padEnd(14) + [f.win, f.lose, f.flee, f.spare].join(" / ")));
+const evs = {};
+results.forEach((r) => (r.seen || []).forEach((id) => { if (/^ev_|^a1_pasha$|^a5_charu$|^a7_note$/.test(id)) evs[id] = (evs[id] || 0) + 1; }));
+console.log("Events and new scenes seen: " + Object.entries(evs).sort().map(([k, v]) => k + " " + v).join(", "));
+const fl = (f) => results.filter((r) => (r.flags || []).includes(f)).length;
+console.log("Dice: learned " + fl("learned_pasha") + ", beat Haridatta " + fl("beat_haridatta") + ", watched Shakuni " + fl("watched_hands") + ", saw the swap " + fl("saw_swap") + "; Nishada came " + fl("nishada_came") + "; reborn " + fl("reborn"));
 const deaths = results.filter((r) => r.ending && !r.alive);
 console.log("Died in the war:  " + deaths.length);
 if (warn.size) { console.log("Warnings:"); [...warn].slice(0, 10).forEach((x) => console.log("  " + x.slice(0, 300))); }

@@ -7498,5 +7498,1400 @@
   "id": 1500,
   "en": "The ring of chariots at sunset",
   "ctx": "play:end_death"
+ },
+ {
+  "id": 1501,
+  "en": "You drag {t} out of the press, behind the chariots.",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 1502,
+  "en": "Secrets you keep",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 1503,
+  "en": "The lamp went out before you chose.",
+  "ctx": "code:scene.js"
+ },
+ {
+  "id": 1504,
+  "en": "Next: {ab} → all of you",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 1505,
+  "en": "Next: {ab} → you",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 1506,
+  "en": "Next: {ab} → {who}",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 1507,
+  "en": "Next: {ab}",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 1508,
+  "en": "Pull {name} out of the fighting",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 1509,
+  "en": "Costs your turn",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 1510,
+  "en": "Book of Lives",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 1511,
+  "en": "Remember a past life?",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 1512,
+  "en": "A life from your Book of Lives can be born again in this one, and bring its karma with it.",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 1513,
+  "en": "No",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 1514,
+  "en": "Begin with nothing remembered",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 1515,
+  "en": "Timed moments",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 1516,
+  "en": "At a few hard moments a lamp burns down. If it goes out, you hold your tongue.",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 1517,
+  "en": "Sound",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 1518,
+  "en": "The quill, the conch, the dice and the gong.",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 1519,
+  "en": "Tanpura drone",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 1520,
+  "en": "A quiet drone under the story.",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 1521,
+  "en": "Round {n}",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 1522,
+  "en": "You {a}, {who} {b}",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 1523,
+  "en": "Throw the dice",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 1524,
+  "en": "Throw again",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 1525,
+  "en": "Stand on {n}",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 1526,
+  "en": "Next round",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 1527,
+  "en": "Shakuni calls {n}, and the dice show {n}.",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 1528,
+  "en": "Shakuni will throw five times. One throw is not honest. Watch his hands.",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 1529,
+  "en": "You remember the dice at the spring fair: a long die shows only one, two, five or six.",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 1530,
+  "en": "Throw {n} of 5",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 1531,
+  "en": "Throw {n}",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 1532,
+  "en": "Which throw was not honest?",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 1533,
+  "en": "Watch his hands",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 1534,
+  "en": "You take the round, {a} to {b}.",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 1535,
+  "en": "{who} takes the round, {b} to {a}.",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 1536,
+  "en": "A tie. The round is thrown again.",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 1537,
+  "en": "Reached once",
+  "ctx": "code:lives.js"
+ },
+ {
+  "id": 1538,
+  "en": "Reached {n} times",
+  "ctx": "code:lives.js"
+ },
+ {
+  "id": 1539,
+  "en": "Not yet found",
+  "ctx": "code:lives.js"
+ },
+ {
+  "id": 1540,
+  "en": "Endings found: {n} of {m}",
+  "ctx": "code:lives.js"
+ },
+ {
+  "id": 1541,
+  "en": "No lives written yet. Every life you finish is kept here.",
+  "ctx": "code:lives.js"
+ },
+ {
+  "id": 1542,
+  "en": "Clear the book",
+  "ctx": "code:lives.js"
+ },
+ {
+  "id": 1543,
+  "en": "Tap again to erase every life in this book",
+  "ctx": "code:lives.js"
+ },
+ {
+  "id": 1544,
+  "en": "Krishna",
+  "ctx": "world:PEOPLE"
+ },
+ {
+  "id": 1545,
+  "en": "Shakuni's dice cannot lose.",
+  "ctx": "world:SECRETS"
+ },
+ {
+  "id": 1546,
+  "en": "Shakuni swaps a die from his sleeve. You saw it.",
+  "ctx": "world:SECRETS"
+ },
+ {
+  "id": 1547,
+  "en": "There is a tunnel under the house at Varnavata.",
+  "ctx": "world:SECRETS"
+ },
+ {
+  "id": 1548,
+  "en": "Karna is Kunti's firstborn son, the eldest Pandava.",
+  "ctx": "world:SECRETS"
+ },
+ {
+  "id": 1549,
+  "en": "The dance teacher Brihannala is Arjuna.",
+  "ctx": "world:SECRETS"
+ },
+ {
+  "id": 1550,
+  "en": "You remember a life that was not this one.",
+  "ctx": "world:SECRETS"
+ },
+ {
+  "id": 1551,
+  "en": "A conch sounds behind your line, then a hundred more. Your side takes heart.",
+  "ctx": "battle-events"
+ },
+ {
+  "id": 1552,
+  "en": "A cloud of arrows comes down out of the dust, on friend and foe alike.",
+  "ctx": "battle-events"
+ },
+ {
+  "id": 1553,
+  "en": "A riderless horse bolts through the enemy line, dragging its reins. {t} is caught in the open.",
+  "ctx": "battle-events"
+ },
+ {
+  "id": 1554,
+  "en": "A water-carrier runs along your line under the arrows. Everyone drinks.",
+  "ctx": "battle-events"
+ },
+ {
+  "id": 1555,
+  "en": "A maddened elephant tears through the press. {t} is thrown down in its path.",
+  "ctx": "battle-events"
+ },
+ {
+  "id": 1556,
+  "en": "Far down the line, Bhishma's palm-tree banner turns your way. His arrows fall like rain, and your line bends under them.",
+  "ctx": "battle-events"
+ },
+ {
+  "id": 1557,
+  "en": "Bhishma's palm-tree banner sweeps down the line. Where the old man passes, the enemy ranks break, and your side surges after him.",
+  "ctx": "battle-events"
+ },
+ {
+  "id": 1558,
+  "en": "Ghatotkacha, Bhima's giant son, roars out of the dark above the torches. The men in front of you falter and look up.",
+  "ctx": "battle-events"
+ },
+ {
+  "id": 1559,
+  "en": "Something huge moves in the dark above the torches, laughing. Ghatotkacha, Bhima's giant son. Your line shrinks from him.",
+  "ctx": "battle-events"
+ },
+ {
+  "id": 1560,
+  "en": "The tents are burning. Smoke rolls between you, and for a breath he cannot see you.",
+  "ctx": "battle-events"
+ },
+ {
+  "id": 1561,
+  "en": "A cloud slides across the moon. In the sudden dark he loses you for a breath.",
+  "ctx": "battle-events"
+ },
+ {
+  "id": 1562,
+  "en": "Survive, with the new court's trust.",
+  "ctx": "endings"
+ },
+ {
+  "id": 1563,
+  "en": "Survive, and follow the old king into the forest.",
+  "ctx": "endings"
+ },
+ {
+  "id": 1564,
+  "en": "Survive with a storyteller's memory.",
+  "ctx": "endings"
+ },
+ {
+  "id": 1565,
+  "en": "Swear to hunt Ashwatthama, and keep the oath.",
+  "ctx": "endings"
+ },
+ {
+  "id": 1566,
+  "en": "Survive, and go home with most of your people alive.",
+  "ctx": "endings"
+ },
+ {
+  "id": 1567,
+  "en": "Survive, having lost most of those you loved.",
+  "ctx": "endings"
+ },
+ {
+  "id": 1568,
+  "en": "Survive, and walk away from everything.",
+  "ctx": "endings"
+ },
+ {
+  "id": 1569,
+  "en": "Fall in battle with every vow kept.",
+  "ctx": "endings"
+ },
+ {
+  "id": 1570,
+  "en": "Fall in battle.",
+  "ctx": "endings"
+ },
+ {
+  "id": 1571,
+  "en": "Follow Abhimanyu to the end.",
+  "ctx": "endings"
+ },
+ {
+  "id": 1572,
+  "en": "Stand beside Karna on his last day.",
+  "ctx": "endings"
+ },
+ {
+  "id": 1573,
+  "en": "A life of kept promises",
+  "ctx": "rebirth"
+ },
+ {
+  "id": 1574,
+  "en": "A broken vow, still owed",
+  "ctx": "rebirth"
+ },
+ {
+  "id": 1575,
+  "en": "Karna's friend, once",
+  "ctx": "rebirth"
+ },
+ {
+  "id": 1576,
+  "en": "A teller's memory",
+  "ctx": "rebirth"
+ },
+ {
+  "id": 1577,
+  "en": "A death in battle",
+  "ctx": "rebirth"
+ },
+ {
+  "id": 1578,
+  "en": "A quiet life",
+  "ctx": "rebirth"
+ },
+ {
+  "id": 1579,
+  "en": "The spring fair",
+  "ctx": "scene:a1_pasha"
+ },
+ {
+  "id": 1580,
+  "en": "Dice under a striped awning",
+  "ctx": "scene:a1_pasha"
+ },
+ {
+  "id": 1581,
+  "en": "The dice-board under the awning",
+  "ctx": "scene:a1_pasha"
+ },
+ {
+  "id": 1582,
+  "en": "The spring fair has come. Under a striped awning an old man called Haridatta keeps a dice-board: a cloth cross of squares, and three long dice of ivory, each marked one, two, five and six.",
+  "ctx": "scene:a1_pasha"
+ },
+ {
+  "id": 1583,
+  "en": "Haridatta",
+  "ctx": "scene:a1_pasha"
+ },
+ {
+  "id": 1584,
+  "en": "Kings have lost kingdoms at this board. Sit down, if you have a copper. I will teach you for nothing, and beat you for one.",
+  "ctx": "scene:a1_pasha"
+ },
+ {
+  "id": 1585,
+  "en": "Put down a copper and play him",
+  "ctx": "scene:a1_pasha"
+ },
+ {
+  "id": 1586,
+  "en": "A game of dice, best of three rounds",
+  "ctx": "scene:a1_pasha"
+ },
+ {
+  "id": 1587,
+  "en": "You beat old Haridatta at dice at the spring fair.",
+  "ctx": "scene:a1_pasha"
+ },
+ {
+  "id": 1588,
+  "en": "Haridatta laughs, pays you with a bundle of healing herbs from the next stall, and tells you never to play a stranger. \"The dice are honest,\" he says. \"Men are not.\"",
+  "ctx": "scene:a1_pasha"
+ },
+ {
+  "id": 1589,
+  "en": "Haridatta keeps your copper and pats your head. \"Remember the faces,\" he says. \"One, two, five, six. Someone who knows the dice knows when they lie.\"",
+  "ctx": "scene:a1_pasha"
+ },
+ {
+  "id": 1590,
+  "en": "Watch the grown men play, and listen to their stories",
+  "ctx": "scene:a1_pasha"
+ },
+ {
+  "id": 1591,
+  "en": "The players talk while they throw. A king called Nala, they say, once lost his kingdom at dice, and his wife, and very nearly himself.",
+  "ctx": "scene:a1_pasha"
+ },
+ {
+  "id": 1592,
+  "en": "Go on to the wrestling ground",
+  "ctx": "scene:a1_pasha"
+ },
+ {
+  "id": 1593,
+  "en": "You turn the crowd's laughter on him. Ugra drops what he took and stalks off. He looks back once, at you.",
+  "ctx": "scene:a1_wrestle"
+ },
+ {
+  "id": 1594,
+  "en": "You lose, badly. But you stood up to him, and everyone saw. Ugra most of all.",
+  "ctx": "fight:e_ugra"
+ },
+ {
+  "id": 1595,
+  "en": "Watch Shakuni's hands before you say anything",
+  "ctx": "scene:a4_stakes"
+ },
+ {
+  "id": 1596,
+  "en": "A test of your eyes",
+  "ctx": "scene:a4_stakes"
+ },
+ {
+  "id": 1597,
+  "en": "In the dice hall you saw Shakuni swap a die from his sleeve.",
+  "ctx": "scene:a4_stakes"
+ },
+ {
+  "id": 1598,
+  "en": "One of those throws showed a face no long die has. His sleeve moved before it, and after. You are sure now.",
+  "ctx": "scene:a4_stakes"
+ },
+ {
+  "id": 1599,
+  "en": "You watch until your eyes ache. If he did anything, you did not see it.",
+  "ctx": "scene:a4_stakes"
+ },
+ {
+  "id": 1600,
+  "en": "The hall is waiting. If the lamp burns out before you act, you will have said nothing.",
+  "ctx": "scene:a4_draupadi"
+ },
+ {
+  "id": 1601,
+  "en": "The old smith",
+  "ctx": "scene:a5_charu"
+ },
+ {
+  "id": 1602,
+  "en": "Go home and sit with Charu until the end",
+  "ctx": "scene:a5_charu"
+ },
+ {
+  "id": 1603,
+  "en": "You came home when my father was dying.",
+  "ctx": "scene:a5_charu"
+ },
+ {
+  "id": 1604,
+  "en": "Old Kesava knows you at once. On his last morning he puts his hammer in your hands and says nothing at all. Charu holds the lamp.",
+  "ctx": "scene:a5_charu"
+ },
+ {
+  "id": 1605,
+  "en": "Send word that you cannot leave",
+  "ctx": "scene:a5_charu"
+ },
+ {
+  "id": 1606,
+  "en": "You did not come when my father died.",
+  "ctx": "scene:a5_charu"
+ },
+ {
+  "id": 1607,
+  "en": "Charu's answer comes back with the same boy, one line long. \"I know.\"",
+  "ctx": "scene:a5_charu"
+ },
+ {
+  "id": 1608,
+  "en": "Go to Arjuna and tell him who Karna really is",
+  "ctx": "scene:a5_side"
+ },
+ {
+  "id": 1609,
+  "en": "You nearly told Arjuna the truth about Karna. Krishna asked you not to.",
+  "ctx": "scene:a5_side"
+ },
+ {
+  "id": 1610,
+  "en": "You set out to tell Arjuna the truth about Karna. Krishna stopped you on the road.",
+  "ctx": "scene:a5_side"
+ },
+ {
+  "id": 1611,
+  "en": "Krishna is waiting on the road to Arjuna's tent, as if he knew you would come. \"Not from you,\" he says gently. \"If Arjuna learns it now, he will never lift his bow against his brother, and Karna has already chosen. Let him keep his choice.\" He holds your eyes until you nod.",
+  "ctx": "scene:a5_side"
+ },
+ {
+  "id": 1612,
+  "en": "A secret you could spend",
+  "ctx": "scene:a5_side"
+ },
+ {
+  "id": 1613,
+  "en": "Whistle for the Nishada archers camped at the forest's edge",
+  "ctx": "scene:a6_raid"
+ },
+ {
+  "id": 1614,
+  "en": "On the night of the raid, the Nishada archers came out of the dark when you whistled.",
+  "ctx": "scene:a6_raid"
+ },
+ {
+  "id": 1615,
+  "en": "They come out of the trees without a sound. They know the whistle: Ekalavya taught it to them, long ago, and told them who had bound his hand. Their arrows hold the gate long enough for half the camp to run.",
+  "ctx": "scene:a6_raid"
+ },
+ {
+  "id": 1616,
+  "en": "Ask him about the other life you dream of",
+  "ctx": "scene:a7_bhishma"
+ },
+ {
+  "id": 1617,
+  "en": "\"Amba came back to me as Shikhandi, to finish what she began,\" he says. \"Perhaps you came back to finish something too.\" He looks at you for a long time. \"Did you?\"",
+  "ctx": "scene:a7_bhishma"
+ },
+ {
+  "id": 1618,
+  "en": "The note, again",
+  "ctx": "scene:a7_note"
+ },
+ {
+  "id": 1619,
+  "en": "A young man finds you after the war. He has his grandfather's patience, and his grandfather's palm-leaf note. Sudatta is dead. The debt is not.",
+  "ctx": "scene:a7_note"
+ },
+ {
+  "id": 1620,
+  "en": "Sudatta's grandson",
+  "ctx": "scene:a7_note"
+ },
+ {
+  "id": 1621,
+  "en": "I lost two brothers on the field. I would like to be paid.",
+  "ctx": "scene:a7_note"
+ },
+ {
+  "id": 1622,
+  "en": "Pay him, whatever it costs",
+  "ctx": "scene:a7_note"
+ },
+ {
+  "id": 1623,
+  "en": "After the war you paid Sudatta's grandson your grandfather's debt.",
+  "ctx": "scene:a7_note"
+ },
+ {
+  "id": 1624,
+  "en": "It takes most of what you have. He counts it twice, and thanks you, and you see that he did not expect it.",
+  "ctx": "scene:a7_note"
+ },
+ {
+  "id": 1625,
+  "en": "Ask him to forgive it",
+  "ctx": "scene:a7_note"
+ },
+ {
+  "id": 1626,
+  "en": "He listens to the end. Then he tears the note in half himself. \"Everyone is owed something this year,\" he says. \"Nobody is getting paid.\"",
+  "ctx": "scene:a7_note"
+ },
+ {
+  "id": 1627,
+  "en": "\"My grandfather forgave nothing,\" he says. \"Neither do I.\" He keeps the note.",
+  "ctx": "scene:a7_note"
+ },
+ {
+  "id": 1628,
+  "en": "Tear it up again",
+  "ctx": "scene:a7_note"
+ },
+ {
+  "id": 1629,
+  "en": "He watches the pieces fall. \"My son will come,\" he says, and goes.",
+  "ctx": "scene:a7_note"
+ },
+ {
+  "id": 1630,
+  "en": "The well-house at noon",
+  "ctx": "scene:ev_snake"
+ },
+ {
+  "id": 1631,
+  "en": "A cobra in the well-house",
+  "ctx": "scene:ev_snake"
+ },
+ {
+  "id": 1632,
+  "en": "A cobra has made its home in the well-house, and the women will not go for water. Your grandmother says a cobra in the house is a guest of the gods. Your uncle has found a stick.",
+  "ctx": "scene:ev_snake"
+ },
+ {
+  "id": 1633,
+  "en": "Lure it out with a bowl of milk and lead it to the fields",
+  "ctx": "scene:ev_snake"
+ },
+ {
+  "id": 1634,
+  "en": "It drinks, and considers you for a long moment, and flows away into the millet. The women sing your name at the well for a week.",
+  "ctx": "scene:ev_snake"
+ },
+ {
+  "id": 1635,
+  "en": "It rears and spreads its hood. You drop the bowl and run. Your uncle uses the stick.",
+  "ctx": "scene:ev_snake"
+ },
+ {
+  "id": 1636,
+  "en": "Run to the next village for the snake-charmer",
+  "ctx": "scene:ev_snake"
+ },
+ {
+  "id": 1637,
+  "en": "It takes all day. He charges a copper, sings it into a basket, and lets it go in the forest. On the way home he teaches you the song.",
+  "ctx": "scene:ev_snake"
+ },
+ {
+  "id": 1638,
+  "en": "Hand your uncle the stick",
+  "ctx": "scene:ev_snake"
+ },
+ {
+  "id": 1639,
+  "en": "It is quick. Your grandmother does not speak to either of you until the next full moon.",
+  "ctx": "scene:ev_snake"
+ },
+ {
+  "id": 1640,
+  "en": "Under the village banyan",
+  "ctx": "scene:ev_bard"
+ },
+ {
+  "id": 1641,
+  "en": "A bard under the banyan",
+  "ctx": "scene:ev_bard"
+ },
+ {
+  "id": 1642,
+  "en": "A wandering suta sets up under the village banyan with a veena and a voice like a river. Tonight he sings of the churning of the ocean, when gods and demons pulled a serpent back and forth for a thousand years.",
+  "ctx": "scene:ev_bard"
+ },
+ {
+  "id": 1643,
+  "en": "Sit at his feet until the last verse",
+  "ctx": "scene:ev_bard"
+ },
+ {
+  "id": 1644,
+  "en": "You fall asleep before the nectar rises out of the sea. You dream of it for years.",
+  "ctx": "scene:ev_bard"
+ },
+ {
+  "id": 1645,
+  "en": "Ask him to teach you a verse of your own",
+  "ctx": "scene:ev_bard"
+ },
+ {
+  "id": 1646,
+  "en": "He teaches you one verse, and the trick of remembering a hundred more by hanging each one on a door of a house you know.",
+  "ctx": "scene:ev_bard"
+ },
+ {
+  "id": 1647,
+  "en": "He laughs, kindly. \"Come back when your voice breaks.\"",
+  "ctx": "scene:ev_bard"
+ },
+ {
+  "id": 1648,
+  "en": "Pick the pockets of his audience while they listen",
+  "ctx": "scene:ev_bard"
+ },
+ {
+  "id": 1649,
+  "en": "You come home with three coppers and a ring. The bard saw you. He said nothing, and sang a little louder.",
+  "ctx": "scene:ev_bard"
+ },
+ {
+  "id": 1650,
+  "en": "The horse fair by the river road",
+  "ctx": "scene:ev_horses"
+ },
+ {
+  "id": 1651,
+  "en": "Northern horses at the river road",
+  "ctx": "scene:ev_horses"
+ },
+ {
+  "id": 1652,
+  "en": "The grey mare",
+  "ctx": "scene:ev_horses"
+ },
+ {
+  "id": 1653,
+  "en": "Horse-traders have come down the river road with forty northern horses. One grey mare lets no one near her. The traders want her gone before she kills someone.",
+  "ctx": "scene:ev_horses"
+ },
+ {
+  "id": 1654,
+  "en": "Try to gentle the grey mare",
+  "ctx": "scene:ev_horses"
+ },
+ {
+  "id": 1655,
+  "en": "At the horse fair you gentled a grey mare no one else could touch.",
+  "ctx": "scene:ev_horses"
+ },
+ {
+  "id": 1656,
+  "en": "It takes a whole day of standing still. By evening she eats from your hand. The traders sell her to you for the price of a meal, which is a joke and a compliment at once.",
+  "ctx": "scene:ev_horses"
+ },
+ {
+  "id": 1657,
+  "en": "She throws you into the fence. The traders help you up, and tell you better riders than you have tried.",
+  "ctx": "scene:ev_horses"
+ },
+ {
+  "id": 1658,
+  "en": "Haggle for a sound horse for your family",
+  "ctx": "scene:ev_horses"
+ },
+ {
+  "id": 1659,
+  "en": "You beat the price down by a third and come home leading a bay gelding with kind eyes. Your father pretends not to be impressed.",
+  "ctx": "scene:ev_horses"
+ },
+ {
+  "id": 1660,
+  "en": "Watch how the traders lie",
+  "ctx": "scene:ev_horses"
+ },
+ {
+  "id": 1661,
+  "en": "Every trader lies differently. By evening you can tell who is lying about what, and you wish you could not.",
+  "ctx": "scene:ev_horses"
+ },
+ {
+  "id": 1662,
+  "en": "The forest",
+  "ctx": "scene:ev_deer"
+ },
+ {
+  "id": 1663,
+  "en": "A clearing in the forest",
+  "ctx": "scene:ev_deer"
+ },
+ {
+  "id": 1664,
+  "en": "The wounded doe",
+  "ctx": "scene:ev_deer"
+ },
+ {
+  "id": 1665,
+  "en": "In the forest you find a doe with an arrow in her flank, still breathing. Behind you, a hunting party is crashing through the brush. A prince's party, by the sound of the horns.",
+  "ctx": "scene:ev_deer"
+ },
+ {
+  "id": 1666,
+  "en": "You think of King Pandu, who shot a deer in the forest and was cursed for it.",
+  "ctx": "scene:ev_deer"
+ },
+ {
+  "id": 1667,
+  "en": "Draw out the arrow and bind the wound",
+  "ctx": "scene:ev_deer"
+ },
+ {
+  "id": 1668,
+  "en": "She lies still under your hands, then stands, and is gone. An old woman gathering wood saw it all. She says the forest will remember.",
+  "ctx": "scene:ev_deer"
+ },
+ {
+  "id": 1669,
+  "en": "You do what you can. She dies with her head in your lap.",
+  "ctx": "scene:ev_deer"
+ },
+ {
+  "id": 1670,
+  "en": "Hide her trail from the hunters",
+  "ctx": "scene:ev_deer"
+ },
+ {
+  "id": 1671,
+  "en": "You drag a branch across the blood. The horns go past, and fade.",
+  "ctx": "scene:ev_deer"
+ },
+ {
+  "id": 1672,
+  "en": "Call the hunters to her. It is their kill",
+  "ctx": "scene:ev_deer"
+ },
+ {
+  "id": 1673,
+  "en": "A young lord thanks you, and tosses you a coin, and does not look at the deer.",
+  "ctx": "scene:ev_deer"
+ },
+ {
+  "id": 1674,
+  "en": "The city, on the new-moon night",
+  "ctx": "scene:ev_lamps"
+ },
+ {
+  "id": 1675,
+  "en": "Lamps on every wall",
+  "ctx": "scene:ev_lamps"
+ },
+ {
+  "id": 1676,
+  "en": "The night of lamps",
+  "ctx": "scene:ev_lamps"
+ },
+ {
+  "id": 1677,
+  "en": "On the new-moon night of Kartika the whole city sets out lamps, in rows along every wall and step. You have a hundred clay lamps and a little oil.",
+  "ctx": "scene:ev_lamps"
+ },
+ {
+  "id": 1678,
+  "en": "Float them down the river for your family's dead",
+  "ctx": "scene:ev_lamps"
+ },
+ {
+  "id": 1679,
+  "en": "The river carries some of them a long way. You watch until the last one goes out.",
+  "ctx": "scene:ev_lamps"
+ },
+ {
+  "id": 1680,
+  "en": "Give your oil to the potters' lane, which has none",
+  "ctx": "scene:ev_lamps"
+ },
+ {
+  "id": 1681,
+  "en": "The potters' lane is the brightest in the city that night. Nobody knows why, except the potters.",
+  "ctx": "scene:ev_lamps"
+ },
+ {
+  "id": 1682,
+  "en": "Spend the night at dice in the palace courtyard, as the nobles do",
+  "ctx": "scene:ev_lamps"
+ },
+ {
+  "id": 1683,
+  "en": "You lose a little and win a little, and learn who at court owes what to whom. It is the custom, they tell you: the gods play dice on this night too.",
+  "ctx": "scene:ev_lamps"
+ },
+ {
+  "id": 1684,
+  "en": "The river over its banks",
+  "ctx": "scene:ev_flood"
+ },
+ {
+  "id": 1685,
+  "en": "The river rises",
+  "ctx": "scene:ev_flood"
+ },
+ {
+  "id": 1686,
+  "en": "The rains come late and then all at once. In the night the river comes over its banks, and the low quarter of the town is under water to the rooftops.",
+  "ctx": "scene:ev_flood"
+ },
+ {
+  "id": 1687,
+  "en": "Take a boat into the low quarter",
+  "ctx": "scene:ev_flood"
+ },
+ {
+  "id": 1688,
+  "en": "In the flood year you rowed the low quarter out of the water.",
+  "ctx": "scene:ev_flood"
+ },
+ {
+  "id": 1689,
+  "en": "You make eleven trips. On the last the boat goes over, and you swim a child to the temple roof on your back.",
+  "ctx": "scene:ev_flood"
+ },
+ {
+  "id": 1690,
+  "en": "The current takes the boat on the first trip and a beam opens your arm. Someone else pulls you out.",
+  "ctx": "scene:ev_flood"
+ },
+ {
+  "id": 1691,
+  "en": "Get the high town to open its doors",
+  "ctx": "scene:ev_flood"
+ },
+ {
+  "id": 1692,
+  "en": "You go from house to house until every family on the hill has taken in a family from the river.",
+  "ctx": "scene:ev_flood"
+ },
+ {
+  "id": 1693,
+  "en": "Save your family's grain first",
+  "ctx": "scene:ev_flood"
+ },
+ {
+  "id": 1694,
+  "en": "Your family eats well that winter. Your neighbours notice.",
+  "ctx": "scene:ev_flood"
+ },
+ {
+  "id": 1695,
+  "en": "A road in the dry season",
+  "ctx": "scene:ev_riddle"
+ },
+ {
+  "id": 1696,
+  "en": "An ascetic by the road",
+  "ctx": "scene:ev_riddle"
+ },
+ {
+  "id": 1697,
+  "en": "The ascetic's riddle",
+  "ctx": "scene:ev_riddle"
+ },
+ {
+  "id": 1698,
+  "en": "An ascetic sits by the road with his eyes closed, as he has for days. As you pass he speaks without opening them.",
+  "ctx": "scene:ev_riddle"
+ },
+ {
+  "id": 1699,
+  "en": "The ascetic",
+  "ctx": "scene:ev_riddle"
+ },
+ {
+  "id": 1700,
+  "en": "Answer me, and I will give you what you need. What, once given, can never be taken back?",
+  "ctx": "scene:ev_riddle"
+ },
+ {
+  "id": 1701,
+  "en": "\"Your word\"",
+  "ctx": "scene:ev_riddle"
+ },
+ {
+  "id": 1702,
+  "en": "He opens his eyes. \"Yes,\" he says, and gives you two bundles of roots. \"For the war,\" he says. \"You will need them.\"",
+  "ctx": "scene:ev_riddle"
+ },
+ {
+  "id": 1703,
+  "en": "\"A gift\"",
+  "ctx": "scene:ev_riddle"
+ },
+ {
+  "id": 1704,
+  "en": "\"A gift can be taken back,\" he says. \"Ask any king.\" He closes his eyes again.",
+  "ctx": "scene:ev_riddle"
+ },
+ {
+  "id": 1705,
+  "en": "\"A life\"",
+  "ctx": "scene:ev_riddle"
+ },
+ {
+  "id": 1706,
+  "en": "\"Lives are given back all the time,\" he says. \"Ask the river.\" He closes his eyes again, and smiles.",
+  "ctx": "scene:ev_riddle"
+ },
+ {
+  "id": 1707,
+  "en": "Walk on. You have no time for riddles",
+  "ctx": "scene:ev_riddle"
+ },
+ {
+  "id": 1708,
+  "en": "Where the road narrows",
+  "ctx": "scene:ev_bandits"
+ },
+ {
+  "id": 1709,
+  "en": "Five men in the trees",
+  "ctx": "scene:ev_bandits"
+ },
+ {
+  "id": 1710,
+  "en": "Bandits on the road",
+  "ctx": "scene:ev_bandits"
+ },
+ {
+  "id": 1711,
+  "en": "Five men step out of the trees where the road narrows. They are thin, and their weapons are farm tools. The one in front is shaking.",
+  "ctx": "scene:ev_bandits"
+ },
+ {
+  "id": 1712,
+  "en": "Draw your weapon",
+  "ctx": "scene:ev_bandits"
+ },
+ {
+  "id": 1713,
+  "en": "Give them the food you carry",
+  "ctx": "scene:ev_bandits"
+ },
+ {
+  "id": 1714,
+  "en": "The one in front weeps. Their village is two days east. The king's men took its grain, for the war everyone says is coming.",
+  "ctx": "scene:ev_bandits"
+ },
+ {
+  "id": 1715,
+  "en": "Talk them into working for you instead",
+  "ctx": "scene:ev_bandits"
+ },
+ {
+  "id": 1716,
+  "en": "On the road you turned five starving bandits into the most loyal workers you ever had.",
+  "ctx": "scene:ev_bandits"
+ },
+ {
+  "id": 1717,
+  "en": "They have nothing to lose. A year later they are the most loyal people you know.",
+  "ctx": "scene:ev_bandits"
+ },
+ {
+  "id": 1718,
+  "en": "They laugh. Then they rob you anyway, slowly and politely.",
+  "ctx": "scene:ev_bandits"
+ },
+ {
+  "id": 1719,
+  "en": "Farm tools against your weapon",
+  "ctx": "fight:e_bandits"
+ },
+ {
+  "id": 1720,
+  "en": "They come at you all at once, badly.",
+  "ctx": "fight:e_bandits"
+ },
+ {
+  "id": 1721,
+  "en": "Hungry bandit",
+  "ctx": "fight:e_bandits"
+ },
+ {
+  "id": 1722,
+  "en": "They scatter into the trees. The last one to run is no older than sixteen.",
+  "ctx": "fight:e_bandits"
+ },
+ {
+  "id": 1723,
+  "en": "They take your purse and your sandals, and apologise.",
+  "ctx": "fight:e_bandits"
+ },
+ {
+  "id": 1724,
+  "en": "Your teacher's house",
+  "ctx": "scene:ev_teacher"
+ },
+ {
+  "id": 1725,
+  "en": "A lamp by a sickbed",
+  "ctx": "scene:ev_teacher"
+ },
+ {
+  "id": 1726,
+  "en": "Your teacher is ill",
+  "ctx": "scene:ev_teacher"
+ },
+ {
+  "id": 1727,
+  "en": "Word comes that {teacher} is ill and asking for students. The fever is in the chest. The physicians are not hopeful.",
+  "ctx": "scene:ev_teacher"
+ },
+ {
+  "id": 1728,
+  "en": "Go at once and nurse {teacher} yourself",
+  "ctx": "scene:ev_teacher"
+ },
+ {
+  "id": 1729,
+  "en": "You sit up through eleven nights. On the twelfth the fever breaks, and {teacher} looks at you and says, \"Still here?\" That is all. It is enough.",
+  "ctx": "scene:ev_teacher"
+ },
+ {
+  "id": 1730,
+  "en": "Send the best physician you can find",
+  "ctx": "scene:ev_teacher"
+ },
+ {
+  "id": 1731,
+  "en": "The physician comes back with a message: thank you, and come yourself next time.",
+  "ctx": "scene:ev_teacher"
+ },
+ {
+  "id": 1732,
+  "en": "You cannot leave. Send your regrets",
+  "ctx": "scene:ev_teacher"
+ },
+ {
+  "id": 1733,
+  "en": "A palm-leaf letter",
+  "ctx": "scene:ev_letter"
+ },
+ {
+  "id": 1734,
+  "en": "A letter from home",
+  "ctx": "scene:ev_letter"
+ },
+ {
+  "id": 1735,
+  "en": "A palm-leaf letter comes from {origin}, in your mother's hand, which has grown shaky. Your father is old now. The roof needs mending. When are you coming home?",
+  "ctx": "scene:ev_letter"
+ },
+ {
+  "id": 1736,
+  "en": "Go home for the rains",
+  "ctx": "scene:ev_letter"
+ },
+ {
+  "id": 1737,
+  "en": "The roof gets mended. Your father tells the same three stories every night. You do not mind.",
+  "ctx": "scene:ev_letter"
+ },
+ {
+  "id": 1738,
+  "en": "Send money and a long letter",
+  "ctx": "scene:ev_letter"
+ },
+ {
+  "id": 1739,
+  "en": "Write back that your place is here now",
+  "ctx": "scene:ev_letter"
+ },
+ {
+  "id": 1740,
+  "en": "{who} and you have drifted a little. Neither of you said anything.",
+  "ctx": "play:a3_debt"
+ },
+ {
+  "id": 1741,
+  "en": "Lives lived ({n})",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 1742,
+  "en": "Revat has oiled the chariot axle every night for a week. \"They asked for five villages,\" Revat says. \"Drive for the ones who asked.\"",
+  "ctx": "play:a5_side"
+ },
+ {
+  "id": 1743,
+  "en": "You chose a different side from the one I asked you to.",
+  "ctx": "play:a6_eve"
+ },
+ {
+  "id": 1744,
+  "en": "{a} hit {t} for {n}.",
+  "ctx": "play:a6_day14"
+ },
+ {
+  "id": 1745,
+  "en": "Madhavi has already packed her herbs. She is going to the healers' tents, whoever wins, and she asks you to come with her.",
+  "ctx": "play:a5_side"
+ },
+ {
+  "id": 1746,
+  "en": "{They} knew Karna's secret before the war, and kept it, because Krishna asked.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 1747,
+  "en": "Three long dice each, marked one, two, five and six. The higher total takes the round; two rounds win the game. Once a round you may throw one of your dice again.",
+  "ctx": "play:a1_pasha"
+ },
+ {
+  "id": 1748,
+  "en": "Six",
+  "ctx": "play:a1_pasha"
+ },
+ {
+  "id": 1749,
+  "en": "Two",
+  "ctx": "play:a1_pasha"
+ },
+ {
+  "id": 1750,
+  "en": "Tap one of your dice to throw it again, or stand.",
+  "ctx": "play:a1_pasha"
+ },
+ {
+  "id": 1751,
+  "en": "Five",
+  "ctx": "play:a1_pasha"
+ },
+ {
+  "id": 1752,
+  "en": "You lost the game, {b} rounds to {a}.",
+  "ctx": "play:a1_pasha"
+ },
+ {
+  "id": 1753,
+  "en": "One",
+  "ctx": "play:a4_stakes"
+ },
+ {
+  "id": 1754,
+  "en": "Four",
+  "ctx": "play:a4_stakes"
+ },
+ {
+  "id": 1755,
+  "en": "You named throw {n}. It was throw {m}.",
+  "ctx": "play:a4_stakes"
+ },
+ {
+  "id": 1756,
+  "en": "In the line beside you stands a big man with a miller's shoulders. Ugra. \"You put me on my back once,\" he says. \"I have waited thirty years to stand next to you instead.\"",
+  "ctx": "play:a6_day1"
+ },
+ {
+  "id": 1757,
+  "en": "Ugra, the miller's son, carried you off the field.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 1758,
+  "en": "Kurukshetra, at dawn on the first day",
+  "ctx": "play:title"
+ },
+ {
+  "id": 1759,
+  "en": "A boy brings word from home. Old Kesava, Charu's father, the smith who first put a hammer in your hands, is dying.",
+  "ctx": "play:a5_charu"
+ },
+ {
+  "id": 1760,
+  "en": "Charu is already packing, and does not ask whether you will come. Charu never asks.",
+  "ctx": "play:a5_charu"
+ },
+ {
+  "id": 1761,
+  "en": "Charu says that anyone who asks for five villages and is refused should get the whole kingdom, and spits.",
+  "ctx": "play:a5_side"
+ },
+ {
+  "id": 1762,
+  "en": "You are ahead. Stand, or risk a die.",
+  "ctx": "play:a1_pasha"
+ },
+ {
+  "id": 1763,
+  "en": "Ugra, the miller's son, went home and told the story of the fair to anyone who would listen.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 1764,
+  "en": "You won the game, {a} rounds to {b}.",
+  "ctx": "play:a1_pasha"
+ },
+ {
+  "id": 1765,
+  "en": "At night you dream you are someone else: {past}, born in {land}, grown and grey, with a whole life behind them. In the dream it always ends the same way: {end!}.",
+  "ctx": "play:a1_home"
+ },
+ {
+  "id": 1766,
+  "en": "You were born remembering another life, as {past}.",
+  "ctx": "play:a1_poison"
+ },
+ {
+  "id": 1767,
+  "en": "Sudatta's family still keeps the pieces of your grandfather's note.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 1768,
+  "en": "Charu has not sent for you. Charu never asks for anything.",
+  "ctx": "play:a5_charu"
+ },
+ {
+  "id": 1769,
+  "en": "When {they} whistled in the dark, the Nishada archers came, because of a hand {they} once bound.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 1770,
+  "en": "Across the field, under the enemy's banners, there is a big man with a miller's shoulders. Ugra never forgave the crowd for laughing, or you for making them.",
+  "ctx": "play:a6_day1"
+ },
+ {
+  "id": 1771,
+  "en": "{They} went home to sit with an old smith on his last nights, because {their} friend would never ask.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 1772,
+  "en": "Charu says the king whose salt you eat is the king you fight for, and that is the end of it.",
+  "ctx": "play:a5_side"
+ },
+ {
+  "id": 1773,
+  "en": "Three",
+  "ctx": "play:a4_stakes"
+ },
+ {
+  "id": 1774,
+  "en": "Sudatta's grandson tore up your family's note himself, and never spoke of it.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 1775,
+  "en": "Sudatta's grandson told everyone that you paid what your grandfather owed.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 1776,
+  "en": "An empty house at evening",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 1777,
+  "en": "You named throw {n}. You were right.",
+  "ctx": "play:a4_stakes"
+ },
+ {
+  "id": 1778,
+  "en": "{They} saw Shakuni's hands in the dice hall, and told no one.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 1779,
+  "en": "{They} saw Shakuni's hands in the dice hall, and said so.",
+  "ctx": "play:end_life"
  }
 ]

@@ -1,6 +1,22 @@
 /* Act V — The exile years (13-year time skip, ages 31–44). Three roads, then the incognito year. PRD §6. */
 (function (K) {
   "use strict";
+  // Where your spouse stands when the sides are drawn up, and what it costs to stand elsewhere.
+  function spouseView(S) {
+    const sp = S.spouse;
+    if (!sp || S.dead.includes(sp)) return null;
+    if (sp === "madhavi") return { side: "neutral", line: "Madhavi has already packed her herbs. She is going to the healers' tents, whoever wins, and she asks you to come with her." };
+    if (sp === "revat") return { side: "pandava", line: "Revat has oiled the chariot axle every night for a week. \"They asked for five villages,\" Revat says. \"Drive for the ones who asked.\"" };
+    if (sp === "charu") return S.court === "hastinapura"
+      ? { side: "kaurava", line: "Charu says the king whose salt you eat is the king you fight for, and that is the end of it." }
+      : { side: "pandava", line: "Charu says that anyone who asks for five villages and is refused should get the whole kingdom, and spits." };
+    return null;
+  }
+  function withSpouse(S, side, fx) {
+    const v = spouseView(S);
+    if (v && v.side !== side) Object.assign(fx, { bond: { [S.spouse]: -1 }, memory: [S.spouse, "You chose a different side from the one I asked you to."] });
+    return fx;
+  }
   const forest = { exile: "forest" }, court = { exile: "court" }, own = { exile: "own" };
 
   K.scenes([
@@ -16,7 +32,7 @@
         { id: "gentle", t: "To be kind before he is brave", fx: { set: { child: "vasu" }, setBond: { vasu: 7 }, duty: { family: 1, conscience: 1 }, flag: "vasu_gentle", journal: "You raised Vasu to be kind before he was brave." } },
         { id: "craft", t: "In your own craft, so he can earn a living without a sword", fx: { set: { child: "vasu" }, setBond: { vasu: 6 }, duty: { family: 2 }, flag: "vasu_craft", journal: "You taught Vasu your own craft." } }
       ],
-      next: "a5_forest_boon"
+      next: "s_exile"
     },
 
     // ---------- The forest road ----------
@@ -66,7 +82,7 @@
           text: "What is faster than the wind? The mind. What is more numerous than the grass? Thoughts. What is the greatest wonder? That every day people die, and the living act as if they never will. You remember every answer for the rest of your life." }
       ],
       after: ["Pleased with Yudhishthira's answers, the voice gives back his brothers' lives. It was Dharma himself, testing his son."],
-      next: "a5_matsya"
+      next: "a5_charu"
     },
 
     // ---------- The court road ----------
@@ -97,12 +113,12 @@
         { id: "astra", t: "Ask {teacher} to teach you the weapon you were promised", req: { teacher: ["drona", "kripa"], duty: ["teacher", 5] }, locked: "Your teacher must think you have earned it.", fx: { boon: "astra", duty: { teacher: 1 }, journal: "{teacher} taught you to call a divine weapon." },
           text: "{teacher} looks at you for a long time, then teaches you the mantra in a whisper. \"Never against someone who cannot fight back,\" he says." }
       ],
-      next: "a5_matsya"
+      next: "a5_charu"
     },
 
     // ---------- Your own road ----------
     {
-      id: "a5_own_life", when: own, skipTo: "a5_matsya",
+      id: "a5_own_life", when: own, skipTo: "a5_charu",
       act: 5, age: 33, art: "origin", place: (S) => K.ORIGINS[S.origin].name,
       title: "A life of your own",
       body: (S) => [
@@ -119,7 +135,7 @@
       next: "a5_own_crisis"
     },
     {
-      id: "a5_own_crisis", when: own, skipTo: "a5_matsya",
+      id: "a5_own_crisis", when: own, skipTo: "a5_charu",
       act: 5, age: 38, art: "origin", place: (S) => K.ORIGINS[S.origin].name,
       title: "The fever year",
       body: ["A fever comes up the river in the dry season. Half the village is sick, the granary is low, and the nearest king is busy with his own troubles."],
@@ -132,7 +148,25 @@
         { id: "mauni", t: "Go into the forest to find Mauni, your old teacher", req: { teacher: "hermit", noFlag: "betrayed_hermit" }, locked: "", fx: { boon: "astra", rep: { common: 1 }, journal: "Mauni gave you medicine for the village, and a divine weapon for what was coming." },
           text: "Mauni is older, and just as silent. He gives you a bundle of roots for the fever, and then, before you leave, a mantra. \"You kept my secret,\" he says. \"Keep this one too.\"" }
       ],
-      next: "a5_matsya"
+      next: "a5_charu"
+    },
+
+    // ---------- A bond that asks something of you ----------
+    {
+      id: "a5_charu", when: (S) => (S.friend === "charu" || S.spouse === "charu") && !S.dead.includes("charu"), skipTo: "s_late",
+      act: 5, art: "origin", place: (S) => K.ORIGINS[S.origin].name,
+      title: "The old smith",
+      body: (S) => [
+        "A boy brings word from home. Old Kesava, Charu's father, the smith who first put a hammer in your hands, is dying.",
+        S.spouse === "charu" ? "Charu is already packing, and does not ask whether you will come. Charu never asks." : "Charu has not sent for you. Charu never asks for anything."
+      ],
+      choices: [
+        { id: "go", t: "Go home and sit with Charu until the end", fx: { bond: { charu: 2 }, duty: { family: 1 }, flag: "sat_with_kesava", memory: ["charu", "You came home when my father was dying."] },
+          text: "Old Kesava knows you at once. On his last morning he puts his hammer in your hands and says nothing at all. Charu holds the lamp." },
+        { id: "send", t: "Send word that you cannot leave", fx: { bond: { charu: -2 }, memory: ["charu", "You did not come when my father died."] },
+          text: "Charu's answer comes back with the same boy, one line long. \"I know.\"" }
+      ],
+      next: "s_late"
     },
 
     // ---------- Everyone: the incognito year ----------
@@ -186,13 +220,19 @@
       ],
       body: (S) => [
         S.teacher === "balarama" ? { memory: "Balarama has gone on pilgrimage rather than fight. He asked you to do the same." } : null,
-        "Vasu is sixteen. He will follow wherever you go.",
+        S.child === "vasu" && !S.dead.includes("vasu") ? "Vasu is sixteen. He will follow wherever you go." : null,
+        spouseView(S) ? { memory: spouseView(S).line } : null,
         "This is the most important decision of your life."
       ],
       choices: [
-        { id: "pandava", t: "Fight for the Pandavas", fx: (S) => ({ set: { side: "pandava" }, rep: { pandava: 2 }, duty: { court: S.court === "hastinapura" ? -4 : 1, teacher: S.teacher === "balarama" ? -4 : 0 }, journal: "You chose to fight for the Pandavas." }) },
-        { id: "kaurava", t: "Fight for the Kuru throne under Duryodhana", fx: (S) => ({ set: { side: "kaurava" }, rep: { kuru: 2 }, duty: { court: S.court === "indraprastha" ? -4 : 1, teacher: S.teacher === "balarama" ? -4 : 0 }, journal: "You chose to fight for Duryodhana and the Kuru throne." }) },
-        { id: "neither", t: "Refuse to fight. Serve in the healers' tents, which take in both sides", fx: { set: { side: "neutral" }, rep: { sages: 2, common: 1 }, skill: { healing: 1 }, journal: "You refused to fight, and went to serve in the healers' tents." } }
+        { id: "pandava", t: "Fight for the Pandavas", fx: (S) => withSpouse(S, "pandava", { set: { side: "pandava" }, rep: { pandava: 2 }, duty: { court: S.court === "hastinapura" ? -4 : 1, teacher: S.teacher === "balarama" ? -4 : 0 }, journal: "You chose to fight for the Pandavas." }) },
+        { id: "kaurava", t: "Fight for the Kuru throne under Duryodhana", fx: (S) => withSpouse(S, "kaurava", { set: { side: "kaurava" }, rep: { kuru: 2 }, duty: { court: S.court === "indraprastha" ? -4 : 1, teacher: S.teacher === "balarama" ? -4 : 0 }, journal: "You chose to fight for Duryodhana and the Kuru throne." }) },
+        { id: "neither", t: "Refuse to fight. Serve in the healers' tents, which take in both sides", fx: (S) => withSpouse(S, "neutral", { set: { side: "neutral" }, rep: { sages: 2, common: 1 }, skill: { healing: 1 }, journal: "You refused to fight, and went to serve in the healers' tents." }) },
+        // A secret you hold can be spent. This one cannot change the story, and the story makes sure of it.
+        { id: "secret", t: "Go to Arjuna and tell him who Karna really is", req: (S) => (S.flags.includes("left_arena") || S.seen.includes("a5_karna_secret")) && !S.flags.includes("tried_secret"),
+          fx: { flag: "tried_secret", bond: { krishna: 1 }, memory: ["krishna", "You nearly told Arjuna the truth about Karna. Krishna asked you not to."], journal: "You set out to tell Arjuna the truth about Karna. Krishna stopped you on the road." },
+          text: "Krishna is waiting on the road to Arjuna's tent, as if he knew you would come. \"Not from you,\" he says gently. \"If Arjuna learns it now, he will never lift his bow against his brother, and Karna has already chosen. Let him keep his choice.\" He holds your eyes until you nod.",
+          hint: "A secret you could spend", next: "a5_side" }
       ],
       next: "a6_eve"
     }

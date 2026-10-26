@@ -105,7 +105,7 @@
         { id: "charu", img: "p_charu", t: "Marry Charu, your oldest friend", req: { friend: "charu" }, tags: ["marry"], fx: { set: { spouse: "charu" }, bond: { charu: 2 }, duty: { family: 2 }, journal: "You married Charu, your oldest friend." } },
         { id: "none", t: "Do not marry", fx: {} }
       ],
-      next: "a3_rajasuya"
+      next: "s_court"
     },
     {
       id: "a3_rajasuya", act: 3, age: 29, canon: true, place: "Indraprastha", art: "scene_rajasuya", plate: ["#6f8fd8", "#d4a84b"], caption: "The hall that Maya built",

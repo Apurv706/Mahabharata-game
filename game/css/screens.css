@@ -22,6 +22,10 @@
 .empty { font-size: 14px; color: var(--faint); font-style: italic; margin: 0; }
 .mems { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 15px; }
 .mems li em { color: var(--faint); font-style: normal; font-size: 13px; display: block; }
+/* Secrets: each sealed with a dot of red wax. */
+.secrets { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 15px; }
+.secrets li { display: grid; grid-template-columns: 12px 1fr; gap: 10px; align-items: start; }
+.secrets li::before { content: ""; width: 12px; height: 12px; margin-top: 5px; border-radius: 50%; background: #b8342a; box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.22); }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { font-size: 14px; border-radius: var(--r-control); padding: 3px 10px; background: var(--raised); color: var(--ink); }
 .chip.bad { background: #5c2a22; color: #ffb4a0; }
@@ -58,6 +62,14 @@
 .blog { margin: 0; padding: 12px 14px; list-style: none; border-radius: var(--r-card); background: var(--ground); display: grid; gap: 3px; font-size: 15px; color: var(--muted); max-height: 200px; overflow-y: auto; }
 .blog li:last-child { color: var(--ink); }
 .battle-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.battle-tools .cta small { display: block; font-weight: 500; font-size: 13px; color: var(--muted); }
+/* The enemy's next move, read off its stance. Heavy blows aimed at you are marked. */
+.unit .intent { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.unit .intent::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--faint); flex: none; }
+.unit .intent.danger { color: var(--negative); font-weight: 700; }
+.unit .intent.danger::before { background: var(--negative); }
+/* Something happening on the field: set apart from the blow-by-blow. */
+.blog li.ev { color: var(--data); font-style: italic; border-left: 2px solid var(--data); padding-left: 8px; margin-block: 3px; }
 
 /* Title: a full-bleed hero that cross-fades through the story's paintings, then the seven acts. */
 body.titling header.top { display: none; }
@@ -208,3 +220,72 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 .telling p { max-width: 60ch; margin: 0; }
 .fates { display: grid; gap: 8px; font-size: 16px; background: var(--raised); border-radius: var(--r-card); padding: 16px 18px; }
 .fates p { margin: 0; }
+
+/* The lamp: at a few moments the story will not wait. The flame shrinks as the oil runs down. */
+.lamp { --oil: 1; display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 6px 14px; padding: 10px 14px; margin-bottom: 10px; border-radius: var(--r-card); background: rgba(0, 0, 0, 0.18); border: 1px solid var(--gold-line); }
+.lamp .diya { grid-row: 1 / span 2; width: 52px; height: 52px; }
+.lamp .diya svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.lamp .flame { transform-box: fill-box; transform-origin: 50% 100%; transform: scale(calc(0.3 + var(--oil) * 0.7)); transition: transform 0.2s linear, opacity 0.4s; }
+.lamp .smoke { opacity: 0; transition: opacity 0.8s; }
+.lamp .oil { height: 4px; border-radius: 2px; background: var(--track); overflow: hidden; align-self: end; }
+.lamp .oil i { display: block; height: 100%; width: calc(var(--oil) * 100%); background: var(--data); }
+.lamp-note { font-size: 15px; color: var(--muted); align-self: start; }
+.lamp.low .oil i { background: var(--negative); }
+.lamp.low .lamp-note { color: var(--ink); }
+.lamp.out .flame { opacity: 0; }
+.lamp.out .smoke { opacity: 0.8; }
+@media (prefers-reduced-motion: no-preference) {
+  .lamp .flame path:first-child { transform-box: fill-box; transform-origin: 50% 100%; animation: flicker 0.9s ease-in-out infinite alternate; }
+  .lamp.low .flame { animation: gutter 0.5s steps(2) infinite; }
+}
+@keyframes flicker { to { transform: scaleY(1.1) skewX(-4deg); } }
+@keyframes gutter { 50% { opacity: 0.55; } }
+
+/* Dice games: long pasha dice, ivory with dark pips. */
+.dicegame { display: grid; gap: 12px; padding: 14px 16px; border-radius: var(--r-card); background: rgba(0, 0, 0, 0.16); border: 1px solid var(--gold-line); }
+.game-rules, .game-note { margin: 0; font-size: 15px; color: var(--muted); }
+.game-note { color: var(--ink); }
+.dicegame .score { margin: 0; font-family: var(--display); font-weight: 700; font-size: 21px; }
+.dicegame .row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.dicegame .row .who { min-width: 84px; color: var(--muted); font-size: 15px; }
+.dicegame .row .sum { font-family: var(--display); font-size: 24px; color: var(--data); font-variant-numeric: tabular-nums; }
+.dice { display: flex; gap: 8px; }
+.die { width: 72px; height: 26px; border: 0; border-radius: 6px; background: #efe2c4; box-shadow: inset 0 -3px 0 rgba(58, 26, 18, 0.28); display: flex; align-items: center; justify-content: center; gap: 4px; padding: 0 6px; }
+.die i { width: 6px; height: 6px; border-radius: 50%; background: #3a1a12; }
+.die:disabled { cursor: default; opacity: 1; }
+.die.live { cursor: pointer; outline: 1px dashed var(--accent); outline-offset: 3px; }
+.die.live:hover { background: #fff4da; }
+.dice.rolled .die { animation: tumble 0.5s cubic-bezier(.2, .8, .3, 1) both; }
+.dice.rolled .die:nth-child(2) { animation-delay: 0.07s; }
+.dice.rolled .die:nth-child(3) { animation-delay: 0.14s; }
+@keyframes tumble { from { opacity: 0; transform: translateY(-16px) rotate(-28deg); } 60% { opacity: 1; transform: translateY(2px) rotate(6deg); } to { transform: none; } }
+.throws { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.throws li { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.throws li span { min-width: 76px; color: var(--muted); font-size: 15px; }
+.dicegame .btnrow { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Rebirth: a past life to remember, on the creation page. */
+.pick.past i { aspect-ratio: 4 / 3; }
+.pick.past i.none { background: var(--surface); border: 1px dashed var(--faint); }
+.pick.past small.karma { color: var(--data); }
+
+/* The Book of Lives: the endings gallery, then a shelf of every life lived in this browser. */
+.endings { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 10px; }
+.ending { margin: 0; background: var(--raised); border-radius: var(--r-card); overflow: hidden; display: grid; grid-template-rows: auto 1fr; align-content: start; }
+.ending i { display: block; aspect-ratio: 16 / 9; background: var(--img, none) center / cover no-repeat, var(--ground); }
+.ending:not(.found) i { background: var(--ground) url("buti.svg") 0 0 / 44px 44px repeat; opacity: 0.6; }
+.ending figcaption { padding: 8px 10px 10px; display: grid; gap: 2px; }
+.ending b { font-family: var(--display); font-size: 18px; line-height: 1.15; }
+.ending:not(.found) b { color: var(--faint); font-family: var(--text); font-size: 14px; font-weight: 700; }
+.ending small { font-size: 13px; color: var(--muted); line-height: 1.35; }
+.shelf { display: grid; gap: 8px; }
+.lifecard { background: var(--raised); border-radius: var(--r-card); }
+.lifecard summary { display: flex; align-items: center; gap: 12px; padding: 10px 12px; cursor: pointer; list-style: none; }
+.lifecard summary::-webkit-details-marker { display: none; }
+.lifecard summary .thumb.card { width: 72px; flex: none; }
+.lifecard summary span { display: grid; gap: 1px; min-width: 0; }
+.lifecard summary b { font-family: var(--display); font-size: 20px; line-height: 1.15; }
+.lifecard summary small { font-size: 13.5px; color: var(--muted); }
+.lifecard[open] summary { border-bottom: 1px solid var(--gold-line); }
+.lifecard .telling { padding: 4px 14px 12px; font-size: 15.5px; }
+.lifecard .telling p { margin: 8px 0 0; }

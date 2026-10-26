@@ -15,12 +15,31 @@
     return into;
   }
 
+  // Event slots: a few places in each life where one small event, drawn by chance at the first visit,
+  // may happen (or nothing does). K.SLOTS[id] = { pool: [scene ids], then: scene id, none: 0..1 }.
+  K.SLOTS = {};
+  K.slot = (id, def) => { K.SLOTS[id] = def; };
+  function slotScene(id, S) {
+    const def = K.SLOTS[id];
+    S.slots = S.slots || {};
+    if (!(id in S.slots)) {
+      const pool = def.pool.filter((e) => K.SCENES[e] && K.test(K.SCENES[e].when, S));
+      S.slots[id] = pool.length && K.rng() >= (def.none ?? 0.3) ? K.pick(pool) : null;
+    }
+    S.slotThen = def.then;
+    return S.slots[id] && !S.seen.includes(S.slots[id]) ? S.slots[id] : def.then;
+  }
+
   // Optional scenes are skipped when their `when` condition fails.
   K.resolveScene = function (id, S = K.S) {
-    let sc = K.SCENES[K.val(id, S)];
+    id = K.val(id, S);
+    for (let g = 0; K.SLOTS[id] && g < 5; g++) id = slotScene(id, S);
+    let sc = K.SCENES[id];
     for (let guard = 0; sc && sc.when && !K.test(sc.when, S); guard++) {
       if (guard > 60) throw new Error("Scene skip loop at " + sc.id);
-      sc = K.SCENES[K.val(sc.skipTo, S)];
+      let next = K.val(sc.skipTo, S);
+      for (let g = 0; K.SLOTS[next] && g < 5; g++) next = slotScene(next, S);
+      sc = K.SCENES[next];
     }
     if (!sc) throw new Error("Missing scene: " + K.val(id, S));
     return sc;
@@ -31,6 +50,7 @@
     if (!S.alive) id = "end_death";
     const sc = K.resolveScene(id);
     S.scene = sc.id;
+    if (sc.act && sc.act > S.act) drift(S, sc.act);
     if (sc.act) S.act = sc.act;
     if (sc.age != null) S.age = K.val(sc.age);
     let delta = {};
@@ -43,6 +63,21 @@
     K.emit("scene", sc);
     return sc;
   };
+
+  // Close bonds drift when they are neglected: at each new act, a friend or spouse whose bond you did
+  // not raise during the last act loses a point, and you notice.
+  function drift(S, newAct) {
+    for (const who of [S.friend, S.spouse]) {
+      if (!who || S.dead.includes(who) || (S.bonds[who] ?? 0) < 4) continue;
+      const last = (S.bondAct || {})[who];
+      if (last != null && last >= S.act) continue;
+      if (S.act < 2) continue;
+      S.bonds[who] -= 1;
+      (S.bondAct = S.bondAct || {})[who] = newAct - 1; // one point per neglected act, not more
+      const src = "{who} and you have drifted a little. Neither of you said anything.", p = { who: K.PEOPLE[who]?.name || who };
+      S.memories.push({ who, src, p, text: K.fill(src, p), age: S.age });
+    }
+  }
 
   K.choiceList = function (sc, S = K.S) {
     return (K.val(sc.choices, S) || [])
@@ -82,7 +117,7 @@
   };
 
   // Applies a choice. Returns what the UI should do next.
-  K.choose = function (sc, c) {
+  K.choose = function (sc, c, outcome) {
     const S = K.S;
     const dyn = c.resolve ? c.resolve(S) : null; // decided from the state at the moment of choice
     const delta = {};
@@ -100,6 +135,12 @@
       if (br.text) res.text = K.val(br.text); // raw English: the UI translates and fills it
       if (br.next) res.next = K.val(br.next);
       if (br.combat) res.combat = br.combat;
+    }
+    if (c.game && outcome) { // a game played inside the scene (ui/games.js) picks its branch
+      const br = c[outcome] || {};
+      addDelta(delta, K.apply(br.fx));
+      if (br.text) res.text = K.val(br.text);
+      if (br.next) res.next = K.val(br.next);
     }
     for (const id of K.vowBreaksFor(c.tags)) addDelta(delta, K.apply({ vowBreak: id }));
     S.log.push(sc.id + ":" + c.id);

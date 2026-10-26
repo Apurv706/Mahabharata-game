@@ -16,7 +16,9 @@
     {
       id: "a1_home", act: 1, age: 6, art: "origin", place: (S) => K.ORIGINS[S.origin].name,
       title: "Your earliest memory",
-      body: (S) => [homeLine[S.origin], "You are six years old. How do you spend your days?"],
+      body: (S) => [homeLine[S.origin],
+        S.karma ? { memory: ["At night you dream you are someone else: {past}, born in {land}, grown and grey, with a whole life behind them. In the dream it always ends the same way: {end!}.", { past: S.karma.name, land: K.ORIGINS[S.karma.origin]?.name || "", end: S.karma.title }] } : null,
+        "You are six years old. How do you spend your days?"],
       choices: [
         { id: "drills", t: "Follow the soldiers to their drills and copy them", fx: { skill: { mace: 1 }, attr: { might: 1 } } },
         { id: "stories", t: "Sit with the old storyteller in the evenings", fx: { skill: { lore: 1 }, attr: { wisdom: 1 }, flag: "loved_stories" } },
@@ -68,7 +70,7 @@
         { id: "arjuna", img: "p_arjuna", t: "Arjuna, who practises until his fingers bleed", req: { flag: "watched_arjuna" }, locked: "You would have needed to watch Arjuna practise.", fx: { set: { friend: "arjuna" }, bond: { arjuna: 3 }, setBond: { charu: 4 }, journal: "Arjuna became your closest friend." } },
         { id: "karna", img: "p_karna", t: "Karna, the charioteer's son who wants to be more", req: { bond: ["karna", 4] }, locked: "You would need to know Karna already.", fx: { set: { friend: "karna" }, bond: { karna: 3 }, setBond: { charu: 4 }, journal: "Karna became your closest friend." } }
       ],
-      next: "a1_poison"
+      next: "s_child"
     },
     {
       id: "a1_poison", act: 1, age: 12, canon: true, place: "Pramanakoti, on the Ganga", art: "scene_poison", plate: ["#3b5ba9", "#16131f"], caption: "Pavilions by the river",
@@ -94,6 +96,25 @@
           text: "He laughs, then stops laughing. \"You of all people,\" he says, and walks away. He does not speak to you for a month." }
       ],
       after: ["Eight days later Bhima walks back into the palace, stronger than before. He says the serpents beneath the river drew out the poison and gave him the strength of a thousand elephants. No one is punished. Everyone remembers."],
+      next: "a1_pasha"
+    },
+    {
+      id: "a1_pasha", act: 1, age: 13, art: "scene_fair", place: "The spring fair", caption: "Dice under a striped awning",
+      title: "The dice-board under the awning",
+      body: [
+        "The spring fair has come. Under a striped awning an old man called Haridatta keeps a dice-board: a cloth cross of squares, and three long dice of ivory, each marked one, two, five and six.",
+        { speaker: "Haridatta", line: "Kings have lost kingdoms at this board. Sit down, if you have a copper. I will teach you for nothing, and beat you for one." }
+      ],
+      choices: [
+        { id: "play", t: "Put down a copper and play him", game: "pasha", hint: "A game of dice, best of three rounds",
+          win: { fx: { item: { herbs: 1 }, flag: ["learned_pasha", "beat_haridatta"], journal: "You beat old Haridatta at dice at the spring fair." },
+            text: "Haridatta laughs, pays you with a bundle of healing herbs from the next stall, and tells you never to play a stranger. \"The dice are honest,\" he says. \"Men are not.\"" },
+          lose: { fx: { flag: "learned_pasha" },
+            text: "Haridatta keeps your copper and pats your head. \"Remember the faces,\" he says. \"One, two, five, six. Someone who knows the dice knows when they lie.\"" } },
+        { id: "watch", t: "Watch the grown men play, and listen to their stories", fx: { skill: { lore: 1 } },
+          text: "The players talk while they throw. A king called Nala, they say, once lost his kingdom at dice, and his wife, and very nearly himself." },
+        { id: "walk", t: "Go on to the wrestling ground", fx: {} }
+      ],
       next: "a1_wrestle"
     },
     {
@@ -107,7 +128,7 @@
         { id: "fight", t: "Step into the wrestling ring and challenge him", combat: "e_ugra" },
         { id: "talk", t: "Shame him in front of the crowd",
           check: { attr: "command", skill: "lore", dc: 7,
-            pass: { fx: { rep: { common: 1 } }, text: "You turn the crowd's laughter on him. Ugra drops what he took and stalks off." },
+            pass: { fx: { rep: { common: 1 }, flag: "shamed_ugra" }, text: "You turn the crowd's laughter on him. Ugra drops what he took and stalks off. He looks back once, at you." },
             fail: { fx: {}, text: "The crowd laughs at you instead. Ugra keeps his prize." } } },
         { id: "leave", t: "Walk away. He is too big", fx: { duty: { conscience: -1 } } }
       ],
@@ -121,6 +142,6 @@
     enemies: [K.foe("Ugra, the miller's son", 1, { hp: 26, atk: 4 })],
     win: { fx: { rep: { common: 1 }, bond: { charu: 1 }, flag: ["beat_ugra", "balarama_noticed"], journal: "You beat Ugra in the ring at the spring fair. A giant of a man with a plough on his shoulder asked your name." },
       text: "Ugra stays down. In the crowd, a huge man with a plough over his shoulder laughs and asks your name. People say afterwards that it was Balarama of the Yadavas." },
-    lose: { fx: { duty: { conscience: 1 } }, text: "You lose, badly. But you stood up to him, and everyone saw." }
+    lose: { fx: { duty: { conscience: 1 }, flag: "lost_to_ugra" }, text: "You lose, badly. But you stood up to him, and everyone saw. Ugra most of all." }
   });
 })(window.K = window.K || {});

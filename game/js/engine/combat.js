@@ -65,7 +65,7 @@
     return {
       uid: side[0] + i, name: K.fmt(def.name), src: def.name, side, hp, maxHp: hp, atk: def.atk, def: def.def || 1,
       abilities: def.abilities || ["strike"], cds: {}, status: {}, armed: def.armed !== false,
-      vowTag: def.vowTag || null, person: def.person || null, note: def.note || null
+      vowTag: def.vowTag || null, person: def.person || null, note: def.note || null, plural: !!def.plural
     };
   }
 
@@ -94,7 +94,7 @@
       if (t.status.guard) { dmg *= 0.5; delete t.status.guard; }
       dmg = Math.max(1, Math.round(dmg));
       t.hp = Math.max(0, t.hp - dmg);
-      const key = o.verb || (isP(u) ? "You hit {t} for {n}." : isP(t) ? "{a} hits you for {n}." : "{a} hits {t} for {n}.");
+      const key = o.verb || (isP(u) ? "You hit {t} for {n}." : isP(t) ? (u.plural ? "{a} hit you for {n}." : "{a} hits you for {n}.") : u.plural ? "{a} hit {t} for {n}." : "{a} hits {t} for {n}.");
       api.tell(key, { a: u, t }, { n: dmg }, crit);
       if (t.hp === 0) api.tell(t.side === "enemy" ? "{t} falls." : isP(t) ? "You fall." : "{t} is down.", { t });
       return dmg;
@@ -110,7 +110,8 @@
       if (text) api.tell(subjectKey(t, text), { t });
     },
     cleanse(t) { for (const s of ["stun", "bleed", "weakened", "exposed"]) delete t.status[s]; },
-    firstEnemy() { return living("enemy").sort((a, b) => a.hp - b.hp)[0]; }
+    firstEnemy() { return living("enemy").sort((a, b) => a.hp - b.hp)[0]; },
+    living(side) { return living(side); }
   };
 
   C.start = function (encId, onEnd) {
@@ -120,6 +121,7 @@
     (K.val(enc.allies) || []).forEach((a, i) => { const d = typeof a === "string" ? K.UNITS[a] && K.UNITS[a](S) : a; if (d) B.units.push(makeUnit(d, "ally", i)); });
     K.val(enc.enemies).forEach((e, i) => B.units.push(makeUnit(e, "enemy", i)));
     if (S.boons.includes("healing_hands") && (S.items.herbs || 0) < 2) S.items.herbs = 2;
+    B.pulled = {};
     if (enc.intro) api.say(K.val(enc.intro));
     const curse = enc.curse && S.curses.find((c) => !c.fired);
     if (curse) {
@@ -127,6 +129,7 @@
       api.status(C.player(), "cursed", 3);
       api.say(K.CURSES[curse.id].fireText);
     }
+    planAll();
     K.emit("combat", B);
     return B;
   };
@@ -169,13 +172,50 @@
     if (ab.once) B.used[id] = true;
   }
 
-  function aiTurn(u) {
-    if (u.status.stun) { delete u.status.stun; api.tell("{t} is stunned and loses the turn.", { t: u }); return; }
+  // What a unit means to do: the same rules for allies (decided on their turn) and enemies (decided
+  // a round ahead and shown on their card, so the player can guard, pull a friend clear or strike first).
+  function decide(u) {
     const specials = u.abilities.filter((id) => id !== "strike" && id !== "guard" && !u.cds[id] && !K.ABILITIES[id].item && !K.ABILITIES[id].needsAlly);
     const hurt = friendsOf(u).find((f) => f.hp / f.maxHp < 0.45);
-    if (hurt && u.abilities.includes("salve") && !u.cds.salve) return use(u, "salve", hurt.uid);
-    if (specials.length && K.rng() < 0.45) return use(u, K.pick(specials));
-    use(u, "strike");
+    if (hurt && u.abilities.includes("salve") && !u.cds.salve) return { id: "salve", uid: hurt.uid };
+    const id = specials.length && K.rng() < 0.45 ? K.pick(specials) : "strike";
+    const ab = K.ABILITIES[id];
+    const t = ab.target === "enemy" ? targetsFor(u, ab) : null;
+    return { id, uid: t ? t.uid : null };
+  }
+  function planAll() { for (const e of B.units) { if (e.side === "enemy" && e.hp > 0) e.intent = decide(e); else delete e.intent; } }
+  function aiTurn(u) {
+    const it = u.intent;
+    delete u.intent;
+    if (u.status.stun) { delete u.status.stun; api.tell("{t} is stunned and loses the turn.", { t: u }); return; }
+    const plan = it && !u.cds[it.id] ? it : decide(u);
+    const ab = K.ABILITIES[plan.id];
+    let uid = plan.uid;
+    if (ab.target === "enemy") { const taunt = foesOf(u).find((f) => f.status.taunt); if (taunt) uid = taunt.uid; } // a war cry still draws the blow
+    use(u, plan.id, uid);
+  }
+  // The enemy's next move, for its card: { ab, who } where who is "you", a name, "all" or null.
+  C.intent = function (u) {
+    if (!B || B.over || !u.intent || u.hp <= 0 || u.status.stun) return null;
+    const ab = K.ABILITIES[u.intent.id];
+    let t = null;
+    if (ab.target === "enemy") {
+      const taunt = foesOf(u).find((f) => f.status.taunt);
+      t = taunt || B.units.find((x) => x.uid === u.intent.uid && x.hp > 0) || null;
+    } else if (ab.target === "ally") t = B.units.find((x) => x.uid === u.intent.uid) || null;
+    return { id: u.intent.id, name: ab.name, target: ab.target, unit: t, heavy: ["heavy", "arrows", "disarm"].includes(u.intent.id) };
+  };
+
+  // Once in each deadly fight, as the third round begins, something happens on the field.
+  function fieldEvent() {
+    B.evented = true;
+    const all = K.BATTLE_EVENTS || {};
+    const list = (K.val(B.enc.events) || Object.keys(all).filter((id) => all[id].common)).filter((id) => all[id]);
+    if (!list.length) return;
+    const ev = all[K.pick(list)];
+    const at = B.log.length;
+    const u = ev.run(B) || {};
+    B.log.splice(at, 0, { key: ev.text, u, ev: true });
   }
 
   function over() {
@@ -212,6 +252,8 @@
       for (const k of Object.keys(u.cds)) if (u.cds[k] > 0) u.cds[k]--;
     }
     B.round++;
+    if (B.round === 3 && B.enc.lethal && !B.evented && living("enemy").length) fieldEvent();
+    planAll();
   }
 
   function others() {
@@ -233,6 +275,17 @@
     if (!row || row.why) return;
     use(C.player(), id, uid);
     if (!over()) others();
+    K.emit("combat", B);
+  };
+  // A friend who falls can be dragged out of the press. It costs your turn.
+  C.fallen = () => (B && !B.over ? B.units.filter((u) => u.side === "ally" && u.person && u.hp <= 0 && !B.pulled[u.uid]) : []);
+  C.pull = function (uid) {
+    const t = C.fallen().find((u) => u.uid === uid);
+    if (!t) return;
+    B.pulled[t.uid] = true;
+    api.tell("You drag {t} out of the press, behind the chariots.", { t });
+    K.apply({ bond: { [t.person]: 1 }, memory: [t.person, "You came back for me when I fell."] });
+    others();
     K.emit("combat", B);
   };
   C.canFlee = () => !!(B && B.enc.flee && !B.over);

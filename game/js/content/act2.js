@@ -71,7 +71,7 @@
             fail: { fx: { duty: { conscience: 1 }, flag: "helped_ekalavya" }, text: "You do what you can. It is not much. He thanks you anyway." } } },
         { id: "kin", t: "Walk away from Drona's party and stay with Ekalavya", req: { origin: "nishada" }, fx: { duty: { conscience: 3 }, rep: { common: 2, kuru: -2 }, flag: "stood_with_ekalavya", memory: ["all", "You chose your own people over the princes' hunt."] } }
       ],
-      next: "a2_spar"
+      next: "s_youth"
     },
     {
       id: "a2_spar", act: 2, age: 17, art: "scene_teacher", place: "The practice ground", caption: "Sparring at the practice ground",

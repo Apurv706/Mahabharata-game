@@ -42,7 +42,7 @@
   // Story text blocks: plain strings, speech, memories, curses, asides.
   U.blocks = function (arr) {
     return [].concat(K.val(arr) || []).filter(Boolean).map((b) => {
-      if (typeof b === "string") return "<p>" + U.t(b) + "</p>";
+      if (typeof b === "string" || Array.isArray(b)) return "<p>" + U.t(b) + "</p>";
       if (b.speaker) {
         const face = U.portraitKey(U.personByName(b.speaker));
         return '<div class="said' + (face ? " with-face" : "") + '">' + (face ? U.thumb(face, "face") : "") + '<div><div class="lbl">' + U.t(b.speaker) + '</div><p class="speech">' + U.t(b.line) + "</p></div></div>";
@@ -149,6 +149,7 @@
     const frame = (now) => {
       if (writer !== w) return;
       const n = Math.min(total, Math.ceil(((now - start) / duration) * total));
+      if (n > shown && K.Sound && /\S/.test(chars[n - 1].textContent)) K.Sound.play("quill");
       for (; shown < n; shown++) chars[shown].classList.add("on");
       const last = chars[Math.max(0, shown - 1)];
       if (last) {

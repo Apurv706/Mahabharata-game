@@ -36,6 +36,8 @@
         (c.fired ? U.tr("{curse} (struck)", { curse: K.tr(K.CURSES[c.id].name) }) : U.tr(K.CURSES[c.id].name)) + "</span>"))
       .concat(S.injuries.map((i) => '<span class="chip bad">' + U.tr(K.INJURIES[i].name) + "</span>"));
 
+    const secrets = (K.SECRETS || []).filter((s) => K.test(s.when, S)).map((s) => "<li>" + U.tr(s.text) + "</li>").join("");
+
     const mems = S.memories.slice(-5).reverse().map((m) => "<li>" + U.esc(K.entryText(m)) + "<em>" +
       (m.who === "all" ? U.tr("Remembered by many · age {n}", { n: m.age }) : U.tr("Remembered by {who} · age {n}", { who: K.personName(m.who), n: m.age })) + "</em></li>").join("");
 
@@ -44,6 +46,7 @@
       "<h2>" + U.tr("Bonds") + "</h2>" + bonds +
       "<h2>" + U.tr("Vows ({n} / {max})", { n: K.activeVows().length, max: K.MAX_VOWS }) + "</h2>" + vows +
       (chips.length ? "<h2>" + U.tr("Boons, curses and wounds") + '</h2><div class="chips">' + chips.join("") + "</div>" : "") +
+      (secrets ? "<h2>" + U.tr("Secrets you keep") + '</h2><ul class="secrets">' + secrets + "</ul>" : "") +
       "<h2>" + U.tr("Memories") + "</h2>" + (mems ? '<ul class="mems">' + mems + "</ul>" : '<p class="empty">' + U.tr("Nothing remembered yet.") + "</p>");
   };
 })(window.K = window.K || {});

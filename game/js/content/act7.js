@@ -36,9 +36,31 @@
         { id: "rule", t: "Ask how a king should rule", fx: { skill: { statecraft: 1 }, attr: { command: 1 } } },
         { id: "grief", t: "Ask how to carry grief", fx: { attr: { wisdom: 1 }, duty: { family: 1 } }, text: "\"Like water,\" he says. \"You cannot put it down. You can learn to walk with it.\"" },
         { id: "vow", t: "Ask how to live with a broken vow", req: (S) => S.vows.some((v) => v.broken && !v.released), fx: { duty: { conscience: 2 } }, text: "\"Keep the next promise,\" he says. \"That is all any of us can do.\"" },
-        { id: "listen", t: "Ask nothing. Just listen", fx: { skill: { lore: 1 } } }
+        { id: "listen", t: "Ask nothing. Just listen", fx: { skill: { lore: 1 } } },
+        { id: "dream", t: "Ask him about the other life you dream of", req: { flag: "reborn" }, fx: { attr: { wisdom: 1 }, duty: { conscience: 1 }, unflag: "karmic_debt" },
+          text: "\"Amba came back to me as Shikhandi, to finish what she began,\" he says. \"Perhaps you came back to finish something too.\" He looks at you for a long time. \"Did you?\"" }
       ],
       after: ["When the sun turns north, Bhishma dies. Yudhishthira is crowned king of Hastinapura, and reigns over an empty kingdom."],
+      next: "a7_note"
+    },
+    {
+      id: "a7_note", when: { flag: "debt_refused" }, skipTo: "a7_final",
+      act: 7, age: 45, art: "origin", place: (S) => K.ORIGINS[S.origin].name,
+      title: "The note, again",
+      body: [
+        "A young man finds you after the war. He has his grandfather's patience, and his grandfather's palm-leaf note. Sudatta is dead. The debt is not.",
+        { speaker: "Sudatta's grandson", line: "I lost two brothers on the field. I would like to be paid." }
+      ],
+      choices: [
+        { id: "pay", t: "Pay him, whatever it costs", fx: { duty: { conscience: 2, family: -1 }, unflag: "debt_refused", flag: "debt_paid_late", journal: "After the war you paid Sudatta's grandson your grandfather's debt." },
+          text: "It takes most of what you have. He counts it twice, and thanks you, and you see that he did not expect it." },
+        { id: "forgive", t: "Ask him to forgive it",
+          check: { attr: "wisdom", skill: "statecraft", dc: 8,
+            pass: { fx: { duty: { conscience: 1 }, unflag: "debt_refused", flag: "debt_forgiven" }, text: "He listens to the end. Then he tears the note in half himself. \"Everyone is owed something this year,\" he says. \"Nobody is getting paid.\"" },
+            fail: { fx: {}, text: "\"My grandfather forgave nothing,\" he says. \"Neither do I.\" He keeps the note." } } },
+        { id: "tear", t: "Tear it up again", fx: { rep: { common: -1 }, duty: { conscience: -1 }, flag: "debt_torn_twice" },
+          text: "He watches the pieces fall. \"My son will come,\" he says, and goes." }
+      ],
       next: "a7_final"
     },
     {
@@ -85,6 +107,10 @@
     if (has("shot_karna")) t.push("On the seventeenth day {they} loosed an arrow at Karna as he lifted his wheel.");
     if (has("joined_raid")) t.push("On the last night {they} went with Ashwatthama into the sleeping camp. No one sings that part aloud.");
     if (has("saved_vasu_raid") || has("woke_camp")) t.push("On the night of the raid {they} pulled the living out of the fire.");
+    if (has("nishada_came")) t.push("When {they} whistled in the dark, the Nishada archers came, because of a hand {they} once bound.");
+    if (has("tried_secret")) t.push("{They} knew Karna's secret before the war, and kept it, because Krishna asked.");
+    if (has("saw_swap")) t.push(has("spoke_dice") ? "{They} saw Shakuni's hands in the dice hall, and said so." : "{They} saw Shakuni's hands in the dice hall, and told no one.");
+    if (has("sat_with_kesava")) t.push("{They} went home to sit with an old smith on his last nights, because {their} friend would never ask.");
     const CURSE_LINE = {
       hermit: "The hermit's curse found {them} at the worst hour.",
       sage: "The sage's curse found {them} at the worst hour.",
@@ -104,6 +130,10 @@
     }
     if (S.spouse) f.push(S.alive ? "{spouse} grew old beside you." : "{spouse} never remarried.");
     if (S.friend === "charu") f.push(S.alive ? "Charu outlived everyone, and complained about it." : "Charu kept a lamp lit for you every year.");
+    if (S.flags.includes("debt_paid_late")) f.push("Sudatta's grandson told everyone that you paid what your grandfather owed.");
+    if (S.flags.includes("debt_forgiven")) f.push("Sudatta's grandson tore up your family's note himself, and never spoke of it.");
+    if (S.flags.includes("debt_torn_twice")) f.push("Sudatta's family still keeps the pieces of your grandfather's note.");
+    if ((S.flags.includes("beat_ugra") || S.flags.includes("lost_to_ugra")) && S.side && S.side !== "neutral") f.push(S.alive ? "Ugra, the miller's son, went home and told the story of the fair to anyone who would listen." : "Ugra, the miller's son, carried you off the field.");
     if (S.friend === "karna" || S.bonds.karna >= 7) f.push("Karna's sons all died in the war. His name lived on.");
     if (S.friend === "duryodhana") f.push("Duryodhana, your oldest friend, went to heaven, the stories say, for dying as a warrior.");
     if (S.teacher && S.teacher !== "self") f.push(S.duty.teacher >= 7 ? "Your debt to {teacher} was paid in full." : S.duty.teacher <= 2 ? "Your debt to {teacher} was never paid." : "Your debt to {teacher} was partly paid, as most are.");
@@ -111,6 +141,21 @@
     if (S.injuries.length) f.push(["You carried the war in your body: {list}.", { list: K.list(S.injuries.map((i) => K.low(K.tr(K.INJURIES[i].name)))) }, true]);
     return f;
   }
+
+  // Every ending, for the Book of Lives. Undiscovered ones show only their hint.
+  K.ENDINGS = [
+    { title: "The wise elder", art: "end_elder", hint: "Survive, with the new court's trust." },
+    { title: "Renunciation", art: "end_forest", hint: "Survive, and follow the old king into the forest." },
+    { title: "The teller", art: "end_teller", hint: "Survive with a storyteller's memory." },
+    { title: "Vengeance", art: "end_vengeance", hint: "Swear to hunt Ashwatthama, and keep the oath." },
+    { title: "The homecoming", art: "end_survivor", hint: "Survive, and go home with most of your people alive." },
+    { title: "Broken survivor", art: "end_broken", hint: "Survive, having lost most of those you loved." },
+    { title: "The wanderer", art: "end_river", hint: "Survive, and walk away from everything." },
+    { title: "Glorious death", art: "end_death", hint: "Fall in battle with every vow kept." },
+    { title: "Fallen at Kurukshetra", art: "end_death", hint: "Fall in battle." },
+    { title: "Into the wheel", art: "end_wheel", hint: "Follow Abhimanyu to the end." },
+    { title: "Beside Karna", art: "war_day17", hint: "Stand beside Karna on his last day." }
+  ];
 
   K.composeEnding = function (S) {
     const vows = S.vows;

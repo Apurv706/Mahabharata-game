@@ -133,6 +133,10 @@
             pass: { fx: { rep: { pandava: 2, common: 2 }, flag: "woke_camp", journal: "On the night of the raid your shouting woke enough of the camp to save many lives." }, text: "Your voice carries. Tents empty into the dark. Many who should have died that night live." },
             fail: { resolve: null, fx: { flag: "raid_failed_wake" }, text: "The smoke takes your voice. Too few hear you." } } },
         { id: "gate", t: "Fight Ashwatthama at the gate", req: { not: { side: "kaurava" } }, combat: "e_raid" },
+        { id: "nishada", t: "Whistle for the Nishada archers camped at the forest's edge", req: (S) => S.side !== "kaurava" && (S.flags.includes("helped_ekalavya") || S.flags.includes("stood_with_ekalavya")),
+          resolve: (S) => (vasuAt(S, "vasu_in_camp") || vasuAt(S, "vasu_with_you") ? { flag: "saved_vasu_raid", bond: { vasu: 1 } } : {}),
+          fx: { flag: ["woke_camp", "nishada_came"], rep: { common: 2 }, journal: "On the night of the raid, the Nishada archers came out of the dark when you whistled." },
+          text: "They come out of the trees without a sound. They know the whistle: Ekalavya taught it to them, long ago, and told them who had bound his hand. Their arrows hold the gate long enough for half the camp to run." },
         { id: "join", t: "Go with Ashwatthama into the sleeping camp", req: { side: "kaurava" }, tags: ["strike_unarmed"],
           fx: { duty: { conscience: -5 }, rep: { sages: -3, common: -2 }, flag: "joined_raid", journal: "You went into the sleeping Pandava camp with Ashwatthama." } },
         { id: "refuse", t: "Refuse him", req: { side: "kaurava" }, fx: { duty: { conscience: 2 }, flag: "refused_raid" }, text: "\"Then go home,\" he says, \"and live with that.\"" },
@@ -161,7 +165,7 @@
     flee: { text: "You fall back toward Jayadratha's hiding place." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go." }
   });
   war("e_night", "The night battle", (S) => [K.foe(foeSide(S) + " torch-bearer", 4), K.foe(foeSide(S) + " archer", 4, { abilities: ["strike", "arrows"] })], { art: "battle_night",
-    caption: "Torchlight on the field",
+    caption: "Torchlight on the field", events: (S) => [S.side === "kaurava" ? "ghatotkacha_k" : "ghatotkacha_p"],
     win: { fx: { journal: "You survived the night battle of the fourteenth day." }, text: "Dawn comes. You are still alive, and you cannot remember most of the night." },
     lose: { deathText: "You fell in the dark on the night of the fourteenth day." },
     flee: { text: "You fall back into the dark." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go into the dark." }
@@ -185,13 +189,13 @@
     flee: { text: "You fall back, for the last time." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go. The war is nearly over." }
   });
   war("e_raid", "Ashwatthama at the gate", [{ name: "Ashwatthama", hp: 115, atk: 12, def: 3, abilities: ["strike", "heavy", "arrows"] }], { art: "scene_raid",
-    caption: "Fire in the camp", allies: [], spare: false,
+    caption: "Fire in the camp", allies: [], spare: false, events: ["smoke"],
     win: { fx: { rep: { pandava: 2 }, flag: "slowed_ashwatthama", journal: "You fought Ashwatthama at the gate of the burning camp, and lived." }, text: "He breaks away from you and vanishes into the smoke. You held him for long enough that some got out." },
     lose: { deathText: "You died at the gate of the Pandava camp, fighting Ashwatthama in the dark." },
     flee: { text: "You run, like everyone else." }
   });
   war("e_ash", "Standing in Ashwatthama's way", [{ name: "Ashwatthama", hp: 115, atk: 12, def: 3, abilities: ["strike", "heavy", "arrows"] }], { art: "scene_raid",
-    caption: "The road to the sleeping camp", allies: [], spare: false,
+    caption: "The road to the sleeping camp", allies: [], spare: false, events: ["moon"],
     win: { fx: { duty: { conscience: 3 }, flag: "fought_ashwatthama", journal: "You tried to stop Ashwatthama on the road to the sleeping camp." }, text: "He staggers, and then goes around you. You cannot stop him. You slowed him down." },
     lose: { deathText: "You died on the road, trying to stop Ashwatthama from reaching the sleeping camp." },
     flee: { text: "You let him go." }

@@ -34,9 +34,13 @@
       body: ["You are standing among the courtiers by the pillars."],
       choices: [
         { id: "cheat", t: "Call out that Shakuni's dice are false",
-          check: { attr: "wisdom", skill: "stealth", dc: 8,
+          check: { attr: "wisdom", skill: "stealth", dc: 8, bonus: (S) => (S.flags.includes("saw_swap") ? 3 : 0),
             pass: { fx: { rep: { pandava: 1, kuru: -2 }, flag: "spoke_dice" }, text: "You have watched Shakuni's hands, and you say exactly what they are doing. Shakuni smiles. Nobody stops the game, but Vidura looks at you as if marking your face for later." },
             fail: { fx: { rep: { kuru: -2 }, flag: "spoke_dice" }, text: "You shout, and the hall turns to look at you. Shakuni asks, very kindly, whether you would like to inspect the dice yourself. People laugh." } } },
+        { id: "watch", t: "Watch Shakuni's hands before you say anything", req: { noFlag: "watched_hands" }, game: "hands", next: "a4_stakes", hint: "A test of your eyes",
+          win: { fx: { flag: ["watched_hands", "saw_swap"], journal: "In the dice hall you saw Shakuni swap a die from his sleeve." },
+            text: "One of those throws showed a face no long die has. His sleeve moved before it, and after. You are sure now." },
+          lose: { fx: { flag: "watched_hands" }, text: "You watch until your eyes ache. If he did anything, you did not see it." } },
         { id: "bhishma", t: "Beg Bhishma to stop the game", fx: { duty: { conscience: 1 }, bond: { bhishma: 1 } }, text: "Bhishma looks at his hands. \"The way of dharma is subtle,\" he says, and says nothing more." },
         { id: "silent", t: "Stay silent. It is the king's game", fx: { duty: { court: 1, conscience: -1 }, flag: "silent_dice" } },
         { id: "leave", t: "Leave the hall now", fx: { flag: "left_dice", duty: { conscience: -1 }, journal: "You walked out of the dice game before the worst of it." }, next: "a4_aftermath" }
@@ -46,6 +50,7 @@
     {
       id: "a4_draupadi", act: 4, age: 30, canon: true, art: "scene_dice_question", place: "The assembly hall, Hastinapura", caption: "The question no one answers",
       title: "Draupadi's question",
+      lamp: { secs: 35, silent: "silent", note: "The hall is waiting. If the lamp burns out before you act, you will have said nothing." },
       witness: [
         "Yudhishthira stakes Draupadi, and loses her. Duryodhana sends for her as a slave. She sends back a question: did he lose me before or after he lost himself?",
         "Dushasana drags her into the hall by her hair. She stands before the elders and asks again. No one answers her.",

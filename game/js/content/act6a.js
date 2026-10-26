@@ -9,6 +9,7 @@
     if (vasuNear(S)) a.push("vasu");
     if (S.spouse === "revat" && !S.dead.includes("revat")) a.push("revat");
     if (S.friend === "charu" && !S.dead.includes("charu") && S.side !== "neutral") a.push("charu");
+    if ((S.flags.includes("beat_ugra") || S.flags.includes("lost_to_ugra")) && !S.dead.includes("ugra")) a.push("ugra");
     return a;
   };
   const foeSide = (S) => (S.side === "kaurava" ? "Pandava" : "Kaurava");
@@ -53,6 +54,9 @@
       witness: ["For nine days Bhishma, the grandsire, commands the Kaurava army, and no one can stand against him. He has promised not to kill the Pandava brothers themselves. He kills nearly everyone else."],
       body: (S) => [
         S.side === "pandava" ? "On the first day you watch Prince Uttara of Matsya fall." : S.side === "kaurava" ? "On your side, the old man fights like a storm. It is hard not to feel safe behind him." : "The first wounded reach the tents before noon. By evening there is nowhere left to lay them.",
+        S.side !== "neutral" && S.flags.includes("beat_ugra") ? { memory: "In the line beside you stands a big man with a miller's shoulders. Ugra. \"You put me on my back once,\" he says. \"I have waited thirty years to stand next to you instead.\"" } : null,
+        S.side !== "neutral" && S.flags.includes("lost_to_ugra") ? { memory: "In the line beside you stands a big man with a miller's shoulders. Ugra. \"You were the only one who ever stood up to me,\" he says. \"You lost. You still stood up. I am with you.\"" } : null,
+        S.side !== "neutral" && S.flags.includes("shamed_ugra") ? { memory: "Across the field, under the enemy's banners, there is a big man with a miller's shoulders. Ugra never forgave the crowd for laughing, or you for making them." } : null,
         "These are the days of first battles, first kills and first friends lost."
       ],
       choices: [
@@ -101,6 +105,8 @@
     {
       id: "a6_day13", act: 6, age: 44, canon: true, war: true, art: "scene_day13", place: "Kurukshetra · day 13", caption: "The wheel formation",
       title: "The wheel formation",
+      lamp: (S) => (S.side === "kaurava" ? { secs: 30, silent: "ring", note: "The ring is closing. If the lamp burns out, you will hold your place in it." }
+        : S.side === "pandava" ? { secs: 30, silent: "gate", note: "The breach will not stay open. If the lamp burns out, you will be at the gate with the others." } : null),
       witness: (S) => S.side === "kaurava" ? [
         "Drona sets the Chakravyuha, a spinning wheel of warriors. Arjuna has been lured away to the far end of the field.",
         "A boy of sixteen, Abhimanyu, Arjuna's son, has broken into its heart alone, and he is cutting through the finest warriors of your side. The order comes down the ring: close in around him."
@@ -154,8 +160,36 @@
     deathText: "You fell at Kurukshetra."
   }, extra, { enemies })));
 
-  war("e_day1", (S) => "The line holds against the " + foeSide(S) + "s", (S) => [K.foe(foeSide(S) + " spearman", 3), K.foe(foeSide(S) + " chariot-warrior", 4, { abilities: ["strike", "arrows"] })], { art: "war_bhishma",
-    caption: "Days one to nine",
+  // Something happens on the field once in each deadly fight, as the third round begins (combat.js).
+  // Fights draw from the common ones unless they name their own in `events`.
+  const each = (B, side, fn) => B.living(side).forEach(fn);
+  K.BATTLE_EVENTS = {
+    conch: { common: true, text: "A conch sounds behind your line, then a hundred more. Your side takes heart.",
+      run: (B) => each(B, "friends", (u) => B.status(u, "inspired", 2)) },
+    arrows: { common: true, text: "A cloud of arrows comes down out of the dust, on friend and foe alike.",
+      run: (B) => B.units.forEach((u) => { if (u.hp > 1) u.hp = Math.max(1, u.hp - Math.max(1, Math.round(u.maxHp * 0.08))); }) },
+    horse: { common: true, text: "A riderless horse bolts through the enemy line, dragging its reins. {t} is caught in the open.",
+      run: (B) => { const t = K.pick(B.living("enemy")); B.status(t, "exposed", 2); return { t }; } },
+    water: { common: true, text: "A water-carrier runs along your line under the arrows. Everyone drinks.",
+      run: (B) => each(B, "friends", (u) => { u.hp = Math.min(u.maxHp, u.hp + Math.round(u.maxHp * 0.12)); }) },
+    elephant: { common: true, text: "A maddened elephant tears through the press. {t} is thrown down in its path.",
+      run: (B) => { const t = K.pick(B.living("enemy")); B.status(t, "stun", 1); return { t }; } },
+    bhishma_p: { text: "Far down the line, Bhishma's palm-tree banner turns your way. His arrows fall like rain, and your line bends under them.",
+      run: (B) => each(B, "friends", (u) => B.status(u, "weakened", 2)) },
+    bhishma_k: { text: "Bhishma's palm-tree banner sweeps down the line. Where the old man passes, the enemy ranks break, and your side surges after him.",
+      run: (B) => { each(B, "friends", (u) => B.status(u, "inspired", 2)); each(B, "enemy", (u) => B.status(u, "exposed", 1)); } },
+    ghatotkacha_p: { text: "Ghatotkacha, Bhima's giant son, roars out of the dark above the torches. The men in front of you falter and look up.",
+      run: (B) => each(B, "enemy", (u) => B.status(u, "weakened", 2)) },
+    ghatotkacha_k: { text: "Something huge moves in the dark above the torches, laughing. Ghatotkacha, Bhima's giant son. Your line shrinks from him.",
+      run: (B) => each(B, "friends", (u) => B.status(u, "weakened", 2)) },
+    smoke: { text: "The tents are burning. Smoke rolls between you, and for a breath he cannot see you.",
+      run: (B) => each(B, "player", (u) => B.status(u, "evade", 1)) },
+    moon: { text: "A cloud slides across the moon. In the sudden dark he loses you for a breath.",
+      run: (B) => each(B, "player", (u) => B.status(u, "evade", 1)) }
+  };
+
+  war("e_day1", (S) => "The line holds against the " + foeSide(S) + "s", (S) => [S.flags.includes("shamed_ugra") ? K.foe("Ugra, the miller's son", 3, { abilities: ["strike", "heavy"] }) : K.foe(foeSide(S) + " spearman", 3), K.foe(foeSide(S) + " chariot-warrior", 4, { abilities: ["strike", "arrows"] })], { art: "war_bhishma",
+    caption: "Days one to nine", events: (S) => [S.side === "kaurava" ? "bhishma_k" : "bhishma_p"],
     win: { fx: { duty: { court: 1 }, rep: { common: 1 }, journal: "You survived the first nine days of the war." }, text: "When the conches sound at sunset, you are still standing." },
     lose: { deathText: "You fell in the first days of the war, when Bhishma was still unstoppable." },
     flee: { fx: { duty: { court: -1 } }, text: "You fall back with the broken line. No one blames you. You blame yourself." },

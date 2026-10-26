@@ -35,6 +35,14 @@ A life takes about 45–60 minutes. The game saves itself at every scene (in tha
 - **Reputation** (§9.6): six factions.
 - **Combat** (§9.7): turn-based, with three abilities per path, astras with a dharma check, sparing and withdrawing. All input goes through one command layer (ready for touch).
 - **Story mode** (§10): you cannot die in battle.
+- **Enemy intent and field events**: each enemy shows its next move ("Next: Heavy blow → you"). Once in every deadly fight something happens on the field (a conch, an arrow storm, Bhishma's banner, Ghatotkacha in the dark). A fallen friend can be pulled out of the fighting for your turn.
+- **Timed moments**: at Draupadi's question and the wheel formation a lamp burns down beside the choices. If it goes out, the scene's silent choice is made for you. Scene data: `lamp: { secs, silent, note }`. Off in the menu.
+- **Dice games** (`js/ui/games.js`): pasha against old Haridatta at the spring fair, and spotting Shakuni's swapped die in the dice hall (it shows a face a long die does not have). A choice with `game` picks its `win` or `lose` branch.
+- **Story echoes**: Ugra from the fair turns up on day one (beside you or across the field), the Nishada archers answer your whistle on the night of the raid if you helped Ekalavya, Sudatta's grandson brings the note back after the war, Charu asks you home when the old smith is dying, your spouse says which side they want, close bonds you neglect for a whole act drift, and Karna's secret can be spent (Krishna stops you).
+- **Secrets** you hold are listed in the ledger (`K.SECRETS`).
+- **Chance events** (`js/content/events.js`): five slots, each drawing one of two small events or nothing, so no two lives meet the same things (`K.slot`).
+- **Book of Lives** (`js/ui/lives.js`): every finished life is kept in this browser, with an endings gallery (11 endings, the unfound ones as hints). A new life can remember a past one and starts with its karma.
+- **Sound** (`js/ui/audio.js`): made in the browser with Web Audio, no files: a tanpura drone, the quill, conches, dice, blows and a gong. Switches in the menu.
 - **Skill checks** show their odds before you choose.
 
 ## Code layout
@@ -43,7 +51,7 @@ A life takes about 45–60 minutes. The game saves itself at every scene (in tha
 game/index.html          page shell
 game/css/                styles
 game/js/engine/          rules: state, conditions and effects, scene flow, saves, combat (engine-agnostic)
-game/js/content/         the story as plain data, one file per act
+game/js/content/         the story as plain data, one file per act, plus chance events
 game/js/ui/              screens: title, creation, scenes, battle, ledger, menus
 game/art/                concept art
 tests/playthrough.js     automated playthroughs

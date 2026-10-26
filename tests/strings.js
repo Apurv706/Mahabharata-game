@@ -39,7 +39,11 @@ function walkContent(K, add) {
   };
   for (const t of ["ACT_TITLES", "DUTIES", "FACTIONS", "SKILLS", "ATTRS", "STATUS_TEXT"]) walk(K[t], "ui:" + t);
   for (const [id, a] of Object.entries(K.ABILITIES)) { add(a.name, "ability"); if (a.desc) add(a.desc, "ability"); }
-  for (const t of ["ORIGINS", "TEMPERAMENTS", "HEIRLOOMS", "TEACHERS", "PATHS", "COURTS", "VOWS", "BOONS", "CURSES", "INJURIES", "PEOPLE"]) walk(K[t], "world:" + t);
+  for (const t of ["ORIGINS", "TEMPERAMENTS", "HEIRLOOMS", "TEACHERS", "PATHS", "COURTS", "VOWS", "BOONS", "CURSES", "INJURIES", "PEOPLE", "SECRETS"]) walk(K[t], "world:" + t);
+  walk(K.BATTLE_EVENTS, "battle-events");
+  walk(K.ENDINGS, "endings");
+  for (const [label] of K.karmaOf({ kept: true, broke: true, karna: true, teller: true, alive: false })) add(label, "rebirth");
+  add(K.karmaOf({ alive: true })[0][0], "rebirth");
   for (const [term, def] of Object.entries(K.GLOSSARY)) { add(term, "glossary"); add(def, "glossary"); }
   const encSeen = new Set();
   for (const sc of Object.values(K.SCENES)) {
@@ -53,27 +57,33 @@ function walkContent(K, add) {
 
 // (2) Literals in interface and engine code that are passed to the translator.
 function walkCode(add) {
-  const files = ["js/engine/core.js", "js/engine/flow.js", "js/engine/combat.js", "js/engine/abilities.js", "js/ui/dom.js", "js/ui/ledger.js", "js/ui/scene.js", "js/ui/battle.js", "js/ui/screens.js", "js/ui/modals.js", "js/content/act7.js"];
+  const files = ["js/engine/core.js", "js/engine/flow.js", "js/engine/combat.js", "js/engine/abilities.js", "js/ui/dom.js", "js/ui/ledger.js", "js/ui/scene.js", "js/ui/battle.js", "js/ui/screens.js", "js/ui/modals.js", "js/ui/games.js", "js/ui/lives.js", "js/content/act7.js"];
   for (const f of files) {
     const src = fs.readFileSync(path.join(GAME, f), "utf8");
     // Literals inside K.tr(...) / U.tr(...) / K.text(...), and the screens' fixed tables.
     for (const m of src.matchAll(/(?:K\.tr|U\.tr|K\.text|U\.t)\(([^;]*?)\)/g)) for (const lit of m[1].matchAll(/"((?:[^"\\]|\\.)*)"/g)) { const s = JSON.parse('"' + lit[1] + '"'); if (looksLikeText(s)) add(s, "code:" + path.basename(f)); }
     for (const m of src.matchAll(/(?:key|verb|say|tell|subjectKey)\s*[:(]\s*[^"]*"((?:[^"\\]|\\.)*)"/g)) { const s = JSON.parse('"' + m[1] + '"'); if (looksLikeText(s)) add(s, "code:" + path.basename(f)); }
+    // Game notes and summaries: G.note = "..." / ["...", ...], and done(..., ["...", ...]).
+    for (const m of src.matchAll(/(?:note = |done\([^;]*?)\[?\s*(?:\w+ \? )?"((?:[^"\\]|\\.)*)"(?: : "((?:[^"\\]|\\.)*)")?/g)) for (const g of [m[1], m[2]]) if (g) { const s = JSON.parse('"' + g + '"'); if (looksLikeText(s)) add(s, "code:" + path.basename(f)); }
   }
 }
 
 // (3) Strings shown during play, including modals and every battle state the bot reaches.
-function playAndRecord(K, w, d, story) {
+// A finished life in the Book of Lives, so the title, creation and rebirth paths are exercised too.
+const PAST = { at: "2026-10-01T10:00:00.000Z", me: { name: "Ira", pronoun: "she", origin: "panchala", teacher: "drona", path: "archer", spouse: "revat", friend: "charu", court: "panchala", child: "vasu" },
+  title: "The teller", art: "end_teller", alive: true, age: 45, side: "pandava", telling: ["They sing of {name}, born in {origin}, {path!}, student of {teacher}.", "The teller"], kept: true, broke: true, karna: true, teller: true, conscience: 8 };
+function playAndRecord(K, w, d, story, past) {
   const rnd = (arr) => arr[Math.floor(w.Math.random() * arr.length)];
+  if (past) { w.localStorage.setItem("kurukshetra.v2.lives", JSON.stringify([PAST, Object.assign({}, PAST, { title: "Into the wheel", alive: false, art: "end_wheel" })])); K.UI.renderTitle(); K.UI.openLives(); K.UI.closeModal(); }
   d.getElementById("btn-new").click();
   rnd([...d.querySelectorAll("#origins .origin")]).click(); d.getElementById("land-ok").click();
-  for (const sel of ["#pron .opt", "#temps .pick", "#heirs .pick"]) rnd([...d.querySelectorAll(sel)]).click();
+  for (const sel of ["#pron .opt", "#temps .pick", "#heirs .pick", "#pasts .pick"]) { const opts = [...d.querySelectorAll(sel)]; if (opts.length) rnd(opts).click(); }
   d.getElementById("begin").click(); // first try without a name shows the "Choose ..." error once
   if (story) { const s = d.getElementById("story"); if (s) { s.checked = true; s.dispatchEvent(new w.Event("change")); } }
   if (d.getElementById("begin")) d.getElementById("begin").click();
   const U = K.UI;
   for (let step = 0; step < 4000; step++) {
-    if (d.getElementById("again")) { U.openJournal(); U.openCharacter(); U.closeModal(); return; }
+    if (d.getElementById("again")) { U.openJournal(); U.openCharacter(); U.openLives(); U.closeModal(); return; }
     if (step % 150 === 7) { U.openCharacter(); U.openJournal(); U.openMenu(); U.openGlossary(); U.openLoad(); U.closeModal(); }
     const acts = [...d.querySelectorAll("#battle-actions .act:not([disabled])")];
     const choices = [...d.querySelectorAll("#choices .choice:not([disabled])")].filter((b) => !b.classList.contains("picked"));
@@ -102,7 +112,7 @@ if (mode === "collect") {
     const w = boot(i * 7919);
     w.K.seenText = new Set();
     w.K.seenText.add = function (s) { add(s, "play:" + (w.K.S && w.K.S.scene)); return this; };
-    try { playAndRecord(w.K, w, w.document, i % 4 === 0); } catch (e) { console.error("life " + i + ": " + e.message); }
+    try { playAndRecord(w.K, w, w.document, i % 4 === 0, i % 5 === 0); } catch (e) { console.error("life " + i + ": " + e.message); }
   }
   // Keep existing ids stable; append new strings.
   let prev = [];
@@ -120,7 +130,7 @@ if (mode === "collect") {
   for (let i = 1; i <= lives; i++) {
     const w = boot(i * 104729, lang);
     w.K.missing = new Set();
-    try { playAndRecord(w.K, w, w.document, i % 3 === 0); } catch (e) { console.error("life " + i + ": " + (e.stack || e.message).split("\n").slice(0, 3).join(" | ")); }
+    try { playAndRecord(w.K, w, w.document, i % 3 === 0, i % 5 === 0); } catch (e) { console.error("life " + i + ": " + (e.stack || e.message).split("\n").slice(0, 3).join(" | ")); }
     for (const s of w.K.missing) missing.set(s, (missing.get(s) || 0) + 1);
   }
   console.log("Untranslated strings seen in " + lives + " lives (" + lang + "): " + missing.size);

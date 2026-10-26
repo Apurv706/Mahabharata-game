@@ -37,6 +37,11 @@ Ornaments, all in gold line:
 - Every motion uses transform, opacity or clip-path, and has a reduced-motion fallback.
 - Story screens reveal in order (`U.stage`): painting, title, each line, then the choices. Never show choices before the scene is set. A tap, Space, Enter or a number key shows everything; the menu can turn it off.
 
+- Timed moments use the lamp, never a numeric countdown. It pauses while a window is open or the tab is hidden.
+- An enemy's next move sits under its name in small muted text; a heavy blow aimed at you turns red. Field events in the battle log are gold italic with a gold rule.
+- Dice are ivory long dice with dark pips, not numerals. The class is `.dicegame` (`.game` is the page container).
+- Secrets in the ledger are each marked with a red wax dot.
+
 ## Not yet checked
 
 The skill's real-browser inspector could not run in the build environment (no Chrome). Run `node <skill>/scripts/inspect.mjs game/index.html --app` on a machine with Chrome and fix anything it reports.

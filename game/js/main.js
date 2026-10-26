@@ -6,7 +6,8 @@
   // Static content check: every string reference must point at something real.
   K.validate = function () {
     const problems = [];
-    const ref = (from, id) => { if (typeof id === "string" && !K.SCENES[id]) problems.push(from + " → missing scene " + id); };
+    const ref = (from, id) => { if (typeof id === "string" && !K.SCENES[id] && !K.SLOTS[id]) problems.push(from + " → missing scene " + id); };
+    for (const [id, d] of Object.entries(K.SLOTS)) { ref(id + ".then", d.then); d.pool.forEach((e) => ref(id + ".pool", e)); }
     const enc = (from, id) => { if (typeof id === "string" && !K.ENCOUNTERS[id]) problems.push(from + " → missing encounter " + id); };
     for (const sc of Object.values(K.SCENES)) {
       ref(sc.id + ".next", sc.next); ref(sc.id + ".skipTo", sc.skipTo);
@@ -16,6 +17,7 @@
         ref(sc.id + ":" + c.id, c.next); enc(sc.id + ":" + c.id, c.combat);
         if (!c.next && !sc.next && !c.check && !c.combat) problems.push(sc.id + ":" + c.id + " leads nowhere");
         if (c.check) for (const br of [c.check.pass, c.check.fail]) if (br) { ref(sc.id + ":" + c.id + " check", br.next); enc(sc.id + ":" + c.id + " check", br.combat); }
+        if (c.game) { if (!U.games || !U.games[c.game]) problems.push(sc.id + ":" + c.id + " unknown game " + c.game); for (const br of [c.win, c.lose]) if (br) ref(sc.id + ":" + c.id + " game", br.next); }
         if (c.fx && c.fx.vowTake && !K.VOWS[c.fx.vowTake]) problems.push(sc.id + ":" + c.id + " unknown vow");
       }
     }

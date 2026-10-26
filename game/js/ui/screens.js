@@ -61,6 +61,7 @@
     const load = () => U.openLoad();
     row.appendChild(U.button("ghost", U.tr("Load a save code"), load));
     keys.push(load);
+    if (K.lives().length) { row.appendChild(U.button("ghost", U.tr("Book of Lives"), U.openLives, "btn-lives")); keys.push(U.openLives); }
     U.keys(keys);
     // The introduction is written in, like every other page.
     const q = (sel) => leaf.querySelector(sel);
@@ -74,7 +75,7 @@
   // Step one is the homeland: a picture of each land, then a page about the chosen region written
   // out by the quill. Step two is the rest of the character.
   let draft = null;
-  const newDraft = () => ({ step: "land", look: null, name: "", pronoun: null, origin: null, temperament: null, heirloom: null, storyMode: false });
+  const newDraft = () => ({ step: "land", look: null, name: "", pronoun: null, origin: null, temperament: null, heirloom: null, storyMode: false, past: null });
   const writeAll = (els) => els.forEach((el) => el && el.classList.add("write"));
 
   U.renderCreate = function () {
@@ -136,6 +137,7 @@
       '<div class="field"><span class="lbl">' + U.tr("How should the bards speak of you?") + '</span><div class="opts" id="pron"></div></div>' +
       '<div class="field"><span class="lbl">' + U.tr("Childhood temperament") + '</span><div class="picks" id="temps"></div></div>' +
       '<div class="field"><span class="lbl">' + U.tr("Family heirloom") + '</span><div class="picks" id="heirs"></div></div>' +
+      (K.lives().length ? '<div class="field"><span class="lbl">' + U.tr("Remember a past life?") + '</span><p class="note">' + U.tr("A life from your Book of Lives can be born again in this one, and bring its karma with it.") + '</p><div class="picks pasts" id="pasts"></div></div>' : "") +
       '<label class="toggle"><input type="checkbox" id="story"' + (draft.storyMode ? " checked" : "") + "><span>" + U.tr("Story mode") + "<small>" +
         U.tr("You cannot die in battle, so you can see every chapter. Death stays a choice the story can still offer.") + "</small></span></label>" +
       '<div class="btnrow"><button class="cta" id="begin" type="button">' + U.tr("Begin this life") + '</button><button class="ghost" id="back" type="button">' + U.tr("Choose another homeland") + '</button></div><p class="err" id="need"></p></div>';
@@ -147,7 +149,7 @@
       U.$(elId).appendChild(b);
     });
     // Picking updates the buttons in place, so the page does not re-stage on every click.
-    const refresh = () => leaf.querySelectorAll("[data-key]").forEach((b) => b.setAttribute("aria-pressed", String(draft[b.dataset.key] === b.dataset.id)));
+    const refresh = () => leaf.querySelectorAll("[data-key]").forEach((b) => b.setAttribute("aria-pressed", String(String(draft[b.dataset.key]) === b.dataset.id)));
     opts("pron", [["she", "She"], ["he", "He"], ["they", "They"]], "pronoun");
     U.$("pron").querySelectorAll(".opt").forEach((b) => { b.dataset.key = "pronoun"; });
     const cards = (elId, map, key, prefix, round) => Object.entries(map).forEach(([id, v]) => {
@@ -160,6 +162,18 @@
     });
     cards("temps", K.TEMPERAMENTS, "temperament", "temper_", true);
     cards("heirs", K.HEIRLOOMS, "heirloom", "heir_", false);
+    if (U.$("pasts")) {
+      const lives = K.lives().slice(0, 4);
+      const past = (idx, html) => {
+        const b = U.button("pick past", html, () => { draft.past = idx; refresh(); });
+        b.dataset.key = "past"; b.dataset.id = String(idx);
+        b.setAttribute("aria-pressed", String(String(draft.past) === String(idx)));
+        U.$("pasts").appendChild(b);
+      };
+      past(null, '<i class="none" aria-hidden="true"></i><b>' + U.tr("No") + "</b><small>" + U.tr("Begin with nothing remembered") + "</small>");
+      lives.forEach((r, i) => past(i, '<i style="background-image:url(\'' + U.artUrl(r.art) + '\')" aria-hidden="true"></i><b>' + U.esc(r.me.name) + "</b><small>" +
+        U.tr(r.title) + "</small><small class=\"karma\">" + K.karmaOf(r).map(([label]) => U.tr(label)).join(" · ") + "</small>"));
+    }
     U.$("pname").addEventListener("input", (e) => { draft.name = e.target.value; });
     U.$("story").addEventListener("change", (e) => { draft.storyMode = e.target.checked; });
     U.$("back").addEventListener("click", () => { draft.step = "land"; U.renderCreate(); });
@@ -185,6 +199,8 @@
     K.apply(K.HEIRLOOMS[d.heirloom].fx);
     K.apply({ flag: ["origin_" + d.origin, "temper_" + d.temperament, "heir_" + d.heirloom] });
     K.apply({ journal: "You were born in {origin}." });
+    const past = d.past != null && K.lives()[d.past];
+    if (past) K.rebirth(S, past);
     K.go(K.FIRST_SCENE);
   };
 
@@ -194,6 +210,7 @@
     U.redraw = () => U.renderEnding(sc);
     const e = sc.ending(S);
     S.ending = e.title;
+    K.recordLife(S, e);
     U.setNav(true);
     U.where("<b>" + U.tr("The end of a life") + "</b>" + U.tr(S.alive ? "Age {n}" : "Fell at {n}", { n: S.age }));
     const leaf = U.$("leaf");

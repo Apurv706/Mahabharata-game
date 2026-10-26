@@ -44,6 +44,8 @@ Companion to the PRD (§12 cultural rules, §14 art direction).
 
 ## Still needed
 
+**New scenes (gameplay update, 26 Oct).** Thirteen new scenes borrow paintings for now; each would be better with its own 3:1 painting: the dice-board under a striped awning at the spring fair (`scene_pasha`), a cobra in a village well-house, a bard under a banyan, a grey mare at a horse fair, a wounded doe in a forest clearing, rows of lamps on a city's walls at new moon, a river flood over a low town, an ascetic by a dry-season road, five thin bandits with farm tools where a road narrows, a lamp by a teacher's sickbed, a mother's palm-leaf letter, an old smith's forge with his hammer, and a young man holding a palm-leaf note. Also a small diya (oil lamp) drawing could replace the coded one used by the lamp timer.
+
 Still open: the Steam library hero (3840×1240, needs its own wide painting), five 1920×1080 gameplay screenshots (captured from the game), the 12 fixes in the Final Items brief, and advisory review. Optional later: 4K key art and hand-lettered logos.
 
 The full brief for everything below, with a review of batch 1, is the [Remaining Art Brief](https://claude.ai/artifact/TQGHRD663Ee6M5tNjayZjy). Batch 1 (25 Oct) delivered all 82 files, but the 60 paintings were crops of one small contact sheet upscaled to full size, so they were sent back for redo and are not in the game.

@@ -13,8 +13,23 @@
     lastHp = {};
     lastLogLen = 0;
     onEndCb = onEnd;
+    if (K.ENCOUNTERS[encId] && K.ENCOUNTERS[encId].lethal && K.Sound) K.Sound.play("conch");
     C.start(encId, onEnd);
   };
+
+  // "Next: Heavy blow → you", under an enemy's name.
+  function intentLine(u) {
+    const it = C.intent(u);
+    if (!it) return "";
+    const ab = K.tr(it.name);
+    let txt;
+    if (it.target === "enemies") txt = K.tr("Next: {ab} → all of you", { ab });
+    else if (it.unit && it.unit.side === "player") txt = K.tr("Next: {ab} → you", { ab });
+    else if (it.unit && it.unit !== u) txt = K.tr("Next: {ab} → {who}", { ab, who: K.text(it.unit.src || it.unit.name) });
+    else txt = K.tr("Next: {ab}", { ab });
+    const danger = it.heavy && (it.target === "enemies" || (it.unit && it.unit.side === "player"));
+    return '<span class="intent' + (danger ? " danger" : "") + '">' + U.esc(txt) + "</span>";
+  }
 
   function unitCard(u, B) {
     const pct = Math.round((u.hp / u.maxHp) * 100);
@@ -26,6 +41,7 @@
       '<span class="nm">' + (u.person && U.portraitKey(u.person) ? U.thumb(U.portraitKey(u.person), "face") : "") + "<em>" + U.esc(label) + "</em><span>" + u.hp + " / " + u.maxHp + "</span></span>" +
       '<span class="hpbar"><i style="width:' + pct + '%"></i></span>' +
       (st ? '<span class="st">' + st + "</span>" : "") +
+      (enemy ? intentLine(u) : "") +
       (u.note ? '<span class="note">' + U.t(u.note) + "</span>" : "") + "</button>";
   }
 
@@ -43,8 +59,15 @@
       '<div class="text battle"><h1>' + U.t(K.val(enc.title)) + "</h1>" +
       '<div class="sides"><div class="side"><span class="lbl">' + U.tr("Your side") + "</span>" + friends.map((u) => unitCard(u, B)).join("") +
       '</div><div class="side"><span class="lbl">' + U.tr("Against you · tap to target") + "</span>" + enemies.map((u) => unitCard(u, B)).join("") + "</div></div>" +
-      '<div id="battle-actions"></div><ol class="blog" id="blog" aria-live="polite">' + B.log.slice(-8).map((l) => "<li>" + U.esc(C.line(l)) + "</li>").join("") + "</ol></div>";
-    // Blows land visibly: a card that lost health shakes and shows the damage; healing glows.
+      '<div id="battle-actions"></div><ol class="blog" id="blog" aria-live="polite">' + B.log.slice(-8).map((l) => "<li" + (l.ev ? ' class="ev"' : "") + ">" + U.esc(C.line(l)) + "</li>").join("") + "</ol></div>";
+    // Blows land visibly (and audibly): a card that lost health shakes and shows the damage; healing glows.
+    if (K.Sound && B.log.length !== lastLogLen) {
+      const fresh = B.log.slice(lastLogLen);
+      const lost = B.units.some((u) => lastHp[u.uid] != null && u.hp < lastHp[u.uid]);
+      const gained = B.units.some((u) => lastHp[u.uid] != null && u.hp > lastHp[u.uid]);
+      if (fresh.some((l) => l.ev)) K.Sound.play("gong");
+      if (lost) K.Sound.play("hit"); else if (gained) K.Sound.play("heal");
+    }
     if (U.motion()) {
       for (const u of B.units) {
         const before = lastHp[u.uid];
@@ -92,6 +115,7 @@
     box.appendChild(acts);
 
     const tools = U.el('<div class="battle-tools"></div>');
+    C.fallen().forEach((u) => tools.appendChild(U.button("cta secondary", U.tr("Pull {name} out of the fighting", { name: K.text(u.src || u.name) }) + "<small>" + U.tr("Costs your turn") + "</small>", () => C.pull(u.uid))));
     C.spareable().forEach((e) => tools.appendChild(U.button("cta secondary", U.tr("Spare {name}", { name: K.text(e.src || e.name) }), () => C.spare(e.uid))));
     if (C.canFlee()) {
       const breaks = C.fleeBreaks();

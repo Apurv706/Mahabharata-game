@@ -13,7 +13,7 @@
     vidura: canon("Vidura"), bhishma: canon("Bhishma"), draupadi: canon("Draupadi"), abhimanyu: canon("Abhimanyu"),
     ashwatthama: canon("Ashwatthama"), balarama: canon("Balarama"), shakuni: canon("Shakuni"), uttara: canon("Prince Uttara"),
     charu: orig("Charu"), mauni: orig("Mauni the hermit"), vasu: orig("Vasu"), madhavi: orig("Madhavi"), revat: orig("Revat"),
-    bhadra: orig("Bhadra"), sudatta: orig("Sudatta the moneylender"), ugra: orig("Ugra")
+    bhadra: orig("Bhadra"), sudatta: orig("Sudatta the moneylender"), ugra: orig("Ugra"), krishna: canon("Krishna")
   });
 
   Object.assign(K.VOWS, {
@@ -102,8 +102,19 @@
     revat: () => ({ name: "Revat", hp: 42, atk: 7, def: 2, abilities: ["strike", "swerve"], person: "revat" }),
     bhadra: () => ({ name: "Bhadra, an old soldier", hp: 48, atk: 7, def: 3, abilities: ["strike", "guard", "heavy"], person: "bhadra" }),
     spouse: (S) => (S.spouse && !S.dead.includes(S.spouse) ? K.UNITS[S.spouse](S) : null),
-    soldiers: () => ({ name: "Your soldiers", hp: 50, atk: 6, def: 2, abilities: ["strike", "arrows"] })
+    ugra: () => ({ name: "Ugra, the miller's son", hp: 46, atk: 7, def: 2, abilities: ["strike", "heavy"], person: "ugra" }),
+    soldiers: () => ({ name: "Your soldiers", plural: true, hp: 50, atk: 6, def: 2, abilities: ["strike", "arrows"] })
   };
+
+  // Secrets you hold, shown in the ledger. Some can be spent at the right moment.
+  K.SECRETS = [
+    { when: { flag: "knows_dice_plot" }, text: "Shakuni's dice cannot lose." },
+    { when: { flag: "saw_swap" }, text: "Shakuni swaps a die from his sleeve. You saw it." },
+    { when: { flag: "helped_tunnel" }, text: "There is a tunnel under the house at Varnavata." },
+    { when: (S) => S.flags.includes("left_arena") || S.seen.includes("a5_karna_secret"), text: "Karna is Kunti's firstborn son, the eldest Pandava." },
+    { when: { flag: "kept_arjuna_secret" }, text: "The dance teacher Brihannala is Arjuna." },
+    { when: { flag: "reborn" }, text: "You remember a life that was not this one." }
+  ];
 
   K.GLOSSARY = {
     Akshauhini: "A full army division: chariots, elephants, horse and foot. Eighteen of them meet at Kurukshetra.",
