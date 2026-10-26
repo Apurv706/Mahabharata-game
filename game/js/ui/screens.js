@@ -4,16 +4,9 @@
   const U = K.UI;
 
   // ---------- Title ----------
-  // A life told in paintings: the hero cross-fades through the story in order, each frame captioned
-  // with the age you would be. Below it, the seven acts as a strip.
-  const SLIDES = [
-    ["scene_princes", 8, "The palace gardens"],
-    ["scene_path", 15, "Your first year of training"],
-    ["scene_swayamvara", 25, "A golden fish turning above the water"],
-    ["scene_exile", 30, "The Pandavas walk into exile"],
-    ["scene_day13", 44, "Kurukshetra, the thirteenth day of the war"],
-    ["scene_teaching", 44, "The grandsire's last teaching"]
-  ];
+  // The hero: one painting, a lone survivor looking over the field at dawn: someone the epic never
+  // names. Mirrored so the figure stands clear of the title.
+  const HERO = { art: "end_survivor", caption: "Dawn over the field", mirror: true };
   const ACTS = [
     [1, "scene_princes", "Ages 6 to 12", "Grow up beside the princes. Choose a friend, make a rival, tell your first lie."],
     [2, "scene_path", "Ages 14 to 19", "Find a teacher and a path: archer, healer, spy, bard, and more."],
@@ -23,7 +16,6 @@
     [6, "scene_day13", "Age 44", "Eighteen days at Kurukshetra. You can die here."],
     [7, "scene_teaching", "Age 44 onward", "What is left, who is left, and how the bards will tell it."]
   ];
-  let slideTimer = null;
 
   U.renderTitle = function () {
     U.redraw = U.renderTitle;
@@ -31,20 +23,18 @@
     document.body.classList.add("titling");
     U.where("");
     U.closeModal();
-    clearInterval(slideTimer);
     const auto = K.loadSlot("auto");
     const leaf = U.$("leaf");
-    const cap = (i) => K.tr("Age {n}", { n: SLIDES[i][1] }) + " · " + K.text(SLIDES[i][2]);
     leaf.innerHTML =
       '<section class="hero" aria-labelledby="title-h">' +
-        '<div class="slides" aria-hidden="true">' + SLIDES.map((s, i) => '<i class="slide' + (i === 0 ? " on" : "") + '" data-art="' + s[0] + '"' + (i === 0 ? ' style="--img:url(\'' + U.artUrl(s[0]) + '\')"' : "") + "></i>").join("") + "</div>" +
+        '<div class="slides" aria-hidden="true"><i class="slide on' + (HERO.mirror ? " mirror" : "") + '" style="--img:url(\'' + U.artUrl(HERO.art) + '\')"></i></div>' +
         '<div class="hero-bar" id="hero-bar"></div>' +
         '<div class="hero-copy">' +
           '<h1 class="title" id="title-h">' + U.tr("Kurukshetra") + "<em>" + U.tr("A Life") + "</em></h1>" +
           '<p class="tagline">' + U.tr("You cannot change the Mahabharata. You can decide who you were inside it.") + "</p>" +
           '<div class="btnrow" id="title-btns"></div>' +
         "</div>" +
-        '<p class="slide-cap" id="slide-cap">' + U.esc(cap(0)) + "</p>" +
+        '<p class="slide-cap">' + U.t(HERO.caption) + "</p>" +
       "</section>" +
       '<section class="life" aria-labelledby="life-h">' +
         '<div class="life-head"><h2 id="life-h">' + U.tr("One life, seven acts") + "</h2>" +
@@ -72,34 +62,7 @@
     row.appendChild(U.button("ghost", U.tr("Load a save code"), load));
     keys.push(load);
     U.keys(keys);
-    startSlides(cap);
   };
-
-  // Cross-fade every 7 seconds, loading each painting only just before it is shown.
-  function startSlides(cap) {
-    const slides = [...document.querySelectorAll(".hero .slide")];
-    const capEl = U.$("slide-cap");
-    const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (still || slides.length < 2) return;
-    let i = 0;
-    slideTimer = setInterval(() => {
-      if (!document.body.contains(capEl)) return clearInterval(slideTimer);
-      if (document.hidden) return;
-      const next = (i + 1) % slides.length;
-      const el = slides[next];
-      const show = () => {
-        slides[i].classList.remove("on");
-        el.classList.add("on");
-        capEl.textContent = cap(next);
-        i = next;
-      };
-      if (el.style.getPropertyValue("--img")) return show();
-      const url = U.artUrl(el.dataset.art);
-      const img = new Image();
-      img.onload = () => { el.style.setProperty("--img", "url('" + url + "')"); show(); };
-      img.src = url;
-    }, 7000);
-  }
 
   // ---------- Character creation ----------
   let draft = null;

@@ -59,6 +59,7 @@ body.titling header.top { display: none; }
 .slides { position: absolute; inset: 0; z-index: -2; }
 .slide { position: absolute; inset: 0; background: var(--img, none) center 42% / cover no-repeat; opacity: 0; transition: opacity 1.8s ease; }
 .slide.on { opacity: 1; }
+.slide.mirror { scale: -1 1; } /* flipped left to right; composes with the settle zoom */
 @media (prefers-reduced-motion: no-preference) {
   .slide.on { animation: settle 12s ease-out both; }
   @keyframes settle { from { transform: scale(1.08); } to { transform: scale(1.01); } }
@@ -72,15 +73,16 @@ body.titling header.top { display: none; }
 .tagline { font-family: var(--display); font-style: italic; font-size: clamp(22px, 2.4vw, 28px); line-height: 1.25; color: var(--ink); max-width: 32ch; margin: 0; }
 .hero .btnrow { margin-top: 6px; }
 .slide-cap { position: absolute; right: clamp(20px, 5vw, 60px); bottom: clamp(28px, 6vh, 60px); margin: 0; max-width: 28ch; text-align: right; font-size: 14px; color: var(--muted); }
-/* Portrait screens (phones, upright tablets): a tall hero would crop a 3:1 painting to its middle
-   fifth. Instead the painting sits as a 2:1 band that slowly pans end to end, so the whole picture
-   is seen; the caption, title and buttons follow below it on the page ground. */
+/* Portrait screens (phones, upright tablets): a tall hero would crop the 3:1 painting to its middle
+   fifth. Instead the painting sits as a 2:1 band on top, and the caption, title and buttons follow
+   below it on the page ground. */
 @media (max-aspect-ratio: 5/4) {
   .hero { min-height: 0; display: flex; flex-direction: column; }
   .hero::before { display: none; }
   .slides { position: relative; inset: auto; z-index: 0; order: 1; aspect-ratio: 2 / 1; overflow: hidden; }
   .slides::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, var(--ground) 0%, rgba(19, 17, 14, 0) 38%); } /* taste-skill-ignore: neutral scrim, the painting fading into the page */
-  .slide { right: auto; width: 150%; background-position: center 42%; transform: translateX(-16.667%); }
+  .slide { background-position: center 42%; }
+  .slide.mirror { background-position: 6% 42%; } /* keep the survivor (left of the unflipped painting) in the band */
   .slide-cap { position: static; order: 2; max-width: none; text-align: left; padding: 10px clamp(20px, 5vw, 60px) 0; }
   .hero-copy { order: 3; padding-top: 6px; gap: 14px; }
   .title { font-size: clamp(52px, 15vw, 96px); }
@@ -91,11 +93,6 @@ body.titling header.top { display: none; }
   .tagline { font-size: 19px; }
   .hero-copy { gap: 10px; padding-bottom: 22px; }
   .hero { min-height: max(86svh, 320px); }
-}
-@media (max-aspect-ratio: 5/4) and (prefers-reduced-motion: no-preference) {
-  .slide { transform: translateX(-33.333%); }
-  .slide.on { animation: pan 8s ease-in-out both; }
-  @keyframes pan { from { transform: translateX(0); } to { transform: translateX(-33.333%); } }
 }
 html[lang="hi"] .title { font-size: clamp(50px, 8.6vw, 108px); line-height: 1.15; letter-spacing: 0; }
 html[lang="hi"] .title em { font-style: normal; margin-top: 0.05em; }
