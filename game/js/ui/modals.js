@@ -23,7 +23,11 @@
       .concat(S.boons.map((b) => "<p><b>" + U.esc(K.BOONS[b].name) + ".</b> " + U.esc(K.BOONS[b].text) + "</p>"))
       .concat(S.curses.map((c) => '<p class="curse"><b>' + U.esc(K.CURSES[c.id].name) + ".</b> " + U.esc(c.fired ? "It has struck." : K.CURSES[c.id].text) + "</p>"))
       .concat(S.injuries.map((i) => "<p><b>" + U.esc(K.INJURIES[i].name) + ".</b> " + U.esc(K.INJURIES[i].text) + "</p>"));
-    U.openModal("Character", '<div class="grid2"><div><span class="lbl">Life</span>' + life + "</div><div><span class=\"lbl\">Attributes (age changes these)</span>" + attrs +
+    const head = '<div class="sheet-head">' +
+      (S.temperament ? '<i class="round" role="img" aria-label="' + U.esc(K.TEMPERAMENTS[S.temperament].name) + '" style="background-image:url(\'' + U.artUrl("temper_" + S.temperament) + '\')"></i><span>' + U.esc(K.TEMPERAMENTS[S.temperament].name) + " by temperament</span>" : "") +
+      (S.heirloom ? '<i role="img" aria-label="' + U.esc(K.HEIRLOOMS[S.heirloom].name) + '" style="background-image:url(\'' + U.artUrl("heir_" + S.heirloom) + '\')"></i><span>Heirloom: ' + U.esc(K.HEIRLOOMS[S.heirloom].name.toLowerCase()) +
+        (S.heirloom === "amulet" && S.flags.includes("amulet_broken") ? " (cracked)" : "") + "</span>" : "") + "</div>";
+    U.openModal("Character", head + '<div class="grid2"><div><span class="lbl">Life</span>' + life + "</div><div><span class=\"lbl\">Attributes (age changes these)</span>" + attrs +
       '</div><div><span class="lbl">Skills</span>' + skills + "</div><div><span class=\"lbl\">Standing</span>" + rep +
       row("Healing herbs", S.items.herbs || 0) + "</div></div>" + (extras.length ? '<span class="lbl">Boons, curses and wounds</span>' + extras.join("") : ""));
   };

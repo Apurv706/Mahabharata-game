@@ -68,6 +68,17 @@
 .origin b { font-family: var(--display); font-size: 20px; font-weight: 700; line-height: 1.15; }
 .origin small { font-size: 13px; color: var(--ink-dim); line-height: 1.35; }
 .origin[aria-pressed="true"] { border-color: var(--saffron); box-shadow: 0 0 0 1px var(--saffron); }
+.picks { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 130px), 1fr)); gap: 10px; }
+.pick { text-align: center; background: var(--leaf-2); border: 1px solid rgba(212, 168, 75, 0.3); border-radius: 12px; padding: 10px 10px 12px; cursor: pointer; display: grid; gap: 4px; justify-items: center; }
+.pick i { display: block; width: 100%; aspect-ratio: 1; max-width: 100%; background-size: cover; background-position: center; border-radius: 8px; }
+.pick.round i { width: 78%; border-radius: 50%; }
+.pick b { font-family: var(--display); font-size: 19px; line-height: 1.1; }
+.pick small { font-size: 12.5px; color: var(--ink-dim); }
+.pick[aria-pressed="true"] { border-color: var(--saffron); box-shadow: 0 0 0 1px var(--saffron); }
+.sheet-head { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.sheet-head i { width: 64px; height: 64px; background-size: cover; background-position: center; border-radius: 8px; flex: none; }
+.sheet-head i.round { border-radius: 50%; }
+.sheet-head span { font-size: 14px; color: var(--ink-dim); }
 input[type="text"], textarea { font: inherit; color: var(--ink); background: var(--leaf-2); border: 1px solid rgba(212, 168, 75, 0.4); border-radius: 10px; padding: 10px 12px; width: min(100%, 360px); }
 textarea { width: 100%; min-height: 110px; font-family: var(--mono); font-size: 12px; }
 .toggle { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; cursor: pointer; }

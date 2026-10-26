@@ -38,7 +38,7 @@ function playLife(seed) {
   // Create a character through the real creation screen.
   d.getElementById("btn-new").click();
   const pickOpt = (sel) => rnd(w, [...d.querySelectorAll(sel)]).click();
-  pickOpt("#pron .opt"); pickOpt("#origins .origin"); pickOpt("#temps .opt"); pickOpt("#heirs .opt");
+  pickOpt("#pron .opt"); pickOpt("#origins .origin"); pickOpt("#temps .pick"); pickOpt("#heirs .pick");
   if (STORY) { const s = d.getElementById("story"); s.checked = true; s.dispatchEvent(new w.Event("change")); }
   d.getElementById("begin").click();
 

@@ -49,8 +49,8 @@
       '<div class="field"><span class="lbl">How should the bards speak of you?</span><div class="opts" id="pron"></div></div>' +
       '<div class="field"><span class="lbl">Homeland</span><div class="origins" id="origins"></div></div>' +
       (o ? '<p class="aside">' + U.t(o.detail) + "</p>" : "") +
-      '<div class="field"><span class="lbl">Childhood temperament</span><div class="opts" id="temps"></div></div>' +
-      '<div class="field"><span class="lbl">Family heirloom</span><div class="opts" id="heirs"></div></div>' +
+      '<div class="field"><span class="lbl">Childhood temperament</span><div class="picks" id="temps"></div></div>' +
+      '<div class="field"><span class="lbl">Family heirloom</span><div class="picks" id="heirs"></div></div>' +
       '<label class="toggle"><input type="checkbox" id="story"' + (draft.storyMode ? " checked" : "") + "><span>Story mode<small>You cannot die in battle, so you can see every chapter. Death stays a choice the story can still offer.</small></span></label>" +
       '<div class="btnrow"><button class="cta" id="begin" type="button">Begin this life</button><button class="ghost" id="back" type="button">Back</button></div><p class="err" id="need"></p></div>';
 
@@ -60,8 +60,14 @@
       U.$(elId).appendChild(b);
     });
     opts("pron", [["she", "She"], ["he", "He"], ["they", "They"]], "pronoun");
-    opts("temps", Object.entries(K.TEMPERAMENTS).map(([id, t]) => [id, t.name, t.short]), "temperament");
-    opts("heirs", Object.entries(K.HEIRLOOMS).map(([id, h]) => [id, h.name, h.short]), "heirloom");
+    const cards = (elId, map, key, prefix, round) => Object.entries(map).forEach(([id, v]) => {
+      const b = U.button("pick" + (round ? " round" : ""), '<i role="img" aria-label="' + U.esc(v.name) + '" style="background-image:url(\'' + U.artUrl(prefix + id) + '\')"></i><b>' + U.esc(v.name) + "</b><small>" + U.esc(v.short) + "</small>",
+        () => { draft[key] = id; U.renderCreate(); });
+      b.setAttribute("aria-pressed", String(draft[key] === id));
+      U.$(elId).appendChild(b);
+    });
+    cards("temps", K.TEMPERAMENTS, "temperament", "temper_", true);
+    cards("heirs", K.HEIRLOOMS, "heirloom", "heir_", false);
     for (const [id, v] of Object.entries(K.ORIGINS)) {
       const b = U.button("origin", '<i role="img" aria-label="' + U.esc(v.name) + '" style="background-image:url(\'' + U.artUrl(id) + '\')"></i><div><b>' + U.esc(v.name) + "</b><small>" + U.esc(v.blurb) + "</small></div>",
         () => { draft.origin = id; U.renderCreate(); });
