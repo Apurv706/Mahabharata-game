@@ -17,7 +17,7 @@
       ],
       body: (S) => [
         S.dead.includes("vasu") ? { curse: "You carry Vasu to the pyres yourself." } : S.child === "vasu" ? { memory: "Vasu is alive. You keep touching his shoulder to make sure." } : null,
-        S.friend && K.PEOPLE[S.friend]?.canon && ["karna", "duryodhana"].includes(S.friend) ? { memory: K.personName(S.friend) + ", your oldest friend, is among the dead." } : null
+        S.friend && K.PEOPLE[S.friend]?.canon && ["karna", "duryodhana"].includes(S.friend) ? { memory: "{friend}, your oldest friend, is among the dead." } : null
       ],
       choices: [
         { id: "pyres", t: "Help build the pyres for the dead of both sides", fx: { rep: { common: 2 }, duty: { conscience: 1 } } },
@@ -61,31 +61,38 @@
 
   // ---------- Ending composer ----------
   function telling(S) {
-    const P = { she: "she", he: "he", they: "they" }[S.pronoun] || "they";
+    // Whole sentences only, so each one translates as a unit; [text, values] pairs carry names.
     const t = [];
     const has = (f) => S.flags.includes(f);
-    t.push("They sing of {name}, born in " + K.ORIGINS[S.origin].name + (S.path ? ", " + K.PATHS[S.path].name.toLowerCase() : "") +
-      (S.teacher === "self" ? ", who taught {them}self by night." : S.teacher ? ", student of " + K.TEACHERS[S.teacher].short + "." : "."));
-    if (S.friend) t.push("As a child {they} chose " + K.personName("friend", S) + " for a friend, and that choice followed {them} all {their} life.");
+    const self = S.teacher === "self", taught = S.teacher && !self;
+    t.push(S.path
+      ? (self ? "They sing of {name}, born in {origin}, {path!}, who taught {them}self by night." : taught ? "They sing of {name}, born in {origin}, {path!}, student of {teacher}." : "They sing of {name}, born in {origin}, {path!}.")
+      : (self ? "They sing of {name}, born in {origin}, who taught {them}self by night." : taught ? "They sing of {name}, born in {origin}, student of {teacher}." : "They sing of {name}, born in {origin}."));
+    if (S.friend) t.push("As a child {they} chose {friend} for a friend, and that choice followed {them} all {their} life.");
     if (has("stood_with_karna")) t.push("At seventeen {they} stood beside Karna when the arena laughed at him.");
     if (has("stood_with_princes")) t.push("At seventeen {they} stood with the princes, and Karna remembered it.");
     if (has("helped_ekalavya")) t.push("{They} bound Ekalavya's hand when no one else would.");
     if (has("refused_dakshina")) t.push("{They} refused to ride against Panchala, and Drona never forgot it.");
     if (has("helped_tunnel")) t.push("{They} carried earth out of the tunnel at Varnavata, night after night.");
-    if (has("objected_dice") || has("stood_between")) t.push("In the dice hall, when the elders were silent, {they} were not.");
+    if (has("objected_dice") || has("stood_between")) t.push("In the dice hall, when the elders were silent, {they} {were} not.");
     if (has("silent_draupadi")) t.push("In the dice hall {they} said nothing, like most of the people there.");
-    if (has("left_dice") || has("absent_dice")) t.push("{They} were not in the hall to see the worst of it.");
-    S.vows.forEach((v) => t.push("{They} swore “" + K.VOWS[v.id].name.toLowerCase() + "”" + (v.released ? ", and the vow was answered." : v.broken ? " and broke it." : " and kept it.")));
-    if (has("could_not_break_through")) t.push("On the thirteenth day {they} were among those who could not break through.");
+    if (has("left_dice") || has("absent_dice")) t.push("{They} {were} not in the hall to see the worst of it.");
+    S.vows.forEach((v) => t.push([v.released ? "{They} swore “{vow!}”, and the vow was answered." : v.broken ? "{They} swore “{vow!}” and broke it." : "{They} swore “{vow!}” and kept it.", { vow: K.VOWS[v.id].name }]));
+    if (has("could_not_break_through")) t.push("On the thirteenth day {they} {were} among those who could not break through.");
     if (has("held_the_ring")) t.push("On the thirteenth day {they} held {their} place in the ring that closed on Abhimanyu.");
     if (has("refused_ring")) t.push("On the thirteenth day {they} lowered {their} bow and would not close in on a lone boy.");
     if (has("spread_the_lie")) t.push("On the fifteenth day {they} shouted the half-truth that killed Drona.");
     if (has("shot_karna")) t.push("On the seventeenth day {they} loosed an arrow at Karna as he lifted his wheel.");
     if (has("joined_raid")) t.push("On the last night {they} went with Ashwatthama into the sleeping camp. No one sings that part aloud.");
     if (has("saved_vasu_raid") || has("woke_camp")) t.push("On the night of the raid {they} pulled the living out of the fire.");
-    S.curses.filter((c) => c.fired).forEach((c) => t.push("The " + K.CURSES[c.id].name.toLowerCase().replace(/^the /, "") + " found {them} at the worst hour."));
+    const CURSE_LINE = {
+      hermit: "The hermit's curse found {them} at the worst hour.",
+      sage: "The sage's curse found {them} at the worst hour.",
+      astra_misuse: "The curse of the misused astra found {them} at the worst hour."
+    };
+    S.curses.filter((c) => c.fired && CURSE_LINE[c.id]).forEach((c) => t.push(CURSE_LINE[c.id]));
     if (!S.alive) t.push(S.deathText || "{They} fell at Kurukshetra.");
-    return t.map((x) => x.replace(/\{They\}/g, P.charAt(0).toUpperCase() + P.slice(1)));
+    return t;
   }
 
   function fates(S) {
@@ -95,12 +102,13 @@
       else if (!S.alive) f.push("Vasu carried your story home, and told it to his own children.");
       else f.push(S.flags.includes("vasu_gentle") ? "Vasu grew into the kind man you hoped for, and never picked up a sword again." : S.flags.includes("vasu_craft") ? "Vasu went back to the craft you taught him, and did well." : "Vasu served in Parikshit's guard and rose high.");
     }
-    if (S.spouse) f.push(K.personName("spouse", S) + (S.alive ? " grew old beside you." : " never remarried."));
-    if (S.friend === "charu") f.push("Charu " + (S.alive ? "outlived everyone, and complained about it." : "kept a lamp lit for you every year."));
+    if (S.spouse) f.push(S.alive ? "{spouse} grew old beside you." : "{spouse} never remarried.");
+    if (S.friend === "charu") f.push(S.alive ? "Charu outlived everyone, and complained about it." : "Charu kept a lamp lit for you every year.");
     if (S.friend === "karna" || S.bonds.karna >= 7) f.push("Karna's sons all died in the war. His name lived on.");
     if (S.friend === "duryodhana") f.push("Duryodhana, your oldest friend, went to heaven, the stories say, for dying as a warrior.");
-    if (S.teacher && S.teacher !== "self") f.push(S.duty.teacher >= 7 ? "Your debt to " + K.TEACHERS[S.teacher].short + " was paid in full." : S.duty.teacher <= 2 ? "Your debt to " + K.TEACHERS[S.teacher].short + " was never paid." : "Your debt to " + K.TEACHERS[S.teacher].short + " was partly paid, as most are.");
-    if (S.injuries.length) f.push("You carried the war in your body: " + S.injuries.map((i) => K.INJURIES[i].name.toLowerCase()).join(", ") + ".");
+    if (S.teacher && S.teacher !== "self") f.push(S.duty.teacher >= 7 ? "Your debt to {teacher} was paid in full." : S.duty.teacher <= 2 ? "Your debt to {teacher} was never paid." : "Your debt to {teacher} was partly paid, as most are.");
+    // Composed when the ending is shown, so the list is built in the current language ("done" pair).
+    if (S.injuries.length) f.push(["You carried the war in your body: {list}.", { list: K.list(S.injuries.map((i) => K.low(K.tr(K.INJURIES[i].name)))) }, true]);
     return f;
   }
 

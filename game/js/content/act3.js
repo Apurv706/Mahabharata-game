@@ -82,7 +82,7 @@
         "To avoid war, Dhritarashtra gives the Pandavas half the kingdom: the wild land of Khandavaprastha. The Khandava forest is burned to clear it, and on the ashes they build Indraprastha, a city of white stone and glass.",
         "Now there are two courts, and everyone must decide where they belong."
       ],
-      body: (S) => ["You are twenty-six. Where do you make your life?", S.friend && K.PEOPLE[S.friend]?.canon ? { memory: K.personName(S.friend) + " asks where you will go." } : null],
+      body: (S) => ["You are twenty-six. Where do you make your life?", S.friend && K.PEOPLE[S.friend]?.canon ? { memory: "{friend} asks where you will go." } : null],
       choices: [
         { id: "hastinapura", t: "Serve the old throne at Hastinapura", fx: { rep: { kuru: 2 }, bond: { duryodhana: 1 }, journal: "You pledged yourself to the court at Hastinapura." }, resolve: pledge("hastinapura") },
         { id: "indraprastha", t: "Go to Indraprastha and serve Yudhishthira", fx: { rep: { pandava: 2 }, bond: { yudhishthira: 1 }, journal: "You went to Indraprastha to serve Yudhishthira." }, resolve: pledge("indraprastha") },

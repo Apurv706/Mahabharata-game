@@ -4,7 +4,8 @@
   const U = (K.UI = {});
   U.$ = (id) => document.getElementById(id);
   U.esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  U.t = (s) => U.esc(K.fmt(s));
+  U.t = (s) => U.esc(K.text(s));            // story text: translate, fill the life's tokens, escape
+  U.tr = (s, p) => U.esc(K.tr(s, p));        // interface text: translate (and fill params), escape
   U.el = function (html) { const t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstElementChild; };
   U.button = function (cls, html, onClick, id) {
     const b = document.createElement("button");
@@ -48,7 +49,10 @@
   };
 
   U.where = function (html) { U.$("where").innerHTML = html; };
-  U.setNav = function (on) { U.$("nav").hidden = !on; U.$("game").classList.toggle("wide", !on); U.$("ledger").hidden = !on; };
+  U.setNav = function (on) {
+    document.body.classList.remove("titling"); // the title screen adds it back after this call
+    U.$("nav").hidden = !on; U.$("game").classList.toggle("wide", !on); U.$("ledger").hidden = !on;
+  };
 
   // Number keys map to whatever buttons the current screen registers.
   let keyActions = [];
@@ -68,8 +72,8 @@
   // Modal shell
   U.openModal = function (title, bodyHtml, onMount) {
     U.closeModal();
-    const scrim = U.el('<div class="scrim" role="dialog" aria-modal="true" aria-label="' + U.esc(title) + '"><div class="modal"><header><h2>' + U.esc(title) +
-      '</h2><button type="button" class="ghost" id="modal-close">Close</button></header><div id="modal-body">' + bodyHtml + "</div></div></div>");
+    const scrim = U.el('<div class="scrim" role="dialog" aria-modal="true" aria-label="' + U.tr(title) + '"><div class="modal"><header><h2>' + U.tr(title) +
+      '</h2><button type="button" class="ghost" id="modal-close">' + U.tr("Close") + '</button></header><div id="modal-body">' + bodyHtml + "</div></div></div>");
     scrim.addEventListener("click", (e) => { if (e.target === scrim) U.closeModal(); });
     document.body.appendChild(scrim);
     U.$("modal-close").addEventListener("click", U.closeModal);
@@ -77,4 +81,39 @@
     U.$("modal-close").focus();
   };
   U.closeModal = function () { const s = document.querySelector(".scrim"); if (s) s.remove(); };
+
+  // ---------- Language ----------
+  // Each screen registers how to draw itself again (U.redraw), so a language switch can repaint
+  // the current screen in place, including a scene whose choice has already been made.
+  U.redraw = null;
+  U.applyStatic = function () {
+    const html = document.documentElement;
+    html.lang = (K.LANGS[K.lang] || K.LANGS.en).htmlLang;
+    document.title = K.tr("Kurukshetra: A Life");
+    U.$("brand").textContent = K.tr("Kurukshetra: A Life");
+    U.$("nav").setAttribute("aria-label", K.tr("Game menu"));
+    U.$("nav-char").textContent = K.tr("Character");
+    U.$("nav-journal").textContent = K.tr("Journal");
+    U.$("nav-menu").textContent = K.tr("Menu");
+    U.$("ledger").setAttribute("aria-label", K.tr("Obligations, bonds, vows and memories"));
+  };
+  U.setLang = function (lang, reopen) {
+    if (!K.LANGS[lang] || lang === K.lang) return;
+    K.lang = lang;
+    K.prefs({ lang });
+    U.applyStatic();
+    if (U.redraw) U.redraw();
+    if (reopen) reopen();
+  };
+  // The two-button language switch used on the title screen and in the menu.
+  U.langSwitch = function (onPick) {
+    const box = U.el('<div class="langs" role="group" aria-label="Language / भाषा"></div>');
+    for (const [id, l] of Object.entries(K.LANGS)) {
+      const b = U.button("lang", U.esc(l.name), () => onPick(id));
+      b.setAttribute("lang", l.htmlLang);
+      b.setAttribute("aria-pressed", String(K.lang === id));
+      box.appendChild(b);
+    }
+    return box;
+  };
 })(window.K = window.K || {});

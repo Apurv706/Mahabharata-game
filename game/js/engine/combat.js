@@ -5,14 +5,42 @@
   const C = (K.Combat = {});
   let B = null;
   const TIMED = ["guard", "evade", "exposed", "weakened", "inspired", "bleed", "taunt", "cursed"];
-  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-  const nm = (u, c) => (u.side === "player" ? (c ? "You" : "you") : u.name);
-  const conj = (u, phrase) => {
-    if (u.side !== "player") return phrase;
+  // The log stores events, not sentences: { key, u: { role: unit }, v: { name: value }, crit }.
+  // C.line() phrases one in the current language, so switching language rewrites the whole log.
+  // Keys are English templates; "{t} ..." lines about the player use a "You ..." key instead.
+  const youForm = (phrase) => {
     const [w, ...rest] = phrase.split(" ");
-    const m = { is: "are", goes: "go", has: "have" };
+    const m = { is: "are", goes: "go", has: "have", loses: "lose" };
     const fw = m[w] || (w.endsWith("s") ? w.slice(0, -1) : w);
     return [fw, ...rest].join(" ");
+  };
+  const subjectKey = (u, phrase) => (u.side === "player" ? "You " + youForm(phrase) + "." : "{t} " + phrase + ".");
+  const isP = (u) => u && u.side === "player";
+  const unitName = (u) => (u.side === "player" ? K.S.name || K.tr("You") : K.text(u.src || u.name));
+  // Every grammatical form a sentence might need for one unit. English uses {t}/{a}; the Hindi
+  // templates pick the form with the right postposition ({tko} "to", {tne} ergative, {tke} "of").
+  function forms(role, u) {
+    const o = {};
+    if (!u) return o;
+    if (isP(u) && K.lang === "hi") Object.assign(o, { [role]: "तुम", [role + "ko"]: "तुम्हें", [role + "ne"]: "तुमने", [role + "ke"]: "तुम्हारे", [role + "ki"]: "तुम्हारी", [role + "par"]: "तुम पर" });
+    else if (isP(u)) o[role] = "you";
+    else {
+      const n = unitName(u);
+      // Before a postposition Hindi takes the oblique form: "राजा का अंगरक्षक" becomes "राजा के अंगरक्षक ने".
+      const ob = K.lang === "hi" ? n.replace(/ का /g, " के ").replace(/(लुटेरा|ग्वाला|बेटा)$/, (m) => m.slice(0, -1) + "े") : n;
+      Object.assign(o, { [role]: n, [role + "ko"]: ob + " को", [role + "ne"]: ob + " ने", [role + "ke"]: ob + " के", [role + "ki"]: ob + " की", [role + "par"]: ob + " पर" });
+    }
+    return o;
+  }
+  C.line = function (e) {
+    if (typeof e === "string") return K.text(e); // older logs
+    if (e.raw) return K.text(e.raw);
+    const p = {};
+    for (const [role, u] of Object.entries(e.u || {})) Object.assign(p, forms(role, u));
+    for (const [k, v] of Object.entries(e.v || {})) p[k] = typeof v === "string" ? K.tr(v) : v;
+    let line = K.text(e.key, p);
+    if (e.crit) line += " " + K.tr("A critical hit.");
+    return line;
   };
 
   // Enemy template by tier, so encounters stay balanced as the player grows.
@@ -35,7 +63,7 @@
   function makeUnit(def, side, i) {
     const hp = Math.round(def.hp * (side === "enemy" && K.S.storyMode ? 0.75 : 1));
     return {
-      uid: side[0] + i, name: K.fmt(def.name), side, hp, maxHp: hp, atk: def.atk, def: def.def || 1,
+      uid: side[0] + i, name: K.fmt(def.name), src: def.name, side, hp, maxHp: hp, atk: def.atk, def: def.def || 1,
       abilities: def.abilities || ["strike"], cds: {}, status: {}, armed: def.armed !== false,
       vowTag: def.vowTag || null, person: def.person || null, note: def.note || null
     };
@@ -47,13 +75,14 @@
   C.player = () => B && B.units.find((u) => u.side === "player");
 
   const api = {
-    say(t) { B.log.push(t); },
+    say(t) { B.log.push({ raw: t }); },                       // a line of story text (English source)
+    tell(key, u, v, crit) { B.log.push({ key, u, v, crit }); }, // a combat event
     hit(u, t, mult, o = {}) {
       if (!t || t.hp <= 0) return 0;
       if (u.side === "player" && t.vowTag) {
-        for (const id of K.vowBreaksFor([t.vowTag])) { K.apply({ vowBreak: id }); api.say("You strike " + t.name + ". Your vow is broken."); }
+        for (const id of K.vowBreaksFor([t.vowTag])) { K.apply({ vowBreak: id }); api.tell("You strike {t}. Your vow is broken.", { t }); }
       }
-      if (t.status.evade) { delete t.status.evade; api.say(cap(nm(t)) + " " + conj(t, "avoids the attack") + "."); return 0; }
+      if (t.status.evade) { delete t.status.evade; api.tell(subjectKey(t, "avoids the attack"), { t }); return 0; }
       let dmg = (u.atk + K.roll(4)) * mult;
       if (u.status.inspired) dmg *= 1.3;
       if (u.status.weakened) dmg *= 0.7;
@@ -65,20 +94,20 @@
       if (t.status.guard) { dmg *= 0.5; delete t.status.guard; }
       dmg = Math.max(1, Math.round(dmg));
       t.hp = Math.max(0, t.hp - dmg);
-      const lead = o.verb ? cap(o.verb) + " " + nm(t) : cap(nm(u)) + " " + (u.side === "player" ? "hit " : "hits ") + nm(t);
-      api.say(lead + " for " + dmg + (crit ? ". A critical hit" : "") + ".");
-      if (t.hp === 0) api.say(t.side === "enemy" ? t.name + " falls." : t.side === "player" ? "You fall." : t.name + " is down.");
+      const key = o.verb || (isP(u) ? "You hit {t} for {n}." : isP(t) ? "{a} hits you for {n}." : "{a} hits {t} for {n}.");
+      api.tell(key, { a: u, t }, { n: dmg }, crit);
+      if (t.hp === 0) api.tell(t.side === "enemy" ? "{t} falls." : isP(t) ? "You fall." : "{t} is down.", { t });
       return dmg;
     },
     heal(u, t, n) {
       if (!t || t.hp <= 0) return;
       const before = t.hp; t.hp = Math.min(t.maxHp, t.hp + n);
-      api.say(cap(nm(t)) + " " + conj(t, "recovers " + (t.hp - before) + " health") + ".");
+      api.tell(subjectKey(t, "recovers {n} health"), { t }, { n: t.hp - before });
     },
     status(t, s, dur, text) {
       if (!t || t.hp <= 0) return;
       t.status[s] = Math.max(t.status[s] || 0, dur);
-      if (text) api.say(cap(nm(t)) + " " + conj(t, text) + ".");
+      if (text) api.tell(subjectKey(t, text), { t });
     },
     cleanse(t) { for (const s of ["stun", "bleed", "weakened", "exposed"]) delete t.status[s]; },
     firstEnemy() { return living("enemy").sort((a, b) => a.hp - b.hp)[0]; }
@@ -91,12 +120,12 @@
     (K.val(enc.allies) || []).forEach((a, i) => { const d = typeof a === "string" ? K.UNITS[a] && K.UNITS[a](S) : a; if (d) B.units.push(makeUnit(d, "ally", i)); });
     K.val(enc.enemies).forEach((e, i) => B.units.push(makeUnit(e, "enemy", i)));
     if (S.boons.includes("healing_hands") && (S.items.herbs || 0) < 2) S.items.herbs = 2;
-    if (enc.intro) api.say(K.fmt(K.val(enc.intro)));
+    if (enc.intro) api.say(K.val(enc.intro));
     const curse = enc.curse && S.curses.find((c) => !c.fired);
     if (curse) {
       K.apply({ fireCurse: curse.id, journal: K.CURSES[curse.id].fireText });
       api.status(C.player(), "cursed", 3);
-      api.say(K.fmt(K.CURSES[curse.id].fireText));
+      api.say(K.CURSES[curse.id].fireText);
     }
     K.emit("combat", B);
     return B;
@@ -125,11 +154,11 @@
     return p.abilities.map((id) => {
       const ab = K.ABILITIES[id];
       let why = null;
-      if (p.cds[id]) why = "Ready in " + p.cds[id] + (p.cds[id] === 1 ? " turn" : " turns");
-      if (ab.once && B.used[id]) why = "Used this battle";
-      if (ab.item && !(S.items[ab.item] > 0)) why = "None left";
-      if (ab.needsAlly && friendsOf(p).length < 2) why = "No ally to command";
-      return { id, name: ab.name, desc: ab.desc, target: ab.target, why, count: ab.item ? S.items[ab.item] || 0 : null };
+      if (p.cds[id]) why = K.tr(p.cds[id] === 1 ? "Ready in 1 turn" : "Ready in {n} turns", { n: p.cds[id] });
+      if (ab.once && B.used[id]) why = K.tr("Used this battle");
+      if (ab.item && !(S.items[ab.item] > 0)) why = K.tr("None left");
+      if (ab.needsAlly && friendsOf(p).length < 2) why = K.tr("No ally to command");
+      return { id, name: K.tr(ab.name), desc: K.tr(ab.desc), target: ab.target, why, count: ab.item ? S.items[ab.item] || 0 : null };
     });
   };
 
@@ -141,7 +170,7 @@
   }
 
   function aiTurn(u) {
-    if (u.status.stun) { delete u.status.stun; api.say(u.name + " is stunned and loses the turn."); return; }
+    if (u.status.stun) { delete u.status.stun; api.tell("{t} is stunned and loses the turn.", { t: u }); return; }
     const specials = u.abilities.filter((id) => id !== "strike" && id !== "guard" && !u.cds[id] && !K.ABILITIES[id].item && !K.ABILITIES[id].needsAlly);
     const hurt = friendsOf(u).find((f) => f.hp / f.maxHp < 0.45);
     if (hurt && u.abilities.includes("salve") && !u.cds.salve) return use(u, "salve", hurt.uid);
@@ -158,7 +187,7 @@
     }
     if (p.hp <= 0) return finish("lose");
     if (!living("enemy").length) return finish("win");
-    if (B.enc.rounds && B.round > B.enc.rounds) { api.say(K.fmt(B.enc.roundsText || "You held long enough.")); return finish("win"); }
+    if (B.enc.rounds && B.round > B.enc.rounds) { api.say(B.enc.roundsText || "You held long enough."); return finish("win"); }
     return false;
   }
   function finish(outcome) {
@@ -168,8 +197,8 @@
       const options = Object.keys(K.INJURIES).filter((id) => id !== "scar" && !K.S.injuries.includes(id));
       if (options.length) {
         const id = K.pick(options);
-        K.apply({ injury: id, journal: "You survived the fighting, but not whole: " + K.INJURIES[id].text.toLowerCase() + "." });
-        api.say("You survive, but the battle leaves its mark: " + K.INJURIES[id].text.toLowerCase() + ".");
+        K.apply({ injury: id, journal: { src: "You survived the fighting, but not whole: {inj!}.", p: { inj: K.INJURIES[id].text } } });
+        api.tell("You survive, but the battle leaves its mark: {inj!}.", null, { inj: K.INJURIES[id].text });
       }
     }
     K.emit("combat", B);
@@ -178,7 +207,7 @@
 
   function endRound() {
     for (const u of B.units) {
-      if (u.hp > 0 && u.status.bleed) { const d = Math.max(1, Math.round(u.maxHp * 0.06)); u.hp = Math.max(0, u.hp - d); api.say(cap(nm(u)) + " " + conj(u, "bleeds for " + d) + "."); }
+      if (u.hp > 0 && u.status.bleed) { const d = Math.max(1, Math.round(u.maxHp * 0.06)); u.hp = Math.max(0, u.hp - d); api.tell(subjectKey(u, "bleeds for {n}"), { t: u }, { n: d }); }
       for (const s of TIMED) if (u.status[s]) { u.status[s]--; if (!u.status[s]) delete u.status[s]; }
       for (const k of Object.keys(u.cds)) if (u.cds[k] > 0) u.cds[k]--;
     }
@@ -192,7 +221,7 @@
     if (over()) return;
     const p = C.player();
     while (!B.over && p.status.stun) {
-      delete p.status.stun; api.say("You are stunned and lose your turn.");
+      delete p.status.stun; api.tell("You are stunned and lose your turn.");
       for (const u of living("ally").concat(living("enemy"))) { aiTurn(u); if (over()) return; }
       endRound(); if (over()) return;
     }
@@ -211,14 +240,14 @@
   C.flee = function () {
     if (!C.canFlee()) return;
     for (const id of C.fleeBreaks()) K.apply({ vowBreak: id });
-    api.say("You withdraw from the fight.");
+    api.tell("You withdraw from the fight.");
     finish("flee");
   };
   C.spareable = () => (B && B.enc.spare && !B.over ? living("enemy").filter((e) => e.hp <= e.maxHp * 0.3) : []);
   C.spare = function (uid) {
     const t = C.spareable().find((e) => e.uid === uid);
     if (!t) return;
-    api.say("You lower your weapon and let " + t.name + " go.");
+    api.tell("You lower your weapon and let {t} go.", { t });
     finish("spare");
   };
   C.end = function () {

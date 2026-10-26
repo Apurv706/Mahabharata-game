@@ -16,11 +16,13 @@ The screen is a lamp-lit manuscript leaf. The paintings carry the colour; the in
 | `--data` | #d4a84b gold | Only the duty meters and canon markers |
 | `--positive` / `--negative` | #67b38f / #e46a4f | Rises and falls in choices, health bars, curses |
 
-Type: Cormorant Garamond for names and titles, Alegreya Sans for everything else. No third face, no monospace.
+Type: Cormorant Garamond for names and titles, Alegreya Sans for everything else. No third face, no monospace. The one exception is script: in Hindi, Devanagari falls through to Tiro Devanagari Hindi (display) and Mukta (text), set in the same font stacks, with more line height and no faux bold.
 
 Shape: cards 8px, controls 6px, everywhere.
 
 ## Rules
+
+- Every string the player sees goes through `K.tr` (interface) or `K.text` / `U.t` (story). Write whole sentences, never glue fragments together, so each one translates as a unit.
 
 - Separate surfaces with a tone step, never a 1px outline or a shadow. Only the dialog casts a shadow.
 - No gradients. The one exception is the dark scrim under a caption on a painting.

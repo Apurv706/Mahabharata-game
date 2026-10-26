@@ -18,27 +18,27 @@
           B.say("You loose the astra at a foe who cannot defend himself. The sky goes dark. Somewhere, a sage has seen.");
           K.apply({ curse: "astra_misuse", duty: { conscience: -3 }, rep: { sages: -2 }, journal: "You used a divine weapon on someone who could not fight back." });
         }
-        B.hit(u, t, 3, { pierce: true, verb: "the astra strikes" });
+        B.hit(u, t, 3, { pierce: true, verb: "The astra strikes {t} for {n}." });
       }
     },
 
     // Archer
-    aimed: { name: "Aimed shot", target: "enemy", cd: 2, desc: "Take your time. A heavy, precise hit.", use: (B, u, t) => B.hit(u, t, 1.8, { verb: "a long, careful shot hits" }) },
-    volley: { name: "Volley", target: "enemies", cd: 3, desc: "Arrows across the whole line.", use: (B, u, ts) => ts.forEach((t) => B.hit(u, t, 0.7, { verb: "arrows fall on" })) },
+    aimed: { name: "Aimed shot", target: "enemy", cd: 2, desc: "Take your time. A heavy, precise hit.", use: (B, u, t) => B.hit(u, t, 1.8, { verb: "A long, careful shot hits {t} for {n}." }) },
+    volley: { name: "Volley", target: "enemies", cd: 3, desc: "Arrows across the whole line.", use: (B, u, ts) => ts.forEach((t) => B.hit(u, t, 0.7, { verb: "Arrows fall on {t} for {n}." })) },
     pin: { name: "Pinning shot", target: "enemy", cd: 3, desc: "Pin a foe so they lose their next turn.", use: (B, u, t) => { B.hit(u, t, 0.6); B.status(t, "stun", 1, "is pinned in place"); } },
 
     // Mace fighter
     crush: { name: "Crushing blow", target: "enemy", cd: 2, desc: "A huge swing. May stun.", use: (B, u, t) => { B.hit(u, t, 1.6); if (K.rng() < 0.35) B.status(t, "stun", 1, "staggers"); } },
     roar: { name: "War cry", target: "self", cd: 3, desc: "Draw every enemy's attention and brace.", use: (B, u) => { B.status(u, "taunt", 2, "roars a challenge"); B.status(u, "guard", 1); } },
-    quake: { name: "Ground-shaker", target: "enemies", cd: 3, desc: "Hit everyone in reach.", use: (B, u, ts) => ts.forEach((t) => B.hit(u, t, 0.65, { verb: "the blow shakes" })) },
+    quake: { name: "Ground-shaker", target: "enemies", cd: 3, desc: "Hit everyone in reach.", use: (B, u, ts) => ts.forEach((t) => B.hit(u, t, 0.65, { verb: "The blow shakes {t} for {n}." })) },
 
     // Charioteer
     swerve: { name: "Swerve", target: "self", cd: 2, desc: "Dodge the next attack; your next hit lands harder.", use: (B, u) => { B.status(u, "evade", 1, "swerves the chariot"); B.status(u, "inspired", 2); } },
-    ridedown: { name: "Ride them down", target: "enemy", cd: 3, desc: "Drive straight through a foe.", use: (B, u, t) => { B.hit(u, t, 1.4, { verb: "the chariot runs down" }); if (K.rng() < 0.3) B.status(t, "stun", 1, "is knocked flat"); } },
+    ridedown: { name: "Ride them down", target: "enemy", cd: 3, desc: "Drive straight through a foe.", use: (B, u, t) => { B.hit(u, t, 1.4, { verb: "The chariot runs down {t} for {n}." }); if (K.rng() < 0.3) B.status(t, "stun", 1, "is knocked flat"); } },
     rally: { name: "Rally the horses", target: "self", cd: 3, desc: "Recover 25% health and shake off effects.", use: (B, u) => { B.cleanse(u); B.heal(u, u, pct(u, 0.25)); } },
 
     // Strategist
-    command: { name: "Command", target: "ally", cd: 2, needsAlly: true, desc: "An ally attacks at once, hitting harder.", use: (B, u, t) => { if (t === u) return B.hit(u, B.firstEnemy(), 1); B.status(t, "inspired", 2); B.hit(t, B.firstEnemy(), 1.2, { verb: "on your order, " + t.name + " hits" }); } },
+    command: { name: "Command", target: "ally", cd: 2, needsAlly: true, desc: "An ally attacks at once, hitting harder.", use: (B, u, t) => { if (t === u) return B.hit(u, B.firstEnemy(), 1); B.status(t, "inspired", 2); B.hit(t, B.firstEnemy(), 1.2, { verb: "On your order, {a} hits {t} for {n}." }); } },
     expose: { name: "Read the field", target: "enemy", cd: 2, desc: "Find the gap. The foe takes 40% more damage for 2 turns.", use: (B, u, t) => B.status(t, "exposed", 2, "is exposed") },
     formation: { name: "Close formation", target: "allies", cd: 3, desc: "Every ally guards.", use: (B, u, ts) => ts.forEach((t) => B.status(t, "guard", 1, "closes ranks")) },
 
@@ -53,13 +53,13 @@
     hamstring: { name: "Hamstring", target: "enemy", cd: 2, desc: "A cut that keeps bleeding for 3 turns.", use: (B, u, t) => { B.hit(u, t, 0.9); B.status(t, "bleed", 3, "is bleeding"); } },
 
     // Bard
-    song: { name: "Battle song", target: "allies", cd: 3, desc: "Allies hit 30% harder for 2 turns.", use: (B, u, ts) => ts.forEach((t) => B.status(t, "inspired", 2)) || B.say(u.name + " sings, and the line stands taller.") },
+    song: { name: "Battle song", target: "allies", cd: 3, desc: "Allies hit 30% harder for 2 turns.", use: (B, u, ts) => ts.forEach((t) => B.status(t, "inspired", 2)) || B.tell(u.side === "player" ? "You sing, and the line stands taller." : "{a} sings, and the line stands taller.", { a: u }) },
     verse: { name: "Mocking verse", target: "enemy", cd: 2, desc: "The foe hits 30% softer for 2 turns.", use: (B, u, t) => B.status(t, "weakened", 2, "falters at the verse") },
     hymn: { name: "Steadying hymn", target: "allies", cd: 3, desc: "Every ally recovers 15% health.", use: (B, u, ts) => ts.forEach((t) => B.heal(u, t, pct(t, 0.15))) },
 
     // Enemy techniques
-    heavy: { name: "Heavy blow", target: "enemy", cd: 3, desc: "", use: (B, u, t) => B.hit(u, t, 1.6, { verb: "a heavy blow hits" }) },
-    arrows: { name: "Arrow storm", target: "enemies", cd: 3, desc: "", use: (B, u, ts) => ts.forEach((t) => B.hit(u, t, 0.6, { verb: "arrows rain on" })) },
+    heavy: { name: "Heavy blow", target: "enemy", cd: 3, desc: "", use: (B, u, t) => B.hit(u, t, 1.6, { verb: "A heavy blow hits {t} for {n}." }) },
+    arrows: { name: "Arrow storm", target: "enemies", cd: 3, desc: "", use: (B, u, ts) => ts.forEach((t) => B.hit(u, t, 0.6, { verb: "Arrows rain on {t} for {n}." })) },
     disarm: { name: "Break the bow", target: "enemy", cd: 4, desc: "", use: (B, u, t) => { B.hit(u, t, 0.8); B.status(t, "weakened", 2, "loses grip on the weapon"); } }
   };
 

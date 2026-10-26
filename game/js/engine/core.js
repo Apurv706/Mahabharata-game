@@ -66,33 +66,63 @@
   K.activeVows = (S = K.S) => S.vows.filter((v) => !v.broken);
   K.hasVow = (id, S = K.S) => S.vows.some((v) => v.id === id && !v.broken);
   K.isDead = (who, S = K.S) => S.dead.includes(who);
+  // Display name of a person, in the current language.
   K.personName = (id, S = K.S) => {
-    if (id === "spouse" && S.spouse) return K.PEOPLE[S.spouse]?.name || "your spouse";
-    if (id === "friend" && S.friend) return K.PEOPLE[S.friend]?.name || "your friend";
-    return K.PEOPLE[id]?.name || id;
+    if (id === "spouse" && S.spouse) return K.tr(K.PEOPLE[S.spouse]?.name || "your spouse");
+    if (id === "friend" && S.friend) return K.tr(K.PEOPLE[S.friend]?.name || "your friend");
+    return K.tr(K.PEOPLE[id]?.name || id);
   };
 
   // ---------- Text ----------
   const PRON = {
-    she: { they: "she", them: "her", their: "her", They: "She", theyre: "she is" },
-    he: { they: "he", them: "him", their: "his", They: "He", theyre: "he is" },
-    they: { they: "they", them: "them", their: "their", They: "They", theyre: "they are" }
+    en: {
+      she: { they: "she", them: "her", their: "her", They: "She", theyre: "she is", were: "was" },
+      he: { they: "he", them: "him", their: "his", They: "He", theyre: "he is", were: "was" },
+      they: { they: "they", them: "them", their: "their", They: "They", theyre: "they are", were: "were" }
+    },
+    // Hindi text uses {g:...} forms instead; these only cover a stray English token.
+    hi: {
+      she: { they: "वह", them: "उसे", their: "उसका", They: "वह", theyre: "वह" },
+      he: { they: "वह", them: "उसे", their: "उसका", They: "वह", theyre: "वह" },
+      they: { they: "वे", them: "उन्हें", their: "उनका", They: "वे", theyre: "वे" }
+    }
   };
+  // Fill the life's tokens into an already-translated string (see i18n.js for the token list).
   K.fmt = function (str, S = K.S) {
     if (typeof str !== "string") return str;
-    const p = PRON[S.pronoun] || PRON.they;
-    return str.replace(/\{(\w+)\}/g, (m, key) => {
-      if (p[key]) return p[key];
-      if (key === "name") return S.name || "you";
-      if (key === "origin") return K.ORIGINS?.[S.origin]?.name || "your homeland";
-      if (key === "teacher") return K.TEACHERS?.[S.teacher]?.short || "your teacher";
-      if (key === "path") return K.PATHS?.[S.path]?.name || "warrior";
-      if (key === "spouse") return K.personName("spouse", S);
-      if (key === "friend") return K.personName("friend", S);
-      if (key === "child") return K.PEOPLE.vasu?.name || "Vasu";
-      if (key === "king") return K.COURTS?.[S.court]?.king || "your king";
-      return m;
+    const p = (PRON[K.lang] || PRON.en)[S.pronoun] || PRON.en.they;
+    return str.replace(/\{(\w+)(!?)(?::([^}]*))?\}/g, (m, key, low, arg) => {
+      if (key === "g" && arg != null) {
+        const forms = arg.split("|");
+        return (S.pronoun === "she" ? forms[1] : S.pronoun === "they" ? forms[2] : null) ?? forms[0];
+      }
+      let v = null;
+      if (p[key]) v = p[key];
+      else if (key === "name") v = S.name || K.tr("you");
+      else if (key === "origin") v = K.tr(K.ORIGINS?.[S.origin]?.name || "your homeland");
+      else if (key === "teacher") v = K.tr(K.TEACHERS?.[S.teacher]?.short || "your teacher");
+      else if (key === "path") v = K.tr(K.PATHS?.[S.path]?.name || "warrior");
+      else if (key === "spouse") v = K.personName("spouse", S);
+      else if (key === "friend") v = K.personName("friend", S);
+      else if (key === "child") v = K.tr(K.PEOPLE.vasu?.name || "Vasu");
+      else if (key === "king") v = K.tr(K.COURTS?.[S.court]?.king || "your king");
+      if (v == null) return m;
+      return low ? K.low(v) : v;
     });
+  };
+  // Translate, then fill the life's tokens: the one call for any story string. Content may also
+  // give a pair [text, values]: the values are English names, translated here; a third element
+  // true means the values are already in the current language.
+  K.text = (str, params, S = K.S) => {
+    if (Array.isArray(str)) return str[2] ? K.fmt(K.tr(str[0], str[1]), S) : K.entryText({ src: str[0], p: str[1] }, S);
+    return K.fmt(K.tr(str, params), S);
+  };
+  // A stored journal line or memory, shown in the current language. Entries from older saves have
+  // only the finished English text, which is looked up as it is.
+  K.entryText = (e, S = K.S) => {
+    if (e.src == null) return K.text(e.text, null, S);
+    const p = e.p ? Object.fromEntries(Object.entries(e.p).map(([k, v]) => [k, typeof v === "string" ? K.tr(v) : v])) : null;
+    return K.text(e.src, p, S);
   };
 
   // ---------- Conditions ----------
@@ -151,13 +181,19 @@
     item: (o, S, d) => { for (const [k, n] of Object.entries(o)) { S.items[k] = Math.max(0, (S.items[k] || 0) + n); d["item." + k] = n; } },
     flag: (v, S) => { for (const f of [].concat(v)) if (!S.flags.includes(f)) S.flags.push(f); },
     unflag: (v, S) => { S.flags = S.flags.filter((f) => ![].concat(v).includes(f)); },
-    memory: ([who, text], S) => { S.memories.push({ who, text: K.fmt(text, S), age: S.age }); },
-    journal: (t, S) => { S.journal.push({ age: S.age, act: S.act, text: K.fmt(typeof t === "function" ? t(S) : t, S) }); },
+    // Memories and journal lines keep their English source (src, p) so they can be shown in any
+    // language later; text is the English as written, for old saves and the save code.
+    memory: ([who, text], S) => { S.memories.push({ who, src: text, text: K.fmt(text, S), age: S.age }); },
+    journal: (t, S) => {
+      if (typeof t === "function") t = t(S);
+      const e = typeof t === "object" && t ? t : { src: t };
+      S.journal.push({ age: S.age, act: S.act, src: e.src, p: e.p || null, text: K.fmt(K.fill(e.src, e.p), S) });
+    },
     set: (o, S) => { Object.assign(S, o); },
     vowTake: (id, S, d) => {
       if (K.activeVows(S).length >= K.MAX_VOWS || S.vows.some((v) => v.id === id)) return;
       S.vows.push({ id, broken: false, age: S.age }); d.vowTaken = id;
-      FX.journal("You swore a vow: " + K.VOWS[id].name.toLowerCase() + ".", S);
+      FX.journal({ src: "You swore a vow: {vow!}.", p: { vow: K.VOWS[id].name } }, S);
     },
     vowBreak: (id, S, d) => {
       const v = S.vows.find((x) => x.id === id && !x.broken);
@@ -165,7 +201,7 @@
       v.broken = true; v.brokenAge = S.age; d.vowBroken = id;
       FX.flag("broke_" + id, S);
       S.rep.common = K.clamp(S.rep.common - 1); S.duty.conscience = K.clamp(S.duty.conscience - 1);
-      FX.journal("You broke your vow: " + K.VOWS[id].name.toLowerCase() + ".", S);
+      FX.journal({ src: "You broke your vow: {vow!}.", p: { vow: K.VOWS[id].name } }, S);
     },
     vowRelease: (id, S) => { const v = S.vows.find((x) => x.id === id && !x.broken); if (v) { v.broken = true; v.released = true; } },
     boon: (id, S, d) => { if (!S.boons.includes(id)) { S.boons.push(id); d.boon = id; } },
@@ -176,7 +212,7 @@
       if (who === true || who === "self") { if (!S.storyMode) S.alive = false; else FX.injury("scar", S, {}); }
       else for (const w of [].concat(who)) if (!S.dead.includes(w)) S.dead.push(w);
     },
-    deathText: (t, S) => { S.deathText = K.fmt(t, S); },
+    deathText: (t, S) => { S.deathText = t; },
     age: (n, S) => { S.age = n; }
   };
   K.apply = function (fx, S = K.S) {

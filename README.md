@@ -65,3 +65,13 @@ The test plays random lives in a headless browser and reports crashes, dead ends
 ## Status
 
 Pre-production. All story text is a working draft after the public-domain K.M. Ganguli translation and must pass advisory board review (PRD §12) before public use. Concept art is placeholder; open notes are in `docs/Art_Brief.md`.
+
+## Languages
+
+The game plays in English and Hindi. Switch on the title screen or in Menu; the choice is remembered, and a browser set to Hindi starts in Hindi.
+
+- English is the source text, written in the content files. Every displayed string passes through `K.tr`, which looks it up in `game/js/i18n/<lang>.js`.
+- Hindi verbs agree with the speaker's gender, so Hindi strings use `{g:masc|fem|neutral}` forms filled from the player's pronoun, and combat lines use postposition forms such as `{tne}` and `{tko}`.
+- The Hindi is a draft and needs a native speaker's review before release.
+
+To change or add text: `node tests/strings.js collect` lists every string (new ones get new ids in `tests/strings.json`), translate them in `i18n/hi/part*.json`, then `node tools/build-i18n.js hi` builds the dictionary and checks placeholders. `node tests/strings.js check hi` plays lives in Hindi and lists anything still in English.

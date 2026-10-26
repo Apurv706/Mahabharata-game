@@ -18,8 +18,9 @@
   --negative: #e46a4f;
   --positive: #67b38f;
   --check: #8fa8e6;
-  --display: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
-  --text: "Alegreya Sans", "Gill Sans", "Segoe UI", sans-serif;
+  /* Devanagari falls through to Tiro (display) and Mukta (text): the Latin faces have no Hindi glyphs. */
+  --display: "Cormorant Garamond", "Tiro Devanagari Hindi", "Iowan Old Style", Georgia, serif;
+  --text: "Alegreya Sans", "Mukta", "Gill Sans", "Segoe UI", sans-serif;
   --r-card: 8px;
   --r-control: 6px;
   color-scheme: dark;
@@ -121,3 +122,12 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
   @keyframes rise { from { opacity: 0.001; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* Hindi: Devanagari needs more line room for its vowel signs, and Tiro has a single weight, so
+   no faux bold; its letters sit larger than Cormorant's, so the biggest display sizes step down. */
+html[lang="hi"] body { line-height: 1.72; font-synthesis: none; }
+html[lang="hi"] .text h1 { line-height: 1.28; }
+html[lang="hi"] .plate .cap b { font-size: clamp(24px, 3.8vw, 38px); line-height: 1.22; }
+html[lang="hi"] .lbl, html[lang="hi"] .brand { line-height: 1.4; }
+html[lang="hi"] .speech { font-size: 21px; line-height: 1.6; }
+html[lang="hi"] .choice .t { line-height: 1.5; }

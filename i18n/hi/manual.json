@@ -1,0 +1,8 @@
+{
+"They sing of {name}, born in {origin}, {path!}.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {path}।",
+"They sing of {name}, born in {origin}, who taught {them}self by night.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {g:जिसने|जिसने|जिन्होंने} रातों में ख़ुद को सिखाया।",
+"They sing of {name}, born in {origin}, student of {teacher}.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {teacher} {g:का शिष्य|की शिष्या|के शिष्य}।",
+"They sing of {name}, born in {origin}.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}।",
+"{They} fell at Kurukshetra.": "{g:वह|वह|वे} कुरुक्षेत्र में वीरगति को {g:प्राप्त हुआ|प्राप्त हुई|प्राप्त हुए}।",
+"Ira": "इरा"
+}

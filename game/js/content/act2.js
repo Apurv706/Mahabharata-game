@@ -3,7 +3,7 @@
   "use strict";
   const COURTISH = ["hastinapura", "anga", "gandhara", "matsya"];
   const pathChoice = (id, t, extra = {}) => ({
-    id, t, fx: Object.assign({ set: { path: id }, skill: { [K.PATHS[id].skill]: 2 }, journal: "You chose the path of the " + K.PATHS[id].name.toLowerCase() + "." }, extra),
+    id, t, fx: Object.assign({ set: { path: id }, skill: { [K.PATHS[id].skill]: 2 }, journal: "You chose the path of the {path!}." }, extra),
     hint: K.PATHS[id].desc
   });
 
@@ -36,7 +36,7 @@
       id: "a2_path", act: 2, age: 15, place: (S) => (S.teacher === "hermit" ? "Mauni's clearing" : S.teacher === "self" ? "A clearing at night" : "Your teacher's school"), art: "scene_path", plate: ["#3e8c72", "#d4a84b"], caption: "Your first year of training",
       title: "Your path",
       body: (S) => [
-        "After a year, " + (S.teacher === "self" ? "you know" : "{teacher} knows") + " what you are good at. The path you choose now decides how you fight, and how you are useful when you are not fighting.",
+        (S.teacher === "self" ? "After a year, you know what you are good at. The path you choose now decides how you fight, and how you are useful when you are not fighting." : "After a year, {teacher} knows what you are good at. The path you choose now decides how you fight, and how you are useful when you are not fighting."),
         "Every path is open to you, wherever you were born. Some doors will still be harder to open than others."
       ],
       choices: [

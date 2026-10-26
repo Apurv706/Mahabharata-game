@@ -66,7 +66,7 @@
         "He climbs down to lift the wheel and asks Arjuna to wait, as the rules of war demand."
       ],
       body: (S) => [
-        S.bonds.karna >= 6 ? { memory: "You have known Karna since " + (S.flags.includes("met_karna_young") ? "you were children" : "the day in the arena") + "." } : null,
+        S.bonds.karna >= 6 ? { memory: S.flags.includes("met_karna_young") ? "You have known Karna since you were children." : "You have known Karna since the day in the arena." } : null,
         K.hasVow("spare_karna") ? { aside: "You swore never to raise a weapon against Karna." } : null,
         S.side === "kaurava" ? "Your chariot is the nearest to his." : S.side === "pandava" ? "You are close enough to see his face." : "You are close enough to see his face."
       ],

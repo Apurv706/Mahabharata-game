@@ -56,7 +56,7 @@
     return Math.max(0, Math.min(1, (7 - need) / 6));
   };
   K.checkLabel = function (ch) {
-    const parts = [ch.attr && K.ATTRS[ch.attr], ch.skill && K.SKILLS[ch.skill]].filter(Boolean);
+    const parts = [ch.attr && K.ATTRS[ch.attr], ch.skill && K.SKILLS[ch.skill]].filter(Boolean).map(K.tr);
     return parts.join(" + ");
   };
 
@@ -66,18 +66,18 @@
     const fx = typeof c.fx === "object" && c.fx ? c.fx : {};
     const sign = (n) => (n > 0 ? "▲ " : "▼ ");
     const cls = (n) => (n > 0 ? "up" : "down");
-    for (const [k, n] of Object.entries(fx.duty || {})) out.push([cls(n), sign(n) + K.DUTIES[k]]);
+    for (const [k, n] of Object.entries(fx.duty || {})) out.push([cls(n), sign(n) + K.tr(K.DUTIES[k])]);
     for (const [k, n] of Object.entries(fx.bond || {})) out.push([cls(n), sign(n) + K.personName(k, S)]);
-    for (const [k, n] of Object.entries(fx.rep || {})) out.push([cls(n), sign(n) + K.FACTIONS[k]]);
-    for (const [k, n] of Object.entries(fx.skill || {})) out.push([cls(n), sign(n) + K.SKILLS[k]]);
-    for (const [k, n] of Object.entries(fx.attr || {})) out.push([cls(n), sign(n) + K.ATTRS[k]]);
-    if (fx.vowTake) out.push(["vow", "Vow: " + K.VOWS[fx.vowTake].name]);
-    if (fx.boon) out.push(["up", "Gain: " + K.BOONS[fx.boon].name]);
-    for (const id of K.vowBreaksFor(c.tags, S)) out.push(["down", "Breaks vow: " + K.VOWS[id].name]);
-    if (fx.memory) out.push(["", (fx.memory[0] === "all" ? "People" : K.personName(fx.memory[0], S)) + " will remember"]);
-    if (c.check) out.push(["check", "Test of " + K.checkLabel(c.check) + ": " + Math.round(K.checkOdds(c.check, S) * 100) + "%"]);
-    if (c.combat) out.push(["combat", "Leads to a fight"]);
-    if (c.hint) out.push(["", K.fmt(K.val(c.hint, S), S)]);
+    for (const [k, n] of Object.entries(fx.rep || {})) out.push([cls(n), sign(n) + K.tr(K.FACTIONS[k])]);
+    for (const [k, n] of Object.entries(fx.skill || {})) out.push([cls(n), sign(n) + K.tr(K.SKILLS[k])]);
+    for (const [k, n] of Object.entries(fx.attr || {})) out.push([cls(n), sign(n) + K.tr(K.ATTRS[k])]);
+    if (fx.vowTake) out.push(["vow", K.tr("Vow: {vow}", { vow: K.tr(K.VOWS[fx.vowTake].name) })]);
+    if (fx.boon) out.push(["up", K.tr("Gain: {boon}", { boon: K.tr(K.BOONS[fx.boon].name) })]);
+    for (const id of K.vowBreaksFor(c.tags, S)) out.push(["down", K.tr("Breaks vow: {vow}", { vow: K.tr(K.VOWS[id].name) })]);
+    if (fx.memory) out.push(["", fx.memory[0] === "all" ? K.tr("People will remember") : K.tr("{who} will remember", { who: K.personName(fx.memory[0], S) })]);
+    if (c.check) out.push(["check", K.tr("Test of {what}: {pct}%", { what: K.checkLabel(c.check), pct: Math.round(K.checkOdds(c.check, S) * 100) })]);
+    if (c.combat) out.push(["combat", K.tr("Leads to a fight")]);
+    if (c.hint) out.push(["", K.text(K.val(c.hint, S), null, S)]);
     return out;
   };
 
@@ -95,15 +95,15 @@
       const base = (ch.attr ? K.attr(ch.attr) : 0) + (ch.skill ? S.skills[ch.skill] || 0 : 0) + (K.val(ch.bonus) || 0);
       const pass = base + roll >= ch.dc;
       const br = (pass ? ch.pass : ch.fail) || {};
-      res.check = { pass, roll, total: base + roll, dc: ch.dc, label: K.checkLabel(ch) };
+      res.check = { pass, roll, total: base + roll, dc: ch.dc, ch };
       addDelta(delta, K.apply(br.fx));
-      if (br.text) res.text = K.fmt(K.val(br.text));
+      if (br.text) res.text = K.val(br.text); // raw English: the UI translates and fills it
       if (br.next) res.next = K.val(br.next);
       if (br.combat) res.combat = br.combat;
     }
     for (const id of K.vowBreaksFor(c.tags)) addDelta(delta, K.apply({ vowBreak: id }));
     S.log.push(sc.id + ":" + c.id);
-    if (!res.text && c.text) res.text = K.fmt(K.val(c.text));
+    if (!res.text && c.text) res.text = K.val(c.text);
     res.next = res.next || K.val(c.next) || K.val(sc.next);
     if (sc.after && !c.noAfter) res.after = K.val(sc.after);
     if (!S.alive) { res.next = "end_death"; res.combat = null; res.after = null; }
@@ -119,11 +119,11 @@
     const delta = K.apply(br.fx);
     if (outcome === "lose" && enc.lethal) {
       if (S.storyMode) K.apply({ injury: enc.injury || "scar" });
-      else { S.alive = false; S.deathText = K.fmt(K.val(br.deathText) || enc.deathText || "You fell in battle.", S); }
+      else { S.alive = false; S.deathText = K.val(br.deathText) || enc.deathText || "You fell in battle."; }
     }
     K.lastDelta = delta;
     return {
-      text: br.text ? K.fmt(K.val(br.text)) : null,
+      text: br.text ? K.val(br.text) : null,
       next: S.alive ? K.val(br.next) || fallbackNext : "end_death"
     };
   };
@@ -157,9 +157,9 @@
     txt = String(txt || "").trim();
     let s;
     try { s = JSON.parse(txt); } catch (e) {
-      try { s = JSON.parse(decodeURIComponent(escape(atob(txt)))); } catch (e2) { throw new Error("That save code could not be read. Copy the whole code and try again."); }
+      try { s = JSON.parse(decodeURIComponent(escape(atob(txt)))); } catch (e2) { throw new Error(K.tr("That save code could not be read. Copy the whole code and try again.")); }
     }
-    if (!s || s.v !== 2 || !K.SCENES[s.scene]) throw new Error("That save code is from a different version of the game.");
+    if (!s || s.v !== 2 || !K.SCENES[s.scene]) throw new Error(K.tr("That save code is from a different version of the game."));
     return s;
   };
 })(window.K = window.K || {});

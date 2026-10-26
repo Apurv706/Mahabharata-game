@@ -7,14 +7,14 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="A narrative RPG: live one whole life inside the Mahabharata.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Alegreya+Sans:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Alegreya+Sans:wght@400;500;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Mukta:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/screens.css">
 </head>
 <body>
 <div class="app">
   <header class="top">
-    <div class="brand">Kurukshetra: A Life</div>
+    <div class="brand" id="brand">Kurukshetra: A Life</div>
     <div class="where" id="where"></div>
     <nav class="nav" id="nav" aria-label="Game menu" hidden>
       <button type="button" id="nav-char">Character</button>
@@ -29,6 +29,7 @@
 </div>
 
 <!-- Engine (engine-agnostic rules) -->
+<script src="js/engine/i18n.js"></script>
 <script src="js/engine/core.js"></script>
 <script src="js/engine/flow.js"></script>
 <script src="js/engine/abilities.js"></script>
@@ -43,6 +44,8 @@
 <script src="js/content/act6a.js"></script>
 <script src="js/content/act6b.js"></script>
 <script src="js/content/act7.js"></script>
+<!-- Languages (English is the source text; each file is one dictionary) -->
+<script src="js/i18n/hi.js"></script>
 <!-- Interface -->
 <script src="js/ui/dom.js"></script>
 <script src="js/ui/ledger.js"></script>
