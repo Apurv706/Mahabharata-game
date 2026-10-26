@@ -1,0 +1,26 @@
+folder,file,width,height,bytes,status
+exports,bg_page_desktop.jpg,2560,1440,499738,Checked export; see README for caveats
+exports,bg_page_mobile.jpg,1080,2340,454438,Checked export; see README for caveats
+exports,bg_parchment_tile.jpg,1024,1024,239267,Checked export; see README for caveats
+exports,border_corner.png,512,512,145642,Checked export; see README for caveats
+exports,border_strip.png,1200,64,18767,Checked export; see README for caveats
+exports,divider.png,800,80,31129,Checked export; see README for caveats
+exports,scene_fair.jpg,1800,600,493797,Checked export; see README for caveats
+studies,key_art_native_study.png,1672,941,2784890,Not final production
+studies,logo_en_dark_native_study.png,1468,741,133707,Not final production
+studies,logo_en_native_study.png,1468,741,970886,Not final production
+steam_review,steam_header.jpg,920,430,187652,Not final production
+steam_review,steam_library_capsule.jpg,600,900,220415,Not final production
+steam_review,steam_library_header.jpg,920,430,187652,Not final production
+steam_review,steam_library_logo.png,1280,646,160824,Not final production
+steam_review,steam_main.jpg,1232,706,371628,Not final production
+steam_review,steam_page_bg.jpg,1438,810,394263,Not final production
+steam_review,steam_small.jpg,462,174,42058,Not final production
+steam_review,steam_vertical.jpg,748,896,273563,Not final production
+native_sources,border_corner_source.png,1254,1254,696682,Native source; no upscale
+native_sources,border_strip_source.png,2172,724,556389,Native source; no upscale
+native_sources,divider_source.png,1983,793,666125,Native source; no upscale
+native_sources,folio_margin_motifs.png,1503,623,949883,Native source; no upscale
+native_sources,logo_en_source.png,1536,1024,1147219,Native source; no upscale
+native_sources,parchment_texture_master.png,1254,1254,2543309,Native source; no upscale
+native_sources,scene_fair_reframed_master.png,1916,821,2878765,Native source; no upscale
