@@ -9,8 +9,21 @@
     anga: "Your family serves in the Anga guard. Everyone in Anga knows the story of how they got a king.",
     suta: "Your father drives chariots for the Kuru nobles. He tells you to keep your eyes down and your hands steady.",
     nishada: "Your village fishes the river and hunts the forest. City people call you Nishada as if it were an insult.",
-    gandhara: "Your family came from Gandhara with Princess Gandhari's household. At court you are still called foreigners."
+    gandhara: "Your family serves in the household of King Subala, high in the mountains. Everyone still talks about his daughter Gandhari, who married the blind Kuru king and bound her own eyes so as never to see more than he could."
   };
+
+  // Why a family from a far land comes to live near the Kuru capital.
+  const journeyLine = {
+    gandhara: "When you are seven, word comes down from Hastinapura: Queen Gandhari wants people from home around her. Your family packs everything it owns and joins the long caravan east, out of the mountains, across the Indus and the five rivers. It takes two months.",
+    dwaraka: "Your uncle is sent to Hastinapura with a Yadava embassy. Kunti, the mother of the Pandavas, was born a Yadava, and the clans want a voice at the Kuru court. Your family goes with him, and stays.",
+    matsya: "The Kuru royal stables need horses, and your family breeds the best in Matsya. Your father takes the work of keeping the king's horses, and the whole family moves east to the stable quarter outside Hastinapura.",
+    anga: "Your father's company of the Anga guard is posted to Hastinapura, where the Kuru king keeps soldiers from every land that pays him tribute. You ride the whole month up the Ganga in a baggage cart.",
+    panchala: "The Kuru armoury has sent for Panchala arrowsmiths, whatever the two kings think of each other. Your mother takes the work, and your family moves into the craft quarter of Hastinapura.",
+    nishada: "The princes' tutors need guides for the royal hunts, and nobody knows the forest like your father. Your family moves to the forest's edge outside Hastinapura, close enough to hear the palace drums."
+  };
+  // Where the childhood that follows happens: near the capital for families who moved there.
+  K.childPlace = (S) => (S.flags.includes("moved_capital") ? (S.origin === "nishada" ? "The forest's edge outside Hastinapura" : "Hastinapura") : K.ORIGINS[S.origin].name);
+  K.childArt = (S) => (S.flags.includes("moved_capital") && S.origin !== "nishada" ? "home_hastinapura" : "home_" + S.origin);
 
   K.scenes([
     {
@@ -25,6 +38,30 @@
         { id: "wild", t: "Run wild by the river and the woods", fx: { skill: { stealth: 1 }, attr: { grace: 1 } } },
         { id: "home", t: "Help at home with the animals and the little ones", fx: { skill: { healing: 1 }, duty: { family: 1 }, attr: { wisdom: 1 } } }
       ],
+      next: "a1_roots"
+    },
+    // Families from the far lands come to live near Hastinapura, so the childhood that follows happens
+    // within reach of the palace. Hastinapura and the charioteer families are already there.
+    {
+      id: "a1_journey", when: (S) => !["hastinapura", "suta"].includes(S.origin), skipTo: "a1_princes",
+      act: 1, age: 7, art: "home_hastinapura", place: "The road to Hastinapura", caption: "Hastinapura, at the end of the road", // art: a stand-in until scene_journey is painted
+      enter: { flag: "moved_capital" },
+      title: "The road to Hastinapura",
+      body: (S) => [
+        journeyLine[S.origin],
+        "Hastinapura is a city of elephants: walls, gateways, a river crowded with boats, and somewhere behind it all, a palace full of princes your own age.",
+        "On the long road, what do you hold on to?"
+      ],
+      choices: [
+        { id: "guards", t: "Watch the caravan guards, and learn how they keep watch at night", fx: { skill: { stealth: 1 } },
+          text: "By the end of the road you can tell a guard who is awake from one who only looks awake." },
+        { id: "words", t: "Learn the words and ways of the new city from everyone you meet", fx: { skill: { statecraft: 1 }, rep: { kuru: 1 } },
+          text: "You arrive speaking like a Kuru child, nearly. Your parents are proud and a little sad." },
+        { id: "reins", t: "Ride up front with the drivers and beg to hold the reins", fx: { skill: { chariot: 1 } },
+          text: "On the last day, on a straight stretch of road, the old driver lets you." },
+        { id: "earth", t: "Keep a handful of earth from home, tied in a cloth", fx: { duty: { family: 1 }, flag: "kept_home_earth", journal: { src: "You carried a handful of earth from {origin} to Hastinapura." } },
+          text: "You keep it under your sleeping mat. Years later, you still have it." }
+      ],
       next: "a1_princes"
     },
     {
@@ -35,7 +72,7 @@
         "Bhima, the second Pandava, wins every game. He holds the Kaurava boys under water until they gasp, and shakes trees until they fall out with the fruit. He means it as play.",
         "Duryodhana, eldest of the hundred, does not laugh."
       ],
-      body: ["You are eight, visiting the palace for a festival. The princes are choosing sides for a game of tag by the lotus pond."],
+      body: ["You are eight. The palace has opened its gardens for a festival, and half the city has come in. The princes are choosing sides for a game of tag by the lotus pond."],
       choices: [
         { id: "bhima", t: "Play on Bhima's side", fx: { bond: { bhima: 2, duryodhana: -1 }, flag: "played_bhima" } },
         { id: "duryo", t: "Join Duryodhana and his brothers", fx: { bond: { duryodhana: 2, bhima: -1 }, flag: "played_duryodhana" } },
@@ -57,7 +94,7 @@
       next: "a1_friend"
     },
     {
-      id: "a1_friend", act: 1, age: 10, art: "origin", place: (S) => K.ORIGINS[S.origin].name,
+      id: "a1_friend", act: 1, age: 10, art: (S) => K.childArt(S), place: (S) => K.childPlace(S),
       title: "A friend for life",
       body: [
         "Charu, the blacksmith's child from your lane, has followed you everywhere for a year. Charu is loud, loyal and afraid of nothing except the dark.",

@@ -39,7 +39,7 @@ function walkContent(K, add) {
   };
   for (const t of ["ACT_TITLES", "DUTIES", "FACTIONS", "SKILLS", "ATTRS", "STATUS_TEXT"]) walk(K[t], "ui:" + t);
   for (const [id, a] of Object.entries(K.ABILITIES)) { add(a.name, "ability"); if (a.desc) add(a.desc, "ability"); }
-  for (const t of ["ORIGINS", "TEMPERAMENTS", "HEIRLOOMS", "TEACHERS", "PATHS", "COURTS", "VOWS", "BOONS", "CURSES", "INJURIES", "PEOPLE", "SECRETS"]) walk(K[t], "world:" + t);
+  for (const t of ["ORIGINS", "TEMPERAMENTS", "HEIRLOOMS", "TEACHERS", "PATHS", "COURTS", "VOWS", "BOONS", "CURSES", "INJURIES", "PEOPLE", "SECRETS", "ROOTS", "CUSTOMS"]) walk(K[t], "world:" + t);
   walk(K.BATTLE_EVENTS, "battle-events");
   walk(K.ENDINGS, "endings");
   for (const [label] of K.karmaOf({ kept: true, broke: true, karna: true, teller: true, alive: false })) add(label, "rebirth");

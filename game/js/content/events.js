@@ -12,7 +12,7 @@
   K.scenes([
     // ---------- Childhood ----------
     {
-      id: "ev_snake", act: 1, art: "ev_snake", place: (S) => K.ORIGINS[S.origin].name, caption: "The well-house at noon",
+      id: "ev_snake", act: 1, art: "ev_snake", place: (S) => K.childPlace(S), caption: "The well-house at noon",
       title: "A cobra in the well-house",
       body: ["A cobra has made its home in the well-house, and the women will not go for water. Your grandmother says a cobra in the house is a guest of the gods. Your uncle has found a stick."],
       choices: [
@@ -28,7 +28,7 @@
       next: "a1_poison"
     },
     {
-      id: "ev_bard", act: 1, art: "ev_bard", place: (S) => K.ORIGINS[S.origin].name, caption: "Under the village banyan",
+      id: "ev_bard", act: 1, art: "ev_bard", place: (S) => K.childPlace(S), caption: "Under the village banyan",
       title: "A bard under the banyan",
       body: ["A wandering suta sets up under the village banyan with a veena and a voice like a river. Tonight he sings of the churning of the ocean, when gods and demons pulled a serpent back and forth for a thousand years."],
       choices: [
@@ -162,7 +162,8 @@
     {
       id: "ev_letter", act: 5, art: "ev_letter", place: (S) => K.ORIGINS[S.origin].name, caption: "A palm-leaf letter",
       title: "A letter from home",
-      body: ["A palm-leaf letter comes from {origin}, in your mother's hand, which has grown shaky. Your father is old now. The roof needs mending. When are you coming home?"],
+      body: (S) => ["A palm-leaf letter comes from {origin}, in your mother's hand, which has grown shaky. Your father is old now. The roof needs mending. When are you coming home?",
+        S.kin ? { memory: ["At the bottom, in another hand you know at once: {kin} asks to see you before {kin} is too old to know your face.", { kin: S.kin }] } : null],
       choices: [
         { id: "go", t: "Go home for the rains", fx: { duty: { family: 2, court: -1 } },
           text: "The roof gets mended. Your father tells the same three stories every night. You do not mind." },

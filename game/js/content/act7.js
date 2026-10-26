@@ -110,6 +110,7 @@
     if (has("nishada_came")) t.push("When {they} whistled in the dark, the Nishada archers came, because of a hand {they} once bound.");
     if (has("tried_secret")) t.push("{They} knew Karna's secret before the war, and kept it, because Krishna asked.");
     if (has("saw_swap")) t.push(has("spoke_dice") ? "{They} saw Shakuni's hands in the dice hall, and said so." : "{They} saw Shakuni's hands in the dice hall, and told no one.");
+    if (has("kept_home_earth")) t.push("{They} carried a handful of {origin}'s earth all {their} life.");
     if (has("sat_with_kesava")) t.push("{They} went home to sit with an old smith on his last nights, because {their} friend would never ask.");
     const CURSE_LINE = {
       hermit: "The hermit's curse found {them} at the worst hour.",
@@ -128,6 +129,7 @@
       else if (!S.alive) f.push("Vasu carried your story home, and told it to his own children.");
       else f.push(S.flags.includes("vasu_gentle") ? "Vasu grew into the kind man you hoped for, and never picked up a sword again." : S.flags.includes("vasu_craft") ? "Vasu went back to the craft you taught him, and did well." : "Vasu served in Parikshit's guard and rose high.");
     }
+    if (S.kin) f.push(S.alive && S.endChoice === "home" ? ["{kin}, who shaped you as a child, lived to see you come home.", { kin: S.kin }] : S.alive ? ["{kin} kept every message you sent from the war.", { kin: S.kin }] : ["In {origin}, {kin} told the children who you had been.", { kin: S.kin }]);
     if (S.spouse) f.push(S.alive ? "{spouse} grew old beside you." : "{spouse} never remarried.");
     if (S.friend === "charu") f.push(S.alive ? "Charu outlived everyone, and complained about it." : "Charu kept a lamp lit for you every year.");
     if (S.flags.includes("debt_paid_late")) f.push("Sudatta's grandson told everyone that you paid what your grandfather owed.");

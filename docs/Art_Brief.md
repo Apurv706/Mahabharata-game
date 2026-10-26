@@ -46,6 +46,10 @@ Companion to the PRD (§12 cultural rules, §14 art direction).
 
 **Delivered 26 Oct:** the 13 new scene paintings (`scene_pasha`, `scene_smith`, `scene_note` and the ten `ev_*` events), the oil-lamp timer art (`diya.png`, `diya_flame.png`, trimmed to the lamp) and the Steam library hero (3840×1240, enlarged by the artist, slightly soft up close). All AI-generated; listed in `store/README.md` for the Steam disclosure. `scene_smith` shows Charu as a woman, though the game leaves Charu's gender open.
 
+**Delivered 26 Oct (evening):** eight homeland-life paintings, `roots_*`, for the new childhood scene "The people you came from". Notes: domed Mughal-style fort towers in `roots_hastinapura`; a Greek-style temple and lighthouse in `roots_dwaraka`. A second batch of eight images (photos and signed paintings from the web, one with a solar panel) was not used: their rights are unclear and they do not match the game's style.
+
+**Still needed for the new childhood scenes:** `scene_journey` (the family caravan on the road to Hastinapura) and eight `custom_*` homeland festivals; details in the Remaining Art Brief.
+
 **Still open:** the 9 optional repaints of period errors and the reviews listed in the [Remaining Art Brief](https://claude.ai/artifact/HMj1qHn6xAJiyXRwZDoq3q); a native-size library hero when possible.
 
 Still open: the Steam library hero (3840×1240, needs its own wide painting), five 1920×1080 gameplay screenshots (captured from the game), the 12 fixes in the Final Items brief, and advisory review. Optional later: 4K key art and hand-lettered logos.
