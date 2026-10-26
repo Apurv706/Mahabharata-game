@@ -1791,6 +1791,7 @@
     "Tanpura, bansuri and tabla, in a raga that follows the story.": "तानपूरा, बाँसुरी और तबला, एक राग में जो कहानी के साथ बदलता है।",
     "Music volume": "संगीत की आवाज़",
     "A forge at dawn": "भोर में एक भट्ठी",
-    "A doorway after the war": "युद्ध के बाद एक द्वार"
+    "A doorway after the war": "युद्ध के बाद एक द्वार",
+    "Three pieces for the stages of a life: a heroic theme, a fusion piece for the hard years, and a battle anthem for the war.": "जीवन के पड़ावों के लिए तीन धुनें: एक वीर धुन, कठिन बरसों के लिए एक फ़्यूज़न धुन, और युद्ध के लिए एक रण-गीत।"
   });
 })(window.K = window.K || {});

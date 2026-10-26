@@ -18,7 +18,7 @@
   }
 
   // Other moments where everything is at stake: the music turns tense for these too.
-  const TENSE = new Set(["a1_poison", "a3_lac", "a5_karna_secret", "a5_side", "a7_field"]);
+  const TENSE = new Set(["a1_poison", "a3_lac", "a5_karna_secret", "a5_side"]);
   // A conch for each day of the war, once per scene (not again when the screen is redrawn).
   let lastConch = null;
   U.renderScene = function (sc) {
@@ -27,7 +27,9 @@
     const S = K.S;
     if (sc.war && lastConch !== sc.id && K.Sound) K.Sound.play("conch");
     // The music follows the stakes: the war, the dice hall and timed moments are tense.
-    if (K.Sound) K.Sound.mood(sc.war || K.val(sc.lamp) || (sc.act === 4 && sc.canon) || TENSE.has(sc.id) ? "tense" : "calm");
+    // The music follows the stage: the war plays the battle anthem; the dice game, the exile years and
+    // high-stakes moments the fusion piece; everything else the heroic theme.
+    if (K.Sound) K.Sound.mood(sc.war || sc.act === 6 ? "battle" : sc.act === 4 || sc.act === 5 || K.val(sc.lamp) || TENSE.has(sc.id) ? "tense" : "calm");
     lastConch = sc.id;
     U.redraw = () => U.renderScene(sc);
     U.setNav(true);

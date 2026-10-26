@@ -170,8 +170,59 @@
 
   // ---------- The scheduler ----------
   let timer = null, mood = "calm", S0 = null;
+  // ---------- The three composed pieces ----------
+  // Each stage of the game has its own piece, played from a file and looped:
+  //   calm   → Vijaya (raga Yaman, heroic): the title, childhood, training, young adulthood, aftermath
+  //   tense  → Chakravyuha (Purvi, fusion): the dice game, the exile years, high-stakes moments
+  //   battle → Dharmayuddha (Bhairavi, battle anthem): the war and every fight
+  // Files load only when their stage is reached. If they cannot load (the game opened from a file on
+  // disk, say), the improvised ensemble above plays instead.
+  const TRACKS = { calm: "music/vijaya.mp3", tense: "music/chakravyuha.mp3", battle: "music/dharmayuddha.mp3" };
+  const TRACK_GAIN = { calm: 0.52, tense: 0.58, battle: 0.72 }; // under the story, a little louder in battle
+  const buffers = {}, loading = {};
+  let useTracks = typeof fetch === "function" && location.protocol !== "file:";
+  let track = null; // { mood, src, gain }
+  function loadTrack(m) {
+    if (!loading[m]) loading[m] = fetch(new URL(TRACKS[m], document.baseURI).href)
+      .then((r) => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+      .then((ab) => new Promise((res, rej) => ctx.decodeAudioData(ab, res, rej)))
+      .then((b) => (buffers[m] = b))
+      .catch(() => { useTracks = false; if (timer === "tracks") { timer = null; fadeTrack(); startMusic(); } return null; });
+    return loading[m];
+  }
+  function fadeTrack() {
+    if (!track) return;
+    const { src, gain } = track, t = now();
+    gain.gain.cancelScheduledValues(t); gain.gain.setTargetAtTime(0.0001, t, 0.45);
+    try { src.stop(t + 2.5); } catch (e) { /* already stopped */ }
+    track = null;
+  }
+  function playTrack(m) {
+    if (track && track.mood === m) return;
+    fadeTrack();
+    const want = m;
+    loadTrack(m).then((b) => {
+      if (!b || timer !== "tracks" || mood !== want || (track && track.mood === want)) return;
+      const src = ctx.createBufferSource(), gain = ctx.createGain();
+      src.buffer = b; src.loop = true;
+      gain.gain.value = 0.0001; src.connect(gain); gain.connect(musicBus);
+      src.start(now() + 0.05);
+      gain.gain.setTargetAtTime(TRACK_GAIN[want], now() + 0.05, 0.5);
+      track = { mood: want, src, gain };
+      // Fetch the other pieces quietly once one is playing, so later stages start at once.
+      setTimeout(() => Object.keys(TRACKS).forEach((k) => { if (useTracks) loadTrack(k); }), 4000);
+    });
+  }
+
   function startMusic() {
     if (!init() || timer || !musicOn()) return;
+    if (useTracks) {
+      timer = "tracks";
+      musicBus.gain.cancelScheduledValues(now());
+      musicBus.gain.setTargetAtTime(musicLevel() * 1.8, now(), 0.3);
+      playTrack(mood);
+      return;
+    }
     const t = now() + 0.05;
     S0 = { pluckAt: t, pluckIdx: 0, beatAt: t + 0.2, beatIdx: 0, tala: MOODS[mood].tala, phraseAt: t + 1.5 };
     musicBus.gain.cancelScheduledValues(t);
@@ -180,7 +231,8 @@
     tick();
   }
   function stopMusic() {
-    if (timer) { clearInterval(timer); timer = null; }
+    if (timer) { if (timer !== "tracks") clearInterval(timer); timer = null; }
+    fadeTrack();
     if (ctx) musicBus.gain.setTargetAtTime(0, now(), 0.4);
   }
   function tick() {
@@ -213,6 +265,7 @@
   function setMood(name) {
     if (!MOODS[name] || name === mood) return;
     mood = name;
+    if (timer === "tracks") return playTrack(name);
     if (!ctx || !S0) return;
     const t = now();
     // Let the flute's phrase fall away, and come back in the new raga soon after.
