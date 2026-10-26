@@ -9,7 +9,7 @@
   }
   function artFor(sc) {
     const a = K.val(sc.art);
-    return a === "origin" ? K.S.origin : a;
+    return a === "origin" ? "home_" + K.S.origin : a;
   }
   function tagFor(sc) {
     if (sc.canon) return ["canon", K.tr("Canon · this always happens")];
@@ -35,7 +35,8 @@
     const keys = [];
     rows.forEach(({ c, ok }, i) => {
       const fx = ok ? K.preview(c).map(([cls, t]) => '<span class="' + cls + '">' + U.esc(t) + "</span>").join("") : U.t(K.val(c.locked));
-      const b = U.button("choice", '<span class="k">' + (i + 1) + '</span><span class="t">' + U.t(K.val(c.t)) + '</span><span class="fx">' + fx + "</span>", null, "choice-" + c.id);
+      const img = K.val(c.img);
+      const b = U.button("choice" + (img ? " has-img" : ""), '<span class="k">' + (i + 1) + "</span>" + (img ? U.thumb(img) : "") + '<span class="t">' + U.t(K.val(c.t)) + '</span><span class="fx">' + fx + "</span>", null, "choice-" + c.id);
       b.disabled = !ok;
       const run = () => pick(sc, c, b);
       b.addEventListener("click", run);
@@ -91,7 +92,8 @@
     // A language switch now must repaint this state, never offer the choices again.
     U.redraw = () => { U.renderScene(sc); showAfter(sc, c, res, next); };
     const box = U.$("choices");
-    const picked = U.button("choice picked", '<span class="k">·</span><span class="t">' + U.t(K.val(c.t)) + '</span><span class="fx">' + U.tr("Your choice") + "</span>");
+    const pimg = K.val(c.img);
+    const picked = U.button("choice picked" + (pimg ? " has-img" : ""), '<span class="k">·</span>' + (pimg ? U.thumb(pimg) : "") + '<span class="t">' + U.t(K.val(c.t)) + '</span><span class="fx">' + U.tr("Your choice") + "</span>");
     picked.disabled = true;
     box.innerHTML = "";
     box.appendChild(picked);

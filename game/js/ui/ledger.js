@@ -3,7 +3,7 @@
   "use strict";
   const U = K.UI;
 
-  function meter(label, v, key, max = 10) {
+  function meter(label, v, key, max = 10, face = null) {
     const d = K.lastDelta[key] || 0;
     let pips = "";
     for (let i = 0; i < 10; i++) {
@@ -12,7 +12,7 @@
       pips += "<i class=\"" + cls + "\"></i>";
     }
     const delta = d ? ' <b class="' + (d > 0 ? "d-up" : "d-down") + '">' + (d > 0 ? "+" : "") + d + "</b>" : "";
-    return '<div class="meter"><div class="row"><span>' + U.esc(label) + "</span><span>" + v + " / " + max + delta + '</span></div><div class="pips" aria-hidden="true">' + pips + "</div></div>";
+    return '<div class="meter' + (face ? " with-face" : "") + '">' + (face ? U.thumb(face, "face") : "") + '<div class="row"><span>' + U.esc(label) + "</span><span>" + v + " / " + max + delta + '</span></div><div class="pips" aria-hidden="true">' + pips + "</div></div>";
   }
 
   U.renderLedger = function () {
@@ -25,9 +25,9 @@
 
     const bondIds = Object.keys(S.bonds).filter((id) => !S.dead.includes(id))
       .sort((a, b) => (K.lastDelta["bond." + b] ? 1 : 0) - (K.lastDelta["bond." + a] ? 1 : 0) || S.bonds[b] - S.bonds[a]).slice(0, 6);
-    const bonds = bondIds.map((id) => meter(K.personName(id), S.bonds[id], "bond." + id)).join("") || '<p class="empty">' + U.tr("No close bonds yet.") + "</p>";
+    const bonds = bondIds.map((id) => meter(K.personName(id), S.bonds[id], "bond." + id, 10, U.portraitKey(id))).join("") || '<p class="empty">' + U.tr("No close bonds yet.") + "</p>";
 
-    const vows = S.vows.map((v) => '<div class="vowcard ' + (v.broken ? "broken" : "") + '"><b>' + U.tr(K.VOWS[v.id].name) + "</b><small>" +
+    const vows = S.vows.map((v) => '<div class="vowcard ' + (v.broken ? "broken" : "") + '">' + U.thumb("vow_" + v.id, "emblem") + '<b>' + U.tr(K.VOWS[v.id].name) + "</b><small>" +
       (v.released ? U.tr("Released through penance.") : v.broken ? U.tr("Broken at {n}. The shame is visible to everyone.", { n: v.brokenAge }) : U.tr(K.VOWS[v.id].gift)) + "</small></div>").join("") || '<p class="empty">' + U.tr("No vows taken.") + "</p>";
 
     const chips = []

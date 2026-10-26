@@ -62,11 +62,11 @@
         "Children choose their friends as if it were nothing. It is the most important choice of your childhood."
       ],
       choices: [
-        { id: "charu", t: "Charu, who has never once left your side", fx: { set: { friend: "charu" }, setBond: { charu: 7 }, memory: ["charu", "You chose each other when you were ten."], journal: "Charu became your closest friend." } },
-        { id: "bhima", t: "Bhima, who laughs louder than anyone", req: { flag: "played_bhima" }, locked: "You would have needed to play on Bhima's side.", fx: { set: { friend: "bhima" }, bond: { bhima: 3 }, setBond: { charu: 4 }, journal: "Bhima became your closest friend." } },
-        { id: "duryo", t: "Duryodhana, who remembers every kindness and every slight", req: { flag: "played_duryodhana" }, locked: "You would have needed to join Duryodhana's side.", fx: { set: { friend: "duryodhana" }, bond: { duryodhana: 3 }, setBond: { charu: 4 }, journal: "Duryodhana became your closest friend." } },
-        { id: "arjuna", t: "Arjuna, who practises until his fingers bleed", req: { flag: "watched_arjuna" }, locked: "You would have needed to watch Arjuna practise.", fx: { set: { friend: "arjuna" }, bond: { arjuna: 3 }, setBond: { charu: 4 }, journal: "Arjuna became your closest friend." } },
-        { id: "karna", t: "Karna, the charioteer's son who wants to be more", req: { bond: ["karna", 4] }, locked: "You would need to know Karna already.", fx: { set: { friend: "karna" }, bond: { karna: 3 }, setBond: { charu: 4 }, journal: "Karna became your closest friend." } }
+        { id: "charu", img: "p_charu", t: "Charu, who has never once left your side", fx: { set: { friend: "charu" }, setBond: { charu: 7 }, memory: ["charu", "You chose each other when you were ten."], journal: "Charu became your closest friend." } },
+        { id: "bhima", img: "p_bhima", t: "Bhima, who laughs louder than anyone", req: { flag: "played_bhima" }, locked: "You would have needed to play on Bhima's side.", fx: { set: { friend: "bhima" }, bond: { bhima: 3 }, setBond: { charu: 4 }, journal: "Bhima became your closest friend." } },
+        { id: "duryo", img: "p_duryodhana", t: "Duryodhana, who remembers every kindness and every slight", req: { flag: "played_duryodhana" }, locked: "You would have needed to join Duryodhana's side.", fx: { set: { friend: "duryodhana" }, bond: { duryodhana: 3 }, setBond: { charu: 4 }, journal: "Duryodhana became your closest friend." } },
+        { id: "arjuna", img: "p_arjuna", t: "Arjuna, who practises until his fingers bleed", req: { flag: "watched_arjuna" }, locked: "You would have needed to watch Arjuna practise.", fx: { set: { friend: "arjuna" }, bond: { arjuna: 3 }, setBond: { charu: 4 }, journal: "Arjuna became your closest friend." } },
+        { id: "karna", img: "p_karna", t: "Karna, the charioteer's son who wants to be more", req: { bond: ["karna", 4] }, locked: "You would need to know Karna already.", fx: { set: { friend: "karna" }, bond: { karna: 3 }, setBond: { charu: 4 }, journal: "Karna became your closest friend." } }
       ],
       next: "a1_poison"
     },

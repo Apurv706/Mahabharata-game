@@ -27,6 +27,8 @@
     const temper = S.temperament && K.tr(K.TEMPERAMENTS[S.temperament].name);
     const heir = S.heirloom && K.tr(K.HEIRLOOMS[S.heirloom].name);
     const head = '<div class="sheet-head">' +
+      (S.path ? U.thumb("path_" + S.path, "emblem", K.tr(K.PATHS[S.path].name)) + "<span>" + U.tr(K.PATHS[S.path].name) + "</span>" : "") +
+      (S.teacher ? U.thumb({ drona: "teacher_drona", kripa: "teacher_kripa", balarama: "teacher_balarama", hermit: "teacher_mauni", vidura: "teacher_vidura", self: "teacher_self" }[S.teacher], "card", K.tr(K.TEACHERS[S.teacher].name)) + "<span>" + U.tr(K.TEACHERS[S.teacher].short === "no one" ? "Self-taught" : K.TEACHERS[S.teacher].short) + "</span>" : "") +
       (S.temperament ? '<i class="round" role="img" aria-label="' + U.esc(temper) + '" style="background-image:url(\'' + U.artUrl("temper_" + S.temperament) + '\')"></i><span>' + U.tr("{t} by temperament", { t: temper }) + "</span>" : "") +
       (S.heirloom ? '<i role="img" aria-label="' + U.esc(heir) + '" style="background-image:url(\'' + U.artUrl("heir_" + S.heirloom) + '\')"></i><span>' +
         U.tr(S.heirloom === "amulet" && S.flags.includes("amulet_broken") ? "Heirloom: {h!} (cracked)" : "Heirloom: {h!}", { h: heir }) + "</span>" : "") + "</div>";

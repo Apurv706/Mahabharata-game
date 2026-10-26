@@ -18,14 +18,35 @@
   // that reads it (css/), not the page: a relative "art/x.jpg" would load css/art/x.jpg.
   U.artUrl = function (key) {
     if (!key) return null;
-    try { return new URL("art/" + key + ".jpg", document.baseURI).href; } catch (e) { return "art/" + key + ".jpg"; }
+    const file = "art/" + key + (/^(path|vow)_/.test(key) ? ".png" : ".jpg"); // emblems are transparent PNGs
+    try { return new URL(file, document.baseURI).href; } catch (e) { return file; }
+  };
+
+  // Portraits of the people you know (art/p_*.jpg). Vasu grows up: the child portrait until 40.
+  const PORTRAITS = ["karna", "arjuna", "bhima", "drona", "kripa", "duryodhana", "abhimanyu", "mauni", "charu", "madhavi", "revat"];
+  U.portraitKey = function (id) {
+    if (id === "vasu") return K.S && K.S.age >= 40 ? "p_vasu_16" : "p_vasu_6";
+    return PORTRAITS.includes(id) ? "p_" + id : null;
+  };
+  U.personByName = function (name) {
+    for (const [id, p] of Object.entries(K.PEOPLE || {})) if (p.name === name) return id;
+    return null;
+  };
+  // A small picture: "face" (round portrait), "emblem" (contained, transparent) or "card" (4:3).
+  U.thumb = function (key, kind, label) {
+    if (!key) return "";
+    kind = kind || (/^p_/.test(key) ? "face" : /^(path|vow)_/.test(key) ? "emblem" : "card");
+    return '<i class="thumb ' + kind + '" style="--img:url(\'' + U.artUrl(key) + '\')"' + (label ? ' role="img" aria-label="' + U.esc(label) + '"' : ' aria-hidden="true"') + "></i>";
   };
 
   // Story text blocks: plain strings, speech, memories, curses, asides.
   U.blocks = function (arr) {
     return [].concat(K.val(arr) || []).filter(Boolean).map((b) => {
       if (typeof b === "string") return "<p>" + U.t(b) + "</p>";
-      if (b.speaker) return '<div><div class="lbl">' + U.t(b.speaker) + '</div><p class="speech">' + U.t(b.line) + "</p></div>";
+      if (b.speaker) {
+        const face = U.portraitKey(U.personByName(b.speaker));
+        return '<div class="said' + (face ? " with-face" : "") + '">' + (face ? U.thumb(face, "face") : "") + '<div><div class="lbl">' + U.t(b.speaker) + '</div><p class="speech">' + U.t(b.line) + "</p></div></div>";
+      }
       if (b.memory) return '<p class="memory">' + U.t(b.memory) + "</p>";
       if (b.curse) return '<p class="curse">' + U.t(b.curse) + "</p>";
       if (b.aside) return '<p class="aside">' + U.t(b.aside) + "</p>";

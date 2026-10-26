@@ -7478,5 +7478,25 @@
   "id": 1496,
   "en": "At the Kuru court you will always be a foreigner. Shakuni will take you for one of his own, and others will wonder whose side you are really on.",
   "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1497,
+  "en": "Now give the child a name, a nature and something handed down.",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 1498,
+  "en": "Self-taught",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 1499,
+  "en": "The palace school, in old age",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 1500,
+  "en": "The ring of chariots at sunset",
+  "ctx": "play:end_death"
  }
 ]

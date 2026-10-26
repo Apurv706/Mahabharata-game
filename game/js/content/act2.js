@@ -3,7 +3,7 @@
   "use strict";
   const COURTISH = ["hastinapura", "anga", "gandhara", "matsya"];
   const pathChoice = (id, t, extra = {}) => ({
-    id, t, fx: Object.assign({ set: { path: id }, skill: { [K.PATHS[id].skill]: 2 }, journal: "You chose the path of the {path!}." }, extra),
+    id, t, img: "path_" + id, fx: Object.assign({ set: { path: id }, skill: { [K.PATHS[id].skill]: 2 }, journal: "You chose the path of the {path!}." }, extra),
     hint: K.PATHS[id].desc
   });
 
@@ -18,17 +18,17 @@
         "A teacher shapes your skills, and you will owe them for the rest of your life."
       ],
       choices: [
-        { id: "drona", t: "Ask Drona to take you as a student", req: { not: { origin: ["suta", "nishada"] } }, locked: "Drona refuses you. He teaches only those born to the royal and priestly orders.",
+        { id: "drona", img: "teacher_drona", t: "Ask Drona to take you as a student", req: { not: { origin: ["suta", "nishada"] } }, locked: "Drona refuses you. He teaches only those born to the royal and priestly orders.",
           fx: { set: { teacher: "drona" }, duty: { teacher: 5 }, skill: { archery: 2 }, rep: { kuru: 1 }, flag: "drona_student", journal: "Drona accepted you as a student." }, hint: "His fee may one day set you against your friends" },
-        { id: "kripa", t: "Train with Kripa, preceptor of the Kuru house", req: { any: [{ origin: COURTISH }, { rep: ["kuru", 5] }] }, locked: "Kripa teaches those tied to the Kuru court.",
+        { id: "kripa", img: "teacher_kripa", t: "Train with Kripa, preceptor of the Kuru house", req: { any: [{ origin: COURTISH }, { rep: ["kuru", 5] }] }, locked: "Kripa teaches those tied to the Kuru court.",
           fx: { set: { teacher: "kripa" }, duty: { teacher: 3, court: 2 }, skill: { mace: 1, archery: 1 }, journal: "Kripa took you into his school." }, hint: "His price is loyalty to the Kuru throne" },
-        { id: "balarama", t: "Go to Balarama, who teaches the mace", req: { any: [{ origin: "dwaraka" }, { flag: "balarama_noticed" }] }, locked: "Balarama teaches Yadavas, and those he has seen fight.",
+        { id: "balarama", img: "teacher_balarama", t: "Go to Balarama, who teaches the mace", req: { any: [{ origin: "dwaraka" }, { flag: "balarama_noticed" }] }, locked: "Balarama teaches Yadavas, and those he has seen fight.",
           fx: { set: { teacher: "balarama" }, duty: { teacher: 4 }, skill: { mace: 2 }, rep: { yadava: 2 }, journal: "Balarama agreed to teach you the mace." }, hint: "He will ask you to stay out of the war his family cannot avoid" },
-        { id: "hermit", t: "Follow Mauni, the forest hermit who shoots blindfolded",
+        { id: "hermit", img: "teacher_mauni", t: "Follow Mauni, the forest hermit who shoots blindfolded",
           fx: { set: { teacher: "hermit" }, duty: { teacher: 5, conscience: 1 }, skill: { archery: 1, stealth: 1, lore: 1 }, flag: "hermit_secret", journal: "Mauni the hermit took you as his student and made you promise never to say who taught you." }, hint: "He asks one thing: never say who taught you" },
-        { id: "vidura", t: "Join Vidura's circle of scribes, envoys and listeners", req: { origin: ["hastinapura", "anga", "gandhara"] }, locked: "Vidura draws his people from the court.",
+        { id: "vidura", img: "teacher_vidura", t: "Join Vidura's circle of scribes, envoys and listeners", req: { origin: ["hastinapura", "anga", "gandhara"] }, locked: "Vidura draws his people from the court.",
           fx: { set: { teacher: "vidura" }, duty: { teacher: 3, conscience: 1 }, skill: { statecraft: 2, stealth: 1 }, bond: { vidura: 2 }, journal: "You joined Vidura's circle." }, hint: "Vidura will judge every choice you make" },
-        { id: "self", t: "Teach yourself, in secret, at night", fx: { set: { teacher: "self" }, skill: { archery: 1 }, attr: { aim: 1 }, flag: "self_taught", journal: "You taught yourself, alone, by night." }, hint: "No debt, and no one to protect you" }
+        { id: "self", img: "teacher_self", t: "Teach yourself, in secret, at night", fx: { set: { teacher: "self" }, skill: { archery: 1 }, attr: { aim: 1 }, flag: "self_taught", journal: "You taught yourself, alone, by night." }, hint: "No debt, and no one to protect you" }
       ],
       next: "a2_path"
     },
@@ -144,11 +144,11 @@
         "The river is full of lamps. People make vows here. A vow gives you strength, and breaking one marks you for life. You may hold up to three."
       ],
       choices: [
-        { id: "retreat", t: "Swear never to retreat in battle", fx: { vowTake: "never_retreat" } },
-        { id: "lie", t: "Swear never to speak a lie", fx: { vowTake: "never_lie", rep: { sages: 1 } } },
-        { id: "unarmed", t: "Swear never to strike someone who cannot defend themselves", fx: { vowTake: "spare_unarmed", rep: { sages: 1, common: 1 } } },
-        { id: "karna", t: "Swear never to raise a weapon against Karna", req: { bond: ["karna", 6] }, locked: "Needs a close bond with Karna.", fx: { vowTake: "spare_karna", bond: { karna: 1 } } },
-        { id: "celibate", t: "Swear a vow of celibacy, as Bhishma did", fx: { vowTake: "celibacy", attr: { wisdom: 1 } } },
+        { id: "retreat", img: "vow_never_retreat", t: "Swear never to retreat in battle", fx: { vowTake: "never_retreat" } },
+        { id: "lie", img: "vow_never_lie", t: "Swear never to speak a lie", fx: { vowTake: "never_lie", rep: { sages: 1 } } },
+        { id: "unarmed", img: "vow_spare_unarmed", t: "Swear never to strike someone who cannot defend themselves", fx: { vowTake: "spare_unarmed", rep: { sages: 1, common: 1 } } },
+        { id: "karna", img: "vow_spare_karna", t: "Swear never to raise a weapon against Karna", req: { bond: ["karna", 6] }, locked: "Needs a close bond with Karna.", fx: { vowTake: "spare_karna", bond: { karna: 1 } } },
+        { id: "celibate", img: "vow_celibacy", t: "Swear a vow of celibacy, as Bhishma did", fx: { vowTake: "celibacy", attr: { wisdom: 1 } } },
         { id: "none", t: "Make no vow", fx: {}, hint: "Nothing to keep, nothing to break" }
       ],
       next: "a3_secret"
@@ -170,7 +170,7 @@
     lose: { fx: { duty: { teacher: 1 }, rep: { panchala: -1 }, injury: "scar" }, text: "You are knocked out of your chariot and wake up after it is over. Drona's prisoner is already in chains." }
   });
   K.encounter({
-    id: "e_border", title: "The border villages", caption: "Kaurava raiders on the road", lethal: false,
+    id: "e_border", title: "The border villages", art: "battle_border", caption: "Kaurava raiders on the road", lethal: false,
     intro: "A band of Kaurava raiders turns off the road toward the village granary.",
     allies: ["charu"],
     enemies: [K.foe("Kaurava raider", 2), K.foe("Kaurava raider", 1)],

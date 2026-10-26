@@ -23,7 +23,7 @@
     const sel = enemy && target === u.uid ? " sel" : "";
     const label = u.side === "player" ? K.tr("You") : K.text(u.src || u.name);
     return '<button type="button" class="unit ' + u.side + sel + (u.hp <= 0 ? " down" : "") + '" data-uid="' + u.uid + '"' + (!enemy || u.hp <= 0 || B.over ? " disabled" : "") + ">" +
-      '<span class="nm">' + U.esc(label) + "<span>" + u.hp + " / " + u.maxHp + "</span></span>" +
+      '<span class="nm">' + (u.person && U.portraitKey(u.person) ? U.thumb(U.portraitKey(u.person), "face") : "") + "<em>" + U.esc(label) + "</em><span>" + u.hp + " / " + u.maxHp + "</span></span>" +
       '<span class="hpbar"><i style="width:' + pct + '%"></i></span>' +
       (st ? '<span class="st">' + st + "</span>" : "") +
       (u.note ? '<span class="note">' + U.t(u.note) + "</span>" : "") + "</button>";

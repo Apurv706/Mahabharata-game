@@ -137,7 +137,7 @@
 
     // ---------- Everyone: the incognito year ----------
     {
-      id: "a5_matsya", act: 5, age: 43, canon: true, art: "matsya", place: "King Virata's court, Matsya", caption: "The lake country of Matsya",
+      id: "a5_matsya", act: 5, age: 43, canon: true, art: "scene_virata", place: "King Virata's court, Matsya", caption: "The lake country of Matsya",
       title: "The hidden year",
       witness: [
         "For the thirteenth year the Pandavas must live unrecognised. They take service at King Virata's court: Yudhishthira as a dice master, Bhima as a cook, Arjuna as Brihannala, a teacher of dance, Draupadi as a queen's maid.",
@@ -178,7 +178,7 @@
       next: "a5_side"
     },
     {
-      id: "a5_side", act: 5, age: 44, canon: true, art: "scene_years", place: "Hastinapura", caption: "Thirteen years, gone",
+      id: "a5_side", act: 5, age: 44, canon: true, art: "scene_envoy", place: "Hastinapura", caption: "Thirteen years, gone",
       title: "Not a needle's point",
       witness: [
         "The Pandavas ask for their kingdom back. When that is refused, they ask for five villages. Krishna goes to Hastinapura himself to plead for peace.",
@@ -212,19 +212,19 @@
     lose: { fx: { bond: { duryodhana: 1 } }, text: "They knock you down and leave you. At least you stayed." }
   });
   K.encounter({
-    id: "e_sudatta", title: "Sudatta's men", caption: "A fence across your family's field", lethal: false,
+    id: "e_sudatta", title: "Sudatta's men", art: "battle_field", caption: "A fence across your family's field", lethal: false,
     enemies: [K.foe("A hired club-man", 2), K.foe("A hired club-man", 1)],
     win: { fx: { unflag: "debt_refused", flag: "field_reclaimed", rep: { common: 1 }, duty: { family: 1 } }, text: "Sudatta's men leave and do not come back. The village brings sweets." },
     lose: { fx: { duty: { family: -1 } }, text: "They keep the field. You keep your pride, more or less." }
   });
   K.encounter({
-    id: "e_cattle", title: "The cattle raid on Matsya", caption: "Dust over the grazing grounds", lethal: false,
+    id: "e_cattle", title: "The cattle raid on Matsya", art: "battle_cattle", caption: "Dust over the grazing grounds", lethal: false,
     enemies: [K.foe("Kaurava horseman", 3), K.foe("Kaurava archer", 2, { abilities: ["strike", "arrows"] })],
     win: { fx: { rep: { pandava: 2, common: 1 }, bond: { arjuna: 1 }, journal: "You fought beside Prince Uttara when the Kauravas raided Matsya." }, text: "The raiders on your flank turn back. Ahead, one chariot is driving the whole Kaurava army before it." },
     lose: { fx: {}, text: "You are unhorsed. From the ground you watch one chariot drive the whole Kaurava army before it." }
   });
   K.encounter({
-    id: "e_cattle_k", title: "Raiding Matsya's herds", caption: "A lone chariot comes for you", lethal: false,
+    id: "e_cattle_k", title: "Raiding Matsya's herds", art: "battle_cattle", caption: "A lone chariot comes for you", lethal: false,
     intro: "Matsya's cowherds fight harder than anyone expected. Then the arrows start coming from a single chariot.",
     enemies: [K.foe("Matsya cowherd", 2), { name: "Brihannala's chariot", hp: 140, atk: 12, def: 4, abilities: ["strike", "arrows"] }],
     win: { fx: { rep: { kuru: 1 } }, text: "Somehow you hold. Around you the rest of the army is running." },

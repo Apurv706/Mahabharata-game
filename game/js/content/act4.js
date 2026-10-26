@@ -5,7 +5,7 @@
   "use strict";
   K.scenes([
     {
-      id: "a4_invite", act: 4, age: 30, canon: true, art: "scene_secret", place: "Hastinapura", caption: "The new assembly hall",
+      id: "a4_invite", act: 4, age: 30, canon: true, art: "scene_dice_hall", place: "Hastinapura", caption: "The new assembly hall",
       title: "An invitation to dice",
       witness: [
         "Dhritarashtra builds a new assembly hall and invites Yudhishthira to a friendly game of dice. Vidura carries the invitation, and his face says what his words cannot.",
@@ -24,7 +24,7 @@
       next: "a4_stakes"
     },
     {
-      id: "a4_stakes", act: 4, age: 30, canon: true, art: "scene_secret", place: "The assembly hall, Hastinapura", caption: "The first throws",
+      id: "a4_stakes", act: 4, age: 30, canon: true, art: "scene_dice_throws", place: "The assembly hall, Hastinapura", caption: "The first throws",
       title: "The stakes",
       witness: [
         "Shakuni throws for Duryodhana. Yudhishthira stakes his jewels and loses. Then his gold, his chariots, his servants, his army and his kingdom. Every throw goes the same way.",
@@ -44,7 +44,7 @@
       next: "a4_draupadi"
     },
     {
-      id: "a4_draupadi", act: 4, age: 30, canon: true, art: "scene_secret", place: "The assembly hall, Hastinapura", caption: "The question no one answers",
+      id: "a4_draupadi", act: 4, age: 30, canon: true, art: "scene_dice_question", place: "The assembly hall, Hastinapura", caption: "The question no one answers",
       title: "Draupadi's question",
       witness: [
         "Yudhishthira stakes Draupadi, and loses her. Duryodhana sends for her as a slave. She sends back a question: did he lose me before or after he lost himself?",
@@ -71,7 +71,7 @@
       next: "a4_robe"
     },
     {
-      id: "a4_robe", act: 4, age: 30, canon: true, art: "scene_secret", place: "The assembly hall, Hastinapura", caption: "The cloth that does not end",
+      id: "a4_robe", act: 4, age: 30, canon: true, art: "scene_dice_cloth", place: "The assembly hall, Hastinapura", caption: "The cloth that does not end",
       title: "The cloth that does not end",
       witness: [
         "Karna, who has not forgotten the swayamvara, says she is a slave now and may be treated like one. Duryodhana bares his thigh to her.",

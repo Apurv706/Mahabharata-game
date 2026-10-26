@@ -100,9 +100,9 @@
         K.hasVow("celibacy") ? { aside: "You swore a vow of celibacy. Marrying would break it." } : null
       ],
       choices: [
-        { id: "madhavi", t: "Marry Madhavi", tags: ["marry"], fx: { set: { spouse: "madhavi" }, setBond: { madhavi: 7 }, duty: { family: 2 }, item: { herbs: 1 }, journal: "You married Madhavi." } },
-        { id: "revat", t: "Marry Revat", tags: ["marry"], fx: { set: { spouse: "revat" }, setBond: { revat: 7 }, duty: { family: 2 }, skill: { chariot: 1 }, journal: "You married Revat." } },
-        { id: "charu", t: "Marry Charu, your oldest friend", req: { friend: "charu" }, tags: ["marry"], fx: { set: { spouse: "charu" }, bond: { charu: 2 }, duty: { family: 2 }, journal: "You married Charu, your oldest friend." } },
+        { id: "madhavi", img: "p_madhavi", t: "Marry Madhavi", tags: ["marry"], fx: { set: { spouse: "madhavi" }, setBond: { madhavi: 7 }, duty: { family: 2 }, item: { herbs: 1 }, journal: "You married Madhavi." } },
+        { id: "revat", img: "p_revat", t: "Marry Revat", tags: ["marry"], fx: { set: { spouse: "revat" }, setBond: { revat: 7 }, duty: { family: 2 }, skill: { chariot: 1 }, journal: "You married Revat." } },
+        { id: "charu", img: "p_charu", t: "Marry Charu, your oldest friend", req: { friend: "charu" }, tags: ["marry"], fx: { set: { spouse: "charu" }, bond: { charu: 2 }, duty: { family: 2 }, journal: "You married Charu, your oldest friend." } },
         { id: "none", t: "Do not marry", fx: {} }
       ],
       next: "a3_rajasuya"

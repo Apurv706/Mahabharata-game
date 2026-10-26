@@ -7,7 +7,7 @@
 
   K.scenes([
     {
-      id: "a7_field", act: 7, age: 44, canon: true, art: "end_survivor", place: "Kurukshetra, after", caption: "Dawn over the field",
+      id: "a7_field", act: 7, age: 44, canon: true, art: "scene_women_field", place: "Kurukshetra, after", caption: "Dawn over the field",
       title: "The women on the field",
       enter: (S) => (vasuLost(S) ? { die: "vasu", journal: "Vasu died in the night raid on the camp." } : null),
       witness: [
@@ -42,7 +42,7 @@
       next: "a7_final"
     },
     {
-      id: "a7_final", act: 7, age: 45, art: "end_river", place: "After the war", caption: "By the river, after everything",
+      id: "a7_final", act: 7, age: 45, art: "scene_years_remain", place: "After the war", caption: "By the river, after everything",
       title: "The years that remain",
       body: ["You are forty-five. Everything you were raised for has happened. How will you spend the rest of your life?"],
       choices: [
@@ -119,16 +119,19 @@
     const weakBonds = Object.values(S.bonds).filter((b) => b <= 2).length;
     let title, art = "end_survivor", caption = "Dawn over the field";
     if (!S.alive) {
-      art = S.flags.includes("died_with_karna") ? "war_day17" : "end_death"; caption = "The day ends without you";
+      const wheel = S.flags.includes("died_with_abhimanyu"), karna = S.flags.includes("died_with_karna");
+      art = wheel ? "end_wheel" : karna ? "war_day17" : "end_death";
+      caption = wheel ? "The ring of chariots at sunset" : karna ? "A chariot wheel sinks into the earth" : "The day ends without you";
       title = S.flags.includes("died_with_abhimanyu") ? "Into the wheel" : S.flags.includes("died_with_karna") ? "Beside Karna" : intact ? "Glorious death" : "Fallen at Kurukshetra";
     } else {
       const c = S.endChoice;
-      if (c === "elder") title = "The wise elder";
-      else if (c === "forest") { title = "Renunciation"; art = "end_river"; caption = "The forest, in old age"; }
-      else if (c === "teller") { title = "The teller"; art = "scene_vow"; caption = "A lamp, and a long story"; }
-      else if (c === "vengeance") { title = "Vengeance"; art = "end_river"; caption = "A road that does not end"; }
-      else if (c === "home") { title = lost >= 2 ? "Broken survivor" : "The homecoming"; art = S.origin; caption = K.ORIGINS[S.origin].name; }
-      else { title = lost >= 1 || weakBonds >= 4 ? "Broken survivor" : "The wanderer"; art = "end_river"; caption = "By the river, after everything"; }
+      if (c === "elder") { title = "The wise elder"; art = "end_elder"; caption = "The palace school, in old age"; }
+      else if (c === "forest") { title = "Renunciation"; art = "end_forest"; caption = "The forest, in old age"; }
+      else if (c === "teller") { title = "The teller"; art = "end_teller"; caption = "A lamp, and a long story"; }
+      else if (c === "vengeance") { title = "Vengeance"; art = "end_vengeance"; caption = "A road that does not end"; }
+      else if (c === "home") { title = lost >= 2 ? "Broken survivor" : "The homecoming"; art = lost >= 2 ? "end_broken" : "home_" + S.origin; caption = lost >= 2 ? "An empty house at evening" : K.ORIGINS[S.origin].name; }
+      else if (lost >= 1 || weakBonds >= 4) { title = "Broken survivor"; art = "end_broken"; caption = "An empty house at evening"; }
+      else { title = "The wanderer"; art = "end_river"; caption = "By the river, after everything"; }
     }
     const coda = {
       "The wise elder": "You sat at Yudhishthira's right hand for thirty-six years, and you told him the truth when no one else would.",

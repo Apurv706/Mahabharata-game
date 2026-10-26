@@ -1496,11 +1496,15 @@
     "The far northwest, beyond the Indus": "सुदूर उत्तर-पश्चिम, सिंधु के पार",
     "A mountain kingdom on the great trade roads, where many peoples, languages and gods meet. Queen Gandhari and her brother Shakuni came from here to Hastinapura.": "बड़े व्यापार-मार्गों पर बसा एक पहाड़ी राज्य, जहाँ अनेक जातियाँ, भाषाएँ और देवता मिलते हैं। रानी गांधारी और उनके भाई शकुनि यहीं से हस्तिनापुर आए थे।",
     "At the Kuru court you will always be a foreigner. Shakuni will take you for one of his own, and others will wonder whose side you are really on.": "कुरु दरबार में तुम्हारी पहचान सदा परदेसी की रहेगी। शकुनि तुम्हें अपने ही लोगों में गिनेगा, और बाकी लोग सोचेंगे कि तुम असल में किसकी ओर हो।",
+    "Now give the child a name, a nature and something handed down.": "अब उस संतान को एक नाम दो, एक स्वभाव, और पीढ़ियों से चली आई कोई धरोहर।",
+    "Self-taught": "स्वयं-शिक्षित",
+    "The palace school, in old age": "बुढ़ापे में राजमहल की पाठशाला",
+    "The ring of chariots at sunset": "सूर्यास्त में रथों का घेरा",
     "They sing of {name}, born in {origin}, {path!}.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {path}।",
     "They sing of {name}, born in {origin}, who taught {them}self by night.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {g:जिसने|जिसने|जिन्होंने} रातों में ख़ुद को सिखाया।",
     "They sing of {name}, born in {origin}, student of {teacher}.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {teacher} {g:का शिष्य|की शिष्या|के शिष्य}।",
     "They sing of {name}, born in {origin}.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}।",
     "{They} fell at Kurukshetra.": "{g:वह|वह|वे} कुरुक्षेत्र में वीरगति को {g:प्राप्त हुआ|प्राप्त हुई|प्राप्त हुए}।",
-    "Now give the child a name, a nature and something handed down.": "अब उस संतान को एक नाम दो, एक स्वभाव, और पीढ़ियों से चली आई कोई धरोहर।"
+    "An empty house at evening": "साँझ में एक सूना घर"
   });
 })(window.K = window.K || {});

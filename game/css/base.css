@@ -104,6 +104,18 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
   background: var(--raised); border: 0; border-radius: var(--r-card); padding: 14px 16px;
   cursor: pointer; min-height: 56px; transition: background-color 0.15s, transform 0.15s;
 }
+/* Thumbnails: portraits are round, emblems sit free, cards are small paintings. */
+.thumb { display: block; flex: none; background: var(--img) center 20% / cover no-repeat; }
+.thumb.face { width: 52px; height: 52px; border-radius: 50%; box-shadow: 0 0 0 2px var(--gold-line); } /* taste-skill-ignore: gold ring around a portrait */
+.thumb.emblem { width: 60px; height: 60px; background-size: contain; background-position: center; }
+.thumb.card { width: 104px; aspect-ratio: 4 / 3; border-radius: var(--r-control); background-position: center; }
+.choice.has-img { grid-template-columns: 22px auto minmax(0, 1fr); align-items: center; }
+.choice.has-img .k, .choice.has-img .thumb { grid-row: span 2; }
+.choice.has-img .t { align-self: end; }
+.choice.has-img .fx { align-self: start; grid-column: 3; }
+.choice.has-img .thumb.face { width: 60px; height: 60px; }
+.said.with-face { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: start; }
+.said.with-face .thumb.face { width: 64px; height: 64px; }
 .choice:hover:not(:disabled) { background: var(--hover); transform: translateX(3px); }
 .choice:active:not(:disabled) { transform: translateX(1px); }
 .choice .k { grid-row: span 2; color: var(--faint); font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; padding-top: 1px; }
@@ -121,7 +133,8 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 .cta.secondary { background: var(--raised); color: var(--ink); }
 .cta.secondary:hover { background: var(--hover); }
 .hint { font-size: 14px; color: var(--faint); margin: 0; }
-@media (pointer: coarse) { .choice .k, .hint { display: none; } .choice { grid-template-columns: minmax(0, 1fr); } }
+@media (pointer: coarse) { .choice .k, .hint { display: none; } .choice { grid-template-columns: minmax(0, 1fr); } .choice.has-img { grid-template-columns: auto minmax(0, 1fr); } .choice.has-img .fx { grid-column: 2; } }
+@media (max-width: 520px) { .thumb.card { width: 84px; } .choice.has-img .thumb.face { width: 52px; height: 52px; } .thumb.emblem { width: 52px; height: 52px; } }
 
 /* Staged reveal (U.stage): parts wait hidden, then rise in one after another. */
 .staged { opacity: 0; transform: translateY(14px); }

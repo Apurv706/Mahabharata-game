@@ -93,7 +93,7 @@
       '<div class="lands" id="origins"></div><p class="err" id="need"></p></div>';
     const box = U.$("origins");
     for (const [id, v] of Object.entries(K.ORIGINS)) {
-      const b = U.button("origin land", '<i style="--img:url(\'' + U.artUrl(id) + '\')" aria-hidden="true"></i><div><b>' + U.tr(v.name) + "</b><span>" + U.tr(v.region) + "</span><small>" + U.tr(v.blurb) + "</small></div>",
+      const b = U.button("origin land", '<i style="--img:url(\'' + U.artUrl("home_" + id) + '\')" aria-hidden="true"></i><div><b>' + U.tr(v.name) + "</b><span>" + U.tr(v.region) + "</span><small>" + U.tr(v.blurb) + "</small></div>",
         () => { draft.look = id; U.renderCreate(); });
       b.setAttribute("aria-pressed", String(draft.origin === id));
       box.appendChild(b);
@@ -109,7 +109,7 @@
     const v = K.ORIGINS[id];
     const gives = K.preview({ fx: v.fx }).map(([cls, txt]) => '<span class="chip ' + (cls === "down" ? "bad" : "good") + '">' + U.esc(txt) + "</span>").join("");
     const leaf = U.$("leaf");
-    leaf.innerHTML = '<div class="land-hero" style="--img:url(\'' + U.artUrl(id) + '\')"><span class="cap"><span class="kind">' + U.tr("Your homeland") + "</span><b>" + U.tr(v.name) + "</b><small>" + U.tr(v.region) + "</small></span></div>" +
+    leaf.innerHTML = '<div class="land-hero" style="--img:url(\'' + U.artUrl("home_" + id) + '\')"><span class="cap"><span class="kind">' + U.tr("Your homeland") + "</span><b>" + U.tr(v.name) + "</b><small>" + U.tr(v.region) + "</small></span></div>" +
       '<div class="text">' + (v.context || [v.detail]).map((pp) => "<p>" + U.t(pp) + "</p>").join("") +
       '<div class="field"><span class="lbl">' + U.tr("You begin with") + '</span><div class="chips">' + gives + "</div></div>" +
       '<div class="btnrow"><button class="cta" id="land-ok" type="button">' + U.tr("Be born here") + '</button><button class="ghost" id="land-back" type="button">' + U.tr("See the other lands") + "</button></div></div>";
@@ -129,7 +129,7 @@
   function selfPage() {
     const o = K.ORIGINS[draft.origin];
     const leaf = U.$("leaf");
-    leaf.innerHTML = U.plate({ art: draft.origin, title: o.name, small: o.region, tag: "yours", tagText: K.tr("Your homeland") }) +
+    leaf.innerHTML = U.plate({ art: "home_" + draft.origin, title: o.name, small: o.region, tag: "yours", tagText: K.tr("Your homeland") }) +
       '<div class="text"><h1>' + U.tr("Who were you?") + "</h1>" +
       "<p>" + U.tr("Now give the child a name, a nature and something handed down.") + "</p>" +
       '<div class="field"><label class="lbl" for="pname">' + U.tr("Your name") + '</label><input id="pname" type="text" maxlength="24" autocomplete="off" placeholder="' + U.tr("Name your character") + '" value="' + U.esc(draft.name) + '"></div>' +

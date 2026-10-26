@@ -148,37 +148,37 @@
   ]);
 
   const foeSide = (S) => (S.side === "kaurava" ? "Pandava" : "Kaurava");
-  war("e_road", "The road to Jayadratha", [K.foe("Kaurava chariot-warrior", 5, { art: "war_day14", abilities: ["strike", "heavy", "arrows"] }), K.foe("Kaurava horseman", 4)], {
+  war("e_road", "The road to Jayadratha", [K.foe("Kaurava chariot-warrior", 5, { abilities: ["strike", "heavy", "arrows"] }), K.foe("Kaurava horseman", 4)], { art: "war_day14",
     caption: "Day fourteen",
     win: { fx: { bond: { arjuna: 2 }, rep: { pandava: 2 } }, text: "You break a hole in the line, and Arjuna's chariot goes through it like water." },
     lose: { deathText: "You fell on the fourteenth day, clearing the road for Arjuna." },
     flee: { text: "You fall back from the road." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go." }
   });
-  war("e_jaya", "Guarding Jayadratha", [K.foe("Pandava chariot-warrior", 5, { art: "war_day14", abilities: ["strike", "heavy", "arrows"] }), K.foe("Pandava footsoldier", 4)], {
+  war("e_jaya", "Guarding Jayadratha", [K.foe("Pandava chariot-warrior", 5, { abilities: ["strike", "heavy", "arrows"] }), K.foe("Pandava footsoldier", 4)], { art: "war_day14",
     caption: "Day fourteen",
     win: { fx: { rep: { kuru: 2 } }, text: "You hold your ground all afternoon. It does not matter. The sun is still up." },
     lose: { deathText: "You fell on the fourteenth day, guarding Jayadratha." },
     flee: { text: "You fall back toward Jayadratha's hiding place." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go." }
   });
-  war("e_night", "The night battle", (S) => [K.foe(foeSide(S) + " torch-bearer", 4), K.foe(foeSide(S) + " archer", 4, { art: "war_day14", abilities: ["strike", "arrows"] })], {
+  war("e_night", "The night battle", (S) => [K.foe(foeSide(S) + " torch-bearer", 4), K.foe(foeSide(S) + " archer", 4, { abilities: ["strike", "arrows"] })], { art: "battle_night",
     caption: "Torchlight on the field",
     win: { fx: { journal: "You survived the night battle of the fourteenth day." }, text: "Dawn comes. You are still alive, and you cannot remember most of the night." },
     lose: { deathText: "You fell in the dark on the night of the fourteenth day." },
     flee: { text: "You fall back into the dark." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go into the dark." }
   });
-  war("e_dushasana", "Dushasana's men", [K.foe("Dushasana's bodyguard", 5, { art: "war_day16", abilities: ["strike", "heavy"] }), K.foe("Dushasana's bodyguard", 4)], {
+  war("e_dushasana", "Dushasana's men", [K.foe("Dushasana's bodyguard", 5, { abilities: ["strike", "heavy"] }), K.foe("Dushasana's bodyguard", 4)], { art: "war_day16",
     caption: "Day sixteen",
     win: { fx: { flag: "survived_dushasana", journal: "On the sixteenth day Dushasana sent his men for you, and you survived them." }, text: "His men lie in the dust. Across the field, Bhima has found Dushasana." },
     lose: { deathText: "On the sixteenth day, Dushasana's men found you. He had not forgotten the dice hall." },
     flee: { text: "You escape them in the press of the battle." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let the last of them go." }
   });
-  war("e_day16", "The sixteenth day", (S) => [K.foe(foeSide(S) + " chariot-warrior", 5, { art: "war_day16", abilities: ["strike", "arrows"] }), K.foe(foeSide(S) + " spearman", 4)], {
+  war("e_day16", "The sixteenth day", (S) => [K.foe(foeSide(S) + " chariot-warrior", 5, { abilities: ["strike", "arrows"] }), K.foe(foeSide(S) + " spearman", 4)], { art: "war_day16",
     caption: "Day sixteen",
     win: { fx: { rep: { common: 1 } }, text: "You survive another day." },
     lose: { deathText: "You fell on the sixteenth day." },
     flee: { text: "You fall back." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go." }
   });
-  war("e_day18", "The last battle", (S) => [K.foe(foeSide(S) + " veteran", 5, { art: "war_day18", abilities: ["strike", "heavy"] }), K.foe(foeSide(S) + " chariot-warrior", 5, { abilities: ["strike", "arrows"] })], {
+  war("e_day18", "The last battle", (S) => [K.foe(foeSide(S) + " veteran", 5, { abilities: ["strike", "heavy"] }), K.foe(foeSide(S) + " chariot-warrior", 5, { abilities: ["strike", "arrows"] })], { art: "war_day18",
     caption: "Day eighteen",
     win: { fx: { journal: "You survived the eighteenth and last day of the war." }, text: "There is no one left to fight." },
     lose: { deathText: "You fell on the eighteenth day, the last day of the war." },
