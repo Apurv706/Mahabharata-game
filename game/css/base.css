@@ -1,43 +1,40 @@
 /* Kurukshetra: A Life — base styles.
-   Direction: an old manuscript on aged parchment. The page is warm paper with soft blotches and
-   fibres, darkened at the edges; the text is written in red ink that has dried to reddish brown
-   (fresh lines sparkle red as the quill writes them). Red torana fringes where a painting meets its
-   text, a double-ruled frame around the canon panel. Panels are separated by tone steps and the
-   ruled ornaments, never by shadows at rest. One sindoor-red accent for what you can do; ochre for
-   the duty meters. Display face for names and titles, one text face for the rest. */
+   Direction: an old Indian manuscript folio. A deep madder-red ground printed with a faint gold
+   lotus buti (block-print), warm red-brown panels, gold torana fringes where a painting meets its
+   text, and a double-ruled frame around the canon panel. Panels are separated by tone steps and
+   the gold ornaments, never by shadows at rest. One saffron accent for what you can do; gold for
+   the duty meters and the ornaments. Freshly written letters sparkle red-gold, then settle to ivory.
+   Display face for names and titles, one text face for the rest. */
 :root {
-  --ground: #e8d5ad;     /* aged parchment */
-  --ground-rgb: 232, 213, 173;
-  --surface: #f1e3c3;    /* the page, a little lighter */
-  --surface-rgb: 241, 227, 195;
-  --raised: #e6d1a6;     /* a choice, a card */
-  --hover: #dcc394;
-  --ink: #4a170d;        /* red ink, dried to reddish brown: 11.6:1 on the page */
-  --muted: #69301e;      /* 8.1:1 */
-  --faint: #733f29;      /* 6.7:1 */
-  --fresh-ink: #e0251a;  /* the same ink while wet */
-  --accent: #9a2c16;     /* sindoor red: actions and the current selection */
-  --accent-ink: #fff4e2;
-  --data: #74470a;       /* ochre: the duty meters */
-  --gold-line: rgba(138, 58, 30, 0.45);
-  --track: #d3b989;
-  --negative: #932713;
-  --positive: #215737;
-  --check: #284891;
+  --ground: #2a120f;     /* madder red, as on Kalamkari cloth and temple flags */
+  --ground-rgb: 42, 18, 15;
+  --surface: #371a15;    /* the folio */
+  --surface-rgb: 55, 26, 21;
+  --raised: #47241d;     /* a choice, a card */
+  --hover: #562e25;
+  --ink: #f7ead3;
+  --muted: #e0c7a6;      /* 9.8:1 on surface */
+  --faint: #c3a585;      /* 6.8:1 on surface */
+  --fresh-ink: #ff6a3d;  /* wet ink: a sparkling red-gold that settles to ivory */
+  --accent: #f0943f;     /* saffron: actions and the current selection */
+  --accent-ink: #1a1208;
+  --data: #e2b55a;       /* gold: the duty meters and the ornaments */
+  --gold-line: rgba(226, 181, 90, 0.42);
+  --track: #64382d;
+  --negative: #ff8a6e;
+  --positive: #7fcfa6;
+  --check: #a9bdf0;
   /* Devanagari falls through to Tiro (display) and Mukta (text): the Latin faces have no Hindi glyphs. */
   --display: "Cormorant Garamond", "Tiro Devanagari Hindi", "Iowan Old Style", Georgia, serif;
   --text: "Alegreya Sans", "Mukta", "Gill Sans", "Segoe UI", sans-serif;
   --r-card: 8px;
   --r-control: 6px;
-  color-scheme: light;
+  color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html { background: var(--ground); }
-/* Aged parchment: paper texture, with the edges darkened as old pages are. */
-/* The page is a painted manuscript folio: margin drawings at the sides on wide screens, at the top
-   and bottom on tall ones, over a repeating painted paper tile. */
-body { background: url("bg_page_desktop.jpg") center top / cover no-repeat fixed, url("bg_parchment_tile.jpg") 0 0 / 512px 512px repeat, var(--ground); color: var(--ink); margin: 0; }
-@media (max-aspect-ratio: 5/4) { body { background: url("bg_page_mobile.jpg") center top / 100% auto no-repeat, url("bg_parchment_tile.jpg") 0 0 / 512px 512px repeat, var(--ground); } }
+/* The block-printed ground: madder red with a faint gold lotus buti. */
+body { background: var(--ground) url("buti.svg") 0 0 / 88px 88px repeat; color: var(--ink); margin: 0; }
 body {
   font-family: var(--text); font-size: 17px; line-height: 1.55;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
@@ -70,10 +67,6 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 
 /* The leaf: painting on top, story and choices below. */
 .leaf { position: relative; background: var(--surface); border-radius: var(--r-card); overflow: hidden; min-width: 0; }
-/* Painted lotus corners at the foot of the page and the side panel. */
-.leaf::before, .leaf::after, .ledger::before, .ledger::after { content: ""; position: absolute; bottom: 6px; width: 46px; height: 46px; background: url("border_corner.png") 0 0 / contain no-repeat; pointer-events: none; z-index: 2; }
-.leaf::before, .ledger::before { left: 6px; transform: scaleY(-1); }
-.leaf::after, .ledger::after { right: 6px; transform: scale(-1, -1); }
 .plate { position: relative; min-height: 132px; background: var(--field, #3a2a1c); display: flex; align-items: flex-end; }
 .plate.painted { aspect-ratio: 3 / 1; min-height: 190px; max-width: 100%; background: var(--img) center 40% / cover no-repeat, var(--raised); }
 .plate.painted.tall { aspect-ratio: 5 / 2; }
@@ -91,15 +84,14 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 }
 
 /* A torana fringe where the painting meets the text, as on a manuscript folio. */
-/* A painted vine border where the painting meets the text. */
-.text { padding: 40px 26px 58px; display: grid; gap: 16px; background: url("border_strip.png") 0 0 / auto 20px repeat-x; }
-@media (max-width: 520px) { .text { padding: 36px 16px 56px; } .plate .cap { padding: 0 16px 14px; } }
+/* A torana fringe where the painting meets the text, as on a manuscript folio. */
+.text { padding: 34px 26px 28px; display: grid; gap: 16px; background: url("torana.svg") 0 0 / 28px 16px repeat-x; }
+@media (max-width: 520px) { .text { padding: 30px 16px 24px; } .plate .cap { padding: 0 16px 14px; } }
 .text h1 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 3.4vw, 36px); line-height: 1.08; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
 .text p { margin: 0; max-width: 66ch; }
 .lbl { font-family: var(--display); font-size: 22px; font-weight: 700; line-height: 1.15; color: var(--ink); }
 /* The canon panel: framed by a double gold rule, like the border of a manuscript page. */
-.witness::before { content: ""; display: block; height: 22px; margin: -6px 0 -2px; background: url("divider.png") center / contain no-repeat; }
-.witness { background: var(--raised); border: 1px solid var(--gold-line); outline: 1px solid rgba(138, 58, 30, 0.22); outline-offset: -6px; border-radius: var(--r-card); padding: 18px 20px; color: var(--ink); display: grid; gap: 10px; }
+.witness { background: var(--raised); border: 1px solid var(--gold-line); outline: 1px solid rgba(226, 181, 90, 0.2); outline-offset: -6px; border-radius: var(--r-card); padding: 18px 20px; color: var(--ink); display: grid; gap: 10px; }
 .witness .lbl { color: var(--data); font-size: 20px; }
 .speech { font-family: var(--display); font-size: 24px; line-height: 1.28; font-weight: 600; color: var(--ink); max-width: 58ch; }
 .memory { font-size: 16px; color: var(--accent); font-style: italic; }
@@ -140,7 +132,7 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 .choice.picked { background: var(--hover); cursor: default; }
 .choice.picked .k { color: var(--accent); }
 .cta { font-weight: 700; font-size: 17px; color: var(--accent-ink); background: var(--accent); border: 0; border-radius: var(--r-control); padding: 12px 24px; min-height: 48px; cursor: pointer; justify-self: start; transition: transform 0.12s, background-color 0.15s; }
-.cta:hover { background: #b23a1f; }
+.cta:hover { background: #f6a65c; }
 .cta:active { transform: translateY(1px); }
 .cta.secondary { background: var(--raised); color: var(--ink); }
 .cta.secondary:hover { background: var(--hover); }
@@ -156,12 +148,12 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 .staged.write { transform: none; }
 .writing .ch { opacity: 0; }
 .writing .ch.on, .ch.on { opacity: 1; }
-/* Fresh ink is a sparkling red that dries to reddish brown. */
+/* Fresh ink sparkles red-gold, then settles to ivory. */
 .writing .ch.on { animation: ink 1.6s ease-out; }
 @keyframes ink {
   0% { color: var(--fresh-ink); text-shadow: 0 0 6px rgba(255, 70, 40, 0.9), 0 0 1px #fff2b8; } /* taste-skill-ignore: wet-ink glow, transient */
-  25% { color: #d0221a; text-shadow: 0 0 4px rgba(255, 120, 60, 0.6), 1px -1px 0 rgba(255, 230, 150, 0.7); } /* taste-skill-ignore: wet-ink glow, transient */
-  55% { color: #9e2416; text-shadow: 0 0 2px rgba(255, 120, 60, 0.25); } /* taste-skill-ignore: wet-ink glow, transient */
+  25% { color: #ff8a4c; text-shadow: 0 0 4px rgba(255, 120, 60, 0.6), 1px -1px 0 rgba(255, 230, 150, 0.7); } /* taste-skill-ignore: wet-ink glow, transient */
+  55% { color: #f3c9a0; text-shadow: 0 0 2px rgba(255, 120, 60, 0.25); } /* taste-skill-ignore: wet-ink glow, transient */
   100% { text-shadow: none; } /* taste-skill-ignore: wet-ink glow, transient */
 }
 .witness, .result, .telling, .text, .hero-copy, .life-head { position: relative; }
@@ -179,15 +171,15 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 /* Choices slide in from the left. */
 .choice.staged { transform: translateX(-18px); }
 /* Choosing: the picked card glows gold, the others fall away. */
-.choice.chosen { background: var(--hover); box-shadow: 0 0 0 1px var(--accent), 0 0 22px rgba(224, 37, 26, 0.25); transition: box-shadow 0.3s, background-color 0.3s; } /* taste-skill-ignore: selection glow, transient */
+.choice.chosen { background: var(--hover); box-shadow: 0 0 0 1px var(--data), 0 0 22px rgba(226, 181, 90, 0.35); transition: box-shadow 0.3s, background-color 0.3s; } /* taste-skill-ignore: selection glow, transient */
 .choice.dismiss { opacity: 0; transform: translateX(14px); transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: none; }
 /* Battle: hits shake the card, damage floats up; healing glows. */
 .unit { position: relative; }
 .unit.hit { animation: shake 0.42s cubic-bezier(.36, .07, .19, .97); }
 .unit.healed { animation: glow 0.8s ease; }
 @keyframes shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
-@keyframes glow { 40% { background-color: #c9dcc4; } }
-.dmg { position: absolute; right: 14px; top: -16px; text-shadow: 0 1px 2px rgba(255, 244, 226, 0.9); font-weight: 700; font-size: 18px; pointer-events: none; animation: float 1.1s ease-out forwards; } /* taste-skill-ignore: transient damage number over a card */
+@keyframes glow { 40% { background-color: #2f4a37; } }
+.dmg { position: absolute; right: 14px; top: -16px; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); font-weight: 700; font-size: 18px; pointer-events: none; animation: float 1.1s ease-out forwards; } /* taste-skill-ignore: transient damage number over a card */
 .dmg.down { color: var(--negative); } .dmg.up { color: var(--positive); }
 @keyframes float { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-26px); } }
 .blog li.fresh { animation: logIn 0.5s ease both; }

@@ -30,7 +30,7 @@
         '<div class="slides" aria-hidden="true"><i class="slide on' + (HERO.mirror ? " mirror" : "") + '" style="--img:url(\'' + U.artUrl(HERO.art) + '\')"></i></div>' +
         '<div class="hero-bar" id="hero-bar"></div>' +
         '<div class="hero-copy">' +
-          '<h1 class="title" id="title-h"><img class="logo ' + K.lang + '" src="brand/logo_' + (K.lang === "hi" ? "hi" : "en") + '.svg" alt="' + U.tr("Kurukshetra: A Life") + '"></h1>' +
+          '<h1 class="title" id="title-h"><img class="logo ' + K.lang + '" src="brand/logo_' + (K.lang === "hi" ? "hi" : "en") + '_dark.svg" alt="' + U.tr("Kurukshetra: A Life") + '"></h1>' +
           '<p class="tagline">' + U.tr("You cannot change the Mahabharata. You can decide who you were inside it.") + "</p>" +
           '<div class="btnrow" id="title-btns"></div>' +
         "</div>" +
