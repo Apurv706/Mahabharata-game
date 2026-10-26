@@ -66,7 +66,8 @@ function walkCode(add) {
 function playAndRecord(K, w, d, story) {
   const rnd = (arr) => arr[Math.floor(w.Math.random() * arr.length)];
   d.getElementById("btn-new").click();
-  for (const sel of ["#pron .opt", "#origins .origin", "#temps .pick", "#heirs .pick"]) rnd([...d.querySelectorAll(sel)]).click();
+  rnd([...d.querySelectorAll("#origins .origin")]).click(); d.getElementById("land-ok").click();
+  for (const sel of ["#pron .opt", "#temps .pick", "#heirs .pick"]) rnd([...d.querySelectorAll(sel)]).click();
   d.getElementById("begin").click(); // first try without a name shows the "Choose ..." error once
   if (story) { const s = d.getElementById("story"); if (s) { s.checked = true; s.dispatchEvent(new w.Event("change")); } }
   if (d.getElementById("begin")) d.getElementById("begin").click();

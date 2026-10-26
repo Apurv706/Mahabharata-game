@@ -7308,5 +7308,175 @@
   "id": 1462,
   "en": "The curse of the misused astra found {them} at the worst hour.",
   "ctx": "extra"
+ },
+ {
+  "id": 1463,
+  "en": "Your homeland shapes how the world treats you. It never limits what you can become. Choose a land to read about it.",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 1464,
+  "en": "You begin with",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 1465,
+  "en": "Be born here",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 1466,
+  "en": "See the other lands",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 1467,
+  "en": "Who were you?",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 1468,
+  "en": "A child of {land}. Now give that child a name, a nature and something handed down.",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 1469,
+  "en": "Choose another homeland",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 1470,
+  "en": "Ira",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 1471,
+  "en": "Reveal the story line by line",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 1472,
+  "en": "Tap the page or press Space to show everything at once.",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 1473,
+  "en": "The Kuru heartland, on the upper Ganga",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1474,
+  "en": "A city of palaces, granaries and old dynasties on the banks of the Ganga, ruled by the blind king Dhritarashtra on behalf of the Kuru line. The princes, Pandavas and Kauravas alike, grow up within its walls.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1475,
+  "en": "Born here, you stand closest to every great event of the epic: the tournament, the dice game, the councils of war. Loyalty to the throne comes easily. Standing apart from it does not.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1476,
+  "en": "Between the Ganga and the Yamuna, south of the Kurus",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1477,
+  "en": "A rich and learned kingdom of archers, scholars and fire-priests, with its capital at Kampilya. King Drupada's court values what you can do over who your father was.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1478,
+  "en": "Drona will train the Kuru princes to take Drupada prisoner, so a child of Panchala begins with a grudge on one side and a welcome on the other. Draupadi, born from Drupada's sacrificial fire, will one day be your princess.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1479,
+  "en": "West of the Yamuna, a land of lakes and pastures",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1480,
+  "en": "A small, gentle kingdom of cattle herders, horse breeders and lake fishers, ruled by King Virata from his capital at Viratanagara.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1481,
+  "en": "Greater powers rarely look this way, which is why the Pandavas will choose it for their year in hiding. Children here grow up among horses, and many become fine charioteers.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1482,
+  "en": "The western coast, at the edge of the sea",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1483,
+  "en": "A walled island city of the Yadava clans, built on the sea for safety. Its harbours bring traders, sailors and envoys from distant lands.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1484,
+  "en": "The Yadavas are kin to both sides of the coming war. Born here, you learn diplomacy early, and you will see your own clan divided when the armies gather.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1485,
+  "en": "The far east of the Ganga plain, on the Champa river",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1486,
+  "en": "A prosperous eastern kingdom of rice fields, river ports and elephant forests, with its capital at Champa.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1487,
+  "en": "Duryodhana gives Anga to Karna, the charioteer's son, to make him a king. Its people love Karna for it, and here a person is judged more by deeds than by birth.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1488,
+  "en": "The charioteers' quarter at the edge of Hastinapura",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1489,
+  "en": "The sutas drive the chariots, tend the horses and sing the deeds of kings. They stand beside every great warrior in battle, yet the nobles never treat them as equals.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1490,
+  "en": "You grow up in the same lane as Adhiratha, who found a baby floating in a basket and raised him as Karna. Doors will close because of your birth, and you will learn to open them anyway.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1491,
+  "en": "The forests between the river and the hills",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1492,
+  "en": "Hunters, fishers and forest guides who live outside the cities' order and the rules of caste. They know every path, plant and animal of the deep forest.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1493,
+  "en": "Ekalavya, the Nishada prince who taught himself archery, comes from people like yours. The cities look down on you, but in the forest no prince can match you.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1494,
+  "en": "The far northwest, beyond the Indus",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1495,
+  "en": "A mountain kingdom on the great trade roads, where many peoples, languages and gods meet. Queen Gandhari and her brother Shakuni came from here to Hastinapura.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1496,
+  "en": "At the Kuru court you will always be a foreigner. Shakuni will take you for one of his own, and others will wonder whose side you are really on.",
+  "ctx": "world:ORIGINS"
  }
 ]

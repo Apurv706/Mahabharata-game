@@ -62,64 +62,119 @@
     row.appendChild(U.button("ghost", U.tr("Load a save code"), load));
     keys.push(load);
     U.keys(keys);
+    // The introduction is written in, like every other page.
+    const q = (sel) => leaf.querySelector(sel);
+    q(".tagline").classList.add("write");
+    q(".life-head p").classList.add("write");
+    q(".title").dataset.hold = 700;
+    U.stage([q(".title"), q(".tagline"), q(".hero .btnrow"), q(".slide-cap"), q(".life-head h2"), q(".life-head p"), ...leaf.querySelectorAll(".acts li"), q(".life .note")]);
   };
 
   // ---------- Character creation ----------
+  // Step one is the homeland: a picture of each land, then a page about the chosen region written
+  // out by the quill. Step two is the rest of the character.
   let draft = null;
+  const newDraft = () => ({ step: "land", look: null, name: "", pronoun: null, origin: null, temperament: null, heirloom: null, storyMode: false });
+  const writeAll = (els) => els.forEach((el) => el && el.classList.add("write"));
+
   U.renderCreate = function () {
-    draft = draft || { name: "", pronoun: null, origin: null, temperament: null, heirloom: null, storyMode: false };
+    draft = draft || newDraft();
     U.redraw = U.renderCreate;
     U.setNav(false);
     U.where("<b>" + U.tr("A new life") + "</b>" + U.tr("Age {n}", { n: 6 }));
-    const o = draft.origin && K.ORIGINS[draft.origin];
+    if (draft.step === "land") return draft.look ? landPage(draft.look) : landList();
+    return selfPage();
+  };
+
+  function landList() {
     const leaf = U.$("leaf");
-    leaf.innerHTML = (o ? U.plate({ art: draft.origin, title: o.name, small: o.blurb, tag: "yours", tagText: K.tr("Your homeland") })
-      : U.plate({ grad: ["#d4a84b", "#3b5ba9"], caption: "Choose a homeland below", tag: "yours", tagText: K.tr("Your life") })) +
-      '<div class="text"><h1>' + U.tr("Where were you born?") + "</h1>" +
-      "<p>" + U.tr("Your origin shapes how the world treats you. It never limits what you can become.") + "</p>" +
+    leaf.innerHTML = '<div class="text"><h1>' + U.tr("Where were you born?") + "</h1>" +
+      "<p>" + U.tr("Your homeland shapes how the world treats you. It never limits what you can become. Choose a land to read about it.") + "</p>" +
+      '<div class="lands" id="origins"></div><p class="err" id="need"></p></div>';
+    const box = U.$("origins");
+    for (const [id, v] of Object.entries(K.ORIGINS)) {
+      const b = U.button("origin land", '<i style="--img:url(\'' + U.artUrl(id) + '\')" aria-hidden="true"></i><div><b>' + U.tr(v.name) + "</b><span>" + U.tr(v.region) + "</span><small>" + U.tr(v.blurb) + "</small></div>",
+        () => { draft.look = id; U.renderCreate(); });
+      b.setAttribute("aria-pressed", String(draft.origin === id));
+      box.appendChild(b);
+    }
+    U.keys([]);
+    const t = leaf.querySelector(".text");
+    writeAll([t.children[1]]);
+    [...box.children].forEach((c) => { c.dataset.hold = 140; });
+    U.stage([t.children[0], t.children[1], ...box.children]);
+  }
+
+  function landPage(id) {
+    const v = K.ORIGINS[id];
+    const gives = K.preview({ fx: v.fx }).map(([cls, txt]) => '<span class="chip ' + (cls === "down" ? "bad" : "good") + '">' + U.esc(txt) + "</span>").join("");
+    const leaf = U.$("leaf");
+    leaf.innerHTML = '<div class="land-hero" style="--img:url(\'' + U.artUrl(id) + '\')"><span class="cap"><span class="kind">' + U.tr("Your homeland") + "</span><b>" + U.tr(v.name) + "</b><small>" + U.tr(v.region) + "</small></span></div>" +
+      '<div class="text">' + (v.context || [v.detail]).map((pp) => "<p>" + U.t(pp) + "</p>").join("") +
+      '<div class="field"><span class="lbl">' + U.tr("You begin with") + '</span><div class="chips">' + gives + "</div></div>" +
+      '<div class="btnrow"><button class="cta" id="land-ok" type="button">' + U.tr("Be born here") + '</button><button class="ghost" id="land-back" type="button">' + U.tr("See the other lands") + "</button></div></div>";
+    const ok = () => { draft.origin = id; draft.look = null; draft.step = "self"; U.renderCreate(); };
+    const back = () => { draft.look = null; U.renderCreate(); };
+    U.$("land-ok").addEventListener("click", ok);
+    U.$("land-back").addEventListener("click", back);
+    U.keys([]);
+    U.scrollTop();
+    const hero = leaf.querySelector(".land-hero"); hero.dataset.hold = 900;
+    const t = leaf.querySelector(".text");
+    const paras = [...t.querySelectorAll(":scope > p")];
+    writeAll(paras);
+    U.stage([hero, ...paras, t.querySelector(".field"), t.querySelector(".btnrow")], () => U.keys([ok, back]));
+  }
+
+  function selfPage() {
+    const o = K.ORIGINS[draft.origin];
+    const leaf = U.$("leaf");
+    leaf.innerHTML = U.plate({ art: draft.origin, title: o.name, small: o.region, tag: "yours", tagText: K.tr("Your homeland") }) +
+      '<div class="text"><h1>' + U.tr("Who were you?") + "</h1>" +
+      "<p>" + U.tr("Now give the child a name, a nature and something handed down.") + "</p>" +
       '<div class="field"><label class="lbl" for="pname">' + U.tr("Your name") + '</label><input id="pname" type="text" maxlength="24" autocomplete="off" placeholder="' + U.tr("Name your character") + '" value="' + U.esc(draft.name) + '"></div>' +
       '<div class="field"><span class="lbl">' + U.tr("How should the bards speak of you?") + '</span><div class="opts" id="pron"></div></div>' +
-      '<div class="field"><span class="lbl">' + U.tr("Homeland") + '</span><div class="origins" id="origins"></div></div>' +
-      (o ? '<p class="aside">' + U.t(o.detail) + "</p>" : "") +
       '<div class="field"><span class="lbl">' + U.tr("Childhood temperament") + '</span><div class="picks" id="temps"></div></div>' +
       '<div class="field"><span class="lbl">' + U.tr("Family heirloom") + '</span><div class="picks" id="heirs"></div></div>' +
       '<label class="toggle"><input type="checkbox" id="story"' + (draft.storyMode ? " checked" : "") + "><span>" + U.tr("Story mode") + "<small>" +
         U.tr("You cannot die in battle, so you can see every chapter. Death stays a choice the story can still offer.") + "</small></span></label>" +
-      '<div class="btnrow"><button class="cta" id="begin" type="button">' + U.tr("Begin this life") + '</button><button class="ghost" id="back" type="button">' + U.tr("Back") + '</button></div><p class="err" id="need"></p></div>';
+      '<div class="btnrow"><button class="cta" id="begin" type="button">' + U.tr("Begin this life") + '</button><button class="ghost" id="back" type="button">' + U.tr("Choose another homeland") + '</button></div><p class="err" id="need"></p></div>';
 
-    const opts = (elId, list, key) => list.forEach(([id, label, small]) => {
-      const b = U.button("opt", U.tr(label) + (small ? "<small>" + U.tr(small) + "</small>" : ""), () => { draft[key] = id; U.renderCreate(); });
+    const opts = (elId, list, key) => list.forEach(([id, label]) => {
+      const b = U.button("opt", U.tr(label), () => { draft[key] = id; refresh(); });
+      b.dataset.id = id;
       b.setAttribute("aria-pressed", String(draft[key] === id));
       U.$(elId).appendChild(b);
     });
+    // Picking updates the buttons in place, so the page does not re-stage on every click.
+    const refresh = () => leaf.querySelectorAll("[data-key]").forEach((b) => b.setAttribute("aria-pressed", String(draft[b.dataset.key] === b.dataset.id)));
     opts("pron", [["she", "She"], ["he", "He"], ["they", "They"]], "pronoun");
+    U.$("pron").querySelectorAll(".opt").forEach((b) => { b.dataset.key = "pronoun"; });
     const cards = (elId, map, key, prefix, round) => Object.entries(map).forEach(([id, v]) => {
       const name = K.tr(v.name);
       const b = U.button("pick" + (round ? " round" : ""), '<i role="img" aria-label="' + U.esc(name) + '" style="background-image:url(\'' + U.artUrl(prefix + id) + '\')"></i><b>' + U.esc(name) + "</b><small>" + U.tr(v.short) + "</small>",
-        () => { draft[key] = id; U.renderCreate(); });
+        () => { draft[key] = id; refresh(); });
+      b.dataset.key = key; b.dataset.id = id;
       b.setAttribute("aria-pressed", String(draft[key] === id));
       U.$(elId).appendChild(b);
     });
     cards("temps", K.TEMPERAMENTS, "temperament", "temper_", true);
     cards("heirs", K.HEIRLOOMS, "heirloom", "heir_", false);
-    for (const [id, v] of Object.entries(K.ORIGINS)) {
-      const name = K.tr(v.name);
-      const b = U.button("origin", '<i role="img" aria-label="' + U.esc(name) + '" style="background-image:url(\'' + U.artUrl(id) + '\')"></i><div><b>' + U.esc(name) + "</b><small>" + U.tr(v.blurb) + "</small></div>",
-        () => { draft.origin = id; U.renderCreate(); });
-      b.setAttribute("aria-pressed", String(draft.origin === id));
-      U.$("origins").appendChild(b);
-    }
     U.$("pname").addEventListener("input", (e) => { draft.name = e.target.value; });
     U.$("story").addEventListener("change", (e) => { draft.storyMode = e.target.checked; });
-    U.$("back").addEventListener("click", () => { draft = null; U.renderTitle(); });
+    U.$("back").addEventListener("click", () => { draft.step = "land"; U.renderCreate(); });
     U.$("begin").addEventListener("click", () => {
-      const missing = [!draft.pronoun && "how the bards speak of you", !draft.origin && "a homeland", !draft.temperament && "a temperament", !draft.heirloom && "an heirloom"].filter(Boolean).map(K.tr);
+      const missing = [!draft.pronoun && "how the bards speak of you", !draft.temperament && "a temperament", !draft.heirloom && "an heirloom"].filter(Boolean).map(K.tr);
       if (missing.length) { U.$("need").textContent = K.tr("Choose {list} to begin.", { list: K.list(missing) }); return; }
       U.beginLife(draft);
       draft = null;
     });
     U.keys([]);
-  };
+    const plate = leaf.querySelector(".plate"); if (plate) plate.dataset.hold = 600;
+    const t = leaf.querySelector(".text");
+    writeAll([t.children[1]]);
+    U.stage([plate, ...t.children]);
+  }
 
   U.beginLife = function (d) {
     const S = (K.S = K.newLife());

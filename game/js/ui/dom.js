@@ -115,13 +115,13 @@
       n.parentNode.replaceChild(frag, n);
     }
     const chars = el.querySelectorAll(".ch");
-    const host = el.closest(".witness, .result, .telling, .text") || el;
+    const host = el.closest(".witness, .result, .telling, .text, .hero-copy, .life-head") || el.parentElement;
     let quill = host.querySelector(":scope > .quill");
     if (!quill) { quill = U.el('<span class="quill">' + QUILL + "</span>"); host.appendChild(quill); }
     el.classList.add("writing");
     quill.classList.add("on");
     const total = chars.length;
-    const duration = Math.min(2300, Math.max(450, total * 13));
+    const duration = Math.min(7000, Math.max(800, total * 36)); // an unhurried hand, about 28 letters a second
     const start = performance.now();
     let shown = 0;
     const w = (writer = { el, chars, quill, done, raf: 0 });
