@@ -44,7 +44,9 @@ Companion to the PRD (§12 cultural rules, §14 art direction).
 
 ## Still needed
 
-**New scenes (gameplay update, 26 Oct).** Thirteen new scenes borrow paintings for now; each would be better with its own 3:1 painting: the dice-board under a striped awning at the spring fair (`scene_pasha`), a cobra in a village well-house, a bard under a banyan, a grey mare at a horse fair, a wounded doe in a forest clearing, rows of lamps on a city's walls at new moon, a river flood over a low town, an ascetic by a dry-season road, five thin bandits with farm tools where a road narrows, a lamp by a teacher's sickbed, a mother's palm-leaf letter, an old smith's forge with his hammer, and a young man holding a palm-leaf note. Also a small diya (oil lamp) drawing could replace the coded one used by the lamp timer.
+**Delivered 26 Oct:** the 13 new scene paintings (`scene_pasha`, `scene_smith`, `scene_note` and the ten `ev_*` events), the oil-lamp timer art (`diya.png`, `diya_flame.png`, trimmed to the lamp) and the Steam library hero (3840×1240, enlarged by the artist, slightly soft up close). All AI-generated; listed in `store/README.md` for the Steam disclosure. `scene_smith` shows Charu as a woman, though the game leaves Charu's gender open.
+
+**Still open:** the 9 optional repaints of period errors and the reviews listed in the [Remaining Art Brief](https://claude.ai/artifact/HMj1qHn6xAJiyXRwZDoq3q); a native-size library hero when possible.
 
 Still open: the Steam library hero (3840×1240, needs its own wide painting), five 1920×1080 gameplay screenshots (captured from the game), the 12 fixes in the Final Items brief, and advisory review. Optional later: 4K key art and hand-lettered logos.
 

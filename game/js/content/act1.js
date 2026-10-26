@@ -99,7 +99,7 @@
       next: "a1_pasha"
     },
     {
-      id: "a1_pasha", act: 1, age: 13, art: "scene_fair", place: "The spring fair", caption: "Dice under a striped awning",
+      id: "a1_pasha", act: 1, age: 13, art: "scene_pasha", place: "The spring fair", caption: "Dice under a striped awning",
       title: "The dice-board under the awning",
       body: [
         "The spring fair has come. Under a striped awning an old man called Haridatta keeps a dice-board: a cloth cross of squares, and three long dice of ivory, each marked one, two, five and six.",

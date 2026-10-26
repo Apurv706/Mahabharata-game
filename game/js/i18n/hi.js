@@ -1786,6 +1786,11 @@
     "{They} fell at Kurukshetra.": "{g:वह|वह|वे} कुरुक्षेत्र में वीरगति को {g:प्राप्त हुआ|प्राप्त हुई|प्राप्त हुए}।",
     "{a} hit you for {n}.": "{ane} तुम पर वार किया: {n} की चोट।",
     "The ring is closing. If the lamp burns out, you will hold your place in it.": "घेरा कस रहा है। अगर दीया बुझ गया, तो तुम उसमें अपनी जगह पर डटे रहोगे।",
-    "The breach will not stay open. If the lamp burns out, you will be at the gate with the others.": "दरार खुली नहीं रहेगी। अगर दीया बुझ गया, तो तुम बाकियों के साथ द्वार पर रहोगे।"
+    "The breach will not stay open. If the lamp burns out, you will be at the gate with the others.": "दरार खुली नहीं रहेगी। अगर दीया बुझ गया, तो तुम बाकियों के साथ द्वार पर रहोगे।",
+    "Music": "संगीत",
+    "Tanpura, bansuri and tabla, in a raga that follows the story.": "तानपूरा, बाँसुरी और तबला, एक राग में जो कहानी के साथ बदलता है।",
+    "Music volume": "संगीत की आवाज़",
+    "A forge at dawn": "भोर में एक भट्ठी",
+    "A doorway after the war": "युद्ध के बाद एक द्वार"
   });
 })(window.K = window.K || {});

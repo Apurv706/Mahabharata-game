@@ -19,6 +19,7 @@
 
   U.renderTitle = function () {
     U.redraw = U.renderTitle;
+    if (K.Sound) K.Sound.mood("calm");
     U.setNav(false);
     document.body.classList.add("titling");
     U.where("");
@@ -208,6 +209,7 @@
   U.renderEnding = function (sc) {
     const S = K.S;
     U.redraw = () => U.renderEnding(sc);
+    if (K.Sound) K.Sound.mood("calm");
     const e = sc.ending(S);
     S.ending = e.title;
     K.recordLife(S, e);

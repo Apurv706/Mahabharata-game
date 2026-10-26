@@ -14,6 +14,7 @@
     lastLogLen = 0;
     onEndCb = onEnd;
     if (K.ENCOUNTERS[encId] && K.ENCOUNTERS[encId].lethal && K.Sound) K.Sound.play("conch");
+    if (K.Sound) K.Sound.mood("battle");
     C.start(encId, onEnd);
   };
 

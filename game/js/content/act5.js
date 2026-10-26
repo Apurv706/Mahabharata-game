@@ -154,7 +154,7 @@
     // ---------- A bond that asks something of you ----------
     {
       id: "a5_charu", when: (S) => (S.friend === "charu" || S.spouse === "charu") && !S.dead.includes("charu"), skipTo: "s_late",
-      act: 5, art: "origin", place: (S) => K.ORIGINS[S.origin].name,
+      act: 5, art: "scene_smith", place: (S) => K.ORIGINS[S.origin].name, caption: "A forge at dawn",
       title: "The old smith",
       body: (S) => [
         "A boy brings word from home. Old Kesava, Charu's father, the smith who first put a hammer in your hands, is dying.",

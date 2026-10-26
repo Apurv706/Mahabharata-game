@@ -12,7 +12,7 @@
   K.scenes([
     // ---------- Childhood ----------
     {
-      id: "ev_snake", act: 1, art: "origin", place: (S) => K.ORIGINS[S.origin].name, caption: "The well-house at noon",
+      id: "ev_snake", act: 1, art: "ev_snake", place: (S) => K.ORIGINS[S.origin].name, caption: "The well-house at noon",
       title: "A cobra in the well-house",
       body: ["A cobra has made its home in the well-house, and the women will not go for water. Your grandmother says a cobra in the house is a guest of the gods. Your uncle has found a stick."],
       choices: [
@@ -28,7 +28,7 @@
       next: "a1_poison"
     },
     {
-      id: "ev_bard", act: 1, art: "scene_sage", place: (S) => K.ORIGINS[S.origin].name, caption: "Under the village banyan",
+      id: "ev_bard", act: 1, art: "ev_bard", place: (S) => K.ORIGINS[S.origin].name, caption: "Under the village banyan",
       title: "A bard under the banyan",
       body: ["A wandering suta sets up under the village banyan with a veena and a voice like a river. Tonight he sings of the churning of the ocean, when gods and demons pulled a serpent back and forth for a thousand years."],
       choices: [
@@ -46,7 +46,7 @@
 
     // ---------- Youth ----------
     {
-      id: "ev_horses", act: 2, art: "scene_fair", place: "The horse fair by the river road", caption: "Northern horses at the river road",
+      id: "ev_horses", act: 2, art: "ev_horses", place: "The horse fair by the river road", caption: "Northern horses at the river road",
       title: "The grey mare",
       body: ["Horse-traders have come down the river road with forty northern horses. One grey mare lets no one near her. The traders want her gone before she kills someone."],
       choices: [
@@ -62,7 +62,7 @@
       next: "a2_spar"
     },
     {
-      id: "ev_deer", act: 2, art: "scene_ashram", place: "The forest", caption: "A clearing in the forest",
+      id: "ev_deer", act: 2, art: "ev_deer", place: "The forest", caption: "A clearing in the forest",
       title: "The wounded doe",
       body: [
         "In the forest you find a doe with an arrow in her flank, still breathing. Behind you, a hunting party is crashing through the brush. A prince's party, by the sound of the horns.",
@@ -83,7 +83,7 @@
 
     // ---------- Young adult ----------
     {
-      id: "ev_lamps", act: 3, art: "scene_indraprastha", place: "The city, on the new-moon night", caption: "Lamps on every wall",
+      id: "ev_lamps", act: 3, art: "ev_lamps", place: "The city, on the new-moon night", caption: "Lamps on every wall",
       title: "The night of lamps",
       body: ["On the new-moon night of Kartika the whole city sets out lamps, in rows along every wall and step. You have a hundred clay lamps and a little oil."],
       choices: [
@@ -97,7 +97,7 @@
       next: "a3_rajasuya"
     },
     {
-      id: "ev_flood", act: 3, art: "origin", place: (S) => K.ORIGINS[S.origin].name, caption: "The river over its banks",
+      id: "ev_flood", act: 3, art: "ev_flood", place: (S) => K.ORIGINS[S.origin].name, caption: "The river over its banks",
       title: "The river rises",
       body: ["The rains come late and then all at once. In the night the river comes over its banks, and the low quarter of the town is under water to the rooftops."],
       choices: [
@@ -115,7 +115,7 @@
 
     // ---------- The exile years ----------
     {
-      id: "ev_riddle", act: 5, art: "scene_sage", place: "A road in the dry season", caption: "An ascetic by the road",
+      id: "ev_riddle", act: 5, art: "ev_riddle", place: "A road in the dry season", caption: "An ascetic by the road",
       title: "The ascetic's riddle",
       body: [
         "An ascetic sits by the road with his eyes closed, as he has for days. As you pass he speaks without opening them.",
@@ -131,7 +131,7 @@
       next: "a5_forest_boon"
     },
     {
-      id: "ev_bandits", act: 5, art: "battle_border", place: "Where the road narrows", caption: "Five men in the trees",
+      id: "ev_bandits", act: 5, art: "ev_bandits", place: "Where the road narrows", caption: "Five men in the trees",
       title: "Bandits on the road",
       body: ["Five men step out of the trees where the road narrows. They are thin, and their weapons are farm tools. The one in front is shaking."],
       choices: [
@@ -147,7 +147,7 @@
     },
     {
       id: "ev_teacher", act: 5, when: (S) => S.teacher && S.teacher !== "self", skipTo: "a5_matsya",
-      art: "scene_teacher", place: "Your teacher's house", caption: "A lamp by a sickbed",
+      art: "ev_teacher", place: "Your teacher's house", caption: "A lamp by a sickbed",
       title: "Your teacher is ill",
       body: ["Word comes that {teacher} is ill and asking for students. The fever is in the chest. The physicians are not hopeful."],
       choices: [
@@ -160,7 +160,7 @@
       next: "a5_matsya"
     },
     {
-      id: "ev_letter", act: 5, art: "origin", place: (S) => K.ORIGINS[S.origin].name, caption: "A palm-leaf letter",
+      id: "ev_letter", act: 5, art: "ev_letter", place: (S) => K.ORIGINS[S.origin].name, caption: "A palm-leaf letter",
       title: "A letter from home",
       body: ["A palm-leaf letter comes from {origin}, in your mother's hand, which has grown shaky. Your father is old now. The roof needs mending. When are you coming home?"],
       choices: [
@@ -174,7 +174,7 @@
   ]);
 
   K.encounter({
-    id: "e_bandits", title: "Bandits on the road", art: "battle_border", caption: "Farm tools against your weapon", lethal: false,
+    id: "e_bandits", title: "Bandits on the road", art: "ev_bandits", caption: "Farm tools against your weapon", lethal: false,
     intro: "They come at you all at once, badly.",
     enemies: [K.foe("Hungry bandit", 2, { hp: 24 }), K.foe("Hungry bandit", 1, { hp: 20 })],
     win: { fx: { rep: { common: -1 } }, text: "They scatter into the trees. The last one to run is no older than sixteen." },

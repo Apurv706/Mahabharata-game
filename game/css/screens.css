@@ -197,6 +197,8 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 .toggle { display: flex; gap: 10px; align-items: flex-start; font-size: 16px; cursor: pointer; }
 .toggle input { margin-top: 5px; accent-color: var(--accent); width: 18px; height: 18px; }
 .toggle small { display: block; color: var(--muted); font-size: 14px; }
+.range { display: grid; gap: 4px; font-size: 16px; padding-left: 28px; }
+.range input { width: 100%; accent-color: var(--accent); }
 .note { font-size: 15px; color: var(--muted); }
 .err { color: var(--negative); font-size: 15px; }
 
@@ -222,23 +224,24 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 .fates p { margin: 0; }
 
 /* The lamp: at a few moments the story will not wait. The flame shrinks as the oil runs down. */
-.lamp { --oil: 1; display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 6px 14px; padding: 10px 14px; margin-bottom: 10px; border-radius: var(--r-card); background: rgba(0, 0, 0, 0.18); border: 1px solid var(--gold-line); }
-.lamp .diya { grid-row: 1 / span 2; width: 52px; height: 52px; }
-.lamp .diya svg { width: 100%; height: 100%; display: block; overflow: visible; }
-.lamp .flame { transform-box: fill-box; transform-origin: 50% 100%; transform: scale(calc(0.3 + var(--oil) * 0.7)); transition: transform 0.2s linear, opacity 0.4s; }
-.lamp .smoke { opacity: 0; transition: opacity 0.8s; }
+.lamp { --oil: 1; display: grid; grid-template-columns: 70px 1fr; align-items: center; gap: 6px 14px; padding: 10px 14px; margin-bottom: 10px; border-radius: var(--r-card); background: rgba(0, 0, 0, 0.18); border: 1px solid var(--gold-line); }
+.lamp .diya { grid-row: 1 / span 2; position: relative; width: 70px; aspect-ratio: 330 / 264; }
+.lamp .diya img, .lamp .diya svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+/* The flame shrinks toward its wick (86% across, 55% down the trimmed lamp) as the oil runs out. */
+.lamp .flame { transform-origin: 86.4% 55.3%; transform: scale(calc(0.3 + var(--oil) * 0.7)); transition: transform 0.2s linear, opacity 0.4s; }
+.lamp .smoke { opacity: 0; transition: opacity 0.8s; overflow: visible; }
 .lamp .oil { height: 4px; border-radius: 2px; background: var(--track); overflow: hidden; align-self: end; }
 .lamp .oil i { display: block; height: 100%; width: calc(var(--oil) * 100%); background: var(--data); }
 .lamp-note { font-size: 15px; color: var(--muted); align-self: start; }
 .lamp.low .oil i { background: var(--negative); }
 .lamp.low .lamp-note { color: var(--ink); }
-.lamp.out .flame { opacity: 0; }
+.lamp.out .flame { opacity: 0; animation: none; }
 .lamp.out .smoke { opacity: 0.8; }
 @media (prefers-reduced-motion: no-preference) {
-  .lamp .flame path:first-child { transform-box: fill-box; transform-origin: 50% 100%; animation: flicker 0.9s ease-in-out infinite alternate; }
-  .lamp.low .flame { animation: gutter 0.5s steps(2) infinite; }
+  .lamp .flame { animation: flicker 0.9s ease-in-out infinite alternate; }
+  .lamp.low .flame { animation: flicker 0.9s ease-in-out infinite alternate, gutter 0.5s steps(2) infinite; }
 }
-@keyframes flicker { to { transform: scaleY(1.1) skewX(-4deg); } }
+@keyframes flicker { to { opacity: 0.86; translate: 0 -1px; } }
 @keyframes gutter { 50% { opacity: 0.55; } }
 
 /* Dice games: long pasha dice, ivory with dark pips. */

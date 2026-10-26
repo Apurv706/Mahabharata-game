@@ -76,7 +76,8 @@
       '<label class="toggle"><input type="checkbox" id="m-gradual"' + (prefs.gradual !== false ? " checked" : "") + "><span>" + U.tr("Reveal the story line by line") + "<small>" + U.tr("Tap the page or press Space to show everything at once.") + "</small></span></label>" +
       '<label class="toggle"><input type="checkbox" id="m-timed"' + (prefs.timed !== false ? " checked" : "") + "><span>" + U.tr("Timed moments") + "<small>" + U.tr("At a few hard moments a lamp burns down. If it goes out, you hold your tongue.") + "</small></span></label>" +
       '<label class="toggle"><input type="checkbox" id="m-sound"' + (prefs.sound !== false ? " checked" : "") + "><span>" + U.tr("Sound") + "<small>" + U.tr("The quill, the conch, the dice and the gong.") + "</small></span></label>" +
-      '<label class="toggle"><input type="checkbox" id="m-drone"' + (prefs.drone !== false ? " checked" : "") + (prefs.sound === false ? " disabled" : "") + "><span>" + U.tr("Tanpura drone") + "<small>" + U.tr("A quiet drone under the story.") + "</small></span></label></div></div>" +
+      '<label class="toggle"><input type="checkbox" id="m-drone"' + (prefs.drone !== false && prefs.music !== false ? " checked" : "") + (prefs.sound === false ? " disabled" : "") + "><span>" + U.tr("Music") + "<small>" + U.tr("Tanpura, bansuri and tabla, in a raga that follows the story.") + "</small></span></label>" +
+      '<label class="range"><span>' + U.tr("Music volume") + '</span><input type="range" id="m-vol" min="0" max="100" step="5" value="' + Math.round((typeof prefs.musicVol === "number" ? prefs.musicVol : 0.45) * 100) + '"></label></div></div>' +
       '<div class="field"><span class="lbl">' + U.tr("Move this life to another device") + '</span><p class="note">' + U.tr("Copy this code and paste it into \u201cLoad a save code\u201d on another device.") + "</p>" +
       '<textarea id="m-code" readonly spellcheck="false">' + U.esc(K.exportCode()) + '</textarea><div class="btnrow"><button class="ghost" id="m-copy" type="button">' + U.tr("Copy code") + "</button></div></div>" +
       '<div class="btnrow"><button class="ghost" id="m-gloss" type="button">' + U.tr("Glossary") + '</button><button class="ghost" id="m-title" type="button">' + U.tr("Return to title") + "</button></div>",
@@ -88,7 +89,8 @@
         U.$("m-gradual").addEventListener("change", (e) => { K.prefs({ gradual: e.target.checked }); });
         U.$("m-timed").addEventListener("change", (e) => { K.prefs({ timed: e.target.checked }); });
         U.$("m-sound").addEventListener("change", (e) => { K.prefs({ sound: e.target.checked }); U.$("m-drone").disabled = !e.target.checked; if (K.Sound) K.Sound.refresh(); });
-        U.$("m-drone").addEventListener("change", (e) => { K.prefs({ drone: e.target.checked }); if (K.Sound) K.Sound.refresh(); });
+        U.$("m-drone").addEventListener("change", (e) => { K.prefs({ drone: e.target.checked, music: e.target.checked }); if (K.Sound) K.Sound.refresh(); });
+        U.$("m-vol").addEventListener("input", (e) => { K.prefs({ musicVol: e.target.value / 100 }); if (K.Sound) K.Sound.refresh(); });
         U.$("m-big").addEventListener("change", (e) => { K.prefs({ bigText: e.target.checked }); document.body.classList.toggle("big-text", e.target.checked); });
         U.$("m-copy").addEventListener("click", async () => {
           const ta = U.$("m-code");

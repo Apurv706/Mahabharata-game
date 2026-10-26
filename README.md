@@ -42,7 +42,7 @@ A life takes about 45–60 minutes. The game saves itself at every scene (in tha
 - **Secrets** you hold are listed in the ledger (`K.SECRETS`).
 - **Chance events** (`js/content/events.js`): five slots, each drawing one of two small events or nothing, so no two lives meet the same things (`K.slot`).
 - **Book of Lives** (`js/ui/lives.js`): every finished life is kept in this browser, with an endings gallery (11 endings, the unfound ones as hints). A new life can remember a past one and starts with its karma.
-- **Sound** (`js/ui/audio.js`): made in the browser with Web Audio, no files: a tanpura drone, the quill, conches, dice, blows and a gong. Switches in the menu.
+- **Sound and music** (`js/ui/audio.js`): made in the browser with Web Audio, no files. The music is a small Hindustani ensemble that improvises: tanpura, bansuri and tabla. It follows the stakes: raga Yaman as a slow alap for the story, raga Marwa in jhaptal for high-stakes scenes (the dice hall, the war, timed moments), and Marwa in fast teental with flute runs in battle. Effects: the quill, conches, dice, blows and a gong. The menu has music on/off, a music volume slider and sound effects.
 - **Skill checks** show their odds before you choose.
 
 ## Code layout

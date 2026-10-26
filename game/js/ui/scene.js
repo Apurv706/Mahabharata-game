@@ -17,6 +17,8 @@
     return ["yours", K.tr("Your life")];
   }
 
+  // Other moments where everything is at stake: the music turns tense for these too.
+  const TENSE = new Set(["a1_poison", "a3_lac", "a5_karna_secret", "a5_side", "a7_field"]);
   // A conch for each day of the war, once per scene (not again when the screen is redrawn).
   let lastConch = null;
   U.renderScene = function (sc) {
@@ -24,6 +26,8 @@
     if (sc.ending) return U.renderEnding(sc);
     const S = K.S;
     if (sc.war && lastConch !== sc.id && K.Sound) K.Sound.play("conch");
+    // The music follows the stakes: the war, the dice hall and timed moments are tense.
+    if (K.Sound) K.Sound.mood(sc.war || K.val(sc.lamp) || (sc.act === 4 && sc.canon) || TENSE.has(sc.id) ? "tense" : "calm");
     lastConch = sc.id;
     U.redraw = () => U.renderScene(sc);
     U.setNav(true);
@@ -76,12 +80,10 @@
   // The lamp pauses while the tab is hidden or a window is open, keeps its oil through a language
   // switch, and is off in the tests and when "Timed moments" is turned off in the menu.
   U.timed = () => !/jsdom/i.test(navigator.userAgent || "") && K.prefs().timed !== false;
-  const DIYA = '<svg viewBox="0 0 64 64" aria-hidden="true">' +
-    '<path class="smoke" d="M57 28 C53 22 61 18 57 12 C53 6 60 3 58 0" fill="none" stroke="#c3a585" stroke-width="1.6" stroke-linecap="round"/>' +
-    '<g class="flame"><path d="M57 7 C64 17 64 25 57 31 C50 25 50 17 57 7Z" fill="#f0943f"/><path d="M57 15 C60.5 21 60.5 26 57 29.5 C53.5 26 53.5 21 57 15Z" fill="#ffe7a8"/></g>' +
-    '<path d="M6 38 Q32 62 54 40 L60 33 Q50 41 32 42 Q16 42 6 38Z" fill="#b8642f"/>' +
-    '<ellipse cx="30" cy="39" rx="24" ry="4.5" fill="#7a3a1c"/><path d="M48 37 L60 31 L58 35Z" fill="#7a3a1c"/>' +
-    '<path d="M14 50 Q32 58 48 50" fill="none" stroke="#e2b55a" stroke-width="1.2" opacity="0.7"/></svg>';
+  // The painted clay lamp (art/diya.png) with its flame as a separate layer, so the flame alone shrinks.
+  const DIYA = '<img class="body" src="art/diya.png" alt="">' +
+    '<svg class="smoke" viewBox="0 0 330 264" aria-hidden="true"><path d="M285 140 C266 112 302 96 284 68 C266 40 298 26 288 2" fill="none" stroke="#c3a585" stroke-width="7" stroke-linecap="round"/></svg>' +
+    '<img class="flame" src="art/diya_flame.png" alt="">';
   let lampRun = null;
   const lampMemo = { key: null, left: 0 };
   function stopLamp() { if (lampRun) { clearTimeout(lampRun.timer); lampRun = null; } }
