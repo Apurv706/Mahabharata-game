@@ -129,7 +129,8 @@
       else if (!S.alive) f.push("Vasu carried your story home, and told it to his own children.");
       else f.push(S.flags.includes("vasu_gentle") ? "Vasu grew into the kind man you hoped for, and never picked up a sword again." : S.flags.includes("vasu_craft") ? "Vasu went back to the craft you taught him, and did well." : "Vasu served in Parikshit's guard and rose high.");
     }
-    if (S.kin) f.push(S.alive && S.endChoice === "home" ? ["{kin}, who shaped you as a child, lived to see you come home.", { kin: S.kin }] : S.alive ? ["{kin} kept every message you sent from the war.", { kin: S.kin }] : ["In {origin}, {kin} told the children who you had been.", { kin: S.kin }]);
+    if (S.kin && K.kinElder(S)) f.push(["You taught your own children what {kin} taught you.", { kin: S.kin }]);
+    else if (S.kin) f.push(S.alive && S.endChoice === "home" ? ["{kin}, who shaped you as a child, lived to see you come home.", { kin: S.kin }] : S.alive ? ["{kin} kept every message you sent from the war.", { kin: S.kin }] : ["In {origin}, {kin} told the children who you had been.", { kin: S.kin }]);
     if (S.spouse) f.push(S.alive ? "{spouse} grew old beside you." : "{spouse} never remarried.");
     if (S.friend === "charu") f.push(S.alive ? "Charu outlived everyone, and complained about it." : "Charu kept a lamp lit for you every year.");
     if (S.flags.includes("debt_paid_late")) f.push("Sudatta's grandson told everyone that you paid what your grandfather owed.");

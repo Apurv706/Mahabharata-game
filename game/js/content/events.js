@@ -162,8 +162,13 @@
     {
       id: "ev_letter", act: 5, art: "ev_letter", place: (S) => K.ORIGINS[S.origin].name, caption: "A palm-leaf letter",
       title: "A letter from home",
-      body: (S) => ["A palm-leaf letter comes from {origin}, in your mother's hand, which has grown shaky. Your father is old now. The roof needs mending. When are you coming home?",
-        S.kin ? { memory: ["At the bottom, in another hand you know at once: {kin} asks to see you before {kin} is too old to know your face.", { kin: S.kin }] } : null],
+      body: (S) => [
+        S.flags.includes("moved_capital") ? "Your parents went back to {origin} when your father's working years were done." : null,
+        "A palm-leaf letter comes from {origin}, in your mother's hand, which has grown shaky. Your father is old now. The roof needs mending. When are you coming home?",
+        !S.kin ? null
+          : K.kinElder(S) ? { memory: ["She writes that {kin} died in the cold season, still asking after you.", { kin: S.kin }] }
+          : S.kinRole === "mother" ? { memory: "At the bottom, in a hand that shakes more than it used to, she asks you to come before she is too old to know your face." }
+          : { memory: ["At the bottom, in another hand you know at once: {kin} asks to see you before {kin} is too old to know your face.", { kin: S.kin }] }],
       choices: [
         { id: "go", t: "Go home for the rains", fx: { duty: { family: 2, court: -1 } },
           text: "The roof gets mended. Your father tells the same three stories every night. You do not mind." },

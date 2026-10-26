@@ -1971,6 +1971,13 @@
     "The ring is closing. If the lamp burns out, you will hold your place in it.": "घेरा कस रहा है। अगर दीया बुझ गया, तो तुम उसमें अपनी जगह पर डटे रहोगे।",
     "The breach will not stay open. If the lamp burns out, you will be at the gate with the others.": "दरार खुली नहीं रहेगी। अगर दीया बुझ गया, तो तुम बाकियों के साथ द्वार पर रहोगे।",
     "Tanpura, bansuri and tabla, in a raga that follows the story.": "तानपूरा, बाँसुरी और तबला, एक राग में जो कहानी के साथ बदलता है।",
-    "Hastinapura, at the end of the road": "राह के छोर पर हस्तिनापुर"
+    "Hastinapura, at the end of the road": "राह के छोर पर हस्तिनापुर",
+    "Two years ago, outside the arena, you found Adhiratha alone by the chariots. He told you Karna was found as a baby, floating down this river in a basket.": "दो बरस पहले, रंगभूमि के बाहर, तुम्हें अधिरथ रथों के पास अकेले मिले थे। उन्होंने बताया था कि कर्ण बचपन में एक टोकरी में इसी नदी पर बहता हुआ मिला था।",
+    "Your family serves in the Anga guard. Anga pays tribute to the Kuru throne, and its guard goes wherever the Kuru king sends it.": "तुम्हारा परिवार अंग के रक्षक दल में सेवा करता है। अंग कुरु सिंहासन को कर देता है, और उसका रक्षक दल वहीं जाता है जहाँ कुरु राजा भेजते हैं।",
+    "Panchala is your homeland. The arrows in the Kuru quivers came from your mother's workshop in the armoury.": "पांचाल तुम्हारी जन्मभूमि है। कुरु तरकशों के बाण शस्त्रागार में तुम्हारी माँ की कार्यशाला से आए हैं।",
+    "Your parents went back to {origin} when your father's working years were done.": "जब तुम्हारे पिता के काम के बरस पूरे हुए, तुम्हारे माता-पिता {origin} लौट गए।",
+    "She writes that {kin} died in the cold season, still asking after you.": "वे लिखती हैं कि {kin} जाड़ों में चल बसे, आख़िर तक तुम्हारा हाल पूछते हुए।",
+    "At the bottom, in a hand that shakes more than it used to, she asks you to come before she is too old to know your face.": "नीचे, पहले से ज़्यादा काँपती लिखावट में, वे कहती हैं कि आ जाओ, इससे पहले कि बुढ़ापे में वे तुम्हारा चेहरा भी न पहचान पाएँ।",
+    "You taught your own children what {kin} taught you.": "{kin} ने तुम्हें जो सिखाया, वह तुमने अपने बच्चों को सिखाया।"
   });
 })(window.K = window.K || {});

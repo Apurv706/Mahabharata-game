@@ -6,7 +6,7 @@
     panchala: "Your mother makes arrows for the king's archers. In Panchala, people say a good arrow matters more than a good name.",
     matsya: "Your family keeps horses on the lake shore. Visitors from the big kingdoms rarely come this far.",
     dwaraka: "Your uncle trades across the sea. Dwaraka smells of salt and cardamom, and everyone argues about everything.",
-    anga: "Your family serves in the Anga guard. Everyone in Anga knows the story of how they got a king.",
+    anga: "Your family serves in the Anga guard. Anga pays tribute to the Kuru throne, and its guard goes wherever the Kuru king sends it.",
     suta: "Your father drives chariots for the Kuru nobles. He tells you to keep your eyes down and your hands steady.",
     nishada: "Your village fishes the river and hunts the forest. City people call you Nishada as if it were an insult.",
     gandhara: "Your family serves in the household of King Subala, high in the mountains. Everyone still talks about his daughter Gandhari, who married the blind Kuru king and bound her own eyes so as never to see more than he could."

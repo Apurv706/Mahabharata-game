@@ -19,7 +19,7 @@
     },
     {
       id: "a3_debt", when: { flag: "debt_owed" }, skipTo: "a3_lac",
-      act: 3, age: 21, art: "origin", place: (S) => K.ORIGINS[S.origin].name,
+      act: 3, age: 21, art: (S) => K.childArt(S), place: (S) => K.childPlace(S),
       title: "The debt comes due",
       body: ["Sudatta the moneylender arrives at your door with a palm-leaf note your grandfather signed. With interest, it is more than your family owns. He is polite about it, which is worse."],
       choices: [

@@ -72,6 +72,11 @@
     }
   };
 
+  // Record which relative was chosen (grandmother, mother, cousin...), so later lines fit their age:
+  // a grandparent will not still be alive when you are forty-five.
+  Object.values(K.ROOTS).forEach((r) => r.choices.forEach((c) => { c.fx.set.kinRole = c.id; }));
+  K.kinElder = (S) => ["grandmother", "grandfather", "greataunt"].includes(S.kinRole);
+
   K.CUSTOMS = {
     hastinapura: {
       title: "The king's procession", art: "home_hastinapura",

@@ -115,7 +115,7 @@
         "The Kauravas ride first, and the Panchala army throws them back."
       ],
       body: (S) => [
-        S.origin === "panchala" ? { memory: "Panchala is your home. Your mother's arrows are in those quivers." } : null,
+        S.origin === "panchala" ? { memory: S.flags.includes("moved_capital") ? "Panchala is your homeland. The arrows in the Kuru quivers came from your mother's workshop in the armoury." : "Panchala is your home. Your mother's arrows are in those quivers." } : null,
         S.teacher === "drona" ? "Drona looks at each of his students in turn, and then at you." : "The army passes your door on its way east."
       ],
       choices: [
@@ -140,7 +140,7 @@
       id: "a2_vow", act: 2, age: 19, art: "scene_vow", place: "The river ghat, at night", caption: "Lamps on the dark river",
       title: "A vow by the river",
       body: (S) => [
-        S.flags.includes("left_arena") ? { memory: "Months ago, outside the arena, you found Adhiratha alone by the chariots. He told you Karna was found as a baby, floating down this river in a basket." } : null,
+        S.flags.includes("left_arena") ? { memory: "Two years ago, outside the arena, you found Adhiratha alone by the chariots. He told you Karna was found as a baby, floating down this river in a basket." } : null,
         "The river is full of lamps. People make vows here. A vow gives you strength, and breaking one marks you for life. You may hold up to three."
       ],
       choices: [
