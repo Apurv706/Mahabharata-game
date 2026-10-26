@@ -106,7 +106,14 @@
       const lfo = ctx.createOscillator(), vib = ctx.createGain(); lfo.frequency.value = kind === "shehnai" ? 6.2 : 5.3; vib.gain.value = 0;
       lfo.connect(vib); vib.connect(o.frequency); vib.connect(o2.frequency);
       let chain;
-      if (kind === "shehnai") {
+      if (kind === "sarangi") { // bowed, nasal, singing
+        o.type = "sawtooth"; o2.type = "sawtooth";
+        const b1 = ctx.createBiquadFilter(); b1.type = "peaking"; b1.frequency.value = 1050; b1.Q.value = 1.4; b1.gain.value = 8;
+        const b2 = ctx.createBiquadFilter(); b2.type = "peaking"; b2.frequency.value = 2600; b2.Q.value = 2; b2.gain.value = 5;
+        const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 280;
+        const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 3800;
+        const g2 = ctx.createGain(); g2.gain.value = 0.5; o.connect(hp); o2.connect(g2); g2.connect(hp); hp.connect(b1); b1.connect(b2); b2.connect(lp); chain = lp;
+      } else if (kind === "shehnai") {
         o.type = "sawtooth"; o2.type = "square";
         const hp = ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 450;
         const pk = ctx.createBiquadFilter(); pk.type = "peaking"; pk.frequency.value = 1400; pk.Q.value = 2; pk.gain.value = 9;
@@ -119,25 +126,31 @@
         const br = noise(t, 10), bp = ctx.createBiquadFilter(), bg = ctx.createGain(); bp.type = "bandpass"; bp.frequency.value = 2200; bp.Q.value = 1.5; bg.gain.value = 0.05;
         br.loop = true; br.connect(bp); bp.connect(bg); bg.connect(out);
       }
-      chain.connect(out); out.connect(kind === "shehnai" ? C.lead : C.flute);
-      const peak = (kind === "shehnai" ? 0.11 : 0.16) * vel;
+      chain.connect(out); out.connect(kind === "shehnai" ? C.lead : kind === "sarangi" ? C.str : C.flute);
+      const peak = (kind === "shehnai" ? 0.11 : kind === "sarangi" ? 0.075 : 0.16) * vel;
+      const mult = kind === "sarangi" ? 1.004 : kind === "shehnai" ? 1 : 2; // the sarangi's sympathetic shimmer
       let x = t;
       out.gain.setValueAtTime(0.0001, t);
       let first = true, end = t, prevF = 0;
       notes.forEach((nt, i) => {
         const d = nt.d * beat;
         if (nt.n === "-") { out.gain.setTargetAtTime(0.0001, x, 0.03); x += d; first = true; return; }
-        const f = freq(nt.n, octaveBase), mult = kind === "shehnai" ? 1 : 2;
+        const f = freq(nt.n, octaveBase);
         if (first) { o.frequency.setValueAtTime(f, x); o2.frequency.setValueAtTime(f * mult, x); out.gain.setTargetAtTime(peak, x, 0.02); first = false; }
         else {
-          const gl = Math.min(0.07, d * 0.3);
+          const gl = nt.slide ? Math.min(0.38, d * 0.5) : Math.min(0.07, d * 0.3);
           o.frequency.setValueAtTime(prevF || f, x); o.frequency.exponentialRampToValueAtTime(f, x + gl);
           o2.frequency.setValueAtTime((prevF || f) * mult, x); o2.frequency.exponentialRampToValueAtTime(f * mult, x + gl);
           out.gain.setTargetAtTime(peak * 0.7, x, 0.008); out.gain.setTargetAtTime(peak * (nt.acc ? 1.2 : 1), x + 0.02, 0.02);
         }
         prevF = f;
         vib.gain.setValueAtTime(0, x);
-        if (d > 0.45) vib.gain.linearRampToValueAtTime(f * 0.012, x + d * 0.85);
+        if (nt.and) { // andolan: a slow, wide sway, as on Bhairavi's flat Re and Dha
+          lfo.frequency.setValueAtTime(1.6, x); vib.gain.linearRampToValueAtTime(f * 0.016, x + Math.min(0.4, d * 0.5));
+        } else {
+          lfo.frequency.setValueAtTime(kind === "shehnai" ? 6.2 : kind === "sarangi" ? 5.6 : 5.3, x);
+          if (d > 0.45) vib.gain.linearRampToValueAtTime(f * (kind === "sarangi" ? 0.009 : 0.012), x + d * 0.85);
+        }
         x += d; end = x;
       });
       out.gain.setTargetAtTime(0.0001, end, 0.08);
@@ -212,9 +225,10 @@
   // Parse "S:1 r:0.5 - :1 g'" → [{n, d, acc}]
   function seq(str, defD = 1) {
     return str.trim().split(/\s+/).map((tok) => {
-      const acc = tok.startsWith("!"); if (acc) tok = tok.slice(1);
+      let acc = false, and = false, slide = false;
+      for (;;) { if (tok[0] === "!") acc = true; else if (tok[0] === "~") and = true; else if (tok[0] === "^") slide = true; else break; tok = tok.slice(1); }
       const [n, d] = tok.split(":");
-      return { n, d: d ? parseFloat(d) : defD, acc };
+      return { n, d: d ? parseFloat(d) : defD, acc, and, slide };
     });
   }
   window.FUSION = { makeRack, seq };

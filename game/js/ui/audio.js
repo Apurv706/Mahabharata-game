@@ -172,7 +172,7 @@
   let timer = null, mood = "calm", S0 = null;
   // ---------- The three composed pieces ----------
   // Each stage of the game has its own piece, played from a file and looped:
-  //   calm   → Vijaya (raga Yaman, heroic): the title, childhood, training, young adulthood, aftermath
+  //   calm   → Vijaya (raga Bhairavi, heroic): the title, childhood, training, young adulthood, aftermath
   //   tense  → Chakravyuha (Purvi, fusion): the dice game, the exile years, high-stakes moments
   //   battle → Dharmayuddha (Bhairavi, battle anthem): the war and every fight
   // Files load only when their stage is reached. If they cannot load (the game opened from a file on

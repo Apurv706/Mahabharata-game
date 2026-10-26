@@ -134,59 +134,68 @@
     return end + 4.5;
   }
 
-  // 3. VIJAYA — heroic, uplifting. C#, 126 bpm, raga Yaman (S R G M# P D N); lifts a whole tone for the last chorus.
+  // 3. VIJAYA — heroic, in raga Bhairavi (S r g m P d n), Sa on C#, 132 bpm. No chord changes: everything
+  // rests on the Sa-Pa drone. Alap on bansuri, then a gat on sarangi and bansuri over tabla in teental,
+  // an antara in the upper register with shehnai and voices in unison, a flute-and-tabla exchange,
+  // the gat again with the full ensemble, and a tihai that lands on sam.
   function vijaya(ctx) {
     const SA = 138.59;
-    const rack = makeRack(ctx, { sa: SA });
-    const { I } = rack;
-    const { beat, T } = clock(126);
+    const { I } = makeRack(ctx, { sa: SA });
+    const { beat, T } = clock(132);
     const BARS = 36;
-    I.tanpura(T(0), T(BARS) + 2);
-    // Intro: bells and choir, a free flute call.
-    [0, 1, 2, 3].forEach((b) => I.bell(T(b), ["S", "P", "G", "S"][b], 0.8));
-    I.choir(T(0), ["S", "G", "P"], 8 * beat, 0.8, "a");
-    I.choir(T(2), ["R", "M", "D"], 8 * beat, 0.8, "a");
-    melody(I, T, 0, beat, "-:1 P:2 M:0.5 G:0.5 R:1 G:3 -:1 N:1 D:1 P:2 M:1 !G:3 -:1", "bansuri", 0.85);
-    I.riser(T(3), 4 * beat);
-    const chords = [["S", "G", "P"], ["R", "M", "D"], ["D", "S'", "G'"], ["P", "N", "R'"]];
-    // Verse: dhol, manjira, legato strings, flute theme.
-    dholGroove(I, T, 0, 4, 12, 0.85);
-    manjira(I, T, 4, 12, 1, 0.7);
-    for (let k = 0; k < 4; k++) I.chord(T(4 + k * 2), chords[k], 8 * beat, 0.8);
-    for (let b = 4; b < 12; b++) { I.bass(T(b), ["S", "S", "R", "R", "D", "D", "P", "P"][b - 4], 2 * beat, 0.7); I.bass(T(b, 2), ["S", "S", "R", "R", "D", "D", "P", "P"][b - 4], 2 * beat, 0.6); }
-    const theme = "G:1 M:1 D:1.5 N:0.5 D:2 P:2 G:1 R:1 G:1 M:1 P:3 -:1 D:1 N:1 S':1 R':1 G':1.5 R':0.5 S':2 N:1 D:1 P:1 M:1 !G:3 -:1";
-    melody(I, T, 4, beat, theme, "bansuri", 1);
-    // Chorus: choir and brass carry the anthem, strings in octaves.
-    const anthem = "S':2 N:1 D:1 P:2 M:1 G:1 M:1 D:1 N:1 S':1 R':3 -:1 G':2 R':1 S':1 N:1 D:1 P:1 D:1 N:1 S':1 R':1 N:1 !S':3 -:1";
-    const chorus = (from, lift) => {
-      const sa = SA * lift;
-      const r2 = makeRack(ctx, { sa }); const J = r2.I; // a rack in the lifted key
-      dholGroove(J, T, 0, from, from + 8, 1, true);
-      manjira(J, T, from, from + 8, 0.5, 0.85);
-      for (let k = 0; k < 4; k++) { const ch = chords[k]; J.choir(T(from + k * 2), ch, 8 * beat, 1.1); J.chord(T(from + k * 2), ch, 8 * beat, 0.8); J.brass(T(from + k * 2), ch, 0.5, 1); J.brass(T(from + k * 2 + 1, 2.5), ch, 0.3, 0.8); }
-      for (let b = from; b < from + 8; b++) { J.nagara(T(b), 0.75); J.bass(T(b), ["S", "S", "R", "R", "D", "D", "P", "P"][b - from], 4 * beat, 0.9); }
-      J.line(T(from), beat, seq(anthem), "shehnai", 1.05, sa);
-      J.line(T(from), beat, seq(anthem), "bansuri", 0.7, sa);
-      return J;
-    };
-    chorus(12, 1);
-    // Bridge: tabla and flute answer each other.
-    const qa = ["dha", "ge", "na", "ti", "na", "ka", "dhin", "-"];
-    for (let b = 20; b < 24; b++) {
-      if (b % 2 === 1) for (let i = 0; i < 8; i++) { if (qa[i] !== "-") I.tabla(T(b, i * 0.5), qa[i], 1); I.tabla(T(b, i * 0.5 + 0.25), "ti", 0.5); }
-    }
-    melody(I, T, 20, beat, "P:0.5 D:0.5 N:0.5 S':0.5 R':1 S':1 -:4 G':0.5 R':0.5 S':0.5 N:0.5 D:1 P:1 -:4", "bansuri", 0.9);
-    I.chord(T(20), ["S", "P"], 16 * beat, 0.6);
-    I.riser(T(22), 8 * beat, 1.1);
-    for (let i = 0; i < 8; i++) I.dhol(T(23, i * 0.5), "both", 0.5 + i * 0.07);
-    // Last chorus, a whole tone up.
-    const J = chorus(24, 9 / 8);
-    for (let b = 24; b < 32; b++) J.kick(T(b), 0.7);
-    // Ending.
-    dholGroove(J, T, 0, 32, 34, 1);
-    J.line(T(32), beat, seq("N:1 S':1 R':1 G':1 !S':4"), "shehnai", 1.1, SA * 9 / 8);
-    const end = T(34);
-    J.nagara(end, 1.2); J.brass(end, [".S", "S", "G", "P", "S'"], 3, 1.2); J.choir(end, ["S", "G", "P", "S'"], 3.5, 1.2); J.chord(end, [".S", "S", "G", "P"], 3.5, 1); J.bell(end, "S", 1); J.manjira(end, 1.2);
+    I.tanpura(T(0), T(BARS) + 3);
+    const drone = (from, to, vel) => { for (let b = from; b < to; b += 4) { I.choir(T(b), ["S", "P"], Math.min(4, to - b) * 4 * beat, vel, "o"); I.chord(T(b), [".S", ".P", "S"], Math.min(4, to - b) * 4 * beat, vel * 0.7); } };
+    const theka = ["dha", "dhin", "dhin", "dha", "dha", "dhin", "dhin", "dha", "dha", "tin", "tin", "ta", "ta", "dhin", "dhin", "dha"];
+    const tabla = (from, to, vel, fill) => { for (let b = from; b < to; b++) for (let i = 0; i < 4; i++) { const pos = ((b - from) * 4 + i) % 16; I.tabla(T(b, i), theka[pos], vel * (pos === 0 ? 1.25 : 0.9)); if (fill) { I.tabla(T(b, i + 0.5), pos % 2 ? "ti" : "na", vel * 0.45); } } };
+    const sam = (from, to, vel) => { for (let b = from; b < to; b += 4) { I.nagara(T(b), vel); I.manjira(T(b), vel); } };
+    const drone_bass = (from, to, vel) => { for (let b = from; b < to; b++) { I.bass(T(b), "S", beat * 1.5, vel); I.bass(T(b, 2), b % 2 ? "P" : "S", beat * 1.5, vel * 0.8); } };
+    const gat = "S:1 r:0.5 g:0.5 m:1 P:1 ~d:2 P:1 m:1 g:1 m:1 P:1 m:0.5 g:0.5 ~r:2 S:2 .n:1 S:1 r:1 g:1 m:1 g:0.5 r:0.5 g:1 m:1 P:1 d:0.5 P:0.5 m:1 g:1 !~r:1 S:3";
+    const antara = "m:1 P:1 d:1 n:1 !S':2 ^n:1 S':1 r':1 g':1 ~r':1 S':1 n:2 ~d:2 P:1 d:1 n:1 S':1 ^r':2 S':1 n:1 ~d:1 P:1 m:1 g:1 !^r:1 S:3";
+
+    // Alap: free, over the drone.
+    I.bell(T(0), "S", 0.6);
+    drone(0, 4, 0.7);
+    melody(I, T, 0, beat, "-:1 S:2 ^r:1 ~r:2 S:1 .n:1 S:1 ^g:2 m:1 ^g:1 ~r:2 !S:1", "bansuri", 0.9);
+    I.riser(T(3, 2), 2 * beat, 0.6);
+    for (let i = 0; i < 4; i++) I.tabla(T(3, i), ["ti", "ra", "ki", "dha"][i], 0.6 + i * 0.12);
+
+    // Gat: sarangi and bansuri in unison over tabla.
+    drone(4, 12, 0.6); tabla(4, 12, 0.9, false); sam(4, 12, 0.6); drone_bass(4, 12, 0.5);
+    for (let b = 4; b < 12; b++) for (let i = 0; i < 4; i++) I.manjira(T(b, i), i === 0 ? 0.6 : 0.35, i % 2 === 0);
+    melody(I, T, 4, beat, gat, "sarangi", 1);
+    melody(I, T, 4, beat, gat, "bansuri", 0.6);
+
+    // Antara: upper register; shehnai leads, voices sing the line in unison, dhol joins.
+    drone(12, 20, 0.7); tabla(12, 20, 1, true); sam(12, 20, 0.9); drone_bass(12, 20, 0.7);
+    dholGroove(I, T, 0, 12, 20, 0.75);
+    for (let b = 12; b < 20; b++) for (let i = 0; i < 4; i++) I.manjira(T(b, i), i === 0 ? 0.8 : 0.45, true);
+    melody(I, T, 12, beat, antara, "shehnai", 1);
+    melody(I, T, 12, beat, antara, "sarangi", 0.8);
+    { let x = 0; for (const nt of seq(antara)) { if (nt.n !== "-" && nt.d >= 2) I.choir(T(12, x), [nt.n], nt.d * beat, 0.7, "a"); x += nt.d; } }
+
+    // Sawal-jawab: the flute asks, the tabla answers.
+    drone(20, 24, 0.55);
+    melody(I, T, 20, beat, "P:0.5 d:0.5 n:0.5 S':0.5 ^r':1 S':1 -:4 g':0.5 r':0.5 S':0.5 n:0.5 ~d:1 P:1 -:4", "bansuri", 1);
+    const answer = ["dha", "ti", "ra", "ki", "ta", "ka", "dhin", "na"];
+    [21, 23].forEach((b) => { for (let i = 0; i < 8; i++) I.tabla(T(b, i * 0.5), answer[i], 1); for (let i = 0; i < 8; i++) I.tabla(T(b, i * 0.5 + 0.25), "ti", 0.45); });
+    I.nagara(T(23, 3), 0.7);
+
+    // The gat again, full ensemble, with sitar-like jhala strokes on Sa underneath.
+    drone(24, 32, 0.75); tabla(24, 32, 1.05, true); sam(24, 32, 1); drone_bass(24, 32, 0.8);
+    dholGroove(I, T, 0, 24, 32, 0.95, true);
+    for (let b = 24; b < 32; b++) for (let i = 0; i < 8; i++) I.pluck(T(b, i * 0.5), i % 4 === 0 ? "S" : ".S", 0.18, i % 4 === 0 ? 0.6 : 0.35);
+    melody(I, T, 24, beat, gat, "shehnai", 1.05);
+    melody(I, T, 24, beat, gat, "sarangi", 0.9);
+    melody(I, T, 24, beat, gat, "bansuri", 0.6, SA * 4);
+
+    // Tihai: the phrase three times, landing on sam.
+    drone(32, 36, 0.8);
+    const tih = "P:0.5 m:0.5 g:0.5 r:0.5 !S:1 -:1";
+    melody(I, T, 32, beat, [tih, tih, tih, "!S':4"].join(" "), "shehnai", 1.1);
+    melody(I, T, 32, beat, [tih, tih, tih, "!S:4"].join(" "), "sarangi", 0.9);
+    for (let k = 0; k < 3; k++) { I.tabla(T(32, k * 4 + 2), "dha", 1.1); I.dhol(T(32, k * 4 + 2), "both", 0.9); I.nagara(T(32, k * 4 + 2), 0.6); }
+    const end = T(35);
+    I.nagara(end, 1.2); I.tabla(end, "dha", 1.3); I.dhol(end, "both", 1); I.choir(end, ["S", "P", "S'"], 3.5, 1.1, "a"); I.chord(end, [".S", "S", "P"], 3.5, 0.9); I.bell(end, "S", 1); I.manjira(end, 1.2);
     return end + 5;
   }
 
