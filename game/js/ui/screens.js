@@ -4,9 +4,9 @@
   const U = K.UI;
 
   // ---------- Title ----------
-  // The hero: one painting, a lone survivor looking over the field at dawn: someone the epic never
-  // names. Mirrored so the figure stands clear of the title.
-  const HERO = { art: "end_survivor", caption: "Dawn over the field", mirror: true };
+  // The hero: the title key art. Someone the epic never names stands on a ridge at dawn above the two
+  // armies; the figure is right of centre, clear of the title.
+  const HERO = { art: "key_art", caption: "Kurukshetra, at dawn on the first day", mirror: false };
   const ACTS = [
     [1, "scene_princes", "Ages 6 to 12", "Grow up beside the princes. Choose a friend, make a rival, tell your first lie."],
     [2, "scene_path", "Ages 14 to 19", "Find a teacher and a path: archer, healer, spy, bard, and more."],
@@ -30,7 +30,7 @@
         '<div class="slides" aria-hidden="true"><i class="slide on' + (HERO.mirror ? " mirror" : "") + '" style="--img:url(\'' + U.artUrl(HERO.art) + '\')"></i></div>' +
         '<div class="hero-bar" id="hero-bar"></div>' +
         '<div class="hero-copy">' +
-          '<h1 class="title" id="title-h">' + U.tr("Kurukshetra") + "<em>" + U.tr("A Life") + "</em></h1>" +
+          '<h1 class="title" id="title-h"><img class="logo ' + K.lang + '" src="brand/logo_' + (K.lang === "hi" ? "hi" : "en") + '.svg" alt="' + U.tr("Kurukshetra: A Life") + '"></h1>' +
           '<p class="tagline">' + U.tr("You cannot change the Mahabharata. You can decide who you were inside it.") + "</p>" +
           '<div class="btnrow" id="title-btns"></div>' +
         "</div>" +

@@ -97,7 +97,7 @@
       next: "a1_wrestle"
     },
     {
-      id: "a1_wrestle", act: 1, age: 13, art: "origin", place: "The wrestling ground at the spring fair",
+      id: "a1_wrestle", act: 1, age: 13, art: "scene_fair", place: "The wrestling ground at the spring fair",
       title: "Ugra at the fair",
       body: (S) => [
         "Ugra, the miller's son, is two years older and twice your size. Every fair he takes the smaller children's sweets and dares anyone to stop him.",
@@ -116,7 +116,7 @@
   ]);
 
   K.encounter({
-    id: "e_ugra", title: "Ugra at the fair", caption: "The wrestling ring", lethal: false,
+    id: "e_ugra", title: "Ugra at the fair", art: "scene_fair", caption: "The wrestling ring", lethal: false,
     intro: "The crowd makes a ring. Ugra grins and spits on his palms.",
     enemies: [K.foe("Ugra, the miller's son", 1, { hp: 26, atk: 4 })],
     win: { fx: { rep: { common: 1 }, bond: { charu: 1 }, flag: ["beat_ugra", "balarama_noticed"], journal: "You beat Ugra in the ring at the spring fair. A giant of a man with a plough on his shoulder asked your name." },

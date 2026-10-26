@@ -1505,6 +1505,7 @@
     "They sing of {name}, born in {origin}, student of {teacher}.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {teacher} {g:का शिष्य|की शिष्या|के शिष्य}।",
     "They sing of {name}, born in {origin}.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}।",
     "{They} fell at Kurukshetra.": "{g:वह|वह|वे} कुरुक्षेत्र में वीरगति को {g:प्राप्त हुआ|प्राप्त हुई|प्राप्त हुए}।",
-    "An empty house at evening": "साँझ में एक सूना घर"
+    "An empty house at evening": "साँझ में एक सूना घर",
+    "Kurukshetra, at dawn on the first day": "कुरुक्षेत्र, पहले दिन की भोर"
   });
 })(window.K = window.K || {});

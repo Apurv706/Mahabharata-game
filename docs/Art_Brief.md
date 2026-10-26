@@ -35,6 +35,7 @@ Companion to the PRD (§12 cultural rules, §14 art direction).
 | `heir_*` (4) | Heirloom cards in character creation | Good. Cropped from one sheet with painted labels |
 | `temper_*` (4) | Temperament emblems | Good |
 | `scene_princes` … `scene_teaching` (22) | Every scene in the story-order list, Acts I–VII | Good overall. Later-style temple spires in `scene_armour` and `scene_birth`; Greco-Roman colonnades in `scene_indraprastha`; walled castle city in `scene_drupada`; a modern bullseye target in `scene_path`; European cross-hilt sword in `scene_vasu`. Draupadi appears in `scene_swayamvara` and `scene_exile` (advisory review). |
+| Final items (26 Oct), artist B | `scene_fair`; `key_art` (1672×941, title screen); page background `bg_page_desktop`, `bg_page_mobile`, `bg_parchment_tile`; ornaments `border_strip`, `border_corner`, `divider`; logos `logo_en`/`logo_hi` light and dark (font-based: Cormorant Garamond Bold, Noto Serif Devanagari SemiBold); Steam images and icons in `store/` | Brief relaxed by agreement: native key art and font-based logos instead of 4K and hand-lettering. Hindi logo: reader check recommended. Key art: advisory review. |
 | Batch 3 mix (26 Oct), artist A | `scene_dice_hall`, `scene_dice_throws`, `scene_dice_question`, `scene_dice_cloth`; battles `battle_border`, `battle_field`, `battle_cattle`, `battle_night` | Dice question and women on the field need advisory review. Small temple silhouette in `battle_field`. |
 | Batch 3 mix (26 Oct), artist B | `war_day15`, `war_day16` (replacing A's); all 8 `home_*` panoramas (3:1); `scene_virata`, `scene_envoy`, `scene_women_field`, `scene_years_remain`; all 7 endings; 13 portraits `p_*` (bonds panel, speakers, allies, friend and marriage choices); 6 `teacher_*` cards (teacher choice, character sheet); 7 `path_*` and 6 `vow_*` emblems (path and vow choices, vow cards) | Canon portraits need advisory review. Abhimanyu's helmet reads Greek. Check Balarama's face is not shown. Originals kept in `art_review/artist-b/`. |
 | `war_eve` … `war_day18` (8) | The war's own days: eve, Bhishma, capture, day 14, 15, 16, 17, 18; also their fights and the Beside Karna ending | Good. Batch 2, 26 Oct. Karna's face in `war_day16`/`war_day17` needs advisory review. |
@@ -43,7 +44,7 @@ Companion to the PRD (§12 cultural rules, §14 art direction).
 
 ## Still needed
 
-Still open after batch 3: the fair (`scene_fair`, Ugra must read as a boy of about 12), title key art at 3840×2160, both logos with real lettering, and the Steam images.
+Still open: the Steam library hero (3840×1240, needs its own wide painting), five 1920×1080 gameplay screenshots (captured from the game), the 12 fixes in the Final Items brief, and advisory review. Optional later: 4K key art and hand-lettered logos.
 
 The full brief for everything below, with a review of batch 1, is the [Remaining Art Brief](https://claude.ai/artifact/TQGHRD663Ee6M5tNjayZjy). Batch 1 (25 Oct) delivered all 82 files, but the 60 paintings were crops of one small contact sheet upscaled to full size, so they were sent back for redo and are not in the game.
 

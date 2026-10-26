@@ -1,7 +1,7 @@
 /* Ledger, battle, title, creation, modal and ending screens. Tone steps, no outlines. */
 
 /* Ledger: the duty meters are the game's data, so they carry the gold. */
-.ledger { background: var(--surface) url("torana.svg") 0 0 / 28px 16px repeat-x; border-radius: var(--r-card); padding: 32px 20px 20px; display: grid; gap: 18px; min-width: 0; }
+.ledger { position: relative; background: var(--surface) url("border_strip.png") 0 0 / auto 20px repeat-x; border-radius: var(--r-card); padding: 38px 20px 58px; display: grid; gap: 18px; min-width: 0; }
 .ledger h2 { margin: 0; font-family: var(--display); font-size: 23px; font-weight: 700; line-height: 1.1; color: var(--ink); }
 .ledger .sub { font-size: 14px; color: var(--muted); margin: -10px 0 0; }
 .meter { display: grid; gap: 5px; }
@@ -74,8 +74,9 @@ body.titling header.top { display: none; }
 .hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, rgba(var(--ground-rgb), 0.96) 4%, rgba(var(--ground-rgb), 0.62) 36%, rgba(var(--ground-rgb), 0) 68%); } /* taste-skill-ignore: neutral scrim under text on a picture */
 .hero-bar { position: absolute; z-index: 2; top: 16px; right: 16px; display: flex; gap: 8px; }
 .hero-copy { padding: 0 clamp(20px, 5vw, 60px) clamp(28px, 6vh, 60px); display: grid; gap: 16px; max-width: 780px; }
-.title { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(56px, 10.5vw, 132px); line-height: 0.9; letter-spacing: -0.025em; color: var(--ink); }
-.title em { display: block; margin-top: 0.14em; font-style: italic; font-weight: 500; font-size: 0.4em; letter-spacing: 0; color: var(--muted); }
+.title { margin: 0; line-height: 0; }
+.title .logo { display: block; width: min(560px, 100%); height: auto; }
+.title .logo.hi { width: auto; height: clamp(150px, 22vw, 250px); max-width: 100%; }
 .tagline { font-family: var(--display); font-style: italic; font-size: clamp(22px, 2.4vw, 28px); line-height: 1.25; color: var(--ink); max-width: 32ch; margin: 0; }
 .hero .btnrow { margin-top: 6px; }
 .slide-cap { position: absolute; right: clamp(20px, 5vw, 60px); bottom: clamp(28px, 6vh, 60px); margin: 0; max-width: 28ch; text-align: right; font-size: 14px; color: var(--muted); }
@@ -91,17 +92,15 @@ body.titling header.top { display: none; }
   .slide.mirror { background-position: 6% 42%; } /* keep the survivor (left of the unflipped painting) in the band */
   .slide-cap { position: static; order: 2; max-width: none; text-align: left; padding: 10px clamp(20px, 5vw, 60px) 0; }
   .hero-copy { order: 3; padding-top: 6px; gap: 14px; }
-  .title { font-size: clamp(52px, 15vw, 96px); }
+  .title .logo { width: min(420px, 92%); } .title .logo.hi { height: clamp(110px, 32vw, 170px); width: auto; }
 }
 /* Short landscape screens (a phone on its side): size the title by height so it clears the switch. */
 @media (min-aspect-ratio: 5/4) and (max-height: 540px) {
-  .title { font-size: clamp(40px, 15vh, 76px); }
+  .title .logo { width: min(380px, 60vw); } .title .logo.hi { height: 120px; width: auto; }
   .tagline { font-size: 19px; }
   .hero-copy { gap: 10px; padding-bottom: 22px; }
   .hero { min-height: max(86svh, 320px); }
 }
-html[lang="hi"] .title { font-size: clamp(50px, 8.6vw, 108px); line-height: 1.15; letter-spacing: 0; }
-html[lang="hi"] .title em { font-style: normal; margin-top: 0.05em; }
 html[lang="hi"] .tagline { font-style: normal; line-height: 1.5; }
 
 .langs { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-control); background: var(--raised); }
@@ -110,7 +109,7 @@ html[lang="hi"] .tagline { font-style: normal; line-height: 1.5; }
 .lang:hover { color: var(--ink); }
 .lang[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
 
-.life { padding: clamp(40px, 5vw, 60px) clamp(20px, 5vw, 60px) 32px; display: grid; gap: 22px; background: url("torana.svg") 0 0 / 28px 16px repeat-x; }
+.life { padding: clamp(44px, 5vw, 60px) clamp(20px, 5vw, 60px) 60px; display: grid; gap: 22px; background: url("border_strip.png") 0 0 / auto 20px repeat-x; }
 .life-head { display: grid; gap: 10px; max-width: 72ch; }
 .life-head h2 { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(30px, 3.6vw, 42px); line-height: 1.05; }
 .life-head p { margin: 0; color: var(--muted); }
@@ -192,7 +191,7 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 /* Dialog: the one surface that truly floats, so it may cast a shadow. */
 .scrim { position: fixed; inset: 0; background: rgba(40, 18, 8, 0.6); display: grid; place-items: center; z-index: 50;
   padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
-.modal { background: var(--surface) url("torana.svg") 0 0 / 28px 16px repeat-x; border-radius: var(--r-card); width: min(720px, 100%); max-height: 100%; overflow-y: auto; padding: 34px 24px 24px; display: grid; gap: 16px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5); } /* taste-skill-ignore: dialog floats */
+.modal { background: var(--surface) url("border_strip.png") 0 0 / auto 20px repeat-x; border-radius: var(--r-card); width: min(720px, 100%); max-height: 100%; overflow-y: auto; padding: 34px 24px 24px; display: grid; gap: 16px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5); } /* taste-skill-ignore: dialog floats */
 .modal header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .modal h2 { margin: 0; font-family: var(--display); font-size: 32px; line-height: 1.05; }
 .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 18px; }
@@ -207,5 +206,6 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 /* Ending */
 .telling { font-family: var(--display); font-size: clamp(21px, 2.2vw, 24px); line-height: 1.42; display: grid; gap: 12px; }
 .telling p { max-width: 60ch; margin: 0; }
+.fates::before { content: ""; display: block; height: 22px; background: url("divider.png") center / contain no-repeat; }
 .fates { display: grid; gap: 8px; font-size: 16px; background: var(--raised); border-radius: var(--r-card); padding: 16px 18px; }
 .fates p { margin: 0; }

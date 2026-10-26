@@ -8,7 +8,7 @@ The screen is an old manuscript on aged parchment, written in red ink that has d
 
 | Token | Value | Use |
 |---|---|---|
-| `--ground` | #e8d5ad parchment | The page, with paper blotches and fibres (`css/parchment.svg`) and darkened edges |
+| `--ground` | #e8d5ad parchment | The page: a painted manuscript folio (`css/bg_page_desktop.jpg`, `css/bg_page_mobile.jpg`) over a painted paper tile (`css/bg_parchment_tile.jpg`) |
 | `--surface` | #f1e3c3 | The scene and the side panel, a little lighter |
 | `--raised` / `--hover` | #e6d1a6 / #dcc394 | Choices, cards, controls; one tone step down on hover |
 | `--ink` / `--muted` / `--faint` | #4a170d / #69301e / #733f29 | Dried red ink in three tiers, all above 4.5:1 on every panel |
@@ -17,9 +17,12 @@ The screen is an old manuscript on aged parchment, written in red ink that has d
 | `--data` | #74470a ochre | The duty meters and canon markers |
 | `--positive` / `--negative` | #215737 / #932713 | Rises and falls in choices, health bars, curses |
 
-Ornaments, in red-brown line:
-- A torana fringe (`css/torana.svg`) where a painting meets its text, and along the top of the side panel, the act strip and dialogs.
+Ornaments, painted in red and ochre ink:
+- A vine border (`css/border_strip.png`) where a painting meets its text, and along the top of the side panel, the act strip and dialogs.
+- Lotus corners (`css/border_corner.png`) at the foot of the page and side panel.
+- A lotus divider (`css/divider.png`) above the canon panel and "What became of them".
 - A double rule framing the canon panel ("What happens, whatever you do").
+- The title is the logo (`brand/logo_en.svg` or `brand/logo_hi.svg`, by language) over the key art.
 - Round gold-ringed portraits, free-standing emblems, small painted teacher cards on their choices.
 
 ## Rules
