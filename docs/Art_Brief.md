@@ -35,8 +35,12 @@ Companion to the PRD (§12 cultural rules, §14 art direction).
 | `heir_*` (4) | Heirloom cards in character creation | Good. Cropped from one sheet with painted labels |
 | `temper_*` (4) | Temperament emblems | Good |
 | `scene_princes` … `scene_teaching` (22) | Every scene in the story-order list, Acts I–VII | Good overall. Later-style temple spires in `scene_armour` and `scene_birth`; Greco-Roman colonnades in `scene_indraprastha`; walled castle city in `scene_drupada`; a modern bullseye target in `scene_path`; European cross-hilt sword in `scene_vasu`. Draupadi appears in `scene_swayamvara` and `scene_exile` (advisory review). |
+| `app_icon` | The game's icon (`game/icons/`) | Good. From batch 1, 25 Oct |
+| `logo_en`, `logo_hi`, path and vow emblems | Kept in `assets/brand/` as placeholders, not yet used | Stock-font lettering; several emblems unclear. From batch 1 |
 
 ## Still needed
+
+The full brief for everything below, with a review of batch 1, is the [Remaining Art Brief](https://claude.ai/artifact/TQGHRD663Ee6M5tNjayZjy). Batch 1 (25 Oct) delivered all 82 files, but the 60 paintings were crops of one small contact sheet upscaled to full size, so they were sent back for redo and are not in the game.
 
 Every image below currently shows a coloured placeholder in the game. Scene art is wide **3:1** (at least 1800×600); battle backgrounds the same. All 22 story scenes are now painted.
 
