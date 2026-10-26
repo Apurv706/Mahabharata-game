@@ -156,6 +156,7 @@
     const plate = leaf.querySelector(".plate"); if (plate) plate.dataset.hold = 800;
     const h1 = leaf.querySelector(".text h1"); if (h1) h1.dataset.hold = 900;
     const lines = [...leaf.querySelectorAll(".telling p")];
+    lines.forEach((l) => l.classList.add("write"));
     const fates = leaf.querySelector(".fates");
     U.keys([]);
     U.stage([plate, h1, ...lines, fates, ...(fates ? fates.children : []), leaf.querySelector(".text .btnrow")], () => U.keys([again]));

@@ -82,16 +82,80 @@
       const el = run.items[run.i++];
       if (!el) return U.stageFinish(true);
       el.classList.add("shown");
-      run.timer = setTimeout(step, holdAfter(el));
+      if (el.classList.contains("write")) U.write(el, () => { if (stageRun === run) run.timer = setTimeout(step, 320); });
+      else run.timer = setTimeout(step, holdAfter(el));
     };
     run.timer = setTimeout(step, 60);
   };
   U.staging = () => !!stageRun;
+
+  // ---------- The quill ----------
+  // Scene-setting lines are written out letter by letter by a peacock-feather pen. Letters are cut
+  // as whole graphemes, so a Devanagari syllable with its vowel signs appears in one stroke.
+  const QUILL = '<svg viewBox="0 0 60 120" aria-hidden="true">' +
+    '<path d="M5 117 C18 88 30 52 50 10" stroke="#e8dcc0" stroke-width="1.6" fill="none"/>' +
+    '<g stroke="#4f9a6a" stroke-width="0.9" opacity="0.85" fill="none">' +
+    '<path d="M14 92 l-8 -10 M14 92 l10 -4 M19 80 l-9 -11 M19 80 l11 -5 M24 68 l-9 -12 M24 68 l12 -5 M30 56 l-9 -12 M30 56 l12 -6 M35 45 l-8 -12 M35 45 l12 -6"/></g>' +
+    '<ellipse cx="49" cy="17" rx="10" ry="15" transform="rotate(28 49 17)" fill="#2f7d55"/>' +
+    '<ellipse cx="49" cy="17" rx="7" ry="11" transform="rotate(28 49 17)" fill="#e2b55a"/>' +
+    '<ellipse cx="49.5" cy="17.5" rx="4.6" ry="7.4" transform="rotate(28 49 17)" fill="#1f56b0"/>' +
+    '<ellipse cx="50" cy="18" rx="2.2" ry="3.6" transform="rotate(28 49 17)" fill="#0b1d45"/>' +
+    '<path d="M2 120 L6 113 L8 116 Z" fill="#1a1208"/></svg>';
+  let writer = null;
+  const segmenter = window.Intl && Intl.Segmenter ? new Intl.Segmenter(undefined, { granularity: "grapheme" }) : null;
+  const graphemes = (t) => (segmenter ? Array.from(segmenter.segment(t), (x) => x.segment) : Array.from(t));
+  U.write = function (el, done) {
+    U.writeFinish();
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    for (const n of nodes) {
+      const frag = document.createDocumentFragment();
+      for (const g of graphemes(n.nodeValue)) { const sp = document.createElement("span"); sp.className = "ch"; sp.textContent = g; frag.appendChild(sp); }
+      n.parentNode.replaceChild(frag, n);
+    }
+    const chars = el.querySelectorAll(".ch");
+    const host = el.closest(".witness, .result, .telling, .text") || el;
+    let quill = host.querySelector(":scope > .quill");
+    if (!quill) { quill = U.el('<span class="quill">' + QUILL + "</span>"); host.appendChild(quill); }
+    el.classList.add("writing");
+    quill.classList.add("on");
+    const total = chars.length;
+    const duration = Math.min(2300, Math.max(450, total * 13));
+    const start = performance.now();
+    let shown = 0;
+    const w = (writer = { el, chars, quill, done, raf: 0 });
+    const frame = (now) => {
+      if (writer !== w) return;
+      const n = Math.min(total, Math.ceil(((now - start) / duration) * total));
+      for (; shown < n; shown++) chars[shown].classList.add("on");
+      const last = chars[Math.max(0, shown - 1)];
+      if (last) {
+        const r = last.getBoundingClientRect(), h = host.getBoundingClientRect();
+        quill.style.transform = "translate(" + (r.right - h.left - 3) + "px," + (r.bottom - h.top - 85) + "px)";
+      }
+      if (shown >= total) return finish(true);
+      w.raf = requestAnimationFrame(frame);
+    };
+    const finish = (callDone) => {
+      if (writer !== w) return;
+      writer = null;
+      cancelAnimationFrame(w.raf);
+      chars.forEach((c) => c.classList.add("on"));
+      el.classList.remove("writing");
+      quill.classList.remove("on");
+      if (callDone && done) done();
+    };
+    w.finish = finish;
+    w.raf = requestAnimationFrame(frame);
+  };
+  U.writeFinish = function () { if (writer) writer.finish(false); };
   U.stageFinish = function (callDone = true) {
     const run = stageRun;
     if (!run) return;
     stageRun = null;
     clearTimeout(run.timer);
+    U.writeFinish();
     run.items.forEach((el) => el.classList.add("shown", "now"));
     if (callDone && run.done) run.done();
   };
