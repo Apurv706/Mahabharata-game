@@ -35,6 +35,7 @@ Companion to the PRD (§12 cultural rules, §14 art direction).
 | `heir_*` (4) | Heirloom cards in character creation | Good. Cropped from one sheet with painted labels |
 | `temper_*` (4) | Temperament emblems | Good |
 | `scene_princes` … `scene_teaching` (22) | Every scene in the story-order list, Acts I–VII | Good overall. Later-style temple spires in `scene_armour` and `scene_birth`; Greco-Roman colonnades in `scene_indraprastha`; walled castle city in `scene_drupada`; a modern bullseye target in `scene_path`; European cross-hilt sword in `scene_vasu`. Draupadi appears in `scene_swayamvara` and `scene_exile` (advisory review). |
+| `war_eve` … `war_day18` (8) | The war's own days: eve, Bhishma, capture, day 14, 15, 16, 17, 18; also their fights and the Beside Karna ending | Good. Batch 2, 26 Oct. Karna's face in `war_day16`/`war_day17` needs advisory review. |
 | `app_icon` | The game's icon (`game/icons/`) | Good. From batch 1, 25 Oct |
 | `logo_en`, `logo_hi`, path and vow emblems | Kept in `assets/brand/` as placeholders, not yet used | Stock-font lettering; several emblems unclear. From batch 1 |
 
@@ -50,7 +51,7 @@ Five fights now borrow a scene painting from the same place: Drupada's palace ya
 
 ### War days (6)
 
-The war's ten scenes all use one painting. Distinct art for: the eve of battle (two armies, a chariot between them, seen from far away), Bhishma's nine days, Drona's plan to capture the king, sunset on day 14, Drona laying down his weapons on day 15, and Karna's sinking wheel on day 17 (the current death-ending painting may suit this).
+The war's ten scenes all use one painting. Done (batch 2): the eve of battle (two armies, a chariot between them, seen from far away), Bhishma's nine days, Drona's plan to capture the king, sunset on day 14, Drona laying down his weapons on day 15, and Karna's sinking wheel on day 17 (the current death-ending painting may suit this).
 
 ### Other
 

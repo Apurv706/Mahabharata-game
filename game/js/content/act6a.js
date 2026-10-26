@@ -15,7 +15,7 @@
 
   K.scenes([
     {
-      id: "a6_eve", act: 6, age: 44, canon: true, war: true, art: "scene_day13", place: "Kurukshetra, before the first day", caption: "Two armies facing each other",
+      id: "a6_eve", act: 6, age: 44, canon: true, war: true, art: "war_eve", place: "Kurukshetra, before the first day", caption: "Two armies facing each other",
       title: "Before the first arrow",
       witness: [
         "Eighteen armies face each other across the plain of Kurukshetra. Conch shells sound from both sides.",
@@ -48,7 +48,7 @@
       next: "a6_day1"
     },
     {
-      id: "a6_day1", act: 6, age: 44, canon: true, war: true, art: "scene_day13", place: "Kurukshetra · days 1 to 9", caption: "Bhishma commands the Kaurava host",
+      id: "a6_day1", act: 6, age: 44, canon: true, war: true, art: "war_bhishma", place: "Kurukshetra · days 1 to 9", caption: "Bhishma commands the Kaurava host",
       title: "Nine days of Bhishma",
       witness: ["For nine days Bhishma, the grandsire, commands the Kaurava army, and no one can stand against him. He has promised not to kill the Pandava brothers themselves. He kills nearly everyone else."],
       body: (S) => [
@@ -84,7 +84,7 @@
       next: "a6_capture"
     },
     {
-      id: "a6_capture", act: 6, age: 44, canon: true, war: true, art: "scene_day13", place: "Kurukshetra · days 11 and 12", caption: "Drona takes command",
+      id: "a6_capture", act: 6, age: 44, canon: true, war: true, art: "war_capture", place: "Kurukshetra · days 11 and 12", caption: "Drona takes command",
       title: "Take the king alive",
       witness: ["Drona takes command of the Kaurava army. Duryodhana wants one thing from him: capture Yudhishthira alive, so the war can be won with another game of dice. For two days Arjuna stays close to his brother, and the plan fails."],
       body: (S) => [S.side === "pandava" ? "Your company is posted beside the king's chariot." : S.side === "kaurava" ? "Your company is sent to break through to the king's chariot." : "Both days, the fighting is thickest around one chariot. The wounded come from there."],
@@ -154,21 +154,21 @@
     deathText: "You fell at Kurukshetra."
   }, extra, { enemies })));
 
-  war("e_day1", (S) => "The line holds against the " + foeSide(S) + "s", (S) => [K.foe(foeSide(S) + " spearman", 3), K.foe(foeSide(S) + " chariot-warrior", 4, { abilities: ["strike", "arrows"] })], {
+  war("e_day1", (S) => "The line holds against the " + foeSide(S) + "s", (S) => [K.foe(foeSide(S) + " spearman", 3), K.foe(foeSide(S) + " chariot-warrior", 4, { art: "war_bhishma", abilities: ["strike", "arrows"] })], {
     caption: "Days one to nine",
     win: { fx: { duty: { court: 1 }, rep: { common: 1 }, journal: "You survived the first nine days of the war." }, text: "When the conches sound at sunset, you are still standing." },
     lose: { deathText: "You fell in the first days of the war, when Bhishma was still unstoppable." },
     flee: { fx: { duty: { court: -1 } }, text: "You fall back with the broken line. No one blames you. You blame yourself." },
     spare: { fx: { duty: { conscience: 1 } }, text: "You let a wounded enemy crawl away. Someone else will kill him, or no one will." }
   });
-  war("e_guard", "Guarding the king", [K.foe("Kaurava chariot-warrior", 4, { abilities: ["strike", "heavy", "arrows"] }), K.foe("Kaurava horseman", 3)], {
+  war("e_guard", "Guarding the king", [K.foe("Kaurava chariot-warrior", 4, { art: "war_capture", abilities: ["strike", "heavy", "arrows"] }), K.foe("Kaurava horseman", 3)], {
     caption: "Around Yudhishthira's chariot",
     win: { fx: { bond: { yudhishthira: 2 }, rep: { pandava: 2 }, journal: "You guarded Yudhishthira's chariot when Drona tried to take him alive." }, text: "The attack breaks against your line. Yudhishthira raises a hand to you as his chariot turns." },
     lose: { deathText: "You fell guarding Yudhishthira's chariot on the eleventh day." },
     flee: { fx: { rep: { pandava: -1 } }, text: "You fall back, and others close the gap you left." },
     spare: { fx: { duty: { conscience: 1 } }, text: "You let the last of them go." }
   });
-  war("e_hunt", "The drive for the king", [K.foe("Pandava guard", 4, { abilities: ["strike", "guard", "heavy"] }), K.foe("Panchala archer", 3, { abilities: ["strike", "arrows"] })], {
+  war("e_hunt", "The drive for the king", [K.foe("Pandava guard", 4, { art: "war_capture", abilities: ["strike", "guard", "heavy"] }), K.foe("Panchala archer", 3, { abilities: ["strike", "arrows"] })], {
     caption: "Yudhishthira's guard",
     win: { fx: { rep: { kuru: 2 }, bond: { duryodhana: 1 } }, text: "You break through the guard, just in time to see Arjuna's chariot arrive and end the attack." },
     lose: { deathText: "You fell trying to take Yudhishthira alive on the twelfth day." },

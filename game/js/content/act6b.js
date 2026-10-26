@@ -7,7 +7,7 @@
 
   K.scenes([
     {
-      id: "a6_day14", act: 6, age: 44, canon: true, war: true, art: "scene_day13", place: "Kurukshetra · day 14", caption: "A sun that seems to set early",
+      id: "a6_day14", act: 6, age: 44, canon: true, war: true, art: "war_day14", place: "Kurukshetra · day 14", caption: "A sun that seems to set early",
       title: "Sunset and torches",
       witness: [
         "All day Arjuna cuts his way toward Jayadratha, who is hidden deep behind the Kaurava lines. Near evening the sky darkens as if the sun has set. Jayadratha steps out to watch Arjuna fail. The sun is still up, and Arjuna's arrow finds him.",
@@ -23,7 +23,7 @@
       next: "a6_day15"
     },
     {
-      id: "a6_day15", act: 6, age: 44, canon: true, war: true, art: "scene_day13", place: "Kurukshetra · day 15", caption: "An elephant named Ashwatthama",
+      id: "a6_day15", act: 6, age: 44, canon: true, war: true, art: "war_day15", place: "Kurukshetra · day 15", caption: "An elephant named Ashwatthama",
       title: "Ashwatthama is dead",
       witness: [
         "Drona cannot be beaten while he holds his bow. Bhima kills an elephant named Ashwatthama, the same name as Drona's son, and shouts that Ashwatthama is dead.",
@@ -46,7 +46,7 @@
       next: "a6_day16"
     },
     {
-      id: "a6_day16", act: 6, age: 44, canon: true, war: true, art: "scene_day13", place: "Kurukshetra · day 16", caption: "Karna takes command",
+      id: "a6_day16", act: 6, age: 44, canon: true, war: true, art: "war_day16", place: "Kurukshetra · day 16", caption: "Karna takes command",
       title: "Bhima's vow",
       witness: ["Karna takes command of the Kaurava army. On the sixteenth day, Bhima finds Dushasana on the field and fulfils the terrible vow he made in the dice hall, thirteen years ago."],
       body: (S) => [S.flags.includes("enemy_dushasana") ? { memory: "Dushasana never forgot your face from the dice hall. Before Bhima finds him, his men find you." } : "The fighting is fiercer than it has ever been."],
@@ -58,7 +58,7 @@
       next: "a6_day17"
     },
     {
-      id: "a6_day17", act: 6, age: 44, canon: true, war: true, art: "scene_day13", place: "Kurukshetra · day 17", caption: "A chariot wheel sinks into the earth",
+      id: "a6_day17", act: 6, age: 44, canon: true, war: true, art: "war_day17", place: "Kurukshetra · day 17", caption: "A chariot wheel sinks into the earth",
       title: "Karna",
       enter: (S) => (K.hasVow("vengeance") && S.flags.includes("vengeance_dice") ? { vowRelease: "vengeance", flag: "vengeance_answered", journal: "Your vow of vengeance for the dice hall was answered by Bhima's hand." } : null),
       witness: [
@@ -89,7 +89,7 @@
       next: "a6_day18"
     },
     {
-      id: "a6_day18", act: 6, age: 44, canon: true, war: true, art: "scene_day13", place: "Kurukshetra · day 18", caption: "The last day",
+      id: "a6_day18", act: 6, age: 44, canon: true, war: true, art: "war_day18", place: "Kurukshetra · day 18", caption: "The last day",
       title: "The last day",
       witness: [
         "Shalya leads what is left of the Kaurava army and falls to Yudhishthira. Sahadeva kills Shakuni, who started all of this with a pair of dice.",
@@ -148,37 +148,37 @@
   ]);
 
   const foeSide = (S) => (S.side === "kaurava" ? "Pandava" : "Kaurava");
-  war("e_road", "The road to Jayadratha", [K.foe("Kaurava chariot-warrior", 5, { abilities: ["strike", "heavy", "arrows"] }), K.foe("Kaurava horseman", 4)], {
+  war("e_road", "The road to Jayadratha", [K.foe("Kaurava chariot-warrior", 5, { art: "war_day14", abilities: ["strike", "heavy", "arrows"] }), K.foe("Kaurava horseman", 4)], {
     caption: "Day fourteen",
     win: { fx: { bond: { arjuna: 2 }, rep: { pandava: 2 } }, text: "You break a hole in the line, and Arjuna's chariot goes through it like water." },
     lose: { deathText: "You fell on the fourteenth day, clearing the road for Arjuna." },
     flee: { text: "You fall back from the road." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go." }
   });
-  war("e_jaya", "Guarding Jayadratha", [K.foe("Pandava chariot-warrior", 5, { abilities: ["strike", "heavy", "arrows"] }), K.foe("Pandava footsoldier", 4)], {
+  war("e_jaya", "Guarding Jayadratha", [K.foe("Pandava chariot-warrior", 5, { art: "war_day14", abilities: ["strike", "heavy", "arrows"] }), K.foe("Pandava footsoldier", 4)], {
     caption: "Day fourteen",
     win: { fx: { rep: { kuru: 2 } }, text: "You hold your ground all afternoon. It does not matter. The sun is still up." },
     lose: { deathText: "You fell on the fourteenth day, guarding Jayadratha." },
     flee: { text: "You fall back toward Jayadratha's hiding place." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go." }
   });
-  war("e_night", "The night battle", (S) => [K.foe(foeSide(S) + " torch-bearer", 4), K.foe(foeSide(S) + " archer", 4, { abilities: ["strike", "arrows"] })], {
+  war("e_night", "The night battle", (S) => [K.foe(foeSide(S) + " torch-bearer", 4), K.foe(foeSide(S) + " archer", 4, { art: "war_day14", abilities: ["strike", "arrows"] })], {
     caption: "Torchlight on the field",
     win: { fx: { journal: "You survived the night battle of the fourteenth day." }, text: "Dawn comes. You are still alive, and you cannot remember most of the night." },
     lose: { deathText: "You fell in the dark on the night of the fourteenth day." },
     flee: { text: "You fall back into the dark." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go into the dark." }
   });
-  war("e_dushasana", "Dushasana's men", [K.foe("Dushasana's bodyguard", 5, { abilities: ["strike", "heavy"] }), K.foe("Dushasana's bodyguard", 4)], {
+  war("e_dushasana", "Dushasana's men", [K.foe("Dushasana's bodyguard", 5, { art: "war_day16", abilities: ["strike", "heavy"] }), K.foe("Dushasana's bodyguard", 4)], {
     caption: "Day sixteen",
     win: { fx: { flag: "survived_dushasana", journal: "On the sixteenth day Dushasana sent his men for you, and you survived them." }, text: "His men lie in the dust. Across the field, Bhima has found Dushasana." },
     lose: { deathText: "On the sixteenth day, Dushasana's men found you. He had not forgotten the dice hall." },
     flee: { text: "You escape them in the press of the battle." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let the last of them go." }
   });
-  war("e_day16", "The sixteenth day", (S) => [K.foe(foeSide(S) + " chariot-warrior", 5, { abilities: ["strike", "arrows"] }), K.foe(foeSide(S) + " spearman", 4)], {
+  war("e_day16", "The sixteenth day", (S) => [K.foe(foeSide(S) + " chariot-warrior", 5, { art: "war_day16", abilities: ["strike", "arrows"] }), K.foe(foeSide(S) + " spearman", 4)], {
     caption: "Day sixteen",
     win: { fx: { rep: { common: 1 } }, text: "You survive another day." },
     lose: { deathText: "You fell on the sixteenth day." },
     flee: { text: "You fall back." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go." }
   });
-  war("e_day18", "The last battle", (S) => [K.foe(foeSide(S) + " veteran", 5, { abilities: ["strike", "heavy"] }), K.foe(foeSide(S) + " chariot-warrior", 5, { abilities: ["strike", "arrows"] })], {
+  war("e_day18", "The last battle", (S) => [K.foe(foeSide(S) + " veteran", 5, { art: "war_day18", abilities: ["strike", "heavy"] }), K.foe(foeSide(S) + " chariot-warrior", 5, { abilities: ["strike", "arrows"] })], {
     caption: "Day eighteen",
     win: { fx: { journal: "You survived the eighteenth and last day of the war." }, text: "There is no one left to fight." },
     lose: { deathText: "You fell on the eighteenth day, the last day of the war." },

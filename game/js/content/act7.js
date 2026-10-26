@@ -119,7 +119,7 @@
     const weakBonds = Object.values(S.bonds).filter((b) => b <= 2).length;
     let title, art = "end_survivor", caption = "Dawn over the field";
     if (!S.alive) {
-      art = "end_death"; caption = "The day ends without you";
+      art = S.flags.includes("died_with_karna") ? "war_day17" : "end_death"; caption = "The day ends without you";
       title = S.flags.includes("died_with_abhimanyu") ? "Into the wheel" : S.flags.includes("died_with_karna") ? "Beside Karna" : intact ? "Glorious death" : "Fallen at Kurukshetra";
     } else {
       const c = S.endChoice;
