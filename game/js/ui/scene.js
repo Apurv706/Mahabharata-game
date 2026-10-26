@@ -12,7 +12,7 @@
     return a === "origin" ? K.S.origin : a;
   }
   function tagFor(sc) {
-    if (sc.canon) return ["canon", "Canon anchor"];
+    if (sc.canon) return ["canon", "Canon · this always happens"];
     if (sc.war) return ["war", "The war"];
     return ["yours", "Your life"];
   }
@@ -41,7 +41,7 @@
       keys.push(ok ? run : null);
       box.appendChild(b);
     });
-    U.$("keyhint").innerHTML = rows.length > 1 ? "Choose with a tap, or press <kbd>1</kbd>–<kbd>" + rows.length + "</kbd>." : "";
+    U.$("keyhint").textContent = rows.length > 1 ? "Press 1 to " + rows.length + " to choose." : "";
     U.keys(keys);
     U.renderLedger();
     U.scrollTop();
@@ -64,7 +64,7 @@
 
   function showAfter(sc, c, res, next) {
     const box = U.$("choices");
-    const picked = U.button("choice", '<span class="k">✓</span><span class="t">' + U.t(K.val(c.t)) + '</span><span class="fx">Your choice</span>');
+    const picked = U.button("choice picked", '<span class="k">·</span><span class="t">' + U.t(K.val(c.t)) + '</span><span class="fx">Your choice</span>');
     picked.disabled = true;
     box.innerHTML = "";
     box.appendChild(picked);

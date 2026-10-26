@@ -34,7 +34,7 @@
     U.where("<b>Battle</b>" + U.t(K.val(enc.title)) + (enc.rounds ? " · round " + Math.min(B.round, enc.rounds) + " of " + enc.rounds : " · round " + B.round));
     const friends = B.units.filter((u) => u.side !== "enemy");
     const leaf = U.$("leaf");
-    leaf.innerHTML = U.plate({ art: K.val(enc.art), grad: ["#8c5c38", "#2a1c1f"], caption: K.val(enc.caption), tag: enc.lethal ? "war" : "yours", tagText: enc.lethal ? "Battle · you can die" : "Fight" }) +
+    leaf.innerHTML = U.plate({ art: K.val(enc.art), grad: ["#8c5c38", "#2a1c1f"], caption: K.val(enc.caption), tag: enc.lethal ? "war" : "yours", tagText: enc.lethal ? "Battle · you can die here" : "A fight" }) +
       '<div class="text battle"><h1>' + U.t(K.val(enc.title)) + "</h1>" +
       '<div class="sides"><div class="side"><span class="lbl">Your side</span>' + friends.map((u) => unitCard(u, B)).join("") +
       '</div><div class="side"><span class="lbl">Against you · tap to target</span>' + enemies.map((u) => unitCard(u, B)).join("") + "</div></div>" +

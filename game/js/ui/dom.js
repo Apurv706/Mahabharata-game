@@ -27,13 +27,19 @@
     }).join("");
   };
 
+  // The scene's painting, or (until the art exists) a flat field in the scene's own colour with its
+  // caption set large, so a missing picture still reads as a designed page, never a gradient.
   U.plate = function (o) {
     const img = U.artUrl(o.art);
-    const style = img ? "--img:url('" + img + "')" : "--plate:linear-gradient(120deg," + (o.grad || ["#3b5ba9", "#e5872e"]).join(",") + ")";
-    const tag = o.tag ? '<span class="tag ' + o.tag + '">' + U.esc(o.tagText) + "</span>" : "";
-    const cap = (o.title ? "<b>" + U.t(o.title) + "</b>" : "") + (o.small ? "<small>" + U.t(o.small) + "</small>" : "") + (!o.title && !o.small && o.caption ? U.t(o.caption) : "");
+    const field = (o.grad || ["#5a3a22"])[0];
+    const style = img ? "--img:url('" + img + "')" : "--field:color-mix(in srgb, " + field + " 42%, #13110e)";
+    const kind = o.tagText ? '<span class="kind ' + (o.tag || "") + '">' + U.esc(o.tagText) + "</span>" : "";
+    let cap = kind;
+    if (o.title) cap += "<b>" + U.t(o.title) + "</b>";
+    if (o.small) cap += "<small>" + U.t(o.small) + "</small>";
+    if (!o.title && !o.small && o.caption) cap += img ? "<small>" + U.t(o.caption) + "</small>" : "<b>" + U.t(o.caption) + "</b>";
     return '<div class="plate' + (img ? " painted" : "") + (o.tall ? " tall" : "") + '" style="' + style + '">' +
-      (cap ? '<span class="cap">' + cap + "</span>" : "") + tag + "</div>";
+      (cap ? '<span class="cap">' + cap + "</span>" : "") + "</div>";
   };
 
   U.where = function (html) { U.$("where").innerHTML = html; };

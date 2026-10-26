@@ -9,7 +9,7 @@
     U.closeModal();
     const auto = K.loadSlot("auto");
     const leaf = U.$("leaf");
-    leaf.innerHTML = U.plate({ art: "scene_day13", tall: true, caption: "Kurukshetra, the thirteenth day" }) +
+    leaf.innerHTML = U.plate({ art: "scene_day13", tall: true, caption: "Kurukshetra, the thirteenth day of the war" }) +
       '<div class="text title-screen"><h1>Kurukshetra: A Life</h1>' +
       '<p class="tagline">You cannot change the Mahabharata. You can decide who you were inside it.</p>' +
       "<p>Create someone the epic never mentions and live their whole life, from a childhood beside the young princes to the eighteen days of war and what comes after. " +
@@ -107,9 +107,9 @@
     U.where("<b>The end of a life</b>" + (S.alive ? "Age " + S.age : "Fell at " + S.age));
     const leaf = U.$("leaf");
     leaf.innerHTML = U.plate({ art: e.art, caption: e.caption, tag: "yours", tagText: "Your ending" }) +
-      '<div class="text"><span class="lbl">Ending</span><h1>' + U.t(e.title) + "</h1>" +
+      '<div class="text"><h1>' + U.t(e.title) + "</h1>" +
       '<div class="telling">' + e.telling.map((l) => "<p>" + U.t(l) + "</p>").join("") + "</div>" +
-      (e.fates && e.fates.length ? '<span class="lbl">What became of them</span><div class="fates">' + e.fates.map((l) => "<p>" + U.t(l) + "</p>").join("") + "</div>" : "") +
+      (e.fates && e.fates.length ? '<div class="fates"><span class="lbl">What became of them</span>' + e.fates.map((l) => "<p>" + U.t(l) + "</p>").join("") + "</div>" : "") +
       '<div class="btnrow"><button class="cta" id="again" type="button">Live another life</button><button class="ghost" id="readj" type="button">Read your journal</button></div></div>';
     const again = () => { K.deleteSlot("auto"); U.renderCreate(); };
     U.$("again").addEventListener("click", again);

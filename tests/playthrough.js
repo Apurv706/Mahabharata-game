@@ -49,7 +49,7 @@ function playLife(seed) {
     if (d.getElementById("again")) return { fights, ending: K.S.ending, alive: K.S.alive, age: K.S.age, path: path_, errors, problems, side: K.S.side, steps: step };
     const acts = [...d.querySelectorAll("#battle-actions .act:not([disabled])")];
     const cta = [...d.querySelectorAll("#leaf .cta")].filter((b) => !b.disabled);
-    const choices = [...d.querySelectorAll("#choices .choice:not([disabled])")].filter((b) => !b.querySelector(".k").textContent.includes("✓"));
+    const choices = [...d.querySelectorAll("#choices .choice:not([disabled])")].filter((b) => !b.classList.contains("picked"));
     if (jsErrors.length) return { crash: jsErrors[0], scene: K.S.scene, path: path_, errors, problems };
     try {
       if (acts.length) {
