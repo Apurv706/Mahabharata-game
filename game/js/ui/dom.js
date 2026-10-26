@@ -114,14 +114,14 @@
   // Scene-setting lines are written out letter by letter by a peacock-feather pen. Letters are cut
   // as whole graphemes, so a Devanagari syllable with its vowel signs appears in one stroke.
   const QUILL = '<svg viewBox="0 0 60 120" aria-hidden="true">' +
-    '<path d="M5 117 C18 88 30 52 50 10" stroke="#e8dcc0" stroke-width="1.6" fill="none"/>' +
+    '<path d="M5 117 C18 88 30 52 50 10" stroke="#6b4a2e" stroke-width="1.6" fill="none"/>' +
     '<g stroke="#4f9a6a" stroke-width="0.9" opacity="0.85" fill="none">' +
     '<path d="M14 92 l-8 -10 M14 92 l10 -4 M19 80 l-9 -11 M19 80 l11 -5 M24 68 l-9 -12 M24 68 l12 -5 M30 56 l-9 -12 M30 56 l12 -6 M35 45 l-8 -12 M35 45 l12 -6"/></g>' +
     '<ellipse cx="49" cy="17" rx="10" ry="15" transform="rotate(28 49 17)" fill="#2f7d55"/>' +
     '<ellipse cx="49" cy="17" rx="7" ry="11" transform="rotate(28 49 17)" fill="#e2b55a"/>' +
     '<ellipse cx="49.5" cy="17.5" rx="4.6" ry="7.4" transform="rotate(28 49 17)" fill="#1f56b0"/>' +
     '<ellipse cx="50" cy="18" rx="2.2" ry="3.6" transform="rotate(28 49 17)" fill="#0b1d45"/>' +
-    '<path d="M2 120 L6 113 L8 116 Z" fill="#1a1208"/></svg>';
+    '<path d="M2 120 L6 113 L8 116 Z" fill="#b0261a"/></svg>';
   let writer = null;
   const segmenter = window.Intl && Intl.Segmenter ? new Intl.Segmenter(undefined, { granularity: "grapheme" }) : null;
   const graphemes = (t) => (segmenter ? Array.from(segmenter.segment(t), (x) => x.segment) : Array.from(t));

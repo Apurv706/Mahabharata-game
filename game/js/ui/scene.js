@@ -60,7 +60,7 @@
     if (h1) h1.dataset.hold = 650;
     [...box.children].forEach((b) => { b.dataset.hold = 110; });
     // The scene-setting lines are written out by the quill.
-    story.forEach((el) => { if (el.tagName === "P" || (el.tagName === "DIV" && el.querySelector(".speech"))) el.classList.add("write"); });
+    story.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
     U.keys([]);
     U.stage([plate, ...story, ...box.children, U.$("keyhint")], () => U.keys(keys));
   };
@@ -118,7 +118,7 @@
       if (el.classList.contains("witness") || el.classList.contains("result")) { el.dataset.hold = 250; parts.push(el, ...el.children); }
       else parts.push(el);
     }
-    parts.forEach((el) => { if (el.tagName === "P" || (el.tagName === "DIV" && el.querySelector(".speech"))) el.classList.add("write"); });
+    parts.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
     U.stage(parts, () => { U.keys([go]); cont.focus({ preventScroll: true }); });
   }
 })(window.K = window.K || {});

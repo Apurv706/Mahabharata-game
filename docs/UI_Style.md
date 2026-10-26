@@ -4,22 +4,23 @@ The game's interface follows the design-taste-frontend (tasteskill v2) rules for
 
 ## Direction
 
-The screen is an old Indian manuscript folio. The paintings carry the colour; the interface frames them the way a manuscript or a Kalamkari cloth frames its pictures.
+The screen is an old manuscript on aged parchment, written in red ink that has dried to reddish brown. The paintings carry the colour; the page frames them the way a manuscript frames its pictures.
 
 | Token | Value | Use |
 |---|---|---|
-| `--ground` | #2a120f madder red | The page, printed with a faint gold lotus buti (`css/buti.svg`, block-print style) |
-| `--surface` | #371a15 | The folio (the scene) and the side panel |
-| `--raised` / `--hover` | #47241d / #562e25 | Choices, cards, controls; one tone step up on hover |
-| `--ink` / `--muted` / `--faint` | #f7ead3 / #e0c7a6 / #c3a585 | Text in three tiers, all above 4.5:1 on every panel |
-| `--accent` | #f0943f saffron | Only what you can do: the main button, the selection, focus |
-| `--data` | #e2b55a gold | The duty meters, canon markers and the ornaments |
-| `--positive` / `--negative` | #7fcfa6 / #ff8a6e | Rises and falls in choices, health bars, curses |
+| `--ground` | #e8d5ad parchment | The page, with paper blotches and fibres (`css/parchment.svg`) and darkened edges |
+| `--surface` | #f1e3c3 | The scene and the side panel, a little lighter |
+| `--raised` / `--hover` | #e6d1a6 / #dcc394 | Choices, cards, controls; one tone step down on hover |
+| `--ink` / `--muted` / `--faint` | #4a170d / #69301e / #733f29 | Dried red ink in three tiers, all above 4.5:1 on every panel |
+| `--fresh-ink` | #e0251a | Wet ink: letters the quill has just written sparkle in this red, then dry to `--ink` |
+| `--accent` | #9a2c16 sindoor red | Only what you can do: the main button, the selection, focus |
+| `--data` | #74470a ochre | The duty meters and canon markers |
+| `--positive` / `--negative` | #215737 / #932713 | Rises and falls in choices, health bars, curses |
 
-Ornaments, all in gold line:
-- A torana fringe (`css/torana.svg`, a rule with hanging scallops and beads) where a painting meets its text, and along the top of the side panel, the act strip and dialogs.
-- A double gold rule framing the canon panel ("What happens, whatever you do"), like a manuscript page border.
-- The app icon (chariot wheel and lamp) beside the wordmark.
+Ornaments, in red-brown line:
+- A torana fringe (`css/torana.svg`) where a painting meets its text, and along the top of the side panel, the act strip and dialogs.
+- A double rule framing the canon panel ("What happens, whatever you do").
+- Round gold-ringed portraits, free-standing emblems, small painted teacher cards on their choices.
 
 ## Rules
 
