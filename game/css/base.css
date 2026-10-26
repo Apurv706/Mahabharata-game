@@ -1,23 +1,27 @@
 /* Kurukshetra: A Life — base styles.
-   Direction: the screen is a lamp-lit manuscript leaf. A warm soot-black ground taken from the
-   paintings, surfaces separated by tone steps (no outlines, no shadows at rest, no gradients),
-   one saffron accent for what you can do, gold reserved for the duty meters (the game's data).
-   Display face for names and titles, one text face for everything else. */
+   Direction: an old Indian manuscript folio. A deep madder-red ground printed with a faint gold
+   lotus buti (block-print), warm red-brown panels, gold torana fringes where a painting meets its
+   text, and a double-ruled frame around the canon panel. Panels are separated by tone steps and
+   the gold ornaments, never by shadows at rest. One saffron accent for what you can do; gold for
+   the duty meters and the ornaments. Display face for names and titles, one text face for the rest. */
 :root {
-  --ground: #13110e;     /* soot-black of an oil-lamp night */
-  --surface: #1c1915;    /* the leaf */
-  --raised: #26221c;     /* a choice, a card */
-  --hover: #312b23;
-  --ink: #f2e8d5;
-  --muted: #c4b69d;      /* 9:1 on surface */
-  --faint: #a1937b;      /* 5.6:1 on surface */
-  --accent: #e8893a;     /* saffron: actions and the current selection */
+  --ground: #2a120f;     /* madder red, as on Kalamkari cloth and temple flags */
+  --ground-rgb: 42, 18, 15;
+  --surface: #371a15;    /* the folio */
+  --surface-rgb: 55, 26, 21;
+  --raised: #47241d;     /* a choice, a card */
+  --hover: #562e25;
+  --ink: #f7ead3;
+  --muted: #e0c7a6;      /* 9.8:1 on surface */
+  --faint: #c3a585;      /* 6.8:1 on surface */
+  --accent: #f0943f;     /* saffron: actions and the current selection */
   --accent-ink: #1a1208;
-  --data: #d4a84b;       /* gold: the duty meters */
-  --track: #3a332a;
-  --negative: #e46a4f;
-  --positive: #67b38f;
-  --check: #8fa8e6;
+  --data: #e2b55a;       /* gold: the duty meters and the ornaments */
+  --gold-line: rgba(226, 181, 90, 0.42);
+  --track: #64382d;
+  --negative: #ff8a6e;
+  --positive: #7fcfa6;
+  --check: #a9bdf0;
   /* Devanagari falls through to Tiro (display) and Mukta (text): the Latin faces have no Hindi glyphs. */
   --display: "Cormorant Garamond", "Tiro Devanagari Hindi", "Iowan Old Style", Georgia, serif;
   --text: "Alegreya Sans", "Mukta", "Gill Sans", "Segoe UI", sans-serif;
@@ -26,7 +30,9 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
-html, body { background: var(--ground); color: var(--ink); margin: 0; }
+html { background: var(--ground); }
+/* The block-printed ground (the user asked for an Indian design in place of plain black). */
+body { background: var(--ground) url("buti.svg") 0 0 / 88px 88px repeat; color: var(--ink); margin: 0; }
 body {
   font-family: var(--text); font-size: 17px; line-height: 1.55;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
@@ -41,7 +47,8 @@ button { font: inherit; color: inherit; }
 /* Shell: wordmark, where you are in your life, three plain links. */
 .app { max-width: 1200px; margin: 0 auto; display: grid; gap: 16px; }
 header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 20px; padding-bottom: 4px; }
-.brand { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.1; color: var(--ink); }
+.brand { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.1; color: var(--ink); display: inline-flex; align-items: center; gap: 10px; }
+.brand::before { content: ""; width: 30px; height: 30px; flex: none; background: url("../icons/icon-192.png") center / contain no-repeat; }
 .where { font-size: 15px; color: var(--muted); font-variant-numeric: tabular-nums; flex: 1 1 260px; min-width: 0; }
 .where b { color: var(--ink); font-weight: 700; margin-right: 10px; }
 .nav { display: flex; gap: 4px; flex-wrap: wrap; }
@@ -61,7 +68,7 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 .plate.painted { aspect-ratio: 3 / 1; min-height: 190px; max-width: 100%; background: var(--img) center 40% / cover no-repeat, var(--raised); }
 .plate.painted.tall { aspect-ratio: 5 / 2; }
 /* A neutral scrim so the caption reads over any painting (the one allowed blend). */
-.plate.painted::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(28, 25, 21, 0.96), rgba(28, 25, 21, 0) 55%); } /* taste-skill-ignore: neutral scrim under text on a picture */
+.plate.painted::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(var(--surface-rgb), 0.97), rgba(var(--surface-rgb), 0) 55%); } /* taste-skill-ignore: neutral scrim under text on a picture */
 .plate .cap { position: relative; z-index: 1; padding: 0 26px 16px; display: grid; gap: 2px; color: var(--ink); width: 100%; }
 .plate .cap b { font-family: var(--display); font-size: clamp(26px, 4.4vw, 44px); font-weight: 700; line-height: 1.02; letter-spacing: -0.01em; }
 .plate .cap small { font-size: 15px; color: var(--muted); max-width: 56ch; }
@@ -73,12 +80,14 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
   @keyframes drift { from { background-position: center 36%, 0 0; } to { background-position: center 48%, 0 0; } }
 }
 
-.text { padding: 22px 26px 28px; display: grid; gap: 16px; }
-@media (max-width: 520px) { .text { padding: 18px 16px 24px; } .plate .cap { padding: 0 16px 14px; } }
+/* A torana fringe where the painting meets the text, as on a manuscript folio. */
+.text { padding: 34px 26px 28px; display: grid; gap: 16px; background: url("torana.svg") 0 0 / 28px 16px repeat-x; }
+@media (max-width: 520px) { .text { padding: 30px 16px 24px; } .plate .cap { padding: 0 16px 14px; } }
 .text h1 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 3.4vw, 36px); line-height: 1.08; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
 .text p { margin: 0; max-width: 66ch; }
 .lbl { font-family: var(--display); font-size: 22px; font-weight: 700; line-height: 1.15; color: var(--ink); }
-.witness { background: var(--raised); border-radius: var(--r-card); padding: 16px 18px; color: var(--ink); display: grid; gap: 10px; }
+/* The canon panel: framed by a double gold rule, like the border of a manuscript page. */
+.witness { background: var(--raised); border: 1px solid var(--gold-line); outline: 1px solid rgba(226, 181, 90, 0.2); outline-offset: -6px; border-radius: var(--r-card); padding: 18px 20px; color: var(--ink); display: grid; gap: 10px; }
 .witness .lbl { color: var(--data); font-size: 20px; }
 .speech { font-family: var(--display); font-size: 24px; line-height: 1.28; font-weight: 600; color: var(--ink); max-width: 58ch; }
 .memory { font-size: 16px; color: var(--accent); font-style: italic; }
@@ -107,7 +116,7 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 .choice.picked { background: var(--hover); cursor: default; }
 .choice.picked .k { color: var(--accent); }
 .cta { font-weight: 700; font-size: 17px; color: var(--accent-ink); background: var(--accent); border: 0; border-radius: var(--r-control); padding: 12px 24px; min-height: 48px; cursor: pointer; justify-self: start; transition: transform 0.12s, background-color 0.15s; }
-.cta:hover { background: #f09a4f; }
+.cta:hover { background: #f6a65c; }
 .cta:active { transform: translateY(1px); }
 .cta.secondary { background: var(--raised); color: var(--ink); }
 .cta.secondary:hover { background: var(--hover); }

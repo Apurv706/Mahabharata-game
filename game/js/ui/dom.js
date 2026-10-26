@@ -38,7 +38,7 @@
   U.plate = function (o) {
     const img = U.artUrl(o.art);
     const field = (o.grad || ["#5a3a22"])[0];
-    const style = img ? "--img:url('" + img + "')" : "--field:color-mix(in srgb, " + field + " 42%, #13110e)";
+    const style = img ? "--img:url('" + img + "')" : "--field:color-mix(in srgb, " + field + " 40%, var(--ground))";
     const kind = o.tagText ? '<span class="kind ' + (o.tag || "") + '">' + U.esc(o.tagText) + "</span>" : "";
     let cap = kind;
     if (o.title) cap += "<b>" + U.t(o.title) + "</b>";
