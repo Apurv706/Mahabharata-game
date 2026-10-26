@@ -34,7 +34,7 @@
     },
     {
       id: "a6_vasu", when: { child: "vasu", alive: "vasu" }, skipTo: "a6_day1",
-      act: 6, age: 44, war: true, place: "Your tent, the night before", plate: ["#5c3361", "#16131f"], caption: "A lamp in a tent",
+      act: 6, age: 44, war: true, place: "Your tent, the night before", art: "scene_vasu", plate: ["#5c3361", "#16131f"], caption: "A lamp in a tent",
       title: "Vasu asks to ride with you",
       body: (S) => [
         "Vasu is sixteen. He has a sword, a borrowed shield and no idea what tomorrow is going to be like. He wants to be beside you.",
@@ -66,7 +66,7 @@
       next: "a6_bhishma"
     },
     {
-      id: "a6_bhishma", act: 6, age: 44, canon: true, war: true, place: "Kurukshetra · day 10", plate: ["#d4a84b", "#2a1c1f"], caption: "A bed of arrows at dusk",
+      id: "a6_bhishma", act: 6, age: 44, canon: true, war: true, place: "Kurukshetra · day 10", art: "scene_arrows", plate: ["#d4a84b", "#2a1c1f"], caption: "A bed of arrows at dusk",
       title: "The bed of arrows",
       witness: [
         "On the tenth day the Pandavas put Shikhandi at the front of Arjuna's chariot. Bhishma will not fight one who was born a woman, and lowers his bow. Arjuna's arrows bring the grandsire down.",

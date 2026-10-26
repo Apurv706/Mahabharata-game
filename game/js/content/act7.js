@@ -28,7 +28,7 @@
       next: "a7_bhishma"
     },
     {
-      id: "a7_bhishma", act: 7, age: 44, canon: true, place: "The bed of arrows", plate: ["#d4a84b", "#5c3361"], caption: "The grandsire's last teaching",
+      id: "a7_bhishma", act: 7, age: 44, canon: true, place: "The bed of arrows", art: "scene_teaching", plate: ["#d4a84b", "#5c3361"], caption: "The grandsire's last teaching",
       title: "The last teaching",
       witness: ["Bhishma has waited on his bed of arrows for the sun to turn north. Before he dies, he teaches Yudhishthira how to rule, at great length, while the Pandavas and the survivors listen."],
       body: ["You sit at the edge of the crowd. When he pauses, he looks at you as if he expects a question."],

@@ -33,7 +33,7 @@
       next: "a2_path"
     },
     {
-      id: "a2_path", act: 2, age: 15, place: (S) => (S.teacher === "hermit" ? "Mauni's clearing" : S.teacher === "self" ? "A clearing at night" : "Your teacher's school"), plate: ["#3e8c72", "#d4a84b"], caption: "Your first year of training",
+      id: "a2_path", act: 2, age: 15, place: (S) => (S.teacher === "hermit" ? "Mauni's clearing" : S.teacher === "self" ? "A clearing at night" : "Your teacher's school"), art: "scene_path", plate: ["#3e8c72", "#d4a84b"], caption: "Your first year of training",
       title: "Your path",
       body: (S) => [
         "After a year, " + (S.teacher === "self" ? "you know" : "{teacher} knows") + " what you are good at. The path you choose now decides how you fight, and how you are useful when you are not fighting.",
@@ -51,7 +51,7 @@
       next: "a2_ekalavya"
     },
     {
-      id: "a2_ekalavya", act: 2, age: 16, canon: true, place: "The forest near Hastinapura", plate: ["#3e8c72", "#16131f"], caption: "A clay image in a forest clearing",
+      id: "a2_ekalavya", act: 2, age: 16, canon: true, place: "The forest near Hastinapura", art: "scene_ekalavya", plate: ["#3e8c72", "#16131f"], caption: "A clay image in a forest clearing",
       title: "Ekalavya's fee",
       witness: [
         "On a hunt, the princes' dog barks at a dark-skinned boy in the forest. Seven arrows close its mouth without drawing blood. The boy is Ekalavya, a Nishada prince. Drona once refused to teach him, so he made a clay image of Drona and practised in front of it.",
@@ -108,7 +108,7 @@
       next: "a2_drupada"
     },
     {
-      id: "a2_drupada", act: 2, age: 18, canon: true, place: "The road to Panchala", plate: ["#c0472f", "#5c3361"], caption: "The road to Drupada's capital",
+      id: "a2_drupada", act: 2, age: 18, canon: true, place: "The road to Panchala", art: "scene_drupada", plate: ["#c0472f", "#5c3361"], caption: "The road to Drupada's capital",
       title: "Drona's fee",
       witness: [
         "Their training is done, and Drona asks his students for his fee: bring him King Drupada of Panchala, the friend who once humiliated him, as a prisoner.",
@@ -163,7 +163,7 @@
     lose: { fx: { attr: { wisdom: 1 } }, text: "Ketan wins. Afterwards he shows you exactly what you did wrong, and you never do it again." }
   });
   K.encounter({
-    id: "e_panchala", title: "The raid on Panchala", caption: "Drupada's palace guard", lethal: false,
+    id: "e_panchala", title: "The raid on Panchala", art: "scene_drupada", caption: "Drupada's palace guard", lethal: false,
     intro: "Drupada's guard forms a line in the palace yard.",
     enemies: [K.foe("Panchala guard captain", 2), K.foe("Panchala archer", 1, { abilities: ["strike", "arrows"] })],
     win: { fx: { duty: { teacher: 2 }, rep: { panchala: -3, kuru: 1 }, journal: "You rode with Drona's students and helped take King Drupada." }, text: "The yard is yours. Arjuna's chariot is already at the palace steps." },

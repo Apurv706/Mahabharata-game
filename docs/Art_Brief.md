@@ -34,41 +34,15 @@ Companion to the PRD (§12 cultural rules, §14 art direction).
 | `end_river` | Broken vow / refused | Later-style temple spires |
 | `heir_*` (4) | Heirloom cards in character creation | Good. Cropped from one sheet with painted labels |
 | `temper_*` (4) | Temperament emblems | Good |
+| `scene_princes` … `scene_teaching` (22) | Every scene in the story-order list, Acts I–VII | Good overall. Later-style temple spires in `scene_armour` and `scene_birth`; Greco-Roman colonnades in `scene_indraprastha`; walled castle city in `scene_drupada`; a modern bullseye target in `scene_path`; European cross-hilt sword in `scene_vasu`. Draupadi appears in `scene_swayamvara` and `scene_exile` (advisory review). |
 
 ## Still needed
 
-Every image below currently shows a coloured placeholder in the game. Scene art is wide **3:1** (at least 1800×600); battle backgrounds the same.
-
-### Scene art, in story order (22)
-
-| Scene | Act | What to show |
-|---|---|---|
-| The princes at play | I | Palace garden and lotus pond; a big boy (Bhima) shaking fruit and children from a tree |
-| A sage on the road | I | An ash-grey sage holding out an empty water pot on a dusty noon road |
-| The river at Pramanakoti | I | Festival pavilions on the Ganga at dusk; two men carrying a bundle to the water |
-| Your path | II | A training ground with bows, maces, a chariot, herbs and a lyre: one of each path |
-| Ekalavya's fee | II | A forest clearing with a clay image of a teacher; the moment before, not the wound |
-| Drona's fee | II | Students' chariots on the road to Drupada's capital |
-| The house at Varnavata | III | A handsome house at night with resin-stained walls; a lamp, a tunnel mouth |
-| Draupadi's swayamvara | III | A golden fish turning on a wheel above a pool; a great bow; a crowded hall |
-| Two kingdoms | III | Indraprastha rising in white stone from burned forest |
-| The Rajasuya | III | Maya's hall of glass floors and water; a figure falling into a pool |
-| Thirteen years | IV | The Pandavas and Draupadi walking out of the city in deerskins |
-| A season at the ashram | V | A mountain hermitage by the upper Ganga |
-| Jayadratha | V | An empty forest hermitage; chariot tracks in the dust |
-| The lake of questions | V | A still forest lake at noon; figures lying on the bank |
-| The cattle count | V | Royal tents at the forest edge; an ambush |
-| Karna's armour | V | Karna at the river at dawn, an old brahmin before him |
-| The secret of Karna's birth | V | A river at dusk; a basket memory in the reflection |
-| Vasu asks to ride with you | VI | A lamp-lit tent; a teenage boy with a borrowed shield |
-| The bed of arrows | VI | Bhishma on his bed of arrows at dusk, warriors of both sides around him |
-| Duryodhana at the lake | VI | A broken king lying by dark water at dusk |
-| The night raid | VI | Fire in a sleeping camp; tents burning (no bodies shown) |
-| The last teaching | VII | The bed of arrows by day; a crowd listening |
+Every image below currently shows a coloured placeholder in the game. Scene art is wide **3:1** (at least 1800×600); battle backgrounds the same. All 22 story scenes are now painted.
 
 ### Battle backgrounds (10)
 
-All war battles reuse the day-13 painting. Each fight needs its own: the wrestling ring at the fair, Drupada's palace yard, the Panchala border villages, the swayamvara brawl, the Sindhu forest road, the Gandharva ambush, Sudatta's field, the Matsya cattle raid, the night battle by torchlight, and the burning camp gate.
+Five fights now borrow a scene painting from the same place: Drupada's palace yard (`scene_drupada`), the swayamvara brawl (`scene_swayamvara`), the Sindhu forest road (`scene_jayadratha`), the Gandharva ambush (`scene_cattle`), and Ashwatthama at the camp gate (`scene_raid`). Still needed: the wrestling ring at the fair, the Panchala border villages, Sudatta's field, the Matsya cattle raid, and the night battle by torchlight. The other war battles reuse the day-13 painting.
 
 ### War days (6)
 

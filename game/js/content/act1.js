@@ -26,7 +26,7 @@
       next: "a1_princes"
     },
     {
-      id: "a1_princes", act: 1, age: 8, canon: true, place: "The palace gardens, Hastinapura", plate: ["#d4a84b", "#3e8c72"], caption: "The palace gardens",
+      id: "a1_princes", act: 1, age: 8, canon: true, place: "The palace gardens, Hastinapura", art: "scene_princes", plate: ["#d4a84b", "#3e8c72"], caption: "The palace gardens",
       title: "The princes at play",
       witness: [
         "King Pandu has died in the forest, and his five sons have come to Hastinapura with their mother Kunti. They grow up beside their hundred cousins, the sons of blind King Dhritarashtra.",
@@ -43,7 +43,7 @@
       next: "a1_sage"
     },
     {
-      id: "a1_sage", act: 1, age: 9, place: "The road home", plate: ["#c9a24a", "#5c3361"], caption: "A dusty road at noon",
+      id: "a1_sage", act: 1, age: 9, place: "The road home", art: "scene_sage", plate: ["#c9a24a", "#5c3361"], caption: "A dusty road at noon",
       title: "A sage on the road",
       body: ["On the way home, an old sage sits by the road. His hair is matted, his body grey with ash, his water pot empty. He holds it out to you without a word."],
       choices: [
@@ -71,7 +71,7 @@
       next: "a1_poison"
     },
     {
-      id: "a1_poison", act: 1, age: 12, canon: true, place: "Pramanakoti, on the Ganga", plate: ["#3b5ba9", "#16131f"], caption: "Pavilions by the river",
+      id: "a1_poison", act: 1, age: 12, canon: true, place: "Pramanakoti, on the Ganga", art: "scene_poison", plate: ["#3b5ba9", "#16131f"], caption: "Pavilions by the river",
       title: "The river at Pramanakoti",
       witness: [
         "Duryodhana holds a river festival at Pramanakoti. He feeds Bhima sweets laced with poison, and when Bhima falls asleep he has him tied with vines and rolled into the Ganga.",

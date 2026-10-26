@@ -31,7 +31,7 @@
       next: "a3_lac"
     },
     {
-      id: "a3_lac", act: 3, age: 23, canon: true, place: "Varnavata", plate: ["#e5872e", "#2a1c1f"], caption: "A new house that smells of resin",
+      id: "a3_lac", act: 3, age: 23, canon: true, place: "Varnavata", art: "scene_lac", plate: ["#e5872e", "#2a1c1f"], caption: "A new house that smells of resin",
       title: "The house at Varnavata",
       witness: [
         "Duryodhana's minister Purochana builds a beautiful house at Varnavata for Kunti and her sons. It is made of lac, hemp and resin, and it is meant to burn.",
@@ -55,7 +55,7 @@
       next: "a3_swayamvara"
     },
     {
-      id: "a3_swayamvara", act: 3, age: 25, canon: true, place: "Drupada's hall, Panchala", plate: ["#d4a84b", "#c0472f"], caption: "A golden fish turning above the water",
+      id: "a3_swayamvara", act: 3, age: 25, canon: true, place: "Drupada's hall, Panchala", art: "scene_swayamvara", plate: ["#d4a84b", "#c0472f"], caption: "A golden fish turning above the water",
       title: "Draupadi's swayamvara",
       witness: [
         "Drupada holds a contest for his daughter's hand. A golden fish turns on a wheel high above a pool. The winner must string a great bow and hit the fish's eye while looking only at its reflection.",
@@ -76,7 +76,7 @@
       next: "a3_court"
     },
     {
-      id: "a3_court", act: 3, age: 26, canon: true, place: "Hastinapura and Indraprastha", plate: ["#3e8c72", "#d4a84b"], caption: "A new city rises from burned forest",
+      id: "a3_court", act: 3, age: 26, canon: true, place: "Hastinapura and Indraprastha", art: "scene_indraprastha", plate: ["#3e8c72", "#d4a84b"], caption: "A new city rises from burned forest",
       title: "Two kingdoms",
       witness: [
         "To avoid war, Dhritarashtra gives the Pandavas half the kingdom: the wild land of Khandavaprastha. The Khandava forest is burned to clear it, and on the ashes they build Indraprastha, a city of white stone and glass.",
@@ -108,7 +108,7 @@
       next: "a3_rajasuya"
     },
     {
-      id: "a3_rajasuya", act: 3, age: 29, canon: true, place: "Indraprastha", plate: ["#6f8fd8", "#d4a84b"], caption: "The hall that Maya built",
+      id: "a3_rajasuya", act: 3, age: 29, canon: true, place: "Indraprastha", art: "scene_rajasuya", plate: ["#6f8fd8", "#d4a84b"], caption: "The hall that Maya built",
       title: "The Rajasuya",
       witness: [
         "Yudhishthira performs the Rajasuya sacrifice and is proclaimed emperor. When King Shishupala insults Krishna past all bearing, Krishna's discus ends his life, and the gathered kings fall silent.",
@@ -130,7 +130,7 @@
   ]);
 
   K.encounter({
-    id: "e_kings", title: "The brawl at the swayamvara", caption: "Kings with drawn swords", lethal: false,
+    id: "e_kings", title: "The brawl at the swayamvara", art: "scene_swayamvara", caption: "Kings with drawn swords", lethal: false,
     intro: "The angry kings' guards rush the two brahmins. You are in the way.",
     allies: [{ name: "The huge brahmin (Bhima)", hp: 90, atk: 11, def: 3, abilities: ["strike", "heavy"] }],
     enemies: [K.foe("A king's bodyguard", 3), K.foe("A king's bodyguard", 2)],

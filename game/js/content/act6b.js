@@ -105,7 +105,7 @@
     },
     {
       id: "a6_duryodhana", when: { any: [{ friend: "duryodhana" }, { bond: ["duryodhana", 7] }] }, skipTo: "a6_raid",
-      act: 6, age: 44, war: true, place: "The lakeside at dusk", plate: ["#5c3361", "#2a1c1f"], caption: "A broken king by the water",
+      act: 6, age: 44, war: true, place: "The lakeside at dusk", art: "scene_duryodhana", plate: ["#5c3361", "#2a1c1f"], caption: "A broken king by the water",
       title: "Duryodhana at the lake",
       body: ["Duryodhana lies where Bhima left him, his thigh shattered. He is waiting to die. He sees you, and for a moment he looks like the boy at the lotus pond."],
       choices: [
@@ -117,7 +117,7 @@
       next: "a6_raid"
     },
     {
-      id: "a6_raid", act: 6, age: 44, canon: true, war: true, place: "The Pandava camp, the night after the last day", plate: ["#c0472f", "#16131f"], caption: "Fire in the sleeping camp",
+      id: "a6_raid", act: 6, age: 44, canon: true, war: true, place: "The Pandava camp, the night after the last day", art: "scene_raid", plate: ["#c0472f", "#16131f"], caption: "Fire in the sleeping camp",
       title: "The night raid",
       witness: ["The war is over. The Pandava camp sleeps for the first time in eighteen days. Ashwatthama, mad with grief for his father, comes through the gate in the dark with a sword."],
       body: (S) => [
@@ -184,13 +184,13 @@
     lose: { deathText: "You fell on the eighteenth day, the last day of the war." },
     flee: { text: "You fall back, for the last time." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go. The war is nearly over." }
   });
-  war("e_raid", "Ashwatthama at the gate", [{ name: "Ashwatthama", hp: 115, atk: 12, def: 3, abilities: ["strike", "heavy", "arrows"] }], {
+  war("e_raid", "Ashwatthama at the gate", [{ name: "Ashwatthama", hp: 115, atk: 12, def: 3, abilities: ["strike", "heavy", "arrows"] }], { art: "scene_raid",
     caption: "Fire in the camp", allies: [], spare: false,
     win: { fx: { rep: { pandava: 2 }, flag: "slowed_ashwatthama", journal: "You fought Ashwatthama at the gate of the burning camp, and lived." }, text: "He breaks away from you and vanishes into the smoke. You held him for long enough that some got out." },
     lose: { deathText: "You died at the gate of the Pandava camp, fighting Ashwatthama in the dark." },
     flee: { text: "You run, like everyone else." }
   });
-  war("e_ash", "Standing in Ashwatthama's way", [{ name: "Ashwatthama", hp: 115, atk: 12, def: 3, abilities: ["strike", "heavy", "arrows"] }], {
+  war("e_ash", "Standing in Ashwatthama's way", [{ name: "Ashwatthama", hp: 115, atk: 12, def: 3, abilities: ["strike", "heavy", "arrows"] }], { art: "scene_raid",
     caption: "The road to the sleeping camp", allies: [], spare: false,
     win: { fx: { duty: { conscience: 3 }, flag: "fought_ashwatthama", journal: "You tried to stop Ashwatthama on the road to the sleeping camp." }, text: "He staggers, and then goes around you. You cannot stop him. You slowed him down." },
     lose: { deathText: "You died on the road, trying to stop Ashwatthama from reaching the sleeping camp." },

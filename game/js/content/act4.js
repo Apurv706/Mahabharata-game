@@ -93,7 +93,7 @@
       next: "a4_aftermath"
     },
     {
-      id: "a4_aftermath", act: 4, age: 30, canon: true, place: "The road out of Hastinapura", plate: ["#5c3361", "#16131f"], caption: "The Pandavas walk into exile",
+      id: "a4_aftermath", act: 4, age: 30, canon: true, place: "The road out of Hastinapura", art: "scene_exile", plate: ["#5c3361", "#16131f"], caption: "The Pandavas walk into exile",
       title: "Thirteen years",
       witness: [
         "The Pandavas walk out of Hastinapura in deerskins, with Draupadi beside them, her hair still unbound. Kunti stays behind with Vidura.",

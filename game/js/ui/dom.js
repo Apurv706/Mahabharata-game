@@ -13,7 +13,12 @@
     if (onClick) b.addEventListener("click", onClick);
     return b;
   };
-  U.artUrl = (key) => (key ? "art/" + key + ".jpg" : null);
+  // Absolute, because a url() carried in a CSS custom property is resolved against the stylesheet
+  // that reads it (css/), not the page: a relative "art/x.jpg" would load css/art/x.jpg.
+  U.artUrl = function (key) {
+    if (!key) return null;
+    try { return new URL("art/" + key + ".jpg", document.baseURI).href; } catch (e) { return "art/" + key + ".jpg"; }
+  };
 
   // Story text blocks: plain strings, speech, memories, curses, asides.
   U.blocks = function (arr) {

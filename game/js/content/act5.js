@@ -22,7 +22,7 @@
     // ---------- The forest road ----------
     {
       id: "a5_forest_boon", when: forest, skipTo: "a5_court_raid",
-      act: 5, age: 33, place: "An ashram on the upper Ganga", plate: ["#3e8c72", "#6f8fd8"], caption: "A hermitage in the mountains",
+      act: 5, age: 33, place: "An ashram on the upper Ganga", art: "scene_ashram", plate: ["#3e8c72", "#6f8fd8"], caption: "A hermitage in the mountains",
       title: "A season at the ashram",
       body: ["Arjuna has gone north alone to seek divine weapons from the gods. The rest of the camp moves between hermitages. You spend a season at an ashram where the sages will teach anyone patient enough to sit still."],
       choices: [
@@ -39,7 +39,7 @@
     },
     {
       id: "a5_jayadratha", when: forest, skipTo: "a5_court_raid",
-      act: 5, age: 35, canon: true, place: "The Kamyaka forest", plate: ["#3e8c72", "#c0472f"], caption: "An empty hermitage",
+      act: 5, age: 35, canon: true, place: "The Kamyaka forest", art: "scene_jayadratha", plate: ["#3e8c72", "#c0472f"], caption: "An empty hermitage",
       title: "Jayadratha",
       witness: ["While the Pandavas are out hunting, King Jayadratha of Sindhu, Duryodhana's brother-in-law, finds Draupadi alone at the hermitage and carries her off in his chariot."],
       body: ["You are the first to hear her shout. Jayadratha's guards are covering his escape."],
@@ -53,7 +53,7 @@
     },
     {
       id: "a5_yaksha", when: forest, skipTo: "a5_court_raid",
-      act: 5, age: 42, canon: true, place: "A lake in the forest", plate: ["#6f8fd8", "#16131f"], caption: "A still lake in the heat",
+      act: 5, age: 42, canon: true, place: "A lake in the forest", art: "scene_lake", plate: ["#6f8fd8", "#16131f"], caption: "A still lake in the heat",
       title: "The lake of questions",
       witness: [
         "In the twelfth year, the brothers grow desperate with thirst. One by one, Nakula, Sahadeva, Arjuna and Bhima go to a lake, ignore a voice that tells them to answer its questions first, drink, and fall down as if dead.",
@@ -72,7 +72,7 @@
     // ---------- The court road ----------
     {
       id: "a5_court_raid", when: court, skipTo: "a5_own_life",
-      act: 5, age: 33, canon: true, place: "The edge of the Dvaita forest", plate: ["#d4a84b", "#3e8c72"], caption: "Royal tents near the forest",
+      act: 5, age: 33, canon: true, place: "The edge of the Dvaita forest", art: "scene_cattle", plate: ["#d4a84b", "#3e8c72"], caption: "Royal tents near the forest",
       title: "The cattle count",
       witness: ["Duryodhana takes his court to the forest, saying it is to count the royal herds. Everyone knows it is to show off in front of the exiled Pandavas. A band of Gandharvas, forest warriors who serve no king, ambushes the royal camp. Karna's line breaks."],
       body: ["Duryodhana is being dragged off in chains."],
@@ -86,7 +86,7 @@
     },
     {
       id: "a5_court_armour", when: court, skipTo: "a5_own_life",
-      act: 5, age: 38, canon: true, place: "The river at dawn", plate: ["#e5872e", "#6f8fd8"], caption: "Karna at his morning prayers",
+      act: 5, age: 38, canon: true, place: "The river at dawn", art: "scene_armour", plate: ["#e5872e", "#6f8fd8"], caption: "Karna at his morning prayers",
       title: "Karna's armour",
       witness: ["Karna was born with armour and earrings that make him almost impossible to kill. Every morning after his prayers to the sun, he gives anyone whatever they ask. One morning an old brahmin asks for the armour. Everyone says it is Indra, Arjuna's father, in disguise."],
       body: (S) => [S.bonds.karna >= 6 ? { memory: "You have known Karna for most of your life. You know he already knows." } : "You are at the river with the morning crowd."],
@@ -159,7 +159,7 @@
     },
     {
       id: "a5_karna_secret", when: { any: [{ flag: "left_arena" }, { bond: ["karna", 7] }] }, skipTo: "a5_side",
-      act: 5, age: 44, canon: true, place: "The river at dusk", plate: ["#e5872e", "#16131f"], caption: "The river where a basket once floated",
+      act: 5, age: 44, canon: true, place: "The river at dusk", art: "scene_birth", plate: ["#e5872e", "#16131f"], caption: "The river where a basket once floated",
       title: "The secret of Karna's birth",
       witness: [
         "Krishna meets Karna before the war and tells him the truth: he is Kunti's firstborn son, born before her marriage, set adrift on the river. He is the eldest Pandava. If he changes sides, he will be king.",
@@ -199,14 +199,14 @@
   ]);
 
   K.encounter({
-    id: "e_jayadratha", title: "After Jayadratha's chariot", caption: "Sindhu guards on the forest road", lethal: false,
+    id: "e_jayadratha", title: "After Jayadratha's chariot", art: "scene_jayadratha", caption: "Sindhu guards on the forest road", lethal: false,
     intro: "Two of Jayadratha's guards turn their horses to block the path.",
     enemies: [K.foe("Sindhu guard", 3), K.foe("Sindhu archer", 2, { abilities: ["strike", "arrows"] })],
     win: { fx: { rep: { pandava: 2 }, bond: { draupadi: 1, bhima: 1 }, journal: "You cut through Jayadratha's rearguard when he carried Draupadi off." }, text: "The guards break. Ahead, you can hear Bhima roaring." },
     lose: { fx: { injury: "scar" }, text: "They leave you in the dust. Bhima runs past you without stopping." }
   });
   K.encounter({
-    id: "e_gandharva", title: "The Gandharva ambush", caption: "Forest warriors in the royal camp", lethal: false,
+    id: "e_gandharva", title: "The Gandharva ambush", art: "scene_cattle", caption: "Forest warriors in the royal camp", lethal: false,
     enemies: [K.foe("Gandharva warrior", 3), K.foe("Gandharva warrior", 2)],
     win: { fx: { bond: { duryodhana: 2 }, rep: { kuru: 1 } }, text: "You hold your corner of the camp, but Duryodhana has already been carried off." },
     lose: { fx: { bond: { duryodhana: 1 } }, text: "They knock you down and leave you. At least you stayed." }
