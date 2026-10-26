@@ -76,9 +76,9 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 @media (max-width: 520px) { .text { padding: 18px 16px 24px; } .plate .cap { padding: 0 16px 14px; } }
 .text h1 { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 3.4vw, 36px); line-height: 1.08; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
 .text p { margin: 0; max-width: 66ch; }
-.lbl { font-size: 14px; font-weight: 500; color: var(--muted); }
+.lbl { font-family: var(--display); font-size: 22px; font-weight: 700; line-height: 1.15; color: var(--ink); }
 .witness { background: var(--raised); border-radius: var(--r-card); padding: 16px 18px; color: var(--ink); display: grid; gap: 10px; }
-.witness .lbl { color: var(--data); }
+.witness .lbl { color: var(--data); font-size: 20px; }
 .speech { font-family: var(--display); font-size: 24px; line-height: 1.28; font-weight: 600; color: var(--ink); max-width: 58ch; }
 .memory { font-size: 16px; color: var(--accent); font-style: italic; }
 .curse { font-size: 16px; color: var(--negative); }

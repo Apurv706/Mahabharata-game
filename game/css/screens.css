@@ -2,8 +2,8 @@
 
 /* Ledger: the duty meters are the game's data, so they carry the gold. */
 .ledger { background: var(--surface); border-radius: var(--r-card); padding: 20px; display: grid; gap: 18px; min-width: 0; }
-.ledger h2 { margin: 0; font-size: 15px; font-weight: 700; color: var(--ink); }
-.ledger .sub { font-size: 14px; color: var(--muted); margin: -12px 0 0; }
+.ledger h2 { margin: 0; font-family: var(--display); font-size: 23px; font-weight: 700; line-height: 1.1; color: var(--ink); }
+.ledger .sub { font-size: 14px; color: var(--muted); margin: -10px 0 0; }
 .meter { display: grid; gap: 5px; }
 .meter .row { display: flex; justify-content: space-between; gap: 8px; font-size: 15px; }
 .meter .row span:last-child { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 14px; white-space: nowrap; }
