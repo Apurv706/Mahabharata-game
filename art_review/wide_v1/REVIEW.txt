@@ -1,0 +1,5 @@
+16:9 background draft, 27 Oct 2026: NOT USED IN THE GAME.
+The artist's own note: blurred fill above and below an upscaled 3:1 painting, not real outpainting.
+Review: visible blur bands; the centre is the 1800px original stretched ~1.4x, so no gain in detail.
+Equivalent to blurring the current paintings in code. Requested instead: true outpainting or a
+native 16:9 re-render at 2560x1440, starting with a test batch of 3 scenes.
