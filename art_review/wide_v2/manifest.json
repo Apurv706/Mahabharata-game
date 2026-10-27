@@ -1,0 +1,327 @@
+[
+  {
+    "filename": "home_anga_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 739346,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "3b40cef8a291e07e500e221230a1a70499cc4d207774e3ddd18ca41b38bffe22"
+  },
+  {
+    "filename": "home_gandhara_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 734043,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "d0ce519d05f7c381a10812372ffa0d704ab6f0d5c8004ebf55a7e1141936c9af"
+  },
+  {
+    "filename": "home_hastinapura_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 746659,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "c4f793223cd7c880ec679576f9ef217de97b19ded6dae3d37220ddefeb5a5b78"
+  },
+  {
+    "filename": "home_mathura_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 744993,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "c5f782c2c33cd71414c897e29ec74c088c7c4fc1a60cb867109132b0b3516f56"
+  },
+  {
+    "filename": "home_matsya_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 770025,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "6f15bc5fae7b896ed1644f447a94eb5d605384ba8e544964663ced64b93a5468"
+  },
+  {
+    "filename": "home_nishada_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 822134,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "c764186c4654b8ff7b4a0fba759f0cb3c666c38a57686428a76202aadc6c55b1"
+  },
+  {
+    "filename": "home_panchala_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 738373,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "a26b9aa86d5e096d279b2051421505a54ac2d6d61efb2b555d410c937cf1e69e"
+  },
+  {
+    "filename": "scene_day13_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 740864,
+    "source_native_dimensions": [
+      1672,
+      940
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "4e9163d1ca752c11bc6bd1de74c2e9f215c2f9e3672c7a0e4b02aab767464def"
+  },
+  {
+    "filename": "scene_dice_hall_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 731207,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "836d17f5016f57a97528205cf80b81a59bae9d71e0e8d091c5688a097af2c8f1"
+  },
+  {
+    "filename": "scene_dice_throws_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 731228,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "7e79a23e1064962ccfce1150973cfb5c94b3286546cda2dd724b7c4bc64c11c3"
+  },
+  {
+    "filename": "scene_exile_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 741073,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "8432e57d13275c3064288795c9266edbb4fb198a2d7763f8e5d31df4eced48a6"
+  },
+  {
+    "filename": "scene_fair_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 732325,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "98458cb749c6e5fa6254b1294224124c253addeb18989fac7b8f00e75bc49543"
+  },
+  {
+    "filename": "scene_indraprastha_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 745183,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "3701ca95315816c1cab35c513dfe393ce4a681d06fd85048c4e4f419c99a57ad"
+  },
+  {
+    "filename": "scene_lac_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 736931,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "cb04ca1b6c3ace31f887147fc1e9c5246cb78de8f900bcb79cb18461fca94d86"
+  },
+  {
+    "filename": "scene_poison_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 745358,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "7130a4727f4019a0092d9024913ce555dffa156ec140949ad312b746ef915f5d"
+  },
+  {
+    "filename": "scene_princes_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 740232,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "5113d4a5833c3cd70616a7ce105d385ddb3530ac1368cc72af1ba794e35e7a67"
+  },
+  {
+    "filename": "scene_swayamvara_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 748377,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "a1dc2fad2f2c6bbbf001a5d37307c36092ec01e6821a1c7696a81a464eefddba"
+  },
+  {
+    "filename": "scene_teacher_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 735085,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "1e9071e2f158f5766a86838c932e2220f039ea27d5b4471e25f4e331706c435a"
+  },
+  {
+    "filename": "scene_teaching_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 762833,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "9cdc9d9536ef513df4743f1344e90ad8ca28b0b7499bb6faa117c4d61a24eb2b"
+  },
+  {
+    "filename": "scene_tournament_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 740974,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "b47c929f929c8dbbe0dcb339f09d7b881f7ba7ee2f811c31a0948f5c3771e9df"
+  },
+  {
+    "filename": "scene_virata_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 740008,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "70138012a41648dabe07b337d0a750fdc9fe1616dc4424fe52ad92598ef19679"
+  },
+  {
+    "filename": "scene_women_field_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 743049,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "be1425b3d6732cceb740137a6c70e6fd6274230eb1d327d5670ab03751168520"
+  },
+  {
+    "filename": "war_day17_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 745041,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "6d761e033b985c731fb2fe679a27108b67410db66a29e03f0ac09d50a5d14280"
+  },
+  {
+    "filename": "war_day18_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 725952,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "20d75b07fb952838b5897ff7cb3a4bc19543cf1270ab2a52d8e4558a47d931fe"
+  },
+  {
+    "filename": "war_eve_wide.jpg",
+    "width": 2560,
+    "height": 1440,
+    "bytes": 735321,
+    "source_native_dimensions": [
+      1672,
+      941
+    ],
+    "AI_generated": true,
+    "upscaled": true,
+    "sha256": "602f56a0f1eebf0a852b2a8fc9a6f8ecec705d74c41b7318fe06944a4b5dd066"
+  }
+]
