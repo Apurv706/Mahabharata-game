@@ -2049,6 +2049,27 @@
     "{a} hit you for {n}.": "{ane} तुम पर वार किया: {n} की चोट।",
     "The ring is closing. If the lamp burns out, you will hold your place in it.": "घेरा कस रहा है। अगर दीया बुझ गया, तो तुम उसमें अपनी जगह पर डटे रहोगे।",
     "The breach will not stay open. If the lamp burns out, you will be at the gate with the others.": "दरार खुली नहीं रहेगी। अगर दीया बुझ गया, तो तुम बाकियों के साथ द्वार पर रहोगे।",
-    "Tanpura, bansuri and tabla, in a raga that follows the story.": "तानपूरा, बाँसुरी और तबला, एक राग में जो कहानी के साथ बदलता है।"
+    "Tanpura, bansuri and tabla, in a raga that follows the story.": "तानपूरा, बाँसुरी और तबला, एक राग में जो कहानी के साथ बदलता है।",
+    "Map": "मानचित्र",
+    "Map. Your road: {r}": "मानचित्र। तुम्हारी राह: {r}",
+    "Map of the kingdoms": "राज्यों का मानचित्र",
+    "Journey": "यात्रा",
+    "The road from {a} to {b}": "{a} से {b} तक की राह",
+    "You travel from {a} to {b}.": "तुम {a} से {b} की यात्रा करते हो।",
+    "Your road": "तुम्हारी राह",
+    "Show your road": "अपनी राह दिखाओ",
+    "Show the whole subcontinent": "पूरा उपमहाद्वीप दिखाओ",
+    "Dvaita forest": "द्वैत वन",
+    "Ashram on the Ganga": "गंगा तट का आश्रम",
+    "Pramanakoti": "प्रमाणकोटि",
+    "Kamyaka forest": "काम्यक वन",
+    "Nishada forests": "निषाद वन",
+    "Western sea": "पश्चिमी समुद्र",
+    "Eastern sea": "पूर्वी समुद्र",
+    "Himalaya": "हिमालय",
+    "Desert": "मरुभूमि",
+    "Indus": "सिंधु",
+    "Yamuna": "यमुना",
+    "Ganga": "गंगा"
   });
 })(window.K = window.K || {});

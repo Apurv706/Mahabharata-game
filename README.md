@@ -14,7 +14,7 @@ A life takes about 45–60 minutes. The game saves itself at every scene (in tha
 
 | Act | Ages | Content |
 |---|---|---|
-| I · Childhood | 6–14 | Homeland, the princes at play, a sage on the road, a friend for life, Bhima poisoned at Pramanakoti, a fight at the fair |
+| I · Childhood | 6–14 | Homeland (Hastinapura, Panchala, Matsya, Mathura, Anga, a charioteer family, a Nishada village or Gandhara), the princes at play, a sage on the road, a friend for life, Bhima poisoned at Pramanakoti, a fight at the fair |
 | II · Training | 14–20 | Six teachers, seven paths, Ekalavya's fee, a sparring trial, the tournament, Drona's fee, a vow by the river |
 | III · Young adult | 20–30 | The hermit's secret, the family debt, the lac house, Draupadi's swayamvara, choosing a court, marriage, the Rajasuya |
 | IV · The fracture | 30 | The dice game in four beats: invitation, stakes, Draupadi's question, the cloth that does not end |
@@ -43,7 +43,9 @@ A life takes about 45–60 minutes. The game saves itself at every scene (in tha
 - **Chance events** (`js/content/events.js`): five slots, each drawing one of two small events or nothing, so no two lives meet the same things (`K.slot`).
 - **Book of Lives** (`js/ui/lives.js`): every finished life is kept in this browser, with an endings gallery (11 endings, the unfound ones as hints). A new life can remember a past one and starts with its karma.
 - **Sound and music** (`js/ui/audio.js`, `music/`): three original pieces, one per stage of a life: *Vijaya* (raga Bhairavi, heroic: alap, gat and antara over the Sa-Pa drone, no chord changes) for the title, childhood, training, young adulthood and aftermath; *Chakravyuha* (Purvi, fusion) for the dice game, the exile years and timed or high-stakes moments; *Dharmayuddha* (Bhairavi, battle anthem) for the war and every fight. They are 128 kbps MP3 loops (about 1.1 MB each), loaded only when their stage is reached, and crossfade on a change. Opened from a file on disk, the game falls back to an improvised tanpura, bansuri and tabla ensemble made in the browser. Effects (quill, conch, dice, blows, gong) are synthesized. The menu has music on/off, a music volume slider and sound effects. The pieces were composed as code; the renderer is in `tools/music/`.
-- **Skill checks** show their odds before you choose.
+- **Skill checks** show their odds before you choose. What you did earlier counts (`K.MERITS`): winning the archery at Kampilya helps later archery tests, being seen at the tunnel counts against stealth (±2 at most). Fights won and lost are kept too: every third win adds +1 attack, and a lost fight leaves you shaky (−1) for the next. The character sheet shows the record, and the ending sums it up.
+- **Teachers beyond your station**: Kripa and Vidura can be asked even when your family is not of the court; it is a check, and a refusal sends you back to choose again.
+- **Map** (`js/ui/map.js`): the subcontinent drawn in code (Natural Earth coastline, public domain), with the kingdoms at their traditional places. When a scene takes you somewhere new, a short journey plays over it: the road draws itself, with the whole subcontinent in a corner inset. The Map button shows the road so far (zoomed, or the whole subcontinent), and the ending shows it once more. Canon scenes before the war do not move you; the war gathers everyone at Kurukshetra.
 
 ## Code layout
 

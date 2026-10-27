@@ -22,6 +22,7 @@ function boot(seed, lang) {
   w.Math.random = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
   if (lang) w.localStorage.setItem("kurukshetra.v2.prefs", JSON.stringify({ lang }));
   for (const src of scripts) w.eval(fs.readFileSync(path.join(GAME, src), "utf8"));
+  w.K.headless = true;
   w.K.seed(seed);
   return w;
 }

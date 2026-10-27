@@ -97,7 +97,7 @@
       next: "a3_rajasuya"
     },
     {
-      id: "ev_flood", act: 3, art: "ev_flood", place: (S) => K.ORIGINS[S.origin].name, caption: "The river over its banks",
+      id: "ev_flood", act: 3, art: "ev_flood", place: (S) => K.homePlace(S), caption: "The river over its banks",
       title: "The river rises",
       body: ["The rains come late and then all at once. In the night the river comes over its banks, and the low quarter of the town is under water to the rooftops."],
       choices: [
@@ -160,7 +160,7 @@
       next: "a5_matsya"
     },
     {
-      id: "ev_letter", act: 5, art: "ev_letter", place: (S) => K.ORIGINS[S.origin].name, caption: "A palm-leaf letter",
+      id: "ev_letter", act: 5, art: "ev_letter", place: (S) => K.homePlace(S), caption: "A palm-leaf letter",
       title: "A letter from home",
       body: (S) => [
         S.flags.includes("moved_capital") ? "Your parents went back to {origin} when your father's working years were done." : null,

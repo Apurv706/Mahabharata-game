@@ -30,6 +30,7 @@
   K.on("scene", (sc) => U.renderScene(sc));
   U.$("nav-char").addEventListener("click", U.openCharacter);
   U.$("nav-journal").addEventListener("click", U.openJournal);
+  U.$("nav-map").addEventListener("click", () => U.openMap());
   U.$("nav-menu").addEventListener("click", U.openMenu);
   if (K.prefs().bigText) document.body.classList.add("big-text");
   // Language: the saved choice, else Hindi for a browser set to Hindi, else English.

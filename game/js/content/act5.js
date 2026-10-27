@@ -21,7 +21,7 @@
 
   K.scenes([
     {
-      id: "a5_child", act: 5, age: 31, art: "origin", place: (S) => K.ORIGINS[S.origin].name,
+      id: "a5_child", act: 5, age: 31, art: "origin", place: (S) => K.homePlace(S),
       title: "Vasu",
       body: (S) => [
         S.spouse ? "Your son Vasu was born two years before the dice game. He is three now, and already climbing everything." : "Two years before the dice game you took in a boy whose parents died of fever. His name is Vasu. He is three now, and already climbing everything.",
@@ -119,7 +119,7 @@
     // ---------- Your own road ----------
     {
       id: "a5_own_life", when: own, skipTo: "a5_charu",
-      act: 5, age: 33, art: "origin", place: (S) => K.ORIGINS[S.origin].name,
+      act: 5, age: 33, art: "origin", place: (S) => K.homePlace(S),
       title: "A life of your own",
       body: (S) => [
         "Far from the courts, the years are your own. Vasu grows. Your hair starts to grey.",
@@ -136,7 +136,7 @@
     },
     {
       id: "a5_own_crisis", when: own, skipTo: "a5_charu",
-      act: 5, age: 38, art: "origin", place: (S) => K.ORIGINS[S.origin].name,
+      act: 5, age: 38, art: "origin", place: (S) => K.homePlace(S),
       title: "The fever year",
       body: ["A fever comes up the river in the dry season. Half the village is sick, the granary is low, and the nearest king is busy with his own troubles."],
       choices: [

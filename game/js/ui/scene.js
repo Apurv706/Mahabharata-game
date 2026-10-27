@@ -34,6 +34,9 @@
     U.redraw = () => U.renderScene(sc);
     U.setNav(true);
     header(sc);
+    // A new place on the map: the journey plays over the scene.
+    const moved = K.travel ? K.travel(sc) : null;
+    if (moved && U.showJourney) U.showJourney(moved[0], moved[1]);
     const [tag, tagText] = tagFor(sc);
     const witness = K.val(sc.witness);
     const leaf = U.$("leaf");

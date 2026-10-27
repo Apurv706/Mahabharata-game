@@ -298,3 +298,41 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 .merits li small { display: block; font-size: 13px; color: var(--positive); }
 .merits li.down small { color: var(--negative); }
 .record-line { font-size: 14px; color: var(--muted); margin-top: 6px; }
+
+/* The map: the subcontinent on cloth, the road in saffron. */
+.bmap { display: block; width: 100%; height: auto; border-radius: var(--r-card); background: #a9c0bb; font-family: var(--display); }
+.bmap .m-sea { fill: #a9c0bb; }
+.bmap .m-land { fill: #ecdcb6; stroke: #7a5634; stroke-width: 1.2; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.bmap .m-hills { fill: none; stroke: #8b6a46; stroke-width: 1.3; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.bmap .m-hills.low { stroke: #a8885f; }
+.bmap .m-river { fill: none; stroke: #4f7f93; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+.bmap .m-river.minor { stroke-width: 1.2; opacity: .7; }
+.bmap .m-river.dry { stroke-dasharray: 3 4; opacity: .7; }
+.bmap text { fill: #3b2414; paint-order: stroke; stroke: #ecdcb6; stroke-width: 3px; stroke-linejoin: round; }
+.bmap .m-water { fill: #2f5f73; stroke: none; font-style: italic; letter-spacing: .04em; }
+.bmap .m-region { fill: #7a5634; stroke: none; letter-spacing: .3em; text-transform: uppercase; }
+.bmap .m-place circle { fill: #ecdcb6; stroke: #5a3a22; stroke-width: 1.4; vector-effect: non-scaling-stroke; }
+.bmap .m-place line { stroke: #5a3a22; stroke-width: .8; vector-effect: non-scaling-stroke; opacity: .6; }
+.bmap .m-place.been circle { fill: #c8471f; }
+.bmap .m-place.small text { font-style: italic; }
+.bmap .m-place.here text { font-weight: 700; }
+.bmap .m-ring { fill: none !important; stroke: #c8471f !important; stroke-width: 2 !important; animation: m-pulse 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes m-pulse { 50% { transform: scale(1.35); opacity: .45; } }
+.bmap .m-road { fill: none; stroke: #c8471f; stroke-width: 2.2; vector-effect: non-scaling-stroke; stroke-dasharray: 6 5; stroke-linecap: round; opacity: .75; }
+.bmap .m-road.new { vector-effect: none; opacity: 1; stroke-dasharray: 1; stroke-dashoffset: 1; animation: m-draw 2.2s cubic-bezier(.4,0,.2,1) forwards; }
+.bmap .m-road.new.still { stroke-dashoffset: 0; animation: none; }
+@keyframes m-draw { to { stroke-dashoffset: 0; } }
+.bmap .m-lamp { fill: #ffcf6b; stroke: #c8471f; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.bmap .m-inset > rect { fill: #a9c0bb; stroke: #5a3a22; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.bmap .m-box { fill: rgba(200, 71, 31, .18); stroke: #c8471f; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.journey { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 16px; background: rgba(var(--ground-rgb), .72); animation: j-in .3s ease-out; cursor: pointer; }
+.journey.out { opacity: 0; transition: opacity .3s; }
+@keyframes j-in { from { opacity: 0; } }
+.journey-card { width: min(760px, 100%); background: var(--surface); border: 1px solid var(--gold-line); border-radius: var(--r-card); padding: 14px; display: grid; gap: 10px; }
+.journey-card .lbl { margin: 0; }
+.journey-card button { justify-self: end; }
+.map-road { font-size: 15px; color: var(--muted); }
+.end-map { margin: 18px 0 6px; }
+.end-map .lbl { display: block; margin-bottom: 6px; }
+@media (prefers-reduced-motion: reduce) { .bmap .m-ring, .journey { animation: none; } }
+:lang(hi) .bmap .m-region, :lang(hi) .bmap .m-water { letter-spacing: 0; text-transform: none; }

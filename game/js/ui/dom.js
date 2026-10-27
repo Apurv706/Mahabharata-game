@@ -227,6 +227,7 @@
     U.$("nav").setAttribute("aria-label", K.tr("Game menu"));
     U.$("nav-char").textContent = K.tr("Character");
     U.$("nav-journal").textContent = K.tr("Journal");
+    U.$("nav-map").textContent = K.tr("Map");
     U.$("nav-menu").textContent = K.tr("Menu");
     U.$("ledger").setAttribute("aria-label", K.tr("Obligations, bonds, vows and memories"));
   };

@@ -25,6 +25,7 @@ function boot(seed) {
   const errors = [];
   w.console.warn = (m) => errors.push("warn: " + m);
   for (const src of scripts) w.eval(fs.readFileSync(path.join(GAME, src), "utf8"));
+  w.K.headless = true;
   w.K.seed(seed);
   return { w, d: w.document, errors, jsErrors };
 }
@@ -59,7 +60,7 @@ function playLife(seed) {
       const book = K.lives();
       if (!book.length || book[0].title !== K.S.ending) errors.push("warn: the Book of Lives did not record this life");
       if (reborn && !K.S.flags.includes("reborn")) errors.push("warn: rebirth did not apply");
-      return { fights, ending: K.S.ending, alive: K.S.alive, age: K.S.age, path: path_, errors, problems, side: K.S.side, steps: step, seen: K.S.seen, flags: K.S.flags };
+      return { fights, ending: K.S.ending, alive: K.S.alive, age: K.S.age, path: path_, errors, problems, side: K.S.side, steps: step, seen: K.S.seen, flags: K.S.flags, road: K.S.road || [] };
     }
     const acts = [...d.querySelectorAll("#battle-actions .act:not([disabled])")];
     const cta = [...d.querySelectorAll("#leaf .cta")].filter((b) => !b.disabled);
@@ -119,6 +120,10 @@ const fl = (f) => results.filter((r) => (r.flags || []).includes(f)).length;
 console.log("Dice: learned " + fl("learned_pasha") + ", beat Haridatta " + fl("beat_haridatta") + ", watched Shakuni " + fl("watched_hands") + ", saw the swap " + fl("saw_swap") + "; Nishada came " + fl("nishada_came") + "; reborn " + fl("reborn"));
 const deaths = results.filter((r) => r.ending && !r.alive);
 console.log("Died in the war:  " + deaths.length);
+{ const roads = results.filter((r) => r.road); const avg = roads.reduce((n, r) => n + r.road.length, 0) / (roads.length || 1);
+  const stops = {}; for (const r of roads) for (const k of new Set(r.road)) stops[k] = (stops[k] || 0) + 1;
+  console.log("Map: " + avg.toFixed(1) + " places per life; lives that reached each: " + Object.entries(stops).sort((a, b) => b[1] - a[1]).map(([k, n]) => k + " " + n).join(", "));
+  if (roads[0]) console.log("  e.g. " + roads[0].road.join(" > ")); }
 if (warn.size) { console.log("Warnings:"); [...warn].slice(0, 10).forEach((x) => console.log("  " + x.slice(0, 300))); }
 crashes.slice(0, 3).forEach((c) => console.log("\nCRASH at " + c.scene + "\n" + c.crash.split("\n").slice(0, 6).join("\n") + "\npath: " + c.path.slice(-5).join(" > ")));
 stuck.slice(0, 3).forEach((c) => console.log("\nSTUCK at " + c.scene + " " + (c.reason || "") + "\n" + (c.html || "") + "\npath: " + c.path.slice(-5).join(" > ")));

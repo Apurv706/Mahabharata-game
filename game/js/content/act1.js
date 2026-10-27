@@ -23,6 +23,8 @@
   };
   // Where the childhood that follows happens: near the capital for families who moved there.
   K.childPlace = (S) => (S.flags.includes("moved_capital") ? (S.origin === "nishada" ? "The forest's edge outside Hastinapura" : "Hastinapura") : K.ORIGINS[S.origin].name);
+  // Where you live as an adult: the court you joined in act 3, otherwise where you grew up.
+  K.homePlace = (S) => { const c = S.act >= 3 && S.court && S.court !== "none" && K.COURTS[S.court]; return c ? c.name : K.childPlace(S); };
   K.childArt = (S) => (S.flags.includes("moved_capital") && S.origin !== "nishada" ? "home_hastinapura" : "home_" + S.origin);
 
   K.scenes([

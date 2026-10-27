@@ -45,7 +45,7 @@
     },
     {
       id: "a7_note", when: { flag: "debt_refused" }, skipTo: "a7_final",
-      act: 7, age: 45, art: "scene_note", place: (S) => K.ORIGINS[S.origin].name, caption: "A doorway after the war",
+      act: 7, age: 45, art: "scene_note", place: (S) => K.homePlace(S), caption: "A doorway after the war",
       title: "The note, again",
       body: [
         "A young man finds you after the war. He has his grandfather's patience, and his grandfather's palm-leaf note. Sudatta is dead. The debt is not.",
