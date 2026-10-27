@@ -1,6 +1,8 @@
-16:9 backgrounds, second delivery, 27 Oct 2026: ACCEPTED (23 of 25), held for the rebuild (not in the game yet).
+16:9 backgrounds, second delivery, 27 Oct 2026: ACCEPTED (all 25 after corrections), held for the rebuild (not in the game yet).
 Real recompositions, generated at 1672x941 and upscaled to 2560x1440 (fine at 1080p, slightly soft above).
 Send back: scene_exile (domed, turreted palace), scene_princes (cypresses, Mediterranean villa, urns).
 Optional: scene_lac (upturned East Asian eaves).
 Off-centre subjects for phone crops (fix with per-image focal points in code): scene_teacher,
 scene_dice_throws, home_anga, scene_princes. war_day17: Karna's face still needs advisory review.
+Corrections received 27 Oct: scene_exile (timber-and-brick palace, no domes), scene_princes (Indian trees,
+veranda palace, clay pots), scene_lac (plain sloped eaves). All three accepted and replaced here.
