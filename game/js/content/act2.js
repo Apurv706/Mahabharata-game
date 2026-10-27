@@ -57,7 +57,7 @@
         pathChoice("spy", "Listening and carrying secrets", { attr: { grace: 1 } }),
         pathChoice("bard", "The songs and stories of the sutas", { attr: { wisdom: 1 } })
       ],
-      next: "a2_ekalavya"
+      next: "a2_trial"
     },
     {
       id: "a2_ekalavya", act: 2, age: 16, canon: true, place: "The forest near Hastinapura", art: "scene_ekalavya", plate: ["#3e8c72", "#16131f"], caption: "A clay image in a forest clearing",

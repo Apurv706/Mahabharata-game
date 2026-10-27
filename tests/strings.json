@@ -10788,5 +10788,1545 @@
   "id": 2158,
   "en": "In the line beside you stands a big man with a miller's shoulders. Ugra. \"You were the only one who ever stood up to me,\" he says. \"You lost. You still stood up. I am with you.\"",
   "ctx": "play:a6_day1"
+ },
+ {
+  "id": 2159,
+  "en": "Shot {n} of {m}",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2160,
+  "en": "Hits: {h}",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2161,
+  "en": "A hit!",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2162,
+  "en": "your opponent",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2163,
+  "en": "Good pushes: {g} of 3 · Slips: {b} of 3",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2164,
+  "en": "Calm: {c}% · {s} seconds left",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2165,
+  "en": "Round {n} of {m} · Right: {r}",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2166,
+  "en": "Too slow. The moment passes.",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2167,
+  "en": "That lands.",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2168,
+  "en": "That was the wrong thing to say.",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2169,
+  "en": "Hold to draw. Let go while the bar is in the bright band.",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2170,
+  "en": "Try {n} of {m} · Strung: {w}",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2171,
+  "en": "Hold to move. Stop before the light reaches you.",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2172,
+  "en": "A shout. You drop the basket and run back into the dark.",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2173,
+  "en": "Out, and back for another load.",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2174,
+  "en": "Loads: {d} of {n} · Seen: {s} of {m} · {t} seconds",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2175,
+  "en": "Look. You have {n} seconds.",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2176,
+  "en": "Question {n} of 3 · Right: {r}",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2177,
+  "en": "Which of these was on the table?",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2178,
+  "en": "Too slow.",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2179,
+  "en": "Yes. It was there.",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2180,
+  "en": "No. That was not there.",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2181,
+  "en": "Map of the kingdoms",
+  "ctx": "code:map.js"
+ },
+ {
+  "id": 2182,
+  "en": "The road from {a} to {b}",
+  "ctx": "code:map.js"
+ },
+ {
+  "id": 2183,
+  "en": "You travel from {a} to {b}.",
+  "ctx": "code:map.js"
+ },
+ {
+  "id": 2184,
+  "en": "Show your road",
+  "ctx": "code:map.js"
+ },
+ {
+  "id": 2185,
+  "en": "Show the whole subcontinent",
+  "ctx": "code:map.js"
+ },
+ {
+  "id": 2186,
+  "en": "You saw only the bird's eye, and hit it.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2187,
+  "en": "You missed Drona's bird twice, and he stopped watching you shoot.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2188,
+  "en": "You turned every one of Kripa's cuts.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2189,
+  "en": "Kripa's wooden sword found your ribs two mornings running.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2190,
+  "en": "You struck clean through Balarama's guard.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2191,
+  "en": "Balarama knocked the mace from your hands twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2192,
+  "en": "You hit Mauni's bell half-blind.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2193,
+  "en": "You missed Mauni's bell twice, and he went back to silence.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2194,
+  "en": "You remembered everything on Vidura's table.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2195,
+  "en": "Twice you could not say what was on Vidura's table.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2196,
+  "en": "You split a leaf on a thread, alone, at night.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2197,
+  "en": "Two nights the leaf beat you, and you began to believe it.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2198,
+  "en": "You strung the great bow of Panchala.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2199,
+  "en": "The great bow of Panchala beat you twice, in front of the kings' men.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2200,
+  "en": "Two nights running, the guards nearly had you at Varnavata.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2201,
+  "en": "You carried Vidura's message past Duryodhana's watchmen.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2202,
+  "en": "Twice Duryodhana's watchmen turned you back from Kunti's door.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2203,
+  "en": "Twice you stared at Shakuni's hands and saw nothing, and the court saw you staring.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2204,
+  "en": "You turned Virata's herd at the ford.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2205,
+  "en": "Virata's herd ran past you twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2206,
+  "en": "On the thirteenth day you did what the wheel asked of you.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2207,
+  "en": "On the thirteenth day you failed your company twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2208,
+  "en": "You answered Bhishma's questions on the bed of arrows.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2209,
+  "en": "Twice Bhishma asked, and twice you had no answer.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2210,
+  "en": "A brass lamp",
+  "ctx": "notice"
+ },
+ {
+  "id": 2211,
+  "en": "A broken arrow",
+  "ctx": "notice"
+ },
+ {
+  "id": 2212,
+  "en": "A red thread",
+  "ctx": "notice"
+ },
+ {
+  "id": 2213,
+  "en": "A clay cup",
+  "ctx": "notice"
+ },
+ {
+  "id": 2214,
+  "en": "A peacock feather",
+  "ctx": "notice"
+ },
+ {
+  "id": 2215,
+  "en": "A seal ring",
+  "ctx": "notice"
+ },
+ {
+  "id": 2216,
+  "en": "A folded letter",
+  "ctx": "notice"
+ },
+ {
+  "id": 2217,
+  "en": "A coil of rope",
+  "ctx": "notice"
+ },
+ {
+  "id": 2218,
+  "en": "A copper coin",
+  "ctx": "notice"
+ },
+ {
+  "id": 2219,
+  "en": "A conch shell",
+  "ctx": "notice"
+ },
+ {
+  "id": 2220,
+  "en": "A long die",
+  "ctx": "notice"
+ },
+ {
+  "id": 2221,
+  "en": "A sandal",
+  "ctx": "notice"
+ },
+ {
+  "id": 2222,
+  "en": "A bowl of rice",
+  "ctx": "notice"
+ },
+ {
+  "id": 2223,
+  "en": "A small bell",
+  "ctx": "notice"
+ },
+ {
+  "id": 2224,
+  "en": "An iron key",
+  "ctx": "notice"
+ },
+ {
+  "id": 2225,
+  "en": "A string of beads",
+  "ctx": "notice"
+ },
+ {
+  "id": 2226,
+  "en": "The end of the first year",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2227,
+  "en": "Your teacher's test",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2228,
+  "en": "Take your place under the tree",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2229,
+  "en": "Release",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2230,
+  "en": "Drona has set a wooden bird high in a tree. \"What do you see?\" he asks each of you. Arjuna sees only the eye. Now it is your turn: three arrows, and two must find the eye.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2231,
+  "en": "Drona counts you among his best.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2232,
+  "en": "Drona says nothing, which is worse. You may shoot again at dawn.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2233,
+  "en": "You hit the eye of Drona's wooden bird.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2234,
+  "en": "Drona nods once. \"You saw the eye,\" he says. From him, that is a speech.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2235,
+  "en": "Your arrows rattle through the leaves. Drona moves on to the next student without a word.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2236,
+  "en": "Pick up the wooden sword",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2237,
+  "en": "A sword drill",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2238,
+  "en": "Parry",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2239,
+  "en": "Parries: {g} of 3 · Hits taken: {b} of 3",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2240,
+  "en": "Parried!",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2241,
+  "en": "Too soon. He feints, and you bite.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2242,
+  "en": "Too late. The wood cracks on your ribs.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2243,
+  "en": "Kripa attacks with a wooden sword, faster each time. Parry as the ring meets the mark. Three clean parries pass; three hits and you are done.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2244,
+  "en": "Kripa trusts you with real steel.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2245,
+  "en": "Kripa sends you to the back row. Tomorrow you may try again.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2246,
+  "en": "Kripa lowers the sword. \"Tomorrow,\" he says, \"steel.\"",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2247,
+  "en": "Three welts across your ribs. Kripa points to the back row.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2248,
+  "en": "Lift the practice mace",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2249,
+  "en": "A mace drill",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2250,
+  "en": "Clean strikes: {g} of 3 · Blocked: {b} of 3",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2251,
+  "en": "Through his guard!",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2252,
+  "en": "Too soon. He reads it.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2253,
+  "en": "Too late. He knocks your mace aside.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2254,
+  "en": "Balarama opens his guard for a heartbeat at a time. Strike as the ring meets the mark. Three clean strikes pass.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2255,
+  "en": "Balarama laughs and calls you a real Yadava.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2256,
+  "en": "Balarama sends you to haul water. You may try again tomorrow.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2257,
+  "en": "Balarama roars with laughter and claps you on the back hard enough to bruise. \"A real Yadava!\"",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2258,
+  "en": "The mace flies out of your hands. Balarama hands you two water jars instead.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2259,
+  "en": "Let Mauni tie the cloth",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2260,
+  "en": "An archery test, half-blind",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2261,
+  "en": "Mauni ties a thin cloth over your eyes. Through it you see the swinging bell only at the ends of its swing, where it rings. Shoot where it will be. Two hits of three.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2262,
+  "en": "Mauni breaks his silence to say your name.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2263,
+  "en": "Mauni unties the cloth and says nothing. You may try again tomorrow night.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2264,
+  "en": "The bell rings twice, sharp and wrong, as your arrows strike it. Mauni says your name. It is the first word he has spoken in a month.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2265,
+  "en": "The bell swings on, untouched. Mauni unties the cloth and walks into the trees.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2266,
+  "en": "Step up to Vidura's table",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2267,
+  "en": "A test of what you notice",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2268,
+  "en": "Vidura lifts a cloth from a table for a few heartbeats, then covers it again. \"What was there?\" he asks. Two right answers of three.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2269,
+  "en": "Vidura gives you your first real errand.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2270,
+  "en": "Vidura covers the table and says \"again tomorrow\".",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2271,
+  "en": "Vidura covers the table. \"Good,\" he says. \"Tomorrow you carry a letter.\"",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2272,
+  "en": "Vidura covers the table. \"Again tomorrow,\" he says, gently.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2273,
+  "en": "Hang the leaf on its thread",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2274,
+  "en": "An archery test, alone",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2275,
+  "en": "Alone at night, you have hung a leaf from a thread. If you miss, no one will ever know. You will. Two hits of three.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2276,
+  "en": "You know you are good, and no one can take that away.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2277,
+  "en": "You go to bed angry. Tomorrow night, again.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2278,
+  "en": "The leaf splits on its thread. You stand there in the dark, grinning at nobody.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2279,
+  "en": "The leaf turns on its thread, untouched. You go to bed angry.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2280,
+  "en": "The next morning",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2281,
+  "en": "Once more",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2282,
+  "en": "You did not sleep. You have one more chance, and you will not be offered a third.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2283,
+  "en": "Drona stops watching you shoot. It counts as two failures, and it will weigh on every archery test to come.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2284,
+  "en": "You miss again. Drona turns away before your last arrow lands. He will not watch you shoot again.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2285,
+  "en": "Kripa gives up on you, and the court hears of it. It counts as two failures, and it will weigh on every weapon test to come.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2286,
+  "en": "Down again. Kripa sighs and calls the next student. The court hears of it by evening.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2287,
+  "en": "Balarama stops teaching you, and the Yadavas hear why. It counts as two failures, and it will weigh on every mace test to come.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2288,
+  "en": "Your mace hits the dust again. Balarama shrugs and walks away. The Yadavas hear why.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2289,
+  "en": "Mauni goes back to his silence, and does not come out of it for you. It counts as two failures, and it will weigh on every archery test to come.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2290,
+  "en": "You miss again. Mauni folds the cloth away. For the rest of your training he teaches you only with his hands.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2291,
+  "en": "Vidura stops trusting your eyes. It counts as two failures, and it will weigh on every test of statecraft to come.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2292,
+  "en": "Again you cannot say. Vidura gives your errands to someone else.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2293,
+  "en": "You begin to believe the people who say you cannot teach yourself. It counts as two failures, and it will weigh on every archery test to come.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2294,
+  "en": "The leaf beats you again. For the first time, you wonder if they were right about you.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2295,
+  "en": "Let it go. There will be other tests",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2296,
+  "en": "You let it go. Your teacher does not mention it, and neither do you.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2297,
+  "en": "The night before the contest",
+  "ctx": "scene:a3_bow"
+ },
+ {
+  "id": 2298,
+  "en": "The great bow",
+  "ctx": "scene:a3_bow"
+ },
+ {
+  "id": 2299,
+  "en": "Every warrior in the land has come to Kampilya for the princess's swayamvara. In the courtyard, under torches, the great bow lies on a rack. It is said that only five men alive can string it.",
+  "ctx": "scene:a3_bow"
+ },
+ {
+  "id": 2300,
+  "en": "Take the great bow",
+  "ctx": "scene:a3_bow"
+ },
+ {
+  "id": 2301,
+  "en": "A test of strength",
+  "ctx": "scene:a3_bow"
+ },
+ {
+  "id": 2302,
+  "en": "Draw",
+  "ctx": "scene:a3_bow"
+ },
+ {
+  "id": 2303,
+  "en": "Hold to bend the bow. Let go while the bar is in the bright band. Hold too long and the string slips.",
+  "ctx": "scene:a3_bow"
+ },
+ {
+  "id": 2304,
+  "en": "The night before the contest, Drupada's bow-masters let young warriors try the great bow in the courtyard, so that no king is shamed tomorrow by an unknown. Three tries; string it twice.",
+  "ctx": "scene:a3_bow"
+ },
+ {
+  "id": 2305,
+  "en": "You string the great bow, and the kings' men see it.",
+  "ctx": "scene:a3_bow"
+ },
+ {
+  "id": 2306,
+  "en": "The bow wins. The bow-master offers you one more try at first light.",
+  "ctx": "scene:a3_bow"
+ },
+ {
+  "id": 2307,
+  "en": "You strung the great bow of Panchala the night before Draupadi's swayamvara.",
+  "ctx": "scene:a3_bow"
+ },
+ {
+  "id": 2308,
+  "en": "The bow bends, groans, and the string drops into its notch. The courtyard goes quiet. Tomorrow, the kings will ask who you are.",
+  "ctx": "scene:a3_bow"
+ },
+ {
+  "id": 2309,
+  "en": "The bow springs straight and nearly takes your teeth. The bow-master grins. \"First light,\" he says. \"Once more.\"",
+  "ctx": "scene:a3_bow"
+ },
+ {
+  "id": 2310,
+  "en": "First light",
+  "ctx": "scene:a3_bow_again"
+ },
+ {
+  "id": 2311,
+  "en": "The courtyard is empty except for the bow-master, the bow, and you.",
+  "ctx": "scene:a3_bow_again"
+ },
+ {
+  "id": 2312,
+  "en": "The bow beats you again, and the kings' men laugh. It counts as two failures, and it will weigh on every archery test to come.",
+  "ctx": "scene:a3_bow_again"
+ },
+ {
+  "id": 2313,
+  "en": "The string slips again. The kings' men laugh, and someone throws you a child's bow.",
+  "ctx": "scene:a3_bow_again"
+ },
+ {
+  "id": 2314,
+  "en": "Leave the bow to the kings",
+  "ctx": "scene:a3_bow_again"
+ },
+ {
+  "id": 2315,
+  "en": "You leave the bow on its rack. Tomorrow, the kings can break their backs on it.",
+  "ctx": "scene:a3_bow_again"
+ },
+ {
+  "id": 2316,
+  "en": "Before the stakes",
+  "ctx": "scene:a4_hands"
+ },
+ {
+  "id": 2317,
+  "en": "Shakuni's hands",
+  "ctx": "scene:a4_hands"
+ },
+ {
+  "id": 2318,
+  "en": "Before the real stakes, Shakuni throws a few rounds for nothing, to warm the dice. You are close enough to see his hands.",
+  "ctx": "scene:a4_hands"
+ },
+ {
+  "id": 2319,
+  "en": "If you see a dishonest throw, you will know what is happening here. If you miss it, you will not.",
+  "ctx": "scene:a4_hands"
+ },
+ {
+  "id": 2320,
+  "en": "Watch Shakuni's hands",
+  "ctx": "scene:a4_hands"
+ },
+ {
+  "id": 2321,
+  "en": "You watch until your eyes ache. If he did anything, you did not see it. He is about to throw again.",
+  "ctx": "scene:a4_hands"
+ },
+ {
+  "id": 2322,
+  "en": "Another round",
+  "ctx": "scene:a4_hands_again"
+ },
+ {
+  "id": 2323,
+  "en": "Shakuni gathers the dice for another round. You will not get a third look.",
+  "ctx": "scene:a4_hands_again"
+ },
+ {
+  "id": 2324,
+  "en": "You stare so hard that the courtiers nudge each other and laugh. You saw nothing.",
+  "ctx": "scene:a4_hands_again"
+ },
+ {
+  "id": 2325,
+  "en": "Look away",
+  "ctx": "scene:a4_hands_again"
+ },
+ {
+  "id": 2326,
+  "en": "You look away. Whatever he is doing, you cannot see it.",
+  "ctx": "scene:a4_hands_again"
+ },
+ {
+  "id": 2327,
+  "en": "The night after the dice game",
+  "ctx": "scene:a4_message"
+ },
+ {
+  "id": 2328,
+  "en": "Vidura's message",
+  "ctx": "scene:a4_message"
+ },
+ {
+  "id": 2329,
+  "en": "You stayed away from the hall, but the news reaches you before midnight: everything is lost.",
+  "ctx": "scene:a4_message"
+ },
+ {
+  "id": 2330,
+  "en": "Carry the message",
+  "ctx": "scene:a4_message"
+ },
+ {
+  "id": 2331,
+  "en": "A test of stealth",
+  "ctx": "scene:a4_message"
+ },
+ {
+  "id": 2332,
+  "en": "Move",
+  "ctx": "scene:a4_message"
+ },
+ {
+  "id": 2333,
+  "en": "Hold to move along the wall. Stop before the torchlight reaches you.",
+  "ctx": "scene:a4_message"
+ },
+ {
+  "id": 2334,
+  "en": "Messages through: {d} of {n} · Seen: {s} of {m} · {t} seconds",
+  "ctx": "scene:a4_message"
+ },
+ {
+  "id": 2335,
+  "en": "Through. Back for the next.",
+  "ctx": "scene:a4_message"
+ },
+ {
+  "id": 2336,
+  "en": "A shout. You run back into the dark.",
+  "ctx": "scene:a4_message"
+ },
+ {
+  "id": 2337,
+  "en": "Vidura's servant finds you. The game is lost, the Pandavas leave for exile at dawn, and Duryodhana's watchmen guard Kunti's door. Carry Vidura's two messages past them unseen.",
+  "ctx": "scene:a4_message"
+ },
+ {
+  "id": 2338,
+  "en": "Kunti gets Vidura's words before her sons leave.",
+  "ctx": "scene:a4_message"
+ },
+ {
+  "id": 2339,
+  "en": "The watchmen turn you back. You may try again before dawn.",
+  "ctx": "scene:a4_message"
+ },
+ {
+  "id": 2340,
+  "en": "You carried Vidura's message to Kunti the night the Pandavas went into exile.",
+  "ctx": "scene:a4_message"
+ },
+ {
+  "id": 2341,
+  "en": "Kunti reads Vidura's words by the last of the lamp, and folds them into her sari.",
+  "ctx": "scene:a4_message"
+ },
+ {
+  "id": 2342,
+  "en": "A torch swings your way and you run. You still have the message. Dawn is a few hours off.",
+  "ctx": "scene:a4_message"
+ },
+ {
+  "id": 2343,
+  "en": "Before dawn",
+  "ctx": "scene:a4_message_again"
+ },
+ {
+  "id": 2344,
+  "en": "The sky is going grey. One more try, or none.",
+  "ctx": "scene:a4_message_again"
+ },
+ {
+  "id": 2345,
+  "en": "The watchmen catch you, and Duryodhana hears your name. It counts as two failures, and it will weigh on every stealth test to come.",
+  "ctx": "scene:a4_message_again"
+ },
+ {
+  "id": 2346,
+  "en": "A watchman catches your sleeve. You tear free, but he has seen your face, and by morning Duryodhana knows your name.",
+  "ctx": "scene:a4_message_again"
+ },
+ {
+  "id": 2347,
+  "en": "Give it up",
+  "ctx": "scene:a4_message_again"
+ },
+ {
+  "id": 2348,
+  "en": "You burn the message. Kunti never knows what Vidura wanted to tell her.",
+  "ctx": "scene:a4_message_again"
+ },
+ {
+  "id": 2349,
+  "en": "Dust on the river road",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2350,
+  "en": "The herds",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2351,
+  "en": "The Kaurava drums have stampeded Virata's cattle. Thousands of them are running for the river.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2352,
+  "en": "Throw your rope",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2353,
+  "en": "A test of hand and eye",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2354,
+  "en": "The raid has stampeded Virata's herds toward the river. Ride alongside and throw your rope over the lead cow as she crosses your line. Two throws of three turn the herd.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2355,
+  "en": "You turn the herd before the ford, and the herders cheer you.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2356,
+  "en": "The herd thunders past. They will slow at the ford, and you may get there first.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2357,
+  "en": "You turned Virata's stampeding herd at the ford.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2358,
+  "en": "The lead cow swings round on your rope, and the herd follows her. The herders cheer you all the way back.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2359,
+  "en": "Your rope falls on dust. The herd thunders past toward the ford.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2360,
+  "en": "The ford",
+  "ctx": "scene:a5_herd_again"
+ },
+ {
+  "id": 2361,
+  "en": "The herd slows at the ford. You cut across the bend and get there first.",
+  "ctx": "scene:a5_herd_again"
+ },
+ {
+  "id": 2362,
+  "en": "The herd goes into the river, and calves drown. It counts as two failures, and it will weigh on every riding test to come.",
+  "ctx": "scene:a5_herd_again"
+ },
+ {
+  "id": 2363,
+  "en": "The herd goes into the river. Not all of it comes out. The herders do not look at you.",
+  "ctx": "scene:a5_herd_again"
+ },
+ {
+  "id": 2364,
+  "en": "Let the herders deal with it",
+  "ctx": "scene:a5_herd_again"
+ },
+ {
+  "id": 2365,
+  "en": "You rein in and let the herders try. Some of the herd is saved.",
+  "ctx": "scene:a5_herd_again"
+ },
+ {
+  "id": 2366,
+  "en": "What the wheel asks",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2367,
+  "en": "The wheel turns. Everything you have learned comes down to the next few heartbeats.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2368,
+  "en": "Drive at the gate with Abhimanyu",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2369,
+  "en": "A test in battle",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2370,
+  "en": "The wheel's gate",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2371,
+  "en": "Charge",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2372,
+  "en": "Breaches: {g} of 3 · Thrown back: {b} of 3",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2373,
+  "en": "The line buckles!",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2374,
+  "en": "Too soon. Spears meet you.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2375,
+  "en": "Too late. The gap closes.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2376,
+  "en": "The gate in the wheel opens and closes like a breath. Charge as the ring meets the mark. Three breaches carry your company through.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2377,
+  "en": "Your company holds the breach open longer than anyone thought it could.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2378,
+  "en": "Your company is thrown back. A second wave is forming.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2379,
+  "en": "For a few heartbeats the gate is yours. Men pour through behind you.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2380,
+  "en": "The spears drive you back. Behind you, the second wave is forming.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2381,
+  "en": "Hold your place in the ring",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2382,
+  "en": "The Pandava charge",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2383,
+  "en": "Brace",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2384,
+  "en": "Charges held: {g} of 3 · Ground lost: {b} of 3",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2385,
+  "en": "The charge breaks on you!",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2386,
+  "en": "Too soon. You brace on nothing.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2387,
+  "en": "Too late. They are through.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2388,
+  "en": "The Pandava chariots come at the ring in waves. Brace as the ring meets the mark. Hold three charges.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2389,
+  "en": "Your part of the ring holds.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2390,
+  "en": "Your part of the ring gives. A second charge is coming.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2391,
+  "en": "The charge breaks on your shields and falls back.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2392,
+  "en": "They are through you before you can close. The second charge is already coming.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2393,
+  "en": "Kneel by the wounded boy",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2394,
+  "en": "A test of steady hands",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2395,
+  "en": "Press",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2396,
+  "en": "Hold to press; let go to ease. Keep your hands over the glow.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2397,
+  "en": "Bleeding slowed: {c}% · {s} seconds",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2398,
+  "en": "The bleeding stops. He will live.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2399,
+  "en": "Nearly. The bleeding slows, but does not stop.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2400,
+  "en": "The blood comes through your fingers.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2401,
+  "en": "A boy from the wheel is bleeding out on the tent floor. Press when it helps; ease off when he fights you. Keep your hands over the glow until the bleeding stops.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2402,
+  "en": "The boy lives.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2403,
+  "en": "The bleeding does not stop. You have one more chance before it is too late.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2404,
+  "en": "The bleeding stops. The boy opens his eyes and asks for his mother.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2405,
+  "en": "The blood keeps coming. You shout for clean cloth and start again.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2406,
+  "en": "The second wave",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 2407,
+  "en": "Again",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 2408,
+  "en": "There is no time to think. Again.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 2409,
+  "en": "The breach closes, and your company blames you. It counts as two failures, and it will weigh on your command.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 2410,
+  "en": "Thrown back again. The gate closes, and your company does not look at you.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 2411,
+  "en": "The ring breaks where you stand, and Drona sees it. It counts as two failures, and it will weigh on your command.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 2412,
+  "en": "The ring breaks where you stand. Drona sees it, and remembers your face.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 2413,
+  "en": "The boy dies under your hands, and the healers see it. It counts as two failures, and it will weigh on every healing test to come.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 2414,
+  "en": "The boy goes still under your hands. The other healers say nothing, and that is worse.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 2415,
+  "en": "Fall back",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 2416,
+  "en": "You fall back with the others. Someone else takes your place.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 2417,
+  "en": "The grandsire's questions",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2418,
+  "en": "Bhishma's questions",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2419,
+  "en": "Before he finishes, Bhishma turns his head on the arrows and looks at you. \"You,\" he says. \"Answer me.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2420,
+  "en": "Answer him",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2421,
+  "en": "A test of wisdom",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2422,
+  "en": "\"What is heavier than the earth?\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2423,
+  "en": "\"A mother.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2424,
+  "en": "\"A king's crown.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2425,
+  "en": "\"Mount Meru.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2426,
+  "en": "\"What is faster than the wind?\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2427,
+  "en": "\"The mind.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2428,
+  "en": "\"An arrow from Arjuna's bow.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2429,
+  "en": "\"A rumour.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2430,
+  "en": "\"What, when you give it up, makes you loved?\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2431,
+  "en": "Bhishma asks the questions the spirit of the lake once asked Yudhishthira. Answer before the lamp burns down. Two right answers of three.",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2432,
+  "en": "Bhishma blesses you, and you will carry his answers all your life.",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2433,
+  "en": "Bhishma closes his eyes. He may ask again tomorrow, if he lives.",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2434,
+  "en": "You answered Bhishma's questions on the bed of arrows, and he blessed you.",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2435,
+  "en": "Bhishma smiles, which must hurt. \"Then you were listening,\" he says, \"all those years.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2436,
+  "en": "The words do not come. Bhishma closes his eyes. \"Tomorrow,\" he says, \"if I am here.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 2437,
+  "en": "The next day",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2438,
+  "en": "Bhishma is still alive. He asks for you.",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2439,
+  "en": "\"What is more numerous than the grass?\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2440,
+  "en": "\"The dead on this field.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2441,
+  "en": "\"The stars.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2442,
+  "en": "\"What is the greatest wonder?\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2443,
+  "en": "\"That every day people die, and the living think they will not.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2444,
+  "en": "\"That the war lasted only eighteen days.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2445,
+  "en": "\"That a man can lie on arrows and live.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2446,
+  "en": "\"What is the path?\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2447,
+  "en": "\"The one the great have walked.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2448,
+  "en": "\"The one the scriptures argue over.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2449,
+  "en": "\"The one you make yourself.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2450,
+  "en": "Bhishma turns his face away, and the sages remember it. It counts as two failures, and it will weigh on every test of lore to come.",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2451,
+  "en": "Again the words will not come. Bhishma turns his face to the sky and does not ask again.",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2452,
+  "en": "Stay silent",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2453,
+  "en": "You stay silent. Bhishma does not ask again.",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 2454,
+  "en": "Hold to creep along the wall with the basket. Stop before the torchlight reaches you.",
+  "ctx": "scene:a3_lac"
+ },
+ {
+  "id": 2455,
+  "en": "Purochana's guard walks the house with a torch. Carry two baskets of earth out of the tunnel without being seen. Seen twice, and you must stop for the night.",
+  "ctx": "scene:a3_lac"
+ },
+ {
+  "id": 2456,
+  "en": "The tunnel grows by a night's digging, and the Pandavas will owe you.",
+  "ctx": "scene:a3_lac"
+ },
+ {
+  "id": 2457,
+  "en": "You have to stop for the night. The miner will try again tomorrow, with or without you.",
+  "ctx": "scene:a3_lac"
+ },
+ {
+  "id": 2458,
+  "en": "A torch swings your way. You drop the basket and crawl back into the dark. \"Tomorrow night,\" the miner whispers.",
+  "ctx": "scene:a3_lac"
+ },
+ {
+  "id": 2459,
+  "en": "The next night",
+  "ctx": "scene:a3_tunnel_again"
+ },
+ {
+  "id": 2460,
+  "en": "The miner is waiting at the mouth of the tunnel with an empty basket. You will not be asked a third time.",
+  "ctx": "scene:a3_tunnel_again"
+ },
+ {
+  "id": 2461,
+  "en": "A guard sees you, and Purochana starts asking questions. It counts as two failures, and it will weigh on every stealth test to come.",
+  "ctx": "scene:a3_tunnel_again"
+ },
+ {
+  "id": 2462,
+  "en": "Leave the digging to the miner",
+  "ctx": "scene:a3_tunnel_again"
+ },
+ {
+  "id": 2463,
+  "en": "You stay away. The miner digs on alone.",
+  "ctx": "scene:a3_tunnel_again"
+ },
+ {
+  "id": 2464,
+  "en": "A year of teaching yourself. Tonight you find out whether it worked.",
+  "ctx": "play:a2_trial"
+ },
+ {
+  "id": 2466,
+  "en": "A year of training. Today {teacher} finds out what you have learned.",
+  "ctx": "play:a2_trial"
+ },
+ {
+  "id": 2467,
+  "en": "If you fail, you will get one more chance. Only one.",
+  "ctx": "play:a2_trial"
  }
 ]

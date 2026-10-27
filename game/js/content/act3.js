@@ -3,6 +3,16 @@
   "use strict";
   const pledge = (court) => (S) => ({ set: { court }, duty: { court: 6 - S.duty.court } });
 
+  // The tunnel at Varnavata: Act III's test for those who know of it (the others try the great bow).
+  const TUNNEL = { t: "Help carry the earth out of the tunnel at night", req: { any: [{ teacher: "vidura" }, { path: "spy" }, { friend: ["bhima", "arjuna"] }] }, game: "sneak", hint: "A test of stealth",
+    trial: { attr: "grace", skill: "stealth", verb: "Move", help: "Hold to creep along the wall with the basket. Stop before the torchlight reaches you.",
+      rules: "Purochana's guard walks the house with a torch. Carry two baskets of earth out of the tunnel without being seen. Seen twice, and you must stop for the night.",
+      stakes: ["The tunnel grows by a night's digging, and the Pandavas will owe you.", "You have to stop for the night. The miner will try again tomorrow, with or without you."] },
+    retryStakes: ["The tunnel grows by a night's digging, and the Pandavas will owe you.", "A guard sees you, and Purochana starts asking questions. It counts as two failures, and it will weigh on every stealth test to come."],
+    win: { fx: { bond: { yudhishthira: 2, bhima: 1 }, rep: { pandava: 2 }, flag: ["helped_tunnel", "act3_tested"], journal: "You helped dig the tunnel under the house at Varnavata." }, text: "Night after night you carry baskets of earth into the dark. No one sees you." },
+    lose: { fx: { flag: "act3_tested" }, text: "A torch swings your way. You drop the basket and crawl back into the dark. \"Tomorrow night,\" the miner whispers." },
+    retryLose: { penalty: 1, fx: { rep: { kuru: -2 }, flag: ["seen_at_tunnel", "tunnel_twice"] }, text: "One of Purochana's guards sees a figure near the house at night. He does not see your face, but he will keep looking." } };
+
   K.scenes([
     {
       id: "a3_secret", when: { flag: "hermit_secret" }, skipTo: "a3_debt",
@@ -42,17 +52,20 @@
         S.teacher === "vidura" ? "Vidura's miner needs someone to carry the earth out at night without being seen." : null
       ],
       choices: [
-        { id: "dig", t: "Help carry the earth out of the tunnel at night", req: { any: [{ teacher: "vidura" }, { path: "spy" }, { friend: ["bhima", "arjuna"] }] }, locked: "Only Vidura's people know about the tunnel.",
-          check: { attr: "grace", skill: "stealth", dc: 7,
-            pass: { fx: { bond: { yudhishthira: 2, bhima: 1 }, rep: { pandava: 2 }, flag: "helped_tunnel", journal: "You helped dig the tunnel under the house at Varnavata." }, text: "Night after night you carry baskets of earth into the dark. No one sees you." },
-            fail: { fx: { rep: { kuru: -2 }, flag: "seen_at_tunnel" }, text: "One of Purochana's guards sees a figure near the house at night. He does not see your face, but he will keep looking." } } },
+        Object.assign(K.testChoice("a3_lac", "dig", TUNNEL), { locked: "Only Vidura's people know about the tunnel." }),
         { id: "warn", t: "Try to wake the Nishada woman and her sons sleeping in the house", fx: (S) => ({ duty: { conscience: 2 }, flag: "tried_nishada", memory: ["all", "You tried to wake the family who died at Varnavata."], rep: S.origin === "nishada" ? { common: 2 } : {} }),
           text: "They drank deep at Kunti's feast and do not wake, however hard you shake them. Then the smoke comes, and someone drags you out by the collar." },
         { id: "tell", t: "Warn Duryodhana that people are talking about the house", req: { friend: "duryodhana" }, fx: { bond: { duryodhana: 2 }, duty: { court: 1, conscience: -2 }, flag: "warned_duryodhana" } },
         { id: "stay", t: "Keep away from the house", fx: {} }
       ],
       after: ["That night the house burns to the ground. In the ashes they find six bodies: a Nishada woman and her five sons. Everyone believes they are Kunti and the Pandavas. In Hastinapura, Dhritarashtra weeps, and Duryodhana weeps louder."],
-      next: "a3_swayamvara"
+      next: "a3_tunnel_again"
+    },
+    {
+      id: "a3_tunnel_again", when: K.retryWhen("a3_lac", ["dig"]), skipTo: "a3_bow", act: 3, age: 23, art: "scene_lac", place: "Varnavata", caption: "The next night",
+      title: "The next night", body: ["The miner is waiting at the mouth of the tunnel with an empty basket. You will not be asked a third time."],
+      choices: [K.retryChoice("a3_lac", "dig", TUNNEL), { id: "let", t: "Leave the digging to the miner", fx: {}, text: "You stay away. The miner digs on alone." }],
+      next: "a3_bow"
     },
     {
       id: "a3_swayamvara", act: 3, age: 25, canon: true, place: "Drupada's hall, Panchala", art: "scene_swayamvara", plate: ["#d4a84b", "#c0472f"], caption: "A golden fish turning above the water",

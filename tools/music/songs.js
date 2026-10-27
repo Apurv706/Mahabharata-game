@@ -199,5 +199,93 @@
     return end + 5;
   }
 
-  window.SONGS = { dharmayuddha, chakravyuha, vijaya };
+
+  // ---------- Five short success themes, one for each kind of test (8–12 seconds) ----------
+  const hitAll = (I, t, v = 1) => { I.nagara(t, v); I.dhol(t, "both", v * 0.9); I.tabla(t, "dha", v); };
+
+  // Archery: bansuri and shehnai, raga Hamsadhwani (S R G P N), bright and rising.
+  function win_archery(ctx) {
+    const { I } = makeRack(ctx, { sa: 164.81 });
+    const { beat, T } = clock(112, 0.2);
+    I.tanpura(T(0), T(5) + 2);
+    melody(I, T, 0, beat, "S:0.25 R:0.25 G:0.25 P:0.25 N:0.25 S':0.25 R':0.25 G':0.25 !P':1.5 G':0.25 R':0.25 S':0.5 N:0.5 P:0.5 N:0.5 !S':2", "bansuri", 0.95);
+    melody(I, T, 1, beat, "P:1 N:1 S':1.5 R':0.5 G':1 R':0.5 S':0.5 N:1 !S':4", "shehnai", 1);
+    I.chord(T(1), [".S", "S", "G", "P"], 8 * beat, 0.6);
+    for (let b = 1; b < 3; b++) ["dha", "dhin", "dhin", "dha", "dha", "tin", "tin", "ta"].forEach((x, i) => I.tabla(T(b, i * 0.5), x, i === 0 ? 1.1 : 0.75));
+    for (let k = 0; k < 3; k++) { I.tabla(T(3, k * 1), "dha", 1); I.tabla(T(3, k * 1 + 0.5), "ti", 0.7); }
+    const end = T(4);
+    hitAll(I, end, 1.1); I.bell(end, "S", 1); I.choir(end, ["S", "G", "P", "S'"], 3, 0.9, "a"); I.chord(end, [".S", "S", "P"], 3, 0.8); I.manjira(end, 1);
+    return end + 3.6;
+  }
+
+  // Strength: nagara, dhol and brass, raga Durga (S R m P D), heavy and proud.
+  function win_strength(ctx) {
+    const { I } = makeRack(ctx, { sa: 146.83 });
+    const { beat, T } = clock(126, 0.2);
+    I.tanpura(T(0), T(5) + 2);
+    for (let i = 0; i < 4; i++) { I.nagara(T(0, i), 0.7 + i * 0.1); I.dhol(T(0, i), "both", 0.8); }
+    I.brass(T(1), [".S", "S", "P"], 0.4, 1.1); I.brass(T(1, 1.5), [".S", "S", "P"], 0.3, 0.9); I.brass(T(1, 3), [".m", "m", "S'"], 0.5, 1);
+    for (let b = 1; b < 4; b++) ["both", "ta", "dha", "ta", "both", "ta", "dha", "dha"].forEach((x, i) => I.dhol(T(b, i * 0.5), x, i % 4 === 0 ? 1.1 : 0.8));
+    for (let b = 1; b < 4; b++) { I.kick(T(b), 0.8); I.kick(T(b, 2), 0.7); I.bass(T(b), ["S", "m", "P"][b - 1], 4 * beat, 0.9); }
+    melody(I, T, 1, beat, "S':1 D:0.5 P:0.5 m:1 R:1 !S:1.5 R:0.5 m:1 P:1 D:1 !S':2 D:0.5 S':0.5 R':1 !S':3", "shehnai", 1.05);
+    I.choir(T(2), ["S", "m", "P"], 8 * beat, 0.8, "o");
+    const end = T(4);
+    hitAll(I, end, 1.2); I.brass(end, [".S", "S", "P", "S'"], 1.6, 1.15); I.choir(end, ["S", "P", "S'"], 3, 1, "a"); I.manjira(end, 1.1);
+    return end + 3.4;
+  }
+
+  // Stealth and chase: quick sitar runs over a light tabla, raga Kafi (S R g m P D n).
+  function win_stealth(ctx) {
+    const { I } = makeRack(ctx, { sa: 155.56 });
+    const { beat, T } = clock(150, 0.2);
+    I.tanpura(T(0), T(6) + 2);
+    const run = ["S", "R", "g", "m", "P", "D", "n", "S'"];
+    for (let k = 0; k < 2; k++) run.forEach((n, i) => I.pluck(T(k * 1, i * 0.25), n, 0.2, 0.8 + (i === 7 ? 0.3 : 0)));
+    for (let k = 0; k < 2; k++) run.slice().reverse().forEach((n, i) => I.pluck(T(k * 1, 2 + i * 0.25), n, 0.2, 0.7));
+    const tir = ["ti", "ra", "ki", "ta", "ti", "ra", "ki", "ta", "dha", "-", "ti", "ra", "ki", "ta", "dha", "-"];
+    for (let b = 1; b < 4; b++) tir.forEach((x, i) => { if (x !== "-") I.tabla(T(b, i * 0.25), x, i % 4 === 0 ? 1 : 0.6); });
+    "P D n S' R' S' n D P m g R S".split(" ").forEach((n, i) => I.pluck(T(2, i * 0.25), n, 0.22, 0.85));
+    "S g m P n S' R' g' R' S' n S'".split(" ").forEach((n, i) => I.pluck(T(3, i * 0.25), n, 0.2, 0.85));
+    melody(I, T, 2, beat, "-:2 g':1 R':1 !S':2 n:1 D:1 !P:4", "bansuri", 0.55);
+    const end = T(5);
+    I.tabla(end, "dha", 1.1); I.pluck(end, "S", 1.6, 1.1, 0); I.pluck(end, "P", 1.6, 0.8); I.pluck(end, "S'", 1.6, 0.9); I.manjira(end, 0.9); I.chord(end, [".S", "S", "P"], 2.6, 0.5);
+    return end + 3;
+  }
+
+  // Wits: veena and tabla, raga Bageshree (S g m D n), calm and knowing.
+  function win_wits(ctx) {
+    const { I } = makeRack(ctx, { sa: 138.59 });
+    const { beat, T } = clock(96, 0.2);
+    I.tanpura(T(0), T(5) + 3);
+    // Veena: plucked, with slides between the notes.
+    [["S", 0, 0.5], ["g", 0.5, 0.5], ["m", 1, 1, 2], ["D", 2, 0.5], ["n", 2.5, 0.5], ["S'", 3, 1.5, -1]].forEach(([n, b, d, bend]) => I.pluck(T(0, b), n, d, 1, bend || 0));
+    [["m", 0, 0.5], ["D", 0.5, 0.5], ["n", 1, 0.5], ["S'", 1.5, 0.5], ["g'", 2, 1, -2], ["m'", 3, 0.5], ["g'", 3.5, 0.5]].forEach(([n, b, d, bend]) => I.pluck(T(1, b), n, d, 0.95, bend || 0));
+    [["S'", 0, 1], ["n", 1, 0.5], ["D", 1.5, 0.5], ["m", 2, 1, 2], ["g", 3, 0.5], ["m", 3.5, 0.5]].forEach(([n, b, d, bend]) => I.pluck(T(2, b), n, d, 0.9, bend || 0));
+    for (let b = 1; b < 4; b++) ["dha", "dhin", "-", "dha", "dha", "dhin", "-", "dha"].forEach((x, i) => { if (x !== "-") I.tabla(T(b, i * 0.5), x, i === 0 ? 1 : 0.7); });
+    melody(I, T, 2, beat, "-:2 D:1 n:1 !S':3 n:0.5 D:0.5 m:1 g:1 !S:2", "sarangi", 0.6);
+    for (let k = 0; k < 3; k++) { I.tabla(T(3, k * 1.25), "dha", 1); I.tabla(T(3, k * 1.25 + 0.5), "tin", 0.6); }
+    const end = T(4);
+    I.tabla(end, "dha", 1.1); I.pluck(end, "S", 2, 1); I.pluck(end, "m", 2, 0.7); I.pluck(end, "S'", 2, 0.8); I.bell(end, "S", 0.8); I.chord(end, [".S", "S", "m"], 3.2, 0.55);
+    return end + 3.6;
+  }
+
+  // War: conch, battle drums, brass and choir, raga Bhairavi (S r g m P d n).
+  function win_war(ctx) {
+    const { I } = makeRack(ctx, { sa: 146.83 });
+    const { beat, T } = clock(132, 0.6);
+    I.tanpura(T(0), T(6) + 2);
+    I.conch(0.05, 1);
+    for (let i = 0; i < 8; i++) I.nagara(T(0, 2 + i * 0.25), 0.4 + i * 0.08);
+    const prog = [["S", "g", "P"], [".d", "S", "g"], ["m", "d", "S'"], ["S", "P", "S'"]];
+    for (let k = 0; k < 4; k++) { I.brass(T(1 + k * 0.5 * 2, 0), prog[k], 0.5, 1.05); I.choir(T(1 + k), prog[k], 4 * beat, 0.9, "o"); }
+    for (let b = 1; b < 5; b++) { ["both", "ta", "ta", "dha", "both", "ta", "dha", "ta"].forEach((x, i) => I.dhol(T(b, i * 0.5), x, i === 0 ? 1.15 : 0.85)); I.nagara(T(b), 0.9); I.nagara(T(b, 2), 0.6); I.kick(T(b), 0.8); I.bass(T(b), ["S", "d", "m", "S"][b - 1], 4 * beat, 1); }
+    melody(I, T, 1, beat, "S':1.5 n:0.5 d:1 P:1 m:1 g:1 !r:1 S:1 g:1 m:1 P:1 d:1 !S':2 r':1 !S':5", "shehnai", 1.1);
+    melody(I, T, 3, beat, "P:1 d:1 n:1 !S':5", "bansuri", 0.6);
+    I.riser(T(4), 4 * beat, 1);
+    const end = T(5);
+    hitAll(I, end, 1.3); I.brass(end, [".S", "S", "P", "S'"], 2, 1.2); I.choir(end, ["S", "P", "S'"], 3.4, 1.1, "a"); I.manjira(end, 1.2); I.bell(end, "S", 0.9);
+    return end + 3.6;
+  }
+
+  window.SONGS = { dharmayuddha, chakravyuha, vijaya, win_archery, win_strength, win_stealth, win_wits, win_war };
 })();

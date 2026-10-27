@@ -189,7 +189,7 @@
         { id: "stay", t: "Stay out of it", fx: {} }
       ],
       after: ["Brihannala is Arjuna. He takes up his bow Gandiva, defeats the whole Kaurava force alone and drives them home. The thirteen years are over. Arjuna's son Abhimanyu marries Virata's daughter Uttara."],
-      next: "a5_karna_secret"
+      next: "a5_herd"
     },
     {
       id: "a5_karna_secret", when: { any: [{ flag: "left_arena" }, { bond: ["karna", 7] }] }, skipTo: "a5_side",

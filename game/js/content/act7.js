@@ -41,7 +41,7 @@
           text: "\"Amba came back to me as Shikhandi, to finish what she began,\" he says. \"Perhaps you came back to finish something too.\" He looks at you for a long time. \"Did you?\"" }
       ],
       after: ["When the sun turns north, Bhishma dies. Yudhishthira is crowned king of Hastinapura, and reigns over an empty kingdom."],
-      next: "a7_note"
+      next: "a7_question"
     },
     {
       id: "a7_note", when: { flag: "debt_refused" }, skipTo: "a7_final",

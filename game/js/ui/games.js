@@ -121,7 +121,7 @@
       G.phase = "watch"; G.shown = i;
       if (K.Sound) K.Sound.play("dice");
       draw();
-      setTimeout(() => (i < 4 ? watch(i + 1) : (G.phase = "ask", draw())), sharp ? 2100 : 1300);
+      setTimeout(() => (i < 4 ? watch(i + 1) : (G.phase = "ask", draw())), sharp ? 1500 : 950);
     }
     function answer(i) {
       const right = i === swap;

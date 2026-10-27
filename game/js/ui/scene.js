@@ -161,6 +161,7 @@
     K.go(res.next);
   }
 
+  const KIND = { aim: "archery", push: "strength", draw: "strength", steady: "strength", sneak: "stealth", retort: "wits", notice: "wits", hands: "wits", pasha: "wits" };
   // A choice that is a game: the game takes the place of the choices, and its outcome picks the branch.
   function playGame(sc, c) {
     const box = U.$("choices");
@@ -172,6 +173,8 @@
     U.$("keyhint").textContent = "";
     U.keys([]);
     const game = U.games[c.game](box, (outcome, summary) => {
+      // A won test gets its own short theme: archery, strength, stealth, wits or war.
+      if (outcome === "win" && K.Sound && K.Sound.flourish) K.Sound.flourish((c.trial && c.trial.kind) || KIND[c.game] || "wits");
       const res = K.choose(sc, c, outcome);
       res.pre = summary;
       showAfter(sc, c, res, res.next);

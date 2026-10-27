@@ -18,8 +18,8 @@
       choices: [
         { id: "warn", t: "Warn Yudhishthira that Shakuni's dice cannot lose", req: { flag: "knows_dice_plot" }, fx: { bond: { yudhishthira: 1 }, rep: { pandava: 1 }, flag: "warned_yudhishthira" },
           text: "He thanks you, and takes your hand, and goes anyway. \"If I am called, I must play,\" he says." },
-        { id: "go", t: "Go to the hall", fx: { flag: "at_dice" }, next: "a4_stakes" },
-        { id: "stay", t: "Stay away. You want no part of it", fx: { flag: "absent_dice", journal: "You stayed away from the dice game." }, next: "a4_aftermath" }
+        { id: "go", t: "Go to the hall", fx: { flag: "at_dice" }, next: "a4_hands" },
+        { id: "stay", t: "Stay away. You want no part of it", fx: { flag: "absent_dice", journal: "You stayed away from the dice game." }, next: "a4_message" }
       ],
       next: "a4_stakes"
     },
@@ -37,10 +37,6 @@
           check: { attr: "wisdom", skill: "stealth", dc: 8, bonus: (S) => (S.flags.includes("saw_swap") ? 3 : 0),
             pass: { fx: { rep: { pandava: 1, kuru: -2 }, flag: "spoke_dice" }, text: "You have watched Shakuni's hands, and you say exactly what they are doing. Shakuni smiles. Nobody stops the game, but Vidura looks at you as if marking your face for later." },
             fail: { fx: { rep: { kuru: -2 }, flag: "spoke_dice" }, text: "You shout, and the hall turns to look at you. Shakuni asks, very kindly, whether you would like to inspect the dice yourself. People laugh." } } },
-        { id: "watch", t: "Watch Shakuni's hands before you say anything", req: { noFlag: "watched_hands" }, game: "hands", next: "a4_stakes", hint: "A test of your eyes",
-          win: { fx: { flag: ["watched_hands", "saw_swap"], journal: "In the dice hall you saw Shakuni swap a die from his sleeve." },
-            text: "One of those throws showed a face no long die has. His sleeve moved before it, and after. You are sure now." },
-          lose: { fx: { flag: "watched_hands" }, text: "You watch until your eyes ache. If he did anything, you did not see it." } },
         { id: "bhishma", t: "Beg Bhishma to stop the game", fx: { duty: { conscience: 1 }, bond: { bhishma: 1 } }, text: "Bhishma looks at his hands. \"The way of dharma is subtle,\" he says, and says nothing more." },
         { id: "silent", t: "Stay silent. It is the king's game", fx: { duty: { court: 1, conscience: -1 }, flag: "silent_dice" } },
         { id: "leave", t: "Leave the hall now", fx: { flag: "left_dice", duty: { conscience: -1 }, journal: "You walked out of the dice game before the worst of it." }, next: "a4_aftermath" }

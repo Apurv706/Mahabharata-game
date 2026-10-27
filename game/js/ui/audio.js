@@ -171,7 +171,8 @@
   // ---------- The scheduler ----------
   let timer = null, mood = "calm", S0 = null;
   // ---------- The three composed pieces ----------
-  // Each stage of the game has its own piece, played from a file and looped:
+  // Each stage of the game has its own piece, played from a file once when the stage begins, then
+  // silence until the next stage (no looping):
   //   calm   → Vijaya (raga Bhairavi, heroic): the title, childhood, training, young adulthood, aftermath
   //   tense  → Chakravyuha (Purvi, fusion): the dice game, the exile years, high-stakes moments
   //   battle → Dharmayuddha (Bhairavi, battle anthem): the war and every fight
@@ -182,12 +183,14 @@
   const buffers = {}, loading = {};
   let useTracks = typeof fetch === "function" && location.protocol !== "file:";
   let track = null; // { mood, src, gain }
+  // A won test plays a short theme of its own kind.
+  const FLOURISH = { archery: "music/win_archery.mp3", strength: "music/win_strength.mp3", stealth: "music/win_stealth.mp3", wits: "music/win_wits.mp3", war: "music/win_war.mp3" };
   function loadTrack(m) {
-    if (!loading[m]) loading[m] = fetch(new URL(TRACKS[m], document.baseURI).href)
+    if (!loading[m]) loading[m] = fetch(new URL(TRACKS[m] || FLOURISH[m.replace("win_", "")], document.baseURI).href)
       .then((r) => { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
       .then((ab) => new Promise((res, rej) => ctx.decodeAudioData(ab, res, rej)))
       .then((b) => (buffers[m] = b))
-      .catch(() => { useTracks = false; if (timer === "tracks") { timer = null; fadeTrack(); startMusic(); } return null; });
+      .catch(() => { if (!TRACKS[m]) return null; useTracks = false; if (timer === "tracks") { timer = null; fadeTrack(); startMusic(); } return null; });
     return loading[m];
   }
   function fadeTrack() {
@@ -197,14 +200,23 @@
     try { src.stop(t + 2.5); } catch (e) { /* already stopped */ }
     track = null;
   }
+  // Each piece plays once per stage (an act; the opening and childhood count as one), never again
+  // until the next act, however often the mood swings back to it.
+  const played = new Set();
+  let playedFor = null; // a new life hears its music again
   function playTrack(m) {
+    if (K.S !== playedFor) { if (playedFor) played.clear(); playedFor = K.S; } // the opening and the first scenes share one piece
     if (track && track.mood === m) return;
     fadeTrack();
+    const stage = m + ":" + Math.max(1, (K.S && K.S.act) || 1);
+    if (played.has(stage)) return;
+    played.add(stage);
     const want = m;
     loadTrack(m).then((b) => {
       if (!b || timer !== "tracks" || mood !== want || (track && track.mood === want)) return;
       const src = ctx.createBufferSource(), gain = ctx.createGain();
-      src.buffer = b; src.loop = true;
+      src.buffer = b; src.loop = false;
+      src.onended = () => { if (track && track.src === src) track = null; }; // the piece ends; silence until the next stage
       gain.gain.value = 0.0001; src.connect(gain); gain.connect(musicBus);
       src.start(now() + 0.05);
       gain.gain.setTargetAtTime(TRACK_GAIN[want], now() + 0.05, 0.5);
@@ -224,7 +236,7 @@
       return;
     }
     const t = now() + 0.05;
-    S0 = { pluckAt: t, pluckIdx: 0, beatAt: t + 0.2, beatIdx: 0, tala: MOODS[mood].tala, phraseAt: t + 1.5 };
+    S0 = { pluckAt: t, pluckIdx: 0, beatAt: t + 0.2, beatIdx: 0, tala: MOODS[mood].tala, phraseAt: t + 1.5, until: t + 80 };
     musicBus.gain.cancelScheduledValues(t);
     musicBus.gain.setTargetAtTime(musicLevel() * 1.8, t, 1.2);
     timer = setInterval(tick, 60);
@@ -238,6 +250,7 @@
   function tick() {
     if (!ctx || ctx.state !== "running") return;
     const M = MOODS[mood], t = now(), horizon = t + 0.3;
+    if (t > S0.until) return; // like the recorded pieces, the improvised ensemble plays once per stage
     // Tanpura, never stopping.
     while (S0.pluckAt < horizon) { pluck(STRINGS[S0.pluckIdx % 4], S0.pluckAt, mood === "battle" ? 0.8 : 1); S0.pluckAt += M.pluck; S0.pluckIdx++; }
     // Tabla. A new tala starts from its sam.
@@ -268,6 +281,7 @@
     if (timer === "tracks") return playTrack(name);
     if (!ctx || !S0) return;
     const t = now();
+    S0.until = t + 80;
     // Let the flute's phrase fall away, and come back in the new raga soon after.
     if (phraseOut && phraseOut.end > t) { phraseOut.out.gain.setTargetAtTime(0.0001, t, 0.15); }
     S0.phraseAt = t + (name === "battle" ? 0.6 : 1.4);
@@ -345,6 +359,21 @@
       try { FX[name](); } catch (e) { /* sound is never allowed to break the game */ }
     },
     mood(name) { try { setMood(name); } catch (e) { /* never break the game */ } },
+    // A won test: its theme plays over everything, the stage's piece ducking underneath.
+    flourish(kind) {
+      try {
+        if (!musicOn() || !init() || ctx.state !== "running") return;
+        if (!useTracks || !FLOURISH[kind]) { FX.gong(); return; }
+        loadTrack("win_" + kind).then((b) => {
+          if (!b) { FX.gong(); return; }
+          const t = now(), src = ctx.createBufferSource(), g = ctx.createGain();
+          src.buffer = b; g.gain.value = 0.95; src.connect(g); g.connect(musicBus);
+          musicBus.gain.cancelScheduledValues(t); musicBus.gain.setTargetAtTime(musicLevel() * 1.8, t, 0.05);
+          if (track) { track.gain.gain.cancelScheduledValues(t); track.gain.gain.setTargetAtTime(0.08, t, 0.15); const tr = track; setTimeout(() => { if (track === tr) tr.gain.gain.setTargetAtTime(TRACK_GAIN[tr.mood], now(), 0.8); }, b.duration * 1000 - 800); }
+          src.start(t + 0.02);
+        });
+      } catch (e) { /* never break the game */ }
+    },
     // Called from the Menu switches and the volume slider.
     refresh() {
       if (!ctx) return;

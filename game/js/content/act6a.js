@@ -133,7 +133,7 @@
         { id: "tend", t: "Work the tents behind the wheel", req: { side: "neutral" }, fx: { rep: { common: 1 }, flag: "tended_d13" } }
       ],
       after: ["Abhimanyu fights until his bow is broken, then with his sword, then with a chariot wheel. Many warriors surround him at once, and he falls. That night Arjuna swears to kill Jayadratha before the next sunset, or walk into fire."],
-      next: "a6_day14"
+      next: "a6_wheel"
     },
     {
       id: "a6_d13_inside", act: 6, age: 44, canon: true, war: true, art: "scene_day13", place: "Inside the Chakravyuha", caption: "The gap closing behind you",
@@ -150,7 +150,7 @@
           text: "You turn the chariot and drive at the weakest part of the wall. You come out the other side bleeding, alone, and alive." }
       ],
       after: ["Abhimanyu fights until his bow is broken, then with his sword, then with a chariot wheel. Many warriors surround him at once, and he falls. That night Arjuna swears to kill Jayadratha before the next sunset, or walk into fire."],
-      next: "a6_day14"
+      next: "a6_wheel"
     }
   ]);
 

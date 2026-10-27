@@ -129,6 +129,13 @@ console.log("Died in the war:  " + deaths.length);
     "; second chances " + ["second_arjuna", "second_bhima", "second_duryo", "second_karna"].map(n).reduce((a, b) => a + b, 0) +
     ", failed twice " + ["missed_lamp_twice", "thrown_by_bhima_twice", "horse_beat_you_twice", "backed_down_twice"].map(n).reduce((a, b) => a + b, 0) +
     "; chose Charu " + n("chose_charu") + ", Ugra beaten " + n("beat_ugra") + ", Ugra twice " + n("ugra_twice")); }
+{ const seen = (id) => results.filter((r) => r.seen && (Array.isArray(r.seen) ? r.seen.includes(id) : r.seen[id])).length, n = (f) => results.filter((r) => r.flags && r.flags.includes(f)).length;
+  const acts = [["II", "a2_trial", "a2_trial_again", ["drona_bird", "kripa_drill", "balarama_drill", "mauni_bell", "vidura_eye", "leaf_night"], ["missed_bird_twice", "kripa_twice", "balarama_twice", "mauni_twice", "vidura_twice", "leaf_twice"]],
+    ["III tunnel", null, "a3_tunnel_again", ["helped_tunnel"], ["tunnel_twice"]], ["III bow", "a3_bow", "a3_bow_again", ["strung_great_bow"], ["bow_twice"]],
+    ["IV hands", "a4_hands", "a4_hands_again", ["saw_swap"], ["hands_twice"]], ["IV message", "a4_message", "a4_message_again", ["message_carried"], ["message_twice"]],
+    ["V", "a5_herd", "a5_herd_again", ["turned_herd"], ["herd_twice"]], ["VI", "a6_wheel", "a6_wheel_again", ["held_wheel"], ["wheel_twice"]], ["VII", "a7_question", "a7_question_again", ["bhishma_answered"], ["bhishma_twice"]]];
+  console.log("Tests by act (reached / second chance / won / failed twice):");
+  for (const [act, a, b, w, f] of acts) console.log("  " + act.padEnd(11) + (a ? seen(a) : "-") + " / " + seen(b) + " / " + w.map(n).reduce((x, y) => x + y, 0) + " / " + f.map(n).reduce((x, y) => x + y, 0)); }
 if (warn.size) { console.log("Warnings:"); [...warn].slice(0, 10).forEach((x) => console.log("  " + x.slice(0, 300))); }
 crashes.slice(0, 3).forEach((c) => console.log("\nCRASH at " + c.scene + "\n" + c.crash.split("\n").slice(0, 6).join("\n") + "\npath: " + c.path.slice(-5).join(" > ")));
 stuck.slice(0, 3).forEach((c) => console.log("\nSTUCK at " + c.scene + " " + (c.reason || "") + "\n" + (c.html || "") + "\npath: " + c.path.slice(-5).join(" > ")));
