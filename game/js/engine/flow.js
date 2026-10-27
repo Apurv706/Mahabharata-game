@@ -148,9 +148,10 @@
       if (br.next) res.next = K.val(br.next);
       if (br.combat) res.combat = br.combat;
     }
-    if (c.game && outcome) { // a game played inside the scene (ui/games.js) picks its branch
-      K.record()[outcome === "win" ? "gamesWon" : "gamesLost"]++;
-      const br = c[outcome] || {};
+    if (c.game && outcome) { // a game or action test played inside the scene picks its branch
+      const practice = c.trial && c.trial.practice; // a first test that does not count
+      const br = c[outcome] || (outcome === "close" ? c.lose : null) || {};
+      if (!practice) K.record()[outcome === "win" ? "gamesWon" : "gamesLost"] += 1 + (outcome !== "win" && br.penalty ? 1 : 0); // a failed second chance counts twice
       addDelta(delta, K.apply(br.fx));
       if (br.text) res.text = K.val(br.text);
       if (br.next) res.next = K.val(br.next);

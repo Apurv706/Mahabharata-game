@@ -10188,5 +10188,605 @@
   "id": 2038,
   "en": "Your past counts against you ({n})",
   "ctx": "play:a3_rajasuya"
+ },
+ {
+  "id": 2039,
+  "en": "Map",
+  "ctx": "code:dom.js"
+ },
+ {
+  "id": 2040,
+  "en": "Your road",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 2041,
+  "en": "You hit Arjuna's swinging lamp in the dark.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2042,
+  "en": "You put Bhima in the river.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2043,
+  "en": "You calmed a maddened horse beside Karna.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2044,
+  "en": "You stood your ground in front of Duryodhana's brothers.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2045,
+  "en": "You missed Arjuna's lamp twice, in front of the whole fair.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2046,
+  "en": "Bhima threw you in the river twice, and the whole fair saw.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2047,
+  "en": "The horse beat you twice, and Karna had to manage alone.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2048,
+  "en": "You backed down twice in front of Duryodhana's brothers.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2049,
+  "en": "Ugra threw you out of the ring twice in one afternoon.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2050,
+  "en": "Three pebbles",
+  "ctx": "scene:a1_first"
+ },
+ {
+  "id": 2051,
+  "en": "Take the pebbles and aim",
+  "ctx": "scene:a1_first"
+ },
+ {
+  "id": 2052,
+  "en": "A first test",
+  "ctx": "scene:a1_first"
+ },
+ {
+  "id": 2053,
+  "en": "Throw",
+  "ctx": "scene:a1_first"
+ },
+ {
+  "id": 2054,
+  "en": "The fruit sways on its branch. Throw as it crosses your line. One hit is enough.",
+  "ctx": "scene:a1_first"
+ },
+ {
+  "id": 2055,
+  "en": "Three pebbles, three misses. Your cousin knocks one down with her first throw and gives it to you anyway. \"Again tomorrow,\" she says.",
+  "ctx": "scene:a1_first"
+ },
+ {
+  "id": 2056,
+  "en": "A wrestling test",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2057,
+  "en": "Bhima wants to wrestle in the river shallows. A ring closes as he shifts his weight: push just as it meets the mark. Three good pushes and he goes into the water. Three slips and you do.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2058,
+  "en": "Bhima becomes your closest friend.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2059,
+  "en": "Charu stays your closest friend, and Bhima laughs about it for a week. You will get one more chance.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2060,
+  "en": "You put him in the river when you were ten. He has never stopped telling people.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2061,
+  "en": "Bhima became your closest friend. You put him in the river to earn it.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2062,
+  "en": "Bhima comes up spluttering and roaring with laughter. \"Again!\" he shouts, and from that day you are hardly ever apart.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2063,
+  "en": "You go into the river three times. Bhima hauls you out each time, delighted. \"Grow a little,\" he says, \"and come back.\" Charu is waiting on the bank with a dry cloth.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2064,
+  "en": "A test of nerve",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2065,
+  "en": "Duryodhana's brothers circle you by the lotus pond to see what you are made of. He is watching. Answer each taunt before the lamp burns down. Two good answers win his respect.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2066,
+  "en": "Duryodhana becomes your closest friend.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2067,
+  "en": "Charu stays your closest friend, and the brothers remember you backed down. You will get one more chance.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2068,
+  "en": "\"Who let this one into the gardens? Did the stables send us a present?\"",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2069,
+  "en": "\"The prince asked me here. Did he ask for you?\"",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2070,
+  "en": "\"I am sorry. I will go.\"",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2071,
+  "en": "\"Better the stables than your father's kitchen.\"",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2072,
+  "en": "Dushasana plants his foot on yours and leans. \"Say please, and I will move.\"",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2073,
+  "en": "\"I can stand here as long as you can.\"",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2074,
+  "en": "Shove him into the pond.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2075,
+  "en": "Duryodhana speaks at last. \"They say you are nobody. Are they right?\"",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2076,
+  "en": "\"Today, yes. Ask me again in ten years.\"",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2077,
+  "en": "\"I am whatever you want me to be, prince.\"",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2078,
+  "en": "\"They are fools, and so are you for listening to them.\"",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2079,
+  "en": "You stood your ground in front of his brothers when you were ten.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2080,
+  "en": "Duryodhana became your closest friend. You stood your ground to earn it.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2081,
+  "en": "Duryodhana laughs and throws an arm around your shoulders. \"This one is mine,\" he tells his brothers. Nobody argues.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2082,
+  "en": "The brothers laugh you out of the garden. Duryodhana does not laugh. He simply looks away, which is worse. Charu walks you home.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2083,
+  "en": "An archery test",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2084,
+  "en": "Arjuna has hung a lamp from a branch and set it swinging in the dark. \"I shoot at the flame,\" he says. \"You try.\" Three arrows: release as the flame crosses your line. Two hits win his friendship.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2085,
+  "en": "Arjuna becomes your closest friend.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2086,
+  "en": "Charu stays your closest friend, and Arjuna remembers you missed. You will get one more chance.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2087,
+  "en": "You hit his swinging lamp in the dark when you were ten.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2088,
+  "en": "Arjuna became your closest friend. You earned it with a bow.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2089,
+  "en": "Arjuna looks at the flame, then at you. \"Again tomorrow,\" he says. \"And the day after.\" From then on, you practise together.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2090,
+  "en": "One arrow finds the flame. \"Not bad,\" Arjuna says, and means it, but he goes back to his practice alone. Charu is waiting for you at the gate.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2091,
+  "en": "Three arrows vanish into the dark. Arjuna laughs, not unkindly, and shows you how to hold the bow. Charu is waiting for you at the gate.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2092,
+  "en": "A test of a steady hand",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2093,
+  "en": "A festival drum has maddened one of the chariot horses, and Karna is trying to hold it. \"Help me,\" he says. Keep your hand over the glow until the horse is calm.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2094,
+  "en": "Karna becomes your closest friend.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2095,
+  "en": "Charu stays your closest friend, and Karna has to manage alone. You will get one more chance.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2096,
+  "en": "You calmed a maddened horse beside him when you were ten.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2097,
+  "en": "Karna became your closest friend. You calmed a horse together to earn it.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2098,
+  "en": "The horse drops its head into your hands. Karna lets out a long breath. \"You have the touch,\" he says. \"Most people only have the whip.\"",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2099,
+  "en": "The horse tears free, and Karna is dragged half across the yard before he catches it again. He is not angry, only alone with it. Charu walks you home.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 2100,
+  "en": "One more chance",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2101,
+  "en": "Take Arjuna's bow",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2102,
+  "en": "Arjuna gives up on you. It counts as two failures, and it will weigh on every archery test to come.",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2103,
+  "en": "You missed his lamp twice. He stopped offering.",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2104,
+  "en": "You miss again, in front of the whole fair. Arjuna lowers his bow and turns back to the lamp. He does not offer again.",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2105,
+  "en": "Wade in and wrestle Bhima",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2106,
+  "en": "Bhima stops taking you seriously. It counts as two failures, and it will weigh on every wrestling test to come.",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2107,
+  "en": "He threw you in the river twice. He calls you \"little fish\" now.",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2108,
+  "en": "Into the river again, in front of the whole fair. Bhima pats your head and calls you \"little fish\". The name sticks for years.",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2109,
+  "en": "Face Duryodhana's brothers again",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2110,
+  "en": "The brothers will never let you forget it. It counts as two failures, and it will weigh on every test of statecraft to come.",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2111,
+  "en": "You backed down in front of his brothers twice.",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2112,
+  "en": "Again the words will not come. Dushasana tells the story at every feast for a year, and the court laughs with him.",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2113,
+  "en": "Take the stallion's rope beside Karna",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2114,
+  "en": "Karna stops asking. It counts as two failures, and it will weigh on every chariot test to come.",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2115,
+  "en": "Twice he asked for your help with a horse, and twice it beat you.",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2116,
+  "en": "The stallion throws you into the straw. Karna gets it in hand alone, as he always has, and does not ask you again.",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2117,
+  "en": "Let it go. Charu is friend enough",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2118,
+  "en": "You walk on with Charu, who pretends not to be pleased.",
+  "ctx": "scene:a1_second"
+ },
+ {
+  "id": 2119,
+  "en": "Ugra fights the fair way: falls in the ring. A ring closes as he shifts his weight. Push just as it meets the mark.",
+  "ctx": "scene:a1_wrestle"
+ },
+ {
+  "id": 2120,
+  "en": "Ugra lets Charu go, in front of everyone.",
+  "ctx": "scene:a1_wrestle"
+ },
+ {
+  "id": 2121,
+  "en": "Ugra keeps his grip on Charu. You can get up and ask for another bout.",
+  "ctx": "scene:a1_wrestle"
+ },
+ {
+  "id": 2122,
+  "en": "Ugra hits the sand, and the crowd roars. He lets go of Charu and leaves the ring without a word. At the edge of the crowd a giant of a man with a plough on his shoulder asks your name.",
+  "ctx": "scene:a1_wrestle"
+ },
+ {
+  "id": 2123,
+  "en": "Ugra throws you out of the ring. Charu is still in his grip.",
+  "ctx": "scene:a1_wrestle"
+ },
+ {
+  "id": 2124,
+  "en": "Get up",
+  "ctx": "scene:a1_rematch"
+ },
+ {
+  "id": 2125,
+  "en": "The crowd is laughing. Ugra is laughing. Charu is not.",
+  "ctx": "scene:a1_rematch"
+ },
+ {
+  "id": 2126,
+  "en": "Get up and ask for another bout",
+  "ctx": "scene:a1_rematch"
+ },
+ {
+  "id": 2127,
+  "en": "Your second chance",
+  "ctx": "scene:a1_rematch"
+ },
+ {
+  "id": 2128,
+  "en": "Ugra wins twice. It counts as two failures, the crowd will not forget it, and it will weigh on every wrestling test to come.",
+  "ctx": "scene:a1_rematch"
+ },
+ {
+  "id": 2129,
+  "en": "You got up and fought Ugra twice for Charu. You lost twice. Charu never forgot either part.",
+  "ctx": "scene:a1_rematch"
+ },
+ {
+  "id": 2130,
+  "en": "He throws you again, harder. The crowd stops laughing, which is worse. Ugra lets Charu go anyway, bored, and Charu helps you home.",
+  "ctx": "scene:a1_rematch"
+ },
+ {
+  "id": 2131,
+  "en": "Stay down",
+  "ctx": "scene:a1_rematch"
+ },
+ {
+  "id": 2132,
+  "en": "You stay down. Ugra lets Charu go anyway, bored. On the way home neither of you says anything.",
+  "ctx": "scene:a1_rematch"
+ },
+ {
+  "id": 2133,
+  "en": "At the edge of the yard grows an old mango tree, and the best fruit always hangs where no one can reach it.",
+  "ctx": "play:a1_first"
+ },
+ {
+  "id": 2134,
+  "en": "Your cousin, three years older and very sure of herself, puts three smooth pebbles in your hand. \"Knock one down,\" she says, \"and it is yours.\"",
+  "ctx": "play:a1_first"
+ },
+ {
+  "id": 2135,
+  "en": "A first test. This one does not count; it shows you how tests work.",
+  "ctx": "play:a1_first"
+ },
+ {
+  "id": 2136,
+  "en": "Helped by your {what}: {n}. The higher, the easier.",
+  "ctx": "play:a1_first"
+ },
+ {
+  "id": 2137,
+  "en": "Begin",
+  "ctx": "play:a1_first"
+ },
+ {
+  "id": 2138,
+  "en": "Map. Your road: {r}",
+  "ctx": "play:a1_journey"
+ },
+ {
+  "id": 2139,
+  "en": "Himalaya",
+  "ctx": "play:a1_journey"
+ },
+ {
+  "id": 2140,
+  "en": "Desert",
+  "ctx": "play:a1_journey"
+ },
+ {
+  "id": 2141,
+  "en": "Western sea",
+  "ctx": "play:a1_journey"
+ },
+ {
+  "id": 2142,
+  "en": "Eastern sea",
+  "ctx": "play:a1_journey"
+ },
+ {
+  "id": 2143,
+  "en": "Indus",
+  "ctx": "play:a1_journey"
+ },
+ {
+  "id": 2144,
+  "en": "Yamuna",
+  "ctx": "play:a1_journey"
+ },
+ {
+  "id": 2145,
+  "en": "Ganga",
+  "ctx": "play:a1_journey"
+ },
+ {
+  "id": 2146,
+  "en": "Nishada forests",
+  "ctx": "play:a1_journey"
+ },
+ {
+  "id": 2147,
+  "en": "If you succeed",
+  "ctx": "play:a1_friend"
+ },
+ {
+  "id": 2148,
+  "en": "If you fail",
+  "ctx": "play:a1_friend"
+ },
+ {
+  "id": 2149,
+  "en": "At the spring fair Duryodhana's brothers find you again by the sweet stalls. Duryodhana is with them. \"Well?\" he says. \"Have you grown a tongue?\"",
+  "ctx": "play:a1_second"
+ },
+ {
+  "id": 2150,
+  "en": "You will not be asked a third time.",
+  "ctx": "play:a1_second"
+ },
+ {
+  "id": 2151,
+  "en": "Ashram on the Ganga",
+  "ctx": "play:a5_forest_boon"
+ },
+ {
+  "id": 2152,
+  "en": "The mango drops into the grass. It is the best thing you have ever eaten, and you tell everyone so, loudly.",
+  "ctx": "play:a1_first"
+ },
+ {
+  "id": 2153,
+  "en": "At the spring fair a horse-dealer's grey stallion has thrown two grooms. Karna is holding its rope, and losing. He sees you. \"Once more?\"",
+  "ctx": "play:a1_second"
+ },
+ {
+  "id": 2154,
+  "en": "At the spring fair Bhima is wrestling all comers in the river shallows. He sees you on the bank and grins. \"Bigger now?\"",
+  "ctx": "play:a1_second"
+ },
+ {
+  "id": 2155,
+  "en": "At the spring fair there is an archery stall: a lamp on a cord, swinging in the shade of an awning. Arjuna is there. He sees you, and holds out his bow.",
+  "ctx": "play:a1_second"
+ },
+ {
+  "id": 2156,
+  "en": "At the edge of the yard grows an old apricot tree, and the best fruit always hangs where no one can reach it.",
+  "ctx": "play:a1_first"
+ },
+ {
+  "id": 2157,
+  "en": "The apricot drops into the grass. It is the best thing you have ever eaten, and you tell everyone so, loudly.",
+  "ctx": "play:a1_first"
+ },
+ {
+  "id": 2158,
+  "en": "In the line beside you stands a big man with a miller's shoulders. Ugra. \"You were the only one who ever stood up to me,\" he says. \"You lost. You still stood up. I am with you.\"",
+  "ctx": "play:a6_day1"
  }
 ]

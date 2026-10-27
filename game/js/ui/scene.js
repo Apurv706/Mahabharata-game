@@ -175,7 +175,7 @@
       const res = K.choose(sc, c, outcome);
       res.pre = summary;
       showAfter(sc, c, res, res.next);
-    });
+    }, c);
     U.redraw = () => game.draw();
   }
 

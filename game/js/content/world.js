@@ -109,6 +109,15 @@
   // What you did earlier in life changes your chances later: each merit adds (or takes) one point on
   // tests that use the same attribute or skill, two at most. Shown on the choice and in the character sheet.
   K.MERITS = [
+    { flag: "hit_the_lamp", on: ["aim", "archery"], n: 1, text: "You hit Arjuna's swinging lamp in the dark." },
+    { flag: "threw_bhima", on: ["might", "mace"], n: 1, text: "You put Bhima in the river." },
+    { flag: "calmed_the_horse", on: ["grace", "chariot"], n: 1, text: "You calmed a maddened horse beside Karna." },
+    { flag: "stood_your_ground", on: ["command", "statecraft"], n: 1, text: "You stood your ground in front of Duryodhana's brothers." },
+    { flag: "missed_lamp_twice", on: ["archery"], n: -1, text: "You missed Arjuna's lamp twice, in front of the whole fair." },
+    { flag: "thrown_by_bhima_twice", on: ["mace"], n: -1, text: "Bhima threw you in the river twice, and the whole fair saw." },
+    { flag: "horse_beat_you_twice", on: ["chariot"], n: -1, text: "The horse beat you twice, and Karna had to manage alone." },
+    { flag: "backed_down_twice", on: ["statecraft"], n: -1, text: "You backed down twice in front of Duryodhana's brothers." },
+    { flag: "ugra_twice", on: ["mace"], n: -1, text: "Ugra threw you out of the ring twice in one afternoon."  },
     { flag: "beat_ugra", on: ["might", "mace"], n: 1, text: "You beat Ugra in the ring at the fair." },
     { flag: "won_kampilya", on: ["aim", "archery"], n: 1, text: "You won the children's archery at Kampilya." },
     { flag: "grey_mare", on: ["chariot"], n: 1, text: "You gentled the grey mare no one else could touch." },

@@ -124,6 +124,11 @@ console.log("Died in the war:  " + deaths.length);
   const stops = {}; for (const r of roads) for (const k of new Set(r.road)) stops[k] = (stops[k] || 0) + 1;
   console.log("Map: " + avg.toFixed(1) + " places per life; lives that reached each: " + Object.entries(stops).sort((a, b) => b[1] - a[1]).map(([k, n]) => k + " " + n).join(", "));
   if (roads[0]) console.log("  e.g. " + roads[0].road.join(" > ")); }
+{ const n = (f) => results.filter((r) => r.flags && r.flags.includes(f)).length;
+  console.log("Act I tests: practice hit " + n("first_throw") + "; friendship won lamp " + n("hit_the_lamp") + ", river " + n("threw_bhima") + ", horse " + n("calmed_the_horse") + ", nerve " + n("stood_your_ground") +
+    "; second chances " + ["second_arjuna", "second_bhima", "second_duryo", "second_karna"].map(n).reduce((a, b) => a + b, 0) +
+    ", failed twice " + ["missed_lamp_twice", "thrown_by_bhima_twice", "horse_beat_you_twice", "backed_down_twice"].map(n).reduce((a, b) => a + b, 0) +
+    "; chose Charu " + n("chose_charu") + ", Ugra beaten " + n("beat_ugra") + ", Ugra twice " + n("ugra_twice")); }
 if (warn.size) { console.log("Warnings:"); [...warn].slice(0, 10).forEach((x) => console.log("  " + x.slice(0, 300))); }
 crashes.slice(0, 3).forEach((c) => console.log("\nCRASH at " + c.scene + "\n" + c.crash.split("\n").slice(0, 6).join("\n") + "\npath: " + c.path.slice(-5).join(" > ")));
 stuck.slice(0, 3).forEach((c) => console.log("\nSTUCK at " + c.scene + " " + (c.reason || "") + "\n" + (c.html || "") + "\npath: " + c.path.slice(-5).join(" > ")));

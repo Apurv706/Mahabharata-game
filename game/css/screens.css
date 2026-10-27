@@ -336,3 +336,66 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 .end-map .lbl { display: block; margin-bottom: 6px; }
 @media (prefers-reduced-motion: reduce) { .bmap .m-ring, .journey { animation: none; } }
 :lang(hi) .bmap .m-region, :lang(hi) .bmap .m-water { letter-spacing: 0; text-transform: none; }
+
+/* Action tests: stakes first, then a single big action. */
+.trial { display: grid; gap: 14px; padding: 16px; background: var(--raised); border: 1px solid var(--gold-line); border-radius: var(--r-card); }
+.trial .game-rules { margin: 0; font-size: 17px; line-height: 1.5; }
+.trial-practice { margin: 0; font-size: 14px; color: var(--data); letter-spacing: .02em; }
+.stakes { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 15px; }
+.stakes b { display: inline-block; min-width: 7.5em; font-weight: 600; }
+.stakes .win b { color: var(--positive); }
+.stakes .lose b { color: var(--negative); }
+.trial-stats { margin: 0; font-size: 14px; color: var(--muted); }
+.trial .score { margin: 0; font-size: 15px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.trial .game-note { margin: 0; min-height: 1.4em; font-size: 16px; color: var(--ink); }
+.trial-press { min-height: 56px; min-width: 180px; font-size: 18px; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+.trial .btnrow { justify-content: center; }
+
+/* Aim: the target swings across a range; your line is the centre. */
+.range { position: relative; height: 150px; border-radius: var(--r-control); overflow: hidden; background: linear-gradient(#3a2a1c, #2a1d14); }
+.range.dark { background: radial-gradient(ellipse at 50% 40%, #241a2c, #0c0a10); }
+.range .zone { position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); background: rgba(240, 148, 63, .12); border-left: 1px dashed rgba(240, 148, 63, .35); border-right: 1px dashed rgba(240, 148, 63, .35); }
+.range .line { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; transform: translateX(-50%); background: var(--accent); opacity: .8; }
+.range .target { position: absolute; top: 18px; width: 0; height: 0; }
+.range .target::before { content: ""; position: absolute; left: 0; top: -18px; width: 1px; height: 40px; background: rgba(247, 234, 211, .35); }
+.range .target i { position: absolute; left: -16px; top: 18px; width: 32px; height: 40px; }
+.range .t-lamp { background: radial-gradient(circle at 50% 30%, #fff3c2 0 12%, #ffb648 22%, rgba(255, 120, 40, .55) 40%, transparent 62%); border-radius: 50%; animation: flicker .18s infinite alternate; }
+.range .t-lamp::after { content: ""; position: absolute; left: 9px; bottom: 2px; width: 14px; height: 9px; border-radius: 0 0 8px 8px; background: #b5793a; }
+.range .t-fruit { background: radial-gradient(circle at 40% 35%, #ffe08a, #f0a030 45%, #c86a1c 75%); border-radius: 50% 50% 46% 54%; height: 34px !important; }
+@keyframes flicker { from { opacity: .82; transform: scale(.96); } to { opacity: 1; transform: scale(1.04); } }
+.range .arrow { position: absolute; left: 50%; bottom: 0; width: 3px; height: 30px; margin-left: -1.5px; background: #e9d2a6; opacity: 0; }
+.range.hit .arrow, .range.miss .arrow { animation: loose .35s ease-out forwards; }
+@keyframes loose { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-120px); } }
+.range.hit { box-shadow: inset 0 0 0 3px var(--positive); }
+.range.miss { box-shadow: inset 0 0 0 3px var(--negative); }
+
+/* Push: a ring closes on the mark; a balance bar shows who is winning. */
+.pushpit { display: grid; gap: 12px; }
+.balance { position: relative; height: 10px; border-radius: 5px; background: linear-gradient(90deg, var(--negative), var(--track) 50%, var(--positive)); }
+.balance i { position: absolute; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: var(--ink); transition: left .3s; left: 50%; }
+.ringbox { position: relative; height: 170px; border-radius: var(--r-control); background: radial-gradient(circle, #4a2a20, #2a1612); overflow: hidden; }
+.ringbox .mark, .ringbox .ring { position: absolute; left: 50%; top: 50%; border-radius: 50%; transform: translate(-50%, -50%); }
+.ringbox .mark { width: 48px; height: 48px; background: rgba(240, 148, 63, .25); border: 3px solid var(--accent); }
+.ringbox .ring { width: 160px; height: 160px; border: 4px solid var(--ink); }
+.ringbox .who { position: absolute; left: 0; right: 0; bottom: 8px; text-align: center; font-size: 14px; color: var(--muted); }
+.pushpit.good .ringbox { box-shadow: inset 0 0 0 3px var(--positive); }
+.pushpit.bad .ringbox { box-shadow: inset 0 0 0 3px var(--negative); }
+
+/* Steady: keep your hand over the horse's mood. */
+.steady { position: relative; height: 70px; border-radius: var(--r-control); background: linear-gradient(90deg, #2c1a14, #3e241b, #2c1a14); }
+.steady .mood { position: absolute; top: 8px; bottom: 8px; border-radius: 8px; background: rgba(240, 148, 63, .22); border: 2px solid rgba(240, 148, 63, .5); transition: background .2s; }
+.steady .mood.on { background: rgba(127, 207, 166, .35); border-color: var(--positive); }
+.steady .hand { position: absolute; top: 4px; bottom: 4px; width: 6px; margin-left: -3px; border-radius: 3px; background: var(--ink); box-shadow: 0 0 8px rgba(247, 234, 211, .6); }
+.calm { height: 10px; border-radius: 5px; background: var(--track); overflow: hidden; }
+.calm i { display: block; height: 100%; width: 0; background: var(--positive); }
+
+/* Retort: the taunt, a burning lamp, three replies. */
+.taunt { margin: 0; padding: 10px 14px; border-left: 3px solid var(--accent); font-family: var(--display); font-size: 21px; line-height: 1.35; }
+.timer { height: 8px; border-radius: 4px; background: var(--track); overflow: hidden; }
+.timer i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--negative), var(--accent)); }
+.replies { display: grid !important; gap: 8px; }
+.replies button { text-align: left; white-space: normal; }
+@media (prefers-reduced-motion: reduce) { .range .t-lamp { animation: none; } }
+.replies button { background: var(--surface); border: 1px solid var(--gold-line); color: var(--ink); padding: 12px 14px; border-radius: var(--r-control); font-weight: 500; }
+.replies button:hover:not(:disabled) { background: var(--hover); border-color: var(--accent); }
+.trial .replies { justify-content: stretch; justify-items: stretch; } .trial .replies button { width: 100%; }
