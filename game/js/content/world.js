@@ -45,7 +45,7 @@
     hastinapura: { name: "Hastinapura", blurb: "Child of a palace official, raised beside the Kuru princes", detail: "Seat of the Kuru dynasty. You grow up close to the throne, among old families, soldiers and constant intrigue. You are always being watched.", region: "The Kuru heartland, on the upper Ganga", context: ["A city of palaces, granaries and old dynasties on the banks of the Ganga, ruled by the blind king Dhritarashtra on behalf of the Kuru line. The princes, Pandavas and Kauravas alike, grow up within its walls.", "Born here, you stand closest to every great event of the epic: the tournament, the dice game, the councils of war. Loyalty to the throne comes easily. Standing apart from it does not."], fx: { duty: { court: 3 }, rep: { kuru: 2 }, skill: { statecraft: 1 }, attr: { command: 1 } } },
     panchala: { name: "Panchala", blurb: "Drupada's kingdom, Drona's old rival", detail: "A kingdom of archers and scholars that prizes skill over birth. Its king, Drupada, once humiliated his boyhood friend Drona, and Drona has not forgotten.", region: "Between the Ganga and the Yamuna, south of the Kurus", context: ["A rich and learned kingdom of archers, scholars and fire-priests, with its capital at Kampilya. King Drupada's court values what you can do over who your father was.", "Drona will train the Kuru princes to take Drupada prisoner, so a child of Panchala begins with a grudge on one side and a welcome on the other. Draupadi, born from Drupada's sacrificial fire, will one day be your princess."], fx: { skill: { archery: 1 }, rep: { panchala: 3, kuru: -1 }, attr: { wisdom: 1 } } },
     matsya: { name: "Matsya", blurb: "King Virata's quiet land", detail: "Fields, lakes and horses under a gentle king. A small kingdom, often caught between larger ones. One day the Pandavas will hide here.", region: "West of the Yamuna, a land of lakes and pastures", context: ["A small, gentle kingdom of cattle herders, horse breeders and lake fishers, ruled by King Virata from his capital at Viratanagara.", "Greater powers rarely look this way, which is why the Pandavas will choose it for their year in hiding. Children here grow up among horses, and many become fine charioteers."], fx: { skill: { chariot: 1 }, duty: { family: 2 }, rep: { common: 1 }, attr: { grace: 1 } } },
-    dwaraka: { name: "Dwaraka", blurb: "City of the Yadavas, by the western sea", detail: "An island city of traders, sailors and diplomats. The Yadavas are clever and proud, and when war comes they will fight on both sides.", region: "The western coast, at the edge of the sea", context: ["A walled island city of the Yadava clans, built on the sea for safety. Its harbours bring traders, sailors and envoys from distant lands.", "The Yadavas are kin to both sides of the coming war. Born here, you learn diplomacy early, and you will see your own clan divided when the armies gather."], fx: { skill: { statecraft: 1 }, rep: { yadava: 3 }, item: { herbs: 1 }, attr: { command: 1 } } },
+    mathura: { name: "Mathura", blurb: "City of the Yadavas, on the Yamuna", detail: "An old city of cowherds, traders and singers on the Yamuna. The Yadavas are clever and proud, and when war comes they will fight on both sides.", region: "On the Yamuna, south of the Kuru lands", context: ["An old city of the Yadava clans on the Yamuna, of cowherds, traders and singers. When you are born it lives in fear of its own king, Kamsa, who has thrown his father Ugrasena into prison.", "The Yadavas are kin to both sides of the coming war. Born here, you learn diplomacy early. One day your people will leave Mathura for a new city by the western sea, Dwaraka, and when the armies gather your clan will be divided."], fx: { skill: { statecraft: 1 }, rep: { yadava: 3 }, item: { herbs: 1 }, attr: { command: 1 } } },
     anga: { name: "Anga", blurb: "Karna's kingdom, gifted by Duryodhana", detail: "A wealthy kingdom on the Champa river, known for loyal people and skilled warriors. Here merit can rise above birth.", region: "The far east of the Ganga plain, on the Champa river", context: ["A prosperous eastern kingdom of rice fields, river ports and elephant forests, with its capital at Champa.", "Duryodhana gives Anga to Karna, the charioteer's son, to make him a king. Its people love Karna for it, and here a person is judged more by deeds than by birth."], fx: { bond: { karna: 1 }, duty: { court: 1 }, skill: { mace: 1 }, attr: { might: 1 } } },
     suta: { name: "Charioteer family", blurb: "Raised among the sutas, like Karna", detail: "You grow up among horses, wheels and warriors, close to great men and never counted among them. Karna's foster father Adhiratha lives in your lane.", region: "The charioteers' quarter at the edge of Hastinapura", context: ["The sutas drive the chariots, tend the horses and sing the deeds of kings. They stand beside every great warrior in battle, yet the nobles never treat them as equals.", "You grow up in the same lane as Adhiratha, who found a baby floating in a basket and raised him as Karna. Doors will close because of your birth, and you will learn to open them anyway."], fx: { skill: { chariot: 2 }, bond: { karna: 2 }, rep: { kuru: -1, common: 2 } } },
     nishada: { name: "Nishada village", blurb: "Forest people outside the city order", detail: "A village of hunters and fishers between the river and the deep forest. You know the land better than any prince, and the cities look down on you.", region: "The forests between the river and the hills", context: ["Hunters, fishers and forest guides who live outside the cities' order and the rules of caste. They know every path, plant and animal of the deep forest.", "Ekalavya, the Nishada prince who taught himself archery, comes from people like yours. The cities look down on you, but in the forest no prince can match you."], fx: { skill: { archery: 1, stealth: 1 }, rep: { kuru: -2, common: 2 }, duty: { family: 2 } } },
@@ -92,7 +92,7 @@
     nishada: { name: "the Nishada villages", king: "the village chief" },
     none: { name: "No court", king: "no one" }
   };
-  K.HOME_COURT = { hastinapura: "hastinapura", panchala: "panchala", matsya: "matsya", dwaraka: "dwaraka", anga: "anga", suta: "anga", nishada: "nishada", gandhara: "gandhara" };
+  K.HOME_COURT = { hastinapura: "hastinapura", panchala: "panchala", matsya: "matsya", mathura: "dwaraka", anga: "anga", suta: "anga", nishada: "nishada", gandhara: "gandhara" };
 
   // Allies who can fight beside you.
   K.UNITS = {
@@ -105,6 +105,30 @@
     ugra: () => ({ name: "Ugra, the miller's son", hp: 46, atk: 7, def: 2, abilities: ["strike", "heavy"], person: "ugra" }),
     soldiers: () => ({ name: "Your soldiers", plural: true, hp: 50, atk: 6, def: 2, abilities: ["strike", "arrows"] })
   };
+
+  // What you did earlier in life changes your chances later: each merit adds (or takes) one point on
+  // tests that use the same attribute or skill, two at most. Shown on the choice and in the character sheet.
+  K.MERITS = [
+    { flag: "beat_ugra", on: ["might", "mace"], n: 1, text: "You beat Ugra in the ring at the fair." },
+    { flag: "won_kampilya", on: ["aim", "archery"], n: 1, text: "You won the children's archery at Kampilya." },
+    { flag: "grey_mare", on: ["chariot"], n: 1, text: "You gentled the grey mare no one else could touch." },
+    { flag: "won_calf_race", on: ["grace", "chariot"], n: 1, text: "You won the calf race at the cattle festival." },
+    { flag: "won_cart_race", on: ["grace", "chariot"], n: 1, text: "You won the cart race on the charioteers' feast day." },
+    { flag: "won_pony_race", on: ["grace", "chariot"], n: 1, text: "You won the pony race in the high valley." },
+    { flag: "led_the_cobra", on: ["stealth"], n: 1, text: "You led the cobra out of the well-house." },
+    { flag: "first_trail", on: ["stealth"], n: 1, text: "You found the deer's trail on your first hunt." },
+    { flag: "found_vines", on: ["stealth"], n: 1, text: "You searched the riverbank at Pramanakoti unseen." },
+    { flag: "helped_tunnel", on: ["stealth"], n: 1, text: "You carried earth out of the tunnel at Varnavata unseen." },
+    { flag: "swam_the_reef", on: ["might"], n: 1, text: "You swam out to the sandbank in the dark." },
+    { flag: "flood_boat", on: ["might"], n: 1, text: "You rowed the low quarter out of the flood." },
+    { flag: "saved_doe", on: ["healing"], n: 1, text: "You saved the wounded doe in the forest." },
+    { flag: "hired_bandits", on: ["command"], n: 1, text: "You turned starving bandits into loyal workers." },
+    { flag: "calmed_kings", on: ["statecraft"], n: 1, text: "You talked angry kings down at the swayamvara." },
+    { flag: "beat_haridatta", on: ["wisdom"], n: 1, text: "You beat old Haridatta at dice." },
+    { flag: "kept_arjuna_secret", on: ["wisdom"], n: 1, text: "You saw through Brihannala's disguise." },
+    { flag: "seen_at_tunnel", on: ["stealth"], n: -1, text: "A guard saw you at Varnavata, and the court still watches you." },
+    { flag: "lost_to_ugra", on: ["might"], n: 1, text: "You lost to Ugra, and learned more from it than from any win." }
+  ];
 
   // Secrets you hold, shown in the ledger. Some can be spent at the right moment.
   K.SECRETS = [

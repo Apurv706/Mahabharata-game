@@ -50,7 +50,11 @@ Companion to the PRD (§12 cultural rules, §14 art direction).
 
 **Still needed for the new childhood scenes:** `scene_journey` (the family caravan on the road to Hastinapura) and eight `custom_*` homeland festivals; details in the Remaining Art Brief.
 
-**Still open:** the 9 optional repaints of period errors and the reviews listed in the [Remaining Art Brief](https://claude.ai/artifact/HMj1qHn6xAJiyXRwZDoq3q); a native-size library hero when possible.
+**Delivered 26 Oct (night):** the Priority 2 period repaints, all retouched in place on the originals: plain straw targets (`scene_teacher`, `scene_path`), a timber-and-brick fort (`scene_teacher`, `roots_hastinapura`), low riverbank roofs instead of temple spires (`scene_vow`, `scene_armour`, `scene_birth`, `end_river`), timber-and-brick gates (`scene_indraprastha`), a low walled town and flat bridge (`scene_drupada`), an Indian sword hilt (`scene_vasu`). All in the game. `roots_dwaraka` was repainted too but is no longer used, since the Yadava homeland is now **Mathura**; kept in `art_review/dwaraka_retired/`.
+
+**Mathura (new homeland, replaces Dwaraka):** `home_mathura` and `custom_mathura` borrow `scene_poison` and `ev_lamps` for now. Wanted: `home_mathura` (Mathura on the Yamuna: ghats, cowherds, a fortress where Kamsa rules), `roots_mathura` (the family house over the ghats, boats coming in) and `custom_mathura` (leaf-boat lamps on the Yamuna at the Kartika full moon). All 3:1, 1800×600 JPG, under 500 KB. `custom_dwaraka` is no longer needed.
+
+**Still open:** the remaining reviews and the reviews listed in the [Remaining Art Brief](https://claude.ai/artifact/HMj1qHn6xAJiyXRwZDoq3q); a native-size library hero when possible.
 
 Still open: the Steam library hero (3840×1240, needs its own wide painting), five 1920×1080 gameplay screenshots (captured from the game), the 12 fixes in the Final Items brief, and advisory review. Optional later: 4K key art and hand-lettered logos.
 

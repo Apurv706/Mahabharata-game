@@ -50,7 +50,8 @@
       vows: [], boons: [], curses: [], injuries: [], items: { herbs: 1 },
       flags: [], memories: [], journal: [], dead: [], seen: [], log: [],
       alive: true, storyMode: false, ending: null, deathText: null, endChoice: null,
-      slots: {}, bondAct: {}, karma: null
+      slots: {}, bondAct: {}, karma: null,
+      record: { won: 0, lost: 0, passed: 0, failed: 0, gamesWon: 0, gamesLost: 0, last: null }
     };
   };
   K.S = K.newLife();

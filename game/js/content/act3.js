@@ -86,7 +86,8 @@
       choices: [
         { id: "hastinapura", t: "Serve the old throne at Hastinapura", fx: { rep: { kuru: 2 }, bond: { duryodhana: 1 }, journal: "You pledged yourself to the court at Hastinapura." }, resolve: pledge("hastinapura") },
         { id: "indraprastha", t: "Go to Indraprastha and serve Yudhishthira", fx: { rep: { pandava: 2 }, bond: { yudhishthira: 1 }, journal: "You went to Indraprastha to serve Yudhishthira." }, resolve: pledge("indraprastha") },
-        { id: "home", t: "Go home and serve your own people", fx: { rep: { common: 1 }, duty: { family: 1 }, journal: "You went home to serve your own people." }, resolve: (S) => pledge(K.HOME_COURT[S.origin])(S) },
+        { id: "home", t: "Go home and serve your own people", fx: { rep: { common: 1 }, duty: { family: 1 }, journal: "You went home to serve your own people." }, resolve: (S) => pledge(K.HOME_COURT[S.origin])(S),
+          text: (S) => (S.origin === "mathura" ? "Your people are no longer in Mathura. Krishna killed Kamsa, and when Jarasandha's armies kept coming, the Yadavas moved to a new city by the western sea: Dwaraka. You follow them there." : null) },
         { id: "none", t: "Serve no king. Go where your skills are needed", fx: { set: { court: "none" }, rep: { common: 1 }, journal: "You chose to serve no king." }, resolve: (S) => ({ duty: { court: 1 - S.duty.court } }) }
       ],
       next: "a3_marriage"

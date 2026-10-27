@@ -30,12 +30,12 @@
         { id: "sister", t: "Your elder sister Tara, who rides in the summer races and wins", fx: kin("Tara", { attr: { grace: 1 } }), text: "Tara rides as if she were part of the horse. She lets you ride behind her, and tells you never to look at the ground." }
       ]
     },
-    dwaraka: {
-      body: "The house faces the harbour, and every day ships come in from somewhere you have never heard of. Three people in your family each bring the sea home differently.",
+    mathura: {
+      body: "The house looks over the Yamuna ghats, and every day boats come in from up and down the river. Three people in your family each bring the river home differently.",
       choices: [
-        { id: "uncle", t: "Your uncle Satyaka, who trades across the western sea", fx: kin("Satyaka", { skill: { statecraft: 1 } }), text: "He takes you to the harbour and teaches you to bargain in three languages, badly. \"Smile first,\" he says. \"Then name the price.\"" },
+        { id: "uncle", t: "Your uncle Satyaka, who trades up and down the Yamuna", fx: kin("Satyaka", { skill: { statecraft: 1 } }), text: "He takes you to the ghats and teaches you to bargain in three dialects, badly. \"Smile first,\" he says. \"Then name the price.\"" },
         { id: "grandmother", t: "Grandmother Lavanya, who sings the old songs of the Yadava clans", fx: kin("Lavanya", { skill: { lore: 1 } }), text: "She knows the name of every Yadava chief for twenty generations, and a song for most of them. You learn half the songs by heart." },
-        { id: "cousin", t: "Your cousin Megha, who dives for pearls off the reef", fx: kin("Megha", { attr: { might: 1 } }), text: "Megha teaches you to hold your breath until your chest burns, and to come up slowly. You never find a pearl. Megha finds three." }
+        { id: "cousin", t: "Your cousin Megha, who swims the Yamuna in the flood season", fx: kin("Megha", { attr: { might: 1 } }), text: "Megha teaches you to swim against the current until your arms burn, and to let the river carry you when it is stronger than you. You never reach the far bank. Megha does, twice." }
       ]
     },
     anga: {
@@ -109,15 +109,15 @@
         { id: "song", t: "Lead the herding song as the cattle come home", fx: { skill: { lore: 1 }, rep: { common: 1 } }, text: "Your voice cracks on the high part. The cattle come home anyway, and the old herders nod at you." }
       ]
     },
-    dwaraka: {
-      title: "The night of boats", art: "home_dwaraka",
-      body: "On the full moon of the sailing season, every family in Dwaraka sets a little boat with a lamp on the sea, for the ones who sailed and the ones who will.",
+    mathura: {
+      title: "Lamps on the Yamuna", art: "custom_mathura",
+      body: "On the full moon of Kartika, every family in Mathura sets a little leaf boat with a lamp on the Yamuna, for the ones who went away and the ones who will. Even King Kamsa's guards stop to watch.",
       choices: [
-        { id: "reef", t: "Swim out past the reef with the older children", check: { attr: "might", skill: "stealth", dc: 6,
-          pass: { fx: { attr: { might: 1 }, flag: "swam_the_reef" }, text: "You touch the outer rock and swim back with the lamps all around you, like stars on the water." },
+        { id: "reef", t: "Swim out to the sandbank with the older children", check: { attr: "might", skill: "stealth", dc: 6,
+          pass: { fx: { attr: { might: 1 }, flag: "swam_the_reef" }, text: "You touch the sandbank and swim back with the lamps all around you, like stars on the water." },
           fail: { fx: { duty: { family: 1 } }, text: "The current turns you back. Your cousin pulls you out by the hair, and your mother does not let go of you all night." } } },
-        { id: "traders", t: "Wander the foreign traders' stalls on the harbour", fx: { skill: { statecraft: 1 }, rep: { yadava: 1 } }, text: "A trader from the far west lets you hold a glass bead the colour of the sea. You trade a song for it." },
-        { id: "boat", t: "Make the family's boat yourself, and name the people it is for", fx: { duty: { family: 1 }, attr: { wisdom: 1 } }, text: "You name your grandfather, whom you never met, and every ship your uncle has ever sailed on. The little boat goes out a long way." }
+        { id: "traders", t: "Wander the traders' stalls along the ghats", fx: { skill: { statecraft: 1 }, rep: { yadava: 1 } }, text: "A trader from the far west lets you hold a glass bead the colour of the river at dusk. You trade a song for it." },
+        { id: "boat", t: "Make the family's boat yourself, and name the people it is for", fx: { duty: { family: 1 }, attr: { wisdom: 1 } }, text: "You name your grandfather, whom you never met, and every boat your uncle has ever taken down the river. The little boat goes a long way." }
       ]
     },
     anga: {

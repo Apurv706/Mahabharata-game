@@ -85,8 +85,15 @@
       .filter((x) => x.ok || (x.c.locked && K.test(x.c.showIf, S))); // no locked text = hidden when unavailable
   };
 
+  // Merits from earlier in life that bear on a test (K.MERITS): +1 each, two at most either way.
+  K.merits = function (ch, S = K.S) {
+    const hits = (K.MERITS || []).filter((m) => S.flags.includes(m.flag) && (m.on.includes(ch.attr) || m.on.includes(ch.skill)));
+    const n = Math.max(-2, Math.min(2, hits.reduce((a, m) => a + m.n, 0)));
+    return { n, hits };
+  };
+  K.record = (S = K.S) => (S.record = S.record || { won: 0, lost: 0, passed: 0, failed: 0, gamesWon: 0, gamesLost: 0, last: null });
   K.checkOdds = function (ch, S = K.S) {
-    const base = (ch.attr ? K.attr(ch.attr, S) : 0) + (ch.skill ? S.skills[ch.skill] || 0 : 0) + (K.val(ch.bonus, S) || 0);
+    const base = (ch.attr ? K.attr(ch.attr, S) : 0) + (ch.skill ? S.skills[ch.skill] || 0 : 0) + (K.val(ch.bonus, S) || 0) + K.merits(ch, S).n;
     const need = ch.dc - base; // need a d6 roll >= need
     return Math.max(0, Math.min(1, (7 - need) / 6));
   };
@@ -110,7 +117,11 @@
     if (fx.boon) out.push(["up", K.tr("Gain: {boon}", { boon: K.tr(K.BOONS[fx.boon].name) })]);
     for (const id of K.vowBreaksFor(c.tags, S)) out.push(["down", K.tr("Breaks vow: {vow}", { vow: K.tr(K.VOWS[id].name) })]);
     if (fx.memory) out.push(["", fx.memory[0] === "all" ? K.tr("People will remember") : K.tr("{who} will remember", { who: K.personName(fx.memory[0], S) })]);
-    if (c.check) out.push(["check", K.tr("Test of {what}: {pct}%", { what: K.checkLabel(c.check), pct: Math.round(K.checkOdds(c.check, S) * 100) })]);
+    if (c.check) {
+      out.push(["check", K.tr("Test of {what}: {pct}%", { what: K.checkLabel(c.check), pct: Math.round(K.checkOdds(c.check, S) * 100) })]);
+      const m = K.merits(c.check, S);
+      if (m.n) out.push([m.n > 0 ? "up" : "down", K.tr(m.n > 0 ? "Your past helps (+{n})" : "Your past counts against you ({n})", { n: m.n })]);
+    }
     if (c.combat) out.push(["combat", K.tr("Leads to a fight")]);
     if (c.hint) out.push(["", K.text(K.val(c.hint, S), null, S)]);
     return out;
@@ -127,8 +138,9 @@
     if (c.check) {
       const ch = c.check;
       const roll = K.roll(6);
-      const base = (ch.attr ? K.attr(ch.attr) : 0) + (ch.skill ? S.skills[ch.skill] || 0 : 0) + (K.val(ch.bonus) || 0);
+      const base = (ch.attr ? K.attr(ch.attr) : 0) + (ch.skill ? S.skills[ch.skill] || 0 : 0) + (K.val(ch.bonus) || 0) + K.merits(ch).n;
       const pass = base + roll >= ch.dc;
+      K.record()[pass ? "passed" : "failed"]++;
       const br = (pass ? ch.pass : ch.fail) || {};
       res.check = { pass, roll, total: base + roll, dc: ch.dc, ch };
       addDelta(delta, K.apply(br.fx));
@@ -137,6 +149,7 @@
       if (br.combat) res.combat = br.combat;
     }
     if (c.game && outcome) { // a game played inside the scene (ui/games.js) picks its branch
+      K.record()[outcome === "win" ? "gamesWon" : "gamesLost"]++;
       const br = c[outcome] || {};
       addDelta(delta, K.apply(br.fx));
       if (br.text) res.text = K.val(br.text);
@@ -158,6 +171,10 @@
     const enc = K.ENCOUNTERS[encId];
     const br = enc[outcome] || {};
     const delta = K.apply(br.fx);
+    const rec = K.record();
+    if (outcome === "win" || outcome === "spare") { rec.won++; rec.last = "won"; }
+    else if (outcome === "lose") { rec.lost++; rec.last = "lost"; }
+    else rec.last = "fled";
     if (outcome === "lose" && enc.lethal) {
       if (S.storyMode) K.apply({ injury: enc.injury || "scar" });
       else { S.alive = false; S.deathText = K.val(br.deathText) || enc.deathText || "You fell in battle."; }
@@ -181,10 +198,15 @@
     if (!S || !K.SCENES[S.scene]) return false;
     return K.store.set(KEY + "." + slot, JSON.stringify(S));
   };
+  // Saves from before the Yadava homeland moved from Dwaraka to Mathura.
+  K.migrate = function (s) {
+    if (s && s.origin === "dwaraka") { s.origin = "mathura"; s.flags = (s.flags || []).map((f) => (f === "origin_dwaraka" ? "origin_mathura" : f)); }
+    return s;
+  };
   K.loadSlot = function (slot) {
     const t = K.store.get(KEY + "." + slot);
     if (!t) return null;
-    try { const s = JSON.parse(t); return s && s.v === 2 && K.SCENES[s.scene] ? s : null; } catch (e) { return null; }
+    try { const s = K.migrate(JSON.parse(t)); return s && s.v === 2 && K.SCENES[s.scene] ? s : null; } catch (e) { return null; }
   };
   K.deleteSlot = (slot) => K.store.del(KEY + "." + slot);
   K.prefs = function (patch) {
@@ -200,6 +222,7 @@
     try { s = JSON.parse(txt); } catch (e) {
       try { s = JSON.parse(decodeURIComponent(escape(atob(txt)))); } catch (e2) { throw new Error(K.tr("That save code could not be read. Copy the whole code and try again.")); }
     }
+    K.migrate(s);
     if (!s || s.v !== 2 || !K.SCENES[s.scene]) throw new Error(K.tr("That save code is from a different version of the game."));
     return s;
   };

@@ -9808,5 +9808,385 @@
   "id": 1962,
   "en": "Satyaka",
   "ctx": "play:end_death"
+ },
+ {
+  "id": 1963,
+  "en": "You remember how your last fight ended. Your hands are not quite steady.",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 1964,
+  "en": "You have won fights before, and your body remembers how.",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 1965,
+  "en": "Your record: {w} fights won, {l} lost · {p} of {t} tests passed · {g} games won",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 1966,
+  "en": "Your record",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 1967,
+  "en": "What your past still does for you",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 1968,
+  "en": "+{n} on tests of {what}",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 1969,
+  "en": "{n} on tests of {what}",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 1970,
+  "en": "Nothing yet. What you do now will count later.",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 1971,
+  "en": "Experience: +{n} attack in every fight.",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 1972,
+  "en": "Your last fight was a loss: −1 attack in the next one.",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 1973,
+  "en": "Mathura",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1974,
+  "en": "City of the Yadavas, on the Yamuna",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1975,
+  "en": "An old city of cowherds, traders and singers on the Yamuna. The Yadavas are clever and proud, and when war comes they will fight on both sides.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1976,
+  "en": "On the Yamuna, south of the Kuru lands",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1977,
+  "en": "An old city of the Yadava clans on the Yamuna, of cowherds, traders and singers. When you are born it lives in fear of its own king, Kamsa, who has thrown his father Ugrasena into prison.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1978,
+  "en": "The Yadavas are kin to both sides of the coming war. Born here, you learn diplomacy early. One day your people will leave Mathura for a new city by the western sea, Dwaraka, and when the armies gather your clan will be divided.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 1979,
+  "en": "The house looks over the Yamuna ghats, and every day boats come in from up and down the river. Three people in your family each bring the river home differently.",
+  "ctx": "world:ROOTS"
+ },
+ {
+  "id": 1980,
+  "en": "Your uncle Satyaka, who trades up and down the Yamuna",
+  "ctx": "world:ROOTS"
+ },
+ {
+  "id": 1981,
+  "en": "He takes you to the ghats and teaches you to bargain in three dialects, badly. \"Smile first,\" he says. \"Then name the price.\"",
+  "ctx": "world:ROOTS"
+ },
+ {
+  "id": 1982,
+  "en": "Your cousin Megha, who swims the Yamuna in the flood season",
+  "ctx": "world:ROOTS"
+ },
+ {
+  "id": 1983,
+  "en": "Megha teaches you to swim against the current until your arms burn, and to let the river carry you when it is stronger than you. You never reach the far bank. Megha does, twice.",
+  "ctx": "world:ROOTS"
+ },
+ {
+  "id": 1984,
+  "en": "Lamps on the Yamuna",
+  "ctx": "world:CUSTOMS"
+ },
+ {
+  "id": 1985,
+  "en": "On the full moon of Kartika, every family in Mathura sets a little leaf boat with a lamp on the Yamuna, for the ones who went away and the ones who will. Even King Kamsa's guards stop to watch.",
+  "ctx": "world:CUSTOMS"
+ },
+ {
+  "id": 1986,
+  "en": "Swim out to the sandbank with the older children",
+  "ctx": "world:CUSTOMS"
+ },
+ {
+  "id": 1987,
+  "en": "You touch the sandbank and swim back with the lamps all around you, like stars on the water.",
+  "ctx": "world:CUSTOMS"
+ },
+ {
+  "id": 1988,
+  "en": "Wander the traders' stalls along the ghats",
+  "ctx": "world:CUSTOMS"
+ },
+ {
+  "id": 1989,
+  "en": "A trader from the far west lets you hold a glass bead the colour of the river at dusk. You trade a song for it.",
+  "ctx": "world:CUSTOMS"
+ },
+ {
+  "id": 1990,
+  "en": "You name your grandfather, whom you never met, and every boat your uncle has ever taken down the river. The little boat goes a long way.",
+  "ctx": "world:CUSTOMS"
+ },
+ {
+  "id": 1991,
+  "en": "You beat Ugra in the ring at the fair.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 1992,
+  "en": "You won the children's archery at Kampilya.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 1993,
+  "en": "You gentled the grey mare no one else could touch.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 1994,
+  "en": "You won the calf race at the cattle festival.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 1995,
+  "en": "You won the cart race on the charioteers' feast day.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 1996,
+  "en": "You won the pony race in the high valley.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 1997,
+  "en": "You led the cobra out of the well-house.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 1998,
+  "en": "You found the deer's trail on your first hunt.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 1999,
+  "en": "You searched the riverbank at Pramanakoti unseen.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2000,
+  "en": "You carried earth out of the tunnel at Varnavata unseen.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2001,
+  "en": "You swam out to the sandbank in the dark.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2002,
+  "en": "You rowed the low quarter out of the flood.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2003,
+  "en": "You saved the wounded doe in the forest.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2004,
+  "en": "You turned starving bandits into loyal workers.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2005,
+  "en": "You talked angry kings down at the swayamvara.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2006,
+  "en": "You beat old Haridatta at dice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2007,
+  "en": "You saw through Brihannala's disguise.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2008,
+  "en": "A guard saw you at Varnavata, and the court still watches you.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2009,
+  "en": "You lost to Ugra, and learned more from it than from any win.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2010,
+  "en": "Hastinapura, at the end of the road",
+  "ctx": "scene:a1_journey"
+ },
+ {
+  "id": 2011,
+  "en": "Ask Kripa to take you, though your family is not of the court",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 2012,
+  "en": "Kripa will want to see what you are worth",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 2013,
+  "en": "Kripa took you into his school, though your family was not of the court.",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 2014,
+  "en": "Kripa questions you for an hour, then sets you to sweep the practice ground. That means yes.",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 2015,
+  "en": "Kripa hears you out politely. \"Come back when the court knows your name,\" he says. You will have to choose another teacher.",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 2016,
+  "en": "Ask Vidura to let you into his circle, though you were not born to the court",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 2017,
+  "en": "Vidura will test what you notice",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 2018,
+  "en": "Vidura let you into his circle, though you were not born to the court.",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 2019,
+  "en": "Vidura asks what you noticed on your way to his door. You tell him: the guard who was not where he should be, the merchant who was. He nods slowly.",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 2020,
+  "en": "Vidura asks what you noticed on your way to his door. You did not notice anything. \"Then you are not ready,\" he says, kindly. You will have to choose another teacher.",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 2021,
+  "en": "Fights won",
+  "ctx": "play:a1_princes"
+ },
+ {
+  "id": 2022,
+  "en": "Fights lost",
+  "ctx": "play:a1_princes"
+ },
+ {
+  "id": 2023,
+  "en": "Tests passed",
+  "ctx": "play:a1_princes"
+ },
+ {
+  "id": 2024,
+  "en": "Tests failed",
+  "ctx": "play:a1_princes"
+ },
+ {
+  "id": 2025,
+  "en": "Games won",
+  "ctx": "play:a1_princes"
+ },
+ {
+  "id": 2026,
+  "en": "Games lost",
+  "ctx": "play:a1_princes"
+ },
+ {
+  "id": 2027,
+  "en": "Your past helps (+{n})",
+  "ctx": "play:a2_teacher"
+ },
+ {
+  "id": 2028,
+  "en": "Your uncle trades up and down the Yamuna. Mathura smells of river mud and cardamom, everyone argues about everything, and everyone lowers their voice when they speak of King Kamsa.",
+  "ctx": "play:a1_home"
+ },
+ {
+  "id": 2029,
+  "en": "Your uncle is sent to Hastinapura with a Yadava embassy. Kunti, the mother of the Pandavas, was born a Yadava, and while Kamsa rules at home the clans want friends at the Kuru court. Your family goes with him, and stays.",
+  "ctx": "play:a1_journey"
+ },
+ {
+  "id": 2030,
+  "en": "Your family serves in the Anga guard. Anga pays tribute to the Kuru throne, and its guard goes wherever the Kuru king sends it.",
+  "ctx": "play:a1_home"
+ },
+ {
+  "id": 2031,
+  "en": "Your parents went back to {origin} when your father's working years were done.",
+  "ctx": "play:ev_letter"
+ },
+ {
+  "id": 2032,
+  "en": "You taught your own children what {kin} taught you.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 2033,
+  "en": "Two years ago, outside the arena, you found Adhiratha alone by the chariots. He told you Karna was found as a baby, floating down this river in a basket.",
+  "ctx": "play:a2_vow"
+ },
+ {
+  "id": 2034,
+  "en": "She writes that {kin} died in the cold season, still asking after you.",
+  "ctx": "play:ev_letter"
+ },
+ {
+  "id": 2035,
+  "en": "Panchala is your homeland. The arrows in the Kuru quivers came from your mother's workshop in the armoury.",
+  "ctx": "play:a2_drupada"
+ },
+ {
+  "id": 2036,
+  "en": "At the bottom, in a hand that shakes more than it used to, she asks you to come before she is too old to know your face.",
+  "ctx": "play:ev_letter"
+ },
+ {
+  "id": 2037,
+  "en": "Your people are no longer in Mathura. Krishna killed Kamsa, and when Jarasandha's armies kept coming, the Yadavas moved to a new city by the western sea: Dwaraka. You follow them there.",
+  "ctx": "play:a3_court"
+ },
+ {
+  "id": 2038,
+  "en": "Your past counts against you ({n})",
+  "ctx": "play:a3_rajasuya"
  }
 ]

@@ -8,7 +8,7 @@
   const MAX = 50;
 
   K.lives = function () {
-    try { const a = JSON.parse(K.store.get(KEY) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+    try { const a = JSON.parse(K.store.get(KEY) || "[]"); return Array.isArray(a) ? a.map((r) => { if (r.me && r.me.origin === "dwaraka") r.me.origin = "mathura"; if (r.art === "home_dwaraka") r.art = "home_mathura"; return r; }) : []; } catch (e) { return []; }
   };
 
   // Called once per life, when its ending is first shown.

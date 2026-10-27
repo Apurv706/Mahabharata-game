@@ -34,7 +34,21 @@
         U.tr(S.heirloom === "amulet" && S.flags.includes("amulet_broken") ? "Heirloom: {h!} (cracked)" : "Heirloom: {h!}", { h: heir }) + "</span>" : "") + "</div>";
     U.openModal("Character", head + '<div class="grid2"><div><span class="lbl">' + U.tr("Life") + "</span>" + life + '</div><div><span class="lbl">' + U.tr("Attributes (age changes these)") + "</span>" + attrs +
       '</div><div><span class="lbl">' + U.tr("Skills") + "</span>" + skills + '</div><div><span class="lbl">' + U.tr("Standing") + "</span>" + rep +
-      row("Healing herbs", S.items.herbs || 0) + "</div></div>" + (extras.length ? '<span class="lbl">' + U.tr("Boons, curses and wounds") + "</span>" + extras.join("") : ""));
+      row("Healing herbs", S.items.herbs || 0) + "</div></div>" + (extras.length ? '<span class="lbl">' + U.tr("Boons, curses and wounds") + "</span>" + extras.join("") : "") + recordHtml(S));
+  };
+  // Your record so far, and the things you did that still change your chances.
+  function recordHtml(S) {
+    const r = K.record(S);
+    const merits = (K.MERITS || []).filter((m) => S.flags.includes(m.flag));
+    const names = (on) => K.list(on.map((k) => K.tr(K.ATTRS[k] || K.SKILLS[k])));
+    return '<div class="grid2"><div><span class="lbl">' + U.tr("Your record") + "</span>" +
+      row("Fights won", r.won) + row("Fights lost", r.lost) + row("Tests passed", r.passed) + row("Tests failed", r.failed) + row("Games won", r.gamesWon) + row("Games lost", r.gamesLost) + "</div>" +
+      '<div><span class="lbl">' + U.tr("What your past still does for you") + "</span>" +
+      (merits.length ? '<ul class="merits">' + merits.map((m) => '<li class="' + (m.n > 0 ? "up" : "down") + '">' + U.tr(m.text) + "<small>" +
+        U.tr(m.n > 0 ? "+{n} on tests of {what}" : "{n} on tests of {what}", { n: m.n, what: names(m.on) }) + "</small></li>").join("") + "</ul>"
+        : '<p class="empty">' + U.tr("Nothing yet. What you do now will count later.") + "</p>") +
+      (r.won >= 3 ? '<p class="note">' + U.tr("Experience: +{n} attack in every fight.", { n: Math.min(2, Math.floor(r.won / 3)) }) + "</p>" : "") +
+      (r.last === "lost" ? '<p class="note">' + U.tr("Your last fight was a loss: −1 attack in the next one.") + "</p>" : "") + "</div></div>";
   };
 
   U.openJournal = function () {

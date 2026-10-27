@@ -220,6 +220,7 @@
       '<div class="text"><h1>' + U.t(e.title) + "</h1>" +
       '<div class="telling">' + e.telling.map((l) => "<p>" + U.t(l) + "</p>").join("") + "</div>" +
       (e.fates && e.fates.length ? '<div class="fates"><span class="lbl">' + U.tr("What became of them") + "</span>" + e.fates.map((l) => "<p>" + U.t(l) + "</p>").join("") + "</div>" : "") +
+      '<p class="record-line">' + U.tr("Your record: {w} fights won, {l} lost · {p} of {t} tests passed · {g} games won", { w: K.record(S).won, l: K.record(S).lost, p: K.record(S).passed, t: K.record(S).passed + K.record(S).failed, g: K.record(S).gamesWon }) + "</p>" +
       '<div class="btnrow"><button class="cta" id="again" type="button">' + U.tr("Live another life") + '</button><button class="ghost" id="readj" type="button">' + U.tr("Read your journal") + "</button></div></div>";
     const again = () => { K.deleteSlot("auto"); U.renderCreate(); };
     U.$("again").addEventListener("click", again);

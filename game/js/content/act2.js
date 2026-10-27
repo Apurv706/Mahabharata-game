@@ -22,12 +22,21 @@
           fx: { set: { teacher: "drona" }, duty: { teacher: 5 }, skill: { archery: 2 }, rep: { kuru: 1 }, flag: "drona_student", journal: "Drona accepted you as a student." }, hint: "His fee may one day set you against your friends" },
         { id: "kripa", img: "teacher_kripa", t: "Train with Kripa, preceptor of the Kuru house", req: { any: [{ origin: COURTISH }, { rep: ["kuru", 5] }] }, locked: "Kripa teaches those tied to the Kuru court.",
           fx: { set: { teacher: "kripa" }, duty: { teacher: 3, court: 2 }, skill: { mace: 1, archery: 1 }, journal: "Kripa took you into his school." }, hint: "His price is loyalty to the Kuru throne" },
-        { id: "balarama", img: "teacher_balarama", t: "Go to Balarama, who teaches the mace", req: { any: [{ origin: "dwaraka" }, { flag: "balarama_noticed" }] }, locked: "Balarama teaches Yadavas, and those he has seen fight.",
+        // Families from other lands may still ask. A test decides, and a refusal sends you back to choose again.
+        { id: "kripa_ask", img: "teacher_kripa", t: "Ask Kripa to take you, though your family is not of the court", req: { not: { any: [{ origin: COURTISH }, { rep: ["kuru", 5] }] }, noFlag: "kripa_refused" }, hint: "Kripa will want to see what you are worth",
+          check: { attr: "command", skill: "statecraft", dc: 7,
+            pass: { fx: { set: { teacher: "kripa" }, duty: { teacher: 3, court: 2 }, skill: { mace: 1, archery: 1 }, journal: "Kripa took you into his school, though your family was not of the court." }, text: "Kripa questions you for an hour, then sets you to sweep the practice ground. That means yes." },
+            fail: { fx: { flag: "kripa_refused" }, text: "Kripa hears you out politely. \"Come back when the court knows your name,\" he says. You will have to choose another teacher.", next: "a2_teacher" } } },
+        { id: "balarama", img: "teacher_balarama", t: "Go to Balarama, who teaches the mace", req: { any: [{ origin: "mathura" }, { flag: "balarama_noticed" }] }, locked: "Balarama teaches Yadavas, and those he has seen fight.",
           fx: { set: { teacher: "balarama" }, duty: { teacher: 4 }, skill: { mace: 2 }, rep: { yadava: 2 }, journal: "Balarama agreed to teach you the mace." }, hint: "He will ask you to stay out of the war his family cannot avoid" },
         { id: "hermit", img: "teacher_mauni", t: "Follow Mauni, the forest hermit who shoots blindfolded",
           fx: { set: { teacher: "hermit" }, duty: { teacher: 5, conscience: 1 }, skill: { archery: 1, stealth: 1, lore: 1 }, flag: "hermit_secret", journal: "Mauni the hermit took you as his student and made you promise never to say who taught you." }, hint: "He asks one thing: never say who taught you" },
         { id: "vidura", img: "teacher_vidura", t: "Join Vidura's circle of scribes, envoys and listeners", req: { origin: ["hastinapura", "anga", "gandhara"] }, locked: "Vidura draws his people from the court.",
           fx: { set: { teacher: "vidura" }, duty: { teacher: 3, conscience: 1 }, skill: { statecraft: 2, stealth: 1 }, bond: { vidura: 2 }, journal: "You joined Vidura's circle." }, hint: "Vidura will judge every choice you make" },
+        { id: "vidura_ask", img: "teacher_vidura", t: "Ask Vidura to let you into his circle, though you were not born to the court", req: { not: { origin: ["hastinapura", "anga", "gandhara"] }, noFlag: "vidura_refused" }, hint: "Vidura will test what you notice",
+          check: { attr: "wisdom", skill: "statecraft", dc: 7,
+            pass: { fx: { set: { teacher: "vidura" }, duty: { teacher: 3, conscience: 1 }, skill: { statecraft: 2, stealth: 1 }, bond: { vidura: 2 }, journal: "Vidura let you into his circle, though you were not born to the court." }, text: "Vidura asks what you noticed on your way to his door. You tell him: the guard who was not where he should be, the merchant who was. He nods slowly." },
+            fail: { fx: { flag: "vidura_refused" }, text: "Vidura asks what you noticed on your way to his door. You did not notice anything. \"Then you are not ready,\" he says, kindly. You will have to choose another teacher.", next: "a2_teacher" } } },
         { id: "self", img: "teacher_self", t: "Teach yourself, in secret, at night", fx: { set: { teacher: "self" }, skill: { archery: 1 }, attr: { aim: 1 }, flag: "self_taught", journal: "You taught yourself, alone, by night." }, hint: "No debt, and no one to protect you" }
       ],
       next: "a2_path"

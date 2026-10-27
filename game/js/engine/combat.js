@@ -55,6 +55,9 @@
     const hp = 30 + might * 5 + grace * 3 + (S.age >= 18 ? 20 : 0) + (S.skills.mace || 0) * 3;
     let atk = 3 + K.attr(P.stat || "might") + (S.skills[P.skill] || 0);
     if (K.hasVow("never_retreat")) atk += 1;
+    const rec = K.record(S);
+    atk += Math.min(2, Math.floor(rec.won / 3)); // every three fights won, a little more sure of your hand
+    if (rec.last === "lost") atk -= 1;            // the last fight still in your mind
     const abilities = ["strike", "guard"].concat(P.abilities || []);
     if (S.boons.includes("astra")) abilities.push("astra");
     abilities.push("herbs");
@@ -122,6 +125,9 @@
     K.val(enc.enemies).forEach((e, i) => B.units.push(makeUnit(e, "enemy", i)));
     if (S.boons.includes("healing_hands") && (S.items.herbs || 0) < 2) S.items.herbs = 2;
     B.pulled = {};
+    const rec = K.record(S);
+    if (rec.last === "lost") api.say("You remember how your last fight ended. Your hands are not quite steady.");
+    else if (rec.last === "won" && rec.won >= 3) api.say("You have won fights before, and your body remembers how.");
     if (enc.intro) api.say(K.val(enc.intro));
     const curse = enc.curse && S.curses.find((c) => !c.fired);
     if (curse) {

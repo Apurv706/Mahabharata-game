@@ -292,3 +292,9 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 .lifecard[open] summary { border-bottom: 1px solid var(--gold-line); }
 .lifecard .telling { padding: 4px 14px 12px; font-size: 15.5px; }
 .lifecard .telling p { margin: 8px 0 0; }
+
+/* The record: what your past still does for you. */
+.merits { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 15px; }
+.merits li small { display: block; font-size: 13px; color: var(--positive); }
+.merits li.down small { color: var(--negative); }
+.record-line { font-size: 14px; color: var(--muted); margin-top: 6px; }

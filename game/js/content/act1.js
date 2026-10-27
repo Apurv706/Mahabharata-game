@@ -5,7 +5,7 @@
     hastinapura: "Your father keeps the palace stores. You learn early that everyone in the palace is listening.",
     panchala: "Your mother makes arrows for the king's archers. In Panchala, people say a good arrow matters more than a good name.",
     matsya: "Your family keeps horses on the lake shore. Visitors from the big kingdoms rarely come this far.",
-    dwaraka: "Your uncle trades across the sea. Dwaraka smells of salt and cardamom, and everyone argues about everything.",
+    mathura: "Your uncle trades up and down the Yamuna. Mathura smells of river mud and cardamom, everyone argues about everything, and everyone lowers their voice when they speak of King Kamsa.",
     anga: "Your family serves in the Anga guard. Anga pays tribute to the Kuru throne, and its guard goes wherever the Kuru king sends it.",
     suta: "Your father drives chariots for the Kuru nobles. He tells you to keep your eyes down and your hands steady.",
     nishada: "Your village fishes the river and hunts the forest. City people call you Nishada as if it were an insult.",
@@ -15,7 +15,7 @@
   // Why a family from a far land comes to live near the Kuru capital.
   const journeyLine = {
     gandhara: "When you are seven, word comes down from Hastinapura: Queen Gandhari wants people from home around her. Your family packs everything it owns and joins the long caravan east, out of the mountains, across the Indus and the five rivers. It takes two months.",
-    dwaraka: "Your uncle is sent to Hastinapura with a Yadava embassy. Kunti, the mother of the Pandavas, was born a Yadava, and the clans want a voice at the Kuru court. Your family goes with him, and stays.",
+    mathura: "Your uncle is sent to Hastinapura with a Yadava embassy. Kunti, the mother of the Pandavas, was born a Yadava, and while Kamsa rules at home the clans want friends at the Kuru court. Your family goes with him, and stays.",
     matsya: "The Kuru royal stables need horses, and your family breeds the best in Matsya. Your father takes the work of keeping the king's horses, and the whole family moves east to the stable quarter outside Hastinapura.",
     anga: "Your father's company of the Anga guard is posted to Hastinapura, where the Kuru king keeps soldiers from every land that pays him tribute. You ride the whole month up the Ganga in a baggage cart.",
     panchala: "The Kuru armoury has sent for Panchala arrowsmiths, whatever the two kings think of each other. Your mother takes the work, and your family moves into the craft quarter of Hastinapura.",
