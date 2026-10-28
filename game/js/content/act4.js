@@ -16,10 +16,10 @@
         "You are thirty. Half the kingdom will be in that hall. Will you?"
       ],
       choices: [
-        { id: "warn", t: "Warn Yudhishthira that Shakuni's dice cannot lose", req: { flag: "knows_dice_plot" }, fx: { bond: { yudhishthira: 1 }, rep: { pandava: 1 }, flag: "warned_yudhishthira" },
-          text: "He thanks you, and takes your hand, and goes anyway. \"If I am called, I must play,\" he says." },
+        { id: "warn", t: "Warn Yudhishthira that Shakuni's dice cannot lose", req: { flag: "knows_dice_plot" }, fx: { bond: { yudhishthira: 1 }, rep: { pandava: 1 }, flag: ["warned_yudhishthira", "at_dice"] },
+          text: "He thanks you, and takes your hand, and goes anyway. \"If I am called, I must play,\" he says. You go with him.", next: "a4_hands" },
         { id: "go", t: "Go to the hall", fx: { flag: "at_dice" }, next: "a4_hands" },
-        { id: "stay", t: "Stay away. You want no part of it", fx: { flag: "absent_dice", journal: "You stayed away from the dice game." }, next: "a4_message" }
+        { id: "stay", t: "Stay away. You want no part of it", fx: { flag: "absent_dice", journal: "You stayed away from the dice game." }, next: "a4_household" }
       ],
       next: "a4_stakes"
     },

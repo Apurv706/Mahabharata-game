@@ -87,15 +87,17 @@
   };
 
   // ---------- Shakuni's hands: five throws, one of them with a die from his sleeve ----------
-  U.games.hands = function (box, done) {
+  U.games.hands = function (box, done, c) {
     const sharp = K.S.flags.includes("learned_pasha");
     const throws = [];
     for (let i = 0; i < 5; i++) throws.push([throwDie(), throwDie(), throwDie()]);
     const swap = Math.floor(K.rng() * 5);
     throws[swap][Math.floor(K.rng() * 3)] = K.rng() < 0.5 ? 3 : 4; // a face no long die has
     const G = { phase: "ready", shown: -1 };
-    const host = U.el('<div class="dicegame hands"></div>');
-    box.appendChild(host);
+    const wrap = U.el('<div class="dicegame hands trial">' + U.castBand((c && c.trial) || {}) + '<div class="trial-body"></div></div>');
+    box.appendChild(wrap);
+    const host = wrap.querySelector(".trial-body");
+    U.castStance(wrap, "think", "stand");
     const call = (t) => K.tr("Shakuni calls {n}, and the dice show {n}.", { n: sum(t) });
     function draw() {
       let html = '<p class="game-rules">' + U.tr("Shakuni will throw five times. One throw is not honest. Watch his hands.") + "</p>";
@@ -125,6 +127,7 @@
     }
     function answer(i) {
       const right = i === swap;
+      U.castStance(wrap, right ? "cheer" : "slump", right ? "slump" : "stand");
       host.querySelectorAll(".btnrow button").forEach((b) => { b.disabled = true; });
       done(right ? "win" : "lose", right ? ["You named throw {n}. You were right.", { n: i + 1 }] : ["You named throw {n}. It was throw {m}.", { n: i + 1, m: swap + 1 }]);
     }

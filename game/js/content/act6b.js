@@ -17,10 +17,10 @@
       choices: [
         { id: "road", t: "Clear the road for Arjuna's chariot", req: { side: "pandava" }, combat: "e_road" },
         { id: "jaya", t: "Guard the ground in front of Jayadratha", req: { side: "kaurava" }, combat: "e_jaya" },
-        { id: "torches", t: "Fight on in the night battle", req: fighting, combat: "e_night" },
-        { id: "light", t: "Carry torches for the healers searching the field", fx: { rep: { common: 1 }, duty: { conscience: 1 } }, text: "You find a boy from your own country under a dead horse, and drag him out alive." }
+        { id: "hold", t: "Hold your company's ground until dusk", req: fighting, fx: { duty: { court: 1 } } },
+        { id: "tend", t: "Tend the wounded as they come in", req: { side: ["neutral", null, undefined] }, fx: { rep: { common: 1 } } }
       ],
-      next: "a6_day15"
+      next: "a6_night"
     },
     {
       id: "a6_day15", act: 6, age: 44, canon: true, war: true, art: "war_day15", place: "Kurukshetra · day 15", caption: "An elephant named Ashwatthama",

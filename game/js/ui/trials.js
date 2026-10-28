@@ -25,10 +25,27 @@
   const statNames = (t) => K.list([t.attr && K.tr(K.ATTRS[t.attr]), t.skill && K.tr(K.SKILLS[t.skill])].filter(Boolean));
 
   // The frame every test shares: stakes first, then the action, with one key for the action.
+  // How each kind of test holds the figures, and how you move when you act.
+  const STANCE = { aim: "stand", push: "brace", draw: "aim", steady: "hold", sneak: "sneak", retort: "speak", notice: "think", rhythm: "brace", race: "hold", herd: "hold", board: "think", drill: "stand", rings: "think" };
+  const ACT = { aim: "loose", push: "push", draw: "loose", steady: "hold", sneak: "walk", retort: "speak", notice: "think", rhythm: "strike", race: "hold", herd: "walk", board: "think", drill: "speak", rings: "think" };
+  const FOE = { push: "brace", rhythm: "block" };
+  K.TRIAL_STANCE = STANCE;
+
   function frame(box, done, c, kind, play) {
     const t = c.trial || {};
-    const host = U.el('<div class="trial trial-' + kind + '"></div>');
-    box.appendChild(host);
+    // The stage: a strip of the painting with the figures on it, above the test itself.
+    const wrap = U.el('<div class="trial trial-' + kind + '">' + U.castBand(t) + '<div class="trial-body"></div></div>');
+    box.appendChild(wrap);
+    const host = wrap.querySelector(".trial-body");
+    U.castStance(wrap, STANCE[kind] || "stand", FOE[kind] || "stand");
+    // The figures answer what happens: you move as you act, the other side staggers when you score.
+    const cue = (ev) => {
+      if (ev === "act") U.castPose(wrap, "me", ACT[kind] || "strike", 450);
+      else if (ev === "good") { U.castPose(wrap, "foe", "hit", 520); U.castPose(wrap, "me", "cheer", 520); }
+      else if (ev === "bad") { U.castPose(wrap, "me", "hit", 520); U.castPose(wrap, "foe", FOE[kind] === "brace" ? "push" : "cheer", 520); }
+      else if (ev === "hold") U.castPose(wrap, "me", ACT[kind] || "hold", 0);
+      else if (ev === "rest") U.castPose(wrap, "me", STANCE[kind] || "stand", 0);
+    };
     const power = K.trialPower(t);
     let phase = "intro", stop = null, finished = false;
     function intro() {
@@ -47,6 +64,7 @@
       if (!host.isConnected) { finished = true; if (stop) stop(); return; } // the scene was left mid-test
       finished = true;
       if (stop) stop();
+      U.castStance(wrap, outcome === "win" ? "cheer" : "slump", outcome === "win" ? "slump" : "cheer");
       document.removeEventListener("keydown", onKey, true);
       document.removeEventListener("keyup", onKeyUp, true);
       if (K.Sound && outcome !== "win") K.Sound.play("hit");
@@ -62,11 +80,11 @@
       if (K.headless) return auto();
       document.addEventListener("keydown", onKey, true);
       document.addEventListener("keyup", onKeyUp, true);
-      stop = play({ host, power, t, finish, onAct: (f, up) => { act = f; actUp = up || null; } });
+      stop = play({ host, power, t, finish, cue, onAct: (f, up) => { act = f; actUp = up || null; } });
     }
     // The harness rolls instead of playing: the better your stats, the likelier the win.
     function auto() {
-      const p = clamp(0.2 + power * 0.055, 0.1, 0.72), r = K.rng();
+      const p = clamp((t.auto != null ? t.auto : 0.2) + power * 0.055, 0.1, 0.72), r = K.rng();
       finish(r < p ? "win" : r < p + 0.15 && (kind === "aim" || kind === "steady") ? "close" : "lose", null);
     }
     intro();
@@ -84,10 +102,13 @@
   // Runs every frame until stopped, or until its test is no longer on screen.
   const loop = (fn, el) => { let id, on = true; const t0 = performance.now(); const f = (now) => { if (!on) return; if (el && !el.isConnected) { on = false; return; } fn((now - t0) / 1000); id = requestAnimationFrame(f); }; id = requestAnimationFrame(f); return () => { on = false; cancelAnimationFrame(id); }; };
 
+  // Shared with the other kinds of test (ui/play.js, ui/boards.js).
+  U.trialFrame = frame; U.pressButton = pressButton; U.loop = loop;
+
   // ---------- Aim: a target swings; release when it crosses your line ----------
   // trial.shots (3), trial.need (2): hits needed to win; one fewer is "close".
   U.games.aim = function (box, done, c) {
-    return frame(box, done, c, "aim", ({ host, power, t, finish, onAct }) => {
+    return frame(box, done, c, "aim", ({ host, power, t, finish, onAct, cue }) => {
       const shots = t.shots || 3, need = t.need || 2;
       const win = clamp(0.085 + power * 0.012 + (t.easy || 0), 0.08, 0.2) * (t.small ? 0.75 : 1); // half-width of the hit zone, as a share of the swing
       let shot = 0, hits = 0, speed = t.speed || 1.6, phase = 0, x = 0, busy = false;
@@ -101,6 +122,7 @@
         busy = true;
         const hit = Math.abs(x) <= win;
         if (hit) hits++;
+        cue("act"); setTimeout(() => cue(hit ? "good" : "bad"), 260);
         range.classList.remove("hit", "miss"); void range.offsetWidth; range.classList.add(hit ? "hit" : "miss");
         if (K.Sound) K.Sound.play(hit ? "choose" : "quill");
         note.textContent = K.tr(hit ? "A hit!" : Math.abs(x) <= win * 1.8 ? "So close." : "A miss.");
@@ -131,7 +153,7 @@
   // ---------- Push: a ring closes on your opponent; push as it meets him ----------
   // Three good pushes win; three bad ones lose.
   U.games.push = function (box, done, c) {
-    return frame(box, done, c, "push", ({ host, power, t, finish, onAct }) => {
+    return frame(box, done, c, "push", ({ host, power, t, finish, onAct, cue }) => {
       const tol = clamp(0.035 + power * 0.007, 0.03, 0.08); // how close to the mark counts, as a share of the ring's travel
       let good = 0, bad = 0, cycle = 0, period = t.period || 1.05, start = 0, now = 0, wait = false;
       const foe = K.tr(t.foe || "your opponent");
@@ -149,6 +171,7 @@
       function resolve(ok, msg) {
         wait = true;
         ok ? good++ : bad++;
+        cue("act"); setTimeout(() => cue(ok ? "good" : "bad"), 200);
         note.textContent = K.tr(msg);
         host.querySelector(".pushpit").classList.remove("good", "bad"); void host.offsetWidth; host.querySelector(".pushpit").classList.add(ok ? "good" : "bad");
         if (K.Sound) K.Sound.play(ok ? "hit" : "quill");
@@ -171,12 +194,12 @@
 
   // ---------- Steady: keep your hand over the horse's mood, by holding and letting go ----------
   U.games.steady = function (box, done, c) {
-    return frame(box, done, c, "steady", ({ host, power, t, finish, onAct }) => {
+    return frame(box, done, c, "steady", ({ host, power, t, finish, onAct, cue }) => {
       const band = clamp(0.11 + power * 0.015, 0.1, 0.2), LIMIT = t.secs || 15;
       let pos = 0.5, vel = 0, holding = false, mood = 0.5, moodV = 0, calm = 0, last = 0;
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="steady"><div class="mood" style="width:' + band * 100 + '%"></div><div class="hand"></div></div><div class="calm"><i></i></div><p class="game-note">' + U.tr(t.help || "Hold to move your hand right; let go and it drifts back. Keep it over the glow.") + '</p><div class="btnrow"></div>';
       const moodEl = host.querySelector(".mood"), hand = host.querySelector(".hand"), bar = host.querySelector(".calm i"), score = host.querySelector(".score");
-      const down = () => { holding = true; }, up = () => { holding = false; };
+      const down = () => { holding = true; cue("hold"); }, up = () => { holding = false; cue("rest"); };
       host.querySelector(".btnrow").appendChild(pressButton(t.verb || "Hold", down, up));
       onAct(down, up);
       return loop((s) => {
@@ -206,7 +229,7 @@
   // ---------- Retort: answer before the lamp burns down ----------
   // trial.rounds: [{ line, replies: [right, wrong, wrong] }]; two right answers of three win.
   U.games.retort = function (box, done, c) {
-    return frame(box, done, c, "retort", ({ host, power, t, finish }) => {
+    return frame(box, done, c, "retort", ({ host, power, t, finish, cue }) => {
       const rounds = K.val(t.rounds) || [], base = clamp(3.5 + power * 0.4, 3.5, 6.5);
       let i = 0, right = 0, timer = null, t0 = 0, raf = null;
       function round() {
@@ -227,6 +250,7 @@
         cancelAnimationFrame(raf);
         U.keys([]);
         if (ok) right++;
+        cue(ok ? "good" : "bad");
         host.querySelectorAll(".replies button").forEach((b) => { b.disabled = true; });
         host.insertAdjacentHTML("beforeend", '<p class="game-note">' + U.tr(late ? "Too slow. The moment passes." : ok ? "That lands." : "That was the wrong thing to say.") + "</p>");
         i++;
@@ -240,7 +264,7 @@
   // ---------- Draw: hold to bend the bow, let go inside the band ----------
   // trial.shots (3), trial.need (2). Hold too long and the string slips.
   U.games.draw = function (box, done, c) {
-    return frame(box, done, c, "draw", ({ host, power, t, finish, onAct }) => {
+    return frame(box, done, c, "draw", ({ host, power, t, finish, onAct, cue }) => {
       const shots = t.shots || 3, need = t.need || 2, width = clamp(0.05 + power * 0.008, 0.05, 0.11) * (t.small ? 0.75 : 1);
       let shot = 0, wins = 0, ten = 0, holding = false, busy = false, lo = 0.72, drift = 0, wob = 0, last = 0;
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="drawpit"><svg viewBox="0 0 300 220" class="bow" aria-hidden="true"><path class="limb" d=""/><path class="string" d=""/></svg>' +
@@ -251,6 +275,7 @@
       const settle = (ok, msg) => {
         busy = true; holding = false;
         if (ok) wins++;
+        cue("act"); setTimeout(() => cue(ok ? "good" : "bad"), 240);
         shot++;
         note.textContent = K.tr(msg);
         host.querySelector(".drawpit").classList.remove("good", "bad"); void host.offsetWidth; host.querySelector(".drawpit").classList.add(ok ? "good" : "bad");
@@ -292,13 +317,13 @@
   // ---------- Sneak: move while the torchlight is elsewhere ----------
   // Hold to move. Moving in the light, or standing in it too long, gets you seen.
   U.games.sneak = function (box, done, c) {
-    return frame(box, done, c, "sneak", ({ host, power, t, finish, onAct }) => {
+    return frame(box, done, c, "sneak", ({ host, power, t, finish, onAct, cue }) => {
       const need = t.trips || 2, lives = t.spots || 2, light = clamp(0.26 - power * 0.012, 0.15, 0.26), LIMIT = t.secs || 45;
       let pos = 0, trips = 0, seen = 0, sus = 0, holding = false, freeze = 0, lp = 0.5, lv = 0.22, last = 0;
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="sneakway"><div class="torch"></div><div class="goal"></div><div class="me"></div></div><div class="sus"><i></i></div>' +
         '<p class="game-note" aria-live="polite">' + U.tr(t.help || "Hold to move. Stop before the light reaches you.") + '</p><div class="btnrow"></div>';
       const torch = host.querySelector(".torch"), me = host.querySelector(".me"), susBar = host.querySelector(".sus i"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
-      const down = () => { holding = true; }, up = () => { holding = false; };
+      const down = () => { holding = true; cue("hold"); }, up = () => { holding = false; cue("rest"); };
       host.querySelector(".btnrow").appendChild(pressButton(t.verb || "Move", down, up));
       onAct(down, up);
       return loop((s) => {
@@ -311,8 +336,8 @@
         else {
           if (holding) pos = Math.min(1, pos + dt * 0.11);
           sus = clamp(sus + (lit ? (holding ? dt * 2.4 : dt * 0.22) : -dt * 0.35), 0, 1);
-          if (sus >= 1) { seen++; sus = 0; pos = Math.max(0, pos - 0.35); freeze = 1.1; note.textContent = K.tr(t.spotted || "A shout. You drop the basket and run back into the dark."); if (K.Sound) K.Sound.play("hit"); }
-          if (pos >= 1) { trips++; pos = 0; note.textContent = K.tr(t.made || "Out, and back for another load."); if (K.Sound) K.Sound.play("choose"); }
+          if (sus >= 1) { seen++; sus = 0; pos = Math.max(0, pos - 0.35); freeze = 1.1; note.textContent = K.tr(t.spotted || "A shout. You drop the basket and run back into the dark."); if (K.Sound) K.Sound.play("hit"); cue("bad"); }
+          if (pos >= 1) { trips++; cue("good"); pos = 0; note.textContent = K.tr(t.made || "Out, and back for another load."); if (K.Sound) K.Sound.play("choose"); }
         }
         torch.style.left = (lp - light / 2) * 100 + "%"; torch.style.width = light * 100 + "%";
         me.style.left = pos * 100 + "%"; me.classList.toggle("lit", lit);
@@ -328,7 +353,7 @@
   const THINGS = K.NOTICE_THINGS = ["A brass lamp", "A broken arrow", "A red thread", "A clay cup", "A peacock feather", "A seal ring", "A folded letter", "A coil of rope",
     "A copper coin", "A conch shell", "A long die", "A sandal", "A bowl of rice", "A small bell", "An iron key", "A string of beads"];
   U.games.notice = function (box, done, c) {
-    return frame(box, done, c, "notice", ({ host, power, t, finish }) => {
+    return frame(box, done, c, "notice", ({ host, power, t, finish, cue }) => {
       const look = clamp(3 + power * 0.3, 3, 5.5), secs = clamp(3.5 + power * 0.3, 3.5, 6), count = t.count || 7;
       const pool = THINGS.slice().sort(() => K.rng() - 0.5), seen = pool.slice(0, count), unseen = pool.slice(count);
       let i = 0, right = 0, raf = null, timer = null;
@@ -350,6 +375,7 @@
       function answer(ok, late) {
         cancelAnimationFrame(raf); U.keys([]);
         if (ok) right++;
+        cue(ok ? "good" : "bad");
         host.querySelectorAll(".replies button").forEach((b) => { b.disabled = true; });
         host.insertAdjacentHTML("beforeend", '<p class="game-note">' + U.tr(late ? "Too slow." : ok ? "Yes. It was there." : "No. That was not there.") + "</p>");
         i++;

@@ -27,6 +27,7 @@
   let lastConch = null;
   U.renderScene = function (sc) {
     stopLamp();
+    if (U.stageFx) U.stageFx.stop();
     if (sc.ending) return U.renderEnding(sc);
     const S = K.S;
     if (sc.war && lastConch !== sc.id && K.Sound) K.Sound.play("conch");
@@ -44,7 +45,8 @@
     if (moved && U.journeyPage) {
       if (K.headless) U.mapOf(S);
       else {
-        const why = K.val(sc.travel) || ["Ahead: {what}", { what: K.val(sc.title) || "" }];
+        const place = K.val(sc.place);
+        const why = K.val(sc.travel) || (K.homePlace && place === K.homePlace(S) ? ["You go home to {place}.", { place }] : ["Ahead: {what}", { what: K.val(sc.title) || "" }]);
         return U.journeyPage(moved[0], moved[1], why, () => U.renderScene(sc));
       }
     }
@@ -175,7 +177,8 @@
     K.go(res.next);
   }
 
-  const KIND = { aim: "archery", push: "strength", draw: "strength", steady: "strength", sneak: "stealth", retort: "wits", notice: "wits", hands: "wits", pasha: "wits" };
+  const KIND = { aim: "archery", push: "strength", draw: "strength", steady: "strength", sneak: "stealth", retort: "wits", notice: "wits", hands: "wits", pasha: "wits",
+    rhythm: "strength", race: "war", herd: "stealth", drill: "wits", rings: "wits", chaupar: "wits", baghchal: "wits", moksha: "wits" };
   // A choice that is a game: the game takes the place of the choices, and its outcome picks the branch.
   function playGame(sc, c) {
     const box = U.$("choices");
@@ -188,6 +191,9 @@
     U.keys([]);
     // While a test runs, the story steps aside and the test has the whole page.
     U.$("leaf").classList.add("testing");
+    // The test is played inside its own painted stage, with its own weather.
+    const stage = c.trial && K.val(c.trial.stage);
+    if (stage) { U.setBackdrop(stage); U.stageFx.start(stage); }
     const game = U.games[c.game](box, (outcome, summary) => {
       // A won test gets its own short theme: archery, strength, stealth, wits or war.
       if (outcome === "win" && K.Sound && K.Sound.flourish) K.Sound.flourish((c.trial && c.trial.kind) || KIND[c.game] || "wits");
@@ -203,6 +209,7 @@
     U.redraw = () => { U.renderScene(sc); showAfter(sc, c, res, next); };
     const leaf = U.$("leaf");
     leaf.classList.remove("testing");
+    if (U.stageFx) U.stageFx.stop();
     U.setBackdrop(artFor(sc));
     // What you chose and what came of it are written into the story; Continue waits below.
     const story = U.$("story"), box = U.$("choices");

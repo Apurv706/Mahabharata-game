@@ -41,7 +41,7 @@
       next: "a3_lac"
     },
     {
-      id: "a3_lac", act: 3, age: 23, canon: true, place: "Varnavata", art: "scene_lac", plate: ["#e5872e", "#2a1c1f"], caption: "A new house that smells of resin",
+      id: "a3_lac", act: 3, age: 23, canon: true, place: "Varnavata", to: "varnavata", travel: "You go to Varnavata for the spring festival.", art: "scene_lac", plate: ["#e5872e", "#2a1c1f"], caption: "A new house that smells of resin",
       title: "The house at Varnavata",
       witness: [
         "Duryodhana's minister Purochana builds a beautiful house at Varnavata for Kunti and her sons. It is made of lac, hemp and resin, and it is meant to burn.",
@@ -62,13 +62,30 @@
       next: "a3_tunnel_again"
     },
     {
-      id: "a3_tunnel_again", when: K.retryWhen("a3_lac", ["dig"]), skipTo: "a3_bow", act: 3, age: 23, art: "scene_lac", place: "Varnavata", caption: "The next night",
+      id: "a3_tunnel_again", when: K.retryWhen("a3_lac", ["dig"]), skipTo: "a3_kampilya", act: 3, age: 23, art: "scene_lac", place: "Varnavata", caption: "The next night",
       title: "The next night", body: ["The miner is waiting at the mouth of the tunnel with an empty basket. You will not be asked a third time."],
       choices: [K.retryChoice("a3_lac", "dig", TUNNEL), { id: "let", t: "Leave the digging to the miner", fx: {}, text: "You stay away. The miner digs on alone." }],
+      next: "a3_kampilya"
+    },
+    // Going to Kampilya is a choice. Those who go may try the great bow; those who stay have the
+    // spring hunt at home, and hear of the swayamvara from travellers.
+    {
+      id: "a3_kampilya", act: 3, age: 25, art: (S) => K.childArt(S), place: (S) => K.homePlace(S), caption: "Messengers on every road",
+      travel: (S) => (S.flags.includes("helped_tunnel") ? "You slip away from Varnavata before anyone can ask questions, and go home." : "After the festival, you go home."),
+      title: "A swayamvara at Kampilya",
+      body: (S) => [
+        "Messengers ride out from Kampilya to every court in the land. King Drupada will give his daughter Draupadi in a swayamvara, to whoever can string the great bow and hit the mark.",
+        S.flags.includes("helped_tunnel") ? { memory: "Somewhere in the forest, five brothers everyone believes dead are still alive. You know it, because you carried the earth out of their tunnel." } : null,
+        "Half the land is going. Are you?"
+      ],
+      choices: [
+        { id: "ride", t: "Ride to Kampilya for the swayamvara", fx: { flag: "went_kampilya" }, next: "a3_bow", hint: (S) => (S.flags.includes("act3_tested") ? null : "The great bow will be there") },
+        { id: "stay", t: "Stay home. The year's work will not wait", fx: { flag: "stayed_home_a3" }, next: "a3_hunt", hint: (S) => (S.flags.includes("act3_tested") ? null : "The spring hunt comes at the end of the rains") }
+      ],
       next: "a3_bow"
     },
     {
-      id: "a3_swayamvara", act: 3, age: 25, canon: true, place: "Drupada's hall, Panchala", art: "scene_swayamvara", plate: ["#d4a84b", "#c0472f"], caption: "A golden fish turning above the water",
+      id: "a3_swayamvara", act: 3, age: 25, canon: true, place: "Drupada's hall, Panchala", to: "panchala", travel: "You ride to Kampilya for the swayamvara.", art: "scene_swayamvara", plate: ["#d4a84b", "#c0472f"], caption: "A golden fish turning above the water",
       title: "Draupadi's swayamvara",
       witness: [
         "Drupada holds a contest for his daughter's hand. A golden fish turns on a wheel high above a pool. The winner must string a great bow and hit the fish's eye while looking only at its reflection.",
@@ -88,6 +105,25 @@
       after: ["The brahmins were Arjuna and Bhima in disguise. The Pandavas are alive. Draupadi becomes the wife of all five brothers, as their mother's word and Draupadi's own fate decree, and the news reaches Hastinapura like thunder."],
       next: "a3_court"
     },
+    // For those who stayed at home: the same story, told by travellers.
+    {
+      id: "a3_news", act: 3, age: 25, canon: true, place: (S) => K.homePlace(S), art: "scene_swayamvara", caption: "A traveller's story",
+      title: "News from Kampilya",
+      witness: [
+        "At Draupadi's swayamvara, king after king failed to string the great bow. Karna strung it, and walked back to his seat. Then a young brahmin in a deerskin strung it in one motion, and hit the fish's eye.",
+        "The brahmins were Arjuna and Bhima in disguise. The Pandavas are alive, and Draupadi is the wife of all five brothers."
+      ],
+      body: (S) => [
+        "You hear it from a traveller at the well, and then from everyone. By evening the story has grown a fight with a hundred kings and an uprooted tree.",
+        S.flags.includes("spring_deer") ? { memory: "Your deer is already forgotten. Nobody is going to make up a song about it now." } : null
+      ],
+      choices: [
+        { id: "glad", t: "Drink to the Pandavas being alive", fx: { rep: { pandava: 1 }, duty: { conscience: 1 } } },
+        { id: "worry", t: "Wonder aloud what Duryodhana will do now", fx: { skill: { statecraft: 1 } }, text: "An old man at the well looks at you sharply. \"Nothing good,\" he says." },
+        { id: "shrug", t: "Shrug. Kings and their weddings are nothing to you", fx: { rep: { common: 1 } } }
+      ],
+      next: "a3_court"
+    },
     {
       id: "a3_court", act: 3, age: 26, canon: true, place: "Hastinapura and Indraprastha", art: "scene_indraprastha", plate: ["#3e8c72", "#d4a84b"], caption: "A new city rises from burned forest",
       title: "Two kingdoms",
@@ -103,7 +139,7 @@
           text: (S) => (S.origin === "mathura" ? "Your people are no longer in Mathura. Krishna killed Kamsa, and when Jarasandha's armies kept coming, the Yadavas moved to a new city by the western sea: Dwaraka. You follow them there." : null) },
         { id: "none", t: "Serve no king. Go where your skills are needed", fx: { set: { court: "none" }, rep: { common: 1 }, journal: "You chose to serve no king." }, resolve: (S) => ({ duty: { court: 1 - S.duty.court } }) }
       ],
-      next: "a3_marriage"
+      next: "a3_courttest"
     },
     {
       id: "a3_marriage", act: 3, age: 27, art: "origin", place: (S) => K.COURTS[S.court]?.name || "Home",

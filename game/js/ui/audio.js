@@ -323,6 +323,30 @@
       o.type = "sine"; o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(48, t + 0.18); o.connect(og); og.connect(sfxBus);
       env(og, t, 0.003, 0.3, 0.2); o.start(t); o.stop(t + 0.25);
     },
+    drum() { // a dhol stroke: a low skin with a slap on top
+      const t = now(), o = ctx.createOscillator(), g = ctx.createGain(), s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), sg = ctx.createGain();
+      o.type = "sine"; o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(62, t + 0.22); o.connect(g); g.connect(sfxBus);
+      env(g, t, 0.002, 0.34, 0.26); o.start(t); o.stop(t + 0.3);
+      s.buffer = noise; f.type = "bandpass"; f.frequency.value = 2100; f.Q.value = 0.9; s.connect(f); f.connect(sg); sg.connect(sfxBus);
+      env(sg, t, 0.001, 0.12, 0.05); s.start(t, Math.random() * 0.5, 0.06);
+    },
+    tap() { // a light hand on the drum's other head
+      const t = now(), o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = "triangle"; o.frequency.setValueAtTime(420, t); o.frequency.exponentialRampToValueAtTime(260, t + 0.06); o.connect(g); g.connect(sfxBus);
+      env(g, t, 0.001, 0.12, 0.08); o.start(t); o.stop(t + 0.12);
+    },
+    clang() { // hammer on hot iron
+      const t = now();
+      [[1230, 0.09], [1870, 0.05], [2640, 0.03]].forEach(([fr, a]) => {
+        const o = ctx.createOscillator(), g = ctx.createGain(); o.type = "square"; o.frequency.value = fr; o.connect(g); g.connect(sfxBus);
+        env(g, t, 0.001, a, 0.32); o.start(t); o.stop(t + 0.4);
+      });
+    },
+    step() { // a soft footfall on a dusty road
+      const t = now(), s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
+      s.buffer = noise; f.type = "lowpass"; f.frequency.value = 520; s.connect(f); f.connect(g); g.connect(sfxBus);
+      env(g, t, 0.004, 0.16, 0.09); s.start(t, Math.random() * 0.5, 0.1);
+    },
     heal() { // two soft bells
       const t = now();
       [[880, 0], [1318, 0.09]].forEach(([fr, d]) => {

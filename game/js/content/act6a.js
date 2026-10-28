@@ -17,13 +17,19 @@
   K.scenes([
     {
       id: "a6_eve", act: 6, age: 44, canon: true, war: true, art: "war_eve", place: "Kurukshetra, before the first day", caption: "Two armies facing each other",
+      travel: (S) => (S.side === "neutral" ? "The healers go to Kurukshetra, and you go with them." : "You march to Kurukshetra with the army."),
       title: "Before the first arrow",
       witness: [
         "Eighteen armies face each other across the plain of Kurukshetra. Conch shells sound from both sides.",
         "Arjuna drives his chariot out between the two armies and looks at his teachers, his grandfather and his cousins on the other side. He puts down his bow. Krishna, his charioteer, speaks to him for a long time.",
         "You are too far away to hear the words. You only see Arjuna stand up at last and take up his bow again."
       ],
-      body: (S) => [S.side === "neutral" ? "The healers' tents stand behind both armies. You will see everything from there." : "You are forty-four. Where do you take your place?"],
+      enter: { unflag: "imprisoned" },
+      body: (S) => [
+        S.flags.includes("refused_raid") ? { memory: S.flags.includes("escaped_prison") ? "Duryodhana's men are still looking for the prisoner who went over the wall. Some of them are standing in the same army as you." : "They let you out of the prison yard the day the armies marched. Duryodhana passed you on the road and did not look at you. He has not forgotten Matsya." } : null,
+        S.flags.includes("turned_herd") ? { memory: "Prince Uttara rides past and raises a hand to you. He has not forgotten the ford." } : null,
+        S.flags.includes("strung_great_bow") ? { memory: "Across the field, the Panchala archers know your face. You strung their king's bow, once." } : null,
+        S.side === "neutral" ? "The healers' tents stand behind both armies. You will see everything from there." : "You are forty-four. Where do you take your place?"],
       choices: [
         { id: "front", t: "In the front line, with your weapon", req: fighting, fx: { flag: "role_front", duty: { court: 1 } } },
         { id: "chariot", t: "Driving a chariot for a warrior who needs one", req: { side: ["pandava", "kaurava"], skill: ["chariot", 2] }, locked: "You need some skill with a chariot.", fx: { flag: "role_chariot", skill: { chariot: 1 } } },

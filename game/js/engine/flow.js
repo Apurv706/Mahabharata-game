@@ -109,6 +109,7 @@
     S.crossed[back.scene] = Object.assign({}, S.crossed[back.scene], { [picked]: why || "This way is closed now." });
     S.loopThen = { scene: back.scene, then: back.then || null };
     if (back.clear) S.flags = S.flags.filter((f) => !(f.startsWith(back.clear + "_") && f.endsWith("_again")));
+    if (back.unflag) S.flags = S.flags.filter((f) => !back.unflag.includes(f));
     return back.scene;
   };
 
@@ -150,7 +151,8 @@
       if (m.n) out.push([m.n > 0 ? "up" : "down", K.tr(m.n > 0 ? "Your past helps (+{n})" : "Your past counts against you ({n})", { n: m.n })]);
     }
     if (c.combat) out.push(["combat", K.tr("Leads to a fight")]);
-    if (c.hint) out.push(["", K.text(K.val(c.hint, S), null, S)]);
+    const hint = K.val(c.hint, S);
+    if (hint) out.push(["", K.text(hint, null, S)]);
     return out;
   };
 

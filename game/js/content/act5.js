@@ -37,7 +37,7 @@
 
     // ---------- The forest road ----------
     {
-      id: "a5_forest_boon", when: forest, skipTo: "a5_court_raid",
+      id: "a5_forest_boon", when: forest, skipTo: "a5_court_raid", travel: "You follow the Pandavas into exile, north to the hermitages.",
       act: 5, age: 33, place: "An ashram on the upper Ganga", art: "scene_ashram", plate: ["#3e8c72", "#6f8fd8"], caption: "A hermitage in the mountains",
       title: "A season at the ashram",
       body: ["Arjuna has gone north alone to seek divine weapons from the gods. The rest of the camp moves between hermitages. You spend a season at an ashram where the sages will teach anyone patient enough to sit still."],
@@ -78,10 +78,19 @@
       body: ["You came with Bhima. Your own throat is cracked with thirst, and the water is right there."],
       choices: [
         { id: "drink", t: "Drink. You cannot think for thirst", fx: { attr: { might: -1 } }, text: "Darkness, and then you are lying on the bank in the evening, alive, with a strange heaviness in your limbs that never quite leaves." },
-        { id: "listen", t: "Wait, and listen to the questions", fx: { attr: { wisdom: 1 }, journal: "At the lake you heard the questions. What is faster than the wind? The mind. What is the greatest wonder? That every day people die, and the living act as if they never will." },
-          text: "What is faster than the wind? The mind. What is more numerous than the grass? Thoughts. What is the greatest wonder? That every day people die, and the living act as if they never will. You remember every answer for the rest of your life." }
+        Object.assign(K.testChoice("a5_yaksha", "answer", K.YAKSHA), { noAfter: false })
       ],
       after: ["Pleased with Yudhishthira's answers, the voice gives back his brothers' lives. It was Dharma himself, testing his son."],
+      next: "a5_yaksha_again"
+    },
+    {
+      id: "a5_yaksha_again", when: K.retryWhen("a5_yaksha", ["answer"]), skipTo: "a5_charu",
+      act: 5, age: 42, place: "A lake in the forest", art: "scene_lake", caption: "The voice waits",
+      title: "The voice waits", body: ["The voice in the water is still waiting. So is your thirst. You will not be asked a third time."],
+      choices: [
+        Object.assign(K.retryChoice("a5_yaksha", "answer", K.YAKSHA), { trial: Object.assign({}, K.YAKSHA.trial, { stakes: K.YAKSHA.retryStakes, rounds: K.YAKSHA_AGAIN }) }),
+        { id: "drink", t: "Drink, and stop thinking", fx: { attr: { might: -1 } }, text: "Darkness, and then you are lying on the bank in the evening, alive, with a strange heaviness in your limbs that never quite leaves." }
+      ],
       next: "a5_charu"
     },
 
@@ -98,7 +107,7 @@
         { id: "flee", t: "Get out with the rest of the court", tags: ["retreat"], fx: { duty: { court: -1 } } }
       ],
       after: ["Arjuna and Bhima free Duryodhana on Yudhishthira's orders. Rescued by his enemies, Duryodhana tries to starve himself to death from shame. His friends talk him out of it, and he comes home hating the Pandavas more than ever."],
-      next: "a5_court_armour"
+      next: "a5_vikarna"
     },
     {
       id: "a5_court_armour", when: court, skipTo: "a5_own_life",
@@ -132,7 +141,7 @@
         { id: "teach", t: "Teach the village children to fight", fx: { skill: { [ "mace" ]: 1 }, attr: { might: 1 }, rep: { common: 1 } } },
         { id: "sudatta", t: "Take your field back from Sudatta's men", req: { flag: "debt_refused" }, combat: "e_sudatta" }
       ],
-      next: "a5_own_crisis"
+      next: "a5_forge"
     },
     {
       id: "a5_own_crisis", when: own, skipTo: "a5_charu",
@@ -154,7 +163,7 @@
     // ---------- A bond that asks something of you ----------
     {
       id: "a5_charu", when: (S) => (S.friend === "charu" || S.spouse === "charu") && !S.dead.includes("charu"), skipTo: "s_late",
-      act: 5, art: "scene_smith", place: (S) => K.childPlace(S), caption: "A forge at dawn",
+      act: 5, art: "scene_smith", place: (S) => K.homePlace(S), caption: "A forge at dawn",
       title: "The old smith",
       body: (S) => [
         "A boy brings word from home. Old Kesava, Charu's father, the smith who first put a hammer in your hands, is dying.",
@@ -178,15 +187,27 @@
         "When the king's commander Kichaka will not leave Draupadi alone, Bhima kills him one night in the dancing hall.",
         "With Kichaka dead, the Kauravas raid Matsya's cattle. Young Prince Uttara rides out to stop them, with the dance teacher Brihannala as his charioteer."
       ],
-      body: (S) => [S.origin === "matsya" ? { memory: "This is your home. Those are your neighbours' herds." } : "You are in Matsya when the raid comes."],
+      // Where you are when the raid comes depends on the road you took (K.raidGroup): the Pandavas'
+      // people are in Matsya, the Kuru court is called to ride, and everyone else hears it from afar.
+      body: (S) => {
+        const g = K.raidGroup(S);
+        if (g === "matsya") return [S.origin === "matsya" ? { memory: "This is your home. Those are your neighbours' herds." } : "You are in Matsya when the raid comes. You have been here most of the year, quietly, near the people you followed into exile."];
+        if (g === "kuru") return ["Duryodhana calls every sword at court to ride on Matsya's herds. If the Pandavas are hiding there, he says, they will come out to save the cattle, and be found before the year is up.",
+          S.origin === "matsya" ? { memory: "Matsya is your homeland. Those are your neighbours' herds." } : null];
+        return ["The news of the raid reaches you late, from a traveller who saw the dust. Here, the same week brings trouble of its own."];
+      },
       choices: [
-        { id: "defend", t: "Ride out with Prince Uttara to save the herds", combat: "e_cattle" },
-        { id: "raid", t: "Ride with the Kaurava raiders", req: { any: [{ court: "hastinapura" }, { exile: "court" }] }, combat: "e_cattle_k" },
-        { id: "secret", t: "Recognise Brihannala, and keep the secret",
+        { id: "defend", t: "Ride out with Prince Uttara to save the herds", req: (S) => K.raidGroup(S) === "matsya", combat: "e_cattle" },
+        { id: "raid", t: "Ride with Duryodhana against Matsya", req: (S) => K.raidGroup(S) === "kuru", combat: "e_cattle_k" },
+        { id: "refuse", t: "Refuse to ride against a kingdom that has done you no wrong", req: (S) => K.raidGroup(S) === "kuru", hint: "Duryodhana does not forgive a refusal",
+          fx: { rep: { kuru: -2 }, bond: { duryodhana: -2 }, duty: { court: -2, conscience: 2 }, flag: ["refused_raid", "imprisoned"], memory: ["duryodhana", "You refused to ride with him against Matsya."], journal: "You refused to ride against Matsya. Duryodhana had you thrown in the prison yard." },
+          text: "The hall goes quiet. Duryodhana looks at you for a long time, and then he smiles, which is worse. \"Then you can wait for us here,\" he says. His guards are already moving." },
+        { id: "secret", t: "Recognise Brihannala, and keep the secret", req: (S) => K.raidGroup(S) === "matsya",
           check: { attr: "wisdom", skill: "stealth", dc: 8,
             pass: { fx: { bond: { arjuna: 2 }, flag: "kept_arjuna_secret", journal: "You recognised Arjuna in Matsya and kept his secret." }, text: "You know that walk, even in bangles. When your eyes meet, Arjuna puts a finger to his lips. You say nothing to anyone." },
             fail: { fx: {}, text: "Brihannala is just a dance teacher to you. Later you will feel a fool." } } },
-        { id: "stay", t: "Stay out of it", fx: {} }
+        { id: "home", t: "Leave Matsya's troubles to Matsya. There is trouble enough at home", req: (S) => K.raidGroup(S) === "local" },
+        { id: "stay", t: "Stay out of it", req: (S) => K.raidGroup(S) === "matsya" }
       ],
       after: ["Brihannala is Arjuna. He takes up his bow Gandiva, defeats the whole Kaurava force alone and drives them home. The thirteen years are over. Arjuna's son Abhimanyu marries Virata's daughter Uttara."],
       next: "a5_herd"

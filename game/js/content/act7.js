@@ -110,6 +110,13 @@
     if (has("nishada_came")) t.push("When {they} whistled in the dark, the Nishada archers came, because of a hand {they} once bound.");
     if (has("tried_secret")) t.push("{They} knew Karna's secret before the war, and kept it, because Krishna asked.");
     if (has("saw_swap")) t.push(has("spoke_dice") ? "{They} saw Shakuni's hands in the dice hall, and said so." : "{They} saw Shakuni's hands in the dice hall, and told no one.");
+    if (has("strung_great_bow")) t.push("{They} strung the great bow of Panchala the night before Draupadi's swayamvara.");
+    if (has("led_out_of_khandava")) t.push("When the Khandava forest burned, {they} led families out through the smoke.");
+    if (has("household_out")) t.push("The night after the dice game, {they} got a steward's family out past Duryodhana's patrols.");
+    if (has("turned_herd")) t.push("{They} brought Virata's herd across the ford when the Kauravas raided Matsya.");
+    if (has("refused_raid")) t.push(has("escaped_prison") ? "{They} refused to ride on Matsya, and went over Duryodhana's prison wall for it." : "{They} refused to ride on Matsya, and sat in Duryodhana's prison yard for it.");
+    if (has("killed_maneater")) t.push("{They} killed the man-eater at the edge of the Kamyaka forest.");
+    if (has("answered_yaksha")) t.push("At the lake in the forest, {they} answered the voice in the water.");
     if (has("kept_home_earth")) t.push("{They} carried a handful of {origin}'s earth all {their} life.");
     if (has("sat_with_kesava")) t.push("{They} went home to sit with an old smith on his last nights, because {their} friend would never ask.");
     const CURSE_LINE = {
