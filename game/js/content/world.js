@@ -58,9 +58,9 @@
     cunning: { name: "Cunning", short: "+ Grace, Stealth", fx: { attr: { grace: 1 }, skill: { stealth: 1 } } }
   };
   K.HEIRLOOMS = {
-    bow: { name: "A worn bow", short: "+ Archery", fx: { skill: { archery: 1 } } },
-    manuscript: { name: "A palm-leaf manuscript", short: "+ Lore", fx: { skill: { lore: 1 } } },
-    amulet: { name: "An amulet", short: "Turns one killing blow", fx: { flag: "amulet_whole" } },
+    bow: { name: "A worn bow", thing: "old bow", short: "+ Archery", fx: { skill: { archery: 1 } } },
+    manuscript: { name: "A palm-leaf manuscript", thing: "palm-leaf manuscript", short: "+ Lore", fx: { skill: { lore: 1 } } },
+    amulet: { name: "An amulet", thing: "amulet", short: "Turns one killing blow", fx: { flag: "amulet_whole" } },
     debt: { name: "A family debt", short: "+ Family duty", fx: { duty: { family: 2 }, flag: "debt_owed" } }
   };
 

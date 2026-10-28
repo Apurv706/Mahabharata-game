@@ -102,7 +102,7 @@
       if (p[key]) v = p[key];
       else if (key === "name") v = S.name || K.tr("you");
       else if (key === "origin") v = K.tr(K.ORIGINS?.[S.origin]?.land || K.ORIGINS?.[S.origin]?.name || "your homeland");
-      else if (key === "heirloom") v = K.tr(K.HEIRLOOMS?.[S.heirloom]?.name || "heirloom");
+      else if (key === "heirloom") v = K.tr(K.HEIRLOOMS?.[S.heirloom]?.thing || "heirloom");
       else if (key === "teacher") v = K.tr(K.TEACHERS?.[S.teacher]?.short || "your teacher");
       else if (key === "path") v = K.tr(K.PATHS?.[S.path]?.name || "warrior");
       else if (key === "spouse") v = K.personName("spouse", S);

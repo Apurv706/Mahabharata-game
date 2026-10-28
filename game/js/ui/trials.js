@@ -355,7 +355,7 @@
   U.games.notice = function (box, done, c) {
     return frame(box, done, c, "notice", ({ host, power, t, finish, cue }) => {
       const look = clamp(3 + power * 0.3, 3, 5.5), secs = clamp(3.5 + power * 0.3, 3.5, 6), count = t.count || 7;
-      const pool = THINGS.slice().sort(() => K.rng() - 0.5), seen = pool.slice(0, count), unseen = pool.slice(count);
+      const pool = (t.things || THINGS).slice().sort(() => K.rng() - 0.5), seen = pool.slice(0, count), unseen = pool.slice(count);
       let i = 0, right = 0, raf = null, timer = null;
       host.innerHTML = '<p class="score">' + U.tr(t.lookLine || "Look. You have {n} seconds.", { n: Math.round(look) }) + '</p><ul class="table">' + seen.map((x) => "<li>" + U.tr(x) + "</li>").join("") + '</ul><div class="timer"><i></i></div>';
       const bar = host.querySelector(".timer i"), t0 = performance.now();
