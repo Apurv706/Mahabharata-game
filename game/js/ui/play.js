@@ -257,8 +257,8 @@
       for (let i = 0; i < need + 2; i++) { const p = free(); if (p) strays.push(p); }
       const stage = K.val(t.stage);
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="herdfield" style="' + (stage ? "--stage:url('" + U.artUrl(stage) + "')" : "") + '"><canvas width="640" height="400" aria-label="' + U.esc(K.tr(t.fieldLabel || "The field")) + '" role="img"></canvas></div>' +
-        '<p class="game-note" aria-live="polite">' + U.tr(t.help || "Steer with the arrow keys, the buttons or a swipe. Reach everyone you can, then bring them out through the gap on the right.") + '</p>' +
-        '<div class="dpad"><button type="button" class="cta secondary" data-d="up" aria-label="' + U.esc(K.tr("Up")) + '">↑</button><button type="button" class="cta secondary" data-d="left" aria-label="' + U.esc(K.tr("Left")) + '">←</button><button type="button" class="cta secondary" data-d="down" aria-label="' + U.esc(K.tr("Down")) + '">↓</button><button type="button" class="cta secondary" data-d="right" aria-label="' + U.esc(K.tr("Right")) + '">→</button></div>';
+        '<div class="dpad"><button type="button" class="cta secondary" data-d="up" aria-label="' + U.esc(K.tr("Up")) + '">↑</button><button type="button" class="cta secondary" data-d="left" aria-label="' + U.esc(K.tr("Left")) + '">←</button><button type="button" class="cta secondary" data-d="down" aria-label="' + U.esc(K.tr("Down")) + '">↓</button><button type="button" class="cta secondary" data-d="right" aria-label="' + U.esc(K.tr("Right")) + '">→</button></div>' +
+        '<p class="game-note" aria-live="polite">' + U.tr(t.help || "Steer with the arrow keys, the buttons or a swipe. Reach everyone you can, then bring them out through the gap on the right.") + '</p>';
       const cv = host.querySelector("canvas"), ctx = cv.getContext && cv.getContext("2d"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
       const D = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
       const turn = (d) => { const n = D[d]; if (n.x === -dir.x && n.y === -dir.y && snake.length > 1) return; want = n; };

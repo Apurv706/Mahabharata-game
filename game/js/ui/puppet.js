@@ -39,7 +39,7 @@
       cracked: (S.flags || []).includes("amulet_broken"),
       item: S.path ? ITEM[S.path] : null,
       eye: inj.includes("eye"), sling: inj.includes("arm"), limp: inj.includes("leg"), scar: inj.includes("scar"),
-      chained: (S.flags || []).includes("imprisoned"), dead: S.alive === false
+      chained: (S.flags || []).includes("imprisoned"), cuffed: (S.flags || []).includes("was_imprisoned") && !(S.flags || []).includes("imprisoned"), dead: S.alive === false
     };
   };
 
@@ -138,7 +138,9 @@
     const neck = '<path d="M55.5 58 L64.5 58 L63.5 71 L56.5 71 Z" fill="' + skin + '"' + OUT + "/>";
     const rod = '<path class="rod" d="M58 128 L58 236" stroke="#1d0f08" stroke-width="0.9" opacity="0.7"/>';
     const armlet = '<path d="M52.8 80h11" stroke="' + trim + '" stroke-width="2.4"/>';
+    // In chains while imprisoned; afterwards, the broken iron still on one wrist.
     const manacle = spec.chained ? '<rect x="54" y="117" width="8" height="4" fill="#5d5d5d"' + OUT + "/>" : "";
+    const cuff = spec.cuffed ? '<rect x="53.5" y="114" width="9" height="3.6" fill="#6a6a6a"' + OUT + '/><path d="M62.5 115.8 l3 1.6" stroke="#6a6a6a" stroke-width="1.4"/>' : "";
     // The face in profile: brow, long nose, the large almond eye of a puppet.
     const head =
       (she ? '<circle cx="49" cy="50" r="6.5" fill="#1d1410"' + OUT + '/><path d="M48 56 Q44 76 47 92" stroke="#1d1410" stroke-width="3.2" fill="none"/>' : "") +
@@ -178,7 +180,7 @@
         '<path d="' + skirt + '" fill="url(#pp-weave)"/><path d="' + hem + '" fill="none" stroke="' + trim + '" stroke-width="1.5"/>' + belt +
         '<g class="j head"><g transform="translate(62 64) scale(' + headScale + ') translate(-62 -64)">' + head + "</g></g>" +
         '<g class="j legF">' + thigh() + '<g class="j shinF">' + shin + "</g></g>" +
-        '<g class="j armF">' + upper + armlet + '<g class="j foreF">' + fore + manacle + itemSvg(spec.item, trim) + rod + "</g></g>" +
+        '<g class="j armF">' + upper + armlet + '<g class="j foreF">' + fore + manacle + cuff + itemSvg(spec.item, trim) + rod + "</g></g>" +
         (spec.sling ? '<path d="M50 76 Q58 112 68 76" fill="none" stroke="#efe2c0" stroke-width="3" opacity="0.9"/>' : "") +
       "</g></g></svg>";
     return svg;

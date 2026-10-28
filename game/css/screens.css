@@ -718,3 +718,10 @@ body.inscene .leaf.split.testing { height: auto; }
 @media (max-width: 720px) { .arena { height: 150px; padding: 0 3% 3px; } .arena .actor svg { height: 122px; } .arena .actor.ally svg { height: 104px; } }
 @media (prefers-reduced-motion: reduce) { .arena .actor, .arena .actor::after, .arena.slowmo { animation: none !important; } }
 .qte .cta.secondary { background: var(--hover); border: 1px solid var(--gold-line); }
+@media (max-width: 720px) {
+  .trial { padding: 14px; gap: 12px; }
+  .cast { height: 86px; margin: -14px -14px 0; }
+  .cast .actor svg { height: 78px; } .cast .actor.foe.f1 svg, .cast .actor.foe.f2 svg { height: 70px; }
+  .trial .game-rules { font-size: 16px; }
+  .trial .game-note { font-size: 15px; }
+}
