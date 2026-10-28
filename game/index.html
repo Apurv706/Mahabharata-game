@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="css/screens.css">
 </head>
 <body>
+<div class="backdrop" id="backdrop" aria-hidden="true"><i class="bd"></i><i class="bd"></i><canvas class="stagefx" id="stagefx"></canvas></div>
 <div class="app">
   <header class="top">
     <div class="brand" id="brand">Kurukshetra: A Life</div>
@@ -26,10 +27,12 @@
       <button type="button" id="nav-map">Map</button>
       <button type="button" id="nav-menu">Menu</button>
     </nav>
+    <button type="button" class="standing" id="nav-standing" aria-expanded="false" aria-controls="ledger" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c2.4 2.6 3.6 5.2 3.6 7.8 0 2.2-1.6 3.9-3.6 3.9s-3.6-1.7-3.6-3.9C8.4 8.2 9.6 5.6 12 3z" fill="currentColor"/><path d="M4 13.5c2.6-.2 5 .8 6.6 3.2M20 13.5c-2.6-.2-5 .8-6.6 3.2M6 19.5h12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span id="standing-label">Standing</span></button>
+    <div class="floats" id="floats" aria-live="polite"></div>
   </header>
   <div class="game" id="game">
     <main class="leaf" id="leaf" aria-live="polite"></main>
-    <aside class="ledger" id="ledger" aria-label="Obligations, bonds, vows and memories" hidden></aside>
+    <aside class="ledger" id="ledger" tabindex="-1" aria-label="Obligations, bonds, vows and memories" hidden></aside>
   </div>
 </div>
 

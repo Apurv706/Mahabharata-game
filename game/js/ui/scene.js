@@ -12,9 +12,11 @@
     return a === "origin" ? "home_" + K.S.origin : a;
   }
   function tagFor(sc) {
-    if (sc.canon) return ["canon", K.tr("Canon · this always happens")];
-    if (sc.war) return ["war", K.tr("The war")];
-    return ["yours", K.tr("Your life")];
+    // Fate: what the epic has already written, and the part of your life that is still unwritten.
+    if (sc.canon && sc.war) return ["canon war", K.tr("Written · the war")];
+    if (sc.canon) return ["canon", K.tr("Written")];
+    if (sc.war) return ["war", K.tr("Unwritten · the war")];
+    return ["yours", K.tr("Unwritten")];
   }
 
   // Other moments where everything is at stake: the music turns tense for these too.
@@ -40,10 +42,12 @@
     const [tag, tagText] = tagFor(sc);
     const witness = K.val(sc.witness);
     const leaf = U.$("leaf");
+    leaf.className = "leaf split";
     leaf.innerHTML = U.plate({ art: artFor(sc), grad: sc.plate, caption: K.val(sc.caption), tag, tagText }) +
-      '<div class="text"><h1>' + U.t(K.val(sc.title)) + "</h1>" +
-      (witness ? '<div class="witness"><div class="lbl">' + U.tr("What happens, whatever you do") + "</div>" + U.blocks(witness) + "</div>" : "") +
-      U.blocks(sc.body) + '<div class="choices" id="choices"></div><p class="hint" id="keyhint"></p></div>';
+      '<div class="text"><div class="story" id="story" tabindex="0"><h1>' + U.t(K.val(sc.title)) + "</h1>" +
+      (witness ? '<div class="witness"><div class="lbl">' + U.tr("As it is written") + "</div>" + U.blocks(witness) + "</div>" : "") +
+      U.blocks(sc.body) + '</div><div class="actions"><div class="choices" id="choices"></div><p class="hint" id="keyhint"></p></div></div>';
+    U.follow(U.$("story"));
     const box = U.$("choices");
     const rows = K.choiceList(sc);
     const keys = [];
@@ -61,15 +65,14 @@
     U.renderLedger();
     U.scrollTop();
     // Set the scene first, then offer the choices.
-    const text = leaf.querySelector(".text");
+    const text = leaf.querySelector(".story");
     const story = [];
     for (const el of text.children) {
-      if (el.id === "choices" || el.id === "keyhint") continue;
       if (el.classList.contains("witness")) { el.dataset.hold = 250; story.push(el, ...el.children); }
       else story.push(el);
     }
-    const plate = leaf.querySelector(".plate");
-    if (plate) plate.dataset.hold = 700;
+    const plate = leaf.querySelector(".plate, .pagehead");
+    if (plate) plate.dataset.hold = 500;
     const h1 = text.querySelector("h1");
     if (h1) h1.dataset.hold = 650;
     [...box.children].forEach((b) => { b.dataset.hold = 110; });
@@ -172,6 +175,8 @@
     box.appendChild(picked);
     U.$("keyhint").textContent = "";
     U.keys([]);
+    // While a test runs, the story steps aside and the test has the whole page.
+    U.$("leaf").classList.add("testing");
     const game = U.games[c.game](box, (outcome, summary) => {
       // A won test gets its own short theme: archery, strength, stealth, wits or war.
       if (outcome === "win" && K.Sound && K.Sound.flourish) K.Sound.flourish((c.trial && c.trial.kind) || KIND[c.game] || "wits");
@@ -185,22 +190,26 @@
   function showAfter(sc, c, res, next) {
     // A language switch now must repaint this state, never offer the choices again.
     U.redraw = () => { U.renderScene(sc); showAfter(sc, c, res, next); };
-    const box = U.$("choices");
+    const leaf = U.$("leaf");
+    leaf.classList.remove("testing");
+    U.setBackdrop(artFor(sc));
+    // What you chose and what came of it are written into the story; Continue waits below.
+    const story = U.$("story"), box = U.$("choices");
     const pimg = K.val(c.img);
-    const picked = U.button("choice picked" + (pimg ? " has-img" : ""), '<span class="k">·</span>' + (pimg ? U.thumb(pimg) : "") + '<span class="t">' + U.t(K.val(c.t)) + '</span><span class="fx">' + U.tr("Your choice") + "</span>");
-    picked.disabled = true;
+    const picked = U.el('<div class="choice picked' + (pimg ? " has-img" : "") + '"><span class="k">·</span>' + (pimg ? U.thumb(pimg) : "") + '<span class="t">' + U.t(K.val(c.t)) + '</span><span class="fx">' + U.tr("Your choice") + "</span></div>");
     box.innerHTML = "";
-    box.appendChild(picked);
+    const added = [picked];
+    story.appendChild(picked);
     if (res.pre || res.text || res.check || res.lampOut) {
       const r = res.check;
-      box.appendChild(U.el('<div class="result">' +
+      added.push(story.appendChild(U.el('<div class="result">' +
         (r ? '<span class="roll">' + U.tr("{label}: rolled {roll}, total {total} against {dc}", { label: r.ch ? K.checkLabel(r.ch) : r.label, roll: r.roll, total: r.total, dc: r.dc }) +
           ' · <b class="' + (r.pass ? "pass" : "fail") + '">' + U.tr(r.pass ? "Success" : "Failure") + "</b></span>" : "") +
         (res.lampOut ? '<p class="aside">' + U.tr("The lamp went out before you chose.") + "</p>" : "") +
-        (res.pre ? "<p>" + U.t(res.pre) + "</p>" : "") + (res.text ? "<p>" + U.t(res.text) + "</p>" : "") + "</div>"));
+        (res.pre ? "<p>" + U.t(res.pre) + "</p>" : "") + (res.text ? "<p>" + U.t(res.text) + "</p>" : "") + "</div>")));
     }
     if (res.after && K.S.alive) {
-      box.appendChild(U.el('<div class="witness"><div class="lbl">' + U.tr("And then, as it always does") + "</div>" + U.blocks(res.after) + "</div>"));
+      added.push(story.appendChild(U.el('<div class="witness"><div class="lbl">' + U.tr("And then, as it is written") + "</div>" + U.blocks(res.after) + "</div>")));
     }
     const go = () => K.go(next);
     const cont = U.button("cta", U.tr("Continue"), go);
@@ -209,11 +218,14 @@
     U.keys([]);
     U.renderLedger();
     const parts = [];
-    for (const el of [...box.children].slice(1)) {
+    for (const el of added) {
       if (el.classList.contains("witness") || el.classList.contains("result")) { el.dataset.hold = 250; parts.push(el, ...el.children); }
       else parts.push(el);
     }
+    parts.push(cont);
     parts.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
-    U.stage(parts, () => { U.keys([go]); cont.focus({ preventScroll: true }); });
+    story.dataset.follow = "1";
+    U.toEnd(story, true);
+    U.stage(parts, () => { U.toEnd(story, true); U.keys([go]); cont.focus({ preventScroll: true }); });
   }
 })(window.K = window.K || {});

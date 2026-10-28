@@ -39,7 +39,7 @@
       "</section>" +
       '<section class="life" aria-labelledby="life-h">' +
         '<div class="life-head"><h2 id="life-h">' + U.tr("One life, seven acts") + "</h2>" +
-          "<p>" + U.tr("Create someone the epic never mentions and live their whole life, from a childhood beside the young princes to the eighteen days of war and what comes after. The great events always happen. Where you stand, what you swear, who you love and how you die are yours.") + "</p></div>" +
+          "<p>" + U.tr("Create someone the epic never mentions and live their whole life, from a childhood beside the young princes to the eighteen days of war and what comes after. The great events are written. Where you stand, what you swear, who you love and how you die are unwritten, and yours.") + "</p></div>" +
         '<ol class="acts">' + ACTS.map(([n, art, ages, line]) => {
           const [act, name] = K.tr(K.ACT_TITLES[n]).split(" · ");
           return '<li><i style="--img:url(\'' + U.artUrl(art) + '\')" aria-hidden="true"></i><div><span>' + U.esc(act) + " · " + U.tr(ages) + "</span><b>" + U.esc(name || act) + "</b><small>" + U.tr(line) + "</small></div></li>";

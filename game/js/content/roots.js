@@ -79,7 +79,7 @@
 
   K.CUSTOMS = {
     hastinapura: {
-      title: "The king's procession", art: "home_hastinapura",
+      title: "The king's procession", art: "custom_hastinapura",
       body: "Once a year blind King Dhritarashtra is carried through the city on an elephant draped in gold, with Queen Gandhari, her eyes bound, beside him. The whole city comes out.",
       choices: [
         { id: "front", t: "Push through to the front to see the elephants", fx: { attr: { might: 1 }, flag: "saw_procession" }, text: "An elephant looks right at you as it passes. You will remember its eye for the rest of your life." },
@@ -88,7 +88,7 @@
       ]
     },
     panchala: {
-      title: "The children's games at Kampilya", art: "home_panchala",
+      title: "The children's games at Kampilya", art: "custom_panchala",
       body: "Every spring King Drupada holds archery games on the river meadow, and on the first day the children shoot at a straw deer.",
       choices: [
         { id: "shoot", t: "Enter the children's contest", check: { attr: "aim", skill: "archery", dc: 6,
@@ -99,7 +99,7 @@
       ]
     },
     matsya: {
-      title: "The cattle festival", art: "home_matsya",
+      title: "The cattle festival", art: "custom_matsya",
       body: "At the end of the rains Matsya garlands its cattle, paints their horns and races its calves across the lake meadow. The children run the calves.",
       choices: [
         { id: "race", t: "Run a calf in the race", check: { attr: "grace", skill: "chariot", dc: 6,
@@ -121,7 +121,7 @@
       ]
     },
     anga: {
-      title: "The elephant day at Champa", art: "home_anga",
+      title: "The elephant day at Champa", art: "custom_anga",
       body: "Once a year the elephants of Anga are painted, belled and led through Champa to bathe in the river, and the children run beside them.",
       choices: [
         { id: "ride", t: "Ride on your uncle's elephant at the head of the line", fx: { skill: { chariot: 1 }, flag: "rode_elephant" }, text: "From up there you can see the whole city, the river and the forests beyond. It looks small. You do not feel small." },
@@ -130,7 +130,7 @@
       ]
     },
     suta: {
-      title: "Blessing the horses", art: "home_suta",
+      title: "Blessing the horses", art: "custom_suta",
       body: "On the charioteers' feast day, every horse in the royal stables is washed, garlanded and blessed, and the suta children help.",
       choices: [
         { id: "groom", t: "Groom the king's own horses until they shine", fx: { skill: { chariot: 1 } }, text: "The stablemaster inspects your work, says nothing, and gives you the hardest horse next year. That is praise." },
@@ -141,7 +141,7 @@
       ]
     },
     nishada: {
-      title: "The first hunt", art: "home_nishada",
+      title: "The first hunt", art: "custom_nishada",
       body: "At seven, Nishada children go with the hunters for the first time. They are meant to watch, and carry water, and come home with a story.",
       choices: [
         { id: "track", t: "Find the deer's trail before the hunters do", fx: { skill: { stealth: 1 }, flag: "first_trail" }, text: "You see the bent grass first. The hunters let you lead for an hour, and the whole village hears about it." },
@@ -150,7 +150,7 @@
       ]
     },
     gandhara: {
-      title: "The horse fair in the high valley", art: "home_gandhara",
+      title: "The horse fair in the high valley", art: "custom_gandhara",
       body: "Every summer the herders bring their horses down from the high pastures, and caravans from as far as the western deserts stop to trade.",
       choices: [
         { id: "pony", t: "Ride a mountain pony in the children's race", check: { attr: "grace", skill: "chariot", dc: 6,

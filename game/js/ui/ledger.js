@@ -1,4 +1,5 @@
-/* The ledger: obligations, bonds, vows, boons, curses and memories, always visible beside the scene. */
+/* The ledger: obligations, bonds, vows, boons, curses and memories. In the story it sits behind the
+   "Standing" button at the top right; when something changes, a short note floats up beside it. */
 (function (K) {
   "use strict";
   const U = K.UI;
@@ -17,7 +18,8 @@
 
   U.renderLedger = function () {
     const S = K.S, L = U.$("ledger");
-    if (!L || L.hidden) return;
+    if (!L) return;
+    floatChanges();
     const teacherName = K.TEACHERS && K.TEACHERS[S.teacher] ? ": " + K.tr(K.TEACHERS[S.teacher].short) : "";
     const kingName = K.COURTS && K.COURTS[S.court] ? ": " + K.tr(K.COURTS[S.court].king) : "";
     const duties = Object.entries(K.DUTIES).map(([k, n]) =>
@@ -49,4 +51,43 @@
       (secrets ? "<h2>" + U.tr("Secrets you keep") + '</h2><ul class="secrets">' + secrets + "</ul>" : "") +
       "<h2>" + U.tr("Memories") + "</h2>" + (mems ? '<ul class="mems">' + mems + "</ul>" : '<p class="empty">' + U.tr("Nothing remembered yet.") + "</p>");
   };
+
+  // ---------- The Standing panel ----------
+  U.toggleLedger = function (force) {
+    const L = U.$("ledger"), b = U.$("nav-standing");
+    const open = force === undefined ? L.hidden : force;
+    L.hidden = !open;
+    b.setAttribute("aria-expanded", String(open));
+    if (open) { U.renderLedger(); L.focus && L.focus(); }
+  };
+  document.addEventListener("click", (e) => {
+    const L = U.$("ledger");
+    if (!L || L.hidden || e.target.closest("#ledger, #nav-standing")) return;
+    U.toggleLedger(false);
+  });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && U.$("ledger") && !U.$("ledger").hidden) U.toggleLedger(false); });
+
+  // What just changed, as short notes floating up by the button: "+1 Loyalty to your king".
+  let floated = null;
+  function floatChanges() {
+    const box = U.$("floats"), d = K.lastDelta || {};
+    if (!box || d === floated) return;
+    floated = d;
+    const name = (key) => {
+      const [kind, id] = key.split(".");
+      if (kind === "duty") return K.tr(K.DUTIES[id]);
+      if (kind === "bond") return K.personName(id);
+      if (kind === "rep") return K.tr(K.FACTIONS[id]);
+      if (kind === "skill") return K.tr(K.SKILLS[id]);
+      if (kind === "attr") return K.tr(K.ATTRS[id]);
+      return null;
+    };
+    const notes = Object.entries(d).filter(([k, n]) => typeof n === "number" && n && name(k)).slice(0, 4);
+    notes.forEach(([k, n], i) => {
+      const el = U.el('<span class="float ' + (n > 0 ? "up" : "down") + '">' + (n > 0 ? "+" : "") + n + " " + U.esc(name(k)) + "</span>");
+      el.style.animationDelay = i * 0.35 + "s";
+      box.appendChild(el);
+      setTimeout(() => el.remove(), 3200 + i * 350);
+    });
+  }
 })(window.K = window.K || {});

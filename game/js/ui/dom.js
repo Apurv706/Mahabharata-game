@@ -54,9 +54,41 @@
     }).join("");
   };
 
+  // ---------- The painting behind everything ----------
+  // In the story the scene's painting fills the screen and the page lies over it. A 16:9 "_wide"
+  // version is used when there is one; the older 3:1 paintings are dimmed and softened behind the
+  // page. Each painting can carry a focal point, so a phone (which shows only the middle of a wide
+  // picture) crops around its subject.
+  const WIDE = new Set(["home_anga", "home_gandhara", "home_hastinapura", "home_mathura", "home_matsya", "home_nishada", "home_panchala",
+    "scene_day13", "scene_dice_hall", "scene_dice_throws", "scene_exile", "scene_fair", "scene_indraprastha", "scene_lac", "scene_poison",
+    "scene_princes", "scene_swayamvara", "scene_teacher", "scene_teaching", "scene_tournament", "scene_virata", "scene_women_field",
+    "war_day17", "war_day18", "war_eve"]);
+  const FOCAL = { scene_teacher: "62% 45%", scene_dice_throws: "28% 35%", home_anga: "30% 50%", scene_princes: "34% 55%", scene_poison: "45% 45%" };
+  U.hasWide = (key) => WIDE.has(key) || /^stage_/.test(key || "");
+  let bdKey = null, bdFlip = 0;
+  U.setBackdrop = function (key) {
+    const bd = U.$("backdrop");
+    if (!bd || key === bdKey) return;
+    bdKey = key;
+    const layers = bd.querySelectorAll(".bd");
+    const next = layers[bdFlip = 1 - bdFlip], prev = layers[1 - bdFlip];
+    const wide = key && U.hasWide(key);
+    next.style.backgroundImage = key ? "url('" + U.artUrl(WIDE.has(key) ? key + "_wide" : key) + "')" : "none";
+    next.style.backgroundPosition = FOCAL[key] || "50% 45%";
+    next.classList.toggle("flat", !!key && !wide);
+    next.classList.add("on"); prev.classList.remove("on");
+  };
+
   // The scene's painting, or (until the art exists) a flat field in the scene's own colour with its
   // caption set large, so a missing picture still reads as a designed page, never a gradient.
+  // In the story itself the painting goes behind the page, and the page gets a small header instead.
   U.plate = function (o) {
+    if (U.inScene) {
+      U.setBackdrop(o.art || null);
+      const kind = o.tagText ? '<span class="kind ' + (o.tag || "") + '">' + U.esc(o.tagText) + "</span>" : "";
+      return '<header class="pagehead">' + kind + (o.title ? "<b>" + U.t(o.title) + "</b>" : "") +
+        (o.small ? "<small>" + U.t(o.small) + "</small>" : o.caption ? "<small>" + U.t(o.caption) + "</small>" : "") + "</header>";
+    }
     const img = U.artUrl(o.art);
     const field = (o.grad || ["#5a3a22"])[0];
     const style = img ? "--img:url('" + img + "')" : "--field:color-mix(in srgb, " + field + " 40%, var(--ground))";
@@ -70,9 +102,32 @@
   };
 
   U.where = function (html) { U.$("where").innerHTML = html; };
+  U.inScene = false;
   U.setNav = function (on) {
     document.body.classList.remove("titling"); // the title screen adds it back after this call
-    U.$("nav").hidden = !on; U.$("game").classList.toggle("wide", !on); U.$("ledger").hidden = !on;
+    U.inScene = !!on;
+    const leaf = U.$("leaf"); if (leaf) leaf.className = "leaf"; // each screen sets its own page shape
+    document.body.classList.toggle("inscene", !!on);
+    U.$("nav").hidden = !on; U.$("game").classList.toggle("wide", !on);
+    U.$("nav-standing").hidden = !on;
+    if (!on) { U.$("ledger").hidden = true; U.$("nav-standing").setAttribute("aria-expanded", "false"); U.setBackdrop(null); }
+  };
+
+  // The story area follows the pen as it writes, unless the player has scrolled back to reread;
+  // it follows again once they are back at the bottom.
+  U.follow = function (story) {
+    if (!story) return;
+    const atEnd = () => story.scrollHeight - story.scrollTop - story.clientHeight < 28;
+    story.dataset.follow = "1";
+    const check = () => { story.dataset.follow = atEnd() ? "1" : ""; };
+    story.addEventListener("wheel", () => setTimeout(check, 60), { passive: true });
+    story.addEventListener("touchmove", () => setTimeout(check, 60), { passive: true });
+    story.addEventListener("keydown", () => setTimeout(check, 60));
+  };
+  U.toEnd = function (story, smooth) {
+    if (!story || story.dataset.follow === "") return;
+    if (typeof story.scrollTo === "function") story.scrollTo({ top: story.scrollHeight, behavior: smooth && U.motion() ? "smooth" : "auto" });
+    else story.scrollTop = story.scrollHeight;
   };
 
   // ---------- Staged reveal ----------
@@ -155,6 +210,9 @@
       if (last) {
         const r = last.getBoundingClientRect(), h = host.getBoundingClientRect();
         quill.style.transform = "translate(" + (r.right - h.left - 3) + "px," + (r.bottom - h.top - 85) + "px)";
+        // Keep the line being written in view inside a scrolling story.
+        const story = el.closest(".story");
+        if (story && story.dataset.follow !== "") { const sr = story.getBoundingClientRect(); if (r.bottom > sr.bottom - 18) story.scrollTop += r.bottom - sr.bottom + 36; }
       }
       if (shown >= total) return finish(true);
       w.raf = requestAnimationFrame(frame);
@@ -229,6 +287,8 @@
     U.$("nav-journal").textContent = K.tr("Journal");
     U.$("nav-map").textContent = K.tr("Map");
     U.$("nav-menu").textContent = K.tr("Menu");
+    U.$("standing-label").textContent = K.tr("Standing");
+    U.$("nav-standing").setAttribute("aria-label", K.tr("Obligations, bonds, vows and memories"));
     U.$("ledger").setAttribute("aria-label", K.tr("Obligations, bonds, vows and memories"));
   };
   U.setLang = function (lang, reopen) {

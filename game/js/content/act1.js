@@ -144,7 +144,7 @@
     // within reach of the palace. Hastinapura and the charioteer families are already there.
     {
       id: "a1_journey", when: (S) => !["hastinapura", "suta"].includes(S.origin), skipTo: "a1_princes",
-      act: 1, age: 7, art: "home_hastinapura", place: "The road to Hastinapura", caption: "Hastinapura, at the end of the road", // art: a stand-in until scene_journey is painted
+      act: 1, age: 7, art: "scene_journey", place: "The road to Hastinapura", caption: "Hastinapura, at the end of the road",
       enter: { flag: "moved_capital" },
       title: "The road to Hastinapura",
       body: (S) => [

@@ -197,3 +197,85 @@ html[lang="hi"] .plate .cap b { font-size: clamp(24px, 3.8vw, 38px); line-height
 html[lang="hi"] .lbl, html[lang="hi"] .brand { line-height: 1.4; }
 html[lang="hi"] .speech { font-size: 21px; line-height: 1.6; }
 html[lang="hi"] .choice .t { line-height: 1.5; }
+
+/* ---------- In the story: the painting fills the screen, the page lies over it ----------
+   The top bar keeps where you are in your life on the left, Character, Journal, Map and Menu in
+   the middle, and your Standing (obligations, bonds, vows) behind a button on the right. The page
+   never scrolls as a whole: the story scrolls inside it and the choices sit fixed at its foot. */
+.backdrop { position: fixed; inset: 0; z-index: 0; display: none; background: var(--ground); overflow: hidden; }
+body.inscene .backdrop { display: block; }
+.backdrop .bd { position: absolute; inset: 0; background-size: cover; background-repeat: no-repeat; opacity: 0; transition: opacity 0.9s ease; }
+.backdrop .bd.on { opacity: 1; }
+.backdrop .bd.flat { filter: blur(3px) brightness(0.6) saturate(0.9); transform: scale(1.06); } /* an older 3:1 painting, softened behind the page */
+.backdrop::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to bottom, rgba(var(--ground-rgb), 0.62), rgba(var(--ground-rgb), 0) 16%, rgba(var(--ground-rgb), 0) 52%, rgba(var(--ground-rgb), 0.45)); } /* taste-skill-ignore: keeps the top bar legible over any painting */
+.stagefx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+body.inscene { padding: 0; overflow: hidden; height: 100vh; height: 100svh; background: var(--ground); }
+body.inscene .app { position: relative; z-index: 1; max-width: none; height: 100vh; height: 100svh; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 0;
+  padding: max(8px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 14px max(16px, env(safe-area-inset-left, 0px)); }
+body.inscene header.top { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 8px 12px; padding: 2px 0 10px; }
+body.inscene .brand { display: none; }
+body.inscene .where { grid-column: 1; flex: none; color: var(--ink); text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8); line-height: 1.3; } /* taste-skill-ignore: text over a painting */
+body.inscene .where b { display: block; font-family: var(--display); font-size: 19px; }
+body.inscene .nav { grid-column: 2; justify-self: center; flex-wrap: nowrap; background: rgba(var(--surface-rgb), 0.82); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--gold-line); border-radius: 999px; padding: 3px; }
+body.inscene .nav button { border-radius: 999px; padding: 6px 14px; color: var(--ink); }
+.standing { grid-column: 3; justify-self: end; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 6px 14px 6px 10px; border-radius: 999px; cursor: pointer;
+  color: var(--ink); background: rgba(var(--surface-rgb), 0.82); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--gold-line); font-size: 15px; }
+.standing svg { width: 22px; height: 22px; color: var(--data); }
+.standing[aria-expanded="true"] { background: var(--hover); }
+body.inscene .game { display: flex; align-items: flex-end; justify-content: center; min-height: 0; height: 100%; }
+body.inscene .leaf { width: min(800px, 100%); max-height: 100%; overflow: auto; background: rgba(var(--surface-rgb), 0.93); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--gold-line); border-radius: 14px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55); animation: pagein 0.45s cubic-bezier(.2, .7, .2, 1); } /* taste-skill-ignore: the page floats over the painting */
+@keyframes pagein { from { opacity: 0; transform: translateY(24px); } }
+.pagehead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; padding: 16px 26px 4px; }
+.pagehead .kind { font-size: 12.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.pagehead .kind.canon { color: var(--data); }
+.pagehead .kind.war { color: var(--negative); }
+.pagehead b { flex-basis: 100%; font-family: var(--display); font-size: 28px; line-height: 1.1; }
+.pagehead small { font-size: 14px; color: var(--faint); }
+.leaf.split { display: flex; flex-direction: column; overflow: hidden; }
+.leaf.split .text { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 0; padding: 0; background-position: 0 2px; }
+.split .story { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 26px 26px 18px; display: grid; align-content: start; gap: 16px; scrollbar-width: thin; }
+.split .story:focus { outline: none; }
+.split .story .choice.picked { min-height: 0; }
+.split .actions { flex: none; max-height: 52%; overflow-y: auto; padding: 12px 26px 18px; border-top: 1px solid var(--gold-line); display: grid; gap: 8px; background: rgba(var(--surface-rgb), 0.6); }
+.split .actions .hint:empty { display: none; }
+.leaf.split.testing .story, .leaf.split.testing .pagehead { display: none; }
+.leaf.split.testing .actions { flex: 1 1 auto; max-height: none; border-top: 0; padding-top: 18px; }
+body.inscene .ledger { position: fixed; z-index: 40; top: 64px; right: 16px; width: min(380px, calc(100vw - 32px)); max-height: calc(100svh - 84px); overflow: auto;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55); border: 1px solid var(--gold-line); animation: pagein 0.25s ease; } /* taste-skill-ignore: a panel that opens over the page */
+.floats { position: fixed; z-index: 41; top: 60px; right: 20px; display: grid; gap: 6px; justify-items: end; pointer-events: none; }
+.float { font-size: 14px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: rgba(var(--surface-rgb), 0.95); border: 1px solid var(--gold-line); opacity: 0; animation: floatup 3s ease forwards; }
+.float.up { color: var(--positive); } .float.down { color: var(--negative); }
+@keyframes floatup { 0% { opacity: 0; transform: translateY(8px); } 12% { opacity: 1; transform: none; } 80% { opacity: 1; } 100% { opacity: 0; transform: translateY(-14px); } }
+@media (max-height: 760px) { .split .story { padding: 18px 22px 14px; gap: 12px; } .pagehead { padding: 12px 22px 2px; } .split .actions { padding: 10px 22px 14px; } }
+
+/* Phones: the painting first, then the page rises from the bottom like a sheet; the choices sit
+   fixed at its foot, one line each, never needing a scroll. */
+@media (max-width: 720px) {
+  body.inscene header.top { grid-template-columns: minmax(0, 1fr) auto; gap: 6px 8px; padding-bottom: 6px; }
+  body.inscene .where { font-size: 13px; }
+  body.inscene .where b { font-size: 16px; }
+  body.inscene .nav { grid-row: 2; grid-column: 1 / -1; justify-self: stretch; justify-content: space-between; }
+  body.inscene .nav button { padding: 4px 10px; font-size: 14px; min-height: 32px; }
+  .standing { grid-column: 2; grid-row: 1; padding: 4px 10px; min-height: 34px; font-size: 13px; }
+  body.inscene .app { padding-bottom: 0; }
+  body.inscene .leaf { width: calc(100% + 32px); margin: 0 -16px; max-height: 76svh; border-radius: 18px 18px 0 0; border-bottom: 0; animation: sheet 0.55s cubic-bezier(.2, .7, .2, 1) 0.35s both; }
+  @keyframes sheet { from { transform: translateY(100%); } }
+  .pagehead { padding: 12px 18px 2px; }
+  .pagehead b { font-size: 22px; }
+  .split .story { padding: 16px 18px 12px; gap: 12px; }
+  .split .actions { max-height: 50%; padding: 8px 12px calc(10px + env(safe-area-inset-bottom, 0px)); gap: 6px; }
+  .split .actions .choice { min-height: 44px; padding: 9px 12px; gap: 1px 10px; }
+  .split .actions .choice .t { font-size: 15.5px; line-height: 1.3; }
+  .split .actions .choice .fx { font-size: 12.5px; flex-wrap: nowrap; overflow: hidden; white-space: nowrap; gap: 2px 10px; }
+  .split .actions .choice.has-img .thumb.face, .split .actions .choice .thumb.card { width: 38px; height: 38px; aspect-ratio: auto; border-radius: 50%; }
+  .split .actions .choice .thumb.emblem { width: 38px; height: 38px; }
+  body.inscene .ledger { top: auto; bottom: 0; right: 0; left: 0; width: 100%; max-height: 80svh; border-radius: 18px 18px 0 0; }
+  .floats { top: 46px; right: 12px; }
+}
+/* The story page has a definite height, so the story and the choices can share it. */
+body.inscene .leaf.split { height: 100%; max-height: 900px; }
+.split .actions { grid-template-columns: minmax(0, 1fr); align-content: start; }
+.split .story { min-height: 30%; }
+.floats { z-index: 39; }
+@media (max-width: 720px) { body.inscene .leaf.split { height: 76svh; max-height: none; } .split .story { min-height: 34%; } }
