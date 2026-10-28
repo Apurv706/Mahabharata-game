@@ -1,0 +1,48 @@
+name: Fetch Runway videos
+
+# One-off: downloads the accepted Runway clips into art_review/video/<clip>/,
+# zips each clip folder (reference image + prompts + video), and commits.
+# The Runway links expire on 29-30 Oct 2026; run before then.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download accepted clips
+        run: |
+          set -euo pipefail
+          fetch() {
+            curl -fsSL --retry 3 -o "art_review/video/$1/$2" "$3"
+            ls -l "art_review/video/$1/$2"
+          }
+          fetch video_war_eve video_war_eve_try1.mp4 \
+            "https://dnznrvs05pmza.cloudfront.net/ca1617cd-0b66-4c72-bb30-2311b984707b.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNGU4ZDNhZDg0MjU0OTU2ZCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MzMzNzY4OH0.fwllNP7WCg56C9Dcz4TntZqoaOIvO9ccSr7gcdnISTE"
+          fetch video_scene_dice_hall video_scene_dice_hall_try2.mp4 \
+            "https://dnznrvs05pmza.cloudfront.net/adaf355b-2543-4148-a676-52dfd3f35663.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMDBmZDM0NGYwZDQ2MDNjZiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MzMyMzU5OX0.CLm5MA7QKtkWYLK-RAs5gJhp-QawkcgWneRyzf5E3H0"
+          fetch video_scene_poison video_scene_poison_try2.mp4 \
+            "https://dnznrvs05pmza.cloudfront.net/49490450-e69b-4269-ae55-636c68fb54ed.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNmZjN2RjNzE4OTVhYjE2OCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5MzM3NTQ3M30.q2YRkLdCb9bDf5ep8MuBaQsoghla3-HRqz-IKezA9Rw"
+
+      - name: Zip each clip folder
+        run: |
+          cd art_review/video
+          for d in video_war_eve video_scene_dice_hall video_scene_poison; do
+            rm -f "$d.zip"
+            zip -qr "$d.zip" "$d"
+          done
+          ls -l
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898733+github-actions[bot]@users.noreply.github.com"
+          git add art_review/video
+          git commit -m "Add accepted Runway clips (war eve, dice hall, Bhima at the river) with zips"
+          git push

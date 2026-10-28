@@ -1,0 +1,17 @@
+Clip: video_scene_poison
+Status: try 1, replaced by try 2 (owner wanted more action)
+Reference image: scene_poison_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_poison_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: fc00089a-e38f-4e8f-92cc-47fb5ac21518
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+
+PROMPT:
+Night on the river ghats during a festival. The two men at the foot of the steps slowly ease the bound, garlanded bundle down toward the water's edge. Hundreds of lamp flames flicker; their golden reflections ripple and sparkle on the dark water; the moored boats rock gently on the current; red pennants and canopy cloth stir in the breeze; a few flower petals drift slowly on the river. The crowd on the steps stays in place, with only slight movement. Static locked-off camera, no zoom, no pan. Keep the painting's style, composition, colours and every person's face, hands and body exactly as they are; no new people or objects appear. Subtle, slow, natural motion only.
+
+RESULT:
+Video: see the .mp4 in this folder (fetched by the fetch-runway-videos workflow).

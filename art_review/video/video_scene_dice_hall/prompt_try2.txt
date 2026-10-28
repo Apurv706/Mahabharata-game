@@ -1,0 +1,18 @@
+Clip: video_scene_dice_hall
+Status: ACCEPTED (try 2, approved by owner 28 Oct)
+Change from try 1: try 1 added two men walking in the foreground. Try 2 names the empty floor and carpet, forbids anyone entering, and keeps all people still.
+Reference image: scene_dice_hall_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_dice_hall_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: 59a04b3c-37d4-4632-99f8-725a98cea687
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+
+PROMPT:
+A still, quiet royal assembly hall. Only the light and air move: oil-lamp flames flicker on the brass lamp stands; their reflections shimmer on the polished floor; banners and red curtains sway gently; thin incense smoke curls upward; dust motes drift in the sunbeams from the doorway. The foreground floor and the carpet stay completely empty. No one enters the frame from any side. Every person already in the hall stands still in place and does not walk. Static locked-off camera, no zoom, no pan. Keep the painting's style, composition, colours and every person exactly as they are.
+
+RESULT:
+Video: see the .mp4 in this folder (fetched by the fetch-runway-videos workflow).

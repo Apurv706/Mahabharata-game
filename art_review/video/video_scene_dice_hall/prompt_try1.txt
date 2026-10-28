@@ -1,0 +1,17 @@
+Clip: video_scene_dice_hall
+Status: REJECTED - added two men in white walking through the empty foreground
+Reference image: scene_dice_hall_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_dice_hall_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: 056516ad-1ed2-4681-af23-0664b7b579ae
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+
+PROMPT:
+A royal assembly hall before the dice game. Oil-lamp flames flicker softly on the tall brass lamp stands; their reflections shimmer on the polished stone floor; hanging banners and red curtains sway gently; faint incense smoke curls upward through the golden light from the doorway; dust motes drift in the sunbeams. The courtiers and attendants stay in place, with only slight breathing and small head movements. Static locked-off camera, no zoom, no pan. Keep the painting's style, composition, colours and every person's face, hands and body exactly as they are; no new people or objects appear. Subtle, slow, natural motion only.
+
+RESULT:
+Video: see the .mp4 in this folder (fetched by the fetch-runway-videos workflow).
