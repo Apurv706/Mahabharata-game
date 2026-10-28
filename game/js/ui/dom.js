@@ -86,8 +86,10 @@
     if (U.inScene) {
       U.setBackdrop(o.art || null);
       const kind = o.tagText ? '<span class="kind ' + (o.tag || "") + '">' + U.esc(o.tagText) + "</span>" : "";
-      return '<header class="pagehead">' + kind + (o.title ? "<b>" + U.t(o.title) + "</b>" : "") +
-        (o.small ? "<small>" + U.t(o.small) + "</small>" : o.caption ? "<small>" + U.t(o.caption) + "</small>" : "") + "</header>";
+      const fig = K.S && K.puppetSpec && !o.noFigure ? U.puppetBadge(K.puppetSpec(K.S), { pose: o.pose, fit: true }) : "";
+      return '<header class="pagehead"><div class="ph-text"><div class="ph-line">' + kind +
+        (o.small ? "<small>" + U.t(o.small) + "</small>" : o.caption ? "<small>" + U.t(o.caption) + "</small>" : "") + "</div>" +
+        (o.heading ? "<h1>" + U.t(o.heading) + "</h1>" : o.title ? "<b>" + U.t(o.title) + "</b>" : "") + "</div>" + fig + "</header>";
     }
     const img = U.artUrl(o.art);
     const field = (o.grad || ["#5a3a22"])[0];

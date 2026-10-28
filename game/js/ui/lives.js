@@ -19,7 +19,7 @@
     const rec = {
       at: new Date().toISOString(),
       me: { name: S.name, pronoun: S.pronoun, origin: S.origin, teacher: S.teacher, path: S.path, spouse: S.spouse, friend: S.friend, court: S.court, child: S.child },
-      title: e.title, art: e.art, alive: S.alive, age: S.age, side: S.side, telling: e.telling,
+      title: e.title, art: e.art, alive: S.alive, age: S.age, side: S.side, telling: e.telling, figure: K.puppetSpec ? K.puppetSpec(S) : null,
       kept: S.vows.length > 0 && S.vows.every((v) => !v.broken || v.released),
       broke: S.vows.some((v) => v.broken && !v.released),
       karna: (S.bonds.karna || 0) >= 7 || has("died_with_karna") || has("pledged_to_karna"),
@@ -65,7 +65,7 @@
     }).join("");
     const shelf = lives.map((r) => {
       const lines = (r.telling || []).map((l) => "<p>" + U.esc(K.text(l, null, r.me)) + "</p>").join("");
-      return '<details class="lifecard"><summary>' + U.thumb(r.art, "card") + '<span><b>' + U.esc(r.me.name) + "</b><small>" + U.tr(r.title) + " · " +
+      return '<details class="lifecard"><summary>' + (r.figure ? U.puppetBadge(r.figure, { h: 64, cls: "lifefig" }) : "") + U.thumb(r.art, "card") + '<span><b>' + U.esc(r.me.name) + "</b><small>" + U.tr(r.title) + " · " +
         U.tr(r.alive ? "Age {n}" : "Fell at {n}", { n: r.age }) + " · " + U.esc(when(r.at)) + '</small></span></summary><div class="telling">' + lines + "</div></details>";
     }).join("");
     U.openModal("Book of Lives",

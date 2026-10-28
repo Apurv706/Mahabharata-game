@@ -432,3 +432,89 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 .table { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
 .table li { padding: 14px 12px; border: 1px solid var(--gold-line); border-radius: var(--r-control); background: var(--surface); font-size: 17px; text-align: center; }
 .range.field .target::before { display: none; } .range.field .target { top: 60%; }
+
+/* ---------- The shadow puppet ----------
+   Joints turn about fixed points in the figure's own coordinates; a pose is a set of angles. */
+.pp { overflow: visible; filter: drop-shadow(0 0 6px rgba(255, 196, 110, 0.35)) drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.45)); } /* taste-skill-ignore: a lamp behind the puppet's screen */
+.pp .j, .pp .pp-body { transform-box: view-box; transition: transform 0.5s cubic-bezier(.3, .7, .3, 1); }
+.pp .pp-body { transform-origin: 60px 116px; }
+.pp .legB, .pp .legF { transform-origin: 60px 117px; }
+.pp .shinB, .pp .shinF { transform-origin: 60px 152px; }
+.pp .armB, .pp .armF { transform-origin: 58px 73px; }
+.pp .foreB, .pp .foreF { transform-origin: 58px 98px; }
+.pp .head { transform-origin: 60px 65px; }
+.pp.flip { transform: scaleX(-1); }
+.pp.dead { filter: grayscale(0.85) brightness(0.8) drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.45)); }
+/* Standing, breathing; bearing from temperament and age. */
+.pose-stand .armF { transform: rotate(8deg); } .pose-stand .foreF { transform: rotate(-16deg); } .pose-stand .armB { transform: rotate(-6deg); }
+.pose-stand .pp-body { animation: pp-breathe 3.6s ease-in-out infinite; }
+@keyframes pp-breathe { 50% { transform: translateY(-1.2px); } }
+.pose-stand.st-elder .pp-body { transform: rotate(7deg); animation: none; }
+.pose-stand.t-bold .legF { transform: rotate(-9deg); } .pose-stand.t-bold .legB { transform: rotate(9deg); } .pose-stand.t-bold .head { transform: rotate(-4deg); }
+.pose-stand.t-thoughtful .head { transform: rotate(10deg); } .pose-stand.t-thoughtful .armF { transform: rotate(-26deg); } .pose-stand.t-thoughtful .foreF { transform: rotate(-120deg); }
+.pose-stand.t-devoted .armF { transform: rotate(-36deg); } .pose-stand.t-devoted .foreF { transform: rotate(-84deg); }
+.pose-stand.t-cunning .pp-body { transform: rotate(6deg) translateY(2px); animation: none; }
+.pose-stand.limp .legB { transform: rotate(10deg); } .pose-stand.limp .shinB { transform: rotate(14deg); }
+.pose-stand.chained .armF, .pose-stand.chained .armB { transform: rotate(-28deg); } .pose-stand.chained .foreF, .pose-stand.chained .foreB { transform: rotate(-44deg); }
+.sling .armF { transform: rotate(-24deg) !important; animation: none !important; } .sling .foreF { transform: rotate(-96deg) !important; animation: none !important; }
+/* Walking: legs and arms swing against each other. */
+.pose-walk .legF { animation: pp-legF 0.7s ease-in-out infinite alternate; } .pose-walk .legB { animation: pp-legB 0.7s ease-in-out infinite alternate; }
+.pose-walk .shinB { animation: pp-shin 0.7s ease-in-out infinite alternate; }
+.pose-walk .armF { animation: pp-legB 0.7s ease-in-out infinite alternate; } .pose-walk .armB { animation: pp-legF 0.7s ease-in-out infinite alternate; }
+.pose-walk .pp-body { animation: pp-bob 0.35s ease-in-out infinite alternate; }
+@keyframes pp-legF { from { transform: rotate(-24deg); } to { transform: rotate(18deg); } }
+@keyframes pp-legB { from { transform: rotate(18deg); } to { transform: rotate(-24deg); } }
+@keyframes pp-shin { from { transform: rotate(0deg); } to { transform: rotate(28deg); } }
+@keyframes pp-bob { to { transform: translateY(-2px); } }
+/* Actions. */
+.pose-aim .armF { transform: rotate(-84deg); } .pose-aim .foreF { transform: rotate(-6deg); } .pose-aim .armB { transform: rotate(-86deg); } .pose-aim .foreB { transform: rotate(150deg); } .pose-aim .pp-body { transform: rotate(-2deg); }
+.pose-loose .armF { transform: rotate(-84deg); } .pose-loose .foreF { transform: rotate(-6deg); } .pose-loose .armB { transform: rotate(-60deg); } .pose-loose .foreB { transform: rotate(-10deg); }
+.pose-throw .armF { animation: pp-throw 0.45s ease-out forwards; }
+@keyframes pp-throw { from { transform: rotate(-160deg); } to { transform: rotate(-50deg); } }
+.pose-push .pp-body { transform: rotate(14deg); } .pose-push .armF { transform: rotate(-72deg); } .pose-push .foreF { transform: rotate(-18deg); } .pose-push .armB { transform: rotate(-66deg); } .pose-push .foreB { transform: rotate(-22deg); }
+.pose-push .legF { transform: rotate(-26deg); } .pose-push .shinF { transform: rotate(18deg); } .pose-push .legB { transform: rotate(20deg); } .pose-push .shinB { transform: rotate(6deg); }
+.pose-brace .pp-body { transform: rotate(-8deg); } .pose-brace .armF { transform: rotate(-96deg); } .pose-brace .foreF { transform: rotate(-60deg); } .pose-brace .legF { transform: rotate(-16deg); } .pose-brace .legB { transform: rotate(16deg); }
+.pose-strike .armF { animation: pp-strike 0.5s cubic-bezier(.6, 0, .4, 1) forwards; } .pose-strike .pp-body { transform: rotate(8deg); }
+@keyframes pp-strike { 0% { transform: rotate(-170deg); } 100% { transform: rotate(-40deg); } }
+.pose-block .armF { transform: rotate(-112deg); } .pose-block .foreF { transform: rotate(-70deg); } .pose-block .pp-body { transform: rotate(-6deg); }
+.pose-hold .pp-body { transform: rotate(6deg); } .pose-hold .armF { transform: rotate(-66deg); } .pose-hold .foreF { transform: rotate(-24deg); } .pose-hold .armB { transform: rotate(-58deg); } .pose-hold .foreB { transform: rotate(-30deg); }
+.pose-sneak .pp-body { transform: translateY(12px) rotate(20deg); } .pose-sneak .legF { transform: rotate(-42deg); } .pose-sneak .shinF { transform: rotate(52deg); } .pose-sneak .legB { transform: rotate(26deg); } .pose-sneak .shinB { transform: rotate(44deg); } .pose-sneak .armF { transform: rotate(-40deg); } .pose-sneak .foreF { transform: rotate(-40deg); }
+.pose-think .armF { transform: rotate(-28deg); } .pose-think .foreF { transform: rotate(-140deg); } .pose-think .head { transform: rotate(10deg); }
+.pose-speak .armF { transform: rotate(-58deg); } .pose-speak .foreF { transform: rotate(-30deg); } .pose-speak .head { transform: rotate(-4deg); }
+/* Reactions. */
+.pose-cheer .armF { transform: rotate(-166deg); } .pose-cheer .foreF { transform: rotate(-10deg); } .pose-cheer .armB { transform: rotate(-150deg); } .pose-cheer .pp-body { transform: rotate(-4deg); animation: pp-hop 0.5s ease 2; }
+@keyframes pp-hop { 50% { transform: translateY(-7px) rotate(-4deg); } }
+.pose-slump .pp-body { transform: rotate(11deg) translateY(3px); } .pose-slump .head { transform: rotate(26deg); } .pose-slump .armF { transform: rotate(4deg); } .pose-slump .armB { transform: rotate(2deg); }
+.pose-kneel .pp-body { transform: translateY(26px); } .pose-kneel .legF { transform: rotate(-84deg); } .pose-kneel .shinF { transform: rotate(96deg); } .pose-kneel .legB { transform: rotate(8deg); } .pose-kneel .shinB { transform: rotate(98deg); }
+.pose-kneel .armF { transform: rotate(-36deg); } .pose-kneel .foreF { transform: rotate(-84deg); } .pose-kneel .head { transform: rotate(14deg); }
+.pose-hit .pp-body { animation: pp-hit 0.4s ease; }
+@keyframes pp-hit { 30% { transform: translateX(-6px) rotate(-8deg); } 60% { transform: translateX(3px) rotate(3deg); } }
+.pose-dead .pp-body { transform-origin: 60px 190px; transform: rotate(-86deg) translateX(-8px); }
+.pose-fall .pp-body { transform-origin: 60px 190px; animation: pp-fall 0.8s ease-in forwards; }
+@keyframes pp-fall { to { transform: rotate(-86deg) translateX(-8px); } }
+/* The figure in the corner of the page, and in cards. */
+.ppbadge { display: inline-flex; align-items: flex-end; justify-content: center; flex: none; }
+.pagehead .ppbadge { position: absolute; right: 18px; top: -46px; height: 96px; pointer-events: none; }
+.pagehead { position: relative; padding-right: 92px; }
+@media (max-width: 720px) { .pagehead .ppbadge { top: -40px; right: 12px; } .pagehead .ppbadge svg { height: 78px; width: auto; } }
+.pp .rod { opacity: 0.4; }
+.pp:not(.pose-stand):not(.pose-walk) .rod { display: none; }
+.sheet-figure { display: flex; justify-content: center; padding: 4px 0 0; }
+.lifecard summary .lifefig { margin-right: -6px; }
+.react-win { } .react-lose { } .react-vow { }
+/* The figure stands in the page's top corner, fully inside the page. */
+.pagehead { min-height: 92px; align-content: end; padding-bottom: 6px; }
+.pagehead .ppbadge { position: absolute; right: 18px; top: auto; bottom: 0; height: auto; }
+.pagehead .ppbadge svg { height: 92px; width: auto; }
+.sheet-figure { min-height: 0; }
+.sheet-figure svg { height: 180px; width: auto; }
+@media (max-width: 720px) { .pagehead { min-height: 72px; } .pagehead .ppbadge { top: auto; right: 12px; } .pagehead .ppbadge svg { height: 72px; } }
+/* The page header: what kind of moment it is, the caption, the title, and your figure beside them. */
+.pagehead { display: flex; align-items: flex-end; gap: 12px; min-height: 0; padding: 14px 18px 8px 26px; }
+.pagehead .ph-text { flex: 1 1 auto; min-width: 0; display: grid; gap: 2px; }
+.pagehead .ph-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; }
+.pagehead h1 { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 3vw, 34px); line-height: 1.08; margin: 2px 0 0; text-wrap: balance; }
+.pagehead .ppbadge { position: static; flex: none; margin-bottom: -6px; }
+.pagehead .ppbadge svg { height: 104px; width: auto; }
+html[lang="hi"] .pagehead h1 { line-height: 1.3; }
+@media (max-width: 720px) { .pagehead { padding: 10px 12px 6px 18px; } .pagehead h1 { font-size: 22px; } .pagehead .ppbadge svg { height: 78px; } }

@@ -43,8 +43,8 @@
     const witness = K.val(sc.witness);
     const leaf = U.$("leaf");
     leaf.className = "leaf split";
-    leaf.innerHTML = U.plate({ art: artFor(sc), grad: sc.plate, caption: K.val(sc.caption), tag, tagText }) +
-      '<div class="text"><div class="story" id="story" tabindex="0"><h1>' + U.t(K.val(sc.title)) + "</h1>" +
+    leaf.innerHTML = U.plate({ art: artFor(sc), grad: sc.plate, caption: K.val(sc.caption), tag, tagText, heading: K.val(sc.title) }) +
+      '<div class="text"><div class="story" id="story" tabindex="0">' +
       (witness ? '<div class="witness"><div class="lbl">' + U.tr("As it is written") + "</div>" + U.blocks(witness) + "</div>" : "") +
       U.blocks(sc.body) + '</div><div class="actions"><div class="choices" id="choices"></div><p class="hint" id="keyhint"></p></div></div>';
     U.follow(U.$("story"));
@@ -226,6 +226,9 @@
     parts.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
     story.dataset.follow = "1";
     U.toEnd(story, true);
+    const won = res.check ? res.check.pass : res.outcome ? res.outcome === "win" : null;
+    if (K.lastDelta && K.lastDelta.vowTaken) setTimeout(() => U.puppetReact("vow"), 400);
+    else if (won !== null) setTimeout(() => U.puppetReact(won ? "win" : "lose"), 400);
     U.stage(parts, () => { U.toEnd(story, true); U.keys([go]); cont.focus({ preventScroll: true }); });
   }
 })(window.K = window.K || {});
