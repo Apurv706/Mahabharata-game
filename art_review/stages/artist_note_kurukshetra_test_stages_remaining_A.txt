@@ -1,0 +1,6 @@
+Kurukshetra: A Life - test stage paintings, remaining 26 (the first 3 - training_ground, lac_wall, board_table - shipped in the test batch).
+AI-generated (Steam disclosure). Reference-guided AI paintings; no people, text or watermarks.
+Sizes: the image tool cannot render these sizes natively (scene/top sources 1672x941; side sources 2172x724, prison_yard 1983x793). All are upscaled/cropped to the briefed sizes (scene and top 2560x1440, SIDE 3840x1080) with the user's approval. Side views are cropped from wider-than-brief sources, so the vertical scale-up is about 1.8-1.9x.
+Ground line: scene and side stages were set so object bases sit near 75% of the height (small crop/stretch applied where needed).
+Open: in-game fit untested. forest_maze_top and khandava_top central clearings are organic, not a perfect circle. Side-view ends are calm but not guaranteed to join seamlessly.
+TOP stages (vidura_table, khandava_top, forest_maze_top, dice_board_top, chakravyuha_top): plain empty central square x 680-1880, y 120-1320 (1200x1200) of 2560x1440; checked by overlay.

@@ -1,0 +1,5 @@
+Test stage paintings, all 29, 28 Oct 2026: ACCEPTED, held for the rebuild (not in the game yet).
+Scene and top-down stages 2560x1440 (enlarged from 1672x941); side stages 2560x720 (reduced from 3840x1080 masters).
+stage_lac_wall is the re-render with the resinous sheen (replaces the batch-1 version in stages_b1).
+stage_battlefield_night shows an eclipsed sun: keep it, it fits Krishna darkening the sun on day 14.
+Optional, not requested: healers_hall shows snowy peaks; lotus_garden pavilion has slightly upturned corners.

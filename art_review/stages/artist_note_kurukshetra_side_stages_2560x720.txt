@@ -1,0 +1,5 @@
+Kurukshetra: A Life - SIDE stage paintings revised to 2560x720 (user request, Oct 28 2026).
+AI-generated (Steam disclosure). Reference-guided AI paintings; no people, text or watermarks.
+Sizes: all 8 SIDE stages are now 2560x720. Seven (battlefield_night, city_night, matsya_ford, palace_corridor, prison_yard, racetrack, storm_sea) are downscaled from the approved 3840x1080 masters, so no new enlargement. stage_lac_wall adds the optional resinous wall sheen: re-rendered from the approved painting at the tool's native 2172x724, then cropped and scaled about 1.18x to 2560x720 (much less enlarging than before). If you prefer the approved plain version, it can ship instead.
+Scene and TOP stages are unchanged at 2560x1440 (already delivered).
+Open: in-game fit untested. Side-view ends are calm but not guaranteed to join seamlessly.
