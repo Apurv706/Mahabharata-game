@@ -147,6 +147,10 @@
     if (fx.memory) out.push(["", fx.memory[0] === "all" ? K.tr("People will remember") : K.tr("{who} will remember", { who: K.personName(fx.memory[0], S) })]);
     if (c.check) {
       out.push(["check", K.tr("Test of {what}: {pct}%", { what: K.checkLabel(c.check), pct: Math.round(K.checkOdds(c.check, S) * 100) })]);
+      // A risk: what a failure would cost, shown before you choose.
+      const lose = c.check.fail && c.check.fail.fx && c.check.fail.fx.lose;
+      const what = lose && (typeof lose === "string" ? lose : lose.what);
+      if (what === "heirloom" ? K.heirloomAtRisk(S) : what && (S.items[what] || 0) > 0) out.push(["down", K.tr("Risk: {what}", { what: what === "heirloom" ? K.low(K.tr(K.HEIRLOOMS[S.heirloom].name)) : K.tr(what === "herbs" ? "a bundle of herbs" : "your coins") })]);
       const m = K.merits(c.check, S);
       if (m.n) out.push([m.n > 0 ? "up" : "down", K.tr(m.n > 0 ? "Your past helps (+{n})" : "Your past counts against you ({n})", { n: m.n })]);
     }

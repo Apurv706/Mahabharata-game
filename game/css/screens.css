@@ -670,3 +670,51 @@ html[lang="hi"] .pagehead h1 { line-height: 1.3; }
 .pickdice .cta { min-width: 120px; }
 .trial .cta.secondary { background: var(--hover); border: 1px solid var(--gold-line); }
 .trial .cta.secondary:hover:not(:disabled) { background: #6a3a2e; }
+
+/* ---------- The fight, played by puppets ---------- */
+.arena { position: relative; height: 196px; margin: 0 0 4px; overflow: hidden; background: #1a0f0b var(--stage) center 70% / cover no-repeat;
+  display: flex; justify-content: space-between; align-items: flex-end; padding: 0 6% 4px; border-top: 1px solid var(--gold-line); border-bottom: 1px solid var(--gold-line); }
+.arena::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 90% at 50% 100%, rgba(255, 196, 120, .2), transparent 70%), linear-gradient(rgba(20, 10, 6, .15), rgba(20, 10, 6, .5)); pointer-events: none; }
+.arena .team { position: relative; z-index: 1; display: flex; align-items: flex-end; gap: 0; }
+.arena .team.left .actor + .actor { margin-left: -34px; }
+.arena .team.right .actor + .actor { margin-left: -30px; }
+.arena .actor { position: relative; display: block; }
+.arena .actor svg { height: 160px; width: auto; overflow: visible; filter: drop-shadow(0 0 6px rgba(255, 200, 120, .35)) drop-shadow(0 4px 3px rgba(0, 0, 0, .55)); }
+.arena .actor.ally svg { height: 136px; opacity: .92; }
+.arena .actor.enemy + .actor.enemy svg { height: 146px; }
+.arena .actor.down svg { opacity: .55; filter: grayscale(.6) drop-shadow(0 4px 3px rgba(0, 0, 0, .55)); }
+.arena .actor.lunge-r { animation: lunge-r .52s cubic-bezier(.3, .7, .3, 1); }
+.arena .actor.lunge-l { animation: lunge-l .52s cubic-bezier(.3, .7, .3, 1); }
+@keyframes lunge-r { 35% { transform: translateX(46px); } }
+@keyframes lunge-l { 35% { transform: translateX(-46px); } }
+/* A streak behind the lunge: the trail of the swing. */
+.arena .actor.lunge-r::after, .arena .actor.lunge-l::after { content: ""; position: absolute; top: 38%; height: 5px; width: 90px; border-radius: 3px; opacity: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 230, 170, .85)); animation: trail .52s ease-out; }
+.arena .actor.lunge-r::after { left: 40%; } .arena .actor.lunge-l::after { right: 40%; transform: scaleX(-1); }
+@keyframes trail { 30% { opacity: 1; } 100% { opacity: 0; } }
+.arena .actor.struck { animation: struck .42s ease-out; }
+@keyframes struck { 0% { transform: translateX(0); filter: brightness(2.2); } 20% { transform: translateX(-9px) rotate(-2deg); } 45% { transform: translateX(7px); } 70% { transform: translateX(-3px); } 100% { transform: none; filter: none; } }
+.arena .actor.dodge { animation: dodge .5s ease-out; }
+@keyframes dodge { 40% { transform: translateX(-34px) translateY(-6px); } }
+.arena .pops { position: absolute; left: 50%; top: 10px; width: 0; }
+.arena .pop { position: absolute; left: -30px; width: 60px; text-align: center; font: 700 24px var(--display); color: #ffd36b; text-shadow: 0 2px 3px #000, 0 0 8px rgba(0, 0, 0, .7); animation: pop-up 1.2s ease-out forwards; }
+.arena .pop.down { color: #ff8a6e; } .arena .pop.up { color: var(--positive); }
+@keyframes pop-up { 0% { transform: translateY(14px) scale(.6); opacity: 0; } 15% { transform: translateY(0) scale(1.15); opacity: 1; } 100% { transform: translateY(-46px) scale(1); opacity: 0; } }
+/* The last blow of a fight you win falls slowly. */
+.arena.slowmo .pp .j, .arena.slowmo .pp .pp-body { transition-duration: 1.6s !important; }
+.arena.slowmo { animation: slowmo-zoom 1.8s ease-out forwards; }
+@keyframes slowmo-zoom { 0% { background-size: cover; } 100% { background-size: 112%; } }
+.foe-turn { margin: 0; color: var(--muted); font-style: italic; }
+/* Meeting a blow */
+.qte { display: grid; gap: 10px; padding: 14px; border-radius: var(--r-card); background: var(--raised); border: 1px solid var(--gold-line); }
+.qte-who { margin: 0; font-size: 17px; }
+.qte-ring { position: relative; height: 120px; border-radius: var(--r-control); background: radial-gradient(circle, #3e241b, #23140f); overflow: hidden; }
+.qte-ring .mark, .qte-ring .ring { position: absolute; left: 50%; top: 50%; border-radius: 50%; }
+.qte-ring .mark { width: 54px; height: 54px; margin: -27px 0 0 -27px; border: 3px solid var(--data); box-shadow: 0 0 14px rgba(226, 181, 90, .5); }
+.qte-ring .ring { width: 180px; height: 180px; border: 4px solid var(--negative); transform: translate(-50%, -50%) scale(1); }
+.qte-note { margin: 0; min-height: 1.4em; }
+.qte.good .qte-ring { box-shadow: inset 0 0 0 3px var(--positive); } .qte.bad .qte-ring { box-shadow: inset 0 0 0 3px var(--negative); }
+.qte-btns .trial-press { min-width: 150px; }
+@media (max-width: 720px) { .arena { height: 150px; padding: 0 3% 3px; } .arena .actor svg { height: 122px; } .arena .actor.ally svg { height: 104px; } }
+@media (prefers-reduced-motion: reduce) { .arena .actor, .arena .actor::after, .arena.slowmo { animation: none !important; } }
+.qte .cta.secondary { background: var(--hover); border: 1px solid var(--gold-line); }

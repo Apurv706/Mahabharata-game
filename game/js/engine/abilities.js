@@ -8,8 +8,8 @@
     strike: { name: "Strike", target: "enemy", cd: 0, desc: "A plain attack with your weapon.", use: (B, u, t) => B.hit(u, t, 1) },
     guard: { name: "Guard", target: "self", cd: 0, desc: "Halve the next blow against you.", use: (B, u) => B.status(u, "guard", 1, "braces behind a shield") },
     herbs: {
-      name: "Healing herbs", target: "ally", cd: 1, item: "herbs", desc: "Use one bundle of herbs to restore 40% health.",
-      use: (B, u, t) => { K.S.items.herbs = Math.max(0, (K.S.items.herbs || 0) - 1); B.heal(u, t, pct(t, 0.4)); }
+      name: "Healing herbs", target: "ally", cd: 2, item: "herbs", desc: "Use one bundle of herbs to restore 30% health.",
+      use: (B, u, t) => { K.S.items.herbs = Math.max(0, (K.S.items.herbs || 0) - 1); B.heal(u, t, pct(t, 0.3)); }
     },
     astra: {
       name: "Invoke astra", target: "enemy", cd: 99, once: true, desc: "A divine weapon. Once per battle. Using it on an unarmed or helpless foe is a grave wrong.",
@@ -35,7 +35,7 @@
     // Charioteer
     swerve: { name: "Swerve", target: "self", cd: 2, desc: "Dodge the next attack; your next hit lands harder.", use: (B, u) => { B.status(u, "evade", 1, "swerves the chariot"); B.status(u, "inspired", 2); } },
     ridedown: { name: "Ride them down", target: "enemy", cd: 3, desc: "Drive straight through a foe.", use: (B, u, t) => { B.hit(u, t, 1.4, { verb: "The chariot runs down {t} for {n}." }); if (K.rng() < 0.3) B.status(t, "stun", 1, "is knocked flat"); } },
-    rally: { name: "Rally the horses", target: "self", cd: 3, desc: "Recover 25% health and shake off effects.", use: (B, u) => { B.cleanse(u); B.heal(u, u, pct(u, 0.25)); } },
+    rally: { name: "Rally the horses", target: "self", cd: 4, desc: "Recover 20% health and shake off effects.", use: (B, u) => { B.cleanse(u); B.heal(u, u, pct(u, 0.2)); } },
 
     // Strategist
     command: { name: "Command", target: "ally", cd: 2, needsAlly: true, desc: "An ally attacks at once, hitting harder.", use: (B, u, t) => { if (t === u) return B.hit(u, B.firstEnemy(), 1); B.status(t, "inspired", 2); B.hit(t, B.firstEnemy(), 1.2, { verb: "On your order, {a} hits {t} for {n}." }); } },
@@ -43,7 +43,7 @@
     formation: { name: "Close formation", target: "allies", cd: 3, desc: "Every ally guards.", use: (B, u, ts) => ts.forEach((t) => B.status(t, "guard", 1, "closes ranks")) },
 
     // Healer
-    salve: { name: "Herbal salve", target: "ally", cd: 2, desc: "Restore 35% health. No herbs needed.", use: (B, u, t) => B.heal(u, t, pct(t, 0.35)) },
+    salve: { name: "Herbal salve", target: "ally", cd: 3, desc: "Restore 28% health. No herbs needed.", use: (B, u, t) => B.heal(u, t, pct(t, 0.28)) },
     steady: { name: "Steady hands", target: "ally", cd: 3, desc: "Remove harmful effects and guard.", use: (B, u, t) => { B.cleanse(t); B.status(t, "guard", 1); } },
     nerve: { name: "Nerve strike", target: "enemy", cd: 2, desc: "You know where the body is weak. May stun.", use: (B, u, t) => { B.hit(u, t, 1); if (K.rng() < 0.5) B.status(t, "stun", 1, "goes numb"); } },
 
@@ -55,10 +55,12 @@
     // Bard
     song: { name: "Battle song", target: "allies", cd: 3, desc: "Allies hit 30% harder for 2 turns.", use: (B, u, ts) => ts.forEach((t) => B.status(t, "inspired", 2)) || B.tell(u.side === "player" ? "You sing, and the line stands taller." : "{a} sings, and the line stands taller.", { a: u }) },
     verse: { name: "Mocking verse", target: "enemy", cd: 2, desc: "The foe hits 30% softer for 2 turns.", use: (B, u, t) => B.status(t, "weakened", 2, "falters at the verse") },
-    hymn: { name: "Steadying hymn", target: "allies", cd: 3, desc: "Every ally recovers 15% health.", use: (B, u, ts) => ts.forEach((t) => B.heal(u, t, pct(t, 0.15))) },
+    hymn: { name: "Steadying hymn", target: "allies", cd: 3, desc: "Every ally recovers 10% health.", use: (B, u, ts) => ts.forEach((t) => B.heal(u, t, pct(t, 0.1))) },
 
     // Enemy techniques
-    heavy: { name: "Heavy blow", target: "enemy", cd: 3, desc: "", use: (B, u, t) => B.hit(u, t, 1.6, { verb: "A heavy blow hits {t} for {n}." }) },
+    heavy: { name: "Heavy blow", target: "enemy", cd: 3, desc: "", use: (B, u, t) => B.hit(u, t, 1.6, { heavy: true, verb: "A heavy blow hits {t} for {n}." }) },
+    breaker: { name: "Shield-breaker", target: "enemy", cd: 3, desc: "", use: (B, u, t) => B.hit(u, t, 1.25, { heavy: true, breaks: true, verb: "A shield-breaking blow hits {t} for {n}." }) },
+    brace: { name: "Brace", target: "self", cd: 2, desc: "", use: (B, u) => B.status(u, "guard", 1, "braces for your next blow") },
     arrows: { name: "Arrow storm", target: "enemies", cd: 3, desc: "", use: (B, u, ts) => ts.forEach((t) => B.hit(u, t, 0.6, { verb: "Arrows rain on {t} for {n}." })) },
     disarm: { name: "Break the bow", target: "enemy", cd: 4, desc: "", use: (B, u, t) => { B.hit(u, t, 0.8); B.status(t, "weakened", 2, "loses grip on the weapon"); } }
   };

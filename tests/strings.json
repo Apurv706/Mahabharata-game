@@ -12328,5 +12328,3730 @@
   "id": 2467,
   "en": "If you fail, you will get one more chance. Only one.",
   "ctx": "play:a2_trial"
+ },
+ {
+  "id": 2468,
+  "en": "Risk: {what}",
+  "ctx": "code:flow.js"
+ },
+ {
+  "id": 2469,
+  "en": "a bundle of herbs",
+  "ctx": "code:flow.js"
+ },
+ {
+  "id": 2470,
+  "en": "your coins",
+  "ctx": "code:flow.js"
+ },
+ {
+  "id": 2471,
+  "en": "You dodge {a}'s blow.",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 2472,
+  "en": "You turn {a}'s blow aside and strike back.",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 2473,
+  "en": "You win, but the fight leaves its mark: {inj!}.",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 2474,
+  "en": "A shield-breaking blow hits {t} for {n}.",
+  "ctx": "code:abilities.js"
+ },
+ {
+  "id": 2475,
+  "en": "Written · the war",
+  "ctx": "code:scene.js"
+ },
+ {
+  "id": 2476,
+  "en": "Written",
+  "ctx": "code:scene.js"
+ },
+ {
+  "id": 2477,
+  "en": "Unwritten · the war",
+  "ctx": "code:scene.js"
+ },
+ {
+  "id": 2478,
+  "en": "Unwritten",
+  "ctx": "code:scene.js"
+ },
+ {
+  "id": 2479,
+  "en": "As it is written",
+  "ctx": "code:scene.js"
+ },
+ {
+  "id": 2480,
+  "en": "You are back at the same choice. One way is closed to you now.",
+  "ctx": "code:scene.js"
+ },
+ {
+  "id": 2481,
+  "en": "And then, as it is written",
+  "ctx": "code:scene.js"
+ },
+ {
+  "id": 2482,
+  "en": "{who} moves.",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 2483,
+  "en": "Meet the blow",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 2484,
+  "en": "Block as the ring meets the mark. Dodge needs better timing.",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 2485,
+  "en": "Block",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 2486,
+  "en": "Dodge",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 2487,
+  "en": "Create someone the epic never mentions and live their whole life, from a childhood beside the young princes to the eighteen days of war and what comes after. The great events are written. Where you stand, what you swear, who you love and how you die are unwritten, and yours.",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 2488,
+  "en": "See the lands as pictures",
+  "ctx": "code:screens.js"
+ },
+ {
+  "id": 2489,
+  "en": "Your figure",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 2490,
+  "en": "cta trial-press",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2491,
+  "en": "Push",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2492,
+  "en": "Hold",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 2493,
+  "en": "Signs",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2494,
+  "en": "Watch.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2495,
+  "en": "Now you.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2496,
+  "en": "Every one, in order.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2497,
+  "en": "Wrong. It was this one.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2498,
+  "en": "Strike as each beat reaches the ring.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2499,
+  "en": "On the beat: {h} · Missed: {m} · {left} to go",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2500,
+  "en": "Clean!",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2501,
+  "en": "On the beat.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2502,
+  "en": "Nothing there.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2503,
+  "en": "Too soon.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2504,
+  "en": "Too late.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2505,
+  "en": "Change lanes to miss what is in the road: up and down, or the buttons.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2506,
+  "en": "Distance: {d}% · Hits: {h} of {l}",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2507,
+  "en": "You: {d}% · {who}: {r}%",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2508,
+  "en": "You hit it, and lose ground.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2509,
+  "en": "The field",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2510,
+  "en": "Steer with the arrow keys, the buttons or a swipe. Reach everyone you can, then bring them out through the gap on the right.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2511,
+  "en": "Up",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2512,
+  "en": "Left",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2513,
+  "en": "Down",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2514,
+  "en": "Right",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2515,
+  "en": "With you: {f} of {n} · Lost: {d} of {l} · {s} seconds",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2516,
+  "en": "One more falls in behind you.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2517,
+  "en": "The rings of the forest",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2518,
+  "en": "The rings of the wheel",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2519,
+  "en": "Line up every opening with the outer one. Turning a ring drags the ring inside it the other way.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2520,
+  "en": "The wheel keeps turning toward a straight way in. Keep at least one ring out of line.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2521,
+  "en": "Rings in line: {a} of 4 · Turns: {m} · {s} seconds",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2522,
+  "en": "Rings in line: {a} of 4 · Hold for {s} more seconds",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2523,
+  "en": "The wheel turns.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2524,
+  "en": "They push, and a ring gives.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2525,
+  "en": "Outer ring",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2526,
+  "en": "Inner ring",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2527,
+  "en": "A key",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 2528,
+  "en": "Your opponent",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2529,
+  "en": "Piece {n}",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2530,
+  "en": "Squares to go: you {a}, {who} {b}",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2531,
+  "en": "The chaupar board",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2532,
+  "en": "Choose a piece to move: click it, or press 1 or 2.",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2533,
+  "en": "Your throw.",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2534,
+  "en": "Throw the cowries",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2535,
+  "en": "Goats taken: {g} of {n} · Goats still to come: {w} · Tiger moves left: {m}",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2536,
+  "en": "The tigers and goats board",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2537,
+  "en": "Choose a tiger: click it, or move with the arrow keys and press Space.",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2538,
+  "en": "Now choose where it goes. A tiger takes a goat by jumping over it to an empty point.",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2539,
+  "en": "You are on {a} · {who} is on {b} · Moksha is 64",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2540,
+  "en": "The Moksha Patam board",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2541,
+  "en": "Two dice. Move by the one you choose.",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2542,
+  "en": "{who} throws.",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2543,
+  "en": "Move {n}",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2544,
+  "en": "{n}: no piece can move that far.",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2545,
+  "en": "{who} throws {n} and cannot move.",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2546,
+  "en": "You jump a goat and take it.",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2547,
+  "en": "Both tigers are hemmed in.",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2548,
+  "en": "Both throws would carry you past moksha. You must wait.",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2549,
+  "en": "{who} cannot move.",
+  "ctx": "code:boards.js"
+ },
+ {
+  "id": 2550,
+  "en": "From {a} to {b}",
+  "ctx": "code:map.js"
+ },
+ {
+  "id": 2551,
+  "en": "The road",
+  "ctx": "code:map.js"
+ },
+ {
+  "id": 2552,
+  "en": "Map of the homelands",
+  "ctx": "code:map.js"
+ },
+ {
+  "id": 2553,
+  "en": "Use one bundle of herbs to restore 30% health.",
+  "ctx": "ability"
+ },
+ {
+  "id": 2554,
+  "en": "Recover 20% health and shake off effects.",
+  "ctx": "ability"
+ },
+ {
+  "id": 2555,
+  "en": "Restore 28% health. No herbs needed.",
+  "ctx": "ability"
+ },
+ {
+  "id": 2556,
+  "en": "Every ally recovers 10% health.",
+  "ctx": "ability"
+ },
+ {
+  "id": 2557,
+  "en": "Shield-breaker",
+  "ctx": "ability"
+ },
+ {
+  "id": 2558,
+  "en": "Champa",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 2559,
+  "en": "The charioteers' lane in Champa, capital of Anga",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 2560,
+  "en": "You grow up in Champa, in the same lane as the old charioteer Adhiratha, who found a baby floating in a basket and raised him as Karna. When Adhiratha's household is called to Hastinapura, your family will go with it. Doors will close because of your birth, and you will learn to open them anyway.",
+  "ctx": "world:ORIGINS"
+ },
+ {
+  "id": 2561,
+  "en": "Your father Dhruva, who drives for the lords of Anga",
+  "ctx": "world:ROOTS"
+ },
+ {
+  "id": 2562,
+  "en": "On the charioteers' feast day in Champa, every horse in the king of Anga's stables is washed, garlanded and blessed, and the suta children help.",
+  "ctx": "world:CUSTOMS"
+ },
+ {
+  "id": 2563,
+  "en": "You missed Arjuna's lamp twice, and he stopped offering.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2564,
+  "en": "Bhima threw you in the river twice, and named you \"little fish\".",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2565,
+  "en": "You drew your teacher's old war bow to the ear.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2566,
+  "en": "Your teacher's war bow beat you twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2567,
+  "en": "You split the practice post in three blows.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2568,
+  "en": "The practice post stood up to you twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2569,
+  "en": "You beat Karna round the training ground.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2570,
+  "en": "Karna beat you round the training ground twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2571,
+  "en": "You beat Shakuni at chaupar when you were sixteen.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2572,
+  "en": "Shakuni beat you at chaupar twice, smiling.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2573,
+  "en": "You set a broken arm so well it healed straight.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2574,
+  "en": "Twice the bone slipped under your hands.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2575,
+  "en": "You crossed the palace at night, twice, unseen.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2576,
+  "en": "The night guard caught you in the palace twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2577,
+  "en": "You said back every line of the old verses, in order.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2578,
+  "en": "Twice the old verses came out of you in the wrong order.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2579,
+  "en": "You brought down the spring deer with one arrow.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2580,
+  "en": "The spring deer got away from you twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2581,
+  "en": "You took Duryodhana's goats with his own tigers.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2582,
+  "en": "Duryodhana's goats hemmed you in twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2583,
+  "en": "You led families out of the burning Khandava forest.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2584,
+  "en": "Twice the fire in the Khandava forest broke your line.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2585,
+  "en": "You answered Drupada's council in riddles.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2586,
+  "en": "Drupada's council laughed at your answers twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2587,
+  "en": "You brought a boat in through a storm off Dwaraka.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2588,
+  "en": "The storm off Dwaraka beat you twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2589,
+  "en": "You kept the beat for Karna's elephants.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2590,
+  "en": "Karna's elephants broke step on you twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2591,
+  "en": "You found the clearing at the heart of the old forest.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2592,
+  "en": "The old forest turned you round twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2593,
+  "en": "You got a steward's family out past Duryodhana's patrols.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2594,
+  "en": "Duryodhana's patrols turned you back twice in the night streets.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2595,
+  "en": "You answered the voice at the lake.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2596,
+  "en": "The voice at the lake asked you twice, and you drank.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2597,
+  "en": "You reached moksha first, on Vikarna's board.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2598,
+  "en": "The snakes on Vikarna's board took you down twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2599,
+  "en": "You forged a blade with Charu, beat for beat.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2600,
+  "en": "Twice you broke the rhythm at Charu's anvil.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2601,
+  "en": "You escaped Duryodhana's prison yard.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2602,
+  "en": "Duryodhana's guards dragged you back twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2603,
+  "en": "You held the village gate against the raiders.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2604,
+  "en": "The raiders broke through your gate twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2605,
+  "en": "You held the line while a sinking crew climbed across.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2606,
+  "en": "Twice the line slipped through your hands in the storm.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2607,
+  "en": "You roped the lead elephant in the Champa stampede.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2608,
+  "en": "The Champa stampede got past you twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2609,
+  "en": "You killed the man-eater at the edge of the Kamyaka forest.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2610,
+  "en": "The man-eater of Kamyaka got away from you twice.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2611,
+  "en": "You drove through the night battle and back.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2612,
+  "en": "Twice the night battle turned you back.",
+  "ctx": "world:MERITS"
+ },
+ {
+  "id": 2613,
+  "en": "Clean strikes: {h} · Blocked: {m} · {left} to go",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2614,
+  "en": "A solid blow.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2615,
+  "en": "Balarama swings the practice mace in a slow, heavy rhythm, and on every beat his guard opens for a heartbeat. Strike as each beat reaches the ring.",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 2616,
+  "en": "Drona stops watching you shoot, and you must find another teacher. It counts as two failures, and it will weigh on every archery test to come.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2617,
+  "en": "Drona would not watch you shoot again.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2618,
+  "en": "Kripa gives up on you, and you must find another teacher. It counts as two failures, and it will weigh on every weapon test to come.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2619,
+  "en": "Kripa sent you to the back row for good.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2620,
+  "en": "Balarama stops teaching you, and you must find another teacher. It counts as two failures, and it will weigh on every mace test to come.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2621,
+  "en": "Balarama knocked the mace from your hands twice and walked away.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2622,
+  "en": "Mauni goes back to his silence, and you must find another teacher. It counts as two failures, and it will weigh on every archery test to come.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2623,
+  "en": "You miss again. Mauni folds the cloth away and walks into the trees without a sign.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2624,
+  "en": "Mauni went back to his silence after you missed his bell twice.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2625,
+  "en": "Vidura stops trusting your eyes, and you must find another teacher. It counts as two failures, and it will weigh on every test of statecraft to come.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2626,
+  "en": "Vidura stopped trusting your eyes.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2627,
+  "en": "You give up teaching yourself, and must find a teacher after all. It counts as two failures, and it will weigh on every archery test to come.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2628,
+  "en": "Two nights the leaf beat you, and you gave up teaching yourself.",
+  "ctx": "scene:a2_trial_again"
+ },
+ {
+  "id": 2629,
+  "en": "Your second year",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2630,
+  "en": "The test of your path",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2631,
+  "en": "Take down the old war bow",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2632,
+  "en": "Try {n} of {m} · Drawn: {w}",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2633,
+  "en": "Hold to draw. Let go while the bar is in the bright band. Hold too long and the string slips.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2634,
+  "en": "An old war bow hangs on the wall of the school, heavier than anything you have drawn. Draw it to the ear and loose clean: three tries, two clean ones.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2635,
+  "en": "You draw the war bow, and your teacher hangs it in your room.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2636,
+  "en": "The bow wins. You may try again tomorrow.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2637,
+  "en": "The bow bends, groans, and comes round to your ear. When the arrow goes, it goes clean through the straw and out the other side.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2638,
+  "en": "The bow springs back and stings your arm from wrist to elbow.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2639,
+  "en": "Break the practice post",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2640,
+  "en": "The practice post",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2641,
+  "en": "Clean blows: {g} of 3 · Glancing: {b} of 3",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2642,
+  "en": "The post cracks!",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2643,
+  "en": "Too soon. The blow glances off.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2644,
+  "en": "Too late. You hit it off balance.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2645,
+  "en": "A post of seasoned teak stands in the yard. Strike as the ring meets the mark: three clean blows split it. Three glancing ones and your arms give out.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2646,
+  "en": "The post splits, and the younger students stare.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2647,
+  "en": "The post stands. You may try again tomorrow.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2648,
+  "en": "On the third blow the post splits from top to bottom with a sound like a tree falling.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2649,
+  "en": "Your arms are shaking. The post has two dents in it, and it is laughing at you.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2650,
+  "en": "Clean blows: {h} · Missed: {m} · {left} to go",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2651,
+  "en": "A post of seasoned teak stands in the yard. Kripa beats the time on a shield. Strike the post on every beat, and keep the rhythm to the end.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2652,
+  "en": "You split the practice post, keeping Kripa's time.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2653,
+  "en": "On the last beat the post splits from top to bottom with a sound like a tree falling.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2654,
+  "en": "You lose the beat, then the next. The post has a few dents in it, and it is laughing at you.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2655,
+  "en": "Race Karna round the training ground",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2656,
+  "en": "A race",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2657,
+  "en": "Karna, the charioteer's son, races anyone who asks, and nobody has beaten him this year. Change lanes to miss the stones and broken wheels in the road. First past the post wins.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2658,
+  "en": "You beat Karna, and he asks for a rematch every week after.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2659,
+  "en": "Karna wins by a length. He offers to race you again tomorrow.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2660,
+  "en": "You beat Karna in a chariot race at sixteen.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2661,
+  "en": "You cross the line half a length ahead. Karna pulls up beside you, laughing, covered in dust. \"Again,\" he says. \"Next week.\"",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2662,
+  "en": "Karna crosses the line a length ahead, and comes back to show you where you lost it.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2663,
+  "en": "Sit down at Shakuni's chaupar board",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2664,
+  "en": "A board game, a minute or two",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2665,
+  "en": "Shakuni, the queen's brother, plays chaupar in the evenings with anyone who will lose to him. Two pieces each, around the cross and home. Land on his piece to send it back; the green squares are safe.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2666,
+  "en": "You beat Shakuni, and he looks at you properly for the first time.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2667,
+  "en": "Shakuni wins, and offers you another game tomorrow.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2668,
+  "en": "You beat him at chaupar when you were sixteen.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2669,
+  "en": "You beat Shakuni at chaupar.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2670,
+  "en": "Shakuni looks at the board for a long time. \"Who taught you that?\" he asks softly. You decide not to tell him.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2671,
+  "en": "Shakuni gathers the cowries with a little smile. \"Tomorrow,\" he says. \"Bring more patience.\"",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2672,
+  "en": "Set the stable boy's arm",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2673,
+  "en": "Hold to press the bone into place; let go to ease off. Keep your hands over the glow until it is set.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2674,
+  "en": "Set: {c}% · {s} seconds",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2675,
+  "en": "The bone slides home. The splint holds.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2676,
+  "en": "Nearly. The bone is close, but not true.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2677,
+  "en": "The boy screams, and the bone slips out of line.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2678,
+  "en": "A boy from the stables has broken his arm. The old healer is busy. Hold the bone steady while it goes back into line.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2679,
+  "en": "The arm heals straight, and the healers start sending for you.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2680,
+  "en": "The bone will not stay. The healer will let you try again.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2681,
+  "en": "The bone slides home under your hands. Six weeks later the boy is throwing stones with that arm.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2682,
+  "en": "The bone slips out of line, and the boy goes white. The old healer takes over, and nods at you to watch.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2683,
+  "en": "Cross the palace at night",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2684,
+  "en": "Hold to move along the corridor. Stop before the lamplight reaches you.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2685,
+  "en": "Crossings: {d} of {n} · Seen: {s} of {m} · {t} seconds",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2686,
+  "en": "Through. Now back.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2687,
+  "en": "A guard turns. You slip back behind a pillar.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2688,
+  "en": "Your teacher hands you a sealed note. Carry it the length of the palace and back, past the night guard and his lamp, twice, without being seen.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2689,
+  "en": "Your teacher starts trusting you with real secrets.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2690,
+  "en": "A guard sees a shadow. You may try again tomorrow night.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2691,
+  "en": "You put the note back in your teacher's hand before dawn. The seal is unbroken. So is the silence.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2692,
+  "en": "A lamp swings your way and you have to go back. The note is still in your sleeve.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2693,
+  "en": "Say back the old verses",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2694,
+  "en": "A test of memory",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2695,
+  "en": "Listen.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2696,
+  "en": "Now say them back, in order.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2697,
+  "en": "Every line, in order.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2698,
+  "en": "Wrong. That line came here.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2699,
+  "en": "At the fair, an old bard speaks the lines of a verse once, in order, and asks you to say them back. Three verses, each longer than the last. Two must be perfect.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2700,
+  "en": "The old bard lets you sing in his place that night.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2701,
+  "en": "The words come out in the wrong order. You may try again tomorrow.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2702,
+  "en": "You sang in the old bard's place at the fair.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2703,
+  "en": "You say back every line, in order. That night you sing in his place, and the crowd goes quiet in the right places.",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2704,
+  "en": "The lines tangle. The bard pats your hand. \"Tomorrow,\" he says. \"Sleep on them.\"",
+  "ctx": "scene:a2_pathtest"
+ },
+ {
+  "id": 2705,
+  "en": "One more try. After this, the path will have to prove itself some other way.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2706,
+  "en": "The bow beats you again, and you must choose another path. It counts as two failures, and it will weigh on every archery test to come.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2707,
+  "en": "The string slips again. The bow goes back on its wall, and you go back to deciding what you are for.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2708,
+  "en": "Your teacher's old war bow beat you twice.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2709,
+  "en": "The post stands again, and you must choose another path. It counts as two failures, and it will weigh on every mace test to come.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2710,
+  "en": "The post stands. Your hands are bleeding. Maybe the mace is not for you.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2711,
+  "en": "Karna beats you again, and you must choose another path. It counts as two failures, and it will weigh on every chariot test to come.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2712,
+  "en": "Karna wins again, easily. He is kind about it, which is worse.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2713,
+  "en": "Shakuni beats you again, and you must choose another path. It counts as two failures, and it will weigh on every test of statecraft to come.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2714,
+  "en": "Shakuni wins again, and tells the whole court how well you played. He means the opposite.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2715,
+  "en": "The bone slips again, and you must choose another path. It counts as two failures, and it will weigh on every healing test to come.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2716,
+  "en": "The bone slips again. The old healer sets it herself, and does not send for you after that.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2717,
+  "en": "The guard catches your sleeve, and you must choose another path. It counts as two failures, and it will weigh on every stealth test to come.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2718,
+  "en": "The guard catches your sleeve and marches you to the steward. By morning everyone knows.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2719,
+  "en": "The verses beat you again, and you must choose another path. It counts as two failures, and it will weigh on every test of lore to come.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2720,
+  "en": "The lines tangle again. The bard sings his verse himself, and does not ask you again.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2721,
+  "en": "Let it go. You will prove it some other way",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2722,
+  "en": "You let it go. The path is still yours, whatever anyone says.",
+  "ctx": "scene:a2_pathtest_again"
+ },
+ {
+  "id": 2723,
+  "en": "Drupada's courtyard, Kampilya",
+  "ctx": "scene:a3_bow"
+ },
+ {
+  "id": 2724,
+  "en": "You ride to Kampilya for the swayamvara.",
+  "ctx": "scene:a3_bow"
+ },
+ {
+  "id": 2725,
+  "en": "The end of the rains",
+  "ctx": "scene:a3_hunt"
+ },
+ {
+  "id": 2726,
+  "en": "The spring hunt",
+  "ctx": "scene:a3_hunt"
+ },
+ {
+  "id": 2727,
+  "en": "While half the land rides to Kampilya, the year's work goes on at home. At the end of the rains comes the spring hunt on the meadow at the forest's edge.",
+  "ctx": "scene:a3_hunt"
+ },
+ {
+  "id": 2728,
+  "en": "Join the spring hunt",
+  "ctx": "scene:a3_hunt"
+ },
+ {
+  "id": 2729,
+  "en": "At the end of the rains the young men and women of the town hunt the meadow at the forest's edge. A deer breaks from the trees. Loose as it crosses your line: two arrows of three.",
+  "ctx": "scene:a3_hunt"
+ },
+ {
+  "id": 2730,
+  "en": "You bring down the deer, and the whole town eats from your hunt.",
+  "ctx": "scene:a3_hunt"
+ },
+ {
+  "id": 2731,
+  "en": "The deer gets into the trees. Another will come at dawn.",
+  "ctx": "scene:a3_hunt"
+ },
+ {
+  "id": 2732,
+  "en": "You brought down the deer at the spring hunt, the year of Draupadi's swayamvara.",
+  "ctx": "scene:a3_hunt"
+ },
+ {
+  "id": 2733,
+  "en": "Your second arrow takes it behind the shoulder. That night the whole town eats from your hunt, and someone makes up a song about it. It is not a good song.",
+  "ctx": "scene:a3_hunt"
+ },
+ {
+  "id": 2734,
+  "en": "The deer is in the trees before your arrow leaves the string. The old hunters say nothing. \"Dawn,\" one of them says at last.",
+  "ctx": "scene:a3_hunt"
+ },
+ {
+  "id": 2735,
+  "en": "Dawn",
+  "ctx": "scene:a3_hunt_again"
+ },
+ {
+  "id": 2736,
+  "en": "The mist is still on the meadow. The old hunters have saved you a place at the edge of the trees.",
+  "ctx": "scene:a3_hunt_again"
+ },
+ {
+  "id": 2737,
+  "en": "The deer gets away again, and the hunters stop waiting for you. It counts as two failures, and it will weigh on every archery test to come.",
+  "ctx": "scene:a3_hunt_again"
+ },
+ {
+  "id": 2738,
+  "en": "It gets away again. The hunters go on without you, and come home without the deer, and somehow it is your fault.",
+  "ctx": "scene:a3_hunt_again"
+ },
+ {
+  "id": 2739,
+  "en": "Leave the hunting to the old hunters",
+  "ctx": "scene:a3_hunt_again"
+ },
+ {
+  "id": 2740,
+  "en": "You unstring your bow and walk home. The old hunters will manage.",
+  "ctx": "scene:a3_hunt_again"
+ },
+ {
+  "id": 2741,
+  "en": "Your first year there",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2742,
+  "en": "Take the tigers on Duryodhana's board",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2743,
+  "en": "Duryodhana plays tigers and goats with his new courtiers, and judges them by it. He gives you the two tigers and keeps the goats. Jump a goat to take it; take three before his goats hem you in.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2744,
+  "en": "Duryodhana laughs, and you are his for the asking.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2745,
+  "en": "His goats hem you in. He offers you another game, watching you.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2746,
+  "en": "You beat Duryodhana at tigers and goats with his own tigers.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2747,
+  "en": "Duryodhana sweeps the last goat off the board himself, laughing. \"Hunt like that for me,\" he says, \"and you will never be hungry.\"",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2748,
+  "en": "The goats close in around your tigers. Duryodhana sets the board up again without a word.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2749,
+  "en": "Go into the burning forest for the families",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2750,
+  "en": "The Khandava forest is burning to clear the land for the new city, and forest families are trapped inside. Reach them through the smoke; each one falls in behind you. Then bring the line out through the gap by the river. The fire spreads as you go.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2751,
+  "en": "You bring a line of families out of the fire.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2752,
+  "en": "The fire breaks your line. There is still a way in.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2753,
+  "en": "You led families out of the fire when the Khandava forest burned.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2754,
+  "en": "You led families out of the burning Khandava forest while the new city was being cleared.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2755,
+  "en": "You come out by the river with smoke in your hair and a line of coughing families behind you. On the far bank, the city of Indraprastha is already being measured out with strings.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2756,
+  "en": "The fire closes across your path and the line scatters. You get out alone, and look back at the smoke.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2757,
+  "en": "Answer Drupada's council",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2758,
+  "en": "A test of wits",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2759,
+  "en": "King Drupada's council tests newcomers the old way: in riddles. Answer each one before the lamp burns down. Two right answers of three.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2760,
+  "en": "Drupada's council makes room for you on its bench.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2761,
+  "en": "The council laughs. You may try again at the next sitting.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2762,
+  "en": "\"What does a king keep that grows heavier the more of it he gives away?\"",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2763,
+  "en": "\"His word.\"",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2764,
+  "en": "\"His gold.\"",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2765,
+  "en": "\"His crown.\"",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2766,
+  "en": "\"Who is the strongest man in a kingdom?\"",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2767,
+  "en": "\"The one the farmers trust.\"",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2768,
+  "en": "\"The king's champion.\"",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2769,
+  "en": "\"The tax collector.\"",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2770,
+  "en": "\"What wall keeps out an army, but lets in a friend?\"",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2771,
+  "en": "\"A good treaty.\"",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2772,
+  "en": "\"A gate with a guard.\"",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2773,
+  "en": "\"A deep river.\"",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2774,
+  "en": "You answered Drupada's council in riddles, and they made room for you.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2775,
+  "en": "The oldest councillor laughs and moves along the bench. \"Sit,\" he says. \"You will be wasted here, but sit.\"",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2776,
+  "en": "The council laughs, kindly. \"Come back at the next sitting,\" the oldest says, \"with a better answer.\"",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2777,
+  "en": "Bring your boat in through the storm",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2778,
+  "en": "A test in the storm",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2779,
+  "en": "Steer up",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2780,
+  "en": "Steer down",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2781,
+  "en": "A wave slams into the boat.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2782,
+  "en": "Steer between the rocks and the breaking waves: up and down, or the buttons.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2783,
+  "en": "A storm comes in off the western sea while the fishing boats are still out, and yours is the last. Bring it in through the rocks at the harbour mouth. Two hits and the boat is in trouble; three and it is on the rocks.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2784,
+  "en": "You bring the boat in, and Dwaraka's harbour master learns your name.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2785,
+  "en": "The boat takes a beating and you have to stand off. You can try the harbour mouth again.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2786,
+  "en": "You brought a boat in through a storm at Dwaraka's harbour mouth.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2787,
+  "en": "You slide in past the last rock with the sail in rags. The whole harbour is on the wall, cheering.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2788,
+  "en": "A wave throws you back out past the rocks. You fight the boat round for another try.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2789,
+  "en": "Keep the beat for Karna's elephants",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2790,
+  "en": "A drill",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2791,
+  "en": "Drum",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2792,
+  "en": "In step: {h} · Out of step: {m} · {left} to go",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2793,
+  "en": "The whole line steps as one!",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2794,
+  "en": "In step.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2795,
+  "en": "Too soon. The line stumbles.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2796,
+  "en": "Too late. An elephant breaks step.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2797,
+  "en": "Karna is king of Anga now, and drills his war elephants himself. He hands you the great drum. Keep the beat, and forty elephants step as one.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2798,
+  "en": "King Karna gives you charge of his elephants.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2799,
+  "en": "The line breaks step. Karna hands you the drum again tomorrow.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2800,
+  "en": "You kept the beat for Karna's war elephants at Champa.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2801,
+  "en": "Forty elephants come down the grounds at Champa in one long rolling step, and the ground shakes in time. Karna takes the drumsticks from you himself, smiling.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2802,
+  "en": "The line stumbles, then bunches, then stops. An old mahout takes the drum from you gently.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2803,
+  "en": "Go into the old forest after the lost child",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2804,
+  "en": "A puzzle",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2805,
+  "en": "The forest shifts.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2806,
+  "en": "The old forest grows in rings of trees. Line up every clearing with the outer one to open a path to the heart. Turning a ring drags the ring inside it the other way.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2807,
+  "en": "A child has wandered into the old forest where the paths go round in rings, and the people of the place say it moves. Find the way to the clearing at its heart before dark.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2808,
+  "en": "You carry the child out, and the whole place counts you as one of its own.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2809,
+  "en": "The forest turns you round. There is still light; you can go in again.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2810,
+  "en": "You found a lost child at the heart of the old forest and carried her out.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2811,
+  "en": "The last ring slides open, and the path runs straight to a clearing with a sleeping child in it. You carry her out on your back, and the whole place turns out with lamps.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2812,
+  "en": "You come out where you went in. The rings have turned while you walked.",
+  "ctx": "scene:a3_courttest"
+ },
+ {
+  "id": 2813,
+  "en": "One more chance, and then the place will make up its mind about you.",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2814,
+  "en": "His goats hem you in again, and the court decides you are no one. It counts as two failures, and it will weigh on every test of statecraft to come.",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2815,
+  "en": "Hemmed in again. Duryodhana loses interest in you in the middle of a sentence.",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2816,
+  "en": "The fire beats you, and you come out alone. It counts as two failures, and it will weigh on every test of command to come.",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2817,
+  "en": "The fire beats you again. You stand on the riverbank with the others and watch the forest burn, and the new city's builders do not look up from their strings.",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2818,
+  "en": "The council laughs at you twice, and Drupada hears of it. It counts as two failures, and it will weigh on every test of statecraft to come.",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2819,
+  "en": "\"What is a king without a kingdom?\"",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2820,
+  "en": "\"A man with a name.\"",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2821,
+  "en": "\"A beggar.\"",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2822,
+  "en": "\"A god.\"",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2823,
+  "en": "\"What should a messenger carry besides the message?\"",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2824,
+  "en": "\"The way back.\"",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2825,
+  "en": "\"A sword.\"",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2826,
+  "en": "\"When is it wise to lose?\"",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2827,
+  "en": "\"When winning would cost more.\"",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2828,
+  "en": "\"When the gods say so.\"",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2829,
+  "en": "The laughter is less kind this time. You are given a seat at the far end of the hall, behind a pillar.",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2830,
+  "en": "The storm beats you, and the boat is lost on the rocks. It counts as two failures, and it will weigh on every test of steering to come.",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2831,
+  "en": "The boat breaks up on the rocks. You swim the last stretch and crawl up the beach with nothing.",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2832,
+  "en": "The elephants break step on you twice, and Karna gives the drum to someone else. It counts as two failures, and it will weigh on every chariot test to come.",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2833,
+  "en": "The line breaks again. Karna does not say anything. He hands the drum to the old mahout, and that is that.",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2834,
+  "en": "The forest turns you round again, and someone else finds the child at dawn. It counts as two failures, and it will weigh on every stealth test to come.",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2835,
+  "en": "The forest turns you round again. At dawn an old woman walks in and comes out with the child, and does not look at you.",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2836,
+  "en": "Let it go. You will find your place some other way",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2837,
+  "en": "You let it go. It takes longer, but in the end the place gets used to you.",
+  "ctx": "scene:a3_courttest_again"
+ },
+ {
+  "id": 2838,
+  "en": "You come to Hastinapura for the game.",
+  "ctx": "scene:a4_hands"
+ },
+ {
+  "id": 2839,
+  "en": "Get the steward's family out",
+  "ctx": "scene:a4_household"
+ },
+ {
+  "id": 2840,
+  "en": "Hold to move through the street. Stop before the patrol's torch reaches you.",
+  "ctx": "scene:a4_household"
+ },
+ {
+  "id": 2841,
+  "en": "Brought through: {d} of {n} · Seen: {s} of {m} · {t} seconds",
+  "ctx": "scene:a4_household"
+ },
+ {
+  "id": 2842,
+  "en": "Through the gate. Back for the others.",
+  "ctx": "scene:a4_household"
+ },
+ {
+  "id": 2843,
+  "en": "A patrol shouts. You pull them back into a doorway.",
+  "ctx": "scene:a4_household"
+ },
+ {
+  "id": 2844,
+  "en": "Before dawn, Duryodhana's men ride in to seize everything that was Yudhishthira's, and everyone who served him. Your neighbours have been hiding one of his stewards and his family. Get them out through the night streets, past the patrols, in two trips.",
+  "ctx": "scene:a4_household"
+ },
+ {
+  "id": 2845,
+  "en": "The steward's family is across the river before the light comes.",
+  "ctx": "scene:a4_household"
+ },
+ {
+  "id": 2846,
+  "en": "A patrol turns you back. You can try again before dawn.",
+  "ctx": "scene:a4_household"
+ },
+ {
+  "id": 2847,
+  "en": "The night after the dice game you got one of Yudhishthira's stewards and his family out past Duryodhana's patrols.",
+  "ctx": "scene:a4_household"
+ },
+ {
+  "id": 2848,
+  "en": "The ferryman takes them across in the grey light. The steward's little girl waves from the boat until the mist takes her.",
+  "ctx": "scene:a4_household"
+ },
+ {
+  "id": 2849,
+  "en": "A torch comes round the corner and you pull them back into a doorway. The street is quiet again. There is still time.",
+  "ctx": "scene:a4_household"
+ },
+ {
+  "id": 2850,
+  "en": "The patrol takes the steward, and they will remember your face. It counts as two failures, and it will weigh on every stealth test to come.",
+  "ctx": "scene:a4_household_again"
+ },
+ {
+  "id": 2851,
+  "en": "The patrol takes the steward at the gate. His family gets away, and he does not look back at you as they lead him off.",
+  "ctx": "scene:a4_household_again"
+ },
+ {
+  "id": 2852,
+  "en": "You give it up. Whatever happens tonight will happen without you.",
+  "ctx": "scene:a4_household_again"
+ },
+ {
+  "id": 2853,
+  "en": "The palace, Hastinapura",
+  "ctx": "scene:a5_vikarna"
+ },
+ {
+  "id": 2854,
+  "en": "An evening at court",
+  "ctx": "scene:a5_vikarna"
+ },
+ {
+  "id": 2855,
+  "en": "You stay at the Kuru court through the exile years.",
+  "ctx": "scene:a5_vikarna"
+ },
+ {
+  "id": 2856,
+  "en": "Vikarna's board",
+  "ctx": "scene:a5_vikarna"
+ },
+ {
+  "id": 2857,
+  "en": "The court is louder than it used to be, and emptier. One evening Vikarna, Duryodhana's brother, the only one who spoke for Draupadi in the dice hall, sends for you.",
+  "ctx": "scene:a5_vikarna"
+ },
+ {
+  "id": 2858,
+  "en": "Vikarna",
+  "ctx": "scene:a5_vikarna"
+ },
+ {
+  "id": 2859,
+  "en": "Everyone here plays dice. I play a better game. Sit down.",
+  "ctx": "scene:a5_vikarna"
+ },
+ {
+  "id": 2860,
+  "en": "Sit down at Vikarna's board",
+  "ctx": "scene:a5_vikarna"
+ },
+ {
+  "id": 2861,
+  "en": "Vikarna, the brother who spoke for Draupadi in the dice hall, keeps a Moksha Patam board: ladders of virtue, snakes of vice, and moksha at sixty-four. Throw two dice and move by the one you choose. First to moksha wins.",
+  "ctx": "scene:a5_vikarna"
+ },
+ {
+  "id": 2862,
+  "en": "You reach moksha first, and Vikarna starts telling you what he really thinks of this court.",
+  "ctx": "scene:a5_vikarna"
+ },
+ {
+  "id": 2863,
+  "en": "Vikarna wins. He sets the board up again for tomorrow.",
+  "ctx": "scene:a5_vikarna"
+ },
+ {
+  "id": 2864,
+  "en": "You played Moksha Patam with Vikarna through the exile years, and won.",
+  "ctx": "scene:a5_vikarna"
+ },
+ {
+  "id": 2865,
+  "en": "You land on sixty-four. Vikarna laughs and tips his piece over. \"Moksha,\" he says. \"At least one of us will get there.\" After that he tells you what he really thinks, about his brothers, about the hall, about the war that is coming.",
+  "ctx": "scene:a5_vikarna"
+ },
+ {
+  "id": 2866,
+  "en": "Vikarna reaches moksha first and looks almost sorry. \"Tomorrow,\" he says.",
+  "ctx": "scene:a5_vikarna"
+ },
+ {
+  "id": 2867,
+  "en": "The next evening",
+  "ctx": "scene:a5_vikarna_again"
+ },
+ {
+  "id": 2868,
+  "en": "Another game",
+  "ctx": "scene:a5_vikarna_again"
+ },
+ {
+  "id": 2869,
+  "en": "Vikarna has set the board up again.",
+  "ctx": "scene:a5_vikarna_again"
+ },
+ {
+  "id": 2870,
+  "en": "The snakes take you down again, and Vikarna stops inviting you. It counts as two failures, and it will weigh on every test of lore to come.",
+  "ctx": "scene:a5_vikarna_again"
+ },
+ {
+  "id": 2871,
+  "en": "The snake of pride takes you all the way down again. Vikarna stops inviting you, and you never find out what he wanted to say.",
+  "ctx": "scene:a5_vikarna_again"
+ },
+ {
+  "id": 2872,
+  "en": "Make your excuses",
+  "ctx": "scene:a5_vikarna_again"
+ },
+ {
+  "id": 2873,
+  "en": "You make your excuses. Vikarna plays alone, which he seems used to.",
+  "ctx": "scene:a5_vikarna_again"
+ },
+ {
+  "id": 2874,
+  "en": "Charu's anvil",
+  "ctx": "scene:a5_forge"
+ },
+ {
+  "id": 2875,
+  "en": "Charu came to live near you after the dice game, and keeps the forge at the end of the lane now. One morning Charu leans in the doorway, black to the elbows.",
+  "ctx": "scene:a5_forge"
+ },
+ {
+  "id": 2876,
+  "en": "I have a blade that needs two hammers, and you have two arms. Come on.",
+  "ctx": "scene:a5_forge"
+ },
+ {
+  "id": 2877,
+  "en": "Take the hammer at Charu's anvil",
+  "ctx": "scene:a5_forge"
+ },
+ {
+  "id": 2878,
+  "en": "Clean strikes: {h} · Missed: {m} · {left} to go",
+  "ctx": "scene:a5_forge"
+ },
+ {
+  "id": 2879,
+  "en": "The iron rings true!",
+  "ctx": "scene:a5_forge"
+ },
+ {
+  "id": 2880,
+  "en": "A good strike.",
+  "ctx": "scene:a5_forge"
+ },
+ {
+  "id": 2881,
+  "en": "Too soon. The hammer bounces.",
+  "ctx": "scene:a5_forge"
+ },
+ {
+  "id": 2882,
+  "en": "Too late. The iron is cooling.",
+  "ctx": "scene:a5_forge"
+ },
+ {
+  "id": 2883,
+  "en": "Charu is the village smith now, and has a blade on the anvil that needs two hammers. Charu strikes, then you, then Charu. Keep the rhythm while the iron is hot.",
+  "ctx": "scene:a5_forge"
+ },
+ {
+  "id": 2884,
+  "en": "The blade comes out true, and Charu hangs it over the door.",
+  "ctx": "scene:a5_forge"
+ },
+ {
+  "id": 2885,
+  "en": "The iron cools before the blade is done. Charu puts it back in the fire for another try.",
+  "ctx": "scene:a5_forge"
+ },
+ {
+  "id": 2886,
+  "en": "You forged a blade with Charu, beat for beat, in the exile years.",
+  "ctx": "scene:a5_forge"
+ },
+ {
+  "id": 2887,
+  "en": "The blade comes out of the quench hissing and true. Charu holds it up to the light and grins at you through the smoke.",
+  "ctx": "scene:a5_forge"
+ },
+ {
+  "id": 2888,
+  "en": "The iron goes dull red, then grey. Charu shoves it back into the coals. \"Again,\" Charu says.",
+  "ctx": "scene:a5_forge"
+ },
+ {
+  "id": 2889,
+  "en": "The fire again",
+  "ctx": "scene:a5_forge_again"
+ },
+ {
+  "id": 2890,
+  "en": "Back in the fire",
+  "ctx": "scene:a5_forge_again"
+ },
+ {
+  "id": 2891,
+  "en": "The blade is glowing again. Charu nods at the second hammer.",
+  "ctx": "scene:a5_forge_again"
+ },
+ {
+  "id": 2892,
+  "en": "You break the rhythm again, and the blade cracks in the quench. It counts as two failures, and it will weigh on every mace test to come.",
+  "ctx": "scene:a5_forge_again"
+ },
+ {
+  "id": 2893,
+  "en": "The blade cracks in the quench with a sound like a slap. Charu says nothing, and sweeps up the pieces.",
+  "ctx": "scene:a5_forge_again"
+ },
+ {
+  "id": 2894,
+  "en": "Leave the blade to Charu",
+  "ctx": "scene:a5_forge_again"
+ },
+ {
+  "id": 2895,
+  "en": "You leave it to Charu, who finishes it alone and never mentions it.",
+  "ctx": "scene:a5_forge_again"
+ },
+ {
+  "id": 2896,
+  "en": "The ford, Matsya",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2897,
+  "en": "The hidden year finds you in Matsya, near the people you followed.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2898,
+  "en": "Turn the herd before the ford",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2899,
+  "en": "Cattle with you: {f} of {n} · Lost: {d} of {l} · {s} seconds",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2900,
+  "en": "Another cow falls in behind you.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2901,
+  "en": "The water is too deep there. The line breaks.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2902,
+  "en": "The herd tangles on itself.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2903,
+  "en": "Ride to each scattered cow and she falls in behind you. Bring the line round the deep water and out across the ford on the right.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2904,
+  "en": "The raid has stampeded Virata's herds toward the river. Gather the scattered cattle into a line behind your horse, and bring them across at the ford before they drown in the deep water.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2905,
+  "en": "You bring the herd across the ford, and the herders cheer you.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2906,
+  "en": "The line breaks in the river. There are still cattle on the bank.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2907,
+  "en": "You brought Virata's stampeding herd across the ford.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2908,
+  "en": "The lead cow comes up out of the ford behind you, and the whole herd follows her up the bank. The herders cheer you all the way back.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2909,
+  "en": "The line breaks in the river, and the cattle scatter back along the bank.",
+  "ctx": "scene:a5_herd"
+ },
+ {
+  "id": 2910,
+  "en": "The far bank",
+  "ctx": "scene:a5_herd_again"
+ },
+ {
+  "id": 2911,
+  "en": "Half the herd is still on the near bank, lowing. You turn your horse back into the water.",
+  "ctx": "scene:a5_herd_again"
+ },
+ {
+  "id": 2912,
+  "en": "The herd goes into the deep water, and calves drown. It counts as two failures, and it will weigh on every riding test to come.",
+  "ctx": "scene:a5_herd_again"
+ },
+ {
+  "id": 2913,
+  "en": "The herd goes into the deep water. Not all of it comes out. The herders do not look at you.",
+  "ctx": "scene:a5_herd_again"
+ },
+ {
+  "id": 2914,
+  "en": "The prison yard, Hastinapura",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2915,
+  "en": "Below the palace walls",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2916,
+  "en": "Duryodhana's guards take you to the prison yard in chains.",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2917,
+  "en": "The prison yard",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2918,
+  "en": "Duryodhana does not forgive a refusal. His guards come for you the night the army rides out, and you wake in the prison yard below the palace walls, in chains, with the smell of the river coming through the bars.",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2919,
+  "en": "On the third night, the bar on the gate is loose.",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2920,
+  "en": "Get out of the prison yard",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2921,
+  "en": "Hold to creep along the wall. Stop when the torch on the watch platform turns your way.",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2922,
+  "en": "Gate reached: {d} of {n} · Seen: {s} of {m} · {t} seconds",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2923,
+  "en": "At the gate. Back to the shadows.",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2924,
+  "en": "The guard on the platform calls out. You freeze in the corner.",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2925,
+  "en": "The guard on the watch platform swings his torch across the yard. Reach the gate twice: once to slip the bar, once to slip through.",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2926,
+  "en": "You are over the wall and away before dawn.",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2927,
+  "en": "The guard nearly sees you. You can try again tomorrow night.",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2928,
+  "en": "You escaped from Duryodhana's prison yard after refusing to raid Matsya.",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2929,
+  "en": "The bar lifts without a sound. You are through the gate and over the ditch, and the city is waking up behind you.",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2930,
+  "en": "The torch swings back and you freeze in the corner, not breathing. The guard yawns and turns away. Not tonight.",
+  "ctx": "scene:a5_prison"
+ },
+ {
+  "id": 2931,
+  "en": "The bar is still loose. The guard on the platform is a different man, and more awake.",
+  "ctx": "scene:a5_prison_again"
+ },
+ {
+  "id": 2932,
+  "en": "They drag you back and double your chains. It counts as two failures, and it will weigh on every stealth test to come.",
+  "ctx": "scene:a5_prison_again"
+ },
+ {
+  "id": 2933,
+  "en": "They drag you back from the gate and double your chains. You stay in the yard until the war begins, when Duryodhana needs every sword, even yours.",
+  "ctx": "scene:a5_prison_again"
+ },
+ {
+  "id": 2934,
+  "en": "Wait. They will need you when the war comes",
+  "ctx": "scene:a5_prison_again"
+ },
+ {
+  "id": 2935,
+  "en": "You wait. When the war comes, they do need you, and they let you out.",
+  "ctx": "scene:a5_prison_again"
+ },
+ {
+  "id": 2936,
+  "en": "The year of the raid",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2937,
+  "en": "Hold the village gate",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2938,
+  "en": "The raiders",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2939,
+  "en": "Rushes held: {g} of 3 · Gate given: {b} of 3",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2940,
+  "en": "The rush breaks on the gate!",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2941,
+  "en": "Too late. The gate gives.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2942,
+  "en": "Raiders come out of the dusk at the village by the border, the week the Kauravas ride on Matsya, as if the whole land had been given leave. Brace the gate as each rush meets it. Hold three.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2943,
+  "en": "The raiders ride off, and the village feasts you.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2944,
+  "en": "The gate gives a little. They are forming up again.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2945,
+  "en": "You held a border village's gate against raiders, the year of the raid on Matsya.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2946,
+  "en": "The third rush breaks on the gate and does not come again. In the morning the village brings you everything it has, which is not much, and all of it is good.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2947,
+  "en": "The gate shudders and gives a hand's breadth. You throw your shoulder against it. They are forming up again.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2948,
+  "en": "Hold the line to the sinking boat",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2949,
+  "en": "Hold to pull the line taut; let go to give it slack. Keep it over the glow while the crew climbs across.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2950,
+  "en": "Crew across: {c}% · {s} seconds",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2951,
+  "en": "The last of the crew climbs across.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2952,
+  "en": "Nearly. Two are still on the wreck.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2953,
+  "en": "The line jerks out of your hands.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2954,
+  "en": "A trading boat is sinking off the harbour mouth in the storm, and its crew is climbing across to yours on a single line. Keep it taut when the wreck rolls away, slack when it rolls back.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2955,
+  "en": "Every one of the crew comes across alive.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2956,
+  "en": "The line slips. Two are still on the wreck, and you can try again.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2957,
+  "en": "You held the line while a sinking crew climbed across, off Dwaraka in a storm.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2958,
+  "en": "The last sailor tumbles into your boat as the wreck goes under. He is a boy, younger than Vasu, and he will not let go of your arm.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2959,
+  "en": "The line jerks out of your hands, and you catch it again by the end. Two are still on the wreck.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2960,
+  "en": "Throw a rope over the lead elephant",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2961,
+  "en": "Karna's war drums, beating for the war that is coming, have maddened the elephants at Champa. They stampede toward the bathing ghat, where the children are. Throw your rope over the lead elephant's neck as she crosses your line: two throws of three.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2962,
+  "en": "You turn the lead elephant, and the herd follows her away from the ghat.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2963,
+  "en": "The rope falls short. They are still coming, and you can throw again.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2964,
+  "en": "You turned the stampede at Champa with a rope over the lead elephant's neck.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2965,
+  "en": "The rope settles round her neck and she swings toward you, and the whole herd swings after her, away from the river steps and the screaming children.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2966,
+  "en": "The rope slaps against her shoulder and falls. The herd thunders on toward the ghat.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2967,
+  "en": "Hunt the man-eater",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2968,
+  "en": "A tiger has been taking cattle, and then a herdboy, at the edge of the Kamyaka forest. You wait for it at dusk with the boy's brother. It comes out of the long grass fast. Two arrows of three.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2969,
+  "en": "You kill the man-eater, and the villages along the forest are safe.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2970,
+  "en": "The tiger is back in the grass, wounded and angrier. It will come again.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2971,
+  "en": "Your second arrow takes it in the chest in mid-spring. The herdboy's brother sits down in the grass and cries, and you sit beside him until it is dark.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2972,
+  "en": "Your arrow goes into its shoulder and it is gone into the grass, roaring. It will come again. You nock another arrow.",
+  "ctx": "scene:a5_local"
+ },
+ {
+  "id": 2973,
+  "en": "There is still time, just.",
+  "ctx": "scene:a5_local_again"
+ },
+ {
+  "id": 2974,
+  "en": "The raiders break the gate and take the granary. It counts as two failures, and it will weigh on every test of command to come.",
+  "ctx": "scene:a5_local_again"
+ },
+ {
+  "id": 2975,
+  "en": "The gate breaks. The raiders take the granary and your purse with it, and ride off laughing.",
+  "ctx": "scene:a5_local_again"
+ },
+ {
+  "id": 2976,
+  "en": "The line slips away, and the sea takes the wreck. It counts as two failures, and it will weigh on every test of grace to come.",
+  "ctx": "scene:a5_local_again"
+ },
+ {
+  "id": 2977,
+  "en": "The line slips away. The wreck goes under with two men still on it, and you never learn their names.",
+  "ctx": "scene:a5_local_again"
+ },
+ {
+  "id": 2978,
+  "en": "The herd reaches the ghat before you can turn it. It counts as two failures, and it will weigh on every chariot test to come.",
+  "ctx": "scene:a5_local_again"
+ },
+ {
+  "id": 2979,
+  "en": "The herd reaches the ghat. Most of the children scramble clear. Not all of them.",
+  "ctx": "scene:a5_local_again"
+ },
+ {
+  "id": 2980,
+  "en": "The tiger gets away again, and takes another herdboy that winter. It counts as two failures, and it will weigh on every archery test to come.",
+  "ctx": "scene:a5_local_again"
+ },
+ {
+  "id": 2981,
+  "en": "It gets away again. That winter it takes another herdboy, and the villagers stop asking you for help.",
+  "ctx": "scene:a5_local_again"
+ },
+ {
+  "id": 2982,
+  "en": "Leave it to others",
+  "ctx": "scene:a5_local_again"
+ },
+ {
+  "id": 2983,
+  "en": "You leave it to others. They do what they can.",
+  "ctx": "scene:a5_local_again"
+ },
+ {
+  "id": 2984,
+  "en": "Open the wheel with Abhimanyu",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2985,
+  "en": "The wheel of warriors turns ring within ring, and each ring has one opening that moves. Line every opening up with the outer one, and your company can follow Abhimanyu in.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2986,
+  "en": "You open a way, and your company holds it longer than anyone thought it could.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2987,
+  "en": "The rings close. A second wave is forming.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2988,
+  "en": "For a few heartbeats the openings line up and the way is yours. Men pour through behind you.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2989,
+  "en": "The rings turn shut in front of you. Behind you, the second wave is forming.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2990,
+  "en": "Keep the wheel shut",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2991,
+  "en": "The Pandava chariots push at the wheel ring by ring, trying to line up a way in. Turn the rings to keep them out of line. Hold until the sun moves.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2992,
+  "en": "Your part of the wheel holds.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2993,
+  "en": "A way opens where you stand. A second charge is coming.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2994,
+  "en": "The charge breaks on your rings and falls back.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2995,
+  "en": "A way opens through your ring before you can close it. The second charge is already coming.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2996,
+  "en": "Sort the wounded as they come in",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2997,
+  "en": "Look along the cots. You have {n} seconds.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2998,
+  "en": "Which of these did you see on the cots?",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 2999,
+  "en": "A boy with an arrow in his shoulder",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3000,
+  "en": "An old spearman with a broken arm",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3001,
+  "en": "A charioteer with burned hands",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3002,
+  "en": "A girl with a cut across her scalp",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3003,
+  "en": "A horseman with a crushed foot",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3004,
+  "en": "An archer who cannot see",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3005,
+  "en": "A drummer with a split lip",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3006,
+  "en": "A captain with a spear wound",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3007,
+  "en": "A water-carrier with a fever",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3008,
+  "en": "A cook with a scalded arm",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3009,
+  "en": "A prince with no wound at all",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3010,
+  "en": "A priest with a broken nose",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3011,
+  "en": "A mahout with cracked ribs",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3012,
+  "en": "A scout with a snake bite",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3013,
+  "en": "The wounded from the wheel come in faster than anyone can count. Look along the cots once, then tell the healers who is there, so the worst are seen first.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3014,
+  "en": "The worst are seen first, and the boy from the wheel lives.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3015,
+  "en": "You mix them up. The healers send you along the cots again.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3016,
+  "en": "You name them all, worst first. Out of the whole bloody day, a boy from the wheel lives because of the order you put them in.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3017,
+  "en": "You get two of them wrong. The healers send you along the cots again.",
+  "ctx": "scene:a6_wheel"
+ },
+ {
+  "id": 3018,
+  "en": "The wheel closes, and your company blames you. It counts as two failures, and it will weigh on your command.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 3019,
+  "en": "The wheel closes again. Your company does not look at you.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 3020,
+  "en": "The wheel opens where you stand, and Drona sees it. It counts as two failures, and it will weigh on your command.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 3021,
+  "en": "The wheel opens where you stand. Drona sees it, and remembers your face.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 3022,
+  "en": "You mix them up again, and someone waits who should not have. It counts as two failures, and it will weigh on every healing test to come.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 3023,
+  "en": "You mix them up again. A man waits who should not have, and the other healers say nothing, and that is worse.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 3024,
+  "en": "Kurukshetra · the night of day 14",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3025,
+  "en": "Torches across the field",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3026,
+  "en": "Drive arrows up to the front in the dark",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3027,
+  "en": "You hit something in the dark, and the chariot slews.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3028,
+  "en": "Steer between the wrecks and the burning carts: up and down, or the buttons.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3029,
+  "en": "The battle goes on after dark, by torchlight, for the first time in the war. Your line is out of arrows. Drive a loaded chariot up to the front between the wrecks and the burning carts.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3030,
+  "en": "The arrows reach the line, and it holds through the night.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3031,
+  "en": "You have to turn back with half the load. You can try again.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3032,
+  "en": "On the night of the fourteenth day you drove arrows up to the front through the dark.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3033,
+  "en": "You pull up behind the line with the axle smoking. Hands reach up out of the dark for the arrows, and somebody laughs, high and shaky.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3034,
+  "en": "A wreck you never saw tips the chariot on one wheel. You get it down again and turn back for another run.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3035,
+  "en": "Carry the wounded back between the torches",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3036,
+  "en": "Carry",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3037,
+  "en": "Hold to carry. Stop when the archers' torchlight sweeps your way.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3038,
+  "en": "Carried back: {d} of {n} · Seen: {s} of {m} · {t} seconds",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3039,
+  "en": "One more behind the lines.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3040,
+  "en": "Arrows come out of the dark. You flatten yourself in the mud.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3041,
+  "en": "The battle goes on by torchlight. Between the lines, the wounded are calling. Archers on both sides shoot at anything that moves in the torchlight. Carry two of them back.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3042,
+  "en": "You bring two back alive, and the healers stop arguing with you.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3043,
+  "en": "The archers pin you down. There are still voices calling.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3044,
+  "en": "On the night of the fourteenth day you carried the wounded back between the torches.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3045,
+  "en": "You bring them in, one and then another. The second one is from the other army. Nobody in the tent says a word about it.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3046,
+  "en": "Arrows come out of the dark and you lie flat in the mud. When they stop, the voices are still calling.",
+  "ctx": "scene:a6_night"
+ },
+ {
+  "id": 3047,
+  "en": "Later in the night",
+  "ctx": "scene:a6_night_again"
+ },
+ {
+  "id": 3048,
+  "en": "The torches are burning down. Once more, before they go out.",
+  "ctx": "scene:a6_night_again"
+ },
+ {
+  "id": 3049,
+  "en": "The chariot goes over in the dark, and the line runs dry. It counts as two failures, and it will weigh on every chariot test to come.",
+  "ctx": "scene:a6_night_again"
+ },
+ {
+  "id": 3050,
+  "en": "The chariot goes over in the dark. You crawl out from under it with your leg on fire, and the line runs dry an hour before dawn.",
+  "ctx": "scene:a6_night_again"
+ },
+ {
+  "id": 3051,
+  "en": "An arrow finds you between the lines. It counts as two failures, and it will weigh on every test of grace to come.",
+  "ctx": "scene:a6_night_again"
+ },
+ {
+  "id": 3052,
+  "en": "An arrow takes you in the arm between the lines. You crawl back alone.",
+  "ctx": "scene:a6_night_again"
+ },
+ {
+  "id": 3053,
+  "en": "Wait for dawn",
+  "ctx": "scene:a6_night_again"
+ },
+ {
+  "id": 3054,
+  "en": "You wait for dawn. It is a long time coming.",
+  "ctx": "scene:a6_night_again"
+ },
+ {
+  "id": 3055,
+  "en": "\"What protects a kingdom better than its walls?\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 3056,
+  "en": "\"The trust of its people.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 3057,
+  "en": "\"Its army.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 3058,
+  "en": "\"Its treasury.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 3059,
+  "en": "\"When is a king most like a thief?\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 3060,
+  "en": "\"When he takes taxes and gives no protection.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 3061,
+  "en": "\"When he spends his own gold.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 3062,
+  "en": "\"When he forgives his enemies.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 3063,
+  "en": "\"When two duties pull against each other, what should a person do?\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 3064,
+  "en": "\"Choose the one that harms fewest, and own the harm.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 3065,
+  "en": "\"Obey the eldest.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 3066,
+  "en": "\"Wait until it passes.\"",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 3067,
+  "en": "Bhishma has been teaching Yudhishthira for days: how to rule, how to give, how to grieve. Now he tests you on what he taught. Answer before the lamp burns down. Two right answers of three.",
+  "ctx": "scene:a7_question"
+ },
+ {
+  "id": 3068,
+  "en": "\"Who is truly rich?\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 3069,
+  "en": "\"Whoever is content.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 3070,
+  "en": "\"Whoever owns the most cattle.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 3071,
+  "en": "\"The king's treasurer.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 3072,
+  "en": "\"What is the root of every war?\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 3073,
+  "en": "\"Wanting what belongs to another.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 3074,
+  "en": "\"The will of the gods.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 3075,
+  "en": "\"Bad luck at dice.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 3076,
+  "en": "\"What do the living owe the dead?\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 3077,
+  "en": "\"To live so the dead are not ashamed.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 3078,
+  "en": "\"Tall shrines.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 3079,
+  "en": "\"To forget them quickly.\"",
+  "ctx": "scene:a7_question_again"
+ },
+ {
+  "id": 3080,
+  "en": "Bhima laughs about it for a week, and lets you try once more.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 3081,
+  "en": "You go into the river three times. Bhima hauls you out each time, delighted.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 3082,
+  "en": "The brothers remember you backed down. Duryodhana lets them try you once more.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 3083,
+  "en": "The brothers laugh. Duryodhana does not laugh. He looks at you, waiting, which is worse.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 3084,
+  "en": "Arjuna remembers you missed, and lets you try once more.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 3085,
+  "en": "One arrow finds the flame. \"Not bad,\" Arjuna says, and means it. He sets the lamp swinging again.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 3086,
+  "en": "Three arrows vanish into the dark. Arjuna laughs, not unkindly, and shows you how to hold the bow.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 3087,
+  "en": "Karna has to manage alone this time, and asks you to try once more.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 3088,
+  "en": "The horse is quieter, but it pulls free at the last moment. Karna catches the rope. \"Nearly,\" he says.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 3089,
+  "en": "The horse tears free, and Karna is dragged half across the yard before he catches it again.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 3090,
+  "en": "Arjuna gives up on you, and you must choose another friend. It counts as two failures, and it will weigh on every archery test to come.",
+  "ctx": "scene:a1_friend_again"
+ },
+ {
+  "id": 3091,
+  "en": "You miss again. Arjuna lowers his bow and turns back to the lamp. He does not offer again.",
+  "ctx": "scene:a1_friend_again"
+ },
+ {
+  "id": 3092,
+  "en": "Arjuna stopped offering after you missed his lamp twice.",
+  "ctx": "scene:a1_friend_again"
+ },
+ {
+  "id": 3093,
+  "en": "Bhima stops taking you seriously, and you must choose another friend. It counts as two failures, and it will weigh on every wrestling test to come.",
+  "ctx": "scene:a1_friend_again"
+ },
+ {
+  "id": 3094,
+  "en": "Into the river again. Bhima pats your head and calls you \"little fish\". The name sticks for years.",
+  "ctx": "scene:a1_friend_again"
+ },
+ {
+  "id": 3095,
+  "en": "Bhima threw you in the river twice. He calls you \"little fish\" now.",
+  "ctx": "scene:a1_friend_again"
+ },
+ {
+  "id": 3096,
+  "en": "The brothers will never let you forget it, and you must choose another friend. It counts as two failures, and it will weigh on every test of statecraft to come.",
+  "ctx": "scene:a1_friend_again"
+ },
+ {
+  "id": 3097,
+  "en": "Take the horse's rope beside Karna",
+  "ctx": "scene:a1_friend_again"
+ },
+ {
+  "id": 3098,
+  "en": "Karna stops asking, and you must choose another friend. It counts as two failures, and it will weigh on every chariot test to come.",
+  "ctx": "scene:a1_friend_again"
+ },
+ {
+  "id": 3099,
+  "en": "The horse throws you into the straw. Karna gets it in hand alone, as he always has, and does not ask you again.",
+  "ctx": "scene:a1_friend_again"
+ },
+ {
+  "id": 3100,
+  "en": "Twice Karna asked for your help with a horse, and twice it beat you.",
+  "ctx": "scene:a1_friend_again"
+ },
+ {
+  "id": 3101,
+  "en": "Let it go. Charu is waiting at the gate",
+  "ctx": "scene:a1_friend_again"
+ },
+ {
+  "id": 3102,
+  "en": "You walk home with Charu, who pretends not to be pleased.",
+  "ctx": "scene:a1_friend_again"
+ },
+ {
+  "id": 3103,
+  "en": "Strike as each beat reaches the ring: every beat is Ugra shifting his weight.",
+  "ctx": "scene:a1_wrestle"
+ },
+ {
+  "id": 3104,
+  "en": "Holds broken: {h} · Missed: {m} · {left} to go",
+  "ctx": "scene:a1_wrestle"
+ },
+ {
+  "id": 3105,
+  "en": "He staggers!",
+  "ctx": "scene:a1_wrestle"
+ },
+ {
+  "id": 3106,
+  "en": "He gives ground.",
+  "ctx": "scene:a1_wrestle"
+ },
+ {
+  "id": 3107,
+  "en": "Too soon. He reads you.",
+  "ctx": "scene:a1_wrestle"
+ },
+ {
+  "id": 3108,
+  "en": "Too late. He shoves you back.",
+  "ctx": "scene:a1_wrestle"
+ },
+ {
+  "id": 3109,
+  "en": "Ugra fights the fair way: falls in the ring. He shifts his weight like a drummer keeping time. Catch him on the beat, again and again, and he goes down.",
+  "ctx": "scene:a1_wrestle"
+ },
+ {
+  "id": 3110,
+  "en": "Ugra goes to one knee, and gets up again. Charu is still in his grip.",
+  "ctx": "scene:a1_wrestle"
+ },
+ {
+  "id": 3111,
+  "en": "Ugra wins twice, and you will not get into that ring again. It counts as two failures, and it will weigh on every wrestling test to come.",
+  "ctx": "scene:a1_rematch"
+ },
+ {
+  "id": 3112,
+  "en": "Ugra threw you twice. You will not get into that ring again.",
+  "ctx": "scene:a1_rematch"
+ },
+ {
+  "id": 3113,
+  "en": "You go to Varnavata for the spring festival.",
+  "ctx": "scene:a3_lac"
+ },
+ {
+  "id": 3114,
+  "en": "Messengers on every road",
+  "ctx": "scene:a3_kampilya"
+ },
+ {
+  "id": 3115,
+  "en": "A swayamvara at Kampilya",
+  "ctx": "scene:a3_kampilya"
+ },
+ {
+  "id": 3116,
+  "en": "Ride to Kampilya for the swayamvara",
+  "ctx": "scene:a3_kampilya"
+ },
+ {
+  "id": 3117,
+  "en": "Stay home. The year's work will not wait",
+  "ctx": "scene:a3_kampilya"
+ },
+ {
+  "id": 3118,
+  "en": "A traveller's story",
+  "ctx": "scene:a3_news"
+ },
+ {
+  "id": 3119,
+  "en": "News from Kampilya",
+  "ctx": "scene:a3_news"
+ },
+ {
+  "id": 3120,
+  "en": "At Draupadi's swayamvara, king after king failed to string the great bow. Karna strung it, and walked back to his seat. Then a young brahmin in a deerskin strung it in one motion, and hit the fish's eye.",
+  "ctx": "scene:a3_news"
+ },
+ {
+  "id": 3121,
+  "en": "The brahmins were Arjuna and Bhima in disguise. The Pandavas are alive, and Draupadi is the wife of all five brothers.",
+  "ctx": "scene:a3_news"
+ },
+ {
+  "id": 3122,
+  "en": "Drink to the Pandavas being alive",
+  "ctx": "scene:a3_news"
+ },
+ {
+  "id": 3123,
+  "en": "Wonder aloud what Duryodhana will do now",
+  "ctx": "scene:a3_news"
+ },
+ {
+  "id": 3124,
+  "en": "An old man at the well looks at you sharply. \"Nothing good,\" he says.",
+  "ctx": "scene:a3_news"
+ },
+ {
+  "id": 3125,
+  "en": "Shrug. Kings and their weddings are nothing to you",
+  "ctx": "scene:a3_news"
+ },
+ {
+  "id": 3126,
+  "en": "He thanks you, and takes your hand, and goes anyway. \"If I am called, I must play,\" he says. You go with him.",
+  "ctx": "scene:a4_invite"
+ },
+ {
+  "id": 3127,
+  "en": "You follow the Pandavas into exile, north to the hermitages.",
+  "ctx": "scene:a5_forest_boon"
+ },
+ {
+  "id": 3128,
+  "en": "Answer the voice before you drink",
+  "ctx": "scene:a5_yaksha"
+ },
+ {
+  "id": 3129,
+  "en": "The voice speaks from the water. \"Answer my questions first,\" it says, \"then drink.\" Answer before the lamp burns down. Two right answers of three.",
+  "ctx": "scene:a5_yaksha"
+ },
+ {
+  "id": 3130,
+  "en": "The voice lets you drink, and you remember every answer for life.",
+  "ctx": "scene:a5_yaksha"
+ },
+ {
+  "id": 3131,
+  "en": "The voice falls silent, waiting. You may answer again before you drink.",
+  "ctx": "scene:a5_yaksha"
+ },
+ {
+  "id": 3132,
+  "en": "At the lake you answered the voice in the water. What is faster than the wind? The mind.",
+  "ctx": "scene:a5_yaksha"
+ },
+ {
+  "id": 3133,
+  "en": "\"Drink,\" says the voice. The water is cold and sweet. You remember every word of it for the rest of your life.",
+  "ctx": "scene:a5_yaksha"
+ },
+ {
+  "id": 3134,
+  "en": "Your answer comes out wrong, and the voice falls silent. The water is right there. You wait.",
+  "ctx": "scene:a5_yaksha"
+ },
+ {
+  "id": 3135,
+  "en": "The voice waits",
+  "ctx": "scene:a5_yaksha_again"
+ },
+ {
+  "id": 3136,
+  "en": "The voice in the water is still waiting. So is your thirst. You will not be asked a third time.",
+  "ctx": "scene:a5_yaksha_again"
+ },
+ {
+  "id": 3137,
+  "en": "\"Arrows in a war.\"",
+  "ctx": "scene:a5_yaksha_again"
+ },
+ {
+  "id": 3138,
+  "en": "\"That the sun rises every morning.\"",
+  "ctx": "scene:a5_yaksha_again"
+ },
+ {
+  "id": 3139,
+  "en": "\"That a lake can speak.\"",
+  "ctx": "scene:a5_yaksha_again"
+ },
+ {
+  "id": 3140,
+  "en": "You cannot think for thirst. You drink, and fall like the others. It counts as two failures, and it will weigh on every test of lore to come.",
+  "ctx": "scene:a5_yaksha_again"
+ },
+ {
+  "id": 3141,
+  "en": "You cannot think for thirst. You drink. Darkness, and then you are lying on the bank in the evening, alive, with a heaviness in your limbs that never quite leaves.",
+  "ctx": "scene:a5_yaksha_again"
+ },
+ {
+  "id": 3142,
+  "en": "Drink, and stop thinking",
+  "ctx": "scene:a5_yaksha_again"
+ },
+ {
+  "id": 3143,
+  "en": "Ride with Duryodhana against Matsya",
+  "ctx": "scene:a5_matsya"
+ },
+ {
+  "id": 3144,
+  "en": "Refuse to ride against a kingdom that has done you no wrong",
+  "ctx": "scene:a5_matsya"
+ },
+ {
+  "id": 3145,
+  "en": "Duryodhana does not forgive a refusal",
+  "ctx": "scene:a5_matsya"
+ },
+ {
+  "id": 3146,
+  "en": "You refused to ride with him against Matsya.",
+  "ctx": "scene:a5_matsya"
+ },
+ {
+  "id": 3147,
+  "en": "You refused to ride against Matsya. Duryodhana had you thrown in the prison yard.",
+  "ctx": "scene:a5_matsya"
+ },
+ {
+  "id": 3148,
+  "en": "The hall goes quiet. Duryodhana looks at you for a long time, and then he smiles, which is worse. \"Then you can wait for us here,\" he says. His guards are already moving.",
+  "ctx": "scene:a5_matsya"
+ },
+ {
+  "id": 3149,
+  "en": "Leave Matsya's troubles to Matsya. There is trouble enough at home",
+  "ctx": "scene:a5_matsya"
+ },
+ {
+  "id": 3150,
+  "en": "Hold your company's ground until dusk",
+  "ctx": "scene:a6_day14"
+ },
+ {
+  "id": 3151,
+  "en": "Tend the wounded as they come in",
+  "ctx": "scene:a6_day14"
+ },
+ {
+  "id": 3152,
+  "en": "It rears and strikes at your hand as you run. It was a dry bite, the healer says, but the family's herbs go on it all the same. Your uncle uses the stick.",
+  "ctx": "scene:ev_snake"
+ },
+ {
+  "id": 3153,
+  "en": "She throws you into the fence. The traders help you up, rub your bruises with your own herbs, and tell you better riders than you have tried.",
+  "ctx": "scene:ev_horses"
+ },
+ {
+  "id": 3154,
+  "en": "Dushasana is already walking back toward you, grinning. Duryodhana raises a hand. \"Let them try again,\" he says. \"Once.\"",
+  "ctx": "play:a1_friend_again"
+ },
+ {
+  "id": 3155,
+  "en": "You are sixteen, and you have chosen the path of the {path!}. Before the year is out, someone wants to see whether you were right.",
+  "ctx": "play:a2_pathtest"
+ },
+ {
+  "id": 3156,
+  "en": "Messengers ride out from Kampilya to every court in the land. King Drupada will give his daughter Draupadi in a swayamvara, to whoever can string the great bow and hit the mark.",
+  "ctx": "play:a3_kampilya"
+ },
+ {
+  "id": 3157,
+  "en": "Half the land is going. Are you?",
+  "ctx": "play:a3_kampilya"
+ },
+ {
+  "id": 3158,
+  "en": "The great bow will be there",
+  "ctx": "play:a3_kampilya"
+ },
+ {
+  "id": 3159,
+  "en": "The spring hunt comes at the end of the rains",
+  "ctx": "play:a3_kampilya"
+ },
+ {
+  "id": 3160,
+  "en": "You hear it from a traveller at the well, and then from everyone. By evening the story has grown a fight with a hundred kings and an uprooted tree.",
+  "ctx": "play:a3_news"
+ },
+ {
+  "id": 3161,
+  "en": "Your deer is already forgotten. Nobody is going to make up a song about it now.",
+  "ctx": "play:a3_news"
+ },
+ {
+  "id": 3162,
+  "en": "The Khandava forest, Indraprastha",
+  "ctx": "play:a3_courttest"
+ },
+ {
+  "id": 3163,
+  "en": "The burning forest",
+  "ctx": "play:a3_courttest"
+ },
+ {
+  "id": 3164,
+  "en": "The new city needs land, and the land is forest. Krishna and Arjuna have set the Khandava forest burning, and they shoot down anything that tries to escape it.",
+  "ctx": "play:a3_courttest"
+ },
+ {
+  "id": 3165,
+  "en": "The night streets",
+  "ctx": "play:a4_household"
+ },
+ {
+  "id": 3166,
+  "en": "By morning, Duryodhana's men will be in the streets here too.",
+  "ctx": "play:a4_household"
+ },
+ {
+  "id": 3167,
+  "en": "You block, and {a}'s blow still hits you for {n}.",
+  "ctx": "play:a5_own_life"
+ },
+ {
+  "id": 3168,
+  "en": "The news of the raid reaches you late, from a traveller who saw the dust. Here, the same week brings trouble of its own.",
+  "ctx": "play:a5_matsya"
+ },
+ {
+  "id": 3169,
+  "en": "The man-eater",
+  "ctx": "play:a5_local"
+ },
+ {
+  "id": 3170,
+  "en": "The same week the Kauravas ride on Matsya, trouble comes here too, as if the whole land had been given leave.",
+  "ctx": "play:a5_local"
+ },
+ {
+  "id": 3171,
+  "en": "{t} braces for your next blow.",
+  "ctx": "play:a6_day14"
+ },
+ {
+  "id": 3172,
+  "en": "No one sounds the conch at sunset. The fighting goes on by torchlight.",
+  "ctx": "play:a6_night"
+ },
+ {
+  "id": 3173,
+  "en": "The night after the dice game, {they} got a steward's family out past Duryodhana's patrols.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3174,
+  "en": "{They} killed the man-eater at the edge of the Kamyaka forest.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3175,
+  "en": "Shakuni's rooms",
+  "ctx": "play:a2_pathtest"
+ },
+ {
+  "id": 3176,
+  "en": "When the Khandava forest burned, {they} led families out through the smoke.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3177,
+  "en": "The old forest",
+  "ctx": "play:a3_courttest"
+ },
+ {
+  "id": 3178,
+  "en": "A new place takes your measure in the first year. Here is how this one does it.",
+  "ctx": "play:a3_courttest"
+ },
+ {
+  "id": 3179,
+  "en": "Duryodhana calls every sword at court to ride on Matsya's herds. If the Pandavas are hiding there, he says, they will come out to save the cattle, and be found before the year is up.",
+  "ctx": "play:a5_matsya"
+ },
+ {
+  "id": 3180,
+  "en": "Duryodhana's men are still looking for the prisoner who went over the wall. Some of them are standing in the same army as you.",
+  "ctx": "play:a6_eve"
+ },
+ {
+  "id": 3181,
+  "en": "Across the field, the Panchala archers know your face. You strung their king's bow, once.",
+  "ctx": "play:a6_eve"
+ },
+ {
+  "id": 3182,
+  "en": "{They} strung the great bow of Panchala the night before Draupadi's swayamvara.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3183,
+  "en": "{They} refused to ride on Matsya, and went over Duryodhana's prison wall for it.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3184,
+  "en": "The horse has torn free again, and Karna is running after its rope. \"Once more!\" he shouts over his shoulder.",
+  "ctx": "play:a1_friend_again"
+ },
+ {
+  "id": 3185,
+  "en": "Tigers and goats",
+  "ctx": "play:a3_courttest"
+ },
+ {
+  "id": 3186,
+  "en": "You are in Matsya when the raid comes. You have been here most of the year, quietly, near the people you followed into exile.",
+  "ctx": "play:a5_matsya"
+ },
+ {
+  "id": 3187,
+  "en": "Prince Uttara rides past and raises a hand to you. He has not forgotten the ford.",
+  "ctx": "play:a6_eve"
+ },
+ {
+  "id": 3188,
+  "en": "{They} brought Virata's herd across the ford when the Kauravas raided Matsya.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3189,
+  "en": "At the lake in the forest, {they} answered the voice in the water.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3190,
+  "en": "Bhima wades back into the shallows and beckons. \"Once more,\" he says. \"I was not ready.\" He was.",
+  "ctx": "play:a1_friend_again"
+ },
+ {
+  "id": 3191,
+  "en": "The palace, at night",
+  "ctx": "play:a2_pathtest"
+ },
+ {
+  "id": 3192,
+  "en": "The charioteers' lane, Champa",
+  "ctx": "play:a1_home"
+ },
+ {
+  "id": 3193,
+  "en": "Your father drives chariots for the lords of Anga, in the household of the old charioteer Adhiratha. He tells you to keep your eyes down and your hands steady.",
+  "ctx": "play:a1_home"
+ },
+ {
+  "id": 3194,
+  "en": "When you are seven, Adhiratha is called to Hastinapura to drive for the Kuru court, and his whole household goes with him: horses, carts, cousins, and your family. His foster son Karna, a boy your age, rides on the lead cart and asks the drivers questions all the way up the Ganga.",
+  "ctx": "play:a1_journey"
+ },
+ {
+  "id": 3195,
+  "en": "The charioteers' quarter, Hastinapura",
+  "ctx": "play:a1_friend"
+ },
+ {
+  "id": 3196,
+  "en": "Karna's elephants",
+  "ctx": "play:a3_courttest"
+ },
+ {
+  "id": 3197,
+  "en": "{They} refused to ride on Matsya, and sat in Duryodhana's prison yard for it.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 3198,
+  "en": "Somewhere in the forest, five brothers everyone believes dead are still alive. You know it, because you carried the earth out of their tunnel.",
+  "ctx": "play:a3_kampilya"
+ },
+ {
+  "id": 3199,
+  "en": "They let you out of the prison yard the day the armies marched. Duryodhana passed you on the road and did not look at you. He has not forgotten Matsya.",
+  "ctx": "play:a6_eve"
+ },
+ {
+  "id": 3200,
+  "en": "The healers go out between the lines with torches. Some of them do not come back.",
+  "ctx": "play:a6_night"
+ },
+ {
+  "id": 3201,
+  "en": "Arjuna sets the lamp swinging again and holds out his bow. \"Once more,\" he says. \"Then I go in to eat.\"",
+  "ctx": "play:a1_friend_again"
+ },
+ {
+  "id": 3202,
+  "en": "They laugh. Then they rob you anyway, slowly and politely, and the one who was shaking takes your {heirloom!}.",
+  "ctx": "play:ev_bandits"
+ },
+ {
+  "id": 3203,
+  "en": "Among the levies brought in from the villages, you see a thin man with a farmer's hands, wearing your {heirloom!}. He sees you see it, and looks away.",
+  "ctx": "play:a6_day1"
+ },
+ {
+  "id": 3204,
+  "en": "You lost your family's heirloom: {h!}.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3205,
+  "en": "The healers' hall",
+  "ctx": "play:a2_pathtest"
+ },
+ {
+  "id": 3206,
+  "en": "Shakuni sees you, and smiles. He has not forgotten the chaupar board, fourteen years ago.",
+  "ctx": "play:a4_hands"
+ },
+ {
+  "id": 3207,
+  "en": "Matsya is your homeland. Those are your neighbours' herds.",
+  "ctx": "play:a5_matsya"
+ },
+ {
+  "id": 3208,
+  "en": "The harbour mouth",
+  "ctx": "play:a3_courttest"
+ },
+ {
+  "id": 3209,
+  "en": "Kaurava outriders catch you on the road and send you home bruised. One of them keeps your {heirloom!}, laughing. Your name is noted.",
+  "ctx": "play:a2_drupada"
+ },
+ {
+  "id": 3210,
+  "en": "A Kaurava captain rides along the line with your {heirloom!} hanging from his belt. He has worn it for twenty-six years. He has no idea whose it was.",
+  "ctx": "play:a6_day1"
+ },
+ {
+  "id": 3211,
+  "en": "Drupada's council",
+  "ctx": "play:a3_courttest"
+ },
+ {
+  "id": 3212,
+  "en": "The wreck",
+  "ctx": "play:a5_local"
  }
 ]

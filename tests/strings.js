@@ -59,11 +59,12 @@ function walkContent(K, add) {
 
 // (2) Literals in interface and engine code that are passed to the translator.
 function walkCode(add) {
-  const files = ["js/engine/core.js", "js/engine/flow.js", "js/engine/combat.js", "js/engine/abilities.js", "js/ui/dom.js", "js/ui/ledger.js", "js/ui/scene.js", "js/ui/battle.js", "js/ui/screens.js", "js/ui/modals.js", "js/ui/games.js", "js/ui/lives.js", "js/ui/trials.js", "js/ui/map.js", "js/content/act7.js"];
+  const files = ["js/engine/core.js", "js/engine/flow.js", "js/engine/combat.js", "js/engine/abilities.js", "js/ui/dom.js", "js/ui/ledger.js", "js/ui/scene.js", "js/ui/battle.js", "js/ui/screens.js", "js/ui/modals.js", "js/ui/games.js", "js/ui/lives.js", "js/ui/trials.js", "js/ui/play.js", "js/ui/boards.js", "js/ui/stage.js", "js/ui/puppet.js", "js/ui/map.js", "js/content/act7.js"];
   for (const f of files) {
     const src = fs.readFileSync(path.join(GAME, f), "utf8");
     // Literals inside K.tr(...) / U.tr(...) / K.text(...), and the screens' fixed tables.
     for (const m of src.matchAll(/(?:K\.tr|U\.tr|K\.text|U\.t)\(([^;]*?)\)/g)) for (const lit of m[1].matchAll(/"((?:[^"\\]|\\.)*)"/g)) { const s = JSON.parse('"' + lit[1] + '"'); if (looksLikeText(s)) add(s, "code:" + path.basename(f)); }
+    for (const m of src.matchAll(/pressButton\([^;]*?"((?:[^"\\]|\\.)*)"/g)) { const s = JSON.parse('"' + m[1] + '"'); if (looksLikeText(s)) add(s, "code:" + path.basename(f)); }
     for (const m of src.matchAll(/(?:key|verb|say|tell|subjectKey)\s*[:(]\s*[^"]*"((?:[^"\\]|\\.)*)"/g)) { const s = JSON.parse('"' + m[1] + '"'); if (looksLikeText(s)) add(s, "code:" + path.basename(f)); }
     // Game notes and summaries: G.note = "..." / ["...", ...], and done(..., ["...", ...]).
     for (const m of src.matchAll(/(?:note = |done\([^;]*?)\[?\s*(?:\w+ \? )?"((?:[^"\\]|\\.)*)"(?: : "((?:[^"\\]|\\.)*)")?/g)) for (const g of [m[1], m[2]]) if (g) { const s = JSON.parse('"' + g + '"'); if (looksLikeText(s)) add(s, "code:" + path.basename(f)); }

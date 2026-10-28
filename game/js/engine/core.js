@@ -102,6 +102,7 @@
       if (p[key]) v = p[key];
       else if (key === "name") v = S.name || K.tr("you");
       else if (key === "origin") v = K.tr(K.ORIGINS?.[S.origin]?.land || K.ORIGINS?.[S.origin]?.name || "your homeland");
+      else if (key === "heirloom") v = K.tr(K.HEIRLOOMS?.[S.heirloom]?.name || "heirloom");
       else if (key === "teacher") v = K.tr(K.TEACHERS?.[S.teacher]?.short || "your teacher");
       else if (key === "path") v = K.tr(K.PATHS?.[S.path]?.name || "warrior");
       else if (key === "spouse") v = K.personName("spouse", S);
@@ -173,6 +174,7 @@
     obj[k] = K.clamp((obj[k] ?? base) + n, lo, hi);
     d[label] = (d[label] || 0) + n;
   }
+  K.heirloomAtRisk = (S = K.S) => !!S.heirloom && S.heirloom !== "debt" && !S.flags.includes("heirloom_lost");
   const FX = {
     duty: (o, S, d) => { for (const [k, n] of Object.entries(o)) bump(S.duty, k, n, d, "duty." + k); },
     bond: (o, S, d) => { for (const [k, n] of Object.entries(o)) { bump(S.bonds, k, n, d, "bond." + k, 0, 10, 3); if (n > 0) (S.bondAct = S.bondAct || {})[k] = S.act; } },
@@ -182,6 +184,21 @@
     skill: (o, S, d) => { for (const [k, n] of Object.entries(o)) bump(S.skills, k, n, d, "skill." + k, 0, 6); },
     item: (o, S, d) => { for (const [k, n] of Object.entries(o)) { S.items[k] = Math.max(0, (S.items[k] || 0) + n); d["item." + k] = n; } },
     flag: (v, S) => { for (const f of [].concat(v)) if (!S.flags.includes(f)) S.flags.push(f); },
+    // A risk that went wrong: lose the family heirloom (the puppet shows it gone, and someone else
+    // may turn up wearing it), a bundle of herbs, or coins. { lose: "heirloom", at: "bandits" }
+    lose: (v, S, d) => {
+      const what = typeof v === "string" ? v : v.what;
+      if (what === "heirloom") {
+        if (!K.heirloomAtRisk(S)) return;
+        S.flags.push("heirloom_lost");
+        S.flags = S.flags.filter((f) => f !== "amulet_whole");
+        const back = { bow: { archery: -1 }, manuscript: { lore: -1 } }[S.heirloom];
+        if (back) FX.skill(back, S, d);
+        S.heirloomLost = { act: S.act, at: (typeof v === "object" && v.at) || null };
+        d.heirloomLost = S.heirloom;
+        FX.journal({ src: "You lost your family's heirloom: {h!}.", p: { h: K.HEIRLOOMS[S.heirloom].name } }, S);
+      } else FX.item({ [what]: -1 }, S, d);
+    },
     unflag: (v, S) => { S.flags = S.flags.filter((f) => ![].concat(v).includes(f)); },
     // Memories and journal lines keep their English source (src, p) so they can be shown in any
     // language later; text is the English as written, for old saves and the save code.

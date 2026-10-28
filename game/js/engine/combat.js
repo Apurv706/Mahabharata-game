@@ -63,10 +63,16 @@
     abilities.push("herbs");
     return { uid: "p", name: S.name || "You", side: "player", hp, maxHp: hp, atk, def: 1 + Math.floor(grace / 2), abilities, cds: {}, status: {}, armed: true };
   }
-  function makeUnit(def, side, i) {
-    const hp = Math.round(def.hp * (side === "enemy" && K.S.storyMode ? 0.75 : 1));
+  // Enemies come in a little stronger than their tier says, and more so in a fight marked hard; story
+  // mode takes a quarter off. Tuned so an even fight is won about two times in three by a player who
+  // guards and defends in time, and a hard one about two times in five (tests/balance.js).
+  C.TOUGH = { hp: 2.2, atk: 1.9 };
+  C.HARD = { hp: 1.5, atk: 1.35 }; // the hard fights are already built big (Ashwatthama, the lone chariot), so a smaller step
+  function makeUnit(def, side, i, enc) {
+    const m = side === "enemy" ? (enc && enc.hard ? C.HARD : C.TOUGH) : { hp: 1, atk: 1 };
+    const hp = Math.round(def.hp * m.hp * (side === "enemy" && K.S.storyMode ? 0.75 : 1));
     return {
-      uid: side[0] + i, name: K.fmt(def.name), src: def.name, side, hp, maxHp: hp, atk: def.atk, def: def.def || 1,
+      uid: side[0] + i, name: K.fmt(def.name), src: def.name, side, hp, maxHp: hp, atk: Math.round(def.atk * m.atk * 10) / 10, def: def.def || 1,
       abilities: def.abilities || ["strike"], cds: {}, status: {}, armed: def.armed !== false,
       vowTag: def.vowTag || null, person: def.person || null, note: def.note || null, plural: !!def.plural
     };
@@ -86,7 +92,16 @@
         for (const id of K.vowBreaksFor([t.vowTag])) { K.apply({ vowBreak: id }); api.tell("You strike {t}. Your vow is broken.", { t }); }
       }
       if (t.status.evade) { delete t.status.evade; api.tell(subjectKey(t, "avoids the attack"), { t }); return 0; }
+      // A blow aimed at you that you met in time (C.resolve): dodged, blocked, or turned into a counter.
+      const def = isP(t) && u.side === "enemy" ? B.defNow : null;
+      if (def === "dodge") { api.tell("You dodge {a}'s blow.", { a: u }); B.lastDef = "dodge"; return 0; }
+      if (def === "counter") {
+        api.tell("You turn {a}'s blow aside and strike back.", { a: u }); B.lastDef = "counter";
+        const p = t; B.defNow = null; api.hit(p, u, 0.7); return 0;
+      }
       let dmg = (u.atk + K.roll(4)) * mult;
+      if (def === "block") { dmg *= 0.45; B.lastDef = "block"; }
+      if (def === "miss") { dmg *= o.heavy ? 1.15 : 1; B.lastDef = "miss"; }
       if (u.status.inspired) dmg *= 1.3;
       if (u.status.weakened) dmg *= 0.7;
       if (u.status.cursed) dmg *= 0.5;
@@ -94,10 +109,11 @@
       if (t.status.exposed) dmg *= 1.4;
       let crit = false;
       if (u.status.crit || K.rng() < 0.08) { crit = true; dmg *= 1.5; delete u.status.crit; }
-      if (t.status.guard) { dmg *= 0.5; delete t.status.guard; }
+      if (t.status.guard) { dmg *= o.breaks ? 0.85 : 0.5; delete t.status.guard; }
       dmg = Math.max(1, Math.round(dmg));
       t.hp = Math.max(0, t.hp - dmg);
-      const key = o.verb || (isP(u) ? "You hit {t} for {n}." : isP(t) ? (u.plural ? "{a} hit you for {n}." : "{a} hits you for {n}.") : u.plural ? "{a} hit {t} for {n}." : "{a} hits {t} for {n}.");
+      const key = def === "block" ? "You block, and {a}'s blow still hits you for {n}." : o.verb || (isP(u) ? "You hit {t} for {n}." : isP(t) ? (u.plural ? "{a} hit you for {n}." : "{a} hits you for {n}.") : u.plural ? "{a} hit {t} for {n}." : "{a} hits {t} for {n}.");
+      B.lastHit = { by: u.uid, on: t.uid, n: dmg, crit };
       api.tell(key, { a: u, t }, { n: dmg }, crit);
       if (t.hp === 0) api.tell(t.side === "enemy" ? "{t} falls." : isP(t) ? "You fall." : "{t} is down.", { t });
       return dmg;
@@ -120,11 +136,15 @@
   C.start = function (encId, onEnd) {
     const S = K.S, enc = K.ENCOUNTERS[encId];
     if (!enc) throw new Error("Missing encounter: " + encId);
-    B = Object.assign({ enc, units: [makePlayer(S)], round: 1, log: [], over: null, used: {}, onEnd }, api);
-    (K.val(enc.allies) || []).forEach((a, i) => { const d = typeof a === "string" ? K.UNITS[a] && K.UNITS[a](S) : a; if (d) B.units.push(makeUnit(d, "ally", i)); });
-    K.val(enc.enemies).forEach((e, i) => B.units.push(makeUnit(e, "enemy", i)));
+    B = Object.assign({ enc, units: [makePlayer(S)], round: 1, log: [], acts: [], over: null, used: {}, onEnd, bid: Date.now() + ":" + encId }, api);
+    (K.val(enc.allies) || []).forEach((a, i) => { const d = typeof a === "string" ? K.UNITS[a] && K.UNITS[a](S) : a; if (d) B.units.push(makeUnit(d, "ally", i, enc)); });
+    K.val(enc.enemies).forEach((e, i) => B.units.push(makeUnit(e, "enemy", i, enc)));
+    B.habit = []; // what you have done lately: enemies learn from it
     if (S.boons.includes("healing_hands") && (S.items.herbs || 0) < 2) S.items.herbs = 2;
     B.pulled = {};
+    // The screen asks for step mode (each blow aimed at you met in time); with timed moments off the
+    // blows are met by chance, on kinder odds; under the tests, on the plain odds.
+    B.stepMode = !!C.stepNext; B.lenient = !C.stepNext && !K.headless;
     const rec = K.record(S);
     if (rec.last === "lost") api.say("You remember how your last fight ended. Your hands are not quite steady.");
     else if (rec.last === "won" && rec.won >= 3) api.say("You have won fights before, and your body remembers how.");
@@ -173,6 +193,7 @@
 
   function use(u, id, uid) {
     const ab = K.ABILITIES[id];
+    B.acts.push({ uid: u.uid, id, round: B.round }); // for the screen: who moved, and how
     ab.use(B, u, targetsFor(u, ab, uid));
     if (ab.cd) u.cds[id] = ab.cd;
     if (ab.once) B.used[id] = true;
@@ -180,13 +201,20 @@
 
   // What a unit means to do: the same rules for allies (decided on their turn) and enemies (decided
   // a round ahead and shown on their card, so the player can guard, pull a friend clear or strike first).
+  // Enemies learn: a player who keeps guarding draws shield-breaking blows; one who keeps hitting the
+  // same foe finds it braced; a player low on health, or who has just used herbs, is hunted.
   function decide(u) {
     const specials = u.abilities.filter((id) => id !== "strike" && id !== "guard" && !u.cds[id] && !K.ABILITIES[id].item && !K.ABILITIES[id].needsAlly);
     const hurt = friendsOf(u).find((f) => f.hp / f.maxHp < 0.45);
     if (hurt && u.abilities.includes("salve") && !u.cds.salve) return { id: "salve", uid: hurt.uid };
-    const id = specials.length && K.rng() < 0.45 ? K.pick(specials) : "strike";
+    const h = (B && B.habit) || [], recent = h.slice(-3);
+    const p = foesOf(u).find((f) => f.side === "player");
+    if (u.side === "enemy" && recent.filter((x) => x.id === "guard").length >= 2 && !u.cds.breaker) return { id: "breaker", uid: p ? p.uid : null };
+    if (u.side === "enemy" && recent.length >= 2 && recent.slice(-2).every((x) => x.uid === u.uid) && !u.status.guard && K.rng() < 0.5) return { id: "brace", uid: null };
+    const id = specials.length && K.rng() < 0.5 ? K.pick(specials) : "strike";
     const ab = K.ABILITIES[id];
-    const t = ab.target === "enemy" ? targetsFor(u, ab) : null;
+    let t = ab.target === "enemy" ? targetsFor(u, ab) : null;
+    if (u.side === "enemy" && ab.target === "enemy" && p && (p.hp / p.maxHp < 0.4 || (recent.length && recent[recent.length - 1].id === "herbs")) && K.rng() < 0.85) t = p;
     return { id, uid: t ? t.uid : null };
   }
   function planAll() { for (const e of B.units) { if (e.side === "enemy" && e.hp > 0) e.intent = decide(e); else delete e.intent; } }
@@ -239,7 +267,13 @@
   function finish(outcome) {
     B.over = outcome;
     const p = C.player();
-    if (outcome === "win" && B.enc.lethal && p.hp <= p.maxHp * 0.2 && K.rng() < 0.45) {
+    // A fight won on your last legs can leave a mark for life: any wound in a deadly fight, a scar in
+    // any other.
+    if (outcome === "win" && !B.enc.lethal && p.hp <= p.maxHp * 0.2 && K.rng() < 0.35 && !K.S.injuries.includes("scar")) {
+      K.apply({ injury: "scar", journal: { src: "You won, but not whole: {inj!}.", p: { inj: K.INJURIES.scar.text } } });
+      api.tell("You win, but the fight leaves its mark: {inj!}.", null, { inj: K.INJURIES.scar.text });
+    }
+    if (outcome === "win" && B.enc.lethal && p.hp <= p.maxHp * 0.3 && K.rng() < 0.5) {
       const options = Object.keys(K.INJURIES).filter((id) => id !== "scar" && !K.S.injuries.includes(id));
       if (options.length) {
         const id = K.pick(options);
@@ -262,23 +296,71 @@
     planAll();
   }
 
-  function others() {
-    for (const a of living("ally")) { if (B.over) return; aiTurn(a); if (over()) return; }
-    for (const e of living("enemy")) { if (B.over) return; aiTurn(e); if (over()) return; }
+  // Does this enemy's next move come at you? Then you get a moment to meet it (block, dodge, counter).
+  const DAMAGING = ["strike", "heavy", "arrows", "disarm", "breaker"];
+  C.threat = function (u) {
+    if (!u || u.hp <= 0 || u.status.stun || !u.intent || !DAMAGING.includes(u.intent.id)) return null;
+    const ab = K.ABILITIES[u.intent.id];
+    const taunt = foesOf(u).find((f) => f.status.taunt);
+    const onMe = ab.target === "enemies" || (taunt ? taunt.side === "player" : (B.units.find((x) => x.uid === u.intent.uid) || {}).side === "player");
+    return onMe ? { id: u.intent.id, name: ab.name, heavy: ["heavy", "arrows", "breaker"].includes(u.intent.id), speed: u.intent.id === "arrows" ? 0.85 : u.intent.id === "heavy" ? 1.25 : 1 } : null;
+  };
+  // Without a player at the keys (the tests), or with timed moments off, the blow is met by chance:
+  // the more graceful you are, the better your odds.
+  function autoDefense() {
+    const g = K.attr("grace"), r = K.rng(), lenient = B && B.lenient;
+    const hd = C.humanDefense; // the balance check plays as an attentive player would (tests/balance.js)
+    const counter = hd ? hd.counter : 0.06 + g * 0.01, block = hd ? hd.block : (lenient ? 0.5 : 0.32) + g * 0.03;
+    return r < counter ? "counter" : r < counter + block ? "block" : "miss";
+  }
+  function enemyTurn(e, def) {
+    B.defNow = C.threat(e) ? def || autoDefense() : null;
+    B.lastDef = null;
+    aiTurn(e);
+    B.defNow = null;
+  }
+  function roundEnd() {
     endRound();
     if (over()) return;
     const p = C.player();
     while (!B.over && p.status.stun) {
       delete p.status.stun; api.tell("You are stunned and lose your turn.");
-      for (const u of living("ally").concat(living("enemy"))) { aiTurn(u); if (over()) return; }
+      for (const u of living("ally")) { aiTurn(u); if (over()) return; }
+      for (const u of living("enemy")) { enemyTurn(u); if (over()) return; }
       endRound(); if (over()) return;
     }
   }
+  function others() {
+    for (const a of living("ally")) { if (B.over) return; aiTurn(a); if (over()) return; }
+    if (B.stepMode) { B.queue = living("enemy").map((e) => e.uid); if (!B.queue.length) roundEnd(); return; }
+    for (const e of living("enemy")) { if (B.over) return; enemyTurn(e); if (over()) return; }
+    roundEnd();
+  }
+  // Step mode (the screen asks for it): after your move the enemies come one at a time. C.nextFoe()
+  // says who is next and whether the blow is aimed at you; C.resolve(defense) plays that turn.
+  C.nextFoe = function () {
+    if (!B || B.over || !B.queue) return null;
+    while (B.queue.length) {
+      const u = B.units.find((x) => x.uid === B.queue[0]);
+      if (u && u.hp > 0) return { u, threat: C.threat(u) };
+      B.queue.shift();
+    }
+    return null;
+  };
+  C.resolve = function (def) {
+    const n = C.nextFoe();
+    if (!n) return;
+    B.queue.shift();
+    enemyTurn(n.u, def);
+    if (!over() && !B.queue.length) { B.queue = null; roundEnd(); }
+    K.emit("combat", B);
+  };
 
   C.act = function (id, uid) {
-    if (!B || B.over) return;
+    if (!B || B.over || (B.queue && B.queue.length)) return;
     const row = C.available().find((a) => a.id === id);
     if (!row || row.why) return;
+    B.habit.push({ id, uid });
     use(C.player(), id, uid);
     if (!over()) others();
     K.emit("combat", B);

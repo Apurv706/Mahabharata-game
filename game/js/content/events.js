@@ -19,7 +19,7 @@
         { id: "milk", t: "Lure it out with a bowl of milk and lead it to the fields",
           check: { attr: "grace", skill: "stealth", dc: 6,
             pass: { fx: { rep: { common: 1 }, attr: { grace: 1 }, flag: "led_the_cobra" }, text: "It drinks, and considers you for a long moment, and flows away into the millet. The women sing your name at the well for a week." },
-            fail: { fx: {}, text: "It rears and spreads its hood. You drop the bowl and run. Your uncle uses the stick." } } },
+            fail: { fx: { lose: "herbs" }, text: "It rears and strikes at your hand as you run. It was a dry bite, the healer says, but the family's herbs go on it all the same. Your uncle uses the stick." } } },
         { id: "charmer", t: "Run to the next village for the snake-charmer", fx: { duty: { family: 1 }, skill: { lore: 1 } },
           text: "It takes all day. He charges a copper, sings it into a basket, and lets it go in the forest. On the way home he teaches you the song." },
         { id: "stick", t: "Hand your uncle the stick", fx: { attr: { might: 1 }, duty: { conscience: -1 } },
@@ -53,7 +53,7 @@
         { id: "gentle", t: "Try to gentle the grey mare",
           check: { attr: "grace", skill: "chariot", dc: 7,
             pass: { fx: { skill: { chariot: 1 }, rep: { common: 1 }, flag: "grey_mare", journal: "At the horse fair you gentled a grey mare no one else could touch." }, text: "It takes a whole day of standing still. By evening she eats from your hand. The traders sell her to you for the price of a meal, which is a joke and a compliment at once." },
-            fail: { fx: {}, text: "She throws you into the fence. The traders help you up, and tell you better riders than you have tried." } } },
+            fail: { fx: { lose: "herbs" }, text: "She throws you into the fence. The traders help you up, rub your bruises with your own herbs, and tell you better riders than you have tried." } } },
         { id: "haggle", t: "Haggle for a sound horse for your family", fx: { skill: { statecraft: 1 }, duty: { family: 1 } },
           text: "You beat the price down by a third and come home leading a bay gelding with kind eyes. Your father pretends not to be impressed." },
         { id: "watch", t: "Watch how the traders lie", fx: { attr: { wisdom: 1 } },
@@ -141,7 +141,7 @@
         { id: "hire", t: "Talk them into working for you instead",
           check: { attr: "command", skill: "statecraft", dc: 8,
             pass: { fx: { rep: { common: 2 }, attr: { command: 1 }, flag: "hired_bandits", journal: "On the road you turned five starving bandits into the most loyal workers you ever had." }, text: "They have nothing to lose. A year later they are the most loyal people you know." },
-            fail: { fx: { item: { herbs: -1 } }, text: "They laugh. Then they rob you anyway, slowly and politely." } } }
+            fail: { fx: { lose: { what: "heirloom", at: "bandits" } }, text: (S) => (S.heirloomLost && S.heirloomLost.at === "bandits" ? "They laugh. Then they rob you anyway, slowly and politely, and the one who was shaking takes your {heirloom!}." : "They laugh. Then they rob you anyway, slowly and politely.") } } }
       ],
       next: "a5_forest_boon"
     },

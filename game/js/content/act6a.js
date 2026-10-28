@@ -63,6 +63,9 @@
         S.side !== "neutral" && S.flags.includes("beat_ugra") ? { memory: "In the line beside you stands a big man with a miller's shoulders. Ugra. \"You put me on my back once,\" he says. \"I have waited thirty years to stand next to you instead.\"" } : null,
         S.side !== "neutral" && S.flags.includes("lost_to_ugra") ? { memory: "In the line beside you stands a big man with a miller's shoulders. Ugra. \"You were the only one who ever stood up to me,\" he says. \"You lost. You still stood up. I am with you.\"" } : null,
         S.side !== "neutral" && S.flags.includes("shamed_ugra") ? { memory: "Across the field, under the enemy's banners, there is a big man with a miller's shoulders. Ugra never forgave the crowd for laughing, or you for making them." } : null,
+        // A risk that went wrong long ago comes back: someone else is wearing your heirloom.
+        S.heirloomLost && S.heirloomLost.at === "bandits" ? { memory: "Among the levies brought in from the villages, you see a thin man with a farmer's hands, wearing your {heirloom!}. He sees you see it, and looks away." } : null,
+        S.heirloomLost && S.heirloomLost.at === "outriders" ? { memory: "A Kaurava captain rides along the line with your {heirloom!} hanging from his belt. He has worn it for twenty-six years. He has no idea whose it was." } : null,
         "These are the days of first battles, first kills and first friends lost."
       ],
       choices: [

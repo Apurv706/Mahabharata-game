@@ -170,7 +170,7 @@
     lose: { deathText: "You fell in the dark on the night of the fourteenth day." },
     flee: { text: "You fall back into the dark." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go into the dark." }
   });
-  war("e_dushasana", "Dushasana's men", [K.foe("Dushasana's bodyguard", 5, { abilities: ["strike", "heavy"] }), K.foe("Dushasana's bodyguard", 4)], { art: "war_day16",
+  war("e_dushasana", "Dushasana's men", [K.foe("Dushasana's bodyguard", 5, { abilities: ["strike", "heavy"] }), K.foe("Dushasana's bodyguard", 4)], { hard: true, art: "war_day16",
     caption: "Day sixteen",
     win: { fx: { flag: "survived_dushasana", journal: "On the sixteenth day Dushasana sent his men for you, and you survived them." }, text: "His men lie in the dust. Across the field, Bhima has found Dushasana." },
     lose: { deathText: "On the sixteenth day, Dushasana's men found you. He had not forgotten the dice hall." },
@@ -182,19 +182,19 @@
     lose: { deathText: "You fell on the sixteenth day." },
     flee: { text: "You fall back." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go." }
   });
-  war("e_day18", "The last battle", (S) => [K.foe(foeSide(S) + " veteran", 5, { abilities: ["strike", "heavy"] }), K.foe(foeSide(S) + " chariot-warrior", 5, { abilities: ["strike", "arrows"] })], { art: "war_day18",
+  war("e_day18", "The last battle", (S) => [K.foe(foeSide(S) + " veteran", 5, { abilities: ["strike", "heavy"] }), K.foe(foeSide(S) + " chariot-warrior", 5, { abilities: ["strike", "arrows"] })], { hard: true, art: "war_day18",
     caption: "Day eighteen",
     win: { fx: { journal: "You survived the eighteenth and last day of the war." }, text: "There is no one left to fight." },
     lose: { deathText: "You fell on the eighteenth day, the last day of the war." },
     flee: { text: "You fall back, for the last time." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go. The war is nearly over." }
   });
-  war("e_raid", "Ashwatthama at the gate", [{ name: "Ashwatthama", hp: 115, atk: 12, def: 3, abilities: ["strike", "heavy", "arrows"] }], { art: "scene_raid",
+  war("e_raid", "Ashwatthama at the gate", [{ name: "Ashwatthama", hp: 115, atk: 12, def: 3, abilities: ["strike", "heavy", "arrows"] }], { hard: true, art: "scene_raid",
     caption: "Fire in the camp", allies: [], spare: false, events: ["smoke"],
     win: { fx: { rep: { pandava: 2 }, flag: "slowed_ashwatthama", journal: "You fought Ashwatthama at the gate of the burning camp, and lived." }, text: "He breaks away from you and vanishes into the smoke. You held him for long enough that some got out." },
     lose: { deathText: "You died at the gate of the Pandava camp, fighting Ashwatthama in the dark." },
     flee: { text: "You run, like everyone else." }
   });
-  war("e_ash", "Standing in Ashwatthama's way", [{ name: "Ashwatthama", hp: 115, atk: 12, def: 3, abilities: ["strike", "heavy", "arrows"] }], { art: "scene_raid",
+  war("e_ash", "Standing in Ashwatthama's way", [{ name: "Ashwatthama", hp: 115, atk: 12, def: 3, abilities: ["strike", "heavy", "arrows"] }], { hard: true, art: "scene_raid",
     caption: "The road to the sleeping camp", allies: [], spare: false, events: ["moon"],
     win: { fx: { duty: { conscience: 3 }, flag: "fought_ashwatthama", journal: "You tried to stop Ashwatthama on the road to the sleeping camp." }, text: "He staggers, and then goes around you. You cannot stop him. You slowed him down." },
     lose: { deathText: "You died on the road, trying to stop Ashwatthama from reaching the sleeping camp." },

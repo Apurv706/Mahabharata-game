@@ -136,7 +136,7 @@
         { id: "warn", t: "Run ahead and warn the villages on the road", req: { not: { teacher: "drona" } },
           check: { attr: "grace", skill: "stealth", dc: 7,
             pass: { fx: { rep: { panchala: 2, common: 1, kuru: -1 }, flag: "warned_panchala" }, text: "The villages empty before the army arrives. No one there dies that day." },
-            fail: { fx: { rep: { kuru: -2 } }, text: "Kaurava outriders catch you on the road and send you home bruised. Your name is noted." } } },
+            fail: { fx: { rep: { kuru: -2 }, lose: { what: "heirloom", at: "outriders" } }, text: (S) => (S.heirloomLost && S.heirloomLost.at === "outriders" ? "Kaurava outriders catch you on the road and send you home bruised. One of them keeps your {heirloom!}, laughing. Your name is noted." : "Kaurava outriders catch you on the road and send you home bruised. Your name is noted.") } } },
         { id: "watch", t: "Stay out of it", fx: {} }
       ],
       after: [

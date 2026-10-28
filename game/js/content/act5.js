@@ -267,7 +267,7 @@
     lose: { fx: { injury: "scar" }, text: "They leave you in the dust. Bhima runs past you without stopping." }
   });
   K.encounter({
-    id: "e_gandharva", title: "The Gandharva ambush", art: "scene_cattle", caption: "Forest warriors in the royal camp", lethal: false,
+    id: "e_gandharva", title: "The Gandharva ambush", art: "scene_cattle", caption: "Forest warriors in the royal camp", lethal: false, hard: true,
     enemies: [K.foe("Gandharva warrior", 3), K.foe("Gandharva warrior", 2)],
     win: { fx: { bond: { duryodhana: 2 }, rep: { kuru: 1 } }, text: "You hold your corner of the camp, but Duryodhana has already been carried off." },
     lose: { fx: { bond: { duryodhana: 1 } }, text: "They knock you down and leave you. At least you stayed." }
@@ -285,7 +285,7 @@
     lose: { fx: {}, text: "You are unhorsed. From the ground you watch one chariot drive the whole Kaurava army before it." }
   });
   K.encounter({
-    id: "e_cattle_k", title: "Raiding Matsya's herds", art: "battle_cattle", caption: "A lone chariot comes for you", lethal: false,
+    id: "e_cattle_k", title: "Raiding Matsya's herds", art: "battle_cattle", caption: "A lone chariot comes for you", lethal: false, hard: true,
     intro: "Matsya's cowherds fight harder than anyone expected. Then the arrows start coming from a single chariot.",
     enemies: [K.foe("Matsya cowherd", 2), { name: "Brihannala's chariot", hp: 140, atk: 12, def: 4, abilities: ["strike", "arrows"] }],
     win: { fx: { rep: { kuru: 1 } }, text: "Somehow you hold. Around you the rest of the army is running." },
