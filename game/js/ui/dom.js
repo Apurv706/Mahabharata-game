@@ -84,10 +84,10 @@
   // In the story itself the painting goes behind the page, and the page gets a small header instead.
   U.plate = function (o) {
     if (U.inScene) {
-      U.setBackdrop(o.art || null);
+      if (!o.keepArt) U.setBackdrop(o.art || null);
       const kind = o.tagText ? '<span class="kind ' + (o.tag || "") + '">' + U.esc(o.tagText) + "</span>" : "";
-      const fig = K.S && K.puppetSpec && !o.noFigure ? U.puppetBadge(K.puppetSpec(K.S), { pose: o.pose, fit: true }) : "";
-      return '<header class="pagehead"><div class="ph-text"><div class="ph-line">' + kind +
+      const fig = K.S && K.puppetSpec && !o.noFigure ? U.puppetBadge(K.puppetSpec(K.S), { pose: o.pose, fit: true, cls: o.big ? "big" : "" }) : "";
+      return '<header class="pagehead' + (o.big ? " big" : "") + '"><div class="ph-text"><div class="ph-line">' + kind +
         (o.small ? "<small>" + U.t(o.small) + "</small>" : o.caption ? "<small>" + U.t(o.caption) + "</small>" : "") + "</div>" +
         (o.heading ? "<h1>" + U.t(o.heading) + "</h1>" : o.title ? "<b>" + U.t(o.title) + "</b>" : "") + "</div>" + fig + "</header>";
     }

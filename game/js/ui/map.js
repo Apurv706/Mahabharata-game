@@ -51,11 +51,11 @@
     [/Gandhara/, "gandhara"],
     [/Nishada/, "nishada"],
     [/upper Ganga/, "ashram"],
-    [/Hastinapura|Kuru assembly|Charioteer family|palace gardens/, "hastinapura"]
+    [/Hastinapura|Kuru assembly|palace gardens/, "hastinapura"]
   ];
   K.locOf = function (place, S = K.S) {
     if (!place) return null;
-    if (place === "Home") return !K.ORIGINS[S.origin] ? null : S.flags.includes("moved_capital") ? "hastinapura" : K.locOf(K.ORIGINS[S.origin].name, S);
+    if (place === "Home") return !K.ORIGINS[S.origin] ? null : S.flags.includes("moved_capital") ? "hastinapura" : S.origin === "suta" ? "anga" : K.locOf(K.ORIGINS[S.origin].name, S);
     for (const [re, loc] of MATCH) if (re.test(place)) return loc;
     return null;
   };
@@ -65,7 +65,7 @@
     // Canon scenes before the war tell what happens to the princes, wherever you are; only the
     // war gathers everyone in one place.
     if (sc.canon && sc.act < 6) return null;
-    const loc = K.locOf(K.val(sc.place), S);
+    const loc = K.val(sc.to, S) || K.locOf(K.val(sc.place), S);
     if (!loc) return null;
     S.road = S.road || [];
     if (!S.at) { S.at = loc; if (S.road[S.road.length - 1] !== loc) S.road.push(loc); return null; }
@@ -122,6 +122,47 @@
         '<text class="m-water" x="' + at(83.6, 24.9) + '"' + fs(12) + ">" + T("Ganga") + "</text>");
   }
 
+  // Emblems beside the names, invented for the game (no real flags survive): Matsya's fish, Anga's
+  // elephant, Gandhara's horse, the Yadavas' conch, the Nishadas' bow, crossed spears at Kurukshetra,
+  // a tree for the forests, a lotus for the ashram, a flame for Varnavata. Drawn in a 20-unit box.
+  const EMBLEM = {
+    fish: '<path d="M-9 0 Q-1 -7 5 0 Q-1 7 -9 0 Z M5 0 L10 -4 L10 4 Z"/><circle class="e-eye" cx="-5" cy="-1" r="1"/>',
+    elephant: '<path d="M-9 7 V0 Q-9 -6 -2 -6 H3 Q8 -7 9 -2 Q10 2 9 6 Q8 9 6 8 Q8 6 7 3 L6 3 V7 H3 V3 H-4 V7 Z"/><path class="e-line" d="M1 -5 Q-2 -1 2 2"/>',
+    horse: '<path d="M-6 9 L-4 1 Q-6 -5 -1 -8 L0 -10 L2 -7 Q8 -5 9 1 Q9 3 7 3 L3 0 L3 9 Z"/>',
+    conch: '<path d="M-8 3 Q-9 -5 -1 -7 Q8 -8 9 -1 Q9 5 3 6 L-5 9 L-4 5 Q-8 5 -8 3 Z"/><path class="e-line" d="M-3 -2 Q1 -5 4 -1 Q3 2 0 1"/>',
+    bow: '<path class="e-line" d="M-5 -9 Q8 0 -5 9 M-5 -9 L-5 9 M-9 0 H9 M9 0 L5 -3 M9 0 L5 3"/>',
+    spears: '<path class="e-line" d="M-8 8 L7 -7 M8 8 L-7 -7"/><path d="M7 -7 L9 -9 L8 -5 Z M-7 -7 L-9 -9 L-8 -5 Z"/>',
+    tree: '<path d="M-7 2 Q-10 -4 -4 -6 Q-2 -10 2 -8 Q8 -9 8 -3 Q10 2 4 2 Z"/><path class="e-line" d="M0 2 V9"/>',
+    lotus: '<path d="M0 6 Q-4 -1 0 -9 Q4 -1 0 6 Z M0 6 Q-9 3 -9 -4 Q-3 -2 0 6 Z M0 6 Q9 3 9 -4 Q3 -2 0 6 Z"/>',
+    flame: '<path d="M0 -10 Q7 -2 5 4 Q3 9 0 9 Q-3 9 -5 4 Q-7 -2 0 -10 Z"/><path class="e-in" d="M0 -2 Q3 2 2 5 Q1 7 0 7 Q-1 7 -2 5 Q-3 2 0 -2 Z"/>'
+  };
+  const EMB = { matsya: "fish", anga: "elephant", gandhara: "horse", mathura: "conch", dwaraka: "conch", nishada: "bow", kurukshetra: "spears", kamyaka: "tree", dvaita: "tree", ashram: "lotus", varnavata: "flame" };
+  K.EMBLEM_OF = EMB;
+  // An emblem in front of a label: placed by an estimate of the label's width, since SVG text
+  // cannot be measured before it is drawn.
+  // Labels anchored at their start (to the right of the dot) get the emblem first and the text
+  // moved along; the others get it in front of the estimated start of the text.
+  function emblem(kind, tx, ty, anchor, fs, label) {
+    if (!kind) return "";
+    const w = label.length * fs * 0.6, s = fs / 17;
+    const start = anchor === "start" ? tx + 22 * s : anchor === "end" ? tx - w : tx - w / 2;
+    return '<g class="m-emb" data-a="' + anchor + '" data-s="' + Math.round(s * 100) / 100 + '" data-y="' + Math.round((ty - fs * 0.34) * 10) / 10 + '" transform="translate(' + Math.round((start - 12 * s) * 10) / 10 + " " + Math.round((ty - fs * 0.34) * 10) / 10 + ") scale(" + Math.round(s * 100) / 100 + ')">' + EMBLEM[kind] + "</g>";
+  }
+  // Once a map is on the page the labels can be measured: emblems in front of right-aligned or
+  // centred labels move to sit just before the real start of the text.
+  U.fitEmblems = function (root) {
+    if (!root || !root.querySelectorAll) return;
+    root.querySelectorAll(".bmap .m-emb[data-a]").forEach((g) => {
+      if (g.dataset.a === "start") return;
+      const t = g.parentNode.querySelector("text");
+      if (!t || !t.getBBox) return;
+      let x; try { const bb = t.getBBox(); if (!bb.width) return; x = bb.x; } catch (e) { return; }
+      const sc = +g.dataset.s;
+      g.setAttribute("transform", "translate(" + (x - 14 * sc).toFixed(1) + " " + g.dataset.y + ") scale(" + sc + ")");
+    });
+  };
+  const shiftFor = (kind, anchor, fs) => (kind && anchor === "start" ? 26 * fs / 17 : 0);
+
   // The places: the ones this life has been to are filled, the current one ringed. Small places
   // (forests, an ashram) appear only once you have been there.
   function places(road, here, z, whole) {
@@ -129,10 +170,11 @@
     return Object.keys(K.PLACES).filter((k) => !P(k).small || been.has(k) || k === here).map((k) => {
       const p = P(k), cls = (been.has(k) ? " been" : "") + (k === here ? " here" : "") + (p.small ? " small" : "");
       const tx = p.x + p.lx * z, ty = p.y + p.ly * z, far = Math.hypot(p.lx, p.ly) > 24;
+      const fs = Math.round((p.small ? 13 : 15.5) * z * 10) / 10, name = K.tr(p.name), shown = !(whole && p.small && k !== here);
       return '<g class="m-place' + cls + '">' + (far ? '<line x1="' + p.x + '" y1="' + p.y + '" x2="' + tx + '" y2="' + (ty - 4 * z) + '"/>' : "") +
         '<circle cx="' + p.x + '" cy="' + p.y + '" r="' + (p.small ? 3.2 : 4.5) * z + '"/>' +
         (k === here ? '<circle class="m-ring" cx="' + p.x + '" cy="' + p.y + '" r="' + 10 * z + '"/>' : "") +
-        (whole && p.small && k !== here ? "" : '<text x="' + tx + '" y="' + ty + '" text-anchor="' + p.anchor + '" style="font-size:' + Math.round((p.small ? 13 : 15.5) * z * 10) / 10 + 'px">' + T(p.name) + "</text>") + "</g>";
+        (shown ? emblem(EMB[k], tx, ty, p.anchor, fs, name) + '<text x="' + (tx + shiftFor(EMB[k], p.anchor, fs)) + '" y="' + ty + '" text-anchor="' + p.anchor + '" style="font-size:' + fs + 'px">' + U.esc(name) + "</text>" : "") + "</g>";
     }).join("");
   }
 
@@ -185,41 +227,107 @@
     return svg(ground(z) + roadPaths(road) + places(road, S.at, z, opt.whole) + (opt.whole ? "" : locator(vb, keys)), label, vb, opt.whole ? "full" : "zoom");
   };
 
-  // A journey over the scene: the new leg draws itself, a lamp travels along it.
-  let closer = null;
-  U.showJourney = function (from, to) {
-    if (closer) closer();
-    // Under the test harness: draw the map (to catch errors) but leave no overlay or timers behind.
-    if (K.headless) { U.mapOf(K.S); return; }
+  // ---------- The journey ----------
+  // When a choice takes you somewhere new, the map comes up before the next scene: the road from
+  // where you were to where you are going, your puppet walking it and leaving footprints (about
+  // two and a half seconds, skippable), "From X to Y" and why, below the map. With reduced motion
+  // the trail is drawn at once and the figure stands at the end.
+  U.journeyPage = function (from, to, why, done) {
     const S = K.S, a = P(from), b = P(to), d = leg(a, b);
     const road = S.road || [];
-    const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const px = Math.min(760, window.innerWidth - 32) - 28, g = grow(px);
+    const still = !U.motion();
+    const leaf = U.$("leaf");
+    const px = Math.min(760, (leaf && leaf.clientWidth) || window.innerWidth - 32) - 40, g = grow(px);
     const vb = frame([from, to], narrow(px) ? 1.1 : 1.5, 360), z0 = vb[2] / FULL[2], z = z0 * g;
+    const fh = Math.round(118 * z0 * Math.sqrt(g)); // the walker's height, in map units
     const inner = ground(z) + roadPaths(road.slice(0, -1)) +
-      '<path class="m-road new' + (still ? " still" : "") + '" pathLength="1" style="stroke-width:' + Math.round(3.2 * z0 * Math.sqrt(g) * 10) / 10 + '" d="' + d + '"/>' +
-      places(road, to, z) + locator(vb, [from, to]) +
-      (still ? "" : '<circle class="m-lamp" r="' + 6 * z + '"><animateMotion dur="2.2s" fill="freeze" path="' + d + '" keyPoints="0;1" keyTimes="0;1" calcMode="spline" keySplines="0.4 0 0.2 1"/></circle>');
-    const box = U.el('<div class="journey" role="dialog" aria-modal="false" aria-live="polite" aria-label="' + T("Journey") + '"><div class="journey-card">' +
-      '<p class="lbl">' + U.tr("The road from {a} to {b}", { a: K.tr(a.name), b: K.tr(b.name) }) + "</p>" + svg(inner, K.tr("You travel from {a} to {b}.", { a: K.tr(a.name), b: K.tr(b.name) }), vb, "zoom") +
-      '<button type="button" class="ghost" id="journey-go">' + U.tr("Continue") + "</button></div></div>");
-    document.body.appendChild(box);
-    let gone = false;
-    const close = () => {
-      if (gone) return;
-      gone = true; closer = null;
-      clearTimeout(timer);
-      document.removeEventListener("keydown", onKey, true);
-      box.classList.add("out");
-      setTimeout(() => box.remove(), 300);
+      '<path class="m-road new" pathLength="1" style="stroke-width:' + Math.round(3.2 * z0 * Math.sqrt(g) * 10) / 10 + '" d="' + d + '"/>' +
+      '<g class="m-steps"></g>' + places(road, to, z) + locator(vb, [from, to]) +
+      '<g class="m-walker"><g class="m-face"' + (b.x < a.x ? ' transform="scale(-1 1)"' : "") + ">" +
+      U.puppet(K.puppetSpec(S), { pose: still ? "stand" : "walk", h: fh }).replace("<svg ", '<svg x="' + -Math.round(fh * 0.29) + '" y="' + -fh + '" ') + "</g></g>";
+    const route = K.tr("From {a} to {b}", { a: K.tr(a.name), b: K.tr(b.name) });
+    leaf.className = "leaf journeying";
+    leaf.innerHTML = U.plate({ keepArt: true, noFigure: true, tag: "yours", tagText: K.tr("The road"), heading: K.tr(b.name) }) +
+      '<div class="text"><div class="jmap">' + svg(inner, K.tr("You travel from {a} to {b}.", { a: K.tr(a.name), b: K.tr(b.name) }), vb, "zoom") + "</div>" +
+      '<p class="j-route">' + emblemBadge(EMB[from]) + U.esc(K.tr(a.name)) + ' <span class="j-arrow" aria-hidden="true">→</span> ' + emblemBadge(EMB[to]) + U.esc(K.tr(b.name)) + '<span class="sr">' + U.esc(route) + "</span></p>" +
+      (why ? '<p class="j-why">' + U.t(why) + "</p>" : "") +
+      '<div class="btnrow"><button type="button" class="cta" id="journey-go">' + U.tr("Continue") + "</button></div></div>";
+    U.fitEmblems(leaf);
+    const map = leaf.querySelector(".bmap"), path = map.querySelector(".m-road.new"), steps = map.querySelector(".m-steps"), walker = map.querySelector(".m-walker");
+    const figure = walker.querySelector(".pp");
+    const L = path.getTotalLength ? path.getTotalLength() : 0;
+    const gap = Math.max(8, L / 18);
+    let dropped = 0, raf = 0, t0 = 0, over = false;
+    const at = (f) => (L ? path.getPointAtLength(L * f) : { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f });
+    const place = (f) => { const p = at(f); walker.setAttribute("transform", "translate(" + p.x.toFixed(1) + " " + p.y.toFixed(1) + ")"); };
+    // Footprints fall on alternate sides of the road.
+    const stepTo = (len) => {
+      while (dropped * gap <= len && L) {
+        const f = (dropped * gap) / L, p = at(f), q = at(Math.min(1, f + 0.01));
+        const ang = Math.atan2(q.y - p.y, q.x - p.x), side = dropped % 2 ? 1 : -1, off = 6 * z0 * Math.sqrt(g);
+        const x = p.x + Math.cos(ang + Math.PI / 2) * off * side, y = p.y + Math.sin(ang + Math.PI / 2) * off * side;
+        steps.insertAdjacentHTML("beforeend", '<ellipse cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" rx="' + (3.6 * z0 * Math.sqrt(g)).toFixed(2) + '" ry="' + (1.9 * z0 * Math.sqrt(g)).toFixed(2) + '" transform="rotate(' + (ang * 180 / Math.PI).toFixed(0) + " " + x.toFixed(1) + " " + y.toFixed(1) + ')"/>');
+        dropped++;
+      }
     };
-    const onKey = (e) => { if (["Enter", " ", "Escape"].includes(e.key)) { e.preventDefault(); e.stopPropagation(); close(); } };
-    box.addEventListener("click", close);
-    document.addEventListener("keydown", onKey, true);
-    const timer = setTimeout(close, still ? 3200 : 4200);
-    closer = close;
+    const finish = () => {
+      if (over) return;
+      over = true; cancelAnimationFrame(raf);
+      path.style.animation = "none"; path.style.strokeDashoffset = "0";
+      stepTo(L); place(1);
+      if (figure) figure.setAttribute("class", figure.getAttribute("class").replace(/pose-\S+/, "pose-stand"));
+    };
+    const DUR = 2600, ease = (x) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2);
+    const tick = (now) => {
+      if (!t0) t0 = now;
+      const f = Math.min(1, (now - t0) / DUR), e = ease(f);
+      path.style.strokeDashoffset = String(1 - e);
+      stepTo(L * e); place(e);
+      if (f < 1) raf = requestAnimationFrame(tick); else finish();
+    };
+    place(0);
+    if (still) finish(); else { path.style.animation = "none"; path.style.strokeDashoffset = "1"; raf = requestAnimationFrame(tick); }
     if (K.Sound && K.Sound.play) try { K.Sound.play("step"); } catch (e) { /* no step sound: fine */ }
+    let left = false;
+    const go = () => { if (left) return; left = true; finish(); done(); };
+    // A first press while the figure walks finishes the walk; the next one moves on.
+    map.addEventListener("click", finish);
+    U.$("journey-go").addEventListener("click", go);
+    U.keys([() => (over ? go() : finish())]);
+    U.redraw = () => U.journeyPage(from, to, why, done);
+    const ph = leaf.querySelector(".pagehead");
+    U.stage([ph, leaf.querySelector(".jmap"), leaf.querySelector(".j-route"), leaf.querySelector(".j-why"), leaf.querySelector(".text .btnrow")].filter(Boolean));
   };
+  // A small emblem for running text.
+  function emblemBadge(kind) {
+    return kind ? '<svg class="emb" viewBox="-11 -11 22 22" aria-hidden="true"><g class="m-emb">' + EMBLEM[kind] + "</g></svg>" : "";
+  }
+  U.emblemBadge = emblemBadge;
+
+  // ---------- Choosing a homeland on the map ----------
+  // Before the picture list: the north of the subcontinent with every homeland marked. The
+  // charioteer family lives in Champa, beside Anga, so its pin sits just below Anga's.
+  const HOMES = { hastinapura: "hastinapura", panchala: "panchala", matsya: "matsya", mathura: "mathura", anga: "anga", suta: "anga", nishada: "nishada", gandhara: "gandhara" };
+  U.homeMap = function (chosen) {
+    const keys = Object.keys(K.ORIGINS).filter((k) => HOMES[k]);
+    const vb = frame(keys.map((k) => HOMES[k]), 1.55, 360), z = vb[2] / FULL[2];
+    // Where each label sits: [dx, dy, anchor], in map units before zoom.
+    const LBL = { gandhara: [12, 6, "start"], hastinapura: [12, 6, "start"], panchala: [12, 6, "start"], matsya: [-12, 6, "end"], mathura: [10, 26, "start"], anga: [-12, 6, "end"], suta: [-12, 6, "end"], nishada: [-12, 6, "end"] };
+    const pins = keys.map((k) => {
+      const p = P(HOMES[k]), x = p.x, y = p.y + (k === "suta" ? 52 * z : 0);
+      const name = K.tr(K.ORIGINS[k].name), fs = Math.round(17 * z * 10) / 10;
+      const [dx, dy, anchor] = LBL[k] || [12, 6, "start"];
+      const tx = x + dx * z, ty = y + dy * z;
+      const kind = k === "suta" ? "wheel" : EMB[HOMES[k]];
+      return '<g class="m-home' + (chosen === k ? " on" : "") + '" data-home="' + k + '" tabindex="0" role="button" aria-label="' + U.esc(name) + '">' +
+        '<circle class="hit" cx="' + x + '" cy="' + y + '" r="' + 22 * z + '"/>' +
+        '<circle cx="' + x + '" cy="' + y + '" r="' + 6 * z + '"/>' +
+        (kind ? emblem(kind, tx, ty, anchor, fs, name) : "") +
+        '<text x="' + (tx + shiftFor(kind, anchor, fs)) + '" y="' + ty + '" text-anchor="' + anchor + '" style="font-size:' + fs + 'px">' + U.esc(name) + "</text></g>";
+    }).join("");
+    return svg(ground(z) + pins, K.tr("Map of the homelands"), vb, "zoom homes");
+  };
+  EMBLEM.wheel = '<circle class="e-line" cx="0" cy="0" r="8"/><path class="e-line" d="M0 -8 V8 M-8 0 H8 M-5.6 -5.6 L5.6 5.6 M5.6 -5.6 L-5.6 5.6"/><circle cx="0" cy="0" r="2"/>';
 
   U.openMap = function () {
     const S = K.S;
@@ -228,6 +336,7 @@
     const draw = (body) => {
       const px = body.clientWidth || 640;
       body.querySelector(".map-holder").innerHTML = U.mapOf(S, { whole, px });
+      U.fitEmblems(body);
       const t = body.querySelector("#map-toggle");
       t.textContent = K.tr(whole ? "Show your road" : "Show the whole subcontinent");
       t.setAttribute("aria-pressed", String(whole));

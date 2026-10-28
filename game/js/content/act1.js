@@ -7,7 +7,7 @@
     matsya: "Your family keeps horses on the lake shore. Visitors from the big kingdoms rarely come this far.",
     mathura: "Your uncle trades up and down the Yamuna. Mathura smells of river mud and cardamom, everyone argues about everything, and everyone lowers their voice when they speak of King Kamsa.",
     anga: "Your family serves in the Anga guard. Anga pays tribute to the Kuru throne, and its guard goes wherever the Kuru king sends it.",
-    suta: "Your father drives chariots for the Kuru nobles. He tells you to keep your eyes down and your hands steady.",
+    suta: "Your father drives chariots for the lords of Anga, in the household of the old charioteer Adhiratha. He tells you to keep your eyes down and your hands steady.",
     nishada: "Your village fishes the river and hunts the forest. City people call you Nishada as if it were an insult.",
     gandhara: "Your family serves in the household of King Subala, high in the mountains. Everyone still talks about his daughter Gandhari, who married the blind Kuru king and bound her own eyes so as never to see more than he could."
   };
@@ -19,13 +19,15 @@
     matsya: "The Kuru royal stables need horses, and your family breeds the best in Matsya. Your father takes the work of keeping the king's horses, and the whole family moves east to the stable quarter outside Hastinapura.",
     anga: "Your father's company of the Anga guard is posted to Hastinapura, where the Kuru king keeps soldiers from every land that pays him tribute. You ride the whole month up the Ganga in a baggage cart.",
     panchala: "The Kuru armoury has sent for Panchala arrowsmiths, whatever the two kings think of each other. Your mother takes the work, and your family moves into the craft quarter of Hastinapura.",
+    suta: "When you are seven, Adhiratha is called to Hastinapura to drive for the Kuru court, and his whole household goes with him: horses, carts, cousins, and your family. His foster son Karna, a boy your age, rides on the lead cart and asks the drivers questions all the way up the Ganga.",
     nishada: "The princes' tutors need guides for the royal hunts, and nobody knows the forest like your father. Your family moves to the forest's edge outside Hastinapura, close enough to hear the palace drums."
   };
   // Where the childhood that follows happens: near the capital for families who moved there.
-  K.childPlace = (S) => (S.flags.includes("moved_capital") ? (S.origin === "nishada" ? "The forest's edge outside Hastinapura" : "Hastinapura") : K.ORIGINS[S.origin].name);
+  K.childPlace = (S) => (S.flags.includes("moved_capital") ? (S.origin === "nishada" ? "The forest's edge outside Hastinapura" : S.origin === "suta" ? "The charioteers' quarter, Hastinapura" : "Hastinapura") : S.origin === "suta" ? "The charioteers' lane, Champa" : K.ORIGINS[S.origin].name);
   // Where you live as an adult: the court you joined in act 3, otherwise where you grew up.
   K.homePlace = (S) => { const c = S.act >= 3 && S.court && S.court !== "none" && K.COURTS[S.court]; return c ? c.name : K.childPlace(S); };
-  K.childArt = (S) => (S.flags.includes("moved_capital") && S.origin !== "nishada" ? "home_hastinapura" : "home_" + S.origin);
+  // The charioteer family's Champa years use Anga's paintings; in Hastinapura they live in the charioteers' quarter.
+  K.childArt = (S) => (S.origin === "suta" ? (S.flags.includes("moved_capital") ? "home_suta" : "home_anga") : S.flags.includes("moved_capital") && S.origin !== "nishada" ? "home_hastinapura" : "home_" + S.origin);
 
   // ---------- Act I's action tests ----------
   // A friendship has to be earned: each prince sets a test. Fail it (or come close) and Charu stays
@@ -110,7 +112,7 @@
 
   K.scenes([
     {
-      id: "a1_home", act: 1, age: 6, art: "origin", place: (S) => K.ORIGINS[S.origin].name,
+      id: "a1_home", act: 1, age: 6, art: "origin", place: (S) => K.childPlace(S),
       title: "Your earliest memory",
       body: (S) => [homeLine[S.origin],
         S.karma ? { memory: ["At night you dream you are someone else: {past}, born in {land}, grown and grey, with a whole life behind them. In the dream it always ends the same way: {end!}.", { past: S.karma.name, land: K.ORIGINS[S.karma.origin]?.name || "", end: S.karma.title }] } : null,
@@ -141,10 +143,12 @@
       next: "a1_roots"
     },
     // Families from the far lands come to live near Hastinapura, so the childhood that follows happens
-    // within reach of the palace. Hastinapura and the charioteer families are already there.
+    // within reach of the palace. Hastinapura families are already there; the charioteer family comes
+    // up the Ganga from Champa with Adhiratha's household.
     {
-      id: "a1_journey", when: (S) => !["hastinapura", "suta"].includes(S.origin), skipTo: "a1_princes",
-      act: 1, age: 7, art: "scene_journey", place: "The road to Hastinapura", caption: "Hastinapura, at the end of the road",
+      id: "a1_journey", when: (S) => S.origin !== "hastinapura", skipTo: "a1_princes",
+      act: 1, age: 7, art: "scene_journey", place: "The road to Hastinapura", caption: "Hastinapura, at the end of the road", to: "hastinapura",
+      travel: (S) => (S.origin === "suta" ? "Adhiratha's household is called to the Kuru court, and your family goes with it." : "Your family is moving to Hastinapura."),
       enter: { flag: "moved_capital" },
       title: "The road to Hastinapura",
       body: (S) => [

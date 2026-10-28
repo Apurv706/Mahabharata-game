@@ -54,13 +54,15 @@ function playLife(seed) {
 
   const path_ = [];
   const fights = [];
+  const moves = [];
+  const tv = K.travel; K.travel = (sc, S) => { const m = tv(sc, S); if (m) moves.push(sc.id + (sc.travel ? "" : " (no line)") + " " + m[0] + ">" + m[1]); return m; };
   K.on("combat", (B) => { if (B.over && !B._counted) { B._counted = true; fights.push([B.enc.id, B.over]); } });
   for (let step = 0; step < 4000; step++) {
     if (d.getElementById("again")) {
       const book = K.lives();
       if (!book.length || book[0].title !== K.S.ending) errors.push("warn: the Book of Lives did not record this life");
       if (reborn && !K.S.flags.includes("reborn")) errors.push("warn: rebirth did not apply");
-      return { fights, ending: K.S.ending, alive: K.S.alive, age: K.S.age, path: path_, errors, problems, side: K.S.side, steps: step, seen: K.S.seen, flags: K.S.flags, road: K.S.road || [] };
+      return { fights, ending: K.S.ending, alive: K.S.alive, age: K.S.age, path: path_, errors, problems, side: K.S.side, steps: step, seen: K.S.seen, flags: K.S.flags, road: K.S.road || [], moves };
     }
     const acts = [...d.querySelectorAll("#battle-actions .act:not([disabled])")];
     const cta = [...d.querySelectorAll("#leaf .cta")].filter((b) => !b.disabled);
@@ -123,7 +125,9 @@ console.log("Died in the war:  " + deaths.length);
 { const roads = results.filter((r) => r.road); const avg = roads.reduce((n, r) => n + r.road.length, 0) / (roads.length || 1);
   const stops = {}; for (const r of roads) for (const k of new Set(r.road)) stops[k] = (stops[k] || 0) + 1;
   console.log("Map: " + avg.toFixed(1) + " places per life; lives that reached each: " + Object.entries(stops).sort((a, b) => b[1] - a[1]).map(([k, n]) => k + " " + n).join(", "));
-  if (roads[0]) console.log("  e.g. " + roads[0].road.join(" > ")); }
+  if (roads[0]) console.log("  e.g. " + roads[0].road.join(" > "));
+  if (process.argv.includes("--moves")) { const mv = {}; for (const r of results) for (const m of r.moves || []) mv[m] = (mv[m] || 0) + 1;
+    console.log("Moves (scene, from>to):"); Object.entries(mv).sort((a, b) => b[1] - a[1]).forEach(([m, n]) => console.log("  " + n + "  " + m)); } }
 { const n = (f) => results.filter((r) => r.flags && r.flags.includes(f)).length;
   console.log("Act I tests: practice hit " + n("first_throw") + "; friendship won lamp " + n("hit_the_lamp") + ", river " + n("threw_bhima") + ", horse " + n("calmed_the_horse") + ", nerve " + n("stood_your_ground") +
     "; second chances " + ["second_arjuna", "second_bhima", "second_duryo", "second_karna"].map(n).reduce((a, b) => a + b, 0) +

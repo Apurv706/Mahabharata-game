@@ -52,7 +52,8 @@
     S.scene = sc.id;
     if (sc.act && sc.act > S.act) drift(S, sc.act);
     if (sc.act) S.act = sc.act;
-    if (sc.age != null) S.age = K.val(sc.age);
+    // Going back to an earlier question after a closed way does not make you younger.
+    if (sc.age != null) S.age = S.loopThen && S.loopThen.scene === sc.id ? Math.max(S.age, K.val(sc.age)) : K.val(sc.age);
     let delta = {};
     if (!S.seen.includes(sc.id)) {
       S.seen.push(sc.id);
@@ -80,9 +81,35 @@
   }
 
   K.choiceList = function (sc, S = K.S) {
+    const crossed = (S.crossed || {})[sc.id] || {};
     return (K.val(sc.choices, S) || [])
-      .map((c) => ({ c, ok: K.test(c.req, S) }))
-      .filter((x) => x.ok || (x.c.locked && K.test(x.c.showIf, S))); // no locked text = hidden when unavailable
+      .map((c) => (crossed[c.id] ? { c, ok: false, crossed: crossed[c.id] } : { c, ok: K.test(c.req, S) }))
+      .filter((x) => x.ok || x.crossed || (x.c.locked && K.test(x.c.showIf, S))); // no locked text = hidden when unavailable
+  };
+
+  // The failure rule: fail a test, and you get a second chance; fail that too, and the way is closed.
+  // The choice that led to the test is crossed out, with the reason, and you go back to that earlier
+  // question to choose again. At most once an act, never when it would leave nothing to choose, and
+  // never back past something the epic has written. back: { scene, then, clear } on the test choice;
+  // `then` is where the new choice leads (the test that follows it), `clear` the test's id, whose
+  // second-chance flags are wiped so the next attempt starts fresh.
+  K.loopBack = function (back, why, S = K.S) {
+    if (!back || !back.scene || !K.SCENES[back.scene]) return null;
+    S.loops = S.loops || [];
+    if (S.loops.includes(S.act)) return null;
+    const sc = K.SCENES[back.scene];
+    if (sc.canon) return null;
+    let picked = back.choice;
+    if (!picked) for (let i = S.log.length - 1; i >= 0; i--) { const [sid, cid] = S.log[i].split(":"); if (sid === back.scene) { picked = cid; break; } }
+    if (!picked) return null;
+    const left = K.choiceList(sc, S).filter((x) => x.ok && x.c.id !== picked);
+    if (!left.length) return null;
+    S.loops.push(S.act);
+    S.crossed = S.crossed || {};
+    S.crossed[back.scene] = Object.assign({}, S.crossed[back.scene], { [picked]: why || "This way is closed now." });
+    S.loopThen = { scene: back.scene, then: back.then || null };
+    if (back.clear) S.flags = S.flags.filter((f) => !(f.startsWith(back.clear + "_") && f.endsWith("_again")));
+    return back.scene;
   };
 
   // Merits from earlier in life that bear on a test (K.MERITS): +1 each, two at most either way.
@@ -156,11 +183,21 @@
       addDelta(delta, K.apply(br.fx));
       if (br.text) res.text = K.val(br.text);
       if (br.next) res.next = K.val(br.next);
+      // A second failure closes this way and sends you back to choose again (see K.loopBack).
+      if (outcome !== "win" && br.penalty && c.back) {
+        const back = K.loopBack(c.back, K.val(c.back.why || c.crossWhy));
+        if (back) { res.next = back; res.looped = true; }
+      }
     }
     for (const id of K.vowBreaksFor(c.tags)) addDelta(delta, K.apply({ vowBreak: id }));
     S.log.push(sc.id + ":" + c.id);
     if (!res.text && c.text) res.text = K.val(c.text);
     res.next = res.next || K.val(c.next) || K.val(sc.next);
+    // Back at an earlier question after a closed way: the new choice leads straight to its test.
+    if (S.loopThen && S.loopThen.scene === sc.id && !res.looped && !(res.check && !res.check.pass)) {
+      if (S.loopThen.then && !c.game && !c.combat) res.next = S.loopThen.then;
+      S.loopThen = null;
+    }
     if (sc.after && !c.noAfter) res.after = K.val(sc.after);
     if (!S.alive) { res.next = "end_death"; res.combat = null; res.after = null; }
     K.lastDelta = delta;

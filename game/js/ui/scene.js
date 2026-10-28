@@ -9,7 +9,9 @@
   }
   function artFor(sc) {
     const a = K.val(sc.art);
-    return a === "origin" ? "home_" + K.S.origin : a;
+    // The charioteer family's Champa years use Anga's painting.
+    if (a === "origin") return K.S.origin === "suta" && !K.S.flags.includes("moved_capital") ? "home_anga" : "home_" + K.S.origin;
+    return a;
   }
   function tagFor(sc) {
     // Fate: what the epic has already written, and the part of your life that is still unwritten.
@@ -36,9 +38,16 @@
     U.redraw = () => U.renderScene(sc);
     U.setNav(true);
     header(sc);
-    // A new place on the map: the journey plays over the scene.
+    // A new place on the map: the journey comes first, then the scene. The reason is the scene's
+    // own travel line, or what lies ahead.
     const moved = K.travel ? K.travel(sc) : null;
-    if (moved && U.showJourney) U.showJourney(moved[0], moved[1]);
+    if (moved && U.journeyPage) {
+      if (K.headless) U.mapOf(S);
+      else {
+        const why = K.val(sc.travel) || ["Ahead: {what}", { what: K.val(sc.title) || "" }];
+        return U.journeyPage(moved[0], moved[1], why, () => U.renderScene(sc));
+      }
+    }
     const [tag, tagText] = tagFor(sc);
     const witness = K.val(sc.witness);
     const leaf = U.$("leaf");
@@ -46,15 +55,17 @@
     leaf.innerHTML = U.plate({ art: artFor(sc), grad: sc.plate, caption: K.val(sc.caption), tag, tagText, heading: K.val(sc.title) }) +
       '<div class="text"><div class="story" id="story" tabindex="0">' +
       (witness ? '<div class="witness"><div class="lbl">' + U.tr("As it is written") + "</div>" + U.blocks(witness) + "</div>" : "") +
+      (S.loopThen && S.loopThen.scene === sc.id ? '<p class="aside loopnote">' + U.tr("You are back at the same choice. One way is closed to you now.") + "</p>" : "") +
       U.blocks(sc.body) + '</div><div class="actions"><div class="choices" id="choices"></div><p class="hint" id="keyhint"></p></div></div>';
     U.follow(U.$("story"));
     const box = U.$("choices");
     const rows = K.choiceList(sc);
     const keys = [];
-    rows.forEach(({ c, ok }, i) => {
-      const fx = ok ? K.preview(c).map(([cls, t]) => '<span class="' + cls + '">' + U.esc(t) + "</span>").join("") : U.t(K.val(c.locked));
+    rows.forEach(({ c, ok, crossed }, i) => {
+      // A way closed by two failed tests stays on the page, struck through, with the reason.
+      const fx = crossed ? '<span class="down">' + U.t(crossed) + "</span>" : ok ? K.preview(c).map(([cls, t]) => '<span class="' + cls + '">' + U.esc(t) + "</span>").join("") : U.t(K.val(c.locked));
       const img = K.val(c.img);
-      const b = U.button("choice" + (img ? " has-img" : ""), '<span class="k">' + (i + 1) + "</span>" + (img ? U.thumb(img) : "") + '<span class="t">' + U.t(K.val(c.t)) + '</span><span class="fx">' + fx + "</span>", null, "choice-" + c.id);
+      const b = U.button("choice" + (img ? " has-img" : "") + (crossed ? " crossed" : ""), '<span class="k">' + (i + 1) + "</span>" + (img ? U.thumb(img) : "") + '<span class="t">' + U.t(K.val(c.t)) + '</span><span class="fx">' + fx + "</span>", null, "choice-" + c.id);
       b.disabled = !ok;
       const run = () => pick(sc, c, b);
       b.addEventListener("click", run);

@@ -492,29 +492,51 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 .pose-dead .pp-body { transform-origin: 60px 190px; transform: rotate(-86deg) translateX(-8px); }
 .pose-fall .pp-body { transform-origin: 60px 190px; animation: pp-fall 0.8s ease-in forwards; }
 @keyframes pp-fall { to { transform: rotate(-86deg) translateX(-8px); } }
-/* The figure in the corner of the page, and in cards. */
-.ppbadge { display: inline-flex; align-items: flex-end; justify-content: center; flex: none; }
-.pagehead .ppbadge { position: absolute; right: 18px; top: -46px; height: 96px; pointer-events: none; }
-.pagehead { position: relative; padding-right: 92px; }
-@media (max-width: 720px) { .pagehead .ppbadge { top: -40px; right: 12px; } .pagehead .ppbadge svg { height: 78px; width: auto; } }
+/* The figure: in the page header beside the title, and in cards. */
+.ppbadge { display: inline-flex; align-items: flex-end; justify-content: center; flex: none; pointer-events: none; }
 .pp .rod { opacity: 0.4; }
 .pp:not(.pose-stand):not(.pose-walk) .rod { display: none; }
 .sheet-figure { display: flex; justify-content: center; padding: 4px 0 0; }
-.lifecard summary .lifefig { margin-right: -6px; }
-.react-win { } .react-lose { } .react-vow { }
-/* The figure stands in the page's top corner, fully inside the page. */
-.pagehead { min-height: 92px; align-content: end; padding-bottom: 6px; }
-.pagehead .ppbadge { position: absolute; right: 18px; top: auto; bottom: 0; height: auto; }
-.pagehead .ppbadge svg { height: 92px; width: auto; }
-.sheet-figure { min-height: 0; }
 .sheet-figure svg { height: 180px; width: auto; }
-@media (max-width: 720px) { .pagehead { min-height: 72px; } .pagehead .ppbadge { top: auto; right: 12px; } .pagehead .ppbadge svg { height: 72px; } }
-/* The page header: what kind of moment it is, the caption, the title, and your figure beside them. */
-.pagehead { display: flex; align-items: flex-end; gap: 12px; min-height: 0; padding: 14px 18px 8px 26px; }
+.lifecard summary .lifefig { margin-right: -6px; }
+.pagehead { position: relative; display: flex; align-items: flex-end; gap: 12px; padding: 14px 18px 8px 26px; }
 .pagehead .ph-text { flex: 1 1 auto; min-width: 0; display: grid; gap: 2px; }
 .pagehead .ph-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; }
 .pagehead h1 { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 3vw, 34px); line-height: 1.08; margin: 2px 0 0; text-wrap: balance; }
-.pagehead .ppbadge { position: static; flex: none; margin-bottom: -6px; }
+.pagehead .ppbadge { margin-bottom: -6px; }
 .pagehead .ppbadge svg { height: 104px; width: auto; }
+.pagehead.big .ppbadge svg { height: 150px; }
+.pagehead .ppbadge svg.pose-dead { height: 62px; } .pagehead.big .ppbadge svg.pose-dead { height: 80px; }
 html[lang="hi"] .pagehead h1 { line-height: 1.3; }
-@media (max-width: 720px) { .pagehead { padding: 10px 12px 6px 18px; } .pagehead h1 { font-size: 22px; } .pagehead .ppbadge svg { height: 78px; } }
+@media (max-width: 720px) { .pagehead { padding: 10px 12px 6px 18px; } .pagehead h1 { font-size: 22px; } .pagehead .ppbadge svg { height: 78px; } .pagehead.big .ppbadge svg { height: 110px; } }
+/* The road you have walked, stronger than the map's own lines. */
+.bmap .m-road { stroke: #b3341a; stroke-width: 2.8; stroke-dasharray: 7 4; opacity: .95; }
+.bmap .m-road.new { stroke: #c8471f; }
+.bmap .m-steps ellipse { fill: #4a2412; opacity: .8; }
+.bmap .m-emb, .emb .m-emb { fill: #6b3a1c; stroke: none; }
+.bmap .m-emb .e-line, .emb .m-emb .e-line { fill: none; stroke: #6b3a1c; stroke-width: 1.8; stroke-linecap: round; vector-effect: none; }
+.bmap .m-emb .e-eye, .bmap .m-emb .e-in, .emb .m-emb .e-eye, .emb .m-emb .e-in { fill: #ecdcb6; }
+.bmap .m-place.been .m-emb { fill: #a8321a; }
+.bmap .m-walker .pp { overflow: visible; }
+/* The journey page: map, then From X → Y and why. */
+.leaf.journeying .text { display: grid; gap: 10px; padding-bottom: 16px; }
+.jmap .bmap { max-height: min(56svh, 520px); width: 100%; }
+.j-route { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-family: var(--display); font-size: 21px; font-weight: 700; }
+.j-route .emb, .emb { width: 1.1em; height: 1.1em; flex: none; }
+.j-arrow { color: var(--gold); padding: 0 4px; }
+.j-why { margin: 0; color: var(--muted); font-style: italic; }
+.leaf.journeying .btnrow { margin-top: 2px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* Choosing a homeland on the map. */
+.bmap.homes .m-home { cursor: pointer; outline: none; }
+.bmap.homes .m-home .hit { fill: transparent; stroke: none; }
+.bmap.homes .m-home circle:not(.hit) { fill: #ecdcb6; stroke: #5a3a22; stroke-width: 1.6; vector-effect: non-scaling-stroke; transition: fill .2s; }
+.bmap.homes .m-home text { font-weight: 700; transition: fill .2s; }
+.bmap.homes .m-home:hover circle:not(.hit), .bmap.homes .m-home:focus-visible circle:not(.hit), .bmap.homes .m-home.on circle:not(.hit) { fill: #c8471f; }
+.bmap.homes .m-home:hover text, .bmap.homes .m-home:focus-visible text { fill: #a8321a; }
+.bmap.homes .m-home:focus-visible .hit { stroke: #c8471f; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-dasharray: 3 3; }
+.homes-wrap { display: grid; gap: 10px; margin-top: 8px; }
+.homes-wrap .ghost { justify-self: start; }
+@media (max-width: 720px) { .homes-wrap { display: none; } }
+@media (min-width: 721px) { .lands.under-map { display: none; } .lands.under-map.shown { display: grid; } }
+.homes-wrap .bmap { height: min(60svh, 560px); width: auto; max-width: 100%; margin: 0 auto; }

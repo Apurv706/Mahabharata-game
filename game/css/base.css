@@ -279,3 +279,8 @@ body.inscene .leaf.split { height: 100%; max-height: 900px; }
 .split .story { min-height: 30%; }
 .floats { z-index: 39; }
 @media (max-width: 720px) { body.inscene .leaf.split { height: 76svh; max-height: none; } .split .story { min-height: 34%; } }
+/* A way closed by two failed tests: struck through, with the reason beneath. */
+.choice.crossed { opacity: 1; }
+.choice.crossed .t { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: rgba(200, 71, 31, .85); color: var(--muted); }
+.choice.crossed .fx .down { font-style: italic; }
+.loopnote { border-left: 3px solid var(--gold); padding-left: 10px; }

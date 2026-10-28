@@ -90,9 +90,20 @@
 
   function landList() {
     const leaf = U.$("leaf");
+    // On wider screens the map comes first and the pictures wait behind a button; phones get the list.
     leaf.innerHTML = '<div class="text"><h1>' + U.tr("Where were you born?") + "</h1>" +
       "<p>" + U.tr("Your homeland shapes how the world treats you. It never limits what you can become. Choose a land to read about it.") + "</p>" +
-      '<div class="lands" id="origins"></div><p class="err" id="need"></p></div>';
+      (U.homeMap ? '<div class="homes-wrap">' + U.homeMap(draft.origin) + '<button type="button" class="ghost" id="as-list">' + U.tr("See the lands as pictures") + "</button></div>" : "") +
+      '<div class="lands under-map' + (draft.asList ? " shown" : "") + '" id="origins"></div><p class="err" id="need"></p></div>';
+    if (U.fitEmblems) U.fitEmblems(leaf);
+    const pickHome = (id) => { draft.look = id; U.renderCreate(); };
+    leaf.querySelectorAll(".m-home").forEach((g) => {
+      g.addEventListener("click", () => pickHome(g.dataset.home));
+      g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pickHome(g.dataset.home); } });
+    });
+    const asList = U.$("as-list");
+    if (asList) asList.addEventListener("click", () => { draft.asList = true; U.$("origins").classList.add("shown"); asList.hidden = true; U.$("origins").scrollIntoView({ behavior: "smooth", block: "start" }); });
+    if (asList && draft.asList) asList.hidden = true;
     const box = U.$("origins");
     for (const [id, v] of Object.entries(K.ORIGINS)) {
       const b = U.button("origin land", '<i style="--img:url(\'' + U.artUrl("home_" + id) + '\')" aria-hidden="true"></i><div><b>' + U.tr(v.name) + "</b><span>" + U.tr(v.region) + "</span><small>" + U.tr(v.blurb) + "</small></div>",
@@ -104,7 +115,7 @@
     const t = leaf.querySelector(".text");
     writeAll([t.children[1]]);
     [...box.children].forEach((c) => { c.dataset.hold = 140; });
-    U.stage([t.children[0], t.children[1], ...box.children]);
+    U.stage([t.children[0], t.children[1], leaf.querySelector(".homes-wrap"), ...box.children].filter(Boolean));
   }
 
   function landPage(id) {
@@ -216,25 +227,26 @@
     U.setNav(true);
     U.where("<b>" + U.tr("The end of a life") + "</b>" + U.tr(S.alive ? "Age {n}" : "Fell at {n}", { n: S.age }));
     const leaf = U.$("leaf");
-    leaf.innerHTML = U.plate({ art: e.art, caption: e.caption, tag: "yours", tagText: K.tr("Your ending") }) +
-      '<div class="text"><h1>' + U.t(e.title) + "</h1>" +
+    leaf.innerHTML = U.plate({ art: e.art, caption: e.caption, tag: "yours", tagText: K.tr("Your ending"), heading: e.title, pose: S.alive ? "stand" : "dead", big: true }) +
+      '<div class="text">' +
       '<div class="telling">' + e.telling.map((l) => "<p>" + U.t(l) + "</p>").join("") + "</div>" +
       (e.fates && e.fates.length ? '<div class="fates"><span class="lbl">' + U.tr("What became of them") + "</span>" + e.fates.map((l) => "<p>" + U.t(l) + "</p>").join("") + "</div>" : "") +
       '<p class="record-line">' + U.tr("Your record: {w} fights won, {l} lost · {p} of {t} tests passed · {g} games won", { w: K.record(S).won, l: K.record(S).lost, p: K.record(S).passed, t: K.record(S).passed + K.record(S).failed, g: K.record(S).gamesWon }) + "</p>" +
       (S.road && S.road.length > 1 && U.mapOf ? '<div class="end-map"><span class="lbl">' + U.tr("Your road") + "</span>" + U.mapOf(S, { px: Math.min(700, window.innerWidth - 40) }) + "</div>" : "") +
       '<div class="btnrow"><button class="cta" id="again" type="button">' + U.tr("Live another life") + '</button><button class="ghost" id="readj" type="button">' + U.tr("Read your journal") + "</button></div></div>";
     const again = () => { K.deleteSlot("auto"); U.renderCreate(); };
+    if (U.fitEmblems) U.fitEmblems(leaf);
     U.$("again").addEventListener("click", again);
     U.$("readj").addEventListener("click", () => U.openJournal());
     U.renderLedger();
     U.scrollTop();
     // The bards' telling arrives line by line.
-    const plate = leaf.querySelector(".plate"); if (plate) plate.dataset.hold = 800;
-    const h1 = leaf.querySelector(".text h1"); if (h1) h1.dataset.hold = 900;
+    const plate = leaf.querySelector(".pagehead,.plate"); if (plate) plate.dataset.hold = 1400;
+    const h1 = null;
     const lines = [...leaf.querySelectorAll(".telling p")];
     lines.forEach((l) => l.classList.add("write"));
     const fates = leaf.querySelector(".fates");
     U.keys([]);
-    U.stage([plate, h1, ...lines, fates, ...(fates ? fates.children : []), leaf.querySelector(".text .btnrow")], () => U.keys([again]));
+    U.stage([plate, ...lines, fates, ...(fates ? fates.children : []), leaf.querySelector(".text .btnrow")], () => U.keys([again]));
   };
 })(window.K = window.K || {});

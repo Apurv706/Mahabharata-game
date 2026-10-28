@@ -49,7 +49,7 @@
     suta: {
       body: "Sutas drive the chariots of kings and sing the stories of kings, and your family does both. Three people in your family shaped what kind of suta you will be.",
       choices: [
-        { id: "father", t: "Your father Dhruva, who drives for the Kuru nobles", fx: kin("Dhruva", { skill: { chariot: 1 } }), text: "He lets you walk the horses after a drive, and tells you a good charioteer is the calmest person on any battlefield." },
+        { id: "father", t: "Your father Dhruva, who drives for the lords of Anga", fx: kin("Dhruva", { skill: { chariot: 1 } }), text: "He lets you walk the horses after a drive, and tells you a good charioteer is the calmest person on any battlefield." },
         { id: "grandmother", t: "Grandmother Saumya, a bard who has sung before three kings", fx: kin("Saumya", { skill: { lore: 1 } }), text: "She teaches you the first verses of the great stories, and how to watch a king's face while you sing, so you know when to stop." },
         { id: "brother", t: "Your elder brother Rathin, who mends wheels and axles", fx: kin("Rathin", { attr: { might: 1 } }), text: "You hold the wheel while Rathin hammers. Your arms ache every night, and grow strong." }
       ]
@@ -131,7 +131,7 @@
     },
     suta: {
       title: "Blessing the horses", art: "custom_suta",
-      body: "On the charioteers' feast day, every horse in the royal stables is washed, garlanded and blessed, and the suta children help.",
+      body: "On the charioteers' feast day in Champa, every horse in the king of Anga's stables is washed, garlanded and blessed, and the suta children help.",
       choices: [
         { id: "groom", t: "Groom the king's own horses until they shine", fx: { skill: { chariot: 1 } }, text: "The stablemaster inspects your work, says nothing, and gives you the hardest horse next year. That is praise." },
         { id: "bards", t: "Listen to the bards sing the deeds of charioteers", fx: { skill: { lore: 1 } }, text: "They sing of charioteers who turned battles, whom no one else remembers. You decide someone should." },
@@ -164,14 +164,14 @@
 
   K.scenes([
     {
-      id: "a1_roots", act: 1, age: 6, art: (S) => "roots_" + S.origin, place: (S) => K.ORIGINS[S.origin].name, caption: (S) => K.ORIGINS[S.origin].region,
+      id: "a1_roots", act: 1, age: 6, art: (S) => "roots_" + S.origin, place: (S) => K.childPlace(S), caption: (S) => K.ORIGINS[S.origin].region,
       title: "The people you came from",
       body: (S) => [K.ROOTS[S.origin].body, "Who shaped you most?"],
       choices: (S) => K.ROOTS[S.origin].choices,
       next: "a1_custom"
     },
     {
-      id: "a1_custom", act: 1, age: 7, art: (S) => K.CUSTOMS[S.origin].art, place: (S) => K.ORIGINS[S.origin].name,
+      id: "a1_custom", act: 1, age: 7, art: (S) => K.CUSTOMS[S.origin].art, place: (S) => K.childPlace(S),
       title: (S) => K.CUSTOMS[S.origin].title,
       body: (S) => [K.CUSTOMS[S.origin].body],
       choices: (S) => K.CUSTOMS[S.origin].choices,
