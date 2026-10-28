@@ -3313,6 +3313,9 @@
     "palm-leaf manuscript": "ताड़पत्र ग्रंथ",
     "amulet": "ताबीज़",
     "Brace!": "डटो",
-    "You hit the eye.": "तुमने आँख भेदी।"
+    "You hit the eye.": "तुमने आँख भेदी।",
+    "You won, but not whole: {inj!}.": "तुम जीते, पर पूरे नहीं: {inj!}।",
+    "Raiders at the pass": "दर्रे पर लुटेरे",
+    "Hill raiders come down on the villages at the pass, as if the whole land had been given leave.": "पहाड़ी लुटेरे दर्रे के गाँवों पर उतर आते हैं, मानो पूरे देश को छूट मिल गई हो।"
   });
 })(window.K = window.K || {});

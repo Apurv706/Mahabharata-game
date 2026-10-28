@@ -11,7 +11,7 @@
     karna: canon("Karna"), arjuna: canon("Arjuna"), bhima: canon("Bhima"), yudhishthira: canon("Yudhishthira"),
     duryodhana: canon("Duryodhana"), dushasana: canon("Dushasana"), drona: canon("Drona"), kripa: canon("Kripa"),
     vidura: canon("Vidura"), bhishma: canon("Bhishma"), draupadi: canon("Draupadi"), abhimanyu: canon("Abhimanyu"),
-    ashwatthama: canon("Ashwatthama"), balarama: canon("Balarama"), shakuni: canon("Shakuni"), uttara: canon("Prince Uttara"),
+    ashwatthama: canon("Ashwatthama"), balarama: canon("Balarama"), shakuni: canon("Shakuni"), uttara: canon("Prince Uttara"), vikarna: canon("Vikarna"),
     charu: orig("Charu"), mauni: orig("Mauni the hermit"), vasu: orig("Vasu"), madhavi: orig("Madhavi"), revat: orig("Revat"),
     bhadra: orig("Bhadra"), sudatta: orig("Sudatta the moneylender"), ugra: orig("Ugra"), krishna: canon("Krishna")
   });
