@@ -72,8 +72,9 @@ const PAGE = {
     const out = [];
     const W = innerWidth, H = innerHeight;
     if (document.documentElement.scrollWidth > W + 1) out.push("page scrolls sideways (" + document.documentElement.scrollWidth + " > " + W + ")");
-    const wide = [...document.querySelectorAll(".leaf, .modal, .trial, .arena, .bmap, .choice")].filter((e) => e.offsetParent && e.getBoundingClientRect().right > W + 1);
-    if (wide.length) out.push(wide.length + " element(s) run past the right edge: " + wide.slice(0, 3).map((e) => e.className.baseVal ?? e.className).join(", "));
+    // Under the full-screen "turn upright" card nothing else can be seen or touched, so only the card is checked there.
+    const wide = o.underCard ? [] : [...document.querySelectorAll(".leaf, .modal, .trial, .arena, .bmap, .choice")].filter((e) => e.offsetParent && e.getBoundingClientRect().right > W + 1);
+    if (wide.length) out.push(wide.length + " element(s) run past the right edge: " + wide.slice(0, 3).map((e) => (e.className.baseVal ?? e.className) + " (right " + Math.round(e.getBoundingClientRect().right) + " of " + W + ", width " + Math.round(e.getBoundingClientRect().width) + ", transform " + getComputedStyle(e).transform + ")").join(", "));
     return out;
   },
   topbar(o) {
@@ -382,7 +383,7 @@ async function runDevice(browser, base, o, report) {
     const coarse = await page.evaluate(() => matchMedia("(pointer: coarse)").matches);
     if (!coarse) { report.push({ browser: browser._name, device: label, screen: "turn upright", problems: [] }); await ctx.close(); return; }
     await goScene(page, "a2_trial");
-    await check("turn upright", ["turned"]);
+    await check("turn upright", ["turned"], { underCard: true });
     await page.setViewportSize({ width: o.h, height: o.w });
     await page.waitForTimeout(700);
     const back = await page.evaluate(() => ({ hidden: document.getElementById("turn").hidden, paused: K.UI.paused(), choice: !!document.querySelector("#choices .choice") }));

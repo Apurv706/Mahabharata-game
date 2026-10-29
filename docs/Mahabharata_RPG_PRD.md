@@ -415,7 +415,7 @@ The paintings' JPG originals (97 MB) are kept outside the game in `assets/art_sr
 
 ### Art and video (needs an artist or credits)
 1. Redo `fight_camp_gate_night` (eclipse-like sun, crescent banners); optional fixes to `fight_drupada_yard` (East Asian roof) and `fight_swayamvara` (Greek-style pillars).
-2. Still open from the Art Brief: `scene_journey`, the eight `custom_*` homeland festivals, Mathura's `home_mathura`, `roots_mathura` and `custom_mathura`, a native-size Steam library hero, five gameplay screenshots.
+2. The rest of the art is listed in `docs/Art_Brief_Pictures_Required.pdf` (83 images): a portrait fix (`p_abhimanyu`), a native-size Steam library hero, 12 16:9 fight backgrounds for wide screens and 16:9 versions of the remaining 3:1 paintings. Five gameplay screenshots are to be captured from the game.
 3. Deferred video (needs Runway credits): clips extended to tall for phones; clips for the 3 endings, 8 key scenes and 29 test stages without one.
 
 ### Review and release (needs people)

@@ -42,43 +42,13 @@ Companion to the PRD (§12 cultural rules, §14 art direction).
 | `app_icon` | The game's icon (`game/icons/`) | Good. From batch 1, 25 Oct |
 | `logo_en`, `logo_hi` | Kept in `assets/brand/` as placeholders, not yet used | Stock-font lettering; several emblems unclear. From batch 1 |
 
-## Still needed
+## Still needed (29 Oct)
 
-**Delivered 26 Oct:** the 13 new scene paintings (`scene_pasha`, `scene_smith`, `scene_note` and the ten `ev_*` events), the oil-lamp timer art (`diya.png`, `diya_flame.png`, trimmed to the lamp) and the Steam library hero (3840×1240, enlarged by the artist, slightly soft up close). All AI-generated; listed in `store/README.md` for the Steam disclosure. `scene_smith` shows Charu as a woman, though the game leaves Charu's gender open.
+Everything requested in the earlier briefs is delivered and in the game: the 29 test stages and 12 tall fight backgrounds, the 25 16:9 backgrounds, `scene_journey`, the eight `custom_*` festivals, `roots_*`, the three Mathura paintings and the period repaints.
 
-**Delivered 26 Oct (evening):** eight homeland-life paintings, `roots_*`, for the new childhood scene "The people you came from". Notes: domed Mughal-style fort towers in `roots_hastinapura`; a Greek-style temple and lighthouse in `roots_dwaraka`. A second batch of eight images (photos and signed paintings from the web, one with a solar panel) was not used: their rights are unclear and they do not match the game's style.
+The full list of what is still needed, with thumbnails, prompts, layouts and the delivery checklist, is **`docs/Art_Brief_Pictures_Required.pdf`** (83 images):
 
-**Still needed for the new childhood scenes:** `scene_journey` (the family caravan on the road to Hastinapura) and eight `custom_*` homeland festivals; details in the Remaining Art Brief.
-
-**Delivered 26 Oct (night):** the Priority 2 period repaints, all retouched in place on the originals: plain straw targets (`scene_teacher`, `scene_path`), a timber-and-brick fort (`scene_teacher`, `roots_hastinapura`), low riverbank roofs instead of temple spires (`scene_vow`, `scene_armour`, `scene_birth`, `end_river`), timber-and-brick gates (`scene_indraprastha`), a low walled town and flat bridge (`scene_drupada`), an Indian sword hilt (`scene_vasu`). All in the game. `roots_dwaraka` was repainted too but is no longer used, since the Yadava homeland is now **Mathura**; kept in `art_review/dwaraka_retired/`.
-
-**Mathura (new homeland, replaces Dwaraka):** `home_mathura` and `custom_mathura` borrow `scene_poison` and `ev_lamps` for now. Wanted: `home_mathura` (Mathura on the Yamuna: ghats, cowherds, a fortress where Kamsa rules), `roots_mathura` (the family house over the ghats, boats coming in) and `custom_mathura` (leaf-boat lamps on the Yamuna at the Kartika full moon). All 3:1, 1800×600 JPG, under 500 KB. `custom_dwaraka` is no longer needed.
-
-**Still open:** the remaining reviews and the reviews listed in the [Remaining Art Brief](https://claude.ai/artifact/HMj1qHn6xAJiyXRwZDoq3q); a native-size library hero when possible.
-
-Still open: the Steam library hero (3840×1240, needs its own wide painting), five 1920×1080 gameplay screenshots (captured from the game), the 12 fixes in the Final Items brief, and advisory review. Optional later: 4K key art and hand-lettered logos.
-
-The full brief for everything below, with a review of batch 1, is the [Remaining Art Brief](https://claude.ai/artifact/TQGHRD663Ee6M5tNjayZjy). Batch 1 (25 Oct) delivered all 82 files, but the 60 paintings were crops of one small contact sheet upscaled to full size, so they were sent back for redo and are not in the game.
-
-Every image below currently shows a coloured placeholder in the game. Scene art is wide **3:1** (at least 1800×600); battle backgrounds the same. All 22 story scenes are now painted.
-
-### Battle backgrounds (10)
-
-Five fights now borrow a scene painting from the same place: Drupada's palace yard (`scene_drupada`), the swayamvara brawl (`scene_swayamvara`), the Sindhu forest road (`scene_jayadratha`), the Gandharva ambush (`scene_cattle`), and Ashwatthama at the camp gate (`scene_raid`). Still needed: the wrestling ring at the fair, the Panchala border villages, Sudatta's field, the Matsya cattle raid, and the night battle by torchlight. The other war battles reuse the day-13 painting.
-
-### War days (6)
-
-The war's ten scenes all use one painting. Done (batch 2): the eve of battle (two armies, a chariot between them, seen from far away), Bhishma's nine days, Drona's plan to capture the king, sunset on day 14, Drona laying down his weapons on day 15, and Karna's sinking wheel on day 17 (the current death-ending painting may suit this).
-
-### Other
-
-| Item | Count | Shape |
-|---|---|---|
-| Teacher cards: Drona, Kripa, Balarama, the hermit Mauni, Vidura's circle, self-taught | 6 | 4:3 |
-| Path emblems: archer, mace, charioteer, strategist, healer, spy, bard | 7 | 1:1, matching the temperament emblems |
-| Vow emblems: the six vows | 6 | 1:1, small |
-| Portraits: Karna, Arjuna, Bhima, Drona, Kripa, Duryodhana, Abhimanyu, Mauni, Charu, Madhavi, Revat, Vasu at 6 and 16 | 13 | 3:4, 900×1200+ |
-| More endings: wise elder, renunciation, teller, homecoming, vengeance | 5 | 3:1 |
-| Title key art | 1 | 16:9, 3840×2160 |
-| Logo (transparent) and app icon | 2 | icon 1024×1024 |
-| Replacement death-ending painting (your own house's emblem) | 1 | 3:1 |
+- **Priority 1, required (5):** redo `fight_camp_gate_night_tall` (eclipse sun, crescent banners); retouch `fight_drupada_yard_tall` (East Asian roof) and `fight_swayamvara_tall` (Greek columns); retouch `p_abhimanyu` (Greek cuirass and helmet); a native 3840×1240 Steam library hero.
+- **Priority 2, recommended (36):** 12 new 16:9 fight backgrounds for wide screens; 16:9 versions of the 9 endings, 5 war days (`war_bhishma`, `war_capture`, `war_day14`–`16`), `home_suta` and the 9 most-seen scenes (with a fix to Charu in `scene_smith`).
+- **Priority 3, optional (42):** 16:9 versions of the other 16 scenes, the 10 events, the 8 `roots_*` and the 8 `custom_*`.
+- **Not for the artist:** five 1920×1080 Steam screenshots (captured from the game); advisory review; a native reader's check of the Hindi logo.
