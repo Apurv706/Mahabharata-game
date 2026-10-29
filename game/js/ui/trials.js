@@ -31,11 +31,18 @@
   const FOE = { push: "brace", rhythm: "block" };
   K.TRIAL_STANCE = STANCE;
 
+  const IMMERSIVE = new Set(["aim", "board"]);
   function frame(box, done, c, kind, play) {
     const t = c.trial || {};
     // The stage: a strip of the painting with the figures on it, above the test itself.
-    const wrap = U.el('<div class="trial trial-' + kind + '">' + U.castBand(t) + '<div class="trial-body"></div></div>');
+    // Immersive tests: the stage painting is the playing field. The page, the top bar and the
+    // story fall away; the figures stand big on the painting's ground, the score sits at the top
+    // and the controls at the foot. (Being built test by test: IMMERSIVE lists those done.)
+    const deep = !!(U.inScene && t.stage && IMMERSIVE.has(kind) && !K.headless);
+    const wrap = U.el('<div class="trial trial-' + kind + (deep ? " immersive" : "") + '">' + U.castBand(t) +
+      (deep ? '<header class="t-head"><span class="t-name">' + U.t(K.val(c.t)) + "</span></header>" : "") + '<div class="trial-body"></div></div>');
     box.appendChild(wrap);
+    if (deep) document.body.classList.add("intest");
     const host = wrap.querySelector(".trial-body");
     U.castStance(wrap, STANCE[kind] || "stand", FOE[kind] || "stand");
     // The figures answer what happens: you move as you act, the other side staggers when you score.
@@ -66,11 +73,19 @@
       if (stop) stop();
       wrap.classList.remove("playing");
       const page = wrap.closest(".leaf"); if (page) page.classList.remove("playing");
+      // The outcome, large over the scene, while the figures react; then the story page returns.
+      if (deep) {
+        wrap.classList.add("done");
+        const word = outcome === "win" ? "You win" : outcome === "close" ? "So close" : "You lose";
+        wrap.appendChild(U.el('<div class="t-result ' + outcome + '"><b>' + U.tr(word) + "</b></div>"));
+        if (K.Sound) K.Sound.play(outcome === "win" ? "gong" : "drum");
+      }
       U.castStance(wrap, outcome === "win" ? "cheer" : "slump", outcome === "win" ? "slump" : "cheer");
       document.removeEventListener("keydown", onKey, true);
       document.removeEventListener("keyup", onKeyUp, true);
       if (K.Sound && outcome !== "win") K.Sound.play("hit");
-      if (K.headless) done(outcome, summary); else setTimeout(() => done(outcome, summary), 700);
+      if (K.headless) done(outcome, summary);
+      else setTimeout(() => { document.body.classList.remove("intest"); done(outcome, summary); }, deep ? 1700 : 700);
     }
     // One action key: Space or Enter (the scene's own keys are paused while a test runs).
     let act = null, actUp = null;

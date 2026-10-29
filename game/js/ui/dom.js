@@ -318,6 +318,7 @@
   U.setNav = function (on) {
     document.body.classList.remove("titling"); // the title screen adds it back after this call
     if (U.beatStop) U.beatStop();
+    document.body.classList.remove("intest");
     if (U.viewWhole) U.viewWhole(false);
     U.finalTop = null;
     U.inScene = !!on;

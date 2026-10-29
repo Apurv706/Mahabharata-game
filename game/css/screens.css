@@ -911,3 +911,62 @@ body.inscene .leaf.split { transition: none; }
 .turn p { margin: 0; font-size: 15px; color: var(--muted); }
 html[lang="hi"] .turn b { font-size: 23px; line-height: 1.4; }
 body.turned .beat, body.turned .view-full, body.turned .view-back { visibility: hidden; }
+
+/* ---------- Immersive tests: the stage painting is the playing field ----------
+   Everything but the game and its painting falls away: no top bar, no page. The figures stand big
+   on the painting's ground; the test's name and score sit at the top, its controls at the foot,
+   and the play itself happens on the painting. Before it starts, the rules and stakes are a card
+   over the scene; at the end the outcome is written large over it while the figures react. */
+body.intest header.top, body.intest .view-full, body.intest .ledger, body.intest .floats { display: none !important; }
+body.intest .leaf { background: none !important; border: 0 !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  animation: none !important; transform: none !important; transition: none !important; filter: none !important; } /* nothing around the test may hold it in: it fills the screen */
+body.intest .leaf *:has(> .trial.immersive), body.intest .leaf .text, body.intest .leaf .actions, body.intest .leaf .choices { transform: none !important; animation: none !important; filter: none !important; backdrop-filter: none !important; contain: none !important; }
+body.intest .leaf .choices > .choice.picked, body.intest .leaf .pagehead { display: none !important; }
+body.intest .backdrop::after { background: linear-gradient(to bottom, rgba(16, 6, 4, 0.55), rgba(16, 6, 4, 0) 22%, rgba(16, 6, 4, 0) 58%, rgba(16, 6, 4, 0.7)); } /* taste-skill-ignore: keeps the score and controls legible over the painting */
+.trial.immersive { position: fixed; inset: 0; z-index: 20; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 0; margin: 0; padding: max(10px, var(--sat)) max(14px, var(--sar)) max(12px, var(--sab)) max(14px, var(--sal));
+  background: none; border: 0; border-radius: 0; animation: pagein 0.4s ease both; }
+.trial.immersive > .t-head { position: relative; z-index: 3; display: flex; justify-content: center; padding: 2px 0 8px; }
+.trial.immersive .t-name { font-family: var(--display); font-weight: 700; font-size: 18px; color: var(--ink); text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8); text-align: center; } /* taste-skill-ignore: text over a painting */
+/* The figures: big, on the painting's ground, at the two sides. */
+.trial.immersive > .cast { position: absolute; inset: auto 0 0 0; height: 100%; margin: 0; padding: 0 4% max(76px, calc(var(--sab) + 70px)); border-radius: 0; background: none; pointer-events: none; z-index: 1; display: flex; align-items: flex-end; justify-content: space-between; }
+.trial.immersive > .cast::before { display: none; }
+.trial.immersive > .cast .actor svg { height: clamp(150px, 30vh, 300px); filter: drop-shadow(0 0 10px rgba(255, 196, 110, 0.5)) drop-shadow(0 6px 6px rgba(0, 0, 0, 0.6)); }
+.trial.immersive > .cast .actor.foe.f1 svg, .trial.immersive > .cast .actor.foe.f2 svg { height: clamp(130px, 26vh, 260px); }
+/* The test itself, over the painting. */
+.trial.immersive > .trial-body { position: relative; z-index: 2; min-height: 0; display: flex; flex-direction: column; gap: 10px; width: min(760px, 100%); margin: 0 auto; }
+.trial.immersive > .trial-body > * { flex: none; }
+.trial.immersive .score, .trial.immersive .game-note { align-self: center; text-align: center; margin: 0; padding: 5px 14px; border-radius: 999px; background: rgba(var(--surface-rgb), 0.72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border: 1px solid var(--gold-line); color: var(--ink); font-size: 14px; }
+.trial.immersive .game-note:empty { visibility: hidden; }
+.trial.immersive .btnrow { margin-top: auto; justify-content: center; }
+.trial.immersive .trial-press, .trial.immersive .btnrow .cta { min-height: 54px; min-width: min(260px, 70vw); font-size: 18px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45); } /* taste-skill-ignore: the button floats over the painting */
+/* Before it starts: the rules and stakes, a card over the scene. */
+.trial.immersive:not(.playing):not(.done) > .trial-body { margin: auto; width: min(460px, 100%); padding: 20px 20px 18px; border-radius: 16px; background: rgba(var(--surface-rgb), 0.86); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--gold-line); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); align-self: center; } /* taste-skill-ignore: the card floats over the scene */
+.trial.immersive:not(.playing):not(.done) > .trial-body .btnrow { margin-top: 4px; }
+.trial.immersive:not(.playing):not(.done) > .cast { padding-bottom: max(16px, var(--sab)); }
+/* The outcome, large over the scene. */
+.t-result { position: fixed; inset: 0; z-index: 4; display: grid; place-items: center; pointer-events: none; }
+.t-result b { font-family: var(--display); font-weight: 700; font-size: clamp(44px, 11vw, 96px); color: var(--ink); text-shadow: 0 3px 18px rgba(0, 0, 0, 0.8); animation: verdict 1.6s cubic-bezier(.2, .8, .25, 1) both; } /* taste-skill-ignore: the verdict over the painting */
+.t-result.win b { color: #ffe3a3; } .t-result.lose b { color: #ffb4a0; }
+@keyframes verdict { 0% { opacity: 0; transform: scale(0.7); } 25% { opacity: 1; transform: scale(1.04); } 40% { transform: scale(1); } 85% { opacity: 1; } 100% { opacity: 0.9; } }
+html[lang="hi"] .t-result b { line-height: 1.3; }
+
+/* Archery: the range is the painting itself; the target swings over it. */
+.trial.immersive .range { flex: 1 1 0; height: auto; min-height: 160px; max-height: none; background: none; box-shadow: none !important; overflow: visible; }
+.trial.immersive .range .zone { background: rgba(255, 210, 120, 0.12); border-left: 1px dashed rgba(255, 220, 150, 0.55); border-right: 1px dashed rgba(255, 220, 150, 0.55); }
+.trial.immersive .range .line { opacity: 0.9; box-shadow: 0 0 8px rgba(240, 148, 63, 0.8); } /* taste-skill-ignore: your line glows over the painting */
+.trial.immersive .range .target { top: 12%; }
+.trial.immersive .range .target i { transform: scale(1.5); transform-origin: 50% 0; filter: drop-shadow(0 0 10px rgba(255, 190, 90, 0.6)); }
+.trial.immersive .range .target::before { background: rgba(247, 234, 211, 0.6); }
+.trial.immersive .range .arrow { width: 5px; height: 64px; background: linear-gradient(#fff3d0, #c9a46a); box-shadow: 0 0 8px rgba(255, 220, 150, 0.7); }
+@keyframes loose { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-46vh); } }
+.trial.immersive .range.hit .zone { background: rgba(127, 207, 166, 0.25); } .trial.immersive .range.miss .zone { background: rgba(255, 138, 110, 0.22); }
+
+/* Board games: the board lies on the painted table, big, between the two players. */
+.trial.immersive .boardtable { flex: 1 1 0; min-height: 0; padding: 0; background: none; display: flex; align-items: center; justify-content: center; }
+.trial.immersive .boardtable svg { width: auto; height: 100%; max-width: min(100%, 560px); max-height: 560px; filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.6)); }
+.trial.immersive.trial-board > .cast { padding-bottom: max(90px, calc(var(--sab) + 84px)); padding-left: 1%; padding-right: 1%; }
+.trial.immersive.trial-board > .cast .actor svg { height: clamp(120px, 22vh, 230px); }
+.trial.immersive .cowries { padding: 6px 14px; border-radius: 999px; background: rgba(var(--surface-rgb), 0.6); align-self: center; }
+
+.trial.immersive.done .btnrow { visibility: hidden; }
+body.intest .leaf .text { background: none !important; }
