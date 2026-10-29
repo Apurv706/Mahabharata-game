@@ -22,6 +22,9 @@ const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? proces
 const BROWSERS = (arg("--browser", "chromium") === "all" ? "chromium,webkit,firefox" : arg("--browser", "chromium")).split(",");
 const ONLY = arg("--only", "");
 const SHOTS = arg("--shots", "");
+// Where the network cannot reach Google Fonts, --fonts DIR serves the same faces from Fontsource
+// packages (fontsource-<family>-<version>/ folders), so text measures as it does for players.
+const FONTS = arg("--fonts", "");
 const ROOT = path.join(__dirname, "..", "game");
 
 // Device sizes in CSS pixels, with the insets the real devices have (top notch, home bar, sides).
@@ -46,6 +49,10 @@ const shapes = (d) => {
 function serve() {
   const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp", ".json": "application/json", ".mp3": "audio/mpeg", ".m4a": "audio/mp4", ".ogg": "audio/ogg", ".woff2": "font/woff2" };
   const srv = http.createServer((req, res) => {
+    if (FONTS && req.url.startsWith("/__fonts/")) {
+      const f = path.join(FONTS, decodeURIComponent(req.url.slice(9).split("?")[0]));
+      return fs.readFile(f, (err, buf) => { if (err) { res.writeHead(404); return res.end(); } res.writeHead(200, { "Content-Type": "font/woff2" }); res.end(buf); });
+    }
     const p = path.join(ROOT, decodeURIComponent(req.url.split("?")[0]).replace(/\/$/, "/index.html"));
     if (!p.startsWith(ROOT)) { res.writeHead(403); return res.end(); }
     fs.readFile(p, (err, buf) => {
@@ -207,9 +214,23 @@ const PAGE = {
 
 // ---------- Setting up each screen ----------
 const LIFE = { origin: "panchala", pronoun: "she", heirloom: "amulet", temperament: "bold", age: 15, teacher: "drona", path: "archer", act: 2 };
+function fontCss() {
+  const want = { "cormorant-garamond": ["500", "600", "700", "500-italic"], "alegreya-sans": ["400", "500", "700"], "tiro-devanagari-hindi": ["400", "400-italic"], mukta: ["400", "500", "700"] };
+  let css = "";
+  for (const dir of fs.readdirSync(FONTS)) {
+    const fam = Object.keys(want).find((f) => dir.startsWith("fontsource-" + f + "-") && fs.statSync(path.join(FONTS, dir)).isDirectory());
+    if (!fam) continue;
+    for (const w of want[fam]) {
+      const f = path.join(FONTS, dir, w + ".css");
+      if (fs.existsSync(f)) css += fs.readFileSync(f, "utf8").replace(/url\(\.\/files\//g, "url(/__fonts/" + dir + "/files/");
+    }
+  }
+  return css;
+}
 async function fresh(page, url, o, prefs = {}) {
   await page.goto(url);
   await page.waitForFunction(() => window.K && K.UI && K.UI.renderScene);
+  await page.evaluate(() => document.fonts && document.fonts.ready.then(() => true));
   await page.addStyleTag({ content: `:root{--sat:${o.sat}px!important;--sab:${o.sab}px!important;--sal:${o.sal || 0}px!important;--sar:${o.sar || 0}px!important}` });
   await page.evaluate((p) => { localStorage.clear(); K.prefs(Object.assign({ gradual: false, beats: false, sound: false, timed: false }, p)); }, prefs);
 }
@@ -249,6 +270,10 @@ const TESTS = [
 async function runDevice(browser, base, o, report) {
   const ctx = await browser.newContext({ viewport: { width: o.w, height: o.h }, deviceScaleFactor: o.mobile ? 2 : 1, isMobile: o.mobile && browser._name !== "firefox", hasTouch: o.mobile });
   const page = await ctx.newPage();
+  if (FONTS) {
+    const css = fontCss();
+    await page.route(/fonts\.googleapis\.com/, (r) => r.fulfill({ status: 200, contentType: "text/css", body: css }));
+  }
   const errors = [];
   page.on("pageerror", (e) => errors.push(e.message));
   o.small = o.w <= 720 || o.h <= 520;
@@ -325,20 +350,18 @@ async function runDevice(browser, base, o, report) {
 
   // The act card and the title card: shown, gone by themselves, and gone at a tap.
   await fresh(page, url, o, { beats: true });
-  await goScene(page, "a2_trial");
-  const beat = await page.evaluate(() => { const b = document.getElementById("beat"); return b ? b.textContent : null; });
+  await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life); K.S.at = "hastinapura"; K.go("a2_trial"); }, LIFE);
   const probs = [];
-  if (!beat) probs.push("no act card at the start of an act");
-  if (SHOTS) await page.screenshot({ path: path.join(SHOTS, [browser._name, o.name.replace(/\s+/g, ""), o.orient[0], "act_card"].join("-") + ".png") });
-  await page.waitForTimeout(3300);
-  const titleCard = await page.evaluate(() => !!document.querySelector(".beat-title, .beat-short"));
-  if (!titleCard) probs.push("no title card after the act card");
-  await page.mouse.click(o.w / 2, o.h / 2);
-  await page.waitForTimeout(400);
-  await page.mouse.click(o.w / 2, o.h / 2);
-  await page.waitForTimeout(900);
-  if (await page.evaluate(() => !!document.getElementById("beat"))) probs.push("cards did not give way to taps");
-  if (!(await page.evaluate(() => !!document.querySelector("#choices .choice")))) probs.push("no choices after the cards");
+  const seen = async (sel, ms) => page.waitForSelector(sel, { timeout: ms, state: "attached" }).then(() => true, () => false);
+  if (!(await seen(".beat-act", 1500))) probs.push("no act card at the start of an act");
+  else if (SHOTS) await page.screenshot({ path: path.join(SHOTS, [browser._name, o.name.replace(/\s+/g, ""), o.orient[0], "act_card"].join("-") + ".png") });
+  // The act card gives way to the title card by itself, after about three seconds.
+  if (!(await seen(".beat-title, .beat-short", 5000))) probs.push("no title card after the act card");
+  // A tap moves on; the cards are gone and the choices are there.
+  for (let i = 0; i < 3 && (await page.$("#beat")); i++) { await page.mouse.click(o.w / 2, o.h / 2).catch(() => {}); await page.waitForTimeout(350); }
+  await page.waitForTimeout(600);
+  if (await page.$("#beat")) probs.push("cards did not give way to taps");
+  if (!(await page.$("#choices .choice"))) probs.push("no choices after the cards");
   // An ordinary scene gets the short title, and fades by itself.
   await page.evaluate(() => K.prefs({ titles: "short", beats: false }));
   await goScene(page, "a2_pathtest_again");

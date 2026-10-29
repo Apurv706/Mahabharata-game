@@ -16,14 +16,14 @@ jobs:
       matrix:
         browser: [chromium, webkit, firefox]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
       - run: npm i --no-save playwright@1.49.1
       - run: npx playwright install --with-deps ${{ matrix.browser }}
       - run: node tests/layout.js --browser ${{ matrix.browser }} --shots shots
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: always()
         with:
           name: screens-${{ matrix.browser }}
