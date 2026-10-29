@@ -379,5 +379,21 @@ async function runDevice(browser, base, o, report) {
   const bad = report.filter((r) => r.problems.length);
   for (const r of bad) console.log("✗ " + r.browser + " · " + r.device + " · " + r.screen + "\n    " + r.problems.join("\n    "));
   console.log("\n" + (report.length - bad.length) + "/" + report.length + " checks passed in " + (ran.join(", ") || "no browser"));
+  // On GitHub, the failures also go up as annotations (readable through the API), grouped by
+  // screen and problem with the devices listed, since a step may carry only 10 of each level.
+  if (process.env.GITHUB_ACTIONS && bad.length) {
+    const groups = new Map();
+    for (const r of bad) for (const pr of r.problems) {
+      const key = r.screen.replace(/ \(.*\)$/, "") + ": " + pr.replace(/\d+(\.\d+)?/g, "#");
+      if (!groups.has(key)) groups.set(key, { n: 0, ex: pr, where: [] });
+      const g = groups.get(key); g.n++; g.where.push(r.device.replace(/ \(.*\)$/, ""));
+    }
+    const list = [...groups.entries()].sort((a, b) => b[1].n - a[1].n);
+    const esc = (t) => t.replace(/%/g, "%25").replace(/\r/g, "").replace(/\n/g, "%0A");
+    list.slice(0, 30).forEach(([key, g], i) => {
+      const level = i < 10 ? "error" : i < 20 ? "warning" : "notice";
+      console.log("::" + level + " title=" + esc(ran.join(",") + " " + key.split(":")[0]) + "::" + esc(g.n + "× " + key.split(": ").slice(1).join(": ") + " | e.g. " + g.ex + " | on: " + [...new Set(g.where)].join(", ")));
+    });
+  }
   process.exit(bad.length || !ran.length ? 1 : 0);
 })();
