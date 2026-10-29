@@ -16468,5 +16468,30 @@
   "id": 3295,
   "en": "Pandava soldiers",
   "ctx": "play:x_captive"
+ },
+ {
+  "id": 3296,
+  "en": "A life cut short",
+  "ctx": "endings"
+ },
+ {
+  "id": 3297,
+  "en": "Cross someone who does not forgive, before the war, and fail.",
+  "ctx": "endings"
+ },
+ {
+  "id": 3298,
+  "en": "The garden of the lac house, at night",
+  "ctx": "scene:a3_tunnel_again"
+ },
+ {
+  "id": 3299,
+  "en": "Drupada's hall, in uproar",
+  "ctx": "scene:a3_swayamvara"
+ },
+ {
+  "id": 3300,
+  "en": "Behind a curtain in Maya's hall",
+  "ctx": "scene:a3_rajasuya"
  }
 ]

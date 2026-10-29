@@ -165,6 +165,7 @@
     { title: "Glorious death", art: "end_death", hint: "Fall in battle with every vow kept." },
     { title: "Fallen at Kurukshetra", art: "end_death", hint: "Fall in battle." },
     { title: "Into the wheel", art: "end_wheel", hint: "Follow Abhimanyu to the end." },
+    { title: "A life cut short", art: "scene_lake", hint: "Cross someone who does not forgive, before the war, and fail." },
     { title: "Beside Karna", art: "war_day17", hint: "Stand beside Karna on his last day." }
   ];
 
@@ -179,6 +180,10 @@
       art = wheel ? "end_wheel" : karna ? "war_day17" : "end_death";
       caption = wheel ? "The ring of chariots at sunset" : karna ? "A chariot wheel sinks into the earth" : "The day ends without you";
       title = S.flags.includes("died_with_abhimanyu") ? "Into the wheel" : S.flags.includes("died_with_karna") ? "Beside Karna" : intact ? "Glorious death" : "Fallen at Kurukshetra";
+      // A death by peril (see K.inPeril) shows where it happened; before the war it is not a death in battle.
+      const at = S.deathAt;
+      if (at && at.art) { art = at.art; caption = at.caption || caption; }
+      if (S.flags.includes("peril_death") && (at ? at.act : S.act) < 6) title = "A life cut short";
     } else {
       const c = S.endChoice;
       if (c === "elder") { title = "The wise elder"; art = "end_elder"; caption = "The palace school, in old age"; }
