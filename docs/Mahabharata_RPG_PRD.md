@@ -3,7 +3,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft v0.3 (adds the browser edition, §16, and remaining tasks, §17) |
+| **Status** | Draft v0.3.1 (browser edition, §16; remaining tasks, §17, updated after the immersive build) |
 | **Last updated** | October 29, 2026 |
 | **Owner** | [Founder / Creative Director] |
 | **Doc type** | Living PRD; sections marked **[OPEN]** still need decisions |
@@ -375,54 +375,55 @@ The player and every character are drawn as **tholu bommalata** leather shadow p
 
 ### 16.4 Tests
 - 17 kinds of skill test, each a minute or two: archery, wrestling, steady hands, stealth, noticing, mudra and verse drills, rhythm, chariot and boat races, herding, the ring puzzle, retorts, drawing the bow, the dice, Shakuni's hands, and three board games (chaupar, tigers and goats, Moksha Patam). Two failures can close a way and send the player back to an earlier choice (loop-back), at most once per act.
-- **Immersive tests (in progress).** The stage painting is the playing field: the top bar and page fall away, the puppets stand big on the painting, the score sits at the top and the controls at the foot; rules and stakes are a card before, the verdict is written over the scene after. Done: archery (a straw target swinging on a rope from the branch, animals running across the ground) and the three board games.
+- **Every test is played on its painting.** The stage painting is the playing field: the top bar and page fall away, the puppets stand big on the painting, the test's name and score sit at the top and the controls at the foot; rules and stakes are a card before, and the verdict (You win / So close / You lose) is written over the scene after. Archery has a straw target swinging on a rope from the branch, and animals (deer, tiger, elephant) drawn as leather puppets running across the ground. Wrestling pushes across the painted ground; steady hands shows the hand over the glow; in stealth the player's puppet creeps through the scene; races run as vertical courses on the tall course paintings, steered left and right; herding is played upright with the way out at the top; the dice and Shakuni's hands are played on the painted cloth. A test written without a stage gets the usual ground for its kind.
 - **Chance in skill tests.** Not every good attempt succeeds: in archery the aim wavers and each arrow drifts (less for a better archer), so a perfectly timed shot hits about 3 in 4 for a beginner and nearly always for a master.
 - Tall (9:16) stage paintings for all 29 test stages are in the game for upright screens.
 
 ### 16.5 Fights
-Turn-based fights with shadow puppets on a painted stage, timed block and dodge, adaptive enemies, lasting scars. Even fights are won about 63% of the time, hard fights about 41%. 12 tall fight backgrounds are delivered and wait for the fight rebuild (§17).
+Turn-based fights with shadow puppets on a painted stage, timed block and dodge, adaptive enemies, lasting scars. Even fights are won about 63% of the time, hard fights about 41%. **Fights are full-screen on their painting**, like the tests: the fight's name at the top, the two sides standing big on the painted ground (sized so two to a side always fit the screen), and each side's strength, the last lines of the fight and the player's moves on cards across the foot. Each of the 24 encounters has a setting: 12 tall fight backgrounds and 2 test stages (on upright screens; wider screens use the wide paintings).
 
 ### 16.6 Living paintings
 25 Runway clips (7 key moments, 6 endings, 12 key scenes) play in place of their paintings, silently, once, resting on the last frame; on phones at full width during the scene's opening, on desktops full-screen. Encoded for the web (H.264, with VP9 WebM as a fallback), about 0.2 to 1.4 MB each. Menu switch; off with reduced motion or data saver. Extending clips to fill a tall phone screen (Runway expand) is deferred until credits allow.
 
 ### 16.7 Language
-English and Hindi, 3,334 strings, none missing in automated Hindi playthroughs. The Hindi is a draft and needs a native reader's review.
+English and Hindi, 3,339 strings, none missing in automated Hindi playthroughs. The Hindi dictionary loads only when Hindi is chosen. The Hindi is a draft and needs a native reader's review.
 
 ### 16.8 Quality checks
 - **Playthroughs** (tests/playthrough.js): hundreds of automated lives; no crashes, no dead ends; tests per life by act about 1 / 2 / 2 / 1 / 2 / 1 / 0.4.
-- **Screen fit** (tests/layout.js): iPhone SE, 15, 15 Pro Max, Pixel 7, iPad, laptop and desktop, upright and sideways, with stand-in notches; checks the top bar, page fit, choices on screen, every test and fight, the journey, the windows, the act and title cards, the painting's placement, the turn card and pause, the page growing while written. Runs on every push on GitHub in Chromium, WebKit (Safari) and Firefox.
+- **Screen fit** (tests/layout.js): iPhone SE, 15, 15 Pro Max, Pixel 7, iPad, laptop and desktop, upright and sideways, with stand-in notches; checks the top bar, page fit, choices on screen, every test and fight, the journey, the windows, the act and title cards, the painting's placement, the turn card and pause, the page growing while written; for tests and fights on their painting, that they fill the screen, hide the top bar, and keep every control on screen and clear of the notch and home bar. Runs on every push on GitHub in Chromium, WebKit (Safari) and Firefox.
 - **Balance** (tests/balance.js) for fights.
 
 ### 16.9 Build size
 | Part | On disk | What a player downloads |
 |---|---|---|
-| Code, styles, page | 1.6 MB | about 230 KB compressed |
-| Hindi dictionary | 0.7 MB | about 175 KB compressed (loaded even in English; should load only for Hindi) |
-| Paintings (206 files: 3:1, wide 16:9, tall 9:16) | 92 MB | only those shown: about 20 to 30 MB over a whole life |
-| Living paintings (25 clips, MP4 + WebM fallback) | 55 MB | one format, only scenes reached: about 8 to 12 MB per life |
-| Music (3 pieces, 4 win themes) | 4.2 MB | 4.2 MB, streamed as needed |
-| **Total** | **153 MB** | **first screen about 1.5 MB; a full life about 35 to 45 MB** |
+| Code, styles, page | 1.1 MB | about 240 KB compressed |
+| Hindi dictionary | 0.7 MB | about 175 KB compressed, only for Hindi |
+| Paintings (218 WebP + 15 PNG: 3:1, wide 16:9, tall 9:16) | 56 MB | only those shown, the next scene's fetched while you read: about 15 to 25 MB over a whole life |
+| Living paintings (25 clips, MP4 + WebM fallback) | 55 MB (20 MB MP4) | one format, only scenes reached: about 6 to 10 MB per life |
+| Music (3 pieces, 5 win themes) | 4.2 MB | streamed as needed |
+| **Total** | **117 MB** | **first screen about 1 MB; a full life about 25 to 35 MB** |
 
-## 17. Remaining tasks (October 29)
+The paintings' JPG originals (97 MB) are kept outside the game in `assets/art_src/`; `tools/webp-art.py` converts new ones.
 
-### Build
-1. Immersive tests for the remaining kinds: wrestling, steady hands, stealth, noticing, drills, rhythm, races (as vertical courses on the tall course paintings), herding, the ring puzzle, retorts, the bow, the dice and Shakuni's hands.
-2. Fights full-screen on the 12 tall fight backgrounds (2 more settings reuse test stages).
-3. Archery animals (deer, tiger, elephant) redrawn in the leather-puppet style.
-4. Performance: load the Hindi dictionary only for Hindi; convert paintings to WebP (about a third smaller); preload the next scene's painting.
-5. Confirm the Safari (WebKit) screen-fit run passes on the latest build.
+## 17. Remaining tasks (October 29, updated)
 
-### Art and video
-6. Redo `fight_camp_gate_night` (eclipse-like sun, crescent banners); optional fixes to `fight_drupada_yard` (East Asian roof) and `fight_swayamvara` (Greek-style pillars).
-7. Still open from the Art Brief: `scene_journey`, the eight `custom_*` homeland festivals, Mathura's `home_mathura`, `roots_mathura` and `custom_mathura`, a native-size Steam library hero, five gameplay screenshots.
-8. Deferred video (needs Runway credits): clips extended to tall for phones; clips for the 3 endings, 8 key scenes and 29 test stages without one.
+### Built since v0.3
+- Every test and every fight played full-screen on its painting (§16.4, §16.5); archery animals as leather puppets.
+- Performance: Hindi loaded only for Hindi; paintings in WebP (97 MB → 54 MB); the next scene's painting and test stage fetched while the player reads.
+- Steam AI disclosure written: `store/AI_DISCLOSURE.md` (store-page text, content-survey text, and what it covers).
+- Screen-fit checks for full-screen tests and fights, in all three browser engines.
 
-### Review and release
-9. Native Hindi review of all 3,334 strings.
-10. Advisory review: canon portraits, every living painting (faces, hands, canon figures), Draupadi in the dice and exile images, the key art.
-11. AI disclosure for Steam covering paintings and video.
-12. Playtest questions: the timed block/dodge window on phones; whether board games finish within two minutes; whether loop-backs read clearly; whether title cards and the 4-second clip moments feel welcome after an hour; whether archery's chance feels fair.
-13. **[OPEN]** Packaging for Steam (a desktop wrapper around the browser build) and whether the browser edition becomes the shipped game or stays the prototype for the engine build.
+### Art and video (needs an artist or credits)
+1. Redo `fight_camp_gate_night` (eclipse-like sun, crescent banners); optional fixes to `fight_drupada_yard` (East Asian roof) and `fight_swayamvara` (Greek-style pillars).
+2. Still open from the Art Brief: `scene_journey`, the eight `custom_*` homeland festivals, Mathura's `home_mathura`, `roots_mathura` and `custom_mathura`, a native-size Steam library hero, five gameplay screenshots.
+3. Deferred video (needs Runway credits): clips extended to tall for phones; clips for the 3 endings, 8 key scenes and 29 test stages without one.
+
+### Review and release (needs people)
+4. Native Hindi review of all 3,339 strings.
+5. Advisory review: canon portraits, every living painting (faces, hands, canon figures), Draupadi in the dice and exile images, the key art.
+6. Fill in the **[confirm]** lines of the AI disclosure: the image tools the artists used, how much of the story text was edited by hand, and the review status.
+7. Playtests: the timed block/dodge window on phones; whether board games finish within two minutes; whether loop-backs read clearly; whether title cards and the 4-second clip moments feel welcome after an hour; whether archery's chance feels fair; whether full-screen tests and fights read clearly on a small phone.
+8. **[OPEN]** Packaging for Steam (a desktop wrapper around the browser build) and whether the browser edition becomes the shipped game or stays the prototype for the engine build.
 
 ---
 

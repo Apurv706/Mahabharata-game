@@ -154,6 +154,21 @@ const PAGE = {
     const leaf = document.getElementById("leaf");
     const t = document.querySelector(".trial");
     if (!t) return ["the test did not open"];
+    // A test on its painting fills the screen: no top bar, every control on screen and clear of
+    // the notch and the home bar, the test's name below the notch.
+    if (t.classList.contains("immersive")) {
+      const W = innerWidth, H = innerHeight, r = t.getBoundingClientRect();
+      if (r.width < W - 1 || r.height < H - 1) out.push("test does not fill the screen (" + Math.round(r.width) + "×" + Math.round(r.height) + ")");
+      if (document.querySelector("header.top").offsetParent) out.push("top bar still showing during the test");
+      const ctrls = [...t.querySelectorAll("button:not([disabled])")].filter((e) => e.offsetParent && getComputedStyle(e).visibility !== "hidden");
+      const off = ctrls.filter((e) => { const b = e.getBoundingClientRect(); return b.bottom > H - (o.sab || 0) + 1 || b.top < (o.sat || 0) - 1 || b.left < -1 || b.right > W + 1; });
+      if (off.length) out.push(off.length + " control(s) off screen or under the notch / home bar: " + off.slice(0, 3).map((e) => (e.textContent || e.className).trim().slice(0, 20)).join(", "));
+      const name = t.querySelector(".t-name, .score");
+      if (name && name.getBoundingClientRect().top < (o.sat || 0) - 1) out.push("test name under the notch");
+      const tall = [...t.querySelectorAll(".trial-body > *")].filter((e) => e.offsetParent && e.getBoundingClientRect().bottom > H + 1);
+      if (tall.length) out.push("part of the test runs off the bottom: " + tall.map((e) => e.className).join(", "));
+      return out;
+    }
     const H = innerHeight;
     const lr = leaf.getBoundingClientRect();
     if (lr.bottom > H + 1) out.push("test page runs off the bottom");
@@ -171,6 +186,21 @@ const PAGE = {
     const out = [];
     const leaf = document.getElementById("leaf");
     if (!document.querySelector(".arena")) return ["the fight did not open"];
+    if (leaf.classList.contains("immersive")) {
+      const W = innerWidth, H = innerHeight, r = leaf.getBoundingClientRect();
+      if (r.width < W - 1 || r.height < H - 1) out.push("fight does not fill the screen");
+      if (document.querySelector("header.top").offsetParent) out.push("top bar still showing during the fight");
+      const acts = [...document.querySelectorAll("#battle-actions button")].filter((e) => e.offsetParent);
+      if (!acts.length) out.push("no fight actions");
+      const off = acts.filter((e) => { const b = e.getBoundingClientRect(); return b.bottom > H - (o.sab || 0) + 1 || b.right > W + 1 || b.left < -1; });
+      if (off.length) out.push(off.length + " fight action(s) off screen or under the home bar");
+      const figs = [...document.querySelectorAll("#arena .actor")].map((e) => e.getBoundingClientRect());
+      if (figs.some((b) => b.right > W + 24 || b.left < -24)) out.push("a figure stands off the edge of the screen");
+      if (figs.some((b) => b.height < 60)) out.push("figures too small to see");
+      const head = leaf.querySelector(".pagehead");
+      if (head && head.getBoundingClientRect().top < (o.sat || 0) - 1) out.push("fight name under the notch");
+      return out;
+    }
     const H = innerHeight;
     const btn = document.querySelector("#battle-actions button, #battle-actions .act");
     if (!btn) out.push("no fight actions");
@@ -322,6 +352,8 @@ const TESTS = [
   ["race", { stage: "stage_racetrack", cast: ["karna"], rival: "Karna" }], ["herd", { stage: "stage_khandava_top", theme: "fire" }],
   ["rings", { stage: "stage_chakravyuha_top", mode: "open" }], ["chaupar", { stage: "stage_board_table", cast: ["shakuni"], opponent: "Shakuni" }],
   ["baghchal", { stage: "stage_board_table", cast: ["shakuni"], opponent: "Shakuni" }], ["moksha", { stage: "stage_board_table", cast: ["boy"], opponent: "Vikarna" }],
+  ["retort", { stage: "stage_lotus_garden", cast: ["duryodhana"], rounds: [{ line: "They say your family sweeps the stables.", replies: ["And yours sweeps the floor before the king.", "That is not true.", "Leave me alone."] }, { line: "Is that a bow or a broom?", replies: ["Come closer and find out.", "A bow.", "Go away."] }, { line: "Who taught you?", replies: ["Someone who could.", "Nobody.", "My mother."] }] }],
+  ["draw", { stage: "stage_bow_courtyard", cast: ["guard"] }], ["hands", { stage: "stage_dice_board_top", cast: ["shakuni"] }], ["pasha", null],
 ];
 
 async function runDevice(browser, base, o, report) {
@@ -423,7 +455,7 @@ async function runDevice(browser, base, o, report) {
     await check(name + " (" + id + ")", ["topbar", "scene"]);
   }
   // Hindi, larger letters, and the same long scene.
-  await page.evaluate(() => K.UI.setLang("hi"));
+  await page.evaluate(() => K.UI.loadLang("hi").then(() => K.UI.setLang("hi")));
   await goScene(page, picks.longest);
   await check("Hindi long scene", ["topbar", "scene"]);
   await page.evaluate(() => K.UI.setLang("en"));

@@ -11,4 +11,4 @@ Not yet made: gameplay screenshots (1920×1080), to be captured from the game.
 
 ## AI-generated content (for the Steam disclosure)
 
-AI-generated, then reviewed, cropped and exported by hand: the library hero; the 13 scene paintings of 26 Oct (`scene_pasha`, `scene_smith`, `scene_note`, and the ten `ev_*` events); the oil-lamp timer art (`diya.png`, `diya_flame.png`). Artists' notes are in `art_review/batch_scenes_26oct/`. Check the earlier batches' notes for the rest of the game's art.
+The full disclosure, with the text to paste into Steam's content survey and the store page, is in `AI_DISCLOSURE.md`. Short version: the paintings, store images, living paintings, music, story text and Hindi were made with AI tools and reviewed by people; nothing is generated while the game runs.

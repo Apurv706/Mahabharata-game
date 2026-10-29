@@ -1,5 +1,5 @@
 /* Test stages: every action test is played inside a painted stage.
-   - The painting (art/stage_*.jpg) becomes the full-screen backdrop while the test runs.
+   - The painting (art/stage_*.webp) becomes the full-screen backdrop while the test runs.
    - A strip of the same painting sits at the top of the test, with shadow puppets of the people
      involved standing on its ground: you on the left, the others facing you. They react: you draw,
      push or duck as you act; they stagger when you score and you stagger when you slip.

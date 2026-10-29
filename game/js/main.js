@@ -38,10 +38,12 @@
   const saved = K.prefs().lang;
   const nav = (navigator.languages && navigator.languages[0]) || navigator.language || "";
   K.lang = K.LANGS[saved] ? saved : /^hi\b/i.test(nav) ? "hi" : "en";
-  U.applyStatic();
   U.initBackdrop();
   U.initTurn();
   const problems = K.validate();
   if (problems.length && window.console) console.warn("Content problems:\n" + problems.join("\n"));
-  U.renderTitle();
+  // The chosen language's dictionary first (English needs none), then the title.
+  const boot = () => { U.applyStatic(); U.renderTitle(); };
+  if (K.lang === "en" || (K.hasStrings && K.hasStrings(K.lang))) boot();
+  else { U.applyStatic(); U.loadLang(K.lang).then((ok) => { if (!ok) K.lang = "en"; boot(); }); }
 })(window.K = window.K || {});

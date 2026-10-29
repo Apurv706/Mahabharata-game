@@ -20,8 +20,12 @@
   // ---------- Pasha at the fair: three long dice each, best of three rounds ----------
   U.games.pasha = function (box, done) {
     const G = { round: 1, me: 0, them: 0, phase: "ready", mine: null, theirs: null, rolled: false, note: null };
-    const host = U.el('<div class="dicegame pasha"></div>');
-    box.appendChild(host);
+    // In a scene, the game is played on the painted gaming cloth, full-screen, like the tests.
+    const deep = !!(U.inScene && !K.headless);
+    const wrap = U.el('<div class="dicegame pasha trial' + (deep ? " immersive playing" : "") + '">' + (deep ? U.castBand({ stage: "stage_dice_board_top", cast: [] }) : "") + '<div class="trial-body"></div></div>');
+    box.appendChild(wrap);
+    const host = deep ? wrap.querySelector(".trial-body") : wrap;
+    if (deep) { document.body.classList.add("intest"); U.setBackdrop("stage_dice_board_top"); }
     const OPP = "Haridatta";
     function draw() {
       const opp = K.tr(OPP);
@@ -76,7 +80,7 @@
         G.phase = "over";
         draw();
         const won = G.me === 2;
-        wait(900, () => done(won ? "win" : "lose", [won ? "You won the game, {a} rounds to {b}." : "You lost the game, {b} rounds to {a}.", { a: G.me, b: G.them }]));
+        wait(900, () => { document.body.classList.remove("intest"); done(won ? "win" : "lose", [won ? "You won the game, {a} rounds to {b}." : "You lost the game, {b} rounds to {a}.", { a: G.me, b: G.them }]); });
         return;
       }
       G.phase = "next";
@@ -94,8 +98,10 @@
     const swap = Math.floor(K.rng() * 5);
     throws[swap][Math.floor(K.rng() * 3)] = K.rng() < 0.5 ? 3 : 4; // a face no long die has
     const G = { phase: "ready", shown: -1 };
-    const wrap = U.el('<div class="dicegame hands trial">' + U.castBand((c && c.trial) || {}) + '<div class="trial-body"></div></div>');
+    const deep = !!(U.inScene && !K.headless && c && c.trial && c.trial.stage);
+    const wrap = U.el('<div class="dicegame hands trial' + (deep ? " immersive playing" : "") + '">' + U.castBand((c && c.trial) || {}) + '<div class="trial-body"></div></div>');
     box.appendChild(wrap);
+    if (deep) document.body.classList.add("intest");
     const host = wrap.querySelector(".trial-body");
     U.castStance(wrap, "think", "stand");
     const call = (t) => K.tr("Shakuni calls {n}, and the dice show {n}.", { n: sum(t) });
@@ -129,7 +135,8 @@
       const right = i === swap;
       U.castStance(wrap, right ? "cheer" : "slump", right ? "slump" : "stand");
       host.querySelectorAll(".btnrow button").forEach((b) => { b.disabled = true; });
-      done(right ? "win" : "lose", right ? ["You named throw {n}. You were right.", { n: i + 1 }] : ["You named throw {n}. It was throw {m}.", { n: i + 1, m: swap + 1 }]);
+      const end = () => { document.body.classList.remove("intest"); done(right ? "win" : "lose", right ? ["You named throw {n}. You were right.", { n: i + 1 }] : ["You named throw {n}. It was throw {m}.", { n: i + 1, m: swap + 1 }]); };
+      if (deep) wait(1100, end); else end();
     }
     draw();
     return { draw };

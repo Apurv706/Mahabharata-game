@@ -11,6 +11,8 @@ const GAME = path.join(__dirname, "..", "game");
 const OUT = path.join(__dirname, "strings.json");
 const html = fs.readFileSync(path.join(GAME, "index.html"), "utf8");
 const scripts = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map((m) => m[1]);
+// Language dictionaries load on demand in the browser; the harness loads them all up front.
+scripts.splice(scripts.indexOf("js/ui/dom.js"), 0, "js/i18n/hi.js");
 
 function boot(seed, lang) {
   const vc = new VirtualConsole();

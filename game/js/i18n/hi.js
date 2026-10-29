@@ -3232,6 +3232,8 @@
     "Turn your phone upright to continue": "आगे खेलने के लिए फ़ोन सीधा करो",
     "This game is made to be played with the phone upright. Everything waits for you here.": "यह खेल फ़ोन को सीधा पकड़कर खेलने के लिए बना है। सब कुछ यहीं तुम्हारा इंतज़ार करेगा।",
     "The wind took it.": "हवा उसे ले उड़ी।",
+    "Steer left and right to miss what is in the road.": "रास्ते में जो आए, उससे बचने के लिए बाएँ-दाएँ मोड़ो।",
+    "Steer with the arrows or a swipe. Reach everyone you can, then bring them out through the gap at the top.": "तीरों से या उँगली फिराकर दिशा दो। जितनों तक पहुँच सको पहुँचो, फिर उन्हें ऊपर की दरार से बाहर ले आओ।",
     "They sing of {name}, born in {origin}, {path!}.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {path}।",
     "They sing of {name}, born in {origin}, who taught {them}self by night.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {g:जिसने|जिसने|जिन्होंने} रातों में ख़ुद को सिखाया।",
     "They sing of {name}, born in {origin}, student of {teacher}.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {teacher} {g:का शिष्य|की शिष्या|के शिष्य}।",
@@ -3336,6 +3338,9 @@
     "One game of dice breaks a family in two.": "पासे का एक खेल एक परिवार को दो टुकड़ों में तोड़ देता है।",
     "Thirteen years in the forest and in hiding. Everyone must choose a side.": "तेरह बरस वन में और छिपकर। हर किसी को एक पक्ष चुनना होगा।",
     "Eighteen days on the field of Kurukshetra.": "कुरुक्षेत्र के मैदान पर अठारह दिन।",
-    "The war is over. Someone must tell what happened.": "युद्ध समाप्त हुआ। किसी को बताना होगा कि क्या हुआ।"
+    "The war is over. Someone must tell what happened.": "युद्ध समाप्त हुआ। किसी को बताना होगा कि क्या हुआ।",
+    "You win": "जीत तुम्हारी हुई",
+    "So close": "बस ज़रा-सी कसर रह गई",
+    "You lose": "इस बार हार हुई"
   });
 })(window.K = window.K || {});

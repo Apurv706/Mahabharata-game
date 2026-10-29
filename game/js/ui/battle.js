@@ -75,6 +75,17 @@
     command: "speak", expose: "think", formation: "speak", salve: "kneel", steady: "kneel", nerve: "strike", feint: "sneak", vanish: "sneak", hamstring: "strike",
     song: "speak", verse: "speak", hymn: "speak" };
 
+  // Each fight's tall background, for upright screens (art/<key>_tall.webp). Desktops keep the
+  // fight's own wide painting.
+  const FIGHT_BG = {
+    e_ugra: "fight_fair_ring", e_spar: "stage_training_ground", e_panchala: "fight_drupada_yard", e_border: "fight_border_road",
+    e_kings: "fight_swayamvara", e_jayadratha: "fight_forest_road", e_bandits: "fight_forest_road", e_gandharva: "fight_royal_camp",
+    e_sudatta: "fight_grazing", e_cattle: "fight_grazing", e_cattle_k: "fight_grazing",
+    e_day1: "fight_war_field", e_wheel: "fight_war_field", e_day16: "fight_war_field", e_day18: "fight_war_field",
+    e_guard: "fight_war_chariot", e_hunt: "fight_war_chariot", e_road: "fight_war_sunset", e_jaya: "fight_war_sunset", e_gate: "fight_war_sunset",
+    e_night: "stage_battlefield_night", e_dushasana: "fight_war_camp", e_raid: "fight_camp_gate_night", e_ash: "fight_camp_gate_night"
+  };
+  U.FIGHT_BG = FIGHT_BG;
   function arenaHtml(B) {
     const stage = K.val(B.enc.stage) || K.val(B.enc.art);
     const actor = (u) => '<span class="actor ' + u.side + (u.hp <= 0 ? " down" : "") + '" data-uid="' + u.uid + '">' +
@@ -237,10 +248,18 @@
     const friends = B.units.filter((u) => u.side !== "enemy");
     const leaf = U.$("leaf");
     // The painted stage with the figures is drawn once per fight, so they can move between draws.
+    // The fight fills the screen on its painting, like the tests: the top bar and page fall away.
+    // (Set on every draw: the screen's frame is reset between draws.)
+    const deep = !!(U.inScene && !K.headless);
+    leaf.className = "leaf fighting" + (deep ? " immersive" : "");
+    if (deep) document.body.classList.add("intest");
     if (leaf.dataset.battle !== B.bid || !U.$("arena")) {
-      leaf.className = "leaf fighting";
+      if (deep) {
+        const bg = FIGHT_BG[enc.id];
+        U.setBackdrop(U.upright() && bg && U.tallOf(bg) ? bg : K.val(enc.stage) || K.val(enc.art));
+      }
       leaf.dataset.battle = B.bid;
-      leaf.innerHTML = U.plate({ art: K.val(enc.art), caption: K.val(enc.caption), tag: enc.lethal ? "war" : "yours", tagText: K.tr(enc.lethal ? "Battle · you can die here" : "A fight"), heading: K.val(enc.title), noFigure: true }) +
+      leaf.innerHTML = U.plate({ art: K.val(enc.art), keepArt: deep, caption: K.val(enc.caption), tag: enc.lethal ? "war" : "yours", tagText: K.tr(enc.lethal ? "Battle · you can die here" : "A fight"), heading: K.val(enc.title), noFigure: true }) +
         arenaHtml(B) + '<div class="text battle" id="battle-body"></div>';
       lastActs = B.acts.length; // nothing to replay on a fresh draw
     }
@@ -283,7 +302,7 @@
       stopQte(); drums.stop();
       const msg = { win: K.val(enc.winLine) || "The fight is won.", lose: enc.lethal && !K.S.storyMode ? "You have fallen." : "You are beaten.", flee: "You leave the fight behind.", spare: "You let them live." }[B.over];
       box.appendChild(U.el('<div class="result"><p><b>' + U.t(msg) + "</b></p></div>"));
-      const done = () => { const cb = onEndCb; const out = C.end().over; onEndCb = null; const L = U.$("leaf"); if (L) L.dataset.battle = ""; cb(out); };
+      const done = () => { const cb = onEndCb; const out = C.end().over; onEndCb = null; const L = U.$("leaf"); if (L) L.dataset.battle = ""; document.body.classList.remove("intest"); cb(out); };
       const cont = U.button("cta", U.tr("Continue"), done);
       box.appendChild(cont);
       U.keys([done]);

@@ -736,14 +736,14 @@ body.inscene .jmap .bmap { max-height: min(520px, max(180px, calc(var(--vh) - 34
    the short title. A tap moves on. */
 body.beating .leaf { display: none; }
 body.beating header.top { opacity: 0.35; transition: opacity 0.4s ease; }
-.beat { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
+#beat { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
   padding: max(28px, var(--sat)) max(22px, var(--sar)) max(28px, var(--sab)) max(22px, var(--sal)); }
-.beat::before { content: ""; position: absolute; inset: 0; z-index: -1; transition: background 0.5s ease; background: transparent; }
-.beat.dim::before { background: rgba(16, 6, 4, 0.8); } /* taste-skill-ignore: dims the painting under the act card */
-.beat.veil::before { background: radial-gradient(ellipse at 50% 50%, rgba(16, 6, 4, 0.74), rgba(16, 6, 4, 0.42) 75%); } /* taste-skill-ignore: veil under the title card */
-.beat.low { place-items: end start; }
-.beat.low::before { background: linear-gradient(to top, rgba(16, 6, 4, 0.82), rgba(16, 6, 4, 0) 46%); } /* taste-skill-ignore: shade under the short title */
-.beat.gone::before { background: transparent; }
+#beat::before { content: ""; position: absolute; inset: 0; z-index: -1; transition: background 0.5s ease; background: transparent; }
+#beat.dim::before { background: rgba(16, 6, 4, 0.8); } /* taste-skill-ignore: dims the painting under the act card */
+#beat.veil::before { background: radial-gradient(ellipse at 50% 50%, rgba(16, 6, 4, 0.74), rgba(16, 6, 4, 0.42) 75%); } /* taste-skill-ignore: veil under the title card */
+#beat.low { place-items: end start; }
+#beat.low::before { background: linear-gradient(to top, rgba(16, 6, 4, 0.82), rgba(16, 6, 4, 0) 46%); } /* taste-skill-ignore: shade under the short title */
+#beat.gone::before { background: transparent; }
 .beat-in { opacity: 0; transform: translateY(12px) scale(0.99); transition: opacity 0.5s ease, transform 0.7s cubic-bezier(.2, .7, .2, 1); }
 .beat-in.in { opacity: 1; transform: none; }
 .beat-in.out { opacity: 0; transform: translateY(-8px); transition-duration: 0.24s; }
@@ -910,7 +910,7 @@ body.inscene .leaf.split { transition: none; }
 .turn b { font-family: var(--display); font-size: 26px; line-height: 1.15; color: var(--ink); }
 .turn p { margin: 0; font-size: 15px; color: var(--muted); }
 html[lang="hi"] .turn b { font-size: 23px; line-height: 1.4; }
-body.turned .beat, body.turned .view-full, body.turned .view-back { visibility: hidden; }
+body.turned #beat, body.turned .view-full, body.turned .view-back { visibility: hidden; }
 
 /* ---------- Immersive tests: the stage painting is the playing field ----------
    Everything but the game and its painting falls away: no top bar, no page. The figures stand big
@@ -997,3 +997,148 @@ body.intest .leaf .text { background: none !important; }
 .trial.immersive .pushpit .ringbox .mark { width: 120px; height: 120px; background: rgba(255, 210, 120, 0.22); border: 4px solid rgba(255, 210, 120, 0.85); box-shadow: 0 0 20px rgba(255, 190, 90, 0.6); } /* taste-skill-ignore: the mark glows on the sand */
 .trial.immersive .pushpit .ringbox .ring { width: 400px; height: 400px; border: 6px solid rgba(247, 234, 211, 0.9); }
 .trial.immersive .pushpit.good .ringbox .mark { border-color: var(--positive); } .trial.immersive .pushpit.bad .ringbox .mark { border-color: var(--negative); }
+
+/* ---------- Every test on its painting ----------
+   Shared: the play pieces lose their dark boxes and sit on the painting on soft glass where they
+   need to be read; the figures stand on the ground; top-down games hide the standing figures. */
+.trial.immersive .game-note, .trial.immersive .score { max-width: min(92%, 520px); }
+.trial.immersive .timer, .trial.immersive .calm, .trial.immersive .sus { align-self: center; width: min(78%, 420px); height: 6px; background: rgba(var(--surface-rgb), 0.55); border: 1px solid var(--gold-line); }
+.trial.immersive .glass, .trial.immersive .taunt, .trial.immersive .table li, .trial.immersive .replies .cta, .trial.immersive .drill .tile {
+  background: rgba(var(--surface-rgb), 0.62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border: 1px solid var(--gold-line); color: var(--ink); }
+.trial.immersive.trial-race > .cast, .trial.immersive.trial-herd > .cast, .trial.immersive.trial-rings > .cast, .trial.immersive.trial-sneak > .cast .actor.me { display: none; }
+
+/* Steady hands: an open hand drifts across the scene toward a warm glow. */
+.trial.immersive .steady { flex: 1 1 0; height: auto; min-height: 120px; max-height: none; background: none; position: relative; }
+.trial.immersive .steady .mood { top: 18%; bottom: 18%; height: auto; border-radius: 50%; background: radial-gradient(ellipse at center, rgba(255, 214, 140, 0.55), rgba(255, 190, 90, 0.15) 60%, transparent 72%); border: 0; }
+.trial.immersive .steady .mood.on { background: radial-gradient(ellipse at center, rgba(160, 230, 180, 0.6), rgba(120, 200, 150, 0.15) 60%, transparent 72%); }
+.trial.immersive .steady .hand { top: 50%; width: 64px; height: 84px; margin-left: -32px; transform: translateY(-50%); background: none; border: 0; box-shadow: none; }
+.trial.immersive .steady .hand svg { width: 100%; height: 100%; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5)); }
+
+/* Retorts and riddles: the line is spoken from the scene, the answers are cards to tap. */
+.trial.immersive .taunt { margin: 6px auto 0; padding: 14px 18px; border-radius: 16px 16px 16px 4px; max-width: min(92%, 520px); font-family: var(--display); font-size: 20px; line-height: 1.35; }
+.trial.immersive .replies { margin-top: auto; display: grid; gap: 8px; width: min(100%, 520px); align-self: center; }
+.trial.immersive .replies .cta { min-height: 52px; font-weight: 600; text-align: left; justify-content: flex-start; }
+
+/* Drawing the bow: the bow itself, large, over the scene. */
+.trial.immersive .drawpit { flex: 1 1 0; background: none; display: grid; align-content: center; gap: 12px; }
+.trial.immersive .drawpit .bow { width: min(100%, 420px); height: auto; justify-self: center; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.55)); }
+.trial.immersive .drawpit .meter { width: min(86%, 420px); justify-self: center; background: rgba(var(--surface-rgb), 0.6); border: 1px solid var(--gold-line); }
+
+/* Stealth: your puppet creeps along the ground; the torchlight sweeps across the painting. */
+.trial.immersive .sneakway { flex: 1 1 0; height: auto; min-height: 160px; max-height: none; background: none; overflow: visible; }
+.trial.immersive .sneakway .torch { top: -60vh; bottom: 0; height: auto; background: radial-gradient(ellipse 50% 100% at 50% 100%, rgba(255, 196, 110, 0.55), rgba(255, 170, 80, 0.18) 55%, transparent 75%); filter: blur(2px); }
+.trial.immersive .sneakway .goal { width: 18%; background: radial-gradient(ellipse at 100% 70%, rgba(150, 220, 170, 0.45), transparent 70%); }
+.trial.immersive .sneakway .me { bottom: 0; width: auto; height: auto; margin-left: -40px; background: none; box-shadow: none; border-radius: 0; }
+.trial.immersive .sneakway .me .pp { height: clamp(110px, 20vh, 170px); width: auto; filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.6)); }
+.trial.immersive .sneakway .me.lit .pp { filter: drop-shadow(0 0 12px rgba(255, 210, 120, 0.95)); }
+
+/* Noticing: the things lie in the scene as small cards; the question is asked from it. */
+.trial.immersive .table { margin: auto 0; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.trial.immersive .table li { border-radius: 10px; min-height: 48px; display: grid; place-items: center; text-align: center; padding: 8px; }
+
+/* Drills: the four signs float as glass cards over the scene. */
+.trial.immersive .drill { margin: auto 0; gap: 8px; }
+.trial.immersive .drill .tile.lit { background: rgba(240, 148, 63, 0.75); }
+.trial.immersive .drill .tile.ok { background: rgba(127, 207, 166, 0.6); } .trial.immersive .drill .tile.bad { background: rgba(255, 138, 110, 0.6); }
+
+/* Rhythm: the beats roll along the ground to a glowing ring by your feet. */
+.trial.immersive .beatlane { margin-top: auto; height: 84px; min-height: 0; background: linear-gradient(90deg, transparent, rgba(var(--surface-rgb), 0.45) 14%, rgba(var(--surface-rgb), 0.45) 86%, transparent); border: 0; }
+.trial.immersive .beatlane .mark { box-shadow: 0 0 16px rgba(255, 200, 110, 0.8); } /* taste-skill-ignore: the ring glows */
+.trial.immersive.trial-rhythm .btnrow { margin-top: 10px; }
+
+/* The race, upright: the tall course painting scrolls down past you; you steer between lanes. */
+.trial.immersive .track { flex: 1 1 0; height: auto; max-height: none; background-color: transparent; }
+.trial.immersive .track.vertical { position: fixed; inset: 0; z-index: 0; border-radius: 0; background-size: 100% auto; background-repeat: repeat-y; overflow: hidden; }
+.trial.immersive .track.vertical .bgstrip, .trial.immersive .track.vertical .lanes { display: none; }
+.trial.immersive .track.vertical .me, .trial.immersive .track.vertical .ob, .trial.immersive .track.vertical .rivalcar { position: absolute; transition: left 0.18s ease; }
+.trial.immersive .track.vertical .me { top: auto; bottom: calc(max(150px, var(--sab) + 140px)); width: 64px; height: 110px; margin-left: -32px; }
+.trial.immersive .track.vertical .rivalcar { width: 58px; height: 100px; margin-left: -29px; transition: top 0.3s linear, left 0.18s ease; }
+.trial.immersive .track.vertical .ob { width: 64px; height: 44px; margin-left: -32px; }
+.trial.immersive .track.vertical .lane0 { left: 32%; } .trial.immersive .track.vertical .lane1 { left: 50%; } .trial.immersive .track.vertical .lane2 { left: 68%; }
+.trial.immersive .track.vertical .veh { width: 100%; height: 100%; filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.55)); }
+.trial.immersive.trial-race .trial-body > :not(.track) { position: relative; z-index: 1; }
+.trial.immersive.trial-race .progress { width: min(80%, 420px); align-self: center; }
+.trial.immersive.trial-race .btnrow { margin-top: auto; }
+
+/* Herding and the rings: the top-down painting is the field. */
+.trial.immersive .herdfield { flex: 1 1 0; background: none; display: flex; align-items: center; justify-content: center; }
+.trial.immersive .herdfield canvas { aspect-ratio: auto; width: auto; height: 100%; max-width: 100%; max-height: 640px; border-radius: 12px; }
+.trial.immersive .dpad { align-self: center; }
+.trial.immersive .ringfield { flex: 1 1 0; background: none; padding: 0; }
+.trial.immersive .ringfield svg { max-height: 460px; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.5)); }
+
+/* The dice: rolled on the painted gaming cloth. */
+.trial.immersive.dicegame { padding: max(10px, var(--sat)) max(14px, var(--sar)) max(12px, var(--sab)) max(14px, var(--sal)); border: 0; border-radius: 0; background: none; }
+.trial.immersive.dicegame .trial-body { justify-content: center; gap: 14px; }
+.trial.immersive.dicegame .game-rules { margin: 0; padding: 12px 16px; border-radius: 14px; background: rgba(var(--surface-rgb), 0.7); border: 1px solid var(--gold-line); font-size: 15px; }
+.trial.immersive.dicegame .row { justify-content: center; padding: 8px 12px; border-radius: 12px; background: rgba(var(--surface-rgb), 0.45); }
+.trial.immersive.dicegame .btnrow { margin-top: auto; justify-content: center; }
+.trial.immersive.dicegame .throws { background: rgba(var(--surface-rgb), 0.6); border-radius: 12px; padding: 8px 12px; }
+
+.trial.immersive .steady { margin: 0 8%; }
+.trial.immersive .beatlane .beat { width: 30px; height: 30px; margin: -15px 0 0 -15px; box-shadow: 0 0 12px rgba(255, 190, 90, 0.75); } /* taste-skill-ignore: each beat glows */
+.trial.immersive .beatlane .beat.off { width: 22px; height: 22px; margin: -11px 0 0 -11px; }
+.trial.immersive .beatlane { flex: none; height: 84px; max-height: 84px; }
+
+/* ---------- Fights on their painting ----------
+   Full screen: the fight's name and round at the top; the two sides stand big on the painted
+   ground in the middle; the sides' strength, the last lines of the fight and your moves sit on
+   glass across the foot. */
+body.intest .leaf.fighting.immersive { position: fixed; inset: 0; z-index: 20; width: auto; max-width: none; height: auto; max-height: none; margin: 0; border-radius: 0;
+  display: grid; grid-template-rows: auto minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr); overflow: hidden;
+  padding: max(8px, var(--sat)) max(12px, var(--sar)) 0 max(12px, var(--sal)); }
+body.intest .leaf.fighting.immersive > .pagehead { display: flex !important; grid-row: 1; grid-column: 1; justify-content: center; text-align: center; padding: 4px 8px 0; }
+.leaf.fighting.immersive > .pagehead .ppbadge, .leaf.fighting.immersive > .pagehead small { display: none; }
+.leaf.fighting.immersive > .pagehead .ph-line { justify-content: center; }
+.leaf.fighting.immersive > .pagehead h1 { font-size: 22px; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8); } /* taste-skill-ignore: a title over the painting */
+.leaf.fighting.immersive > .pagehead .kind { text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9); }
+.leaf.fighting.immersive > .arena { grid-row: 2; grid-column: 1; height: auto; margin: 0; background: none; overflow: visible; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 2% 2vh; }
+.leaf.fighting.immersive > .arena::before { display: none; }
+/* The figures are as tall as the screen allows, and never so tall that two to a side run off its edges. */
+.leaf.fighting.immersive > .arena { --ah: clamp(130px, min(27vh, 50vw), 280px); }
+.leaf.fighting.immersive > .arena .actor svg { height: var(--ah); filter: drop-shadow(0 0 10px rgba(255, 196, 110, 0.45)) drop-shadow(0 6px 6px rgba(0, 0, 0, 0.6)); }
+.leaf.fighting.immersive > .arena .actor.ally svg { height: calc(var(--ah) * 0.82); }
+.leaf.fighting.immersive > .arena .actor.enemy + .actor.enemy svg { height: calc(var(--ah) * 0.89); }
+.leaf.fighting.immersive > #battle-body { grid-row: 3; grid-column: 1; margin: 0 calc(-1 * max(12px, var(--sar))) 0 calc(-1 * max(12px, var(--sal))); max-height: 54vh;
+  padding: 6px max(12px, var(--sar)) max(12px, var(--sab)) max(12px, var(--sal)); }
+/* Over the painting: labels lit like the score in a test, each side's cards kept to their lines, no empty log before the first blow. */
+.leaf.fighting.immersive #battle-body .side .lbl { color: #f6e7c8; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95), 0 0 12px rgba(0, 0, 0, 0.6); }
+.leaf.fighting.immersive .unit { background: rgba(var(--surface-rgb), 0.86); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35); }
+.leaf.fighting.immersive .unit .nm em, .leaf.fighting.immersive .unit .intent { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.leaf.fighting.immersive .unit .intent { display: block; }
+.leaf.fighting.immersive .unit .intent::before { display: inline-block; margin-right: 6px; vertical-align: 1px; }
+.leaf.fighting.immersive #battle-body > .blog { background: rgba(var(--surface-rgb), 0.8); }
+#battle-body > .blog:empty { display: none; }
+.leaf.fighting.immersive .act { background: rgba(var(--surface-rgb), 0.9); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35); }
+@media (min-width: 721px) and (min-height: 521px) { .leaf.fighting.immersive > #battle-body { width: min(820px, 100%); margin: 0 auto; } }
+/* Wide screens: the fight stands on the painting at the left, big; the sides and your moves run down
+   a shaded band at the right, so the figures are not squeezed into a strip above the cards. */
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  body.intest .leaf.fighting.immersive { grid-template-columns: minmax(0, 1fr) clamp(360px, 34vw, 500px); grid-template-rows: auto minmax(0, 1fr); }
+  body.intest .leaf.fighting.immersive > .pagehead { grid-column: 1; grid-row: 1; }
+  .leaf.fighting.immersive > .arena { grid-column: 1; grid-row: 2; padding: 0 5% 7vh; --ah: clamp(170px, min(46vh, 22vw), 380px); }
+  body.intest .leaf.fighting.immersive > #battle-body { grid-column: 2; grid-row: 1 / span 2; width: auto; max-height: none; align-self: stretch; overflow-y: auto; justify-content: center;
+    margin: calc(-1 * max(8px, var(--sat))) calc(-1 * max(12px, var(--sar))) 0 0; padding: max(18px, var(--sat)) max(18px, var(--sar)) max(18px, var(--sab)) 28px;
+    background: linear-gradient(to right, rgba(16, 6, 4, 0), rgba(16, 6, 4, 0.72) 16%, rgba(16, 6, 4, 0.82)) !important; } /* taste-skill-ignore: a shaded band over the painting */
+  body.intest .leaf.fighting.immersive #battle-body .sides { grid-template-columns: minmax(0, 1fr); }
+  body.intest .leaf.fighting.immersive #battle-body > .sides { flex: none; max-height: none; overflow: visible; }
+  body.intest .leaf.fighting.immersive > .arena .team .actor + .actor { margin-left: -4vw; }
+}
+/* During a test or a fight the painting is shown sharp, even an older narrow one. */
+body.intest .backdrop:not(.fitted) .bdl[data-flat="1"] .pic { opacity: 1; }
+.leaf.fighting.immersive > .arena .team.left .actor + .actor, .leaf.fighting.immersive > .arena .team.right .actor + .actor { margin-left: -9vw; }
+.leaf.fighting.immersive .act:hover:not(:disabled), .leaf.fighting.immersive .unit.enemy:hover:not(:disabled) { background: var(--hover); }
+/* Two buttons side by side under the thumbs: steer left, steer right. */
+.trial.immersive.trial-race .btnrow { flex-wrap: nowrap; gap: 12px; }
+.trial.immersive.trial-race .btnrow .trial-press { min-width: 0; flex: 1 1 0; max-width: 220px; }
+/* The rings: choose a ring and turn it, four buttons in two rows. */
+.trial.immersive.trial-rings .btnrow { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: min(100%, 440px); align-self: center; }
+.trial.immersive.trial-rings .btnrow .trial-press, .trial.immersive.trial-rings .btnrow .cta { min-width: 0; width: 100%; }
+/* A fight's cards keep to their half: a long name gives way to its strength. */
+.leaf.fighting.immersive #battle-body .sides { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.leaf.fighting.immersive .unit { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+/* Herding's arrows: big square keys under the thumb. */
+.trial.immersive .dpad { grid-template-columns: repeat(3, 68px); grid-template-rows: repeat(2, 56px); gap: 8px; }
+.trial.immersive .dpad button { width: 100%; height: 100%; min-width: 0; background: rgba(var(--surface-rgb), 0.88); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4); }
+/* The flash layer covers the stage and takes no room among the figures (so the two sides stand at the two edges). */
+.arena-flash { position: absolute; inset: 0; pointer-events: none; }

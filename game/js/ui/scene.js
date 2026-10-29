@@ -116,6 +116,17 @@
       setTimeout(() => U.fitBackdrop(), U.motion() ? 450 : 0);
     });
     U.livePlay();
+    // The paintings this scene's choices lead to, loaded while the player reads.
+    setTimeout(() => {
+      const keys = [];
+      for (const { c } of rows) {
+        const nx = typeof c.next === "string" ? K.SCENES[c.next] : null;
+        if (nx) { try { const a = artFor(nx); if (typeof a === "string") keys.push(a); } catch (e) { /* art that needs a later state */ } }
+        if (c.trial && typeof c.trial.stage === "string") keys.push(c.trial.stage);
+      }
+      if (typeof sc.next === "string" && K.SCENES[sc.next]) { try { const a = artFor(K.SCENES[sc.next]); if (typeof a === "string") keys.push(a); } catch (e) { /* later state */ } }
+      U.preloadArt(keys);
+    }, 1500);
   };
 
   // ---------- Beats: act cards and scene titles ----------
@@ -295,8 +306,13 @@
 
   const KIND = { aim: "archery", push: "strength", draw: "strength", steady: "strength", sneak: "stealth", retort: "wits", notice: "wits", hands: "wits", pasha: "wits",
     rhythm: "strength", race: "war", herd: "stealth", drill: "wits", rings: "wits", chaupar: "wits", baghchal: "wits", moksha: "wits" };
+  // A test written without a painted stage is still played on one: the usual ground for its kind.
+  const STAGE_FOR = { aim: "stage_training_ground", push: "stage_training_ground", draw: "stage_bow_courtyard", steady: "stage_healers_hall", sneak: "stage_palace_corridor",
+    retort: "stage_lotus_garden", notice: "stage_vidura_table", hands: "stage_dice_board_top", rhythm: "stage_smithy", race: "stage_racetrack", herd: "stage_khandava_top",
+    drill: "stage_training_ground", rings: "stage_chakravyuha_top", chaupar: "stage_board_table", baghchal: "stage_board_table", moksha: "stage_board_table" };
   // A choice that is a game: the game takes the place of the choices, and its outcome picks the branch.
   function playGame(sc, c) {
+    if (c.trial && !c.trial.stage && STAGE_FOR[c.game]) c.trial.stage = STAGE_FOR[c.game];
     const box = U.$("choices");
     const pimg = K.val(c.img);
     box.innerHTML = "";

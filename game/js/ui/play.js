@@ -162,6 +162,12 @@
     return '<svg viewBox="0 0 110 70" class="veh" aria-hidden="true"><path d="M78 40 Q86 22 100 20 L106 24 L98 30 Q102 40 96 50 L84 50 Z" fill="#c9a679" stroke="#2b1609" stroke-width="2"/><path d="M80 48 L76 62 M94 48 L98 62" stroke="#2b1609" stroke-width="3"/>' + fig +
       '<path d="M18 44 H70 L66 30 H22 Z" fill="#a3302a" stroke="#2b1609" stroke-width="2"/><path d="M70 40 L84 42" stroke="#2b1609" stroke-width="3"/><g class="wheel"><circle cx="36" cy="52" r="14" fill="none" stroke="#2b1609" stroke-width="4"/><path d="M36 38 V66 M22 52 H50 M26 42 L46 62 M46 42 L26 62" stroke="#2b1609" stroke-width="2"/></g></svg>';
   }
+  // Seen from above, for the upright course: the horses ahead, the car, you in it.
+  function vehicleTop(kind, rival) {
+    const car = rival ? "#3d5a8a" : "#a3302a", skin = rival ? "#b98656" : "#c9905a";
+    if (kind === "boat") return '<svg viewBox="0 0 60 110" class="veh" aria-hidden="true"><path d="M30 2 Q52 30 50 80 Q48 104 30 108 Q12 104 10 80 Q8 30 30 2Z" fill="#7a4a24" stroke="#2b1609" stroke-width="2.5"/><path d="M30 14 Q44 36 42 80 Q40 96 30 98 Q20 96 18 80 Q16 36 30 14Z" fill="#a8703f"/><path d="M8 58 L-6 66 M52 58 L66 66" stroke="#2b1609" stroke-width="3"/><circle cx="30" cy="66" r="8" fill="' + skin + '" stroke="#2b1609" stroke-width="2"/><circle cx="30" cy="62" r="4" fill="#1d120b"/></svg>';
+    return '<svg viewBox="0 0 70 120" class="veh" aria-hidden="true"><g fill="#c9a679" stroke="#2b1609" stroke-width="2"><ellipse cx="22" cy="26" rx="8" ry="18"/><ellipse cx="48" cy="26" rx="8" ry="18"/><ellipse cx="22" cy="7" rx="5" ry="7"/><ellipse cx="48" cy="7" rx="5" ry="7"/></g><path d="M35 40 V62 M22 42 L35 62 M48 42 L35 62" stroke="#2b1609" stroke-width="2.5"/><rect x="4" y="74" width="8" height="30" rx="3" fill="#2b1609"/><rect x="58" y="74" width="8" height="30" rx="3" fill="#2b1609"/><rect x="12" y="62" width="46" height="46" rx="8" fill="' + car + '" stroke="#2b1609" stroke-width="2.5"/><circle cx="35" cy="88" r="10" fill="' + skin + '" stroke="#2b1609" stroke-width="2"/><circle cx="35" cy="83" r="5" fill="#1d120b"/></svg>';
+  }
   U.games.race = function (box, done, c) {
     return U.trialFrame(box, done, c, "race", ({ host, power, t, finish, cue }) => {
       const kinds = t.obstacles || ["rock", "wreck"], hullMode = !t.rival, LEN = 100;
@@ -182,15 +188,35 @@
       let tileW = 0;
       const sizeStrip = () => { tileW = track.clientHeight * aspect; strip.querySelectorAll("i").forEach((el) => { el.style.width = tileW + "px"; }); };
       sizeStrip();
+      // On an upright screen, inside the painting: the course runs up the tall painting, which
+      // scrolls down past you; you steer left and right between three lanes, seen from above.
+      const tallKey = U.tallOf && U.tallOf(stage);
+      const vertical = !!(host.closest(".trial.immersive") && U.upright() && tallKey);
+      let rivalEl = null;
+      if (vertical) {
+        track.classList.add("vertical");
+        track.style.backgroundImage = "url('" + U.artUrl(tallKey) + "')";
+        me.innerHTML = vehicleTop(t.vehicle);
+        if (t.rival) { rivalEl = U.el('<div class="rivalcar lane' + (lane === 0 ? 2 : 0) + '">' + vehicleTop(t.vehicle, true) + "</div>"); track.appendChild(rivalEl); }
+      }
       const move = (d) => { if (over) return; lane = clamp(lane + d, 0, 2); me.className = "me lane" + lane; cue("act"); };
       const row = host.querySelector(".btnrow");
-      row.appendChild(U.pressButton(t.upVerb || "Up", () => move(-1)));
-      row.appendChild(U.pressButton(t.downVerb || "Down", () => move(1)));
-      const off = keyset({ ArrowUp: () => move(-1), ArrowDown: () => move(1), w: () => move(-1), s: () => move(1), W: () => move(-1), S: () => move(1) });
-      // Swipe up or down on the track.
-      let y0 = null;
-      track.addEventListener("pointerdown", (e) => { y0 = e.clientY; });
-      track.addEventListener("pointerup", (e) => { if (y0 != null && Math.abs(e.clientY - y0) > 18) move(e.clientY < y0 ? -1 : 1); else if (y0 != null) { const r = track.getBoundingClientRect(); move(e.clientY < r.top + r.height / 2 ? -1 : 1); } y0 = null; });
+      row.appendChild(U.pressButton(vertical ? "Left" : t.upVerb || "Up", () => move(-1)));
+      row.appendChild(U.pressButton(vertical ? "Right" : t.downVerb || "Down", () => move(1)));
+      const off = vertical
+        ? keyset({ ArrowLeft: () => move(-1), ArrowRight: () => move(1), a: () => move(-1), d: () => move(1), A: () => move(-1), D: () => move(1) })
+        : keyset({ ArrowUp: () => move(-1), ArrowDown: () => move(1), w: () => move(-1), s: () => move(1), W: () => move(-1), S: () => move(1) });
+      if (vertical) note.textContent = K.tr(t.helpSide || "Steer left and right to miss what is in the road.");
+      // Swipe (up and down, or left and right on the upright course), or tap the side to move to.
+      let y0 = null, x0 = null;
+      track.addEventListener("pointerdown", (e) => { y0 = e.clientY; x0 = e.clientX; });
+      track.addEventListener("pointerup", (e) => {
+        if (y0 == null) return;
+        const r = track.getBoundingClientRect();
+        if (vertical) { if (Math.abs(e.clientX - x0) > 18) move(e.clientX < x0 ? -1 : 1); else move(e.clientX < r.left + r.width / 2 ? -1 : 1); }
+        else if (Math.abs(e.clientY - y0) > 18) move(e.clientY < y0 ? -1 : 1); else move(e.clientY < r.top + r.height / 2 ? -1 : 1);
+        y0 = x0 = null;
+      });
       const tally = () => { score.textContent = hullMode ? K.tr(t.tally || "Distance: {d}% · Hits: {h} of {l}", { d: Math.floor(dist), h: hits, l: lives }) : K.tr(t.tally || "You: {d}% · {who}: {r}%", { d: Math.floor(dist), r: Math.floor(rival), who: K.tr(t.rival) }); };
       const stop = U.loop((s) => {
         const dt = Math.min(0.05, s - last); last = s;
@@ -199,7 +225,9 @@
         if (slow > 0) slow -= dt;
         dist += v * dt; rival += rivalV * dt * (0.94 + 0.12 * Math.sin(s * 0.7));
         scroll += v * dt * 60;
-        if (tileW) strip.style.transform = "translateX(" + (-(scroll % (tileW * 2))).toFixed(1) + "px)";
+        if (vertical) track.style.backgroundPositionY = (scroll * 1.6).toFixed(1) + "px";
+        else if (tileW) strip.style.transform = "translateX(" + (-(scroll % (tileW * 2))).toFixed(1) + "px)";
+        if (rivalEl) rivalEl.style.top = clamp(70 - (rival - dist) * 6, -30, 130) + "%";
         // What is in the road comes toward you; never all three lanes at once.
         spawnIn -= dt;
         if (spawnIn <= 0 && dist < LEN - 6) {
@@ -215,7 +243,7 @@
         for (let i = obs.length - 1; i >= 0; i--) {
           const o = obs[i];
           o.x -= v * dt * 13;
-          o.el.style.left = o.x + "%";
+          if (vertical) o.el.style.top = (96 - o.x) + "%"; else o.el.style.left = o.x + "%";
           if (!o.hit && o.lane === lane && o.x < 26 && o.x > 8) {
             o.hit = true; hits++; slow = 1.1; o.el.classList.add("hit");
             track.classList.remove("bump"); void track.offsetWidth; track.classList.add("bump");
@@ -261,7 +289,12 @@
         '<p class="game-note" aria-live="polite">' + U.tr(t.help || "Steer with the arrow keys, the buttons or a swipe. Reach everyone you can, then bring them out through the gap on the right.") + '</p>';
       const cv = host.querySelector("canvas"), ctx = cv.getContext && cv.getContext("2d"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
       const D = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
-      const turn = (d) => { const n = D[d]; if (n.x === -dir.x && n.y === -dir.y && snake.length > 1) return; want = n; };
+      // On an upright screen, inside the painting, the field stands on end: the way out is at the
+      // top, and the controls follow the screen (up on the screen is toward the way out).
+      const rot = !!(host.closest(".trial.immersive") && U.upright());
+      if (rot) { cv.width = 400; cv.height = 640; note.textContent = K.tr(t.helpUp || "Steer with the arrows or a swipe. Reach everyone you can, then bring them out through the gap at the top."); }
+      const SCREEN = { up: "right", down: "left", left: "up", right: "down" };
+      const turn = (d) => { const n = D[rot ? SCREEN[d] : d]; if (n.x === -dir.x && n.y === -dir.y && snake.length > 1) return; want = n; };
       host.querySelectorAll(".dpad button").forEach((b) => b.addEventListener("pointerdown", (e) => { e.preventDefault(); turn(b.dataset.d); }));
       const off = keyset({ ArrowUp: () => turn("up"), ArrowDown: () => turn("down"), ArrowLeft: () => turn("left"), ArrowRight: () => turn("right"), w: () => turn("up"), s: () => turn("down"), a: () => turn("left"), d: () => turn("right") });
       let sx = null, sy = null;
@@ -305,22 +338,24 @@
       }
       function draw(s) {
         if (!ctx) return;
-        const cw = cv.width / W, ch = cv.height / H;
+        // A cell's top-left corner on the canvas (the field stood on end when rot).
+        const cols = rot ? H : W, rows = rot ? W : H, cw = cv.width / cols, ch = cv.height / rows;
+        const at = (x, y) => (rot ? [y * cw, (W - 1 - x) * ch] : [x * cw, y * ch]);
         ctx.clearRect(0, 0, cv.width, cv.height);
         ctx.fillStyle = theme === "river" ? "rgba(236,220,182,0.18)" : "rgba(20,12,6,0.32)"; ctx.fillRect(0, 0, cv.width, cv.height);
         ctx.strokeStyle = "rgba(255,240,210,0.08)"; ctx.lineWidth = 1;
-        for (let x = 1; x < W; x++) { ctx.beginPath(); ctx.moveTo(x * cw, 0); ctx.lineTo(x * cw, cv.height); ctx.stroke(); }
-        for (let y = 1; y < H; y++) { ctx.beginPath(); ctx.moveTo(0, y * ch); ctx.lineTo(cv.width, y * ch); ctx.stroke(); }
-        goal.forEach((k) => { const [x, y] = k.split(",").map(Number); ctx.fillStyle = "rgba(120,200,120,0.45)"; ctx.fillRect(x * cw, y * ch, cw, ch); });
+        for (let x = 1; x < cols; x++) { ctx.beginPath(); ctx.moveTo(x * cw, 0); ctx.lineTo(x * cw, cv.height); ctx.stroke(); }
+        for (let y = 1; y < rows; y++) { ctx.beginPath(); ctx.moveTo(0, y * ch); ctx.lineTo(cv.width, y * ch); ctx.stroke(); }
+        goal.forEach((k) => { const [x, y] = k.split(",").map(Number), [px, py] = at(x, y); ctx.fillStyle = "rgba(120,200,120,0.45)"; ctx.fillRect(px, py, cw, ch); });
         hazard.forEach((k) => {
-          const [x, y] = k.split(",").map(Number), cx = x * cw + cw / 2, cy = y * ch + ch / 2;
-          if (theme === "river") { ctx.fillStyle = "rgba(40,90,120,0.75)"; ctx.fillRect(x * cw, y * ch, cw, ch); return; }
+          const [x, y] = k.split(",").map(Number), [px, py] = at(x, y), cx = px + cw / 2, cy = py + ch / 2;
+          if (theme === "river") { ctx.fillStyle = "rgba(40,90,120,0.75)"; ctx.fillRect(px, py, cw, ch); return; }
           const f = 0.8 + 0.2 * Math.sin(s * 9 + x * 3 + y);
           ctx.fillStyle = "rgba(229,118,42," + 0.85 * f + ")"; ctx.beginPath(); ctx.moveTo(cx - cw * 0.38, cy + ch * 0.4); ctx.quadraticCurveTo(cx - cw * 0.3, cy - ch * 0.1, cx, cy - ch * 0.48 * f); ctx.quadraticCurveTo(cx + cw * 0.3, cy - ch * 0.1, cx + cw * 0.38, cy + ch * 0.4); ctx.fill();
           ctx.fillStyle = "rgba(255,211,107,0.9)"; ctx.beginPath(); ctx.ellipse(cx, cy + ch * 0.18, cw * 0.14, ch * 0.2 * f, 0, 0, 6.3); ctx.fill();
         });
         const body = (p, lead, i) => {
-          const cx = p.x * cw + cw / 2, cy = p.y * ch + ch / 2;
+          const [px, py] = at(p.x, p.y), cx = px + cw / 2, cy = py + ch / 2;
           if (theme === "river" && !lead) { ctx.fillStyle = "#8a5a36"; ctx.strokeStyle = "#2b1609"; ctx.beginPath(); ctx.ellipse(cx, cy, cw * 0.36, ch * 0.26, 0, 0, 6.3); ctx.fill(); ctx.stroke(); ctx.fillStyle = "#efe2c0"; ctx.beginPath(); ctx.arc(cx + cw * 0.3, cy - ch * 0.12, cw * 0.1, 0, 6.3); ctx.fill(); return; }
           ctx.fillStyle = lead ? "#c8471f" : i % 2 ? "#e9d6ae" : "#d9bf8c"; ctx.strokeStyle = "#2b1609"; ctx.lineWidth = 2;
           ctx.beginPath(); ctx.arc(cx, cy - ch * 0.16, Math.min(cw, ch) * (lead ? 0.2 : 0.16), 0, 6.3); ctx.fill(); ctx.stroke();

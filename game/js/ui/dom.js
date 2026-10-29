@@ -18,11 +18,11 @@
   // that reads it (css/), not the page: a relative "art/x.jpg" would load css/art/x.jpg.
   U.artUrl = function (key) {
     if (!key) return null;
-    const file = "art/" + key + (/^(path|vow)_/.test(key) ? ".png" : ".jpg"); // emblems are transparent PNGs
+    const file = "art/" + key + (/^(path|vow)_/.test(key) ? ".png" : ".webp"); // emblems are transparent PNGs; paintings WebP (sources: assets/art_src)
     try { return new URL(file, document.baseURI).href; } catch (e) { return file; }
   };
 
-  // Portraits of the people you know (art/p_*.jpg). Vasu grows up: the child portrait until 40.
+  // Portraits of the people you know (art/p_*.webp). Vasu grows up: the child portrait until 40.
   const PORTRAITS = ["karna", "arjuna", "bhima", "drona", "kripa", "duryodhana", "abhimanyu", "mauni", "charu", "madhavi", "revat"];
   U.portraitKey = function (id) {
     if (id === "vasu") return K.S && K.S.age >= 40 ? "p_vasu_16" : "p_vasu_6";
@@ -65,9 +65,18 @@
     "war_day17", "war_day18", "war_eve"]);
   const FOCAL = { scene_teacher: "62% 45%", scene_dice_throws: "28% 35%", home_anga: "30% 50%", scene_princes: "34% 55%", scene_poison: "45% 45%" };
   U.hasWide = (key) => WIDE.has(key) || /^stage_/.test(key || "");
-  // Tall (9:16) versions of the test stages, painted for upright screens (art/<key>_tall.jpg).
-  const TALL = new Set(["stage_battlefield_night", "stage_board_table", "stage_border_village", "stage_bow_courtyard", "stage_chakravyuha_top", "stage_city_night", "stage_dice_board_top", "stage_drupada_hall", "stage_elephant_grounds", "stage_forest_clearing_night", "stage_forest_edge", "stage_forest_lake", "stage_forest_maze_top", "stage_healers_hall", "stage_khandava_top", "stage_lac_wall", "stage_lotus_garden", "stage_mango_yard", "stage_matsya_ford", "stage_palace_corridor", "stage_palace_garden_night", "stage_prison_yard", "stage_racetrack", "stage_river_shallows", "stage_smithy", "stage_stable_yard", "stage_storm_sea", "stage_training_ground", "stage_vidura_table"]);
+  // Tall (9:16) versions of the test stages, painted for upright screens (art/<key>_tall.webp).
+  const TALL = new Set(["fight_border_road", "fight_camp_gate_night", "fight_drupada_yard", "fight_fair_ring", "fight_forest_road", "fight_grazing", "fight_royal_camp", "fight_swayamvara", "fight_war_camp", "fight_war_chariot", "fight_war_field", "fight_war_sunset", "stage_battlefield_night", "stage_board_table", "stage_border_village", "stage_bow_courtyard", "stage_chakravyuha_top", "stage_city_night", "stage_dice_board_top", "stage_drupada_hall", "stage_elephant_grounds", "stage_forest_clearing_night", "stage_forest_edge", "stage_forest_lake", "stage_forest_maze_top", "stage_healers_hall", "stage_khandava_top", "stage_lac_wall", "stage_lotus_garden", "stage_mango_yard", "stage_matsya_ford", "stage_palace_corridor", "stage_palace_garden_night", "stage_prison_yard", "stage_racetrack", "stage_river_shallows", "stage_smithy", "stage_stable_yard", "stage_storm_sea", "stage_training_ground", "stage_vidura_table"]);
   U.upright = () => window.innerHeight > window.innerWidth * 1.15;
+  U.tallOf = (key) => (TALL.has(key) ? key + "_tall" : null);
+  // The file a painting shows from behind the page: tall on upright screens, wide where painted.
+  U.bgUrl = (key) => (key ? U.artUrl(TALL.has(key) && U.upright() ? key + "_tall" : WIDE.has(key) ? key + "_wide" : key) : null);
+  // Load paintings a scene may lead to, quietly, so the next one is ready when it is needed.
+  const warmed = new Set();
+  U.preloadArt = function (keys) {
+    if (/jsdom/i.test(navigator.userAgent || "") || K.headless) return;
+    keys.forEach((k) => { const u = U.bgUrl(k); if (!u || warmed.has(u)) return; warmed.add(u); const im = new Image(); im.decoding = "async"; im.src = u; });
+  };
   // ---------- Pause ----------
   // Game time (U.clock) stands still while the game is paused: a phone turned on its side (the game
   // asks to be turned back), or the tab hidden. Tests, the lamp and the fight's timed defence use it.
@@ -138,7 +147,7 @@
     const layers = bd.querySelectorAll(".bdl");
     const next = layers[bdFlip = 1 - bdFlip], prev = layers[1 - bdFlip];
     const wide = key && U.hasWide(key);
-    const url = key ? U.artUrl(TALL.has(key) && U.upright() ? key + "_tall" : WIDE.has(key) ? key + "_wide" : key) : null;
+    const url = U.bgUrl(key);
     const fill = next.querySelector(".bd"), pic = next.querySelector(".pic");
     fill.style.backgroundImage = url ? "url('" + url + "')" : "none";
     fill.style.backgroundPosition = FOCAL[key] || "50% 45%";
@@ -518,8 +527,21 @@
     U.$("nav-standing").setAttribute("aria-label", K.tr("Obligations, bonds, vows and memories"));
     U.$("ledger").setAttribute("aria-label", K.tr("Obligations, bonds, vows and memories"));
   };
+  // A language's dictionary loads only when someone chooses it (about 175 KB for Hindi).
+  const LANG_FILES = { hi: "js/i18n/hi.js" };
+  const langLoads = {};
+  U.loadLang = function (lang) {
+    if (!LANG_FILES[lang] || (K.hasStrings && K.hasStrings(lang))) return Promise.resolve(true);
+    if (!langLoads[lang]) langLoads[lang] = new Promise((ok) => {
+      const s = document.createElement("script");
+      s.src = LANG_FILES[lang]; s.onload = () => ok(true); s.onerror = () => { delete langLoads[lang]; ok(false); };
+      document.head.appendChild(s);
+    });
+    return langLoads[lang];
+  };
   U.setLang = function (lang, reopen) {
     if (!K.LANGS[lang] || lang === K.lang) return;
+    if (LANG_FILES[lang] && !(K.hasStrings && K.hasStrings(lang))) { U.loadLang(lang).then((ok) => { if (ok) U.setLang(lang, reopen); }); return; }
     K.lang = lang;
     K.prefs({ lang });
     U.applyStatic();

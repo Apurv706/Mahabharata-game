@@ -31,7 +31,7 @@
   const FOE = { push: "brace", rhythm: "block" };
   K.TRIAL_STANCE = STANCE;
 
-  const IMMERSIVE = new Set(["aim", "board", "push"]);
+  const IMMERSIVE = new Set(["aim", "board", "push", "steady", "retort", "draw", "sneak", "notice", "drill", "rhythm", "race", "herd", "rings"]);
   // What hangs and swings in the archery test, drawn centred on its middle (about 64 units across).
   const RUNNERS = new Set(["deer", "tiger", "elephant"]);
   function AIM_ART(icon) {
@@ -39,10 +39,10 @@
     if (icon === "lamp") return loop + '<path d="M-18 -6 Q0 18 18 -6 Z" fill="#b5793a" stroke="#4a2a12" stroke-width="2"/><path d="M0 -8 Q-7 -20 0 -32 Q7 -20 0 -8Z" fill="#ffd27a"/><circle cx="0" cy="-16" r="16" fill="#ffb648" opacity=".25"/>';
     if (icon === "fruit") return loop + '<path d="M0 -30 Q22 -22 18 4 Q12 26 -4 26 Q-20 22 -18 0 Q-16 -24 0 -30Z" fill="#f0a030" stroke="#8a4a14" stroke-width="2"/><path d="M0 -30 Q8 -40 16 -36" stroke="#3f6b3a" stroke-width="3" fill="none"/>';
     if (icon === "bell") return loop + '<path d="M-20 18 Q-18 -24 0 -28 Q18 -24 20 18 Z" fill="#b8862e" stroke="#5a3a12" stroke-width="2"/><circle cx="0" cy="22" r="5" fill="#5a3a12"/>';
-    if (icon === "deer") return '<g fill="#a8703f" stroke="#3a2a1c" stroke-width="1.5"><path d="M-26 -2 Q-24 -14 -6 -14 L14 -14 Q22 -14 24 -20 L30 -30 L32 -24 L28 -12 Q26 -4 18 -2 L16 16 L12 16 L12 0 L-14 0 L-16 16 L-20 16 L-20 -2 Z"/><path d="M28 -30 l-4 -10 M30 -30 l4 -10 M24 -34 l-6 -4 M34 -34 l6 -4" fill="none"/></g>';
-    if (icon === "tiger") return '<g stroke="#2b1609" stroke-width="1.5" stroke-linejoin="round"><path d="M-30 -6 Q-44 -14 -46 -26 Q-42 -16 -30 -12" fill="none" stroke-width="4" stroke="#e08a2a"/><path d="M-32 -8 Q-30 -20 -12 -20 L14 -20 Q24 -20 28 -12 L30 4 Q30 8 26 8 L24 22 L19 22 L18 8 L-14 8 L-16 22 L-21 22 L-22 8 Q-32 8 -32 -8Z" fill="#e08a2a"/><circle cx="32" cy="-14" r="11" fill="#e08a2a"/><path d="M26 -24 l3 -6 l4 5 M35 -25 l4 -5 l2 7" fill="#e08a2a"/><circle cx="36" cy="-16" r="1.6" fill="#2b1609"/><path d="M40 -9 h4" fill="none"/><path d="M-20 -20 q2 8 -1 14 M-10 -20 q2 8 -1 14 M0 -20 q2 8 -1 14 M10 -20 q2 8 -1 14" fill="none" stroke-width="2.4"/><path d="M-16 8 h-6 M-14 18 h-6" fill="none" stroke-width="0"/></g>';
-    if (icon === "elephant") return '<g fill="#7d7a76" stroke="#2b2622" stroke-width="1.5"><path d="M-34 4 Q-36 -24 -6 -26 Q22 -26 26 -10 Q34 -4 34 10 Q34 22 28 24 L26 12 Q22 4 18 6 L18 22 L10 22 L10 8 L-14 8 L-14 22 L-22 22 L-22 8 Q-30 10 -34 4Z"/><path d="M14 -18 Q8 -8 14 0" fill="none"/></g>';
-    if (icon === "bird") return '<path d="M-26 0 Q-10 -18 0 -4 Q10 -18 26 0 Q10 -8 0 6 Q-10 -8 -26 0Z" fill="#3a2a1c"/>';
+    if (icon === "deer") return '<g stroke="#2b1609" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M-20 2 L-24 24 M-12 2 L-10 24 M10 2 L8 24 M17 0 L21 24" fill="none" stroke-width="3.2"/><path d="M-28 -6 Q-30 -18 -14 -19 L10 -19 Q17 -19 21 -25 L27 -37 Q31 -42 35 -37 L34 -30 Q38 -24 35 -18 Q31 -9 22 -6 L20 4 Q0 6 -20 4 Z" fill="#c9843e" fill-opacity=".92"/><path d="M-28 -9 l-7 -4" fill="none"/><path d="M29 -39 l-3 -10 l-6 -3 M27 -47 l4 -5 M33 -39 l5 -9 l6 -2" fill="none" stroke-width="2"/><path d="M-22 -11 Q0 -15 18 -11" fill="none" stroke="#a3302a" stroke-width="2.6"/><path d="M-22 -3 Q0 -6 16 -3" fill="none" stroke="#3f6b3a" stroke-width="2"/><g fill="#f4e4c1" stroke="none"><circle cx="-16" cy="-7" r="1.7"/><circle cx="-8" cy="-7.5" r="1.7"/><circle cx="0" cy="-8" r="1.7"/><circle cx="8" cy="-7.5" r="1.7"/></g><circle cx="31" cy="-31" r="1.7" fill="#2b1609" stroke="none"/><circle cx="-18" cy="1" r="2.4" fill="#d9a53a" stroke="#2b1609" stroke-width="1"/><circle cx="14" cy="0" r="2.4" fill="#d9a53a" stroke="#2b1609" stroke-width="1"/><circle cx="22" cy="-14" r="2.4" fill="#d9a53a" stroke="#2b1609" stroke-width="1"/></g>';
+    if (icon === "tiger") return '<g stroke="#2b1609" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M-30 -8 Q-44 -14 -46 -28 Q-40 -18 -30 -14" fill="none" stroke="#e08a2a" stroke-width="5"/><path d="M-30 -8 Q-44 -14 -46 -28" fill="none" stroke-width="1.2"/><path d="M-22 4 L-26 24 L-19 24 L-16 6 M16 4 L14 24 L21 24 L24 4" fill="#e08a2a" fill-opacity=".92"/><path d="M-32 -8 Q-30 -21 -12 -21 L14 -21 Q26 -21 29 -13 L30 4 Q28 8 22 7 L-24 7 Q-33 6 -32 -8Z" fill="#e08a2a" fill-opacity=".92"/><path d="M24 -16 Q26 -30 36 -28 Q46 -26 46 -16 Q46 -6 36 -5 Q28 -5 24 -10Z" fill="#e08a2a" fill-opacity=".95"/><path d="M28 -27 l2 -7 l5 4 M38 -28 l4 -6 l3 6" fill="#e08a2a"/><g fill="none" stroke="#7a2a10" stroke-width="2.6"><path d="M-20 -21 q3 9 -1 15 M-10 -21 q3 9 -1 15 M0 -21 q3 9 -1 15 M10 -21 q3 9 -1 15"/></g><path d="M-26 1 H22" fill="none" stroke="#3f6b3a" stroke-width="2"/><g fill="#f4e4c1" stroke="none"><circle cx="-14" cy="3" r="1.5"/><circle cx="-4" cy="3" r="1.5"/><circle cx="6" cy="3" r="1.5"/></g><circle cx="40" cy="-18" r="1.8" fill="#2b1609" stroke="none"/><path d="M42 -10 h4" fill="none"/><circle cx="-20" cy="2" r="2.4" fill="#d9a53a" stroke="#2b1609" stroke-width="1"/><circle cx="19" cy="2" r="2.4" fill="#d9a53a" stroke="#2b1609" stroke-width="1"/><circle cx="26" cy="-12" r="2.4" fill="#d9a53a" stroke="#2b1609" stroke-width="1"/></g>';
+    if (icon === "elephant") return '<g stroke="#2b1609" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M-24 8 L-24 26 L-15 26 L-15 10 M12 10 L12 26 L21 26 L21 8" fill="#8d8a86" fill-opacity=".95"/><path d="M-34 6 Q-36 -24 -6 -27 Q20 -28 26 -12 Q34 -6 34 8 Q34 24 27 27 Q24 18 22 10 Q14 12 -24 12 Q-33 12 -34 6Z" fill="#8d8a86" fill-opacity=".95"/><path d="M8 -20 Q4 -8 10 2 Q18 6 22 -4" fill="none" stroke-width="1.8"/><path d="M-20 -24 Q-6 -28 6 -24 L8 2 Q-6 6 -20 2 Z" fill="#a3302a" fill-opacity=".95"/><path d="M-20 2 l3 4 l3 -4 l3 4 l3 -4 l3 4 l3 -4 l3 4 l3 -4" fill="none" stroke="#d9a53a" stroke-width="2"/><g fill="#d9a53a" stroke="none"><circle cx="-14" cy="-14" r="1.8"/><circle cx="-6" cy="-15" r="1.8"/><circle cx="2" cy="-14" r="1.8"/><circle cx="-10" cy="-7" r="1.8"/><circle cx="-2" cy="-7" r="1.8"/></g><path d="M30 0 Q38 6 36 16" fill="none" stroke="#f4e4c1" stroke-width="3"/><circle cx="22" cy="-12" r="1.8" fill="#2b1609" stroke="none"/><circle cx="-19" cy="9" r="2.4" fill="#d9a53a" stroke="#2b1609" stroke-width="1"/><circle cx="16" cy="9" r="2.4" fill="#d9a53a" stroke="#2b1609" stroke-width="1"/></g>';
+    if (icon === "bird") return '<g stroke="#2b1609" stroke-width="2" stroke-linejoin="round"><path d="M-28 0 Q-12 -20 0 -5 Q12 -20 28 0 Q12 -9 0 7 Q-12 -9 -28 0Z" fill="#3f6b3a" fill-opacity=".92"/><path d="M-20 -5 Q-10 -11 -3 -4 M20 -5 Q10 -11 3 -4" fill="none" stroke="#a3302a" stroke-width="2.2"/><circle cx="0" cy="0" r="3" fill="#d9a53a" stroke-width="1"/></g>';
     if (icon === "leaf") return loop + '<path d="M0 -30 Q20 -6 0 28 Q-20 -6 0 -30Z" fill="#6f8f3a" stroke="#3a4f1c" stroke-width="2"/><path d="M0 -26 V24" stroke="#3a4f1c" stroke-width="1.5"/>';
     // A plain straw target, rope-bound, as on the training ground.
     return loop + '<circle r="30" fill="#d9b26a" stroke="#6b4a24" stroke-width="3"/><circle r="22" fill="none" stroke="#a87a3a" stroke-width="3"/><circle r="13" fill="none" stroke="#a87a3a" stroke-width="3"/><circle r="5" fill="#b2432a"/><path d="M-30 0 H30 M0 -30 V30" stroke="#8a6230" stroke-width="1.2" opacity=".55"/>';
@@ -292,6 +292,8 @@
       let pos = 0.5, vel = 0, holding = false, mood = 0.5, moodV = 0, calm = 0, last = 0;
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="steady"><div class="mood" style="width:' + band * 100 + '%"></div><div class="hand"></div></div><div class="calm"><i></i></div><p class="game-note">' + U.tr(t.help || "Hold to move your hand right; let go and it drifts back. Keep it over the glow.") + '</p><div class="btnrow"></div>';
       const moodEl = host.querySelector(".mood"), hand = host.querySelector(".hand"), bar = host.querySelector(".calm i"), score = host.querySelector(".score");
+      // On the painting: an open hand reaching toward the glow.
+      if (host.closest(".trial.immersive")) hand.innerHTML = '<svg viewBox="0 0 60 80" aria-hidden="true"><path d="M18 78 L16 46 Q8 40 6 30 Q6 24 12 26 L18 36 L16 10 Q16 4 21 4 Q26 4 26 10 L27 30 L28 6 Q28 1 33 1 Q38 1 38 7 L38 30 L40 10 Q40 5 45 5 Q50 5 49 11 L48 34 L51 18 Q52 13 56 14 Q60 15 59 21 L56 48 Q54 62 44 70 L44 78 Z" fill="#d6a274" stroke="#4a2a14" stroke-width="2.4" stroke-linejoin="round"/><path d="M27 30 L27 40 M38 30 L38 40" stroke="#8a5a34" stroke-width="1.5"/></svg>';
       const down = () => { holding = true; cue("hold"); }, up = () => { holding = false; cue("rest"); };
       host.querySelector(".btnrow").appendChild(pressButton(t.verb || "Hold", down, up));
       onAct(down, up);
@@ -416,6 +418,12 @@
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="sneakway"><div class="torch"></div><div class="goal"></div><div class="me"></div></div><div class="sus"><i></i></div>' +
         '<p class="game-note" aria-live="polite">' + U.tr(t.help || "Hold to move. Stop before the light reaches you.") + '</p><div class="btnrow"></div>';
       const torch = host.querySelector(".torch"), me = host.querySelector(".me"), susBar = host.querySelector(".sus i"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
+      // On the painting your own puppet creeps along the ground through the torchlight.
+      const painted = !!host.closest(".trial.immersive");
+      if (painted) me.innerHTML = U.puppet(K.puppetSpec(K.S), { h: 150, pose: "sneak" });
+      const fig = painted ? me.querySelector(".pp") : null;
+      const pose = (p) => { if (fig) fig.setAttribute("class", fig.getAttribute("class").replace(/pose-\S+/, "pose-" + p)); };
+      let posed = "";
       const down = () => { holding = true; cue("hold"); }, up = () => { holding = false; cue("rest"); };
       host.querySelector(".btnrow").appendChild(pressButton(t.verb || "Move", down, up));
       onAct(down, up);
@@ -434,6 +442,7 @@
         }
         torch.style.left = (lp - light / 2) * 100 + "%"; torch.style.width = light * 100 + "%";
         me.style.left = pos * 100 + "%"; me.classList.toggle("lit", lit);
+        if (fig) { const want = freeze > 0 ? "fall" : holding ? "walk" : "sneak"; if (want !== posed) { posed = want; pose(want); } }
         susBar.style.width = sus * 100 + "%";
         score.textContent = K.tr(t.tally || "Loads: {d} of {n} · Seen: {s} of {m} · {t} seconds", { d: trips, n: need, s: seen, m: lives, t: Math.max(0, Math.ceil(LIMIT - s)) });
         if (trips >= need) finish("win", ["{d} loads carried, seen {s} times.", { d: trips, s: seen }]);

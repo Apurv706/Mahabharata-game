@@ -16143,5 +16143,15 @@
   "id": 3230,
   "en": "The wind took it.",
   "ctx": "code:trials.js"
+ },
+ {
+  "id": 3231,
+  "en": "Steer left and right to miss what is in the road.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 3232,
+  "en": "Steer with the arrows or a swipe. Reach everyone you can, then bring them out through the gap at the top.",
+  "ctx": "code:play.js"
  }
 ]
