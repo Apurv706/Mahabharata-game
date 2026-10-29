@@ -18,6 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install ffmpeg and zip
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg zip
+
       - name: Download accepted clips
         run: |
           set -euo pipefail
