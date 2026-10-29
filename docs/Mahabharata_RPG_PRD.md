@@ -3,7 +3,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft v0.3.1 (browser edition, §16; remaining tasks, §17, updated after the immersive build) |
+| **Status** | Draft v0.4 (browser edition, §16; remaining tasks, §17; proposed storylines, §18) |
 | **Last updated** | October 29, 2026 |
 | **Owner** | [Founder / Creative Director] |
 | **Doc type** | Living PRD; sections marked **[OPEN]** still need decisions |
@@ -427,7 +427,53 @@ The paintings' JPG originals (97 MB) are kept outside the game in `assets/art_sr
 
 ---
 
-## 18. Success metrics
+## 18. Storylines to add (proposed, 29 October; not built)
+
+Ideas to deepen a life, all inside the canon lock (§4): the epic's events happen as written, so Karna, Duryodhana and the Pandavas cannot die early at the player's hand, and the lac house still burns. The tension comes from what the player risks inside those fixed events. The pictures each needs are in `docs/Art_Brief_New_Storylines.pdf`.
+
+### 18.1 Friends who come to help (build first)
+- In a fight, a friend with a high bond (about 7 or more) can step in at a turning point: "Bhima comes through the gate." Once per fight, as an ally unit with their own way of fighting: Bhima takes the blows, Arjuna strikes from range, Karna is fierce and unpredictable, Charu has no armour.
+- Only where the friend could be: no Arjuna during his year away, no Bhima for a Kaurava-side player, nobody in the Pandavas' hidden year who would give them away.
+- A friend who helps can be hurt or scarred, and that is remembered in the bonds panel and the journal. Calling Charu, who has no armour, is a real risk.
+- Uses the existing ally system in fights and the bonds; no new art.
+
+### 18.2 The night the lac house burns (Act III)
+- Players at Varnavata who are inside the house on the night of the fire play a timed escape on a top-down plan of the burning house: open doors, wake sleepers, read where the smoke is going, reach the tunnel.
+- Variant for those who know of the plot (Vidura's people, spies): earlier that night, find and cut Purochana's oil-soaked fuse lines in the cellar; each line cut buys time in the escape. The fire still comes.
+- Outcomes: reach the tunnel and survive (Bhima's debt); reach it late and lose someone you carried; fail and die in the fire (a death ending). Warning the Pandavas helps Vidura's plan; staying silent to protect your own family is remembered.
+- New test kinds: escape (a maze under a clock) and fuse (trace and cut), on two new stages.
+
+### 18.3 Rising to command, and holding against Karna or Duryodhana (Act VI)
+- Rank: company leader, then division officer, then a seat at the war council, earned through duty, the command skill and each war day's result.
+- Army battles: deploy two or three companies into the day's array (vyuha: crane, wheel, crocodile, needle), then rounds of orders: hold, flank, fall back, send help.
+- Facing Karna or Duryodhana is won by holding, never by killing: keep Karna's chariot pinned until sunset; keep Duryodhana's division off the king's flank for ten rounds. Losing breaks the company and costs scars, capture or, if the player stays, death.
+- New: an array test on a top-down battlefield; two holding fights with their own backgrounds; council and promotion scenes.
+
+### 18.4 Threads that run through a life
+- **A rival:** Ugra, the bully from the spring fair, grows up beside you, rises in the opposite camp and meets you again in the tournament and on the field.
+- **The secret you carry:** you learn Karna's birth before he does; who you tell changes how they treat you.
+- **Mentor's fall:** Drona orders something wrong (Ekalavya, the capture plot); obey or refuse.
+- **A sibling on the other side** of the war.
+
+### 18.5 Episodes
+- **Exile:** a storm in the forest (survival run); the Yaksha's lake as a fuller riddle test where losing costs a friend.
+- **The hidden year:** keeping your false name in Virata's court (a test of nerve); Kichaka's court: help Draupadi with her dignity kept, by stealth in the dancing hall at night.
+- **War:** a night raid on the enemy's supply carts; carrying false orders across the river between the camps (burn them or deliver them); the truce at dusk, when soldiers of both sides meet at the river and you see an old friend; trying to break into the wheel after Abhimanyu, knowing the story will not let you save him.
+- **Duty clashes:** asked to confirm "Ashwatthama is dead" (against the vow of truth); asked to help Shikhandi's charge at Bhishma; ordered to strike while Karna is out of his chariot (against the vow to spare the unarmed).
+- **After the war:** rebuilding Hastinapura's ruined quarter; whom to forgive; teaching a student of your own path; a pilgrimage with the elders.
+
+### 18.6 Small systems
+- Bards sing what you did, and get it wrong unless you correct them.
+- Letters from friends on the other side during the war.
+- Scars and keepsakes that become choices later.
+
+### 18.7 Order of work
+1. Friends in fights (no art).
+2. The lac house escape (5 pictures).
+3. Command, arrays and the holding fights (8 pictures).
+4. Threads, episodes and the after-war scenes, a few at a time (20 pictures).
+
+## 19. Success metrics
 
 | Metric | Target **[OPEN — set with publisher]** |
 |---|---|
@@ -439,7 +485,7 @@ The paintings' JPG originals (97 MB) are kept outside the game in `assets/art_sr
 
 ---
 
-## 19. Key risks
+## 20. Key risks
 
 | Risk | Impact | Mitigation |
 |---|---|---|
@@ -455,7 +501,7 @@ The paintings' JPG originals (97 MB) are kept outside the game in `assets/art_sr
 
 ---
 
-## 20. Open questions
+## 21. Open questions
 
 1. Combat feel: Souls-like, action RPG, or tactical?
 2. Open world vs. hub-based acts?
