@@ -107,6 +107,7 @@
   U.inScene = false;
   U.setNav = function (on) {
     document.body.classList.remove("titling"); // the title screen adds it back after this call
+    if (U.beatStop) U.beatStop();
     U.inScene = !!on;
     const leaf = U.$("leaf"); if (leaf) leaf.className = "leaf"; // each screen sets its own page shape
     document.body.classList.toggle("inscene", !!on);
@@ -285,11 +286,13 @@
     document.title = K.tr("Kurukshetra: A Life");
     U.$("brand").textContent = K.tr("Kurukshetra: A Life");
     U.$("nav").setAttribute("aria-label", K.tr("Game menu"));
-    U.$("nav-char").textContent = K.tr("Character");
-    U.$("nav-journal").textContent = K.tr("Journal");
-    U.$("nav-map").textContent = K.tr("Map");
-    U.$("nav-menu").textContent = K.tr("Menu");
+    // Icon buttons: the label shows beside the icon on wide screens and is the button's name on phones.
+    [["nav-char", "Character"], ["nav-journal", "Journal"], ["nav-map", "Map"], ["nav-menu", "Menu"]].forEach(([id, label]) => {
+      const b = U.$(id), t = K.tr(label);
+      b.querySelector(".lbl-t").textContent = t; b.setAttribute("aria-label", t); b.title = t;
+    });
     U.$("standing-label").textContent = K.tr("Standing");
+    U.$("nav-standing").title = K.tr("Standing");
     U.$("nav-standing").setAttribute("aria-label", K.tr("Obligations, bonds, vows and memories"));
     U.$("ledger").setAttribute("aria-label", K.tr("Obligations, bonds, vows and memories"));
   };

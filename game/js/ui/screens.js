@@ -83,7 +83,7 @@
     draft = draft || newDraft();
     U.redraw = U.renderCreate;
     U.setNav(false);
-    U.where("<b>" + U.tr("A new life") + "</b>" + U.tr("Age {n}", { n: 6 }));
+    U.where("<b>" + U.tr("A new life") + "</b><span>" + U.tr("Age {n}", { n: 6 }) + "</span>");
     if (draft.step === "land") return draft.look ? landPage(draft.look) : landList();
     return selfPage();
   };
@@ -93,7 +93,7 @@
     // On wider screens the map comes first and the pictures wait behind a button; phones get the list.
     leaf.innerHTML = '<div class="text"><h1>' + U.tr("Where were you born?") + "</h1>" +
       "<p>" + U.tr("Your homeland shapes how the world treats you. It never limits what you can become. Choose a land to read about it.") + "</p>" +
-      (U.homeMap ? '<div class="homes-wrap">' + U.homeMap(draft.origin) + '<button type="button" class="ghost" id="as-list">' + U.tr("See the lands as pictures") + "</button></div>" : "") +
+      (U.homeMap ? '<div class="homes-wrap">' + U.homeMap(draft.origin, window.matchMedia && matchMedia("(max-width: 720px)").matches ? 1.55 : 1) + '<button type="button" class="ghost" id="as-list">' + U.tr("See the lands as pictures") + "</button></div>" : "") +
       '<div class="lands under-map' + (draft.asList ? " shown" : "") + '" id="origins"></div><p class="err" id="need"></p></div>';
     if (U.fitEmblems) U.fitEmblems(leaf);
     const pickHome = (id) => { draft.look = id; U.renderCreate(); };
@@ -225,7 +225,7 @@
     S.ending = e.title;
     K.recordLife(S, e);
     U.setNav(true);
-    U.where("<b>" + U.tr("The end of a life") + "</b>" + U.tr(S.alive ? "Age {n}" : "Fell at {n}", { n: S.age }));
+    U.where("<b>" + U.tr("The end of a life") + "</b><span>" + U.tr(S.alive ? "Age {n}" : "Fell at {n}", { n: S.age }) + "</span>");
     const leaf = U.$("leaf");
     leaf.innerHTML = U.plate({ art: e.art, caption: e.caption, tag: "yours", tagText: K.tr("Your ending"), heading: e.title, pose: S.alive ? "stand" : "dead", big: true }) +
       '<div class="text">' +

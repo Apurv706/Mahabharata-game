@@ -1,0 +1,31 @@
+# Screen-fit checks in the three browser engines: Chromium (Chrome, Edge, Android),
+# WebKit (Safari on iPhone, iPad and Mac) and Firefox. Phone, tablet and desktop sizes, upright
+# and on their side, with stand-in notches and home bars. See tests/layout.js.
+name: Screen fit
+on:
+  push:
+    branches: [main]
+    paths: ["game/**", "tests/layout.js", ".github/workflows/screen-fit.yml"]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  layout:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit, firefox]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm i --no-save playwright@1.49.1
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: node tests/layout.js --browser ${{ matrix.browser }} --shots shots
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screens-${{ matrix.browser }}
+          path: shots
+          retention-days: 7

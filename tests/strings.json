@@ -16053,5 +16053,60 @@
   "id": 3212,
   "en": "The wreck",
   "ctx": "play:a5_local"
+ },
+ {
+  "id": 3213,
+  "en": "Act {n}",
+  "ctx": "code:scene.js"
+ },
+ {
+  "id": 3214,
+  "en": "Scene titles",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 3215,
+  "en": "Full: a title card before big moments. Short: the title over the painting, for every scene.",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 3216,
+  "en": "Full",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 3217,
+  "en": "Short",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 3218,
+  "en": "old bow",
+  "ctx": "world:HEIRLOOMS"
+ },
+ {
+  "id": 3219,
+  "en": "palm-leaf manuscript",
+  "ctx": "world:HEIRLOOMS"
+ },
+ {
+  "id": 3220,
+  "en": "You won, but not whole: {inj!}.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 3221,
+  "en": "Raiders at the pass",
+  "ctx": "play:a5_local"
+ },
+ {
+  "id": 3222,
+  "en": "Hill raiders come down on the villages at the pass, as if the whole land had been given leave.",
+  "ctx": "play:a5_local"
+ },
+ {
+  "id": 3223,
+  "en": "Raiders at the border",
+  "ctx": "play:a5_local"
  }
 ]

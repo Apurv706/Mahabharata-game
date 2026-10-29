@@ -308,20 +308,21 @@
   // Before the picture list: the north of the subcontinent with every homeland marked. The
   // charioteer family lives in Champa, beside Anga, so its pin sits just below Anga's.
   const HOMES = { hastinapura: "hastinapura", panchala: "panchala", matsya: "matsya", mathura: "mathura", anga: "anga", suta: "anga", nishada: "nishada", gandhara: "gandhara" };
-  U.homeMap = function (chosen) {
+  // On a phone the map is drawn small, so its names and pins are drawn bigger (big = 1.5).
+  U.homeMap = function (chosen, big = 1) {
     const keys = Object.keys(K.ORIGINS).filter((k) => HOMES[k]);
     const vb = frame(keys.map((k) => HOMES[k]), 1.55, 360), z = vb[2] / FULL[2];
     // Where each label sits: [dx, dy, anchor], in map units before zoom.
     const LBL = { gandhara: [12, 6, "start"], hastinapura: [12, 6, "start"], panchala: [12, 6, "start"], matsya: [-12, 6, "end"], mathura: [10, 26, "start"], anga: [-12, 6, "end"], suta: [-12, 6, "end"], nishada: [-12, 6, "end"] };
     const pins = keys.map((k) => {
       const p = P(HOMES[k]), x = p.x, y = p.y + (k === "suta" ? 52 * z : 0);
-      const name = K.tr(K.ORIGINS[k].name), fs = Math.round(17 * z * 10) / 10;
+      const name = K.tr(K.ORIGINS[k].name), fs = Math.round(17 * z * big * 10) / 10;
       const [dx, dy, anchor] = LBL[k] || [12, 6, "start"];
-      const tx = x + dx * z, ty = y + dy * z;
+      const tx = x + dx * z * big, ty = y + dy * z * (big > 1 ? 1.3 : 1);
       const kind = k === "suta" ? "wheel" : EMB[HOMES[k]];
       return '<g class="m-home' + (chosen === k ? " on" : "") + '" data-home="' + k + '" tabindex="0" role="button" aria-label="' + U.esc(name) + '">' +
-        '<circle class="hit" cx="' + x + '" cy="' + y + '" r="' + 22 * z + '"/>' +
-        '<circle cx="' + x + '" cy="' + y + '" r="' + 6 * z + '"/>' +
+        '<circle class="hit" cx="' + x + '" cy="' + y + '" r="' + 22 * z * big + '"/>' +
+        '<circle cx="' + x + '" cy="' + y + '" r="' + 6 * z * Math.sqrt(big) + '"/>' +
         (kind ? emblem(kind, tx, ty, anchor, fs, name) : "") +
         '<text x="' + (tx + shiftFor(kind, anchor, fs)) + '" y="' + ty + '" text-anchor="' + anchor + '" style="font-size:' + fs + 'px">' + U.esc(name) + "</text></g>";
     }).join("");

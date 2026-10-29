@@ -204,9 +204,12 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 
 /* Dialog: the one surface that truly floats, so it may cast a shadow. */
 .scrim { position: fixed; inset: 0; background: rgba(20, 8, 6, 0.8); display: grid; place-items: center; z-index: 50;
-  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+  padding: max(16px, var(--sat)) max(16px, var(--sar)) max(16px, var(--sab)) max(16px, var(--sal)); }
 .modal { background: var(--surface) url("torana.svg") 0 0 / 28px 16px repeat-x; border-radius: var(--r-card); width: min(720px, 100%); max-height: 100%; overflow-y: auto; padding: 34px 24px 24px; display: grid; gap: 16px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5); } /* taste-skill-ignore: dialog floats */
 .modal header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+/* The window's title and Close stay in reach while its contents scroll. */
+.modal > header { position: sticky; top: -34px; z-index: 2; margin: -34px -24px 0; padding: 34px 24px 10px; background: var(--surface) url("torana.svg") 0 0 / 28px 16px repeat-x; }
+@media (max-width: 720px), (max-height: 520px) { .modal { padding: 26px 16px 18px; gap: 12px; } .modal > header { top: -26px; margin: -26px -16px 0; padding: 26px 16px 8px; } .modal h2 { font-size: 26px; } }
 .modal h2 { margin: 0; font-family: var(--display); font-size: 32px; line-height: 1.05; }
 .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 18px; }
 .stat { display: flex; justify-content: space-between; padding: 5px 0; font-size: 16px; }
@@ -500,7 +503,7 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 .sheet-figure svg { height: 180px; width: auto; }
 .lifecard summary .lifefig { margin-right: -6px; }
 .pagehead { position: relative; display: flex; align-items: flex-end; gap: 12px; padding: 14px 18px 8px 26px; }
-.pagehead .ph-text { flex: 1 1 auto; min-width: 0; display: grid; gap: 2px; }
+.pagehead .ph-text { flex: 1 1 0; min-width: 0; display: grid; gap: 2px; }
 .pagehead .ph-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; }
 .pagehead h1 { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 3vw, 34px); line-height: 1.08; margin: 2px 0 0; text-wrap: balance; }
 .pagehead .ppbadge { margin-bottom: -6px; }
@@ -508,7 +511,7 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 .pagehead.big .ppbadge svg { height: 150px; }
 .pagehead .ppbadge svg.pose-dead { height: 62px; } .pagehead.big .ppbadge svg.pose-dead { height: 80px; }
 html[lang="hi"] .pagehead h1 { line-height: 1.3; }
-@media (max-width: 720px) { .pagehead { padding: 10px 12px 6px 18px; } .pagehead h1 { font-size: 22px; } .pagehead .ppbadge svg { height: 78px; } .pagehead.big .ppbadge svg { height: 110px; } }
+@media (max-width: 720px), (max-height: 520px) { .pagehead { padding: 8px 12px 4px 16px; } .pagehead h1 { font-size: 20px; } .pagehead .ppbadge svg { height: 64px; } .pagehead.big .ppbadge svg { height: 96px; } }
 /* The road you have walked, stronger than the map's own lines. */
 .bmap .m-road { stroke: #b3341a; stroke-width: 2.8; stroke-dasharray: 7 4; opacity: .95; }
 .bmap .m-road.new { stroke: #c8471f; }
@@ -521,6 +524,7 @@ html[lang="hi"] .pagehead h1 { line-height: 1.3; }
 /* The journey page: map, then From X → Y and why. */
 .leaf.journeying .text { display: grid; gap: 10px; padding-bottom: 16px; }
 .jmap .bmap { max-height: min(56svh, 520px); width: 100%; }
+body.inscene .jmap .bmap { max-height: min(520px, max(180px, calc(var(--vh) - 340px))); }
 .j-route { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-family: var(--display); font-size: 21px; font-weight: 700; }
 .j-route .emb, .emb { width: 1.1em; height: 1.1em; flex: none; }
 .j-arrow { color: var(--gold); padding: 0 4px; }
@@ -537,9 +541,10 @@ html[lang="hi"] .pagehead h1 { line-height: 1.3; }
 .bmap.homes .m-home:focus-visible .hit { stroke: #c8471f; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-dasharray: 3 3; }
 .homes-wrap { display: grid; gap: 10px; margin-top: 8px; }
 .homes-wrap .ghost { justify-self: start; }
-@media (max-width: 720px) { .homes-wrap { display: none; } }
-@media (min-width: 721px) { .lands.under-map { display: none; } .lands.under-map.shown { display: grid; } }
 .homes-wrap .bmap { height: min(60svh, 560px); width: auto; max-width: 100%; margin: 0 auto; }
+/* Phones upright see the map too, full width, with the lands listed as pictures under it. */
+@media (max-width: 720px) { .homes-wrap .bmap { height: auto; width: 100%; } .homes-wrap #as-list { display: none; } }
+@media (min-width: 721px) { .lands.under-map { display: none; } .lands.under-map.shown { display: grid; } }
 
 /* ---------- Test stages: a strip of the painting with the figures on it ---------- */
 .trial-body { display: grid; gap: 16px; min-width: 0; }
@@ -636,7 +641,6 @@ html[lang="hi"] .pagehead h1 { line-height: 1.3; }
 
 /* Board games on the painted table */
 .boardtable { display: grid; justify-items: center; padding: 14px; border-radius: var(--r-control); background: #2a1d14 var(--stage) center / cover no-repeat; }
-body.inscene .leaf.split.testing { height: auto; }
 .boardtable svg { width: min(100%, 380px); height: auto; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .45)); }
 .chaupar .sq { fill: #b8432a; stroke: #3a1208; stroke-width: 1.2; }
 .chaupar .sq.mid { fill: #d79a2b; } .chaupar .sq.safe { fill: #2f7d55; } .chaupar .home { fill: #8a2a1a; stroke: #3a1208; stroke-width: 1.5; }
@@ -718,10 +722,137 @@ body.inscene .leaf.split.testing { height: auto; }
 @media (max-width: 720px) { .arena { height: 150px; padding: 0 3% 3px; } .arena .actor svg { height: 122px; } .arena .actor.ally svg { height: 104px; } }
 @media (prefers-reduced-motion: reduce) { .arena .actor, .arena .actor::after, .arena.slowmo { animation: none !important; } }
 .qte .cta.secondary { background: var(--hover); border: 1px solid var(--gold-line); }
-@media (max-width: 720px) {
+@media (max-width: 720px), (max-height: 520px) {
   .trial { padding: 14px; gap: 12px; }
   .cast { height: 86px; margin: -14px -14px 0; }
   .cast .actor svg { height: 78px; } .cast .actor.foe.f1 svg, .cast .actor.foe.f2 svg { height: 70px; }
   .trial .game-rules { font-size: 16px; }
   .trial .game-note { font-size: 15px; }
 }
+
+/* ---------- Beats: the act card and the scene's title card ----------
+   They lie over the whole screen. The painting is the backdrop behind them: dimmed for an act,
+   veiled for a full title, clear for the moment the painting shows alone, shaded at the foot for
+   the short title. A tap moves on. */
+body.beating .leaf { display: none; }
+body.beating header.top { opacity: 0.35; transition: opacity 0.4s ease; }
+.beat { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
+  padding: max(28px, var(--sat)) max(22px, var(--sar)) max(28px, var(--sab)) max(22px, var(--sal)); }
+.beat::before { content: ""; position: absolute; inset: 0; z-index: -1; transition: background 0.5s ease; background: transparent; }
+.beat.dim::before { background: rgba(16, 6, 4, 0.8); } /* taste-skill-ignore: dims the painting under the act card */
+.beat.veil::before { background: radial-gradient(ellipse at 50% 50%, rgba(16, 6, 4, 0.74), rgba(16, 6, 4, 0.42) 75%); } /* taste-skill-ignore: veil under the title card */
+.beat.low { place-items: end start; }
+.beat.low::before { background: linear-gradient(to top, rgba(16, 6, 4, 0.82), rgba(16, 6, 4, 0) 46%); } /* taste-skill-ignore: shade under the short title */
+.beat.gone::before { background: transparent; }
+.beat-in { opacity: 0; transform: translateY(12px) scale(0.99); transition: opacity 0.5s ease, transform 0.7s cubic-bezier(.2, .7, .2, 1); }
+.beat-in.in { opacity: 1; transform: none; }
+.beat-in.out { opacity: 0; transform: translateY(-8px); transition-duration: 0.24s; }
+.beat-act { display: grid; justify-items: center; gap: 10px; text-align: center; max-width: 30ch; }
+.beat-act .b-num { font-family: var(--display); font-weight: 700; font-size: clamp(17px, 2.4vw, 22px); letter-spacing: 0.32em; text-transform: uppercase; color: var(--data); padding-left: 0.32em; }
+.beat-act b { font-family: var(--display); font-weight: 700; font-size: clamp(40px, min(10vw, 14vh), 92px); line-height: 1; color: var(--ink); text-wrap: balance; }
+.beat-act .b-orn { display: block; width: 168px; height: 16px; background: url("torana.svg") 0 0 / 28px 16px repeat-x; opacity: 0.9; }
+.beat-act p { margin: 2px 0 0; font-size: clamp(16px, 2.3vw, 21px); line-height: 1.5; color: var(--muted); text-wrap: balance; }
+.beat-title { display: grid; justify-items: center; gap: 6px; text-align: center; max-width: 26ch; }
+.beat-title .ppbadge svg { height: clamp(96px, 18vh, 150px); width: auto; }
+.beat-title .kind, .beat-short .kind { font-size: 12.5px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); padding-left: 0.2em; }
+.beat-title .kind.canon, .beat-short .kind.canon { color: var(--data); }
+.beat-title .kind.war, .beat-short .kind.war { color: var(--negative); }
+.beat-title b { font-family: var(--display); font-weight: 700; font-size: clamp(28px, min(6.4vw, 8vh), 58px); line-height: 1.05; color: var(--ink); text-wrap: balance; }
+.beat-title small { font-size: clamp(14px, 1.8vw, 17px); color: var(--muted); }
+.beat-short { display: grid; gap: 2px; max-width: min(36ch, 100%); padding: 0 0 4vh; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7); } /* taste-skill-ignore: title over a painting */
+.beat-short b { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 6vw, 52px); line-height: 1.05; color: var(--ink); text-wrap: balance; }
+html[lang="hi"] .beat-act b, html[lang="hi"] .beat-title b, html[lang="hi"] .beat-short b { line-height: 1.3; font-size: clamp(38px, 8vw, 74px); }
+html[lang="hi"] .beat-title b, html[lang="hi"] .beat-short b { font-size: clamp(30px, 5.4vw, 50px); }
+html[lang="hi"] .beat-act .b-num, html[lang="hi"] .beat-title .kind, html[lang="hi"] .beat-short .kind { letter-spacing: 0.04em; text-transform: none; }
+html[lang="hi"] .beat-act p { line-height: 1.7; }
+@media (max-height: 520px) { .beat-title { max-width: 40ch; } .beat-title .ppbadge svg { height: 72px; } .beat-act { gap: 6px; max-width: 44ch; } .beat-short { max-width: 52ch; } }
+@media (prefers-reduced-motion: reduce) { .beat-in { transition: none; } }
+/* The menu's two-way switch (Scene titles: Full / Short). */
+.seg-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; font-size: 16px; }
+.seg-row > span { flex: 1 1 220px; }
+.seg-row small { display: block; color: var(--muted); font-size: 14px; }
+.seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--raised); border: 1px solid var(--gold-line); }
+.seg button { border: 0; background: transparent; color: var(--muted); font-size: 15px; padding: 6px 16px; min-height: 36px; border-radius: 999px; cursor: pointer; }
+.seg button[aria-checked="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+/* Phones on their side: tests, fights and the journey shrink to the screen's height, so nothing
+   needs scrolling. The figures' strip gets slimmer and the play areas take what height is left. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .leaf.testing .choices > .choice.picked { display: none; }
+  .leaf.split.testing .actions { padding: 6px 8px max(6px, var(--sab)); }
+  .trial { padding: 10px 12px; gap: 8px; }
+  .trial-body { gap: 8px; }
+  .cast { height: 60px; margin: -10px -12px 0; }
+  .cast .actor svg { height: 54px; } .cast .actor.foe.f1 svg, .cast .actor.foe.f2 svg { height: 48px; }
+  .trial .game-rules { font-size: 15px; line-height: 1.4; } .trial .game-note { font-size: 14px; min-height: 1.2em; } .trial .score { font-size: 13.5px; }
+  .steady { height: 84px; }
+  .drill { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; } .drill .tile { min-height: 0; padding: 6px 4px; } .drill .tile .sign { width: 38px; height: 38px; } .drill.verse .tile { min-height: 0; } .drill .verse { font-size: 15px; }
+  .trial-press { min-height: 46px; font-size: 17px; }
+  .ring-btns .trial-press { min-height: 44px; min-width: 80px; font-size: 16px; }
+  .arena { height: calc(var(--vh) * 0.36); } .arena .actor svg { height: calc(var(--vh) * 0.31); } .arena .actor.ally svg { height: calc(var(--vh) * 0.27); }
+  /* The journey: the map on the left, where you go and why on the right. */
+  .leaf.journeying .text { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-content: start; align-items: start; column-gap: 18px; row-gap: 8px; padding: 14px 16px 10px; }
+  .leaf.journeying .text > .jmap { grid-row: 1 / span 4; grid-column: 1; }
+  .leaf.journeying .text > :not(.jmap):not(.quill) { grid-column: 2; }
+  .jmap .bmap { max-height: calc(var(--vh) - 150px); }
+  .j-route { font-size: 17px; }
+}
+
+/* ---------- The fight fits the screen ----------
+   The painted stage and figures on top; under them the two sides (scrolling if there are many),
+   the last few lines of the fight, and your moves, always at the foot. */
+body.inscene .leaf.fighting { display: flex; flex-direction: column; overflow: hidden; max-height: min(100%, 1000px); }
+.leaf.fighting > .pagehead, .leaf.fighting > .arena { flex: none; }
+.leaf.fighting > #battle-body { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 10px; padding: 14px 22px 16px; overflow: hidden; }
+#battle-body > .sides { flex: 0 1 auto; min-height: 64px; overflow-y: auto; overscroll-behavior: contain; order: 1; }
+#battle-body > .blog { flex: none; order: 2; max-height: 112px; }
+#battle-body > #battle-actions { flex: none; order: 3; }
+@media (max-width: 720px), (max-height: 520px) {
+  .leaf.fighting > #battle-body { padding: 8px 10px max(10px, var(--sab)); gap: 6px; }
+  #battle-body .sides { grid-template-columns: 1fr 1fr; gap: 8px; }
+  #battle-body .side { gap: 5px; }
+  #battle-body .side .lbl { font-size: 14px; }
+  .unit { padding: 6px 8px; gap: 3px; }
+  .unit .nm { font-size: 13.5px; } .unit .nm span { font-size: 12px; } .unit .nm .thumb.face { width: 22px; height: 22px; }
+  .unit .st span, .unit .intent, .unit .note { font-size: 11.5px; }
+  #battle-body > .blog { max-height: 58px; padding: 6px 10px; font-size: 13px; }
+  #battle-actions, #battle-actions .actions { gap: 6px; }
+  #battle-actions .actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .act { min-height: 44px; padding: 7px 10px; } .act b { font-size: 14.5px; } .act small { font-size: 11.5px; line-height: 1.25; }
+}
+/* Phones on their side: the stage and its figures on the left, the two sides and your moves on the right. */
+@media (orientation: landscape) and (max-height: 520px) {
+  body.inscene .leaf.fighting { display: grid; height: 100%; grid-template-columns: minmax(0, 44%) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  .leaf.fighting > .pagehead { grid-column: 1; grid-row: 1; }
+  .leaf.fighting > .arena { grid-column: 1; grid-row: 2; height: auto; align-self: stretch; margin: 0; }
+  .leaf.fighting > #battle-body { grid-column: 2; grid-row: 1 / span 2; background-image: none; border-left: 1px solid var(--gold-line); }
+  #battle-body .sides { grid-template-columns: 1fr; }
+}
+
+/* ---------- A test in play fills the page ----------
+   The page takes the screen's height, and the test's play area (the range, the track, the board,
+   the field) takes whatever height is left after the score, the note and the buttons, so a test
+   never needs scrolling, on a small phone, on its side, or on a desktop. */
+body.inscene .leaf.split.testing { height: auto; }
+body.inscene .leaf.split.testing.playing { height: 100%; }
+.leaf.split.testing.playing .text, .leaf.split.testing.playing .actions, .leaf.split.testing.playing .choices { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.leaf.split.testing.playing .actions { gap: 8px; }
+.leaf.split.testing.playing .choices { gap: 8px; }
+.leaf.split.testing.playing .choices > *, .leaf.split.testing.playing .actions > .hint { flex: none; }
+.leaf.split.testing.playing .choices > .trial { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.trial.playing > .cast { flex: none; }
+.trial.playing > .trial-body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.trial.playing > .trial-body > * { flex: none; }
+.trial.playing > .trial-body > :is(.range, .pushpit, .sneakway, .track, .herdfield, .ringfield, .boardtable, .steady, .beatlane, .table, .drill) { flex: 1 1 0; min-height: 0; }
+.trial.playing .range { height: auto; min-height: 120px; max-height: 340px; }
+.trial.playing .sneakway { height: auto; min-height: 110px; max-height: 260px; }
+.trial.playing .track { height: auto; min-height: 130px; max-height: 260px; }
+.trial.playing .steady { height: auto; min-height: 76px; max-height: 150px; }
+.trial.playing .beatlane { min-height: 70px; max-height: 120px; }
+.trial.playing .pushpit { display: flex; flex-direction: column; } .trial.playing .pushpit > .balance { flex: none; }
+.trial.playing .ringbox { flex: 1 1 0; height: auto; min-height: 110px; max-height: 320px; }
+.trial.playing .table, .trial.playing .drill { align-content: center; overflow: auto; }
+.trial.playing .boardtable, .trial.playing .ringfield, .trial.playing .herdfield { display: flex; justify-content: center; align-items: center; overflow: hidden; }
+.trial.playing .boardtable svg, .trial.playing .ringfield svg { width: auto; height: 100%; max-width: 100%; max-height: 380px; }
+.trial.playing .herdfield canvas { width: auto; height: 100%; max-width: 100%; max-height: 420px; }
+.trial.playing > .trial-body > .boardtable { min-height: 150px; }
+.trial.playing > .trial-body > .ringfield, .trial.playing > .trial-body > .herdfield { min-height: 120px; }

@@ -5,7 +5,7 @@
 
   function header(sc) {
     const S = K.S;
-    U.where("<b>" + U.t(K.val(sc.actTitle) || K.ACT_TITLES[S.act] || "") + "</b>" + U.tr("Age {n}", { n: S.age }) + " · " + U.t(K.val(sc.place) || ""));
+    U.where("<b>" + U.t(K.val(sc.actTitle) || K.ACT_TITLES[S.act] || "") + "</b><span>" + U.tr("Age {n}", { n: S.age }) + " · " + U.t(K.val(sc.place) || "") + "</span>");
   }
   function artFor(sc) {
     const a = K.val(sc.art);
@@ -51,6 +51,16 @@
       }
     }
     const [tag, tagText] = tagFor(sc);
+    // Each new scene opens in beats: an act card when a new act begins, the scene's title card, the
+    // painting alone for a moment, and only then the page. Once per scene, never on a redraw.
+    U.beatStop();
+    if (beatSeen !== sc.id && U.beatsOn()) {
+      beatSeen = sc.id;
+      const newAct = actSeen !== S.act;
+      actSeen = S.act;
+      return U.sceneBeats(sc, { act: newAct, full: newAct || bigScene(sc), tag, tagText }, () => U.renderScene(sc));
+    }
+    beatSeen = sc.id; actSeen = S.act;
     const witness = K.val(sc.witness);
     const leaf = U.$("leaf");
     leaf.className = "leaf split";
@@ -93,6 +103,94 @@
     story.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
     U.keys([]);
     U.stage([plate, ...story, ...box.children, U.$("keyhint")], () => { U.keys(keys); startLamp(sc, rows); });
+  };
+
+  // ---------- Beats: act cards and scene titles ----------
+  // Act card: "Act II", its name and one line, over the painting dimmed, with a gong. About three
+  // seconds, or a tap. Title card: Unwritten or Written, the title, your age and place, and your
+  // puppet; about a second and a half, or a tap. Then the painting alone, then the page.
+  // Full title cards are for act openings, the epic's own scenes, tests, fights and other big
+  // moments; ordinary scenes get the short version, the title over the painting. The menu's
+  // "Scene titles: short" gives every scene the short version (act cards stay).
+  let beatSeen = null, actSeen = null, beatRun = null;
+  U.beatsOn = () => !K.headless && !/jsdom/i.test(navigator.userAgent || "") && K.prefs().beats !== false;
+  function bigScene(sc) {
+    if (sc.canon || sc.war || K.val(sc.lamp) || TENSE.has(sc.id) || sc.big) return true;
+    return K.choiceList(sc).some(({ c }) => c.trial || c.game || c.combat);
+  }
+  const ROMAN = ["", "I", "II", "III", "IV", "V", "VI", "VII"];
+  U.beatStop = function () {
+    if (!beatRun) return;
+    clearTimeout(beatRun.timer);
+    window.removeEventListener("keydown", beatRun.key, true);
+    beatRun.el.remove();
+    beatRun = null;
+    document.body.classList.remove("beating");
+  };
+  U.sceneBeats = function (sc, o, done) {
+    const S = K.S;
+    const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    U.setBackdrop(artFor(sc) || null);
+    const leaf = U.$("leaf");
+    leaf.className = "leaf"; leaf.innerHTML = "";
+    document.body.classList.add("beating");
+    const el = U.el('<div class="beat" id="beat" role="presentation"></div>');
+    document.body.appendChild(el);
+    const title = K.val(sc.title) || K.val(sc.caption) || "";
+    const where = U.tr("Age {n}", { n: S.age }) + " · " + U.t(K.val(sc.place) || "");
+    const steps = [];
+    if (o.act) {
+      const full = U.t(K.ACT_TITLES[S.act] || "");
+      const cut = full.indexOf(" · ");
+      const num = cut > 0 ? full.slice(0, cut) : U.tr("Act {n}", { n: ROMAN[S.act] || S.act });
+      const name = cut > 0 ? full.slice(cut + 3) : full;
+      const line = K.ACT_LINES && K.ACT_LINES[S.act];
+      steps.push({ cls: "dim", ms: 3000, html: '<div class="beat-act"><span class="b-num">' + U.esc(num) + "</span><b>" + U.esc(name) + "</b>" +
+        '<i class="b-orn" aria-hidden="true"></i>' + (line ? "<p>" + U.t(line) + "</p>" : "") + "</div>",
+        on: () => { if (K.Sound) K.Sound.play("gong"); } });
+    }
+    if (title && (o.full && K.prefs().titles !== "short")) {
+      const fig = K.puppetSpec ? U.puppetBadge(K.puppetSpec(S), { fit: true }) : "";
+      steps.push({ cls: "veil", ms: 1500, html: '<div class="beat-title">' + fig + '<span class="kind ' + o.tag + '">' + U.esc(o.tagText) + "</span><b>" + U.t(title) + "</b><small>" + where + "</small></div>" });
+      steps.push({ cls: "clear", ms: 650, html: "" });
+    } else if (title) {
+      steps.push({ cls: "low", ms: 1100, html: '<div class="beat-short"><span class="kind ' + o.tag + '">' + U.esc(o.tagText) + "</span><b>" + U.t(title) + "</b></div>" });
+    }
+    const run = { el, timer: null, i: -1, key: null };
+    beatRun = run;
+    const finish = () => { if (beatRun !== run) return; U.beatStop(); done(); };
+    const next = () => {
+      if (beatRun !== run) return;
+      clearTimeout(run.timer);
+      const cur = el.firstElementChild;
+      run.i++;
+      const st = steps[run.i];
+      if (!st) {
+        if (cur) cur.classList.replace("in", "out");
+        el.classList.add("gone");
+        run.timer = setTimeout(finish, still ? 0 : 260);
+        return;
+      }
+      const show = () => {
+        if (beatRun !== run) return;
+        el.className = "beat " + st.cls;
+        el.innerHTML = st.html ? '<div class="beat-in">' + st.html + "</div>" : "";
+        const inner = el.firstElementChild;
+        if (inner) { if (still) inner.classList.add("in"); else requestAnimationFrame(() => requestAnimationFrame(() => inner.classList.add("in"))); }
+        if (st.on) st.on();
+        run.timer = setTimeout(next, st.ms);
+      };
+      if (cur && !still) { cur.classList.replace("in", "out"); run.timer = setTimeout(show, 240); }
+      else show();
+    };
+    // A tap, a click or Space/Enter/Escape moves on to the next beat.
+    el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); next(); });
+    run.key = (e) => {
+      if (document.querySelector(".scrim")) return;
+      if ([" ", "Enter", "Escape", "ArrowRight"].includes(e.key)) { e.preventDefault(); e.stopPropagation(); next(); }
+    };
+    window.addEventListener("keydown", run.key, true);
+    next();
   };
 
   // ---------- The lamp ----------

@@ -233,12 +233,12 @@
     const enc = B.enc;
     const enemies = B.units.filter((u) => u.side === "enemy");
     if (!target || !enemies.find((e) => e.uid === target && e.hp > 0)) target = (enemies.find((e) => e.hp > 0) || {}).uid || null;
-    U.where("<b>" + U.tr("Battle") + "</b>" + U.t(K.val(enc.title)) + " · " + (enc.rounds ? U.tr("round {n} of {m}", { n: Math.min(B.round, enc.rounds), m: enc.rounds }) : U.tr("round {n}", { n: B.round })));
+    U.where("<b>" + U.tr("Battle") + "</b><span>" + U.t(K.val(enc.title)) + " · " + (enc.rounds ? U.tr("round {n} of {m}", { n: Math.min(B.round, enc.rounds), m: enc.rounds }) : U.tr("round {n}", { n: B.round })) + "</span>");
     const friends = B.units.filter((u) => u.side !== "enemy");
     const leaf = U.$("leaf");
     // The painted stage with the figures is drawn once per fight, so they can move between draws.
     if (leaf.dataset.battle !== B.bid || !U.$("arena")) {
-      leaf.className = "leaf";
+      leaf.className = "leaf fighting";
       leaf.dataset.battle = B.bid;
       leaf.innerHTML = U.plate({ art: K.val(enc.art), caption: K.val(enc.caption), tag: enc.lethal ? "war" : "yours", tagText: K.tr(enc.lethal ? "Battle · you can die here" : "A fight"), heading: K.val(enc.title), noFigure: true }) +
         arenaHtml(B) + '<div class="text battle" id="battle-body"></div>';

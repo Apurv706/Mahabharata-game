@@ -64,6 +64,8 @@
       if (!host.isConnected) { finished = true; if (stop) stop(); return; } // the scene was left mid-test
       finished = true;
       if (stop) stop();
+      wrap.classList.remove("playing");
+      const page = wrap.closest(".leaf"); if (page) page.classList.remove("playing");
       U.castStance(wrap, outcome === "win" ? "cheer" : "slump", outcome === "win" ? "slump" : "cheer");
       document.removeEventListener("keydown", onKey, true);
       document.removeEventListener("keyup", onKeyUp, true);
@@ -77,6 +79,9 @@
     function begin() {
       phase = "play";
       U.keys([]);
+      // While it plays, the test fills the page and its play area takes the height that is left.
+      wrap.classList.add("playing");
+      const page = wrap.closest(".leaf"); if (page) page.classList.add("playing");
       if (K.headless) return auto();
       document.addEventListener("keydown", onKey, true);
       document.addEventListener("keyup", onKeyUp, true);

@@ -4,6 +4,16 @@
   "use strict";
   K.FIRST_SCENE = "a1_home";
   K.ACT_TITLES = { 1: "Act I · Childhood", 2: "Act II · Training", 3: "Act III · Young adult", 4: "Act IV · The fracture", 5: "Act V · The exile years", 6: "Act VI · The war", 7: "Act VII · Aftermath" };
+  // One line under each act's name on its opening card.
+  K.ACT_LINES = {
+    1: "You are born into a story the epic already knows. Your part in it is not yet written.",
+    2: "The great teachers choose their students. What you learn now, you will carry to the war.",
+    3: "The princes grow up, and their quarrel grows with them.",
+    4: "One game of dice breaks a family in two.",
+    5: "Thirteen years in the forest and in hiding. Everyone must choose a side.",
+    6: "Eighteen days on the field of Kurukshetra.",
+    7: "The war is over. Someone must tell what happened.",
+  };
 
   const canon = (name) => ({ name, canon: true });
   const orig = (name) => ({ name, canon: false });
