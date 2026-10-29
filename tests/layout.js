@@ -376,6 +376,13 @@ async function runDevice(browser, base, o, report) {
   await page.evaluate((life) => { K.prefs({ gradual: true }); K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { origin: "matsya", age: 9, act: 1 }); K.S.at = "matsya"; K.go("a1_sage"); }, LIFE);
   await page.waitForTimeout(1600);
   await check("story being written", ["growing"]);
+  {
+    // The painting holds still while the lines appear (it moves up only once the scene is there).
+    const at = () => page.evaluate(() => { const r = document.querySelector("#backdrop .bdl.on .pic").getBoundingClientRect(); return [Math.round(r.top), Math.round(r.height), document.getElementById("backdrop").dataset.mode]; });
+    const a = await at(); await page.waitForTimeout(900); const b = await at();
+    const upright = o.h > o.w * 1.15;
+    report.push({ browser: browser._name, device: label, screen: "painting still while writing", problems: (a[0] !== b[0] || a[1] !== b[1]) ? ["painting moved while the story was written (" + a + " → " + b + ")"] : upright && a[2] !== "whole" ? ["painting not shown whole while the scene opens (" + a[2] + ")"] : [] });
+  }
   await page.evaluate(() => { K.UI.stageFinish(true); K.prefs({ gradual: false }); });
   await goScene(page, "a2_trial");
   // See the painting whole, and back.
@@ -467,7 +474,7 @@ async function runDevice(browser, base, o, report) {
   await page.evaluate((life) => { K.prefs({ beats: true }); K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life); K.S.at = "hastinapura"; K.go("a2_trial"); }, LIFE);
   await page.waitForTimeout(350);
   if (!(await page.evaluate(() => !!document.querySelector(".beat-short")))) probs.push("short title missing with Scene titles: short");
-  await page.waitForTimeout(1800);
+  await page.waitForTimeout(3200); // short title (about 1 s), then the painting alone (about 1.3 s)
   if (await page.evaluate(() => !!document.getElementById("beat"))) probs.push("short title did not fade by itself");
   report.push({ browser: browser._name, device: label, screen: "act and title cards", problems: probs });
 

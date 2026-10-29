@@ -25,6 +25,7 @@
   const TENSE = new Set(["a1_poison", "a3_lac", "a5_karna_secret", "a5_side"]);
   // A conch for each day of the war, once per scene (not again when the screen is redrawn).
   let lastConch = null;
+  let settledFor = null; // the scene whose painting has moved up above its page
   U.renderScene = function (sc) {
     stopLamp();
     if (U.stageFx) U.stageFx.stop();
@@ -102,12 +103,18 @@
     // The scene-setting lines are written out by the quill.
     story.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
     U.keys([]);
-    // The page grows as the story is written: lines and choices not shown yet take no room, and the
-    // painting rides just above the page as it grows (U.fitBackdrop follows the page's size).
+    // The page comes up over the whole painting and grows as the story is written (lines and
+    // choices not shown yet take no room). The painting holds still behind it; once everything is
+    // there, it moves up into the space above the page, in one movement.
+    if (settledFor !== sc.id) U.settled = false;
     U.fitBackdrop();
     const acts = box.parentElement;
     acts.dataset.hold = 0;
-    U.stage([plate, ...story, acts, ...box.children, U.$("keyhint")], () => { U.keys(keys); startLamp(sc, rows); U.finalTop = null; U.fitBackdrop(); });
+    U.stage([plate, ...story, acts, ...box.children, U.$("keyhint")], () => {
+      U.keys(keys); startLamp(sc, rows);
+      settledFor = sc.id; U.settled = true;
+      setTimeout(() => U.fitBackdrop(), U.motion() ? 450 : 0);
+    });
     U.livePlay();
   };
 
@@ -162,10 +169,10 @@
     if (title && (o.full && K.prefs().titles !== "short")) {
       const fig = K.puppetSpec ? U.puppetBadge(K.puppetSpec(S), { fit: true }) : "";
       steps.push({ cls: "veil", ms: 1500, html: '<div class="beat-title">' + fig + '<span class="kind ' + o.tag + '">' + U.esc(o.tagText) + "</span><b>" + U.t(title) + "</b><small>" + where + "</small></div>" });
-      steps.push({ cls: "clear", ms: live ? 4200 : 650, html: "" });
+      steps.push({ cls: "clear", ms: live ? 4200 : 2000, html: "" });
     } else if (title) {
       steps.push({ cls: "low", ms: 1100, html: '<div class="beat-short"><span class="kind ' + o.tag + '">' + U.esc(o.tagText) + "</span><b>" + U.t(title) + "</b></div>" });
-      if (live) steps.push({ cls: "clear", ms: 3600, html: "" });
+      steps.push({ cls: "clear", ms: live ? 3600 : 1300, html: "" });
     } else if (live) steps.push({ cls: "clear", ms: 4200, html: "" });
     const run = { el, timer: null, i: -1, key: null };
     beatRun = run;

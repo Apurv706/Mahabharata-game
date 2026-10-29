@@ -176,6 +176,7 @@
   };
   // Where the page starts, ignoring the slide it is in the middle of.
   U.finalTop = null;
+  U.settled = true;
   U.leafTop = () => leafTop();
   function leafTop() {
     const leaf = U.$("leaf");
@@ -194,7 +195,13 @@
     const hb = head ? head.getBoundingClientRect().bottom : 0;
     let mode = "cover", rt = 0, rb = H;
     if (viewing) { mode = "view"; rt = hb; rb = H - 64; }
-    else if (H > W * 1.15 && !document.body.classList.contains("beating")) {
+    // An upright screen, while a scene opens (its cards, then its page being written): the whole
+    // painting, large, in the middle of the screen. A wide painting cannot fill a tall screen
+    // without being cut to a sliver, so it is shown whole on its glow instead.
+    else if (H > W * 1.15 && (!U.settled || document.body.classList.contains("beating"))) { mode = "whole"; rt = 0; rb = H; }
+    // Until a new scene has fully appeared, its painting stays whole-screen behind the page;
+    // then it moves, once, into the space above the page.
+    else if (H > W * 1.15 && !document.body.classList.contains("beating") && U.settled) {
       // While the story is still being written the page grows; the painting takes the place the
       // finished page will leave, so it does not move as the lines appear.
       const top = U.finalTop != null ? U.finalTop : leafTop();
@@ -216,14 +223,14 @@
       s = Math.max(W / iw, H / ih); w = iw * s; h = ih * s;
       const f = (FOCAL[L.dataset.key] || "50% 45%").split(" ").map((v) => parseFloat(v) / 100);
       x = (W - w) * f[0]; y = (H - h) * f[1];
-    } else if (mode === "fit") {
+    } else if (mode === "fit" || mode === "whole") {
       // As large as the space allows, trimming at most two fifths of the width (around the painting's
       // own centre of interest), and sitting just above the page.
       s = Math.min((rb - rt) / ih, W / (0.6 * iw)); s = Math.max(s, Math.min(W / iw, (rb - rt) / ih));
       w = iw * s; h = ih * s;
       const f = (FOCAL[L.dataset.key] || "50% 45%").split(" ").map((v) => parseFloat(v) / 100);
       x = w > W ? Math.min(0, Math.max(W - w, W / 2 - w * f[0])) : (W - w) / 2;
-      y = rb - h;
+      y = mode === "whole" ? rt + (rb - rt - h) / 2 : rb - h;
     } else {
       s = Math.min(W / iw, (rb - rt) / ih); w = iw * s; h = ih * s;
       x = (W - w) / 2; y = rt + (rb - rt - h) / 2;
