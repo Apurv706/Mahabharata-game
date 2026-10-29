@@ -856,3 +856,33 @@ body.inscene .leaf.split.testing.playing { height: 100%; }
 .trial.playing .herdfield canvas { width: auto; height: 100%; max-width: 100%; max-height: 420px; }
 .trial.playing > .trial-body > .boardtable { min-height: 150px; }
 .trial.playing > .trial-body > .ringfield, .trial.playing > .trial-body > .herdfield { min-height: 120px; }
+
+/* ---------- Your puppet stands on the page ----------
+   Large, on the page's top edge at the right, rising above the page in front of the painting,
+   with a warm glow so it reads over any picture. It steps up as the page rises. */
+body.inscene .leaf.split { overflow: visible; }
+body.inscene .leaf.split > .text { border-radius: 0 0 14px 14px; overflow: hidden; }
+body.inscene .leaf.split > .pagehead { position: relative; padding-right: 128px; }
+body.inscene .leaf.split > .pagehead .ppbadge { position: absolute; right: 22px; bottom: 4px; margin: 0; z-index: 3; }
+body.inscene .leaf.split > .pagehead .ppbadge svg { height: min(250px, var(--pupmax, 250px)); filter: drop-shadow(0 0 10px rgba(255, 196, 110, 0.55)) drop-shadow(0 6px 6px rgba(0, 0, 0, 0.6)); } /* taste-skill-ignore: the puppet lit from behind, as on a shadow-puppet screen */
+body.inscene .leaf.split > .pagehead .ppbadge svg.pose-dead { height: 70px; }
+@media (prefers-reduced-motion: no-preference) {
+  body.inscene .leaf.split > .pagehead .ppbadge { animation: pupup 0.7s cubic-bezier(.2, .8, .25, 1.15) 0.35s both; transform-origin: 50% 100%; }
+  @keyframes pupup { from { opacity: 0; transform: translateY(40px) scale(0.85); } }
+}
+@media (max-width: 720px), (max-height: 520px) {
+  body.inscene .leaf.split > .pagehead { padding-right: 92px; }
+  body.inscene .leaf.split > .pagehead .ppbadge { right: 14px; }
+  body.inscene .leaf.split > .pagehead .ppbadge svg { height: min(150px, var(--pupmax, 150px)); }
+}
+/* Phones on their side: no room above the page, so the puppet stands beside it, in front of the painting. */
+@media (orientation: landscape) and (max-height: 520px) {
+  body.inscene .leaf.split > .pagehead { position: static; padding-right: 16px; }
+  body.inscene .leaf.split > .pagehead .ppbadge { right: calc(100% + 18px); bottom: 0; }
+  body.inscene .leaf.split > .pagehead .ppbadge svg { height: min(230px, calc(var(--vh) * 0.62)); }
+}
+/* While a test is played the puppet is already on its stage strip. */
+body.inscene .leaf.split.testing > .pagehead .ppbadge { display: none; }
+/* The title card's puppet, larger too. */
+.beat-title .ppbadge svg { height: clamp(150px, 26vh, 240px); filter: drop-shadow(0 0 12px rgba(255, 196, 110, 0.5)); }
+@media (max-height: 520px) { .beat-title .ppbadge svg { height: 96px; } }

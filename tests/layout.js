@@ -21,6 +21,7 @@ const path = require("path");
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
 const BROWSERS = (arg("--browser", "chromium") === "all" ? "chromium,webkit,firefox" : arg("--browser", "chromium")).split(",");
 const ONLY = arg("--only", "");
+const DEVICE = arg("--device", "");
 const SHOTS = arg("--shots", "");
 // Where the network cannot reach Google Fonts, --fonts DIR serves the same faces from Fontsource
 // packages (fontsource-<family>-<version>/ folders), so text measures as it does for players.
@@ -177,6 +178,38 @@ const PAGE = {
     if (leaf.getBoundingClientRect().bottom > H + 1) out.push("fight page runs off the bottom");
     return out;
   },
+  painting(o) {
+    const out = [];
+    const bd = document.getElementById("backdrop");
+    const L = bd.querySelector(".bdl.on"), pic = L && L.querySelector(".pic");
+    if (!pic) return ["no painting behind the page"];
+    const r = pic.getBoundingClientRect(), W = innerWidth, H = innerHeight;
+    const leaf = document.getElementById("leaf").getBoundingClientRect();
+    const upright = H > W * 1.15;
+    if (upright && o.short) {
+      if (bd.dataset.mode !== "fit") out.push("painting not shown whole above the page (mode " + bd.dataset.mode + ")");
+      else {
+        if (r.left < -1 || r.right > W + 1 || r.top < -1) out.push("painting cut at the edges");
+        if (r.bottom > leaf.top + 2) out.push("page covers the painting by " + Math.round(r.bottom - leaf.top) + "px");
+        if (r.width < W - 2 && r.height < leaf.top - 2 - Math.max(0, r.top)) out.push("painting smaller than the space allows");
+      }
+    } else if (!upright && bd.dataset.mode !== "cover") out.push("painting not filling the screen on a wide screen");
+    const btn = document.getElementById("view-full");
+    const br = btn.getBoundingClientRect();
+    if (o.short && (btn.hidden || (br.bottom > leaf.top + 1 && br.right > leaf.left - 1))) out.push("See-the-painting-whole button missing or under the page");
+    return out;
+  },
+  viewing(o) {
+    const out = [];
+    if (!document.body.classList.contains("viewing")) return ["view-whole did not open"];
+    const leaf = document.getElementById("leaf").getBoundingClientRect();
+    if (leaf.top < innerHeight - 2) out.push("page still on screen while viewing the painting");
+    const pic = document.querySelector("#backdrop .bdl.on .pic").getBoundingClientRect();
+    if (pic.left < -1 || pic.right > innerWidth + 1 || pic.top < -1 || pic.bottom > innerHeight + 1) out.push("painting not whole while viewing");
+    const back = document.getElementById("view-back");
+    if (back.hidden || back.getBoundingClientRect().bottom > innerHeight - (o.sab || 0) + 1) out.push("Back to the story button missing or under the home bar");
+    return out;
+  },
   modal(o) {
     const out = [];
     const m = document.querySelector(".scrim .modal");
@@ -298,7 +331,27 @@ async function runDevice(browser, base, o, report) {
   // Scenes: a short one, the longest canon scene, the scene with the most choices, a war scene.
   await fresh(page, url, o);
   await goScene(page, "a2_trial");
-  await check("short scene", ["topbar", "scene"], { short: true });
+  await check("short scene", ["topbar", "scene", "painting"], { short: true });
+  // See the painting whole, and back.
+  await page.click("#view-full");
+  await page.waitForTimeout(1400);
+  await check("painting whole", ["viewing"]);
+  await page.mouse.click(o.w / 2, o.h / 2);
+  await page.waitForTimeout(900);
+  {
+    const back = await page.evaluate(() => !document.body.classList.contains("viewing") && document.getElementById("leaf").getBoundingClientRect().top < innerHeight - 50);
+    report.push({ browser: browser._name, device: label, screen: "back from the painting", problems: back ? [] : ["a tap did not bring the page back"] });
+  }
+  // A living painting: the training ground has a clip; it plays and shows over the painting.
+  await page.evaluate(() => K.prefs({ living: true }));
+  await page.evaluate(() => { K.UI.setBackdrop(null); });
+  await goScene(page, "a2_trial");
+  await page.waitForTimeout(2200);
+  {
+    const v = await page.evaluate(() => { const v = document.querySelector("#backdrop .bdl.on video"); const t = document.createElement("video"); return { can: !!(t.canPlayType("video/mp4; codecs=avc1.42E01E") || t.canPlayType("video/webm; codecs=vp9")), el: v ? { t: v.currentTime, on: v.classList.contains("on") } : null }; });
+    // A test browser built without either codec cannot play clips; players' browsers can. The painting stays.
+    if (v.can) report.push({ browser: browser._name, device: label, screen: "living painting", problems: !v.el ? ["no clip on a painting that has one"] : v.el.on && v.el.t > 0.3 ? [] : ["clip did not play (" + JSON.stringify(v.el) + ")"] });
+  }
   const picks = await page.evaluate(() => {
     const len = (b) => JSON.stringify(b || "").length;
     let longest = null, most = null, n = 0, L = 0;
@@ -391,9 +444,10 @@ async function runDevice(browser, base, o, report) {
     ran.push(name);
     for (const d of DEVICES) {
       if (ONLY && d.kind !== ONLY) continue;
+      if (DEVICE && !d.name.toLowerCase().includes(DEVICE.toLowerCase())) continue;
       for (const o of shapes(d)) {
         try { await runDevice(browser, base, o, report); }
-        catch (e) { report.push({ browser: name, device: o.name + " " + o.orient, screen: "run", problems: ["run crashed: " + e.message.split("\n")[0]] }); }
+        catch (e) { report.push({ browser: name, device: o.name + " " + o.orient, screen: "run", problems: ["run crashed: " + e.message.split("\n").slice(0, 8).join(" / ")] }); }
       }
     }
     await browser.close();

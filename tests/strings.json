@@ -16108,5 +16108,25 @@
   "id": 3223,
   "en": "Raiders at the border",
   "ctx": "play:a5_local"
+ },
+ {
+  "id": 3224,
+  "en": "See the painting whole",
+  "ctx": "code:dom.js"
+ },
+ {
+  "id": 3225,
+  "en": "Back to the story",
+  "ctx": "code:dom.js"
+ },
+ {
+  "id": 3226,
+  "en": "Living paintings",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 3227,
+  "en": "Some paintings move for a few seconds. Each uses about 1 MB of data.",
+  "ctx": "code:modals.js"
  }
 ]

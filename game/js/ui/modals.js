@@ -91,6 +91,7 @@
       '<div class="seg-row"><span>' + U.tr("Scene titles") + "<small>" + U.tr("Full: a title card before big moments. Short: the title over the painting, for every scene.") + "</small></span>" +
       '<div class="seg" role="radiogroup" aria-label="' + U.tr("Scene titles") + '">' +
       ["full", "short"].map((v) => '<button type="button" role="radio" data-titles="' + v + '" aria-checked="' + ((prefs.titles || "full") === v) + '">' + U.tr(v === "full" ? "Full" : "Short") + "</button>").join("") + "</div></div>" +
+      '<label class="toggle"><input type="checkbox" id="m-living"' + (prefs.living !== false ? " checked" : "") + "><span>" + U.tr("Living paintings") + "<small>" + U.tr("Some paintings move for a few seconds. Each uses about 1 MB of data.") + "</small></span></label>" +
       '<label class="toggle"><input type="checkbox" id="m-timed"' + (prefs.timed !== false ? " checked" : "") + "><span>" + U.tr("Timed moments") + "<small>" + U.tr("At a few hard moments a lamp burns down. If it goes out, you hold your tongue.") + "</small></span></label>" +
       '<label class="toggle"><input type="checkbox" id="m-sound"' + (prefs.sound !== false ? " checked" : "") + "><span>" + U.tr("Sound") + "<small>" + U.tr("The quill, the conch, the dice and the gong.") + "</small></span></label>" +
       '<label class="toggle"><input type="checkbox" id="m-drone"' + (prefs.drone !== false && prefs.music !== false ? " checked" : "") + (prefs.sound === false ? " disabled" : "") + "><span>" + U.tr("Music") + "<small>" + U.tr("Three pieces for the stages of a life: a heroic theme, a fusion piece for the hard years, and a battle anthem for the war.") + "</small></span></label>" +
@@ -108,6 +109,10 @@
           K.prefs({ titles: b.dataset.titles });
           document.querySelectorAll("[data-titles]").forEach((x) => x.setAttribute("aria-checked", String(x === b)));
         }));
+        U.$("m-living").addEventListener("change", (e) => {
+          K.prefs({ living: e.target.checked });
+          if (!e.target.checked) document.querySelectorAll("#backdrop video").forEach((v) => { v.pause(); v.remove(); });
+        });
         U.$("m-timed").addEventListener("change", (e) => { K.prefs({ timed: e.target.checked }); });
         U.$("m-sound").addEventListener("change", (e) => { K.prefs({ sound: e.target.checked }); U.$("m-drone").disabled = !e.target.checked; if (K.Sound) K.Sound.refresh(); });
         U.$("m-drone").addEventListener("change", (e) => { K.prefs({ drone: e.target.checked, music: e.target.checked }); if (K.Sound) K.Sound.refresh(); });

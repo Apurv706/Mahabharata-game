@@ -103,6 +103,8 @@
     story.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
     U.keys([]);
     U.stage([plate, ...story, ...box.children, U.$("keyhint")], () => { U.keys(keys); startLamp(sc, rows); });
+    // The painting settles above the page, and its living version (if it has one) begins.
+    U.fitBackdrop(); U.livePlay();
   };
 
   // ---------- Beats: act cards and scene titles ----------
@@ -126,6 +128,7 @@
     beatRun.el.remove();
     beatRun = null;
     document.body.classList.remove("beating");
+    U.fitBackdrop();
   };
   U.sceneBeats = function (sc, o, done) {
     const S = K.S;

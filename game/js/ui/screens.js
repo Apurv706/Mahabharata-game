@@ -234,6 +234,7 @@
       '<p class="record-line">' + U.tr("Your record: {w} fights won, {l} lost · {p} of {t} tests passed · {g} games won", { w: K.record(S).won, l: K.record(S).lost, p: K.record(S).passed, t: K.record(S).passed + K.record(S).failed, g: K.record(S).gamesWon }) + "</p>" +
       (S.road && S.road.length > 1 && U.mapOf ? '<div class="end-map"><span class="lbl">' + U.tr("Your road") + "</span>" + U.mapOf(S, { px: Math.min(700, window.innerWidth - 40) }) + "</div>" : "") +
       '<div class="btnrow"><button class="cta" id="again" type="button">' + U.tr("Live another life") + '</button><button class="ghost" id="readj" type="button">' + U.tr("Read your journal") + "</button></div></div>";
+    setTimeout(() => { U.fitBackdrop(); U.livePlay(); }, 0);
     const again = () => { K.deleteSlot("auto"); U.renderCreate(); };
     if (U.fitEmblems) U.fitEmblems(leaf);
     U.$("again").addEventListener("click", again);

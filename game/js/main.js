@@ -39,6 +39,7 @@
   const nav = (navigator.languages && navigator.languages[0]) || navigator.language || "";
   K.lang = K.LANGS[saved] ? saved : /^hi\b/i.test(nav) ? "hi" : "en";
   U.applyStatic();
+  U.initBackdrop();
   const problems = K.validate();
   if (problems.length && window.console) console.warn("Content problems:\n" + problems.join("\n"));
   U.renderTitle();

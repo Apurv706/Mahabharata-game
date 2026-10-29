@@ -65,18 +65,167 @@
     "war_day17", "war_day18", "war_eve"]);
   const FOCAL = { scene_teacher: "62% 45%", scene_dice_throws: "28% 35%", home_anga: "30% 50%", scene_princes: "34% 55%", scene_poison: "45% 45%" };
   U.hasWide = (key) => WIDE.has(key) || /^stage_/.test(key || "");
-  let bdKey = null, bdFlip = 0;
+  // Living paintings: short clips made from some paintings (game/video/<key>.mp4). The painting
+  // shows at once; its clip fades in over it when it can play, plays once and rests on its last
+  // frame. Off in the menu, with reduced motion, when the device asks to save data, and in tests.
+  const VIDEOS = new Set(["war_eve", "scene_dice_hall", "scene_poison", "scene_lac", "scene_dice_cloth", "war_day17", "scene_arrows",
+    "end_death", "end_survivor", "end_broken", "end_elder", "end_forest", "end_river", "scene_princes", "scene_fair", "scene_teacher",
+    "scene_teaching", "scene_tournament", "scene_swayamvara", "scene_indraprastha", "scene_dice_throws", "scene_exile", "scene_virata",
+    "scene_day13", "war_day18"]);
+  U.living = function () {
+    if (/jsdom/i.test(navigator.userAgent || "") || K.headless) return false;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+    if (navigator.connection && navigator.connection.saveData) return false;
+    return K.prefs().living !== false;
+  };
+  U.hasVideo = (key) => VIDEOS.has(key);
+
+  // The backdrop has two layers that cross-fade. Each layer is a soft, blurred fill of the painting
+  // and the painting itself, drawn whole or cropped by placing its box:
+  //   cover - fills the screen (title cards, desktops, phones on their side, tests and fights);
+  //   fit   - on an upright screen, the whole painting in the space above the page, the blurred
+  //           fill around it; it zooms out from cover as the page rises;
+  //   view  - "See the painting whole": the page slides away and the painting fills the screen.
+  let bdKey = null, bdFlip = 0, viewing = false;
+  const sizes = {};
+  function layer() { return U.$("backdrop").querySelectorAll(".bdl")[bdFlip]; }
   U.setBackdrop = function (key) {
     const bd = U.$("backdrop");
     if (!bd || key === bdKey) return;
     bdKey = key;
-    const layers = bd.querySelectorAll(".bd");
+    const layers = bd.querySelectorAll(".bdl");
     const next = layers[bdFlip = 1 - bdFlip], prev = layers[1 - bdFlip];
     const wide = key && U.hasWide(key);
-    next.style.backgroundImage = key ? "url('" + U.artUrl(WIDE.has(key) ? key + "_wide" : key) + "')" : "none";
-    next.style.backgroundPosition = FOCAL[key] || "50% 45%";
-    next.classList.toggle("flat", !!key && !wide);
+    const url = key ? U.artUrl(WIDE.has(key) ? key + "_wide" : key) : null;
+    const fill = next.querySelector(".bd"), pic = next.querySelector(".pic");
+    fill.style.backgroundImage = url ? "url('" + url + "')" : "none";
+    fill.style.backgroundPosition = FOCAL[key] || "50% 45%";
+    fill.classList.toggle("flat", !!key && !wide);
+    pic.innerHTML = "";
+    pic.style.backgroundImage = url ? "url('" + url + "')" : "none";
+    next.dataset.key = key || ""; next.dataset.flat = key && !wide ? "1" : ""; next.dataset.played = "";
     next.classList.add("on"); prev.classList.remove("on");
+    const vprev = prev.querySelector("video"); if (vprev) vprev.pause();
+    if (key && VIDEOS.has(key) && U.living()) {
+      const v = document.createElement("video");
+      v.muted = true; v.defaultMuted = true; v.playsInline = true; v.preload = "auto";
+      v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("aria-hidden", "true");
+      // H.264 first (Safari, Chrome, Edge, Firefox); VP9 WebM where H.264 is missing.
+      ["mp4", "webm"].forEach((ext) => { const so = document.createElement("source"); so.src = "video/" + key + "." + ext; so.type = "video/" + ext; v.appendChild(so); });
+      v.addEventListener("playing", () => v.classList.add("on"));
+      // If neither plays, the painting simply stays.
+      const last = v.lastElementChild; if (last) last.addEventListener("error", () => v.remove());
+      pic.appendChild(v);
+    }
+    const place = () => { U.fitBackdrop(true); };
+    if (url && !sizes[url]) {
+      const im = new Image();
+      im.onload = () => { sizes[url] = [im.naturalWidth, im.naturalHeight]; if (bdKey === key) place(); };
+      im.src = url;
+    }
+    next.dataset.url = url || "";
+    place();
+  };
+  // Start the scene's living painting, once per showing.
+  U.livePlay = function () {
+    const L = layer(); if (!L || L.dataset.played) return;
+    const v = L.querySelector("video"); if (!v) return;
+    L.dataset.played = "1";
+    try { const p = v.play(); if (p && p.catch) p.catch(() => v.remove()); } catch (e) { v.remove(); }
+  };
+  // Where the page starts, ignoring the slide it is in the middle of.
+  function leafTop() {
+    const leaf = U.$("leaf");
+    if (!leaf || !leaf.offsetHeight || getComputedStyle(leaf).display === "none") return null;
+    const r = leaf.getBoundingClientRect();
+    const m = getComputedStyle(leaf).transform;
+    const ty = m && m !== "none" ? parseFloat(m.split(",")[5]) || 0 : 0;
+    return r.top - (viewing ? 0 : ty);
+  }
+  U.fitBackdrop = function (instant) {
+    const bd = U.$("backdrop"); if (!bd || !document.body.classList.contains("inscene")) return;
+    const L = layer(); if (!L) return;
+    const pic = L.querySelector(".pic"), size = sizes[L.dataset.url];
+    const W = window.innerWidth, H = window.innerHeight;
+    const head = document.querySelector("header.top");
+    const hb = head ? head.getBoundingClientRect().bottom : 0;
+    let mode = "cover", rt = 0, rb = H;
+    if (viewing) { mode = "view"; rt = hb; rb = H - 64; }
+    else if (H > W * 1.15 && !document.body.classList.contains("beating")) {
+      const top = leafTop();
+      if (top != null && size && top > 90) {
+        mode = "fit";
+        const fullH = W * size[1] / size[0];
+        rb = top; rt = Math.max(0, Math.min(hb, top - fullH));
+      }
+    }
+    // Your puppet stands on the page's edge: never taller than the room up to the top bar.
+    { const tp = leafTop(), ph = document.querySelector(".leaf.split > .pagehead");
+      if (tp != null && ph) document.documentElement.style.setProperty("--pupmax", Math.max(64, Math.round(tp - hb - 6 + ph.offsetHeight - 6)) + "px"); }
+    bd.dataset.mode = mode;
+    bd.classList.toggle("fitted", mode !== "cover");
+    if (!size) { pic.style.cssText += ";left:0;top:0;width:100%;height:100%"; return; }
+    const [iw, ih] = size;
+    let s, w, h, x, y;
+    if (mode === "cover") {
+      s = Math.max(W / iw, H / ih); w = iw * s; h = ih * s;
+      const f = (FOCAL[L.dataset.key] || "50% 45%").split(" ").map((v) => parseFloat(v) / 100);
+      x = (W - w) * f[0]; y = (H - h) * f[1];
+    } else {
+      s = Math.min(W / iw, (rb - rt) / ih); w = iw * s; h = ih * s;
+      x = (W - w) / 2; y = rt + (rb - rt - h) / 2;
+    }
+    pic.classList.toggle("now", !!instant);
+    Object.assign(pic.style, { left: x.toFixed(1) + "px", top: y.toFixed(1) + "px", width: w.toFixed(1) + "px", height: h.toFixed(1) + "px" });
+    placeViewButton(mode, x, y, w, h);
+  };
+  // The small "see it whole" button sits on the painting's lower right corner.
+  function placeViewButton(mode, x, y, w, h) {
+    const b = U.$("view-full"); if (!b) return;
+    const leaf = U.$("leaf");
+    const ok = !viewing && document.body.classList.contains("inscene") && !document.body.classList.contains("beating") &&
+      leaf && leaf.offsetHeight && !leaf.classList.contains("testing") && !leaf.classList.contains("fighting") && !leaf.classList.contains("journeying") && !!bdKey;
+    const top = leafTop();
+    if (!ok || top == null) { b.hidden = true; return; }
+    const lr = leaf.getBoundingClientRect(), W = window.innerWidth, H = window.innerHeight;
+    // On the painting's lower left corner (your puppet stands on the right, on the page's edge).
+    let bt, left;
+    if (top >= 120) { // the painting is above the page
+      bt = mode === "fit" ? Math.min(y + h, top) : top;
+      left = mode === "fit" ? Math.max(0, x) : 0;
+    } else if (lr.left >= 120) { // the painting is beside the page (a phone on its side, a desktop)
+      bt = lr.bottom; left = 0;
+    } else { b.hidden = true; return; }
+    left = Math.max(left, parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--sal")) || 0);
+    // Never over the top bar: with too little painting showing, the button waits.
+    const head = document.querySelector("header.top");
+    if (head && bt - 50 < head.getBoundingClientRect().bottom + 6) { b.hidden = true; return; }
+    b.hidden = false;
+    b.style.top = Math.round(bt - 50) + "px";
+    b.style.left = Math.round(left + 10) + "px"; b.style.right = "auto";
+  }
+  U.viewWhole = function (on) {
+    if (on === viewing) return;
+    viewing = !!on;
+    document.body.classList.toggle("viewing", viewing);
+    U.$("view-back").hidden = !viewing;
+    U.fitBackdrop();
+    if (viewing) U.$("view-back").focus({ preventScroll: true });
+  };
+  U.viewing = () => viewing;
+  window.addEventListener("resize", () => U.fitBackdrop(true));
+  window.addEventListener("orientationchange", () => setTimeout(() => U.fitBackdrop(true), 250));
+  U.initBackdrop = function () {
+    const leaf = U.$("leaf");
+    if (window.ResizeObserver && leaf) new ResizeObserver(() => U.fitBackdrop()).observe(leaf);
+    // The page's own slide ends: settle the painting in the space it leaves.
+    if (leaf) leaf.addEventListener("animationend", () => U.fitBackdrop());
+    U.$("view-full").addEventListener("click", () => U.viewWhole(true));
+    U.$("view-back").addEventListener("click", () => U.viewWhole(false));
+    // A tap on the painting itself (the space around the page) shows it whole; any tap brings the page back.
+    U.$("game").addEventListener("click", (e) => { if (e.target === U.$("game") && !U.$("view-full").hidden) U.viewWhole(true); });
+    document.addEventListener("click", (e) => { if (viewing && !e.target.closest("#view-back, header.top, .scrim")) { e.preventDefault(); e.stopPropagation(); U.viewWhole(false); } }, true);
+    document.addEventListener("keydown", (e) => { if (viewing && (e.key === "Escape" || e.key === " " || e.key === "Enter")) { e.preventDefault(); e.stopPropagation(); U.viewWhole(false); } }, true);
   };
 
   // The scene's painting, or (until the art exists) a flat field in the scene's own colour with its
@@ -108,6 +257,7 @@
   U.setNav = function (on) {
     document.body.classList.remove("titling"); // the title screen adds it back after this call
     if (U.beatStop) U.beatStop();
+    if (U.viewWhole) U.viewWhole(false);
     U.inScene = !!on;
     const leaf = U.$("leaf"); if (leaf) leaf.className = "leaf"; // each screen sets its own page shape
     document.body.classList.toggle("inscene", !!on);
@@ -293,6 +443,8 @@
     });
     U.$("standing-label").textContent = K.tr("Standing");
     U.$("nav-standing").title = K.tr("Standing");
+    U.$("view-full").setAttribute("aria-label", K.tr("See the painting whole")); U.$("view-full").title = K.tr("See the painting whole");
+    U.$("view-back-t").textContent = K.tr("Back to the story");
     U.$("nav-standing").setAttribute("aria-label", K.tr("Obligations, bonds, vows and memories"));
     U.$("ledger").setAttribute("aria-label", K.tr("Obligations, bonds, vows and memories"));
   };
