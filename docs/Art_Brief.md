@@ -48,7 +48,7 @@ Everything requested in the earlier briefs is delivered and in the game: the 29 
 
 The full list of what is still needed, with thumbnails, prompts, layouts and the delivery checklist, is **`docs/Art_Brief_Pictures_Required.pdf`** (83 images):
 
-- **Priority 1, required (5):** redo `fight_camp_gate_night_tall` (eclipse sun, crescent banners); retouch `fight_drupada_yard_tall` (East Asian roof) and `fight_swayamvara_tall` (Greek columns); retouch `p_abhimanyu` (Greek cuirass and helmet); a native 3840×1240 Steam library hero.
+- **Priority 1, required (4):** redo `fight_camp_gate_night_tall` (eclipse sun, crescent banners); retouch `fight_drupada_yard_tall` (East Asian roof) and `fight_swayamvara_tall` (Greek columns); retouch `p_abhimanyu` (Greek cuirass and helmet).
 - **Priority 2, recommended (36):** 12 new 16:9 fight backgrounds for wide screens; 16:9 versions of the 9 endings, 5 war days (`war_bhishma`, `war_capture`, `war_day14`–`16`), `home_suta` and the 9 most-seen scenes (with a fix to Charu in `scene_smith`).
-- **Priority 3, optional (42):** 16:9 versions of the other 16 scenes, the 10 events, the 8 `roots_*` and the 8 `custom_*`.
+- **Priority 3, optional (43):** 16:9 versions of the other 16 scenes, the 10 events, the 8 `roots_*` and the 8 `custom_*`; a sharper Steam library hero (the current one meets Steam's rules and stays in use; it is only slightly soft at full size on 4K screens).
 - **Not for the artist:** five 1920×1080 Steam screenshots (captured from the game); advisory review; a native reader's check of the Hindi logo.
