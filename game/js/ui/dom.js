@@ -65,6 +65,9 @@
     "war_day17", "war_day18", "war_eve"]);
   const FOCAL = { scene_teacher: "62% 45%", scene_dice_throws: "28% 35%", home_anga: "30% 50%", scene_princes: "34% 55%", scene_poison: "45% 45%" };
   U.hasWide = (key) => WIDE.has(key) || /^stage_/.test(key || "");
+  // Tall (9:16) versions of the test stages, painted for upright screens (art/<key>_tall.jpg).
+  const TALL = new Set(["stage_battlefield_night", "stage_board_table", "stage_border_village", "stage_bow_courtyard", "stage_chakravyuha_top", "stage_city_night", "stage_dice_board_top", "stage_drupada_hall", "stage_elephant_grounds", "stage_forest_clearing_night", "stage_forest_edge", "stage_forest_lake", "stage_forest_maze_top", "stage_healers_hall", "stage_khandava_top", "stage_lac_wall", "stage_lotus_garden", "stage_mango_yard", "stage_matsya_ford", "stage_palace_corridor", "stage_palace_garden_night", "stage_prison_yard", "stage_racetrack", "stage_river_shallows", "stage_smithy", "stage_stable_yard", "stage_storm_sea", "stage_training_ground", "stage_vidura_table"]);
+  U.upright = () => window.innerHeight > window.innerWidth * 1.15;
   // ---------- Pause ----------
   // Game time (U.clock) stands still while the game is paused: a phone turned on its side (the game
   // asks to be turned back), or the tab hidden. Tests, the lamp and the fight's timed defence use it.
@@ -135,7 +138,7 @@
     const layers = bd.querySelectorAll(".bdl");
     const next = layers[bdFlip = 1 - bdFlip], prev = layers[1 - bdFlip];
     const wide = key && U.hasWide(key);
-    const url = key ? U.artUrl(WIDE.has(key) ? key + "_wide" : key) : null;
+    const url = key ? U.artUrl(TALL.has(key) && U.upright() ? key + "_tall" : WIDE.has(key) ? key + "_wide" : key) : null;
     const fill = next.querySelector(".bd"), pic = next.querySelector(".pic");
     fill.style.backgroundImage = url ? "url('" + url + "')" : "none";
     fill.style.backgroundPosition = FOCAL[key] || "50% 45%";

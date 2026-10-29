@@ -32,6 +32,21 @@
   K.TRIAL_STANCE = STANCE;
 
   const IMMERSIVE = new Set(["aim", "board"]);
+  // What hangs and swings in the archery test, drawn centred on its middle (about 64 units across).
+  const RUNNERS = new Set(["deer", "tiger", "elephant"]);
+  function AIM_ART(icon) {
+    const loop = '<path d="M0 -40 L0 -30" stroke="#5a3a22" stroke-width="2"/>';
+    if (icon === "lamp") return loop + '<path d="M-18 -6 Q0 18 18 -6 Z" fill="#b5793a" stroke="#4a2a12" stroke-width="2"/><path d="M0 -8 Q-7 -20 0 -32 Q7 -20 0 -8Z" fill="#ffd27a"/><circle cx="0" cy="-16" r="16" fill="#ffb648" opacity=".25"/>';
+    if (icon === "fruit") return loop + '<path d="M0 -30 Q22 -22 18 4 Q12 26 -4 26 Q-20 22 -18 0 Q-16 -24 0 -30Z" fill="#f0a030" stroke="#8a4a14" stroke-width="2"/><path d="M0 -30 Q8 -40 16 -36" stroke="#3f6b3a" stroke-width="3" fill="none"/>';
+    if (icon === "bell") return loop + '<path d="M-20 18 Q-18 -24 0 -28 Q18 -24 20 18 Z" fill="#b8862e" stroke="#5a3a12" stroke-width="2"/><circle cx="0" cy="22" r="5" fill="#5a3a12"/>';
+    if (icon === "deer") return '<g fill="#a8703f" stroke="#3a2a1c" stroke-width="1.5"><path d="M-26 -2 Q-24 -14 -6 -14 L14 -14 Q22 -14 24 -20 L30 -30 L32 -24 L28 -12 Q26 -4 18 -2 L16 16 L12 16 L12 0 L-14 0 L-16 16 L-20 16 L-20 -2 Z"/><path d="M28 -30 l-4 -10 M30 -30 l4 -10 M24 -34 l-6 -4 M34 -34 l6 -4" fill="none"/></g>';
+    if (icon === "tiger") return '<g stroke="#2b1609" stroke-width="1.5" stroke-linejoin="round"><path d="M-30 -6 Q-44 -14 -46 -26 Q-42 -16 -30 -12" fill="none" stroke-width="4" stroke="#e08a2a"/><path d="M-32 -8 Q-30 -20 -12 -20 L14 -20 Q24 -20 28 -12 L30 4 Q30 8 26 8 L24 22 L19 22 L18 8 L-14 8 L-16 22 L-21 22 L-22 8 Q-32 8 -32 -8Z" fill="#e08a2a"/><circle cx="32" cy="-14" r="11" fill="#e08a2a"/><path d="M26 -24 l3 -6 l4 5 M35 -25 l4 -5 l2 7" fill="#e08a2a"/><circle cx="36" cy="-16" r="1.6" fill="#2b1609"/><path d="M40 -9 h4" fill="none"/><path d="M-20 -20 q2 8 -1 14 M-10 -20 q2 8 -1 14 M0 -20 q2 8 -1 14 M10 -20 q2 8 -1 14" fill="none" stroke-width="2.4"/><path d="M-16 8 h-6 M-14 18 h-6" fill="none" stroke-width="0"/></g>';
+    if (icon === "elephant") return '<g fill="#7d7a76" stroke="#2b2622" stroke-width="1.5"><path d="M-34 4 Q-36 -24 -6 -26 Q22 -26 26 -10 Q34 -4 34 10 Q34 22 28 24 L26 12 Q22 4 18 6 L18 22 L10 22 L10 8 L-14 8 L-14 22 L-22 22 L-22 8 Q-30 10 -34 4Z"/><path d="M14 -18 Q8 -8 14 0" fill="none"/></g>';
+    if (icon === "bird") return '<path d="M-26 0 Q-10 -18 0 -4 Q10 -18 26 0 Q10 -8 0 6 Q-10 -8 -26 0Z" fill="#3a2a1c"/>';
+    if (icon === "leaf") return loop + '<path d="M0 -30 Q20 -6 0 28 Q-20 -6 0 -30Z" fill="#6f8f3a" stroke="#3a4f1c" stroke-width="2"/><path d="M0 -26 V24" stroke="#3a4f1c" stroke-width="1.5"/>';
+    // A plain straw target, rope-bound, as on the training ground.
+    return loop + '<circle r="30" fill="#d9b26a" stroke="#6b4a24" stroke-width="3"/><circle r="22" fill="none" stroke="#a87a3a" stroke-width="3"/><circle r="13" fill="none" stroke="#a87a3a" stroke-width="3"/><circle r="5" fill="#b2432a"/><path d="M-30 0 H30 M0 -30 V30" stroke="#8a6230" stroke-width="1.2" opacity=".55"/>';
+  }
   function frame(box, done, c, kind, play) {
     const t = c.trial || {};
     // The stage: a strip of the painting with the figures on it, above the test itself.
@@ -138,15 +153,53 @@
       const range = host.querySelector(".range"), tgt = host.querySelector(".target"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
       const marks = () => { score.textContent = K.tr("Shot {n} of {m}", { n: Math.min(shot + 1, shots), m: shots }) + " · " + K.tr("Hits: {h}", { h: hits }); };
       marks();
+      // On the painting (immersive): the target hangs by a rope from the branch above and swings;
+      // a faint dotted line runs up from your bow to where the arrow will fly; the arrow flies up
+      // the painting and sticks, or whips past.
+      const painted = !!host.closest(".trial.immersive");
+      let P = null;
+      if (painted) {
+        range.classList.add("painted");
+        range.insertAdjacentHTML("beforeend", '<svg class="aimsvg" aria-hidden="true"><line class="rope"/><line class="path"/><circle class="aimpt" r="5"/><g class="tgt"><g class="tgt-art">' + AIM_ART(t.icon) + '</g><g class="stuck"></g></g><g class="flying"><line class="shaft"/><path class="fletch"/></g></svg>');
+        const q = (sel) => range.querySelector(sel);
+        P = { rope: q(".rope"), path: q(".path"), pt: q(".aimpt"), tgt: q(".tgt"), stuck: q(".stuck"), fly: q(".flying"), shaft: q(".shaft"), fletch: q(".fletch"), W: 0, H: 0, L: 0, tx: 0, ty: 0 };
+      }
+      const shoot = (hit, aimOff) => {
+        if (!P) return;
+        const sw = Math.min(P.W * 0.42, P.L * 0.85), xAim = P.W / 2 + (aimOff || 0) * sw;
+        const x0 = P.W / 2, yA = P.H, yB = hit ? P.ty : -40, xB = hit ? P.tx : xAim + (xAim - x0) * (P.H / Math.max(1, P.H - P.L));
+        const t0 = performance.now(), dur = U.motion() ? 240 : 1;
+        P.fly.style.opacity = "1";
+        const step = () => {
+          const f = Math.min(1, (performance.now() - t0) / dur), xx = x0 + (xB - x0) * f, yy = yA + (yB - yA) * f;
+          P.shaft.setAttribute("x1", xx); P.shaft.setAttribute("y1", yy); P.shaft.setAttribute("x2", xx); P.shaft.setAttribute("y2", yy + 46);
+          P.fletch.setAttribute("d", "M" + (xx - 5) + " " + (yy + 46) + "l5 -8l5 8z");
+          if (f < 1) requestAnimationFrame(step);
+          else {
+            P.fly.style.opacity = "0";
+            if (hit) P.stuck.innerHTML = '<line x1="0" y1="2" x2="0" y2="40" stroke="#efe0bc" stroke-width="3"/><path d="M-5 40l5 -8l5 8z" fill="#b2432a"/>';
+          }
+        };
+        requestAnimationFrame(step);
+      };
+      // Chance in every shot: the aim wavers (an unsteady hand), and each arrow drifts a little in
+      // flight (wind, a slipped release). A better archer wavers and drifts less.
+      const sway = clamp(0.05 - power * 0.004, 0.02, 0.05), drift = clamp(0.06 - power * 0.004, 0.03, 0.06);
+      let wob = 0;
+      const gauss = () => { let u = 0; for (let i = 0; i < 3; i++) u += K.rng(); return (u - 1.5) / 0.5; };
       const release = () => {
         if (busy) return;
         busy = true;
-        const hit = Math.abs(x) <= win;
+        const err = gauss() * drift;
+        const off = x - wob - err;
+        const hit = Math.abs(off) <= win;
         if (hit) hits++;
+        shoot(hit, wob + err);
+        if (!hit && Math.abs(x - wob) <= win) note.dataset.gust = "1"; else delete note.dataset.gust;
         cue("act"); setTimeout(() => cue(hit ? "good" : "bad"), 260);
         range.classList.remove("hit", "miss"); void range.offsetWidth; range.classList.add(hit ? "hit" : "miss");
         if (K.Sound) K.Sound.play(hit ? "choose" : "quill");
-        note.textContent = K.tr(hit ? "A hit!" : Math.abs(x) <= win * 1.8 ? "So close." : "A miss.");
+        note.textContent = K.tr(hit ? "A hit!" : note.dataset.gust ? "The wind took it." : Math.abs(off) <= win * 1.8 ? "So close." : "A miss.");
         shot++;
         marks();
         const left = shots - shot;
@@ -154,7 +207,7 @@
           const out = hits >= need ? "win" : need > 1 && hits === need - 1 ? "close" : "lose";
           return setTimeout(() => finish(out, ["You hit {h} of {n}.", { h: hits, n: shot }]), 500);
         }
-        setTimeout(() => { busy = false; speed *= 1.15; note.textContent = ""; range.classList.remove("hit", "miss"); }, 700);
+        setTimeout(() => { busy = false; speed *= 1.15; note.textContent = ""; range.classList.remove("hit", "miss"); if (P) P.stuck.innerHTML = ""; }, 700);
       };
       host.querySelector(".btnrow").appendChild(pressButton(t.verb || "Release", release));
       onAct(release);
@@ -164,9 +217,26 @@
         if (!busy) phase += dt * speed;
         // A pendulum with a little wind in it: never quite the same swing twice.
         x = Math.sin(phase * 2.2) * (0.86 + 0.1 * Math.sin(phase * 0.7));
+        if (!busy && P) wob = sway * (Math.sin(s * 3.1) * 0.7 + Math.sin(s * 5.7 + 1) * 0.3);
         tgt.style.left = (50 + x * 45) + "%";
         // Blindfolded: the target shows itself only at the ends of its swing, where the bell rings.
         if (t.blind) tgt.style.opacity = String(clamp((Math.abs(x) - 0.62) / 0.22, 0, 1));
+        if (P) {
+          const W = range.clientWidth, H = range.clientHeight;
+          P.W = W; P.H = H; P.L = Math.max(80, H * 0.6);
+          const sw = Math.min(W * 0.42, P.L * 0.85), tx = W / 2 + x * sw, dx = tx - W / 2;
+          // Animals run across the ground; everything else swings on its rope.
+          const runs = RUNNERS.has(t.icon);
+          const ty = runs ? P.L : Math.sqrt(Math.max(P.L * P.L - dx * dx, P.L * P.L * 0.25)), ang = runs ? 0 : Math.atan2(dx, ty) * 180 / Math.PI;
+          P.tx = tx; P.ty = ty;
+          if (runs) { P.rope.style.display = "none"; P.dir = Math.cos(phase * 2.2) >= 0 ? 1 : -1; }
+          else { P.rope.setAttribute("x1", W / 2); P.rope.setAttribute("y1", -10); P.rope.setAttribute("x2", tx); P.rope.setAttribute("y2", ty - 30); }
+          P.tgt.setAttribute("transform", "translate(" + tx.toFixed(1) + " " + ty.toFixed(1) + ") rotate(" + (-ang).toFixed(1) + ")" + (runs ? " scale(" + (P.dir * 1.5) + " 1.5)" : ""));
+          const ax = W / 2 + wob * sw;
+          P.path.setAttribute("x1", W / 2); P.path.setAttribute("y1", H); P.path.setAttribute("x2", ax); P.path.setAttribute("y2", P.L + 34);
+          P.pt.setAttribute("cx", ax); P.pt.setAttribute("cy", P.L);
+          if (t.blind) P.tgt.style.opacity = tgt.style.opacity;
+        }
       }, host);
     });
   };
