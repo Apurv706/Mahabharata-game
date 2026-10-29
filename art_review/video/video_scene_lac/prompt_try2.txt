@@ -1,0 +1,18 @@
+Clip: video_scene_lac
+Status: REJECTED - burning version; flames did not spread beyond the windows
+Lighting reference (not sent to Runway; used for the prompt wording): game/art/scene_raid.jpg
+Reference image: scene_lac_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_lac_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: a03dea8c-5145-4607-82ce-636333f2ca38
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+
+PROMPT:
+Night at the lac house in Varnavata under a full moon. Fire catches inside the house: orange flames rise behind the red lacquered walls and lattice windows, spread along the eaves and climb onto the roof; embers and sparks drift upward; thick dark smoke rolls up and slowly drifts across the moon, and the blue moonlit sky turns orange-red above the house. The orange firelight flickers across the trees and the dirt path. In the tunnel mouth at lower left, the small lamp flickers and the digger stays crouched in the shadow. The guards stand still in place. The foreground path stays empty; no one enters the frame. Static locked-off camera, no zoom, no pan. Keep the painting's style, composition and colours, and keep every person exactly as they are.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_scene_lac_try2.mp4.

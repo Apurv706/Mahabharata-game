@@ -1,0 +1,19 @@
+Clip: video_scene_fair
+Status: ACCEPTED (try 1, first 6 seconds only - approved by owner 28 Oct)
+Trim: use 0:00-0:06 only; two people enter the frame in the last 4 seconds. Trim command: ffmpeg -i video_scene_fair_try1.mp4 -t 6 -c:v libx264 -an video_scene_fair_try1_6s.mp4
+Key scene: Act I, the spring fair by the river (wrestling ring; also the stage for Ugra's bout)
+Reference image: scene_fair_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_fair_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: c377d53f-d460-4b67-bfb1-8d7156a1ad69
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+
+PROMPT:
+Sunset at a riverside spring fair. In the wrestling ring the two young wrestlers circle each other in a low crouch, shuffling their feet and feinting with their hands, kicking up small puffs of sand, without grappling. The drummer on the left beats his drum; the crowd behind the rope fence cheers and waves in their places; the children on the swing under the tree swing gently back and forth; flags and awnings flutter; the sailing boats drift slowly on the shining river. The large sandy ground in the foreground stays empty; no one enters the ring or the frame. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_scene_fair_try1.mp4.

@@ -1,0 +1,18 @@
+Clip: video_scene_lac
+Status: ACCEPTED (try 3, approved by owner 28 Oct)
+Change from try 2: flames did not spread. Fire is now the opening line and the main action, with a timeline (first seconds -> whole house engulfed by the end); removed "keep the painting's style, composition and colours" and "keep every person exactly as they are", which held the image back.
+Reference image: scene_lac_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_lac_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: 77808206-011b-45bf-9466-a89e3a8a64e3
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+
+PROMPT:
+The lac house bursts into flames and burns down. Within the first seconds, fire breaks out through the red walls and windows; large roaring flames quickly race along the whole length of the house, leap up the pillars and engulf the entire roof. By the end the whole house is a towering blaze, fire pouring from every window and from the roof, with huge flames rising high into the night sky. Thick black smoke billows upward and covers the moon; showers of sparks and embers fly; the sky glows bright orange; intense flickering firelight lights up the trees and the ground. The guards and the digger in the tunnel stay where they are. No one enters the frame. Static camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_scene_lac_try3.mp4.

@@ -1,0 +1,18 @@
+Clip: video_scene_indraprastha
+Status: ACCEPTED (try 1, approved by owner 28 Oct)
+Key scene: Act III, building Indraprastha (the new city's gate going up)
+Reference image: scene_indraprastha_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_indraprastha_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: 5ce3997e-7801-4ef1-8473-5edfff83057c
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+
+PROMPT:
+A bright morning at the great new city rising by the river. Near the gate the workers keep working in their places: the two white oxen pull the stone cart slowly forward a short way, the men beside it walk with it, and the men by the stone blocks lift and set stones. The elephant by the wall sways its trunk; workers on the scaffolding move slightly; the orange pennants on the towers flutter; clouds drift slowly across the blue sky; the river glitters in the distance. The wide open ground in the foreground stays empty; no one walks into the frame from the front or the sides. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_scene_indraprastha_try1.mp4.

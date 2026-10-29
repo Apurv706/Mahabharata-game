@@ -1,0 +1,19 @@
+Clip: video_scene_dice_throws
+Status: REJECTED - Runway added ordinary cube dice that kept rolling instead of animating the painted long Indian stick-dice
+Key scene: Act IV, the dice game - Shakuni's throw
+Reference image: scene_dice_throws_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_dice_throws_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: a8e11f40-bfb4-405f-b1fc-a31bbe53ed30
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+Review note (Art Brief): canon figures need advisory review before public use.
+
+PROMPT:
+Night in the royal assembly hall during the dice game. The crowned man has just thrown: the long ivory dice tumble and roll slowly across the patterned board, turning over and over, and come to rest. His open hand stays held out, still. The prince on the left watches with his chin on his hand, motionless; the courtiers behind lean forward slightly, tense, in their places. Oil-lamp flames flicker on the candelabras; the gold coins, pearls and jewels on the cushions glint in the moving light; the red drapes sway gently. The polished floor in the foreground stays empty; no one walks into the frame from any side. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_scene_dice_throws_try1.mp4.

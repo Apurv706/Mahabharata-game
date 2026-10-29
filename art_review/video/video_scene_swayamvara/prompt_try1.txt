@@ -1,0 +1,19 @@
+Clip: video_scene_swayamvara
+Status: ACCEPTED (try 1, approved by owner 28 Oct)
+Key scene: Act III, Draupadi's swayamvara at Kampilya (the fish target and the great bow)
+Reference image: scene_swayamvara_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_swayamvara_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: 0479b703-b185-49da-b325-3651d9389fd4
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+Review note (Art Brief): Draupadi appears in this painting; advisory review before public use.
+
+PROMPT:
+Evening in a grand pavilion hung with garlands. The golden fish on its ring high above the hall turns slowly round and round, and its reflection in the still pool below turns with it. The young archer stands still before the great bow on its stand, facing it. The seated kings and the bride's party on the left stay still in their places, watching. Lamp flames flicker on the stands and chandeliers; the garlands and red drapes sway gently; a few rose petals drift slowly on the pool and the reflections shimmer. The pool and the stone steps in the foreground stay empty; no one walks into the frame from any side. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_scene_swayamvara_try1.mp4.

@@ -1,0 +1,20 @@
+Clip: video_scene_day13
+Status: ACCEPTED (try 1, approved by owner 28 Oct)
+Key scene: Act VI, day 13 - Abhimanyu's chariot charges the Chakravyuha
+Reference image: scene_day13_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_day13_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: fce80613-3702-4826-8b0a-803a13793aee
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+Review note (Art Brief): canon figure (Abhimanyu) needs advisory review before public use.
+Fallback: if anyone walks into the empty foreground late, trim to the clean opening seconds (as with the fair and Virata).
+
+PROMPT:
+Sunset on the battlefield. The single chariot with two white horses charges forward, away from us, toward the great spiral battle formation of soldiers; the horses gallop, the wheels spin and churn up thick clouds of dust behind them; the young archer in the chariot holds his drawn bow steady and the charioteer leans forward with the reins. The huge red banner on the chariot whips and snaps in the wind. The rings of the spiral formation stand firm in place, shields raised; the cavalry on both sides ride slowly inward; the war elephants and banners stand still in the distance; dust and haze drift across the field and the sun glows low. The wide empty ground in the foreground stays empty; no one walks or rides into the frame from the front or the sides. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_scene_day13_try1.mp4.

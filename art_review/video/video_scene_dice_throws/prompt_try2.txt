@@ -1,0 +1,18 @@
+Clip: video_scene_dice_throws
+Status: ACCEPTED (try 2, approved by owner 28 Oct)
+Change from try 1: try 1 added ordinary cube dice that never stopped rolling. Try 2 avoids the word "dice" for the objects, describes exactly three long thin rectangular ivory sticks already in the picture, has them settle within the first two seconds and then lie still, and forbids cubes, square dice and new objects.
+Reference image: scene_dice_throws_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_dice_throws_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: a4a8e532-a56c-4c58-9e6e-5d19a2ba74ab
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+
+PROMPT:
+Night in the royal assembly hall during the game. On the board are exactly three long, thin, rectangular ivory sticks with black markings, already in the picture. In the first two seconds these same three sticks finish their tumble, roll over once or twice and settle flat on the board, then lie completely still for the rest of the clip. No cubes, no square dice and no new objects appear. The crowned man's open hand stays held out, still. The prince on the left watches with his chin on his hand, motionless; the courtiers behind lean forward slightly, tense, in their places. Oil-lamp flames flicker; the gold coins and jewels glint in the moving light; the red drapes sway gently. No one walks into the frame. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_scene_dice_throws_try2.mp4.

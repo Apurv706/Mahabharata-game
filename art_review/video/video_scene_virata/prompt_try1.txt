@@ -1,0 +1,21 @@
+Clip: video_scene_virata
+Status: ACCEPTED (try 1, first 7 seconds only - approved by owner 28 Oct)
+Trim: use 0:00-0:07 only; a person with a stick enters in the last 3 seconds. Trim command: ffmpeg -i video_scene_virata_try1.mp4 -t 7 -c:v libx264 -an video_scene_virata_try1_7s.mp4
+Key scene: Act V, the year in hiding at King Virata's court (the dancer, the courtier at the game table, the cook)
+Reference image: scene_virata_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_virata_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: dd87eee3-f0ce-4751-b06b-889acb590403
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+Review note (Art Brief): canon figures in disguise need advisory review before public use.
+Lesson applied (dice throws): the game pieces are described as ivory sticks, not "dice", and stay still.
+
+PROMPT:
+Sunset in a lakeside royal pavilion. The dancer in the white and orange sari dances slowly and gracefully in place, her raised arm and hands moving in a flowing gesture, her skirt swaying, her ankle bells shimmering. The musician on the right plucks the strings of her tall lute; the woman beside her stands still. The king on the couch watches, still; the man at the low table keeps his hands resting on the board, and the long ivory sticks on the table stay where they lie. The cook holding the pot and the seated courtiers on the left stay in their places. Lamp flames flicker; the hanging drapes sway gently; the lake glitters and the lotus leaves bob slightly; the sun sinks a little toward the hills. The polished floor in the foreground stays empty; no one walks into the frame from any side. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_scene_virata_try1.mp4.

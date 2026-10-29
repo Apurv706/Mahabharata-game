@@ -1,0 +1,18 @@
+Clip: video_end_survivor
+Status: ACCEPTED (try 1, approved by owner 28 Oct)
+Ending: The survivor (also "The wounded survivor", "Broken survivor")
+Reference image: end_survivor.jpg (3:1; no 16:9 version exists)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/game/art/end_survivor.jpg
+Model: Gen-4.5 (gen4.5), image to video  [Gen-4 Turbo has no 21:9]
+Ratio: 21:9 (1584x672 output)
+Duration: 10 s
+Task ID: edc6d672-9f1d-4eac-8c7e-0f567aa34c3d
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 120
+
+PROMPT:
+Sunrise over the battlefield after the war. The lone survivor stands still among the wreckage, looking out across the field; only his cloak and scarf stir and lift in the wind. Torn banners and pennants flutter on their broken poles; a low mist drifts slowly over the field; a few distant birds circle in the sky; the sun rises slowly and the light grows warmer. The broken chariot, shields and weapons on the ground stay where they lie. The survivor does not walk or turn. No other people appear and no one enters the frame. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_end_survivor_try1.mp4.

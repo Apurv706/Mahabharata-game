@@ -1,0 +1,19 @@
+Clip: video_war_day17
+Status: ACCEPTED (try 2, approved by owner 28 Oct)
+Change from try 1: try 1 added a stick in his hand. Try 2 has him grip the rim with both bare, empty hands, forbids any stick/staff/weapon, and keeps the fallen spear and shields on the ground.
+Reference image: war_day17_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/war_day17_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: 21196cc5-9393-43a1-b640-6d097833b67f
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+Review note (Art Brief): Karna's face needs advisory review before public use.
+
+PROMPT:
+Sunset on the battlefield at Kurukshetra. The warrior grips the rim of the chariot wheel sunk in the mud with both bare hands, his empty fingers wrapped around the wooden rim, and heaves with all his strength to pull it out: he strains, the wheel rocks and lifts slightly, then sinks back into the mud, and he heaves again. He holds nothing in his hands: no stick, no staff, no weapon. The fallen spear and shields stay lying on the ground where they are. Wet mud churns, splashes and oozes around the wheel; puddles ripple. The red elephant banner snaps in a strong wind; dust and haze drift across the field; the low sun glows. The distant archer in his chariot stays in the background with his bow drawn; the army on the left stands still. The muddy foreground stays empty; no one enters the frame. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_war_day17_try2.mp4.

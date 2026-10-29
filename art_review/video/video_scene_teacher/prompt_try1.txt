@@ -1,0 +1,18 @@
+Clip: video_scene_teacher
+Status: ACCEPTED (try 1, approved by owner 28 Oct)
+Key scene: Act II, the training ground at dawn (teacher choice)
+Reference image: scene_teacher_wide.jpg (2560x1440, Priority 2 repaint: straw targets, timber-and-brick fort)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_teacher_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: 5563ed4d-3d56-4bfe-97e5-1fcf85f25beb
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+
+PROMPT:
+Dawn on the training ground. The teacher with the quiver stands still in the centre, watching his students. The young archers in front of him draw their bows slowly, hold, and release; their arrows fly straight into the round straw targets, which shudder slightly. The long rows of students behind them stand still in their places. Banners ripple in the morning breeze; the leaves of the great tree sway; mist drifts slowly over the distant lake; the sun rises a little over the hills. The bare ground in the foreground stays empty; no one walks into the frame from any side. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_scene_teacher_try1.mp4.

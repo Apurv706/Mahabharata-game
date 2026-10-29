@@ -1,0 +1,18 @@
+Clip: video_end_forest
+Status: ACCEPTED (try 1, approved by owner 28 Oct)
+Ending: Renunciation (vanaprastha)
+Reference image: end_forest.jpg (1800x600, 3:1; no 16:9 version exists)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/game/art/end_forest.jpg
+Model: Gen-4.5 (gen4.5), image to video  [Gen-4 Turbo has no 21:9]
+Ratio: 21:9 (1584x672 output)
+Duration: 10 s
+Task ID: 0ae7159e-742a-400c-8020-1526810af81f
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 120
+
+PROMPT:
+Morning in a deep forest. The old renunciant in saffron robes walks slowly away from us along the leaf-covered path, leaning on his wooden staff, taking a few slow, steady steps further down the path toward the thatched hut. Golden sunbeams shift softly through the tall trees; dust and pollen float in the light; leaves and ferns sway gently in a light breeze; a few leaves drift down. He keeps walking away and does not turn around. No one else appears and no one enters the frame. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_end_forest_try1.mp4.

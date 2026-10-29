@@ -1,0 +1,18 @@
+Clip: video_end_broken
+Status: ACCEPTED (try 1, approved by owner 28 Oct)
+Ending: The broken vow
+Reference image: end_broken.jpg (1800x600, 3:1; no 16:9 version exists)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/game/art/end_broken.jpg
+Model: Gen-4.5 (gen4.5), image to video  [Gen-4 Turbo has no 21:9]
+Ratio: 21:9 (1584x672 output)
+Duration: 10 s
+Task ID: 2050bb85-72e1-464e-97c3-f57493a1a6f8
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 120
+
+PROMPT:
+Dusk at a quiet village house. A figure sits alone in the doorway, hugging their knees, turned away from us; they stay still, with only slow, heavy breathing. The warm lamplight inside the house flickers softly on the walls; the three clay lamps on the step stay unlit; the leaves of the plants stir in a light breeze; the evening sky beyond the trees slowly darkens. The shield, spear and quiver hang still on the wall. The figure does not turn, stand or move their arms. No one else appears and no one enters the frame. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_end_broken_try1.mp4.

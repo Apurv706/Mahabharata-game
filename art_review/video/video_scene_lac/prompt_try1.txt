@@ -1,0 +1,6 @@
+Clip: video_scene_lac
+Status: try 1, tunnel version - written but NOT sent (owner chose the burning version)
+Reference image: scene_lac_wide.jpg (2560x1440)
+
+PROMPT (not sent):
+Night at the lac house in Varnavata under a full moon. In the tunnel mouth at lower left, the digger quietly scoops earth into his basket and lifts it, working in secret by the small lamp. Torch flames and the lamps inside the house flicker; the red lacquered walls glow and shimmer in the firelight; leaves on the trees stir in a light breeze; thin clouds drift slowly past the moon. The guards and the people inside the house stand still in place. The dirt path in the foreground stays empty; no one enters the frame. The house does not catch fire. Static locked-off camera, no zoom, no pan. Keep the painting's style, composition and colours, and keep everyone except the digger exactly as they are.

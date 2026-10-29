@@ -1,0 +1,19 @@
+Clip: video_end_death
+Status: ACCEPTED (try 1, approved by owner 28 Oct)
+Ending: Glorious death (also used for "Fallen at the breach")
+Reference image: end_death.jpg (1800x600, 3:1; no 16:9 version exists)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/game/art/end_death.jpg
+Model: Gen-4.5 (gen4.5), image to video  [Gen-4 Turbo has no 21:9]
+Ratio: 21:9 (1584x672 output)
+Duration: 10 s
+Task ID: d8688c47-8788-46ae-a798-7a2ae395f0f4
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 120
+Review note (Art Brief): this painting may read as Karna's death (sun banner, sunk wheel); mild blood.
+
+PROMPT:
+An empty battlefield at sunset after the fighting. The broken chariot lies tilted in the tall grass. Its torn banner flaps and twists hard in the wind; the tall grass sways in waves; two birds glide slowly across the orange sky; dust drifts low over the field; the sun sinks slowly toward the horizon and the light dims. Nothing else moves. No people appear and no one enters the frame. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_end_death_try1.mp4.

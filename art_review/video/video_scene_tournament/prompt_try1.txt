@@ -1,0 +1,19 @@
+Clip: video_scene_tournament
+Status: ACCEPTED (try 1, approved by owner 28 Oct)
+Key scene: Act II, the tournament - Karna walks into the arena
+Reference image: scene_tournament_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_tournament_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: 17770a6d-8b7a-4868-9cb2-0ec48032c709
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+Review note (Art Brief): canon figures need advisory review before public use.
+
+PROMPT:
+Sunset in a great tournament arena. The lone warrior in golden armour walks slowly away from us across the arena floor, bow in hand, his red cloak swaying with each step; small puffs of dust rise from his feet. The vast crowd in the stands stirs and murmurs, a ripple of movement running through them; the royals in the box on the left lean forward slightly. Banners and pennants ripple in the evening wind; the torch flames flicker; dust drifts low over the arena; the sun sinks slowly toward the mountains. The guards in the lines stand still. The empty arena floor behind him stays empty; no one else walks into the frame from any side. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_scene_tournament_try1.mp4.

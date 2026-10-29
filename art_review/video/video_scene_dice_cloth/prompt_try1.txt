@@ -1,0 +1,18 @@
+Clip: video_scene_dice_cloth
+Status: ACCEPTED (try 1, approved by owner 28 Oct)
+Reference image: scene_dice_cloth.jpg (1800x600, 3:1; no 16:9 version exists)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/game/art/scene_dice_cloth.jpg
+Model: Gen-4.5 (gen4.5), image to video  [Gen-4 Turbo rejected 21:9; owner chose Gen-4.5 to keep the full painting]
+Ratio: 21:9 (1584x672 output)
+Duration: 10 s
+Task ID: 28d37919-e7a5-4b25-a29f-22d7ca1ae15b
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 120
+Content rule (Art Brief): show the hall, the cloth and the court's reaction only; never Draupadi.
+
+PROMPT:
+The assembly hall after the dice game, as the cloth that does not end keeps coming. The great heap of pale gold-bordered cloth on the floor grows: fresh lengths of cloth keep pouring in and unfolding from the right, rippling forward in slow soft waves, sliding and piling up higher across the polished floor. Oil-lamp flames flicker; the golden light from the doorway shimmers; banners sway slightly. The seated elders and courtiers stay frozen in shock in their places, with only slight breathing. No person appears in the cloth or enters the frame. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_scene_dice_cloth_try1.mp4.

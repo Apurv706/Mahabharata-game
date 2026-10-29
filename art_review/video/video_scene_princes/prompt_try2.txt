@@ -1,0 +1,18 @@
+Clip: video_scene_princes
+Status: ACCEPTED (try 2, approved by owner 28 Oct)
+Change from try 1: try 1 had a person in black enter and dissolve into fruits. Try 2 fixes the count ("exactly seven boys, no other people at any time"), has the fruit fall straight down from the leaves, keeps the boys in place, names every place no one may enter from, and adds "nothing changes shape". Dropped the drifting petals.
+Reference image: scene_princes_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_princes_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: 85f4c7c5-cb3b-4512-aec6-430d39c31c0e
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+
+PROMPT:
+Golden late afternoon in a palace garden beside a lotus pond. There are exactly seven boys in the scene and no other people at any time. The strong boy at the tree trunk shakes the fruit tree; the branches rock and a few small round fruits fall straight down from the leaves above him onto the grass. The boys beneath laugh and reach up to catch them, staying in their places. The boy on the right keeps his arms folded and stands still. Leaves sway and glitter in the warm light; the lotus pond ripples gently and the reflections shimmer. Nobody walks into the scene from the sides, the back, the trees or the palace; the garden, the steps and the pond stay empty of anyone else. Nothing changes shape. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_scene_princes_try2.mp4.

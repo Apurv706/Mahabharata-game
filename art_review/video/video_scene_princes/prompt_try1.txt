@@ -1,0 +1,18 @@
+Clip: video_scene_princes
+Status: REJECTED - a figure in black walked in and dissolved into fruits
+Key scene: Act I, the princes at play (Bhima's strength, Duryodhana's resentment)
+Reference image: scene_princes_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_princes_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: 4b217151-59a8-4ec9-86c9-8da206abefab
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+
+PROMPT:
+Golden late afternoon in a palace garden beside a lotus pond. The strong boy at the tree trunk shakes the fruit tree with both hands; the branches rock and a few ripe fruits drop down, and the laughing boys beneath reach up and scramble to catch them. The boy standing apart on the right keeps his arms folded and watches, still. Leaves sway and glitter in the warm light; petals drift down; the lotus pond ripples gently and the reflections shimmer; the lotus flowers bob slightly. The pond and the stone steps in the foreground stay empty; no one enters the frame. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_scene_princes_try1.mp4.

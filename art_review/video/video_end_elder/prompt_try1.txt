@@ -1,0 +1,18 @@
+Clip: video_end_elder
+Status: ACCEPTED (try 1, approved by owner 28 Oct)
+Ending: The wise elder
+Reference image: end_elder.jpg (1800x600, 3:1; no 16:9 version exists)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/game/art/end_elder.jpg
+Model: Gen-4.5 (gen4.5), image to video  [Gen-4 Turbo has no 21:9]
+Ratio: 21:9 (1584x672 output)
+Duration: 10 s
+Task ID: 35ba0484-bbad-406b-8095-e53b48ab2848
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 120
+
+PROMPT:
+Late afternoon in a sunlit palace courtyard. The elder sits on the carpet with his back to us, teaching the young students gathered around him; his head moves slightly as he speaks and his shawl stirs in the breeze. The students listen in their places; the two at the edges write slowly on their palm leaves. Leaves on the courtyard trees sway gently; warm sunlight flickers through the branches and shifts softly across the walls and the floor; a few dust motes drift in the light. The guards at the back stand still. No one stands up, walks or leaves, and no one enters the frame. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_end_elder_try1.mp4.

@@ -1,0 +1,18 @@
+Clip: video_end_river
+Status: ACCEPTED (try 1, approved by owner 28 Oct)
+Ending: The river (broken vow / the one who would not, alternate)
+Reference image: end_river.jpg (1600x533, 3:1, Priority 2 repaint; no 16:9 version exists)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/game/art/end_river.jpg
+Model: Gen-4.5 (gen4.5), image to video  [Gen-4 Turbo has no 21:9]
+Ratio: 21:9 (1584x672 output)
+Duration: 10 s
+Task ID: aaeaa3cd-d9f5-49de-b55f-f906d92f72ac
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 120
+
+PROMPT:
+Sunset on the river steps. A lone warrior sits on the stone steps by the water with his head bowed, the bow and quiver lying beside him; he stays still, with only slow breathing. The small leaf-boat lamps drift slowly along the river and their flames flicker; mist moves softly across the water; the sun's reflection ripples and shimmers; the lamps on the steps flicker; the leaves of the tree overhead sway in a light breeze; the sun sinks a little toward the hills. The warrior does not turn, stand or move his arms. No one else appears and no one enters the frame. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_end_river_try1.mp4.

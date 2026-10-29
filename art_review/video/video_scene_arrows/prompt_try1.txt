@@ -1,0 +1,18 @@
+Clip: video_scene_arrows
+Status: ACCEPTED (try 1, approved by owner 28 Oct)
+Reference image: scene_arrows.jpg (1800x750, 2.4:1; no 16:9 version exists)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/game/art/scene_arrows.jpg
+Model: Gen-4.5 (gen4.5), image to video  [Gen-4 Turbo has no 21:9]
+Ratio: 21:9 (1584x672 output)
+Duration: 10 s
+Task ID: cb0130c4-0918-48ee-9eba-e0c5b3e1766a
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 120
+Review note (Art Brief): canon portraits (Bhishma and the princes) need advisory review before public use.
+
+PROMPT:
+Dusk on the battlefield, after the fighting has stopped. The old warrior lies still on the bed of arrows, his chest rising and falling with slow, shallow breaths. Around him the kneeling and standing warriors keep their places in silent grief; a few slowly bow their heads. Torch flames flicker and sway in a soft evening wind; the banners ripple slowly; the low sun sinks a little toward the hills and the orange sky slowly dims; a thin haze drifts across the field. The weapons and helmets on the ground stay where they lie. No one enters the frame and no one stands up or walks. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_scene_arrows_try1.mp4.

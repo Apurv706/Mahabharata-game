@@ -1,0 +1,19 @@
+Clip: video_scene_exile
+Status: ACCEPTED (try 1, approved by owner 28 Oct)
+Key scene: Act V, the Pandavas and Draupadi leave the city for exile
+Reference image: scene_exile_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/scene_exile_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: b5619294-edce-4773-b76c-fff6681eefac
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+Review note (Art Brief): canon figures (the Pandavas, Draupadi) need advisory review before public use.
+
+PROMPT:
+Sunset at the city gate. The five brothers and the woman in red walk slowly away from us down the road toward the misty valley, side by side, their backs to us, each taking a few slow steps further away. The crowds lining the walls and the road stand still in silent farewell, watching them go; the guards at the gate stand still. Torch flames flicker; the blue banners ripple in the evening wind; dust drifts low over the road; mist moves slowly through the valley below; the sun sinks a little toward the hills. The road in the foreground stays empty; no one else walks into the frame or follows them. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_scene_exile_try1.mp4.

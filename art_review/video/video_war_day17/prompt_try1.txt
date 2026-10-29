@@ -1,0 +1,18 @@
+Clip: video_war_day17
+Status: REJECTED - Runway put a stick in the warrior's hand
+Reference image: war_day17_wide.jpg (2560x1440)
+Source: https://raw.githubusercontent.com/Apurv706/mahabharata-game/main/art_review/wide_v2/war_day17_wide.jpg
+Model: Gen-4 Turbo (gen4_turbo), image to video
+Ratio: 1280:720
+Duration: 10 s
+Task ID: 4e69672a-b5dc-42e1-88c2-07cafca03357
+Seed: random (not returned by Runway)
+Date: 2026-10-28
+Credits: 50
+Review note (Art Brief): Karna's face needs advisory review before public use.
+
+PROMPT:
+Sunset on the battlefield at Kurukshetra. The warrior heaves with all his strength at the chariot wheel sunk in the mud: he pushes and strains, the wheel rocks and lifts slightly, then sinks back into the mud, and he pushes again. Wet mud churns, splashes and oozes around the wheel; puddles ripple. The red elephant banner snaps in a strong wind; dust and haze drift across the field; the low sun glows. The distant archer in his chariot stays in the background with his bow drawn; the army on the left stands still. The muddy foreground stays empty; no one enters the frame. Static locked-off camera, no zoom, no pan.
+
+RESULT:
+Video file is in the Runway workspace (task ID above); add it to this zip as video_war_day17_try1.mp4.
