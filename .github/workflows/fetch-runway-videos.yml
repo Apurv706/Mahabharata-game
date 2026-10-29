@@ -29,6 +29,7 @@ jobs:
             [ -z "$clip" ] && continue
             dir="art_review/video/$clip"
             mkdir -p "$dir"
+            if [ -f "$dir/$file" ]; then echo "already have $dir/$file"; continue; fi
             if curl -fsSL --retry 3 -o "$dir/$file" "$url"; then
               ls -l "$dir/$file"
             else
@@ -38,7 +39,7 @@ jobs:
             fi
             if [ "$trim" != "0" ]; then
               out="$dir/${file%.mp4}_${trim}s.mp4"
-              ffmpeg -loglevel error -y -i "$dir/$file" -t "$trim" -c:v libx264 -preset veryfast -crf 20 -an "$out"
+              ffmpeg -nostdin -loglevel error -y -i "$dir/$file" -t "$trim" -c:v libx264 -preset veryfast -crf 20 -an "$out"
               ls -l "$out"
             fi
           done
@@ -60,5 +61,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898733+github-actions[bot]@users.noreply.github.com"
           git add art_review/video
-          git commit -m "Add accepted Runway clips (key moments, endings, key scenes) with zips"
+          git diff --cached --quiet || git commit -m "Add accepted Runway clips (key moments, endings, key scenes) with zips"
           git push
