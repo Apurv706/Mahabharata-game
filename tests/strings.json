@@ -16153,5 +16153,320 @@
   "id": 3232,
   "en": "Steer with the arrows or a swipe. Reach everyone you can, then bring them out through the gap at the top.",
   "ctx": "code:play.js"
+ },
+ {
+  "id": 3233,
+  "en": "Danger: failing could cost your life",
+  "ctx": "code:flow.js"
+ },
+ {
+  "id": 3234,
+  "en": "Danger: failing could mean a cell",
+  "ctx": "code:flow.js"
+ },
+ {
+  "id": 3235,
+  "en": "Duryodhana's watchmen",
+  "ctx": "scene:a4_household_again"
+ },
+ {
+  "id": 3236,
+  "en": "The cells below the palace, Hastinapura",
+  "ctx": "scene:a4_household_again"
+ },
+ {
+  "id": 3237,
+  "en": "A watchman catches your sleeve, and this time he does not let go. Vidura's message is in his hand before you hit the ground.",
+  "ctx": "scene:a4_household_again"
+ },
+ {
+  "id": 3238,
+  "en": "Carrying Vidura's message the night of the exile, you were caught by Duryodhana's watchmen.",
+  "ctx": "scene:a4_household_again"
+ },
+ {
+  "id": 3239,
+  "en": "The watchmen catch you, and Duryodhana hears your name. It counts as two failures, and it will weigh on every stealth test to come; if your stealth is low, they may keep you.",
+  "ctx": "scene:a4_household_again"
+ },
+ {
+  "id": 3240,
+  "en": "Duryodhana's men",
+  "ctx": "scene:a4_household_again"
+ },
+ {
+  "id": 3241,
+  "en": "The patrol takes the steward at the gate, and you with him. The family gets away across the river. You hear about it a month later, through the wall.",
+  "ctx": "scene:a4_household_again"
+ },
+ {
+  "id": 3242,
+  "en": "Getting a steward's family out the night after the dice game, you were taken by Duryodhana's men.",
+  "ctx": "scene:a4_household_again"
+ },
+ {
+  "id": 3243,
+  "en": "The patrol takes the steward, and they will remember your face. It counts as two failures, and it will weigh on every stealth test to come; if your stealth is low, they may take you too.",
+  "ctx": "scene:a4_household_again"
+ },
+ {
+  "id": 3244,
+  "en": "The rings close behind you instead of in front. For a moment you see Abhimanyu's banner, far inside. Then the spears.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 3245,
+  "en": "{They} broke into the wheel after Abhimanyu on the thirteenth day, and the rings closed behind {them}.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 3246,
+  "en": "The wheel closes, and your company blames you. It counts as two failures, and it will weigh on your command; with little command, you may be caught inside.",
+  "ctx": "scene:a6_wheel_again"
+ },
+ {
+  "id": 3247,
+  "en": "In chains",
+  "ctx": "scene:x_captive"
+ },
+ {
+  "id": 3248,
+  "en": "Locked away",
+  "ctx": "scene:x_captive"
+ },
+ {
+  "id": 3249,
+  "en": "Get out over the wall",
+  "ctx": "scene:x_captive"
+ },
+ {
+  "id": 3250,
+  "en": "A guard on the watch platform swings his torch across the yard. Reach the gate twice: once to slip the bar, once to slip through.",
+  "ctx": "scene:x_captive"
+ },
+ {
+  "id": 3251,
+  "en": "The guard nearly sees you. You can try again another night.",
+  "ctx": "scene:x_captive"
+ },
+ {
+  "id": 3252,
+  "en": "You were locked away once, and went over the wall.",
+  "ctx": "scene:x_captive"
+ },
+ {
+  "id": 3253,
+  "en": "The bar lifts without a sound. You are through the gate and over the ditch before the guard turns back.",
+  "ctx": "scene:x_captive"
+ },
+ {
+  "id": 3254,
+  "en": "Wait. Someone will remember you, in time",
+  "ctx": "scene:x_captive"
+ },
+ {
+  "id": 3255,
+  "en": "You were locked away for months, and waited until they let you go.",
+  "ctx": "scene:x_captive"
+ },
+ {
+  "id": 3256,
+  "en": "You wait. The seasons turn outside the wall. When they finally open the gate, the world has gone on without you.",
+  "ctx": "scene:x_captive"
+ },
+ {
+  "id": 3257,
+  "en": "Another night",
+  "ctx": "scene:x_captive_again"
+ },
+ {
+  "id": 3258,
+  "en": "The bar is still loose. The guard on the platform has a cough now, and turns away to spit.",
+  "ctx": "scene:x_captive_again"
+ },
+ {
+  "id": 3259,
+  "en": "They drag you back and double your chains, and you wait out the months in the dark. It counts as two failures, and it will weigh on every stealth test to come.",
+  "ctx": "scene:x_captive_again"
+ },
+ {
+  "id": 3260,
+  "en": "They drag you back from the gate and double your chains. Months pass in the dark before anyone remembers to let you go.",
+  "ctx": "scene:x_captive_again"
+ },
+ {
+  "id": 3261,
+  "en": "Wait it out",
+  "ctx": "scene:x_captive_again"
+ },
+ {
+  "id": 3262,
+  "en": "You stop counting the nights. When they finally open the gate, the world has gone on without you.",
+  "ctx": "scene:x_captive_again"
+ },
+ {
+  "id": 3263,
+  "en": "Kaurava outriders",
+  "ctx": "scene:a2_drupada"
+ },
+ {
+  "id": 3264,
+  "en": "A cell below the palace, Hastinapura",
+  "ctx": "scene:a2_drupada"
+ },
+ {
+  "id": 3265,
+  "en": "Kaurava outriders ride you down on the road. This time they do not send you home. They tie your hands to a saddle and take you back to Hastinapura, to wait on the elders' pleasure.",
+  "ctx": "scene:a2_drupada"
+ },
+ {
+  "id": 3266,
+  "en": "Kaurava outriders caught you warning Panchala's villages, and locked you away.",
+  "ctx": "scene:a2_drupada"
+ },
+ {
+  "id": 3267,
+  "en": "The guard does not shout. He takes you for a thief in the dark, and he does not ask questions.",
+  "ctx": "scene:a3_tunnel_again"
+ },
+ {
+  "id": 3268,
+  "en": "{They} carried earth out of the tunnel at Varnavata by night, and one of Purochana's guards took {them} for a thief.",
+  "ctx": "scene:a3_tunnel_again"
+ },
+ {
+  "id": 3269,
+  "en": "A guard sees you, and Purochana starts asking questions. It counts as two failures, and it will weigh on every stealth test to come; if your stealth is low, the guard may not stop at questions.",
+  "ctx": "scene:a3_tunnel_again"
+ },
+ {
+  "id": 3270,
+  "en": "A king's bodyguard does not wait for you to finish your sentence.",
+  "ctx": "scene:a3_swayamvara"
+ },
+ {
+  "id": 3271,
+  "en": "{They} stepped between the angry kings at Draupadi's swayamvara, and did not step back out.",
+  "ctx": "scene:a3_swayamvara"
+ },
+ {
+  "id": 3272,
+  "en": "The curtain moves behind you. Shakuni's man is there before you can turn, and his hand is over your mouth.",
+  "ctx": "scene:a3_rajasuya"
+ },
+ {
+  "id": 3273,
+  "en": "{They} listened behind a curtain at Indraprastha, and Shakuni's men made sure {they} never told what {they} heard.",
+  "ctx": "scene:a3_rajasuya"
+ },
+ {
+  "id": 3274,
+  "en": "Duryodhana's guards",
+  "ctx": "scene:a4_stakes"
+ },
+ {
+  "id": 3275,
+  "en": "The cells below the assembly hall",
+  "ctx": "scene:a4_stakes"
+ },
+ {
+  "id": 3276,
+  "en": "Duryodhana rises. \"Slander, in the king's hall,\" he says, and the guards take you down to the cells while the game goes on above you.",
+  "ctx": "scene:a4_stakes"
+ },
+ {
+  "id": 3277,
+  "en": "You called Shakuni's dice false, and Duryodhana had you locked away.",
+  "ctx": "scene:a4_stakes"
+ },
+ {
+  "id": 3278,
+  "en": "Dushasana's guards drag you out of the hall. Duryodhana does not even look round. \"Below,\" he says, \"until they learn the king's peace.\"",
+  "ctx": "scene:a4_draupadi"
+ },
+ {
+  "id": 3279,
+  "en": "You stepped between Dushasana and Draupadi, and Duryodhana had you locked away.",
+  "ctx": "scene:a4_draupadi"
+ },
+ {
+  "id": 3280,
+  "en": "You cannot think for thirst. You drink. The water is cold, and then there is nothing.",
+  "ctx": "scene:a5_yaksha_again"
+ },
+ {
+  "id": 3281,
+  "en": "{They} drank from the lake in the forest without answering the voice, as the Pandavas did, and no one came to bring {them} back.",
+  "ctx": "scene:a5_yaksha_again"
+ },
+ {
+  "id": 3282,
+  "en": "You cannot think for thirst. You drink, and fall like the others. It counts as two failures, and it will weigh on every test of lore to come; if your lore and wisdom are low, you may not get up again.",
+  "ctx": "scene:a5_yaksha_again"
+ },
+ {
+  "id": 3283,
+  "en": "The arrows come from across the field, and they do not care whose hands are on the wheel.",
+  "ctx": "scene:a6_day17"
+ },
+ {
+  "id": 3284,
+  "en": "{They} jumped down to help Karna lift his sunken wheel, and fell in the dust beside it.",
+  "ctx": "scene:a6_day17"
+ },
+ {
+  "id": 3285,
+  "en": "Your shout brings someone, but not the help you wanted. Ashwatthama finds you in the smoke.",
+  "ctx": "scene:a6_raid"
+ },
+ {
+  "id": 3286,
+  "en": "{They} tried to wake the sleeping camp on the last night, and Ashwatthama reached {them} first.",
+  "ctx": "scene:a6_raid"
+ },
+ {
+  "id": 3287,
+  "en": "You wake in chains, on stone. {who} took you, and nobody will come asking for you soon.",
+  "ctx": "play:x_captive"
+ },
+ {
+  "id": 3288,
+  "en": "Above you a torch swings on the watch platform. The bar on the gate is old, and loose.",
+  "ctx": "play:x_captive"
+ },
+ {
+  "id": 3289,
+  "en": "{They} {were} locked away once for crossing the wrong people, and went over the wall.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 3290,
+  "en": "{They} {were} locked away once for crossing the wrong people, and lost a season of {their} life in the dark.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3291,
+  "en": "On the fourth trip a horse goes down on top of you. When you wake, the enemy's camp guards are binding your hands.",
+  "ctx": "play:a6_capture"
+ },
+ {
+  "id": 3292,
+  "en": "A prisoners' pen behind the enemy's lines",
+  "ctx": "play:x_captive"
+ },
+ {
+  "id": 3293,
+  "en": "Kaurava soldiers",
+  "ctx": "play:x_captive"
+ },
+ {
+  "id": 3294,
+  "en": "Carrying the wounded under fire, you were taken by the enemy.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 3295,
+  "en": "Pandava soldiers",
+  "ctx": "play:x_captive"
  }
 ]

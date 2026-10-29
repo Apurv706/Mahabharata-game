@@ -8,9 +8,11 @@
     trial: { attr: "grace", skill: "stealth", verb: "Move", stage: "stage_lac_wall", cast: ["guard"], help: "Hold to creep along the wall with the basket. Stop before the torchlight reaches you.",
       rules: "Purochana's guard walks the house with a torch. Carry two baskets of earth out of the tunnel without being seen. Seen twice, and you must stop for the night.",
       stakes: ["The tunnel grows by a night's digging, and the Pandavas will owe you.", "You have to stop for the night. The miner will try again tomorrow, with or without you."] },
-    retryStakes: ["The tunnel grows by a night's digging, and the Pandavas will owe you.", "A guard sees you, and Purochana starts asking questions. It counts as two failures, and it will weigh on every stealth test to come."],
+    retryStakes: ["The tunnel grows by a night's digging, and the Pandavas will owe you.", "A guard sees you, and Purochana starts asking questions. It counts as two failures, and it will weigh on every stealth test to come; if your stealth is low, the guard may not stop at questions."],
     win: { fx: { bond: { yudhishthira: 2, bhima: 1 }, rep: { pandava: 2 }, flag: ["helped_tunnel", "act3_tested"], journal: "You helped dig the tunnel under the house at Varnavata." }, text: "Night after night you carry baskets of earth into the dark. No one sees you." },
     lose: { fx: { flag: "act3_tested" }, text: "A torch swings your way. You drop the basket and crawl back into the dark. \"Tomorrow night,\" the miner whispers." },
+    peril: { kind: "death", text: "The guard does not shout. He takes you for a thief in the dark, and he does not ask questions.",
+      deathText: "{They} carried earth out of the tunnel at Varnavata by night, and one of Purochana's guards took {them} for a thief." },
     retryLose: { penalty: 1, fx: { rep: { kuru: -2 }, flag: ["seen_at_tunnel", "tunnel_twice"] }, text: "One of Purochana's guards sees a figure near the house at night. He does not see your face, but he will keep looking." } };
 
   K.scenes([
@@ -96,6 +98,8 @@
       choices: [
         { id: "fight", t: "Stand with the two brahmins against the angry kings", combat: "e_kings" },
         { id: "calm", t: "Talk the nearest kings down before blood is spilled",
+          peril: { kind: "death", text: "A king's bodyguard does not wait for you to finish your sentence.",
+            deathText: "{They} stepped between the angry kings at Draupadi's swayamvara, and did not step back out." },
           check: { attr: "command", skill: "statecraft", dc: 8,
             pass: { fx: { rep: { panchala: 1, yadava: 1, common: 1 }, flag: "calmed_kings" }, text: "Two kings sheathe their swords and walk out with you. Fewer men are hurt that day because of it." },
             fail: { fx: {}, text: "Nobody listens to you. You step back as the fighting starts." } } },
@@ -168,7 +172,9 @@
       choices: [
         { id: "laugh", t: "Laugh with everyone else", fx: { bond: { bhima: 1, duryodhana: -2 }, memory: ["duryodhana", "You laughed when he fell in the water."] } },
         { id: "help", t: "Give Duryodhana your hand and a dry cloak", fx: { bond: { duryodhana: 2 }, duty: { conscience: 1 }, memory: ["duryodhana", "You helped him out of the water when everyone was laughing."] } },
-        { id: "listen", t: "Follow Duryodhana and Shakuni and listen", req: { any: [{ path: "spy" }, { teacher: "vidura" }, { attr: ["grace", 4] }] }, locked: "You would need to be quiet on your feet.",
+        { id: "listen", t: "Follow Duryodhana and Shakuni and listen",
+          peril: { kind: "death", text: "The curtain moves behind you. Shakuni's man is there before you can turn, and his hand is over your mouth.",
+            deathText: "{They} listened behind a curtain at Indraprastha, and Shakuni's men made sure {they} never told what {they} heard." }, req: { any: [{ path: "spy" }, { teacher: "vidura" }, { attr: ["grace", 4] }] }, locked: "You would need to be quiet on your feet.",
           check: { attr: "grace", skill: "stealth", dc: 8,
             pass: { fx: { flag: "knows_dice_plot", journal: "You overheard Shakuni planning a game of dice to ruin the Pandavas." }, text: "Behind a curtain you hear Shakuni say it plainly: Yudhishthira cannot refuse a challenge to dice, and Shakuni cannot lose." },
             fail: { fx: { rep: { kuru: -1 } }, text: "A guard moves you along before you hear anything useful." } } },

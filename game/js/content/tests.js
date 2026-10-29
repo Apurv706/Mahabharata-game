@@ -16,7 +16,7 @@
     close: addFlag(v.close || v.lose, againFlag(id, k)), lose: addFlag(v.lose, againFlag(id, k)) });
   // The second chance carries the way back: fail it, and the earlier question opens again with this
   // option crossed out (v.back, or the test's own d.back; see K.loopBack).
-  K.retryChoice = (id, k, v, back) => ({ id: k, t: v.retryT || v.t, img: v.img, req: { flag: againFlag(id, k) }, locked: "", game: v.game, hint: "Your second chance",
+  K.retryChoice = (id, k, v, back) => ({ id: k, t: v.retryT || v.t, img: v.img, req: { flag: againFlag(id, k) }, locked: "", game: v.game, hint: "Your second chance", peril: v.peril,
     trial: Object.assign({}, v.trial, { stakes: v.retryStakes }), win: v.win, close: v.retryLose, lose: v.retryLose,
     back: v.back || back ? Object.assign({ clear: id }, back, v.back, { why: (v.back && v.back.why) || v.crossWhy }) : undefined });
   K.retryWhen = (id, keys) => (S) => keys.some((k) => S.flags.includes(againFlag(id, k)));
@@ -347,7 +347,10 @@
       trial: { attr: "grace", skill: "stealth", stage: "stage_city_night", cast: ["guard"], verb: "Move", help: "Hold to move along the wall. Stop before the torchlight reaches you.", tally: "Messages through: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "Through. Back for the next.", spotted: "A shout. You run back into the dark.",
         rules: "Vidura's servant finds you. The game is lost, the Pandavas leave for exile at dawn, and Duryodhana's watchmen guard Kunti's door. Carry Vidura's two messages past them unseen.",
         stakes: ["Kunti gets Vidura's words before her sons leave.", "The watchmen turn you back. You may try again before dawn."] },
-      retryStakes: ["Kunti gets Vidura's words before her sons leave.", "The watchmen catch you, and Duryodhana hears your name. It counts as two failures, and it will weigh on every stealth test to come."],
+      retryStakes: ["Kunti gets Vidura's words before her sons leave.", "The watchmen catch you, and Duryodhana hears your name. It counts as two failures, and it will weigh on every stealth test to come; if your stealth is low, they may keep you."],
+      peril: { kind: "prison", by: "Duryodhana's watchmen", place: "The cells below the palace, Hastinapura",
+        text: "A watchman catches your sleeve, and this time he does not let go. Vidura's message is in his hand before you hit the ground.",
+        journal: "Carrying Vidura's message the night of the exile, you were caught by Duryodhana's watchmen." },
       win: { fx: { rep: { pandava: 1 }, bond: { vidura: 1 }, flag: "message_carried", journal: "You carried Vidura's message to Kunti the night the Pandavas went into exile." }, text: "Kunti reads Vidura's words by the last of the lamp, and folds them into her sari." },
       lose: { fx: {}, text: "A torch swings your way and you run. You still have the message. Dawn is a few hours off." },
       retryLose: { penalty: 1, fx: { rep: { kuru: -1, pandava: -1 }, flag: "message_twice" }, text: "A watchman catches your sleeve. You tear free, but he has seen your face, and by morning Duryodhana knows your name." } },
@@ -356,7 +359,10 @@
         tally: "Brought through: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "Through the gate. Back for the others.", spotted: "A patrol shouts. You pull them back into a doorway.",
         rules: "Before dawn, Duryodhana's men ride in to seize everything that was Yudhishthira's, and everyone who served him. Your neighbours have been hiding one of his stewards and his family. Get them out through the night streets, past the patrols, in two trips.",
         stakes: ["The steward's family is across the river before the light comes.", "A patrol turns you back. You can try again before dawn."] },
-      retryStakes: ["The steward's family is across the river before the light comes.", "The patrol takes the steward, and they will remember your face. It counts as two failures, and it will weigh on every stealth test to come."],
+      retryStakes: ["The steward's family is across the river before the light comes.", "The patrol takes the steward, and they will remember your face. It counts as two failures, and it will weigh on every stealth test to come; if your stealth is low, they may take you too."],
+      peril: { kind: "prison", by: "Duryodhana's men", place: "The cells below the palace, Hastinapura",
+        text: "The patrol takes the steward at the gate, and you with him. The family gets away across the river. You hear about it a month later, through the wall.",
+        journal: "Getting a steward's family out the night after the dice game, you were taken by Duryodhana's men." },
       win: { fx: { rep: { pandava: 1, common: 1 }, duty: { conscience: 1 }, flag: "household_out", journal: "The night after the dice game you got one of Yudhishthira's stewards and his family out past Duryodhana's patrols." }, text: "The ferryman takes them across in the grey light. The steward's little girl waves from the boat until the mist takes her." },
       lose: { fx: {}, text: "A torch comes round the corner and you pull them back into a doorway. The street is quiet again. There is still time." },
       retryLose: { penalty: 1, fx: { rep: { kuru: -1 }, duty: { conscience: -1 }, flag: "household_twice" }, text: "The patrol takes the steward at the gate. His family gets away, and he does not look back at you as they lead him off." } }
@@ -377,7 +383,9 @@
     trial: { attr: "wisdom", skill: "lore", rounds: YAKSHA_ROUNDS, stage: "stage_forest_lake",
       rules: "The voice speaks from the water. \"Answer my questions first,\" it says, \"then drink.\" Answer before the lamp burns down. Two right answers of three.",
       stakes: ["The voice lets you drink, and you remember every answer for life.", "The voice falls silent, waiting. You may answer again before you drink."] },
-    retryStakes: ["The voice lets you drink, and you remember every answer for life.", "You cannot think for thirst. You drink, and fall like the others. It counts as two failures, and it will weigh on every test of lore to come."],
+    retryStakes: ["The voice lets you drink, and you remember every answer for life.", "You cannot think for thirst. You drink, and fall like the others. It counts as two failures, and it will weigh on every test of lore to come; if your lore and wisdom are low, you may not get up again."],
+    peril: { kind: "death", text: "You cannot think for thirst. You drink. The water is cold, and then there is nothing.",
+      deathText: "{They} drank from the lake in the forest without answering the voice, as the Pandavas did, and no one came to bring {them} back." },
     win: { fx: { attr: { wisdom: 1 }, flag: "answered_yaksha", journal: "At the lake you answered the voice in the water. What is faster than the wind? The mind." }, text: "\"Drink,\" says the voice. The water is cold and sweet. You remember every word of it for the rest of your life." },
     lose: { fx: {}, text: "Your answer comes out wrong, and the voice falls silent. The water is right there. You wait." },
     retryLose: { penalty: 1, fx: { attr: { might: -1 }, flag: "yaksha_twice" }, text: "You cannot think for thirst. You drink. Darkness, and then you are lying on the bank in the evening, alive, with a heaviness in your limbs that never quite leaves." } };
@@ -458,7 +466,9 @@
       trial: { attr: "command", skill: "chariot", kind: "war", mode: "open", stage: "stage_chakravyuha_top", cast: ["abhimanyu"], turns: "The wheel turns.",
         rules: "The wheel of warriors turns ring within ring, and each ring has one opening that moves. Line every opening up with the outer one, and your company can follow Abhimanyu in.",
         stakes: ["You open a way, and your company holds it longer than anyone thought it could.", "The rings close. A second wave is forming."] },
-      retryStakes: ["You open a way, and your company holds it longer than anyone thought it could.", "The wheel closes, and your company blames you. It counts as two failures, and it will weigh on your command."],
+      retryStakes: ["You open a way, and your company holds it longer than anyone thought it could.", "The wheel closes, and your company blames you. It counts as two failures, and it will weigh on your command; with little command, you may be caught inside."],
+      peril: { kind: "death", text: "The rings close behind you instead of in front. For a moment you see Abhimanyu's banner, far inside. Then the spears.",
+        deathText: "{They} broke into the wheel after Abhimanyu on the thirteenth day, and the rings closed behind {them}." },
       win: { fx: { rep: { pandava: 1 }, flag: "held_wheel" }, text: "For a few heartbeats the openings line up and the way is yours. Men pour through behind you." },
       lose: { fx: {}, text: "The rings turn shut in front of you. Behind you, the second wave is forming." },
       retryLose: { penalty: 1, fx: { rep: { pandava: -1 }, flag: "wheel_twice" }, text: "The wheel closes again. Your company does not look at you." } },
@@ -681,4 +691,34 @@
   const ct = K.SCENES.a3_courttest_again;
   if (ct) ct.choices = ct.choices.map((c) => (c.id === "panchala" ? Object.assign(c, { trial: Object.assign({}, c.trial, { rounds: COURT.panchala.again }) }) : c));
   K.YAKSHA = YAKSHA; K.YAKSHA_AGAIN = YAKSHA_AGAIN;
+
+  // ---------- A cell (any act): where a perilous failure can put you (see K.inPeril) ----------
+  // A way out over the wall (a test of stealth), or the long wait. Either way the story goes on
+  // from where it would have gone (S.captive.then).
+  const CAPTOR = (S) => (S.captive && S.captive.by) || "the guards";
+  const captiveArt = (S) => (S.act >= 6 ? "war_capture" : "scene_secret");
+  const captivePlace = (S) => (S.captive && S.captive.place) || "A cell";
+  const captiveThen = (S) => (S.captive && S.captive.then) || "end_life";
+  const waitThen = (S) => (S.captive && (S.captive.waitThen || S.captive.then)) || "end_life"; // the long wait can outlast what was happening (a war)
+  const WAIT = { unflag: "captive", flag: "waited_out_captivity", duty: { family: -1 }, rep: { common: -1 },
+    journal: "You were locked away for months, and waited until they let you go." };
+  const ESCAPE = { t: "Get out over the wall", game: "sneak", hint: "A test of stealth",
+    trial: { attr: "grace", skill: "stealth", stage: "stage_prison_yard", cast: ["guard"], verb: "Move", trips: 2, help: "Hold to creep along the wall. Stop when the torch on the watch platform turns your way.",
+      tally: "Gate reached: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "At the gate. Back to the shadows.", spotted: "The guard on the platform calls out. You freeze in the corner.",
+      rules: "A guard on the watch platform swings his torch across the yard. Reach the gate twice: once to slip the bar, once to slip through.",
+      stakes: ["You are over the wall and away before dawn.", "The guard nearly sees you. You can try again another night."] },
+    retryStakes: ["You are over the wall and away before dawn.", "They drag you back and double your chains, and you wait out the months in the dark. It counts as two failures, and it will weigh on every stealth test to come."],
+    win: { fx: { unflag: "captive", flag: "escaped_captivity", rep: { common: 1 }, journal: "You were locked away once, and went over the wall." }, text: "The bar lifts without a sound. You are through the gate and over the ditch before the guard turns back." },
+    lose: { fx: {}, text: "The torch swings back and you freeze in the corner, not breathing. The guard yawns and turns away. Not tonight." },
+    retryLose: { penalty: 1, next: waitThen, fx: Object.assign({}, WAIT, { flag: ["waited_out_captivity", "captive_twice"] }), text: "They drag you back from the gate and double your chains. Months pass in the dark before anyone remembers to let you go." } };
+  K.scenes([
+    { id: "x_captive", art: captiveArt, place: captivePlace, caption: "In chains", title: "Locked away",
+      body: (S) => [["You wake in chains, on stone. {who} took you, and nobody will come asking for you soon.", { who: CAPTOR(S) }], "Above you a torch swings on the watch platform. The bar on the gate is old, and loose."],
+      choices: [K.testChoice("x_captive", "escape", ESCAPE), { id: "wait", t: "Wait. Someone will remember you, in time", fx: WAIT, next: waitThen, text: "You wait. The seasons turn outside the wall. When they finally open the gate, the world has gone on without you." }],
+      next: "x_captive_again" },
+    { id: "x_captive_again", when: K.retryWhen("x_captive", ["escape"]), skipTo: captiveThen, art: captiveArt, place: captivePlace, caption: "Another night", title: "Another night",
+      body: ["The bar is still loose. The guard on the platform has a cough now, and turns away to spit."],
+      choices: [K.retryChoice("x_captive", "escape", ESCAPE), { id: "wait", t: "Wait it out", fx: WAIT, next: waitThen, text: "You stop counting the nights. When they finally open the gate, the world has gone on without you." }],
+      next: captiveThen }
+  ]);
 })(window.K = window.K || {});

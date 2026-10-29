@@ -136,6 +136,8 @@ const fl = (f) => results.filter((r) => (r.flags || []).includes(f)).length;
 console.log("Dice: learned " + fl("learned_pasha") + ", beat Haridatta " + fl("beat_haridatta") + ", watched Shakuni " + fl("watched_hands") + ", saw the swap " + fl("saw_swap") + "; Nishada came " + fl("nishada_came") + "; reborn " + fl("reborn"));
 const deaths = results.filter((r) => r.ending && !r.alive);
 console.log("Died in the war:  " + deaths.length);
+console.log("Perils: died " + fl("peril_death") + " (" + deaths.filter((r) => (r.flags || []).includes("peril_death") && !(r.seen || []).some((id) => /^a6_/.test(id))).length + " before the war), locked away " + fl("was_imprisoned") +
+  " (escaped " + fl("escaped_captivity") + ", waited " + fl("waited_out_captivity") + ")");
 { const roads = results.filter((r) => r.road); const avg = roads.reduce((n, r) => n + r.road.length, 0) / (roads.length || 1);
   const stops = {}; for (const r of roads) for (const k of new Set(r.road)) stops[k] = (stops[k] || 0) + 1;
   console.log("Map: " + avg.toFixed(1) + " places per life; lives that reached each: " + Object.entries(stops).sort((a, b) => b[1] - a[1]).map(([k, n]) => k + " " + n).join(", "));

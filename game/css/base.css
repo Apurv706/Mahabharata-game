@@ -126,6 +126,7 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 .choice .t { font-weight: 700; font-size: 18px; line-height: 1.35; }
 .choice .fx { font-size: 14.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 2px 14px; }
 .fx .up { color: var(--positive); } .fx .down { color: var(--negative); } .fx .vow { color: var(--accent); }
+.fx .danger { font-weight: 700; } /* a perilous choice: failing out of your depth can mean death or a cell */
 .fx .check { color: var(--check); } .fx .combat { color: var(--negative); font-weight: 700; }
 .choice:disabled { cursor: not-allowed; background: transparent; }
 .choice:disabled .t { color: var(--faint); }

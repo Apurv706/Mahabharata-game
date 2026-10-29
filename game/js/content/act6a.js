@@ -105,6 +105,9 @@
         { id: "guard", t: "Guard Yudhishthira's chariot", req: { side: "pandava" }, combat: "e_guard" },
         { id: "hunt", t: "Drive for Yudhishthira's chariot", req: { side: "kaurava" }, combat: "e_hunt" },
         { id: "carry", t: "Carry the wounded off the field under fire",
+          peril: (S) => ({ kind: "prison", by: S.side === "kaurava" ? "Pandava soldiers" : "Kaurava soldiers", place: "A prisoners' pen behind the enemy's lines", waitThen: "a7_field",
+            text: "On the fourth trip a horse goes down on top of you. When you wake, the enemy's camp guards are binding your hands.",
+            journal: "Carrying the wounded under fire, you were taken by the enemy." }),
           check: { attr: "grace", skill: "chariot", dc: 8,
             pass: { fx: { rep: { common: 2 }, duty: { conscience: 1 }, journal: "You carried the wounded off the field on the eleventh and twelfth days." }, text: "Seven trips into the dust and back. Seven people who will see their families again." },
             fail: { fx: { injury: "leg" }, text: "On the fourth trip a horse goes down on top of you." } } }

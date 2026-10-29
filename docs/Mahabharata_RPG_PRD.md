@@ -376,6 +376,10 @@ The player and every character are drawn as **tholu bommalata** leather shadow p
 ### 16.4 Tests
 - 17 kinds of skill test, each a minute or two: archery, wrestling, steady hands, stealth, noticing, mudra and verse drills, rhythm, chariot and boat races, herding, the ring puzzle, retorts, drawing the bow, the dice, Shakuni's hands, and three board games (chaupar, tigers and goats, Moksha Patam). Two failures can close a way and send the player back to an earlier choice (loop-back), at most once per act.
 - **Every test is played on its painting.** The stage painting is the playing field: the top bar and page fall away, the puppets stand big on the painting, the test's name and score sit at the top and the controls at the foot; rules and stakes are a card before, and the verdict (You win / So close / You lose) is written over the scene after. Archery has a straw target swinging on a rope from the branch, and animals (deer, tiger, elephant) drawn as leather puppets running across the ground. Wrestling pushes across the painted ground; steady hands shows the hand over the glow; in stealth the player's puppet creeps through the scene; races run as vertical courses on the tall course paintings, steered left and right; herding is played upright with the way out at the top; the dice and Shakuni's hands are played on the painted cloth. A test written without a stage gets the usual ground for its kind.
+- **Failure has teeth (peril).** Some checks and tests set the player against someone who can have them killed or locked away. Fail one while out of your depth (under an even chance on a check, or below 4 in the test's attribute plus skill on a second attempt) and the failure is death or a cell, not a bruise; a capable player who fails gets the ordinary setback. The choice warns first ("Danger: failing could cost your life / mean a cell"). Story mode turns a death into a scar. A cell offers a stealth escape over the wall or the long wait (in the war, waiting means sitting out the rest of it); the ending remembers either.
+  - Death: listening to Shakuni at Indraprastha; calming the kings at the swayamvara; the Varnavata tunnel (Purochana's guard); drinking at the Yaksha's lake unanswered; breaking into the wheel after Abhimanyu; helping Karna lift his wheel; waking the camp on the night of the raid.
+  - A cell: warning Panchala's villages (Kaurava outriders); calling Shakuni's dice false; stepping between Dushasana and Draupadi; Vidura's message and the steward's family on the night of the exile (Duryodhana's men); carrying the wounded under fire (taken by the enemy).
+  - In automated play (random choices) about 1 life in 12 ends in a peril death, half of them before the war.
 - **Chance in skill tests.** Not every good attempt succeeds: in archery the aim wavers and each arrow drifts (less for a better archer), so a perfectly timed shot hits about 3 in 4 for a beginner and nearly always for a master.
 - Tall (9:16) stage paintings for all 29 test stages are in the game for upright screens.
 
@@ -386,7 +390,7 @@ Turn-based fights with shadow puppets on a painted stage, timed block and dodge,
 25 Runway clips (7 key moments, 6 endings, 12 key scenes) play in place of their paintings, silently, once, resting on the last frame; on phones at full width during the scene's opening, on desktops full-screen. Encoded for the web (H.264, with VP9 WebM as a fallback), about 0.2 to 1.4 MB each. Menu switch; off with reduced motion or data saver. Extending clips to fill a tall phone screen (Runway expand) is deferred until credits allow.
 
 ### 16.7 Language
-English and Hindi, 3,339 strings, none missing in automated Hindi playthroughs. The Hindi dictionary loads only when Hindi is chosen. The Hindi is a draft and needs a native reader's review.
+English and Hindi, 3,405 strings, none missing in automated Hindi playthroughs. The Hindi dictionary loads only when Hindi is chosen. The Hindi is a draft and needs a native reader's review.
 
 ### 16.8 Quality checks
 - **Playthroughs** (tests/playthrough.js): hundreds of automated lives; no crashes, no dead ends; tests per life by act about 1 / 2 / 2 / 1 / 2 / 1 / 0.4.
@@ -419,7 +423,7 @@ The paintings' JPG originals (97 MB) are kept outside the game in `assets/art_sr
 3. Deferred video (needs Runway credits): clips extended to tall for phones; clips for the 3 endings, 8 key scenes and 29 test stages without one.
 
 ### Review and release (needs people)
-4. Native Hindi review of all 3,339 strings.
+4. Native Hindi review of all 3,405 strings.
 5. Advisory review: canon portraits, every living painting (faces, hands, canon figures), Draupadi in the dice and exile images, the key art.
 6. Fill in the **[confirm]** lines of the AI disclosure: the image tools the artists used, how much of the story text was edited by hand, and the review status.
 7. Playtests: the timed block/dodge window on phones; whether board games finish within two minutes; whether loop-backs read clearly; whether title cards and the 4-second clip moments feel welcome after an hour; whether archery's chance feels fair; whether full-screen tests and fights read clearly on a small phone.

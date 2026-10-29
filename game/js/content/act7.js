@@ -115,6 +115,7 @@
     if (has("household_out")) t.push("The night after the dice game, {they} got a steward's family out past Duryodhana's patrols.");
     if (has("turned_herd")) t.push("{They} brought Virata's herd across the ford when the Kauravas raided Matsya.");
     if (has("refused_raid")) t.push(has("escaped_prison") ? "{They} refused to ride on Matsya, and went over Duryodhana's prison wall for it." : "{They} refused to ride on Matsya, and sat in Duryodhana's prison yard for it.");
+    if (has("was_imprisoned") && !has("refused_raid")) t.push(has("escaped_captivity") ? "{They} {were} locked away once for crossing the wrong people, and went over the wall." : "{They} {were} locked away once for crossing the wrong people, and lost a season of {their} life in the dark.");
     if (has("killed_maneater")) t.push("{They} killed the man-eater at the edge of the Kamyaka forest.");
     if (has("answered_yaksha")) t.push("At the lake in the forest, {they} answered the voice in the water.");
     if (has("kept_home_earth")) t.push("{They} carried a handful of {origin}'s earth all {their} life.");

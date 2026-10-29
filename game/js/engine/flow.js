@@ -130,6 +130,23 @@
     return parts.join(" + ");
   };
 
+  // Peril: some checks and tests set you against someone who can have you killed or locked away.
+  // Fail one while out of your depth (under an even chance on a check, or below K.PERIL_MIN in the
+  // test's attribute and skill) and the failure is death or a cell, not a bruise. A capable player
+  // who fails gets the ordinary failure. Story mode turns a death into a scar, as everywhere else.
+  K.PERIL_MIN = 4;
+  K.inPeril = function (c, S = K.S) {
+    if (!c || !c.peril) return false;
+    if (c.check) return K.checkOdds(c.check, S) < 0.5;
+    const t = c.trial || {};
+    return (t.attr ? K.attr(t.attr, S) : 0) + (t.skill ? S.skills[t.skill] || 0 : 0) + K.merits({ attr: t.attr, skill: t.skill }, S).n < K.PERIL_MIN;
+  };
+  K.perilNote = function (c, S = K.S) {
+    if (!K.inPeril(c, S)) return null;
+    const p = K.val(c.peril, S);
+    return p.kind === "death" ? K.tr("Danger: failing could cost your life") : K.tr("Danger: failing could mean a cell");
+  };
+
   // ▲/▼ previews are generated from the same data the engine applies.
   K.preview = function (c, S = K.S) {
     const out = [];
@@ -154,6 +171,8 @@
       const m = K.merits(c.check, S);
       if (m.n) out.push([m.n > 0 ? "up" : "down", K.tr(m.n > 0 ? "Your past helps (+{n})" : "Your past counts against you ({n})", { n: m.n })]);
     }
+    const danger = K.perilNote(c, S);
+    if (danger) out.push(["down danger", danger]);
     if (c.combat) out.push(["combat", K.tr("Leads to a fight")]);
     const hint = K.val(c.hint, S);
     if (hint) out.push(["", K.text(hint, null, S)]);
@@ -166,6 +185,8 @@
     const dyn = c.resolve ? c.resolve(S) : null; // decided from the state at the moment of choice
     const delta = {};
     const res = { text: null, check: null, combat: c.combat || null, next: null, after: null };
+    const perilous = K.inPeril(c, S); // judged before this choice changes anything
+    let peril = null;
     addDelta(delta, K.apply(c.fx));
     addDelta(delta, K.apply(dyn));
     if (c.check) {
@@ -180,6 +201,7 @@
       if (br.text) res.text = K.val(br.text); // raw English: the UI translates and fills it
       if (br.next) res.next = K.val(br.next);
       if (br.combat) res.combat = br.combat;
+      if (!pass && perilous) peril = K.val(c.peril, S);
     }
     if (c.game && outcome) { // a game or action test played inside the scene picks its branch
       res.outcome = outcome;
@@ -189,8 +211,10 @@
       addDelta(delta, K.apply(br.fx));
       if (br.text) res.text = K.val(br.text);
       if (br.next) res.next = K.val(br.next);
+      // A second outright failure, out of your depth, against someone who does not forgive.
+      if (outcome === "lose" && br.penalty && perilous) peril = K.val(c.peril, S);
       // A second failure closes this way and sends you back to choose again (see K.loopBack).
-      if (outcome !== "win" && br.penalty && c.back) {
+      if (!peril && outcome !== "win" && br.penalty && c.back) {
         const back = K.loopBack(c.back, K.val(c.back.why || c.crossWhy));
         if (back) { res.next = back; res.looped = true; }
       }
@@ -199,12 +223,29 @@
     S.log.push(sc.id + ":" + c.id);
     if (!res.text && c.text) res.text = K.val(c.text);
     res.next = res.next || K.val(c.next) || K.val(sc.next);
+    if (peril) {
+      res.peril = peril.kind;
+      if (peril.kind === "death") {
+        addDelta(delta, K.apply({ die: true, deathText: peril.deathText, flag: "peril_death" }));
+        res.text = S.alive ? peril.spareText || "You live, barely. The scar will remind you for the rest of your life." : peril.text;
+      } else {
+        // A cell: x_captive offers a way out (a test of stealth) or the long wait; then the story
+        // goes on from where it would have gone (or from peril.then, when the next scene could not
+        // have happened with you locked up).
+        S.captive = { by: peril.by, place: peril.place, then: peril.then || res.next, waitThen: peril.waitThen || null, act: S.act };
+        S.flags = S.flags.filter((f) => !f.startsWith("x_captive_")); // a second time in a cell starts fresh
+        addDelta(delta, K.apply(Object.assign({ flag: ["captive", "was_imprisoned"] }, peril.journal ? { journal: peril.journal } : {})));
+        res.text = peril.text;
+        res.next = "x_captive";
+        res.after = null;
+      }
+    }
     // Back at an earlier question after a closed way: the new choice leads straight to its test.
     if (S.loopThen && S.loopThen.scene === sc.id && !res.looped && !(res.check && !res.check.pass)) {
       if (S.loopThen.then && !c.game && !c.combat) res.next = S.loopThen.then;
       S.loopThen = null;
     }
-    if (sc.after && !c.noAfter) res.after = K.val(sc.after);
+    if (sc.after && !c.noAfter && !(peril && peril.kind !== "death")) res.after = K.val(sc.after);
     if (!S.alive) { res.next = "end_death"; res.combat = null; res.after = null; }
     K.lastDelta = delta;
     return res;
