@@ -380,6 +380,7 @@ The player and every character are drawn as **tholu bommalata** leather shadow p
   - Death: listening to Shakuni at Indraprastha; calming the kings at the swayamvara; the Varnavata tunnel (Purochana's guard); drinking at the Yaksha's lake unanswered; breaking into the wheel after Abhimanyu; helping Karna lift his wheel; waking the camp on the night of the raid.
   - A cell: warning Panchala's villages (Kaurava outriders); calling Shakuni's dice false; stepping between Dushasana and Draupadi; Vidura's message and the steward's family on the night of the exile (Duryodhana's men); carrying the wounded under fire (taken by the enemy).
   - In automated play (random choices) about 1 life in 12 ends in a peril death, half of them before the war.
+  - A peril death ends on the painting of the place it happened ("A life cut short" before the war; "Into the wheel" and "Beside Karna" in it). Until their own pictures arrive (`scene_cell`, `scene_prisoners_pen`, `end_cut_short`, in `docs/Art_Brief_New_Storylines.pdf`), the cell borrows the palace-wall and war-camp paintings.
 - **Chance in skill tests.** Not every good attempt succeeds: in archery the aim wavers and each arrow drifts (less for a better archer), so a perfectly timed shot hits about 3 in 4 for a beginner and nearly always for a master.
 - Tall (9:16) stage paintings for all 29 test stages are in the game for upright screens.
 
@@ -473,7 +474,7 @@ Ideas to deepen a life, all inside the canon lock (§4): the epic's events happe
 
 ### 18.7 Order of work
 1. Friends in fights (no art).
-2. The lac house escape (6 pictures).
+2. The lac house escape (6 pictures), and three pictures for failure, already built (a cell, a prisoners' pen, a life cut short).
 3. Command, arrays and the holding fights, for both sides (12 pictures).
 4. Threads, episodes and the after-war scenes, a few at a time (21 pictures).
 
