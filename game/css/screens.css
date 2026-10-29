@@ -886,3 +886,28 @@ body.inscene .leaf.split.testing > .pagehead .ppbadge { display: none; }
 /* The title card's puppet, larger too. */
 .beat-title .ppbadge svg { height: clamp(150px, 26vh, 240px); filter: drop-shadow(0 0 12px rgba(255, 196, 110, 0.5)); }
 @media (max-height: 520px) { .beat-title .ppbadge svg { height: 96px; } }
+
+/* ---------- The page grows as the story is written ----------
+   Lines, the choices and the key hint that are not shown yet take no room, so there is never an
+   empty band waiting for them; each one rises in as it comes. */
+body.inscene .leaf.split .story > .staged:not(.shown),
+body.inscene .leaf.split .witness > .staged:not(.shown),
+body.inscene .leaf.split .actions.staged:not(.shown),
+body.inscene .leaf.split .choices > .staged:not(.shown),
+body.inscene .leaf.split .actions > .hint.staged:not(.shown) { display: none; }
+body.inscene .leaf.split .actions.staged.shown { animation: growin 0.35s ease both; transform: none; opacity: 1; }
+body.inscene .leaf.split .choices > .staged.shown:not(.now) { animation: risein 0.5s cubic-bezier(.2, .7, .2, 1) both; }
+@keyframes growin { from { opacity: 0; } }
+@keyframes risein { from { opacity: 0; transform: translateX(-14px); } }
+body.inscene .leaf.split { transition: none; }
+
+/* ---------- Phones play upright ---------- */
+.turn { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: max(20px, var(--sat)) max(24px, var(--sar)) max(20px, var(--sab)) max(24px, var(--sal));
+  background: var(--ground) url("buti.svg") 0 0 / 88px 88px repeat; text-align: center; }
+.turn-in { display: grid; justify-items: center; gap: 10px; max-width: 34ch; }
+.turn-ico { width: 64px; height: 64px; color: var(--data); }
+@media (prefers-reduced-motion: no-preference) { .turn-ico { animation: turnit 2.4s ease-in-out infinite; } @keyframes turnit { 0%, 30% { transform: rotate(-90deg); } 60%, 100% { transform: rotate(0deg); } } }
+.turn b { font-family: var(--display); font-size: 26px; line-height: 1.15; color: var(--ink); }
+.turn p { margin: 0; font-size: 15px; color: var(--muted); }
+html[lang="hi"] .turn b { font-size: 23px; line-height: 1.4; }
+body.turned .beat, body.turned .view-full, body.turned .view-back { visibility: hidden; }

@@ -102,9 +102,13 @@
     // The scene-setting lines are written out by the quill.
     story.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
     U.keys([]);
-    U.stage([plate, ...story, ...box.children, U.$("keyhint")], () => { U.keys(keys); startLamp(sc, rows); });
-    // The painting settles above the page, and its living version (if it has one) begins.
-    U.fitBackdrop(); U.livePlay();
+    // The page grows as the story is written: lines and choices not shown yet take no room, and the
+    // painting rides just above the page as it grows (U.fitBackdrop follows the page's size).
+    U.fitBackdrop();
+    const acts = box.parentElement;
+    acts.dataset.hold = 0;
+    U.stage([plate, ...story, acts, ...box.children, U.$("keyhint")], () => { U.keys(keys); startLamp(sc, rows); U.finalTop = null; U.fitBackdrop(); });
+    U.livePlay();
   };
 
   // ---------- Beats: act cards and scene titles ----------
@@ -133,14 +137,17 @@
   U.sceneBeats = function (sc, o, done) {
     const S = K.S;
     const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    U.setBackdrop(artFor(sc) || null);
+    U.setBackdrop(o.art !== undefined ? o.art : artFor(sc) || null);
     const leaf = U.$("leaf");
     leaf.className = "leaf"; leaf.innerHTML = "";
     document.body.classList.add("beating");
     const el = U.el('<div class="beat" id="beat" role="presentation"></div>');
     document.body.appendChild(el);
-    const title = K.val(sc.title) || K.val(sc.caption) || "";
+    const title = o.title || K.val(sc.title) || K.val(sc.caption) || "";
     const where = U.tr("Age {n}", { n: S.age }) + " · " + U.t(K.val(sc.place) || "");
+    // A living painting plays full-screen under the cards, then for a few seconds on its own.
+    const live = U.liveReady();
+    if (live) U.livePlay();
     const steps = [];
     if (o.act) {
       const full = U.t(K.ACT_TITLES[S.act] || "");
@@ -155,10 +162,11 @@
     if (title && (o.full && K.prefs().titles !== "short")) {
       const fig = K.puppetSpec ? U.puppetBadge(K.puppetSpec(S), { fit: true }) : "";
       steps.push({ cls: "veil", ms: 1500, html: '<div class="beat-title">' + fig + '<span class="kind ' + o.tag + '">' + U.esc(o.tagText) + "</span><b>" + U.t(title) + "</b><small>" + where + "</small></div>" });
-      steps.push({ cls: "clear", ms: 650, html: "" });
+      steps.push({ cls: "clear", ms: live ? 4200 : 650, html: "" });
     } else if (title) {
       steps.push({ cls: "low", ms: 1100, html: '<div class="beat-short"><span class="kind ' + o.tag + '">' + U.esc(o.tagText) + "</span><b>" + U.t(title) + "</b></div>" });
-    }
+      if (live) steps.push({ cls: "clear", ms: 3600, html: "" });
+    } else if (live) steps.push({ cls: "clear", ms: 4200, html: "" });
     const run = { el, timer: null, i: -1, key: null };
     beatRun = run;
     const finish = () => { if (beatRun !== run) return; U.beatStop(); done(); };
@@ -229,7 +237,7 @@
       if (lampRun !== run) return;
       if (!document.body.contains(el)) return stopLamp();
       const now = performance.now();
-      if (!document.hidden && !document.querySelector(".scrim")) left -= now - last;
+      if (!document.hidden && !U.paused() && !document.querySelector(".scrim")) left -= now - last;
       last = now;
       lampMemo.key = key; lampMemo.left = left;
       el.style.setProperty("--oil", Math.max(0, left / total).toFixed(3));

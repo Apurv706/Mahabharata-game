@@ -3229,6 +3229,8 @@
     "Back to the story": "कथा पर लौटो",
     "Living paintings": "जीवित चित्र",
     "Some paintings move for a few seconds. Each uses about 1 MB of data.": "कुछ चित्र कुछ पलों के लिए चलते हैं। हर एक में लगभग 1 MB डेटा लगता है।",
+    "Turn your phone upright to continue": "आगे खेलने के लिए फ़ोन सीधा करो",
+    "This game is made to be played with the phone upright. Everything waits for you here.": "यह खेल फ़ोन को सीधा पकड़कर खेलने के लिए बना है। सब कुछ यहीं तुम्हारा इंतज़ार करेगा।",
     "They sing of {name}, born in {origin}, {path!}.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {path}।",
     "They sing of {name}, born in {origin}, who taught {them}self by night.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {g:जिसने|जिसने|जिन्होंने} रातों में ख़ुद को सिखाया।",
     "They sing of {name}, born in {origin}, student of {teacher}.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {teacher} {g:का शिष्य|की शिष्या|के शिष्य}।",

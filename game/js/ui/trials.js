@@ -105,7 +105,8 @@
     return b;
   }
   // Runs every frame until stopped, or until its test is no longer on screen.
-  const loop = (fn, el) => { let id, on = true; const t0 = performance.now(); const f = (now) => { if (!on) return; if (el && !el.isConnected) { on = false; return; } fn((now - t0) / 1000); id = requestAnimationFrame(f); }; id = requestAnimationFrame(f); return () => { on = false; cancelAnimationFrame(id); }; };
+  // Game time stands still while the game is paused (the phone turned sideways, the tab hidden).
+  const loop = (fn, el) => { let id, on = true; const t0 = U.clock(); const f = () => { if (!on) return; if (el && !el.isConnected) { on = false; return; } if (!U.paused()) fn((U.clock() - t0) / 1000); id = requestAnimationFrame(f); }; id = requestAnimationFrame(f); return () => { on = false; cancelAnimationFrame(id); }; };
 
   // Shared with the other kinds of test (ui/play.js, ui/boards.js).
   U.trialFrame = frame; U.pressButton = pressButton; U.loop = loop;
@@ -247,8 +248,8 @@
         U.keys(keys);
         // Longer replies get a little longer to read.
         const secs = base + r.replies.reduce((n, x) => n + K.tr(x).length, 0) / 70;
-        t0 = performance.now();
-        const tick = () => { if (!host.isConnected) return; const left = 1 - (performance.now() - t0) / 1000 / secs; bar.style.width = Math.max(0, left) * 100 + "%"; if (left <= 0) return answer(false, true); raf = requestAnimationFrame(tick); };
+        t0 = U.clock();
+        const tick = () => { if (!host.isConnected) return; const left = 1 - (U.clock() - t0) / 1000 / secs; bar.style.width = Math.max(0, left) * 100 + "%"; if (left <= 0) return answer(false, true); raf = requestAnimationFrame(tick); };
         raf = requestAnimationFrame(tick);
       }
       function answer(ok, late) {
@@ -363,8 +364,8 @@
       const pool = (t.things || THINGS).slice().sort(() => K.rng() - 0.5), seen = pool.slice(0, count), unseen = pool.slice(count);
       let i = 0, right = 0, raf = null, timer = null;
       host.innerHTML = '<p class="score">' + U.tr(t.lookLine || "Look. You have {n} seconds.", { n: Math.round(look) }) + '</p><ul class="table">' + seen.map((x) => "<li>" + U.tr(x) + "</li>").join("") + '</ul><div class="timer"><i></i></div>';
-      const bar = host.querySelector(".timer i"), t0 = performance.now();
-      const tickLook = () => { if (!host.isConnected) return; const left = 1 - (performance.now() - t0) / 1000 / look; bar.style.width = Math.max(0, left) * 100 + "%"; if (left <= 0) return ask(); raf = requestAnimationFrame(tickLook); };
+      const bar = host.querySelector(".timer i"), t0 = U.clock();
+      const tickLook = () => { if (!host.isConnected) return; const left = 1 - (U.clock() - t0) / 1000 / look; bar.style.width = Math.max(0, left) * 100 + "%"; if (left <= 0) return ask(); raf = requestAnimationFrame(tickLook); };
       raf = requestAnimationFrame(tickLook);
       function ask() {
         const yes = seen[(i * 3 + 1) % seen.length], no = unseen.slice(i * 2, i * 2 + 2);
@@ -373,8 +374,8 @@
         const row = host.querySelector(".replies"), b2 = host.querySelector(".timer i"), keys = [];
         opts.forEach((x) => { const f = () => answer(x === yes); row.appendChild(U.button("cta secondary", U.tr(x), f)); keys.push(f); });
         U.keys(keys);
-        const t1 = performance.now();
-        const tick = () => { if (!host.isConnected) return; const left = 1 - (performance.now() - t1) / 1000 / secs; b2.style.width = Math.max(0, left) * 100 + "%"; if (left <= 0) return answer(false, true); raf = requestAnimationFrame(tick); };
+        const t1 = U.clock();
+        const tick = () => { if (!host.isConnected) return; const left = 1 - (U.clock() - t1) / 1000 / secs; b2.style.width = Math.max(0, left) * 100 + "%"; if (left <= 0) return answer(false, true); raf = requestAnimationFrame(tick); };
         raf = requestAnimationFrame(tick);
       }
       function answer(ok, late) {

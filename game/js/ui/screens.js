@@ -217,7 +217,17 @@
   };
 
   // ---------- Ending ----------
+  let endingShown = null;
   U.renderEnding = function (sc) {
+    // An ending with a living painting plays it full-screen first, under the ending's name.
+    if (endingShown !== sc.id && U.beatsOn && U.beatsOn() && U.sceneBeats && K.composeEnding) {
+      const e0 = K.composeEnding(K.S);
+      endingShown = sc.id;
+      if (e0 && e0.art && U.hasVideo(e0.art) && U.living()) {
+        U.setNav(true);
+        return U.sceneBeats(sc, { art: e0.art, title: K.val(e0.title), full: false, tag: "yours", tagText: K.tr("Your ending") }, () => U.renderEnding(sc));
+      }
+    }
     const S = K.S;
     U.redraw = () => U.renderEnding(sc);
     if (K.Sound) K.Sound.mood("calm");

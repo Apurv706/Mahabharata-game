@@ -194,7 +194,7 @@
       if (K.Sound) K.Sound.play(result === "miss" ? "hit" : result === "dodge" ? "tap" : "clang");
       setTimeout(() => done(result), U.motion() ? 380 : 120);
     };
-    const now = () => (performance.now() - t0) / 1000;
+    const now = () => (U.clock() - t0) / 1000; // game time: stands still while the game is paused
     const block = () => { if (over) return; const d = now() - T; if (Math.abs(d) <= W.perfect) finish("counter"); else if (Math.abs(d) <= W.block) finish("block"); else finish("miss", d < 0 ? "early" : "late"); };
     const dodge = () => { if (over) return; const d = now() - T; if (Math.abs(d) <= W.dodge) finish("dodge"); else finish("miss", d < 0 ? "early" : "late"); };
     const row = el.querySelector(".qte-btns");
@@ -220,7 +220,7 @@
       raf = requestAnimationFrame(tick);
     };
     return {
-      mount(box) { if (el.parentNode !== box) box.appendChild(el); if (!t0) { try { el.scrollIntoView({ block: "nearest", behavior: U.motion() ? "smooth" : "auto" }); } catch (e) { /* old browsers */ } t0 = performance.now(); raf = requestAnimationFrame(tick); b1.focus({ preventScroll: true }); } },
+      mount(box) { if (el.parentNode !== box) box.appendChild(el); if (!t0) { try { el.scrollIntoView({ block: "nearest", behavior: U.motion() ? "smooth" : "auto" }); } catch (e) { /* old browsers */ } t0 = U.clock(); raf = requestAnimationFrame(tick); b1.focus({ preventScroll: true }); } },
       stop() { over = true; cancelAnimationFrame(raf); off(); }
     };
   }

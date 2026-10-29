@@ -16128,5 +16128,15 @@
   "id": 3227,
   "en": "Some paintings move for a few seconds. Each uses about 1 MB of data.",
   "ctx": "code:modals.js"
+ },
+ {
+  "id": 3228,
+  "en": "Turn your phone upright to continue",
+  "ctx": "code:dom.js"
+ },
+ {
+  "id": 3229,
+  "en": "This game is made to be played with the phone upright. Everything waits for you here.",
+  "ctx": "code:dom.js"
  }
 ]

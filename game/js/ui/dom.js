@@ -65,6 +65,43 @@
     "war_day17", "war_day18", "war_eve"]);
   const FOCAL = { scene_teacher: "62% 45%", scene_dice_throws: "28% 35%", home_anga: "30% 50%", scene_princes: "34% 55%", scene_poison: "45% 45%" };
   U.hasWide = (key) => WIDE.has(key) || /^stage_/.test(key || "");
+  // ---------- Pause ----------
+  // Game time (U.clock) stands still while the game is paused: a phone turned on its side (the game
+  // asks to be turned back), or the tab hidden. Tests, the lamp and the fight's timed defence use it.
+  let pausedMs = 0, pauseAt = null;
+  const why = new Set();
+  U.paused = () => pauseAt != null;
+  U.clock = () => performance.now() - pausedMs - (pauseAt != null ? performance.now() - pauseAt : 0);
+  U.setPaused = function (reason, on) {
+    if (on) why.add(reason); else why.delete(reason);
+    if (why.size && pauseAt == null) pauseAt = performance.now();
+    else if (!why.size && pauseAt != null) { pausedMs += performance.now() - pauseAt; pauseAt = null; }
+  };
+  document.addEventListener("visibilitychange", () => U.setPaused("hidden", document.hidden));
+
+  // ---------- Phones play upright ----------
+  // A phone turned on its side gets a full-screen card asking to turn it back; everything waits
+  // underneath, and the game goes on where it was. Where the browser allows it, the screen is also
+  // locked upright. Tablets and desktops play either way.
+  const SIDEWAYS = "(orientation: landscape) and (max-height: 520px) and (pointer: coarse)";
+  U.initTurn = function () {
+    const mq = window.matchMedia && window.matchMedia(SIDEWAYS);
+    const card = U.$("turn");
+    if (!mq || !card) return;
+    const apply = () => {
+      const on = mq.matches;
+      card.hidden = !on;
+      document.body.classList.toggle("turned", on);
+      U.setPaused("turned", on);
+      document.querySelectorAll("#backdrop video").forEach((v) => { if (on) v.pause(); else if (v.dataset.playing && !v.ended) v.play().catch(() => {}); });
+      if (!on) setTimeout(() => U.fitBackdrop(true), 60);
+    };
+    if (mq.addEventListener) mq.addEventListener("change", apply); else if (mq.addListener) mq.addListener(apply);
+    apply();
+    const lock = () => { try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock("portrait").catch(() => {}); } catch (e) { /* not allowed here */ } };
+    document.addEventListener("pointerdown", lock, { once: true });
+  };
+
   // Living paintings: short clips made from some paintings (game/video/<key>.mp4). The painting
   // shows at once; its clip fades in over it when it can play, plays once and rests on its last
   // frame. Off in the menu, with reduced motion, when the device asks to save data, and in tests.
@@ -79,6 +116,8 @@
     return K.prefs().living !== false;
   };
   U.hasVideo = (key) => VIDEOS.has(key);
+  // Whether the painting now behind the page has a clip that will play.
+  U.liveReady = () => { const L = layer(); return !!(L && L.querySelector("video")); };
 
   // The backdrop has two layers that cross-fade. Each layer is a soft, blurred fill of the painting
   // and the painting itself, drawn whole or cropped by placing its box:
@@ -112,7 +151,8 @@
       v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("aria-hidden", "true");
       // H.264 first (Safari, Chrome, Edge, Firefox); VP9 WebM where H.264 is missing.
       ["mp4", "webm"].forEach((ext) => { const so = document.createElement("source"); so.src = "video/" + key + "." + ext; so.type = "video/" + ext; v.appendChild(so); });
-      v.addEventListener("playing", () => v.classList.add("on"));
+      v.addEventListener("playing", () => { v.classList.add("on"); v.dataset.playing = "1"; });
+      v.addEventListener("ended", () => { delete v.dataset.playing; });
       // If neither plays, the painting simply stays.
       const last = v.lastElementChild; if (last) last.addEventListener("error", () => v.remove());
       pic.appendChild(v);
@@ -127,13 +167,16 @@
     place();
   };
   // Start the scene's living painting, once per showing.
-  U.livePlay = function () {
-    const L = layer(); if (!L || L.dataset.played) return;
+  U.livePlay = function (again) {
+    const L = layer(); if (!L || (L.dataset.played && !again)) return;
     const v = L.querySelector("video"); if (!v) return;
+    if (again) { try { v.currentTime = 0; } catch (e) { /* not loaded yet */ } }
     L.dataset.played = "1";
     try { const p = v.play(); if (p && p.catch) p.catch(() => v.remove()); } catch (e) { v.remove(); }
   };
   // Where the page starts, ignoring the slide it is in the middle of.
+  U.finalTop = null;
+  U.leafTop = () => leafTop();
   function leafTop() {
     const leaf = U.$("leaf");
     if (!leaf || !leaf.offsetHeight || getComputedStyle(leaf).display === "none") return null;
@@ -152,11 +195,13 @@
     let mode = "cover", rt = 0, rb = H;
     if (viewing) { mode = "view"; rt = hb; rb = H - 64; }
     else if (H > W * 1.15 && !document.body.classList.contains("beating")) {
-      const top = leafTop();
+      // While the story is still being written the page grows; the painting takes the place the
+      // finished page will leave, so it does not move as the lines appear.
+      const top = U.finalTop != null ? U.finalTop : leafTop();
       if (top != null && size && top > 90) {
         mode = "fit";
         const fullH = W * size[1] / size[0];
-        rb = top; rt = Math.max(0, Math.min(hb, top - fullH));
+        rb = top; rt = top - hb >= fullH ? hb : Math.max(0, top - fullH);
       }
     }
     // Your puppet stands on the page's edge: never taller than the room up to the top bar.
@@ -171,6 +216,14 @@
       s = Math.max(W / iw, H / ih); w = iw * s; h = ih * s;
       const f = (FOCAL[L.dataset.key] || "50% 45%").split(" ").map((v) => parseFloat(v) / 100);
       x = (W - w) * f[0]; y = (H - h) * f[1];
+    } else if (mode === "fit") {
+      // As large as the space allows, trimming at most two fifths of the width (around the painting's
+      // own centre of interest), and sitting just above the page.
+      s = Math.min((rb - rt) / ih, W / (0.6 * iw)); s = Math.max(s, Math.min(W / iw, (rb - rt) / ih));
+      w = iw * s; h = ih * s;
+      const f = (FOCAL[L.dataset.key] || "50% 45%").split(" ").map((v) => parseFloat(v) / 100);
+      x = w > W ? Math.min(0, Math.max(W - w, W / 2 - w * f[0])) : (W - w) / 2;
+      y = rb - h;
     } else {
       s = Math.min(W / iw, (rb - rt) / ih); w = iw * s; h = ih * s;
       x = (W - w) / 2; y = rt + (rb - rt - h) / 2;
@@ -183,7 +236,7 @@
   function placeViewButton(mode, x, y, w, h) {
     const b = U.$("view-full"); if (!b) return;
     const leaf = U.$("leaf");
-    const ok = !viewing && document.body.classList.contains("inscene") && !document.body.classList.contains("beating") &&
+    const ok = !viewing && !(U.staging && U.staging()) && document.body.classList.contains("inscene") && !document.body.classList.contains("beating") &&
       leaf && leaf.offsetHeight && !leaf.classList.contains("testing") && !leaf.classList.contains("fighting") && !leaf.classList.contains("journeying") && !!bdKey;
     const top = leafTop();
     if (!ok || top == null) { b.hidden = true; return; }
@@ -193,6 +246,7 @@
     if (top >= 120) { // the painting is above the page
       bt = mode === "fit" ? Math.min(y + h, top) : top;
       left = mode === "fit" ? Math.max(0, x) : 0;
+      if (mode === "fit" && y + h > top + 1) bt = top;
     } else if (lr.left >= 120) { // the painting is beside the page (a phone on its side, a desktop)
       bt = lr.bottom; left = 0;
     } else { b.hidden = true; return; }
@@ -210,7 +264,7 @@
     document.body.classList.toggle("viewing", viewing);
     U.$("view-back").hidden = !viewing;
     U.fitBackdrop();
-    if (viewing) U.$("view-back").focus({ preventScroll: true });
+    if (viewing) { U.$("view-back").focus({ preventScroll: true }); U.livePlay(true); }
   };
   U.viewing = () => viewing;
   window.addEventListener("resize", () => U.fitBackdrop(true));
@@ -258,6 +312,7 @@
     document.body.classList.remove("titling"); // the title screen adds it back after this call
     if (U.beatStop) U.beatStop();
     if (U.viewWhole) U.viewWhole(false);
+    U.finalTop = null;
     U.inScene = !!on;
     const leaf = U.$("leaf"); if (leaf) leaf.className = "leaf"; // each screen sets its own page shape
     document.body.classList.toggle("inscene", !!on);
@@ -445,6 +500,8 @@
     U.$("nav-standing").title = K.tr("Standing");
     U.$("view-full").setAttribute("aria-label", K.tr("See the painting whole")); U.$("view-full").title = K.tr("See the painting whole");
     U.$("view-back-t").textContent = K.tr("Back to the story");
+    U.$("turn-t").textContent = K.tr("Turn your phone upright to continue");
+    U.$("turn-p").textContent = K.tr("This game is made to be played with the phone upright. Everything waits for you here.");
     U.$("nav-standing").setAttribute("aria-label", K.tr("Obligations, bonds, vows and memories"));
     U.$("ledger").setAttribute("aria-label", K.tr("Obligations, bonds, vows and memories"));
   };

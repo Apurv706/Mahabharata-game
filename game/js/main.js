@@ -40,6 +40,7 @@
   K.lang = K.LANGS[saved] ? saved : /^hi\b/i.test(nav) ? "hi" : "en";
   U.applyStatic();
   U.initBackdrop();
+  U.initTurn();
   const problems = K.validate();
   if (problems.length && window.console) console.warn("Content problems:\n" + problems.join("\n"));
   U.renderTitle();

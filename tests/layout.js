@@ -189,9 +189,12 @@ const PAGE = {
     if (upright && o.short) {
       if (bd.dataset.mode !== "fit") out.push("painting not shown whole above the page (mode " + bd.dataset.mode + ")");
       else {
-        if (r.left < -1 || r.right > W + 1 || r.top < -1) out.push("painting cut at the edges");
+        // It may trim the sides (at most two fifths of its width) to fill more of the height.
+        if (r.top < -1) out.push("painting cut at the top");
+        if (r.width > 1 && W / r.width < 0.59) out.push("painting trimmed by more than two fifths (" + Math.round(100 - W / r.width * 100) + "%)");
         if (r.bottom > leaf.top + 2) out.push("page covers the painting by " + Math.round(r.bottom - leaf.top) + "px");
         if (r.width < W - 2 && r.height < leaf.top - 2 - Math.max(0, r.top)) out.push("painting smaller than the space allows");
+        if (r.bottom < leaf.top - 4) out.push("gap of " + Math.round(leaf.top - r.bottom) + "px between the painting and the page");
       }
     } else if (!upright && bd.dataset.mode !== "cover") out.push("painting not filling the screen on a wide screen");
     const btn = document.getElementById("view-full");
@@ -208,6 +211,27 @@ const PAGE = {
     if (pic.left < -1 || pic.right > innerWidth + 1 || pic.top < -1 || pic.bottom > innerHeight + 1) out.push("painting not whole while viewing");
     const back = document.getElementById("view-back");
     if (back.hidden || back.getBoundingClientRect().bottom > innerHeight - (o.sab || 0) + 1) out.push("Back to the story button missing or under the home bar");
+    return out;
+  },
+  turned(o) {
+    const out = [];
+    const t = document.getElementById("turn");
+    if (!t || t.hidden) return ["no turn-upright card on a phone held sideways"];
+    const r = t.getBoundingClientRect();
+    if (r.width < innerWidth - 1 || r.height < innerHeight - 1) out.push("turn-upright card does not cover the screen");
+    if (!K.UI.paused()) out.push("game not paused while the phone is sideways");
+    return out;
+  },
+  growing(o) {
+    // Mid-reveal: the page holds only what has been written so far; no band waits for the rest.
+    const out = [];
+    const leaf = document.getElementById("leaf");
+    if (!leaf.classList.contains("split")) return ["the story page did not open"];
+    const lr = leaf.getBoundingClientRect();
+    const seen = [...leaf.querySelectorAll(".pagehead, .story > *, .actions, .choices > *, .hint")].filter((e) => e.offsetParent && getComputedStyle(e).display !== "none" && e.getBoundingClientRect().height > 0);
+    const bottom = Math.max(...seen.map((e) => e.getBoundingClientRect().bottom));
+    const blank = lr.bottom - bottom - (o.sab || 0);
+    if (blank > 48) out.push("empty band of " + Math.round(blank) + "px in the page while the story is written");
     return out;
   },
   modal(o) {
@@ -265,7 +289,7 @@ async function fresh(page, url, o, prefs = {}) {
   await page.waitForFunction(() => window.K && K.UI && K.UI.renderScene);
   await page.evaluate(() => document.fonts && document.fonts.ready.then(() => true));
   await page.addStyleTag({ content: `:root{--sat:${o.sat}px!important;--sab:${o.sab}px!important;--sal:${o.sal || 0}px!important;--sar:${o.sar || 0}px!important}` });
-  await page.evaluate((p) => { localStorage.clear(); K.prefs(Object.assign({ gradual: false, beats: false, sound: false, timed: false }, p)); }, prefs);
+  await page.evaluate((p) => { localStorage.clear(); K.prefs(Object.assign({ gradual: false, beats: false, sound: false, timed: false, living: false }, p)); }, prefs);
 }
 async function goScene(page, id, extra) {
   await page.evaluate(([id, life, extra]) => {
@@ -320,6 +344,22 @@ async function runDevice(browser, base, o, report) {
   };
   const url = base + "/index.html";
 
+  // Phones held sideways: the game asks to be turned upright and waits; turned back, it goes on.
+  if (o.kind === "phone" && o.orient === "landscape") {
+    await fresh(page, url, o);
+    const coarse = await page.evaluate(() => matchMedia("(pointer: coarse)").matches);
+    if (!coarse) { report.push({ browser: browser._name, device: label, screen: "turn upright", problems: [] }); await ctx.close(); return; }
+    await goScene(page, "a2_trial");
+    await check("turn upright", ["turned"]);
+    await page.setViewportSize({ width: o.h, height: o.w });
+    await page.waitForTimeout(700);
+    const back = await page.evaluate(() => ({ hidden: document.getElementById("turn").hidden, paused: K.UI.paused(), choice: !!document.querySelector("#choices .choice") }));
+    report.push({ browser: browser._name, device: label, screen: "turned back upright", problems: [back.hidden ? null : "turn card stayed", back.paused ? "game still paused" : null, back.choice ? null : "scene lost"].filter(Boolean) });
+    report.push({ browser: browser._name, device: label, screen: "script errors", problems: errors.map((e) => "error: " + e) });
+    await ctx.close();
+    return;
+  }
+
   // Title, and the homeland on the map.
   await fresh(page, url, o);
   await page.waitForTimeout(400);
@@ -332,6 +372,12 @@ async function runDevice(browser, base, o, report) {
   await fresh(page, url, o);
   await goScene(page, "a2_trial");
   await check("short scene", ["topbar", "scene", "painting"], { short: true });
+  // The story written line by line: midway, the page holds only what is written.
+  await page.evaluate((life) => { K.prefs({ gradual: true }); K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { origin: "matsya", age: 9, act: 1 }); K.S.at = "matsya"; K.go("a1_sage"); }, LIFE);
+  await page.waitForTimeout(1600);
+  await check("story being written", ["growing"]);
+  await page.evaluate(() => { K.UI.stageFinish(true); K.prefs({ gradual: false }); });
+  await goScene(page, "a2_trial");
   // See the painting whole, and back.
   await page.click("#view-full");
   await page.waitForTimeout(1400);
@@ -446,8 +492,14 @@ async function runDevice(browser, base, o, report) {
       if (ONLY && d.kind !== ONLY) continue;
       if (DEVICE && !d.name.toLowerCase().includes(DEVICE.toLowerCase())) continue;
       for (const o of shapes(d)) {
+        const mark = report.length;
         try { await runDevice(browser, base, o, report); }
-        catch (e) { report.push({ browser: name, device: o.name + " " + o.orient, screen: "run", problems: ["run crashed: " + e.message.split("\n").slice(0, 8).join(" / ")] }); }
+        catch (e1) {
+          // A test browser that falls over (it happens to WebKit on small CI machines) gets one more go.
+          report.length = mark;
+          if (!browser.isConnected()) { browser = await pw[name].launch(); browser._name = name; }
+          try { await runDevice(browser, base, o, report); continue; } catch (e) { var e2 = e; }
+          const e = e2; report.push({ browser: name, device: o.name + " " + o.orient, screen: "run", problems: ["run crashed: " + e.message.split("\n").slice(0, 8).join(" / ")] }); }
       }
     }
     await browser.close();
