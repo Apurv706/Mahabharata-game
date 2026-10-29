@@ -3,8 +3,8 @@
 
 | | |
 |---|---|
-| **Status** | Draft v0.2 (adds mobile port plan) |
-| **Last updated** | October 25, 2026 |
+| **Status** | Draft v0.3 (adds the browser edition, §16, and remaining tasks, §17) |
+| **Last updated** | October 29, 2026 |
 | **Owner** | [Founder / Creative Director] |
 | **Doc type** | Living PRD; sections marked **[OPEN]** still need decisions |
 
@@ -17,6 +17,8 @@
 **One-line pitch:** *You can't change the Mahabharata. You can decide who you were inside it.*
 
 **Comparable titles:** Crusader Kings III (life simulation, generational legacy), The Witcher 3 (morally weighted choices in a rich mythic world), Black Myth: Wukong (a culturally specific epic made for a global audience), Ghost of Tsushima (respectful cultural authenticity).
+
+**Where it stands (October 29, 2026):** a complete browser edition is playable in English and Hindi on phones and desktops (§16); the remaining work is in §17.
 
 ---
 
@@ -39,6 +41,7 @@
 | Indian and global mobile players | Huge audience (mobile is roughly 79% of India's games revenue) with low spending per player | Secondary: served by a planned mobile port (§15.3) |
 
 - **Platform strategy: PC/console first, mobile port later.** Launch on PC (Steam / Epic), then PS5 / Xbox Series, then iOS / Android as a dedicated port. **[OPEN]** Whether to aim for a Switch 2 port.
+- **Browser edition (built):** the whole game also runs in a web browser on phones (upright only), tablets and desktops (§16). **[OPEN]** Whether it ships as the game (for example in a desktop wrapper on Steam) or stays the prototype for an engine build.
 - **Business model:** Premium (one-time purchase) on PC/console. Possible paid story expansions. The mobile model is in §15.3. No real-money mechanics, loot boxes or paid randomness on any platform (see §13).
 - **Suggested engine:** Unreal Engine 5, which also opens a path to the Epic MegaGrants program. Its mobile renderer and scalability settings support the later port, provided the team follows the port-readiness rules in §15.3 from the start.
 
@@ -73,13 +76,13 @@ The player chooses an **origin** (homeland and family circumstance). Origin sets
 | **Hastinapura (court family)** | Child of a palace official; grows up beside the Kuru princes | Divided loyalties when the family splits |
 | **Panchala** | Drupada's kingdom, rival of Drona | Drona's old grudge against Panchala |
 | **Matsya** | King Virata's land, a quiet kingdom | Hosts the Pandavas' incognito year; the Kichaka episode |
-| **Dwaraka (Yadava)** | Krishna's and Balarama's city | Yadavas fight on both sides of the war |
+| **Mathura (Yadava)** | Krishna's and Balarama's people, on the Yamuna (replaced Dwaraka in the build) | Yadavas fight on both sides of the war |
 | **Anga** | Karna's kingdom, gifted to him by Duryodhana | Loyalty to Karna and Duryodhana |
-| **Charioteer (suta) family** | Like Karna's adoptive family | Social contempt, closed doors, fierce pride |
+| **Charioteer (suta) family** | Like Karna's adoptive family; Champa years before the move to the capital | Social contempt, closed doors, fierce pride |
 | **Nishada forest village** | Forest people outside the city order | Ekalavya's story; whether teachers will accept you |
 | **Gandhara** | Shakuni's distant homeland | Seen as a foreigner at court |
 
-**Also chosen:** name, gender, appearance, a childhood temperament (Bold / Thoughtful / Devoted / Cunning) that tilts early dialogue options, and one **family heirloom** (a bow, a manuscript, an amulet, a debt) that becomes a story thread.
+**Also chosen:** name, gender, appearance, a childhood temperament (Bold / Thoughtful / Devoted / Cunning) that tilts early dialogue options, and one **family heirloom** (a bow, a manuscript, an amulet, a debt) that becomes a story thread. In the build the homeland is chosen on a map.
 
 **Design note on caste and status:** Social hierarchy exists in the world and is shown honestly through how NPCs treat the player, which doors open and which teachers refuse. The game never says a character is worth less, and every vocation is available to every origin. The epic itself raises this question through Karna and Ekalavya, and the game lets players experience it rather than lecturing about it.
 
@@ -138,7 +141,7 @@ The teacher is the player's first major relationship. It sets the starting skill
 |---|---|---|---|
 | **Drona** | Hard to get unless born at court; Nishada and suta origins are refused | Archery, divine weapon (astra) lore | A dakshina that may set the player against their friends |
 | **Kripa** | Open to court-adjacent origins | Balanced arms, tactics | Loyalty to the Kuru throne |
-| **Balarama** | Dwaraka origin or a quest | Mace, wrestling | Neutrality in the war (Balarama himself stays out) |
+| **Balarama** | Mathura origin or a quest | Mace, wrestling | Neutrality in the war (Balarama himself stays out) |
 | **Forest hermit** (original) | Open to all | Archery, survival, mantras | A secret that could curse you if revealed (echoes Karna and Parashurama) |
 | **Vidura's circle** | Court origins | Statecraft, law, espionage | Constant moral scrutiny |
 | **Self-taught** | Open to all | Slower progress, unique "Ekalavya" skill line | No debt, but no protection |
@@ -206,7 +209,7 @@ Key choices pit two or more obligations against each other. Honoring one weakens
 Separate reputation tracks for each faction (Kuru court, Pandavas, Panchala, Yadavas, sages and ashrams, common people). Reputation decides access, war roles and who will stand with you.
 
 ### 9.7 Combat
-- **Personal combat:** Third-person action combat suited to each path. Weapon types: bow, mace, sword, spear, discus. Exact feel **[OPEN]**: options are Souls-like, action-RPG or tactical pause.
+- **Personal combat:** Third-person action combat suited to each path. Weapon types: bow, mace, sword, spear, discus. Exact feel **[OPEN]**: options are Souls-like, action-RPG or tactical pause. (The browser edition uses turn-based fights with timed block and dodge; §16.5.)
 - **Astras:** Divine weapons earned through teachers and boons, with strong limits (cooldowns, conditions, moral cost for misuse).
 - **Chariot combat:** Driving and fighting from a moving chariot on the battlefield, as one player (warrior) or with an NPC charioteer.
 - **Formation layer (vyuha):** Strategist players set formations for their unit (Chakra, Krauncha, Makara, Garuda and others).
@@ -285,15 +288,17 @@ This is a **launch-critical risk area**. Past games that used Hindu figures (Son
 | **Age ratings** | IARC (global digital), ESRB, PEGI. Expect a Teen/16+ rating for battlefield violence. |
 | **Trademark** | Check the title against existing marks before public announcement. |
 | **Religious-sentiment law (India)** | Legal review of all marketing and key scenes before release in India. |
+| **AI-generated art and video** | The browser edition's paintings and living paintings are AI-generated; disclose this on Steam and keep the generation records (art_review/, store/README.md). |
 
 ---
 
 ## 14. Art, audio and language direction (initial)
 
-- **Visual style:** Painterly realism inspired by Indian miniature traditions (Rajput, Pahari, Mughal court painting) for UI and epilogues; grounded, earthy realism in 3D. **[OPEN]** Stylized vs. photoreal.
-- **Architecture:** Draw on early historic Indian architecture, not anachronistic later temple styles. Document choices in the Lore Bible.
-- **Music:** Original score using Hindustani and Carnatic instruments (bansuri, veena, mridangam, shehnai) with an orchestral layer for battles.
-- **Language:** Full English voice-over at launch; Hindi voice-over as a priority second language. Sanskrit for mantras and ritual; key terms (dharma, astra, vyuha) kept with an in-game glossary.
+- **Visual style:** Painterly realism inspired by Indian miniature traditions (Rajput, Pahari, Mughal court painting) for UI and epilogues; grounded, earthy realism in 3D. **[OPEN]** Stylized vs. photoreal. The browser edition uses warm painterly scene paintings in three shapes: 3:1 for desktops, 16:9 for wide stages, and 9:16 for upright phones.
+- **Characters on screen:** Tholu bommalata leather shadow puppets for the player and every character (§16.3). Animals in tests should follow the same puppet style.
+- **Architecture:** Draw on early historic Indian architecture, not anachronistic later temple styles. Document choices in the Lore Bible. Recurring slips to check for in generated art: domes, Gothic or later temple spires, castle towers, Greek columns, East Asian roofs, modern bullseye targets, cube dice, European swords, crescent emblems.
+- **Music:** Original score using Hindustani and Carnatic instruments (bansuri, veena, mridangam, shehnai) with an orchestral layer for battles. The browser edition has three pieces (heroic, fusion, battle) and four win themes.
+- **Language:** Full English voice-over at launch; Hindi voice-over as a priority second language. Sanskrit for mantras and ritual; key terms (dharma, astra, vyuha) kept with an in-game glossary. The browser edition is text-only, in English and Hindi.
 
 ---
 
@@ -303,6 +308,8 @@ This is a **launch-critical risk area**. Past games that used Hindu figures (Son
 **Content:** Act II (Training) through the archery tournament, plus war day 13 (Chakravyuha) as a battle showcase.
 **Proves:** Character creation, one teacher, two paths (Archer, Charioteer), the duty system, one vow, combat and chariot combat, and the "witness and wound" pattern.
 **Target length:** 60–90 minutes.
+
+The browser edition (§16) already covers far more than this slice and can serve as the playable pitch.
 
 ### 15.2 Phases
 | Phase | Goal | Indicative length |
@@ -335,6 +342,7 @@ This is a **launch-critical risk area**. Past games that used Hindu figures (Son
 | World | Full-fidelity hubs | Same hubs at lower fidelity; lighter crowds and battle density on the war days |
 | Session length | Long scenes | Act chapters split into 10–20 minute episodes with save points; the dice game (Act IV) is split into segments |
 | Download | Full install | Small base download; acts downloaded as needed |
+| Orientation | — | Upright (portrait) only on phones, as in the browser edition |
 | Performance target | — | 30 fps on mid-range Android phones (around US$300); higher on recent iPhones. **[OPEN]** Minimum device spec. |
 
 **Mobile monetization**
@@ -346,7 +354,79 @@ This is a **launch-critical risk area**. Past games that used Hindu figures (Son
 
 ---
 
-## 16. Success metrics
+## 16. The browser edition (built, October 2026)
+
+The game is playable today as a browser game (vanilla JavaScript, no engine), at apurv706.github.io/Mahabharata-game/game/ and as a private Claude artifact. It is the working prototype of the full design: all seven acts, every origin, teacher and path, the duty system, vows, curses, the war's 18 days and the endings, in English and Hindi. This section records how it plays and the decisions taken while building it; §17 lists what is left.
+
+### 16.1 Screens and devices
+- **Phones play upright only.** Turned sideways, a full-screen card asks the player to turn the phone back; the game pauses underneath (tests, the lamp and fight timing run on a pausable clock) and resumes where it was. Tablets and desktops play either way.
+- **One slim top bar** of icons (Character, Journal, Map, Menu, Standing), clear of the notch; smaller type on phones.
+- **The story page fits its content** and grows as the story is written line by line; nothing reserves empty space. The choices are always on screen.
+
+### 16.2 How a scene opens
+1. **Act card** at the start of each act: the act's number and name, one line, a gong; about 3 s or a tap.
+2. **Title card** for big moments (act openings, the epic's own scenes, tests, fights): Unwritten/Written, the title, age and place, the player's puppet; about 1.5 s. Ordinary scenes get a short title over the painting. Menu switch: Scene titles full / short.
+3. **The whole painting**, large and centred (or its living painting, full-screen, for about 4 s).
+4. **The page rises over the painting** and the story is written in; the painting holds still.
+5. **The painting moves up once** into the space above the page, shown as large as the space allows (it may trim up to two-fifths of its width around its subject). A button or a tap shows it whole and replays its clip.
+
+### 16.3 The player's puppet
+The player and every character are drawn as **tholu bommalata** leather shadow puppets: top knots with cloth bands, gold stepped crowns for kings and princes, sages' bare knots with rudraksha, tilak, earrings, sacred thread and dhoti; women in saris with bun, braid, nose ring and bangles. The puppet stands large on the story page's top edge, lit from behind, and reacts to what happens.
+
+### 16.4 Tests
+- 17 kinds of skill test, each a minute or two: archery, wrestling, steady hands, stealth, noticing, mudra and verse drills, rhythm, chariot and boat races, herding, the ring puzzle, retorts, drawing the bow, the dice, Shakuni's hands, and three board games (chaupar, tigers and goats, Moksha Patam). Two failures can close a way and send the player back to an earlier choice (loop-back), at most once per act.
+- **Immersive tests (in progress).** The stage painting is the playing field: the top bar and page fall away, the puppets stand big on the painting, the score sits at the top and the controls at the foot; rules and stakes are a card before, the verdict is written over the scene after. Done: archery (a straw target swinging on a rope from the branch, animals running across the ground) and the three board games.
+- **Chance in skill tests.** Not every good attempt succeeds: in archery the aim wavers and each arrow drifts (less for a better archer), so a perfectly timed shot hits about 3 in 4 for a beginner and nearly always for a master.
+- Tall (9:16) stage paintings for all 29 test stages are in the game for upright screens.
+
+### 16.5 Fights
+Turn-based fights with shadow puppets on a painted stage, timed block and dodge, adaptive enemies, lasting scars. Even fights are won about 63% of the time, hard fights about 41%. 12 tall fight backgrounds are delivered and wait for the fight rebuild (§17).
+
+### 16.6 Living paintings
+25 Runway clips (7 key moments, 6 endings, 12 key scenes) play in place of their paintings, silently, once, resting on the last frame; on phones at full width during the scene's opening, on desktops full-screen. Encoded for the web (H.264, with VP9 WebM as a fallback), about 0.2 to 1.4 MB each. Menu switch; off with reduced motion or data saver. Extending clips to fill a tall phone screen (Runway expand) is deferred until credits allow.
+
+### 16.7 Language
+English and Hindi, 3,334 strings, none missing in automated Hindi playthroughs. The Hindi is a draft and needs a native reader's review.
+
+### 16.8 Quality checks
+- **Playthroughs** (tests/playthrough.js): hundreds of automated lives; no crashes, no dead ends; tests per life by act about 1 / 2 / 2 / 1 / 2 / 1 / 0.4.
+- **Screen fit** (tests/layout.js): iPhone SE, 15, 15 Pro Max, Pixel 7, iPad, laptop and desktop, upright and sideways, with stand-in notches; checks the top bar, page fit, choices on screen, every test and fight, the journey, the windows, the act and title cards, the painting's placement, the turn card and pause, the page growing while written. Runs on every push on GitHub in Chromium, WebKit (Safari) and Firefox.
+- **Balance** (tests/balance.js) for fights.
+
+### 16.9 Build size
+| Part | On disk | What a player downloads |
+|---|---|---|
+| Code, styles, page | 1.6 MB | about 230 KB compressed |
+| Hindi dictionary | 0.7 MB | about 175 KB compressed (loaded even in English; should load only for Hindi) |
+| Paintings (206 files: 3:1, wide 16:9, tall 9:16) | 92 MB | only those shown: about 20 to 30 MB over a whole life |
+| Living paintings (25 clips, MP4 + WebM fallback) | 55 MB | one format, only scenes reached: about 8 to 12 MB per life |
+| Music (3 pieces, 4 win themes) | 4.2 MB | 4.2 MB, streamed as needed |
+| **Total** | **153 MB** | **first screen about 1.5 MB; a full life about 35 to 45 MB** |
+
+## 17. Remaining tasks (October 29)
+
+### Build
+1. Immersive tests for the remaining kinds: wrestling, steady hands, stealth, noticing, drills, rhythm, races (as vertical courses on the tall course paintings), herding, the ring puzzle, retorts, the bow, the dice and Shakuni's hands.
+2. Fights full-screen on the 12 tall fight backgrounds (2 more settings reuse test stages).
+3. Archery animals (deer, tiger, elephant) redrawn in the leather-puppet style.
+4. Performance: load the Hindi dictionary only for Hindi; convert paintings to WebP (about a third smaller); preload the next scene's painting.
+5. Confirm the Safari (WebKit) screen-fit run passes on the latest build.
+
+### Art and video
+6. Redo `fight_camp_gate_night` (eclipse-like sun, crescent banners); optional fixes to `fight_drupada_yard` (East Asian roof) and `fight_swayamvara` (Greek-style pillars).
+7. Still open from the Art Brief: `scene_journey`, the eight `custom_*` homeland festivals, Mathura's `home_mathura`, `roots_mathura` and `custom_mathura`, a native-size Steam library hero, five gameplay screenshots.
+8. Deferred video (needs Runway credits): clips extended to tall for phones; clips for the 3 endings, 8 key scenes and 29 test stages without one.
+
+### Review and release
+9. Native Hindi review of all 3,334 strings.
+10. Advisory review: canon portraits, every living painting (faces, hands, canon figures), Draupadi in the dice and exile images, the key art.
+11. AI disclosure for Steam covering paintings and video.
+12. Playtest questions: the timed block/dodge window on phones; whether board games finish within two minutes; whether loop-backs read clearly; whether title cards and the 4-second clip moments feel welcome after an hour; whether archery's chance feels fair.
+13. **[OPEN]** Packaging for Steam (a desktop wrapper around the browser build) and whether the browser edition becomes the shipped game or stays the prototype for the engine build.
+
+---
+
+## 18. Success metrics
 
 | Metric | Target **[OPEN — set with publisher]** |
 |---|---|
@@ -358,7 +438,7 @@ This is a **launch-critical risk area**. Past games that used Hindu figures (Son
 
 ---
 
-## 17. Key risks
+## 19. Key risks
 
 | Risk | Impact | Mitigation |
 |---|---|---|
@@ -370,10 +450,11 @@ This is a **launch-critical risk area**. Past games that used Hindu figures (Son
 | Funding | High | Publishers, Epic MegaGrants, Indian government AVGC programs, crowdfunding (backed by a demo) |
 | Mobile port cost or quality | High | Port-readiness rules from day one (§15.3); budget the port as its own phase; test a mobile build of the vertical slice early |
 | Action combat feels poor on touch | Medium | Assisted controls plus optional tactical mode; touch playtests during production |
+| AI-generated art criticized or slips on period details | Medium | Disclose on Steam; review every image against §14's checklist; advisory review of canon figures |
 
 ---
 
-## 18. Open questions
+## 20. Open questions
 
 1. Combat feel: Souls-like, action RPG, or tactical?
 2. Open world vs. hub-based acts?
@@ -384,6 +465,7 @@ This is a **launch-critical risk area**. Past games that used Hindu figures (Son
 7. Co-op or multiplayer: none, or a separate war mode later?
 8. Minimum mobile device spec, and in-house port vs. porting partner?
 9. Should the vertical slice include a rough mobile build to prove the port is feasible?
+10. Does the browser edition ship as the game (for example on Steam in a desktop wrapper), or stay the prototype for an engine build?
 
 ---
 
@@ -394,6 +476,7 @@ This is a **launch-critical risk area**. Past games that used Hindu figures (Son
 - **Pratijna:** A solemn vow.
 - **Sarathi:** Charioteer.
 - **Suta:** Charioteer/bard community; Karna's adoptive family.
+- **Tholu bommalata:** The leather shadow-puppet theatre of Andhra Pradesh; the look of the browser edition's characters.
 - **Vyuha:** Military formation (e.g., Chakravyuha, the wheel formation).
 - **Vanaprastha:** Retiring to the forest in later life.
 
