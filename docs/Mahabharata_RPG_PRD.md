@@ -3,7 +3,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft v0.4 (browser edition, §16; remaining tasks, §17; proposed storylines, §18) |
+| **Status** | Draft v0.4 (browser edition, §16; remaining tasks, §17; proposed storylines, weapons, magic and the puppet, §18) |
 | **Last updated** | October 29, 2026 |
 | **Owner** | [Founder / Creative Director] |
 | **Doc type** | Living PRD; sections marked **[OPEN]** still need decisions |
@@ -472,11 +472,51 @@ Ideas to deepen a life, all inside the canon lock (§4): the epic's events happe
 - Letters from friends on the other side during the war.
 - Scars and keepsakes that become choices later.
 
-### 18.7 Order of work
+### 18.7 Divine weapons and shields
+Builds on the existing boons (one generic astra, foresight, healing hands) and curses (misusing an astra on the helpless).
+- **Emphatic, not story-altering.** Against ordinary foes (bandits, a Gandharva, raiders, an enemy company) an astra wins the fight in one full-screen moment. Against the epic's heroes (Karna, Arjuna, Bhishma, Drona, Ashwatthama) it is met by its counter-weapon in mid-air, as it is throughout the epic: a spectacular clash that buys rounds in a holding fight, never a kill.
+- **Limits.** Once per battle. The mantra fails at the worst hour if the player broke their teacher's trust (the existing hermit's curse). Turning it on the helpless brings the existing curse.
+- **Out of reach:** Brahmastra, Pashupata, Narayanastra. At most the Brahmastra is offered once as a temptation with a terrible price, as it was to Ashwatthama, and can be refused.
+
+| Weapon | In a fight | Earned by |
+|---|---|---|
+| Agneyastra (fire) | Strikes every enemy; burning | Penance at a fire altar: a steady test held through a season of storms |
+| Varunastra (water) | Puts out fire, cures burns, stuns | Diving for a sage's lost offering in a deep lake (a breath test) |
+| Vayavyastra (wind) | Scatters the line, breaks guards; buys rounds in a holding fight | The climb to a Himalayan hermitage (a course up the mountain) |
+| Sammohana (stupor) | Puts an enemy group to sleep (Arjuna at Virata); escape or spare without killing | Answering a Gandharva's riddles |
+| Nagapasha (serpent noose) | Binds one foe alive: capture, not kill | Healing a wounded naga by the river |
+
+Shields and protections: a sage's **kavacha** (turns one fatal blow per war; a lesser echo of Karna's armour, never his); a **charmed shield** (blocks the first blow of every fight); a **raksha sutra** tied by mother or spouse before the war (once, turns a peril death into a wound).
+Other ways to earn: a year serving a sage; returning a stolen temple offering (stealth); sparing a defeated Gandharva (canon: Arjuna and Chitraratha); a teacher's gift at a high bond (Drona, Kripa, Mauni already); a test at Shiva's mountain, shown only as light and a voice (no divine figures).
+
+### 18.8 Magic, blessings and tapas
+- **Tapas** (spiritual merit) is the resource: earned by keeping vows over years, penance, service to sages and hard right choices; spent to invoke magic. Breaking a vow drains it.
+
+| Magic | Effect | Source |
+|---|---|---|
+| Bala and Atibala mantras | No hunger or fatigue: +1 might and grace for an act | A sage's teaching (Vishwamitra's mantras to Rama) |
+| Mritasanjivani root | One extra life: the next death is undone, then it is gone | A healer's deathbed gift, or a dangerous climb |
+| Antardhana (vanishing) | Pass one stealth check or test, once per act | A Gandharva or naga teacher |
+| Elders' blessings | +1 to every test for a day | Mother before the war; Bhishma; the teacher |
+| Soma at a great sacrifice | +2 to one attribute for a test day, −1 the next | A yajna at Indraprastha or Hastinapura |
+| Rite to lift a curse | Removes one curse at a heavy tapas cost | Sages, a long penance |
+
+- Every effect is temporary, charged or once only, and shown before the player chooses (spend and gain), like odds and danger today. Magic can carry a player through a peril, a holding fight or a hard test; the epic's events still happen as written. Spent carelessly, it costs tapas or brings a curse.
+
+### 18.9 The puppet as the heart of the action
+The tholu bommalata puppets (drawn in code; no paintings needed) become fully animated and playable.
+- **Active defence in fights**, replacing the button-and-bar block and dodge: the enemy puppet visibly winds up, then the player **jumps** a low arrow (swipe up or ↑), **ducks** a high swing (swipe down or ↓), **sidesteps** a thrust or an elephant's charge (swipe sideways or ←/→) or **blocks** with a shield (hold or space). Arrows fly as leather cut-outs with a shadow trail. A perfect move opens a counter-strike; late takes a graze; wrong takes the hit. Fits the existing timed defence, so balance holds; story mode and an assist setting dodge automatically. Holding fights against Karna's arrows or Bhima's charge become a run of reads and dodges.
+- **A better puppet, closer to the real craft:** articulated shoulder, elbow, hip and knee moved like a puppeteer's rods (one central rod, two to the hands, faintly visible); poses blend instead of snapping, with sway in the dangling limbs; a hop with a little hang at the top; the turn (flipping the puppet to face the other way) for retreat or surprise; light and distance (a rival looms large and soft when far from the screen, sharp as he steps in); a moving jaw for speech.
+- **The puppet tells the life:** it ages from child to elder across the acts; it carries the path's gear (bow and quiver, mace, chariot whip, healer's satchel), scars as stitched leather patches, a faint glow for an astra or raksha sutra; it bows, folds its hands, turns away in shame, trembles before a peril. A sutradhara (narrator) puppet introduces each act.
+- **Inside the tests:** move the puppet along the wall in stealth; the bow arm follows the aim; wrestlers lock and strain; the puppet rides the chariot or boat and leans into turns.
+
+### 18.10 Order of work
 1. Friends in fights (no art).
 2. The lac house escape (6 pictures), and three pictures for failure, already built (a cell, a prisoners' pen, a life cut short).
 3. Command, arrays and the holding fights, for both sides (12 pictures).
 4. Threads, episodes and the after-war scenes, a few at a time (21 pictures).
+5. The puppet: active defence (jump, duck, sidestep) first, then joints and pose blending, then gear, ageing and scars (no paintings).
+6. Divine weapons, shields, magic and tapas (31 pictures: 14 emblems, 6 test stages in tall and wide, 5 scenes; in `docs/Art_Brief_Weapons_Magic.pdf`).
 
 ## 19. Success metrics
 
