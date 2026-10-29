@@ -985,3 +985,15 @@ body.intest .leaf .text { background: none !important; }
 /* Your puppet stands in the middle with the bow; the others watch from the side. */
 .trial.immersive.trial-aim > .cast { justify-content: flex-end; }
 .trial.immersive.trial-aim > .cast .actor.me { position: absolute; left: 50%; bottom: max(76px, calc(var(--sab) + 70px)); transform: translateX(-50%); }
+/* Wrestling on the painting: the two close in the middle; the ring closes on the sand at their feet;
+   good pushes drive the other back. */
+.trial.immersive.trial-push > .cast { justify-content: center; gap: 0; }
+.trial.immersive.trial-push > .cast .actor { transform: translateX(var(--shove, 0)); transition: transform 0.45s cubic-bezier(.2, .8, .25, 1.2); }
+.trial.immersive.trial-push > .cast .actor.foe { margin-left: -4vw; }
+.trial.immersive .pushpit { flex: 1 1 0; position: relative; display: block; }
+.trial.immersive .pushpit > .balance { display: none; }
+.trial.immersive .pushpit .ringbox { position: absolute; left: 0; right: 0; bottom: -9vh; height: min(46vh, 380px); max-height: none; min-height: 0; background: none; box-shadow: none !important; overflow: visible; transform: scaleY(0.38); transform-origin: 50% 100%; }
+.trial.immersive .pushpit .ringbox .who { display: none; }
+.trial.immersive .pushpit .ringbox .mark { width: 120px; height: 120px; background: rgba(255, 210, 120, 0.22); border: 4px solid rgba(255, 210, 120, 0.85); box-shadow: 0 0 20px rgba(255, 190, 90, 0.6); } /* taste-skill-ignore: the mark glows on the sand */
+.trial.immersive .pushpit .ringbox .ring { width: 400px; height: 400px; border: 6px solid rgba(247, 234, 211, 0.9); }
+.trial.immersive .pushpit.good .ringbox .mark { border-color: var(--positive); } .trial.immersive .pushpit.bad .ringbox .mark { border-color: var(--negative); }

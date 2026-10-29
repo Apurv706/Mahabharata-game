@@ -208,7 +208,9 @@
       // While the story is still being written the page grows; the painting takes the place the
       // finished page will leave, so it does not move as the lines appear.
       const top = U.finalTop != null ? U.finalTop : leafTop();
-      if (top != null && size && top > 90) {
+      // Tests, fights and the journey fill the page: their painting fills the screen behind them.
+      const lf = U.$("leaf"), busy = lf && /\b(testing|fighting|journeying)\b/.test(lf.className);
+      if (top != null && size && top > 90 && !busy) {
         mode = "fit";
         const fullH = W * size[1] / size[0];
         rb = top; rt = top - hb >= fullH ? hb : Math.max(0, top - fullH);

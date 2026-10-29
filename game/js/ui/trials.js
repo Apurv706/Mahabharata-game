@@ -31,7 +31,7 @@
   const FOE = { push: "brace", rhythm: "block" };
   K.TRIAL_STANCE = STANCE;
 
-  const IMMERSIVE = new Set(["aim", "board"]);
+  const IMMERSIVE = new Set(["aim", "board", "push"]);
   // What hangs and swings in the archery test, drawn centred on its middle (about 64 units across).
   const RUNNERS = new Set(["deer", "tiger", "elephant"]);
   function AIM_ART(icon) {
@@ -250,7 +250,9 @@
       const foe = K.tr(t.foe || "your opponent");
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="pushpit"><div class="balance"><i></i></div><div class="ringbox"><div class="mark"></div><div class="ring"></div><span class="who">' + U.esc(foe) + '</span></div></div><p class="game-note" aria-live="polite"></p><div class="btnrow"></div>';
       const ring = host.querySelector(".ring"), bal = host.querySelector(".balance i"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
-      const show = () => { score.textContent = K.tr(t.tally || "Good pushes: {g} of 3 · Slips: {b} of 3", { g: good, b: bad }); bal.style.left = (50 + (good - bad) * 15) + "%"; };
+      // On the painting, the pushes move the two wrestlers across the ground.
+      const wrapEl = host.closest(".trial");
+      const show = () => { score.textContent = K.tr(t.tally || "Good pushes: {g} of 3 · Slips: {b} of 3", { g: good, b: bad }); bal.style.left = (50 + (good - bad) * 15) + "%"; if (wrapEl) wrapEl.style.setProperty("--shove", (good - bad) * 7 + "vw"); };
       show();
       const MARK = 0.3; // the ring meets the mark at 30% of its starting size
       const push = () => {
