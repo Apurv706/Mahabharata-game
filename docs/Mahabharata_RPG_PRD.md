@@ -421,7 +421,7 @@ The paintings' JPG originals (97 MB) are kept outside the game in `assets/art_sr
 ### Art and video (needs an artist or credits)
 1. Redo `fight_camp_gate_night` (eclipse-like sun, crescent banners); optional fixes to `fight_drupada_yard` (East Asian roof) and `fight_swayamvara` (Greek-style pillars).
 2. The rest of the art is listed in `docs/Art_Brief_Pictures_Required.pdf` (83 images): a portrait fix (`p_abhimanyu`), 12 16:9 fight backgrounds for wide screens and 16:9 versions of the remaining 3:1 paintings. The Steam library hero is done; a sharper repaint is optional. Five gameplay screenshots are to be captured from the game.
-3. Deferred video (needs Runway credits): clips extended to tall for phones; clips for the 3 endings, 8 key scenes and 29 test stages without one.
+3. Video: decided 29 October, no more clips. The game keeps its 25 living paintings; all other motion is drawn in code (the puppet, weapon effects, stage effects). A Cantina test of the Hastinapura homeland gave one usable second.
 
 ### Review and release (needs people)
 4. Native Hindi review of all 3,405 strings.
