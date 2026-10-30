@@ -28,9 +28,12 @@
         "How will you raise him?"
       ],
       choices: [
-        { id: "warrior", t: "As a warrior. The world he will grow up in needs them", fx: { set: { child: "vasu" }, setBond: { vasu: 6 }, duty: { family: 1 }, flag: "vasu_warrior", journal: "You raised Vasu to be a warrior." } },
-        { id: "gentle", t: "To be kind before he is brave", fx: { set: { child: "vasu" }, setBond: { vasu: 7 }, duty: { family: 1, conscience: 1 }, flag: "vasu_gentle", journal: "You raised Vasu to be kind before he was brave." } },
-        { id: "craft", t: "In your own craft, so he can earn a living without a sword", fx: { set: { child: "vasu" }, setBond: { vasu: 6 }, duty: { family: 2 }, flag: "vasu_craft", journal: "You taught Vasu your own craft." } }
+        { id: "warrior", t: "As a warrior. The world he will grow up in needs them", fx: { set: { child: "vasu" }, setBond: { vasu: 6 }, duty: { family: 1 }, flag: "vasu_warrior", journal: "You raised Vasu to be a warrior." },
+          text: "By six he can hold a wooden sword the right way round. By eight he hits back. You are prouder of it than you say." },
+        { id: "gentle", t: "To be kind before he is brave", fx: { set: { child: "vasu" }, setBond: { vasu: 7 }, duty: { family: 1, conscience: 1 }, flag: "vasu_gentle", journal: "You raised Vasu to be kind before he was brave." },
+          text: "He brings home every hurt bird and stray dog in the village. When the other boys fight, he is the one who stops them." },
+        { id: "craft", t: "In your own craft, so he can earn a living without a sword", fx: { set: { child: "vasu" }, setBond: { vasu: 6 }, duty: { family: 2 }, flag: "vasu_craft", journal: "You taught Vasu your own craft." },
+          text: "He sits at your elbow while you work, and by ten his hands know half of what yours do. He will never need a sword to eat." }
       ],
       next: "s_exile"
     },
@@ -85,7 +88,7 @@
     },
     {
       id: "a5_yaksha_again", when: K.retryWhen("a5_yaksha", ["answer"]), skipTo: "a5_charu",
-      act: 5, age: 42, place: "A lake in the forest", art: "scene_lake", caption: "The voice waits",
+      act: 5, age: 42, place: "A lake in the forest", art: "stage_forest_lake", caption: "The voice waits",
       title: "The voice waits", body: ["The voice in the water is still waiting. So is your thirst. You will not be asked a third time."],
       choices: [
         Object.assign(K.retryChoice("a5_yaksha", "answer", K.YAKSHA), { trial: Object.assign({}, K.YAKSHA.trial, { stakes: K.YAKSHA.retryStakes, rounds: K.YAKSHA_AGAIN }) }),
@@ -136,9 +139,12 @@
         "How do you make your living?"
       ],
       choices: [
-        { id: "trade", t: "Trade along the rivers", fx: { skill: { statecraft: 1 }, attr: { command: 1 } } },
-        { id: "heal", t: "Open a healer's house", fx: { skill: { healing: 2 }, rep: { common: 1 } } },
-        { id: "teach", t: "Teach the village children to fight", fx: { skill: { [ "mace" ]: 1 }, attr: { might: 1 }, rep: { common: 1 } } },
+        { id: "trade", t: "Trade along the rivers", fx: { skill: { statecraft: 1 }, attr: { command: 1 } },
+          text: "Three seasons on the river boats, salt down and cloth up. You learn to read a merchant's face faster than his scales." },
+        { id: "heal", t: "Open a healer's house", fx: { skill: { healing: 2 }, rep: { common: 1 } },
+          text: "Within a year there is a line at your door every morning, and people from three villages away know your name." },
+        { id: "teach", t: "Teach the village children to fight", fx: { skill: { [ "mace" ]: 1 }, attr: { might: 1 }, rep: { common: 1 } },
+          text: "Every dawn a line of children with sticks waits in the square. When raiders come through the next winter, the village is ready for them." },
         { id: "sudatta", t: "Take your field back from Sudatta's men", req: { flag: "debt_refused" }, combat: "e_sudatta" }
       ],
       next: "a5_forge"

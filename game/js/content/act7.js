@@ -20,8 +20,10 @@
         S.friend && K.PEOPLE[S.friend]?.canon && ["karna", "duryodhana"].includes(S.friend) ? { memory: "{friend}, your oldest friend, is among the dead." } : null
       ],
       choices: [
-        { id: "pyres", t: "Help build the pyres for the dead of both sides", fx: { rep: { common: 2 }, duty: { conscience: 1 } } },
-        { id: "mourn", t: "Sit with your own dead and let no one move you", fx: { duty: { family: 1 }, attr: { wisdom: 1 } } },
+        { id: "pyres", t: "Help build the pyres for the dead of both sides", fx: { rep: { common: 2 }, duty: { conscience: 1 } },
+          text: "You carry wood for three days. Nobody asks which side the dead fought for. The smoke goes up the same." },
+        { id: "mourn", t: "Sit with your own dead and let no one move you", fx: { duty: { family: 1 }, attr: { wisdom: 1 } },
+          text: "You sit by them until the women come with water and white cloth. When you finally stand, something in you stays sitting there." },
         { id: "hunt", t: "Swear vengeance on Ashwatthama", req: (S) => S.side !== "kaurava" && K.activeVows(S).length < K.MAX_VOWS && !K.hasVow("vengeance", S),
           fx: { vowTake: "vengeance", flag: "vengeance_ashwatthama" }, hint: "He has been cursed to wander the earth. You could follow" }
       ],

@@ -123,10 +123,14 @@
         S.karma ? { memory: ["At night you dream you are someone else: {past}, born in {land}, grown and grey, with a whole life behind them. In the dream it always ends the same way: {end!}.", { past: S.karma.name, land: K.ORIGINS[S.karma.origin]?.name || "", end: S.karma.title }] } : null,
         "You are six years old. How do you spend your days?"],
       choices: [
-        { id: "drills", t: "Follow the soldiers to their drills and copy them", fx: { skill: { mace: 1 }, attr: { might: 1 } } },
-        { id: "stories", t: "Sit with the old storyteller in the evenings", fx: { skill: { lore: 1 }, attr: { wisdom: 1 }, flag: "loved_stories" } },
-        { id: "wild", t: "Run wild by the river and the woods", fx: { skill: { stealth: 1 }, attr: { grace: 1 } } },
-        { id: "home", t: "Help at home with the animals and the little ones", fx: { skill: { healing: 1 }, duty: { family: 1 }, attr: { wisdom: 1 } } }
+        { id: "drills", t: "Follow the soldiers to their drills and copy them", fx: { skill: { mace: 1 }, attr: { might: 1 } },
+          text: "You march behind them with a stick for a spear until the old sergeant gives up chasing you off and starts correcting your grip instead." },
+        { id: "stories", t: "Sit with the old storyteller in the evenings", fx: { skill: { lore: 1 }, attr: { wisdom: 1 }, flag: "loved_stories" },
+          text: "Every evening you are the last child left by his fire. By the time you are seven you can tell his stories back to him, and he pretends not to know the endings." },
+        { id: "wild", t: "Run wild by the river and the woods", fx: { skill: { stealth: 1 }, attr: { grace: 1 } },
+          text: "You learn which branches hold, where the deer drink, and how to come home after dark without anyone hearing the door." },
+        { id: "home", t: "Help at home with the animals and the little ones", fx: { skill: { healing: 1 }, duty: { family: 1 }, attr: { wisdom: 1 } },
+          text: "You learn to set a goat's leg and quiet a crying baby, and your grandmother starts calling you when anyone in the lane is sick." }
       ],
       next: "a1_first"
     },
@@ -183,10 +187,14 @@
       ],
       body: ["You are eight. The palace has opened its gardens for a festival, and half the city has come in. The princes are choosing sides for a game of tag by the lotus pond."],
       choices: [
-        { id: "bhima", t: "Play on Bhima's side", fx: { bond: { bhima: 2, duryodhana: -1 }, flag: "played_bhima" } },
-        { id: "duryo", t: "Join Duryodhana and his brothers", fx: { bond: { duryodhana: 2, bhima: -1 }, flag: "played_duryodhana" } },
-        { id: "arjuna", t: "Slip away and watch Arjuna practise with a borrowed bow", fx: { bond: { arjuna: 1 }, skill: { archery: 1 }, flag: "watched_arjuna" } },
-        { id: "karna", t: "Help the charioteers' boy Karna rub down the horses", req: { origin: ["suta", "anga"] }, locked: "", fx: { bond: { karna: 2 }, skill: { chariot: 1 }, flag: "met_karna_young" } }
+        { id: "bhima", t: "Play on Bhima's side", fx: { bond: { bhima: 2, duryodhana: -1 }, flag: "played_bhima" },
+          text: "Bhima's side wins, of course. At the end he swings you up onto his shoulders, and from up there you see Duryodhana standing alone by the pond, dripping wet, not laughing." },
+        { id: "duryo", t: "Join Duryodhana and his brothers", fx: { bond: { duryodhana: 2, bhima: -1 }, flag: "played_duryodhana" },
+          text: "Bhima tags every one of you before the sun has moved, and throws two of the brothers into the pond. The others go home sulking. Duryodhana stays to fish your sandal out of the water. \"Next time,\" he says. \"Next time we win.\"" },
+        { id: "arjuna", t: "Slip away and watch Arjuna practise with a borrowed bow", fx: { bond: { arjuna: 1 }, skill: { archery: 1 }, flag: "watched_arjuna" },
+          text: "Behind the stables Arjuna shoots at a knot in a tree, again and again, long after the others have gone in. He lets you try once. You miss. He shows you how to breathe out before you let go." },
+        { id: "karna", t: "Help the charioteers' boy Karna rub down the horses", req: { origin: ["suta", "anga"] }, locked: "", fx: { bond: { karna: 2 }, skill: { chariot: 1 }, flag: "met_karna_young" },
+          text: "Karna works without a word until the grey mare nips your shoulder. Then he laughs, and shows you where she likes to be scratched. Nobody from the palace comes looking for either of you." }
       ],
       next: "a1_sage"
     },
@@ -221,7 +229,8 @@
     // The second chance comes at once: the prince lets you try again, there and then.
     {
       id: "a1_friend_again", when: (S) => Object.values(SECOND).some((f) => S.flags.includes(f)), skipTo: "s_child",
-      act: 1, age: 10, art: (S) => K.childArt(S), place: (S) => K.childPlace(S),
+      // The second chance is offered where the first one happened: the river for Bhima, the stable yard for Karna, and so on.
+      act: 1, age: 10, art: (S) => { const k = Object.keys(SECOND).find((x) => S.flags.includes(SECOND[x])); return (k && FRIENDS[k].trial && FRIENDS[k].trial.stage) || K.childArt(S); }, place: (S) => K.childPlace(S),
       title: "Once more",
       body: (S) => [Object.keys(SECOND).filter((k) => S.flags.includes(SECOND[k])).map((k) => FRIENDS[k].line)[0], "You will not be asked a third time."],
       choices: [

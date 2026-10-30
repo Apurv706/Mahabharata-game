@@ -64,7 +64,7 @@
       next: "a3_tunnel_again"
     },
     {
-      id: "a3_tunnel_again", when: K.retryWhen("a3_lac", ["dig"]), skipTo: "a3_kampilya", act: 3, age: 23, art: "scene_lac", place: "Varnavata", caption: "The next night",
+      id: "a3_tunnel_again", when: K.retryWhen("a3_lac", ["dig"]), skipTo: "a3_kampilya", act: 3, age: 23, art: "stage_lac_wall", place: "Varnavata", caption: "The next night",
       title: "The next night", body: ["The miner is waiting at the mouth of the tunnel with an empty basket. You will not be asked a third time."],
       choices: [K.retryChoice("a3_lac", "dig", TUNNEL), { id: "let", t: "Leave the digging to the miner", fx: {}, text: "You stay away. The miner digs on alone." }],
       next: "a3_kampilya"

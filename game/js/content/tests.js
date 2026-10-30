@@ -27,7 +27,9 @@
     const main = Object.assign({}, d.scene, { id: d.id, choices: keys.map((k) => K.testChoice(d.id, k, d.tests[k])), next: d.retry ? d.retry.id : d.next });
     if (!d.retry) return [main];
     const r = d.retry;
-    const again = Object.assign({}, r.scene, { id: r.id, when: K.retryWhen(d.id, keys), skipTo: d.next,
+    // A second chance is offered where the first attempt happened: the painting of the test being retried.
+    const retryArt = (S) => { const k = keys.find((x) => S.flags.includes(againFlag(d.id, x))); const st = k && d.tests[k].trial && K.val(d.tests[k].trial.stage, S); return st || K.val(r.scene.art, S); };
+    const again = Object.assign({}, r.scene, { id: r.id, art: retryArt, when: K.retryWhen(d.id, keys), skipTo: d.next,
       choices: keys.map((k) => K.retryChoice(d.id, k, d.tests[k], d.back)).concat([{ id: "let", t: r.letGo || "Let it go", fx: {}, text: r.letText || null }]), next: d.next });
     return [main, again];
   };
@@ -716,7 +718,7 @@
       body: (S) => [["You wake in chains, on stone. {who} took you, and nobody will come asking for you soon.", { who: CAPTOR(S) }], "Above you a torch swings on the watch platform. The bar on the gate is old, and loose."],
       choices: [K.testChoice("x_captive", "escape", ESCAPE), { id: "wait", t: "Wait. Someone will remember you, in time", fx: WAIT, next: waitThen, text: "You wait. The seasons turn outside the wall. When they finally open the gate, the world has gone on without you." }],
       next: "x_captive_again" },
-    { id: "x_captive_again", when: K.retryWhen("x_captive", ["escape"]), skipTo: captiveThen, art: captiveArt, place: captivePlace, caption: "Another night", title: "Another night",
+    { id: "x_captive_again", when: K.retryWhen("x_captive", ["escape"]), skipTo: captiveThen, art: "stage_prison_yard", place: captivePlace, caption: "Another night", title: "Another night",
       body: ["The bar is still loose. The guard on the platform has a cough now, and turns away to spit."],
       choices: [K.retryChoice("x_captive", "escape", ESCAPE), { id: "wait", t: "Wait it out", fx: WAIT, next: waitThen, text: "You stop counting the nights. When they finally open the gate, the world has gone on without you." }],
       next: captiveThen }
