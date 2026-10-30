@@ -54,14 +54,16 @@
     const might = K.attr("might"), grace = K.attr("grace");
     const hp = 30 + might * 5 + grace * 3 + (S.age >= 18 ? 20 : 0) + (S.skills.mace || 0) * 3;
     let atk = 3 + K.attr(P.stat || "might") + (S.skills[P.skill] || 0);
-    if (K.hasVow("never_retreat")) atk += 1;
+    if (K.hasVow("never_retreat")) atk += 1 + (S.flags.includes("held_firm") ? 1 : 0); // one more once you have held firm in a deadly fight
     const rec = K.record(S);
     atk += Math.min(2, Math.floor(rec.won / 3)); // every three fights won, a little more sure of your hand
     if (rec.last === "lost") atk -= 1;            // the last fight still in your mind
     const abilities = ["strike", "guard"].concat(P.abilities || []);
     if (S.boons.includes("astra")) abilities.push("astra");
     abilities.push("herbs");
-    return { uid: "p", name: S.name || "You", side: "player", hp, maxHp: hp, atk, def: 1 + Math.floor(grace / 2), abilities, cds: {}, status: {}, armed: true };
+    // Bhishma's blessing, for a vow of celibacy kept to the war.
+    const def = 1 + Math.floor(grace / 2) + (S.flags.includes("bhishma_blessing") && K.hasVow("celibacy", S) ? 1 : 0);
+    return { uid: "p", name: S.name || "You", side: "player", hp, maxHp: hp, atk, def, abilities, cds: {}, status: {}, armed: true };
   }
   // Enemies come in a little stronger than their tier says, and more so in a fight marked hard; story
   // mode takes a quarter off. Tuned so an even fight is won about two times in three by a player who
@@ -91,7 +93,8 @@
     hit(u, t, mult, o = {}) {
       if (!t || t.hp <= 0) return 0;
       if (u.side === "player" && t.vowTag) {
-        for (const id of K.vowBreaksFor([t.vowTag])) { K.apply({ vowBreak: id }); api.tell("You strike {t}. Your vow is broken.", { t }); }
+        if (K.vowBreaksFor([t.vowTag]).length) api.tell("You strike {t}. Your vow is broken.", { t });
+        K.breakTags([t.vowTag]);
       }
       if (t.status.evade) { delete t.status.evade; api.tell(subjectKey(t, "avoids the attack"), { t }); return 0; }
       // A blow aimed at you that you met in time (C.resolve): dodged, blocked, or turned into a counter.
@@ -102,6 +105,8 @@
         const p = t; B.defNow = null; api.hit(p, u, 0.7); return 0;
       }
       let dmg = (u.atk + K.roll(4)) * mult;
+      // A vow of vengeance: +1 against the one you swore against.
+      if (u.side === "player" && t.person && K.hasVow("vengeance") && Object.entries(K.VENGEANCE || {}).some(([f, who]) => K.S.flags.includes(f) && who.includes(t.person))) dmg += mult;
       if (def === "block") { dmg *= 0.45; B.lastDef = "block"; }
       if (def === "miss") { dmg *= o.heavy ? 1.15 : 1; B.lastDef = "miss"; }
       if (u.status.inspired) dmg *= 1.3;
@@ -154,11 +159,16 @@
     if (rec.last === "lost") api.say("You remember how your last fight ended. Your hands are not quite steady.");
     else if (rec.last === "won" && rec.won >= 3) api.say("You have won fights before, and your body remembers how.");
     if (enc.intro) api.say(K.val(enc.intro));
-    const curse = enc.curse && S.curses.find((c) => !c.fired);
+    const curse = enc.curse && S.curses.find((c) => !c.fired && c.id !== "astra_condition"); // a broken weapon condition waits for the mantra (abilities.js)
     if (curse) {
       K.apply({ fireCurse: curse.id, journal: K.CURSES[curse.id].fireText });
       api.status(C.player(), "cursed", 3);
       api.say(K.CURSES[curse.id].fireText);
+    }
+    // A vow never to retreat, broken: your company remembers, in its next fight.
+    if (S.flags.includes("company_shaken")) {
+      const co = B.units.find((u) => u.side === "ally" && u.plural);
+      if (co) { api.status(co, "weakened", 3); api.say("Your company remembers the day you fell back. They look at each other before they look at you."); K.apply({ unflag: "company_shaken" }); }
     }
     planAll();
     K.emit("combat", B);
@@ -394,7 +404,7 @@
   C.fleeBreaks = () => (B && B.enc.flee ? K.vowBreaksFor(B.enc.flee.tags || ["retreat"]) : []);
   C.flee = function () {
     if (!C.canFlee()) return;
-    for (const id of C.fleeBreaks()) K.apply({ vowBreak: id });
+    K.breakTags(B.enc.flee.tags || ["retreat"]);
     api.tell("You withdraw from the fight.");
     finish("flee");
   };

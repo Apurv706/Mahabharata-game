@@ -219,6 +219,8 @@
   // ---------- Ending ----------
   let endingShown = null;
   U.renderEnding = function (sc) {
+    // A moment reached in the life's last scene (a farewell, a vow answered) is still shown, first.
+    if (U.playMoments && K.momentQueue && K.momentQueue.length && U.playMoments(() => U.renderEnding(sc))) return;
     // An ending with a living painting plays it full-screen first, under the ending's name.
     if (endingShown !== sc.id && U.beatsOn && U.beatsOn() && U.sceneBeats && K.composeEnding) {
       const e0 = K.composeEnding(K.S);

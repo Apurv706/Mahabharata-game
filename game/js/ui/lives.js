@@ -24,7 +24,8 @@
       broke: S.vows.some((v) => v.broken && !v.released),
       karna: (S.bonds.karna || 0) >= 7 || has("died_with_karna") || has("pledged_to_karna"),
       teller: S.endChoice === "teller",
-      conscience: S.duty.conscience
+      conscience: S.duty.conscience,
+      moments: (S.moments || []).map((m) => ({ kind: m.kind, who: m.who || null, id: m.id || null, from: m.from || null, age: m.age }))
     };
     const all = K.lives();
     all.unshift(rec);
@@ -65,8 +66,10 @@
     }).join("");
     const shelf = lives.map((r) => {
       const lines = (r.telling || []).map((l) => "<p>" + U.esc(K.text(l, null, r.me)) + "</p>").join("");
+      // The moments of that life, as small cards.
+      const mos = (r.moments || []).map((m) => '<span class="chip' + (m.kind === "farewell" ? " bad" : " good") + '">' + U.esc(K.momentTitle(m, Object.assign({}, K.newLife(), r.me))) + "</span>").join("");
       return '<details class="lifecard"><summary>' + (r.figure ? U.puppetBadge(r.figure, { h: 64, cls: "lifefig" }) : "") + U.thumb(r.art, "card") + '<span><b>' + U.esc(r.me.name) + "</b><small>" + U.tr(r.title) + " · " +
-        U.tr(r.alive ? "Age {n}" : "Fell at {n}", { n: r.age }) + " · " + U.esc(when(r.at)) + '</small></span></summary><div class="telling">' + lines + "</div></details>";
+        U.tr(r.alive ? "Age {n}" : "Fell at {n}", { n: r.age }) + " · " + U.esc(when(r.at)) + '</small></span></summary>' + (mos ? '<div class="lifemoments">' + mos + "</div>" : "") + '<div class="telling">' + lines + "</div></details>";
     }).join("");
     U.openModal("Book of Lives",
       '<span class="lbl">' + U.tr("Endings found: {n} of {m}", { n, m: K.ENDINGS.length }) + '</span><div class="endings">' + gallery + "</div>" +

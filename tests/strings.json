@@ -17228,5 +17228,815 @@
   "id": 3447,
   "en": "Your company holds a stretch of the ring. Whatever you do, they will do.",
   "ctx": "play:a6_day13"
+ },
+ {
+  "id": 3448,
+  "en": "Ends your friendship with {who}",
+  "ctx": "code:flow.js"
+ },
+ {
+  "id": 3449,
+  "en": "Kept: {gift}",
+  "ctx": "code:flow.js"
+ },
+ {
+  "id": 3450,
+  "en": "Watched by {who}",
+  "ctx": "code:flow.js"
+ },
+ {
+  "id": 3451,
+  "en": "Broken: {price}",
+  "ctx": "code:flow.js"
+ },
+ {
+  "id": 3452,
+  "en": "{who} will not forgive it",
+  "ctx": "code:flow.js"
+ },
+ {
+  "id": 3453,
+  "en": "Breaks the weapon's condition: {who} will take it back",
+  "ctx": "code:flow.js"
+ },
+ {
+  "id": 3454,
+  "en": "Breaks the weapon's condition: its mantra will fail you",
+  "ctx": "code:flow.js"
+ },
+ {
+  "id": 3455,
+  "en": "My word: the court will believe you without a test",
+  "ctx": "code:flow.js"
+ },
+ {
+  "id": 3456,
+  "en": "You were never given a divine weapon",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 3457,
+  "en": "Your company remembers the day you fell back. They look at each other before they look at you.",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 3458,
+  "en": "The press of the fighting carries {t} away from you.",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 3459,
+  "en": "Call for help",
+  "ctx": "code:abilities.js"
+ },
+ {
+  "id": 3460,
+  "en": "The vow was answered.",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3461,
+  "en": "Broken at {n}. Your penance lifted the shame.",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3462,
+  "en": "You broke {who}'s condition, and the weapon was taken back.",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3463,
+  "en": "You broke the condition. The mantra will fail you at the worst hour.",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3464,
+  "en": "Your divine weapon was given by {who}, on one condition: “{cond}”",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3465,
+  "en": "Moments",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3466,
+  "en": "Your word is enough. The court believes you without a test.",
+  "ctx": "code:scene.js"
+ },
+ {
+  "id": 3467,
+  "en": "Read the blow: jump, duck, sidestep or block, as the ring meets the mark. Swipe or use the arrow keys.",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 3468,
+  "en": "Shout for a friend. Once per battle; who comes depends on what you have been to them.",
+  "ctx": "ability"
+ },
+ {
+  "id": 3469,
+  "en": "+1 attack in every fight, and one more once you have held firm in a deadly fight.",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3470,
+  "en": "Bhima and Karna turn from you, your company is shaken in its next fight, and the extra strength is lost for good.",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3471,
+  "en": "your company will be shaken",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3472,
+  "en": "\"My word\": once in each part of your life, a court believes you without a test. +1 when you persuade honestly.",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3473,
+  "en": "Yudhishthira and Vidura turn from you, \"My word\" is gone, and once, at the worst moment, your chariot wheel will stick in the earth.",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3474,
+  "en": "your chariot wheel will stick at the worst moment",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3475,
+  "en": "Karna answers your call in battle, even across the lines (to stand off your enemies, never against his brothers).",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3476,
+  "en": "Karna's friendship ends at once.",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3477,
+  "en": "Karna's friendship ends at once",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3478,
+  "en": "Foes you spare may one day return the favour; common people warn you of ambushes (+1 stealth).",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3479,
+  "en": "Arjuna and Charu turn from you, and a divine weapon given on this condition is taken back.",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3480,
+  "en": "a weapon given on this condition is lost",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3481,
+  "en": "+1 Wisdom, and Bhishma's blessing before the war (+1 defence in battle).",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3482,
+  "en": "Bhishma withholds his blessing, and the Wisdom point is lost.",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3483,
+  "en": "Bhishma will withhold his blessing",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3484,
+  "en": "+1 attack against the one you swore against.",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3485,
+  "en": "Left unanswered at the end of your life, it darkens how your story is told.",
+  "ctx": "world:VOWS"
+ },
+ {
+  "id": 3486,
+  "en": "The broken condition",
+  "ctx": "world:CURSES"
+ },
+ {
+  "id": 3487,
+  "en": "You broke the condition the divine weapon was given on.",
+  "ctx": "world:CURSES"
+ },
+ {
+  "id": 3488,
+  "en": "You speak the mantra, and nothing answers. The condition you broke has found you.",
+  "ctx": "world:CURSES"
+ },
+ {
+  "id": 3489,
+  "en": "The broken word",
+  "ctx": "world:CURSES"
+ },
+ {
+  "id": 3490,
+  "en": "You swore never to lie, and lied. Once, at the worst moment, the earth will hold your wheel.",
+  "ctx": "world:CURSES"
+ },
+ {
+  "id": 3491,
+  "en": "Your chariot wheel sinks into the earth, as Yudhishthira's did after his half-truth. For a breath you cannot move.",
+  "ctx": "world:CURSES"
+ },
+ {
+  "id": 3492,
+  "en": "Against the boy in the wheel",
+  "ctx": "endings"
+ },
+ {
+  "id": 3493,
+  "en": "On the Kaurava side, stand in Abhimanyu's way.",
+  "ctx": "endings"
+ },
+ {
+  "id": 3494,
+  "en": "Hold to move your hand right; let go and it drifts back. Keep it on the horse's head as it shies.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 3495,
+  "en": "A festival drum has maddened one of the chariot horses, and Karna is trying to hold it. \"Help me,\" he says. Keep your hand on the horse's head until it is calm.",
+  "ctx": "scene:a1_friend"
+ },
+ {
+  "id": 3496,
+  "en": "He has killed everyone who stood in front of him today",
+  "ctx": "scene:a6_day13"
+ },
+ {
+  "id": 3497,
+  "en": "You pull back out of the ring. Others close the gap you leave, and die in it.",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3498,
+  "en": "A sixteen-year-old in a chariot comes at your part of the ring as if it were made of reeds. Behind him, the men who tried to stop him are lying in the dust.",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3499,
+  "en": "His arrows find your charioteer. You take the reins yourself.",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3500,
+  "en": "Duryodhana's son Lakshmana rides in beside you, and falls to Abhimanyu's first arrow.",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3501,
+  "en": "He sees you now. Every arrow he looses is meant for you.",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3502,
+  "en": "Your bow arm is going numb. He is not even tired.",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3503,
+  "en": "Nothing you do slows him.",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3504,
+  "en": "He comes on, faster than anyone can follow.",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3505,
+  "en": "Somehow, he turns away from you, toward a weaker stretch of the ring.",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3506,
+  "en": "{They} fell to Abhimanyu's arrows, holding a stretch of the ring in the Chakravyuha on the thirteenth day.",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3507,
+  "en": "The king's court",
+  "ctx": "scene:v_word"
+ },
+ {
+  "id": 3508,
+  "en": "A word before the court",
+  "ctx": "scene:v_word"
+ },
+ {
+  "id": 3509,
+  "en": "Swear it for me",
+  "ctx": "scene:v_word"
+ },
+ {
+  "id": 3510,
+  "en": "Swear what your friend asks",
+  "ctx": "scene:v_word"
+ },
+ {
+  "id": 3511,
+  "en": "You say it, in a clear voice, and the court believes you. Your friend squeezes your arm afterwards. You do not feel the squeeze for long.",
+  "ctx": "scene:v_word"
+ },
+ {
+  "id": 3512,
+  "en": "Tell the court only what you saw, and keep your friend out of it",
+  "ctx": "scene:v_word"
+ },
+ {
+  "id": 3513,
+  "en": "You tell the truth, all of it that you saw, and nothing more. The court is satisfied. Your friend's name is never spoken.",
+  "ctx": "scene:v_word"
+ },
+ {
+  "id": 3514,
+  "en": "You tell the truth, and the court asks one more question than you hoped. Your friend's name comes out. You did not say it, but you were there when it was said.",
+  "ctx": "scene:v_word"
+ },
+ {
+  "id": 3515,
+  "en": "Honest persuasion",
+  "ctx": "scene:v_word"
+ },
+ {
+  "id": 3516,
+  "en": "Refuse. You will not lie, not even for a friend",
+  "ctx": "scene:v_word"
+ },
+ {
+  "id": 3517,
+  "en": "A camp in the forest",
+  "ctx": "scene:v_hold"
+ },
+ {
+  "id": 3518,
+  "en": "Raiders at the river crossing",
+  "ctx": "scene:v_hold"
+ },
+ {
+  "id": 3519,
+  "en": "Raiders come over the river at dusk, more of them than anyone counted. {friend} takes a spear in the thigh and goes down beside you.",
+  "ctx": "scene:v_hold"
+ },
+ {
+  "id": 3520,
+  "en": "\"Fall back to the trees,\" {friend} gasps. \"Carry me. We can hold them at the trees.\" Falling back is the one thing you swore you would never do.",
+  "ctx": "scene:v_hold"
+ },
+ {
+  "id": 3521,
+  "en": "Carry your friend back to the trees",
+  "ctx": "scene:v_hold"
+ },
+ {
+  "id": 3522,
+  "en": "You get {friend} over your shoulder and run. At the trees you turn, and hold, and the raiders give up before dark. Your vow is broken, and your friend is alive.",
+  "ctx": "scene:v_hold"
+ },
+ {
+  "id": 3523,
+  "en": "Hold the crossing, and shout for someone else to carry your friend",
+  "ctx": "scene:v_hold"
+ },
+ {
+  "id": 3524,
+  "en": "You stand in the water and do not move, and others drag {friend} back to the trees. When the raiders break, you are still standing in the river.",
+  "ctx": "scene:v_hold"
+ },
+ {
+  "id": 3525,
+  "en": "You hold, and it costs you: a raider's axe across the leg. Someone gets {friend} to the trees, late. {friend} does not look at you when they bring you in.",
+  "ctx": "scene:v_hold"
+ },
+ {
+  "id": 3526,
+  "en": "A test of might",
+  "ctx": "scene:v_hold"
+ },
+ {
+  "id": 3527,
+  "en": "Stand over your friend and fight where you are",
+  "ctx": "scene:v_hold"
+ },
+ {
+  "id": 3528,
+  "en": "You stand over {friend} until the raiders run out of courage. \"You would have let me bleed for your vow,\" {friend} says afterwards, and is not entirely joking.",
+  "ctx": "scene:v_hold"
+ },
+ {
+  "id": 3529,
+  "en": "A camp at night",
+  "ctx": "scene:v_captive"
+ },
+ {
+  "id": 3530,
+  "en": "A spy, bound at the wrists",
+  "ctx": "scene:v_captive"
+ },
+ {
+  "id": 3531,
+  "en": "Before he talks",
+  "ctx": "scene:v_captive"
+ },
+ {
+  "id": 3532,
+  "en": "A spy is caught at the edge of the camp, a boy hardly older than you were when you first held a bow. He has seen where everyone sleeps.",
+  "ctx": "scene:v_captive"
+ },
+ {
+  "id": 3533,
+  "en": "{friend} draws you aside. \"If he gets back to his masters, we are all dead by the new moon,\" {friend} says. \"It has to be done, and it has to be you. The men will not do it.\"",
+  "ctx": "scene:v_captive"
+ },
+ {
+  "id": 3534,
+  "en": "Do it, quickly, while he is bound",
+  "ctx": "scene:v_captive"
+ },
+ {
+  "id": 3535,
+  "en": "It is quick. It is not clean. You wash your hands in the river for a long time, and they do not feel washed.",
+  "ctx": "scene:v_captive"
+ },
+ {
+  "id": 3536,
+  "en": "Cut his bonds and let him run",
+  "ctx": "scene:v_captive"
+ },
+ {
+  "id": 3537,
+  "en": "The boy runs. You break camp before dawn and move everyone to the far side of the hills. {friend} does not speak to you for three days.",
+  "ctx": "scene:v_captive"
+ },
+ {
+  "id": 3538,
+  "en": "Keep him bound, and carry him with you until it no longer matters",
+  "ctx": "scene:v_captive"
+ },
+ {
+  "id": 3539,
+  "en": "For a month he walks bound in the middle of the column, and when you let him go at last there is nothing left to tell. He thanks you, which you did not expect.",
+  "ctx": "scene:v_captive"
+ },
+ {
+  "id": 3540,
+  "en": "On the fourth night he slips his rope and is gone. You break camp in the dark. {friend} looks at you and says nothing, which says enough.",
+  "ctx": "scene:v_captive"
+ },
+ {
+  "id": 3541,
+  "en": "An ashram in the hills",
+  "ctx": "scene:v_penance"
+ },
+ {
+  "id": 3542,
+  "en": "A season of fasting",
+  "ctx": "scene:v_penance"
+ },
+ {
+  "id": 3543,
+  "en": "The penance",
+  "ctx": "scene:v_penance"
+ },
+ {
+  "id": 3544,
+  "en": "Do the penance, the whole season of it",
+  "ctx": "scene:v_penance"
+ },
+ {
+  "id": 3545,
+  "en": "You come down out of the hills thinner, quieter, and lighter in some way you could not explain. People look at you differently. Some of them, at least.",
+  "ctx": "scene:v_penance"
+ },
+ {
+  "id": 3546,
+  "en": "Go back down. There is no time",
+  "ctx": "scene:v_penance"
+ },
+ {
+  "id": 3547,
+  "en": "You go back down the hill. The sage does not seem surprised.",
+  "ctx": "scene:v_penance"
+ },
+ {
+  "id": 3548,
+  "en": "A road before the war",
+  "ctx": "scene:v_mend"
+ },
+ {
+  "id": 3549,
+  "en": "An old friend, on the road",
+  "ctx": "scene:v_mend"
+ },
+ {
+  "id": 3550,
+  "en": "The road back",
+  "ctx": "scene:v_mend"
+ },
+ {
+  "id": 3551,
+  "en": "You find the camp at dusk. Neither of you says sorry. Neither of you has to. By the time the fire burns down you are laughing about something stupid from when you were ten.",
+  "ctx": "scene:v_mend"
+ },
+ {
+  "id": 3552,
+  "en": "You find the camp at dusk. You are given water and a place by the fire, and a polite good night. Some doors, once shut, stay shut.",
+  "ctx": "scene:v_mend"
+ },
+ {
+  "id": 3553,
+  "en": "Doing penance first would help",
+  "ctx": "scene:v_mend"
+ },
+ {
+  "id": 3554,
+  "en": "Let it be",
+  "ctx": "scene:v_mend"
+ },
+ {
+  "id": 3555,
+  "en": "You ride on toward the war. You think about it more than you expected to.",
+  "ctx": "scene:v_mend"
+ },
+ {
+  "id": 3556,
+  "en": "Your grace suits the reins.",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 3557,
+  "en": "Your grace suits the dark cloak.",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 3558,
+  "en": "your company",
+  "ctx": "play:a2_vow"
+ },
+ {
+  "id": 3559,
+  "en": "the sages",
+  "ctx": "play:a2_vow"
+ },
+ {
+  "id": 3560,
+  "en": "the common people",
+  "ctx": "play:a2_vow"
+ },
+ {
+  "id": 3561,
+  "en": "A vow: {vow}",
+  "ctx": "play:a3_debt"
+ },
+ {
+  "id": 3562,
+  "en": "You carried me out of the river crossing, and broke your vow to do it.",
+  "ctx": "play:v_hold"
+ },
+ {
+  "id": 3563,
+  "en": "Before the armies gather, you go up into the hills to an old ashram, where the sage there will hear what you did. You swore “{vow!}”, and broke it.",
+  "ctx": "play:v_penance"
+ },
+ {
+  "id": 3564,
+  "en": "He tells you what it costs: a season of fasting and silence, sleeping on the ground, while the world goes to war without you for a while. It will not mend the vow. It may lift the shame.",
+  "ctx": "play:v_penance"
+ },
+ {
+  "id": 3565,
+  "en": "You shout for help. In the roar of the battle no one you trust is near enough to hear.",
+  "ctx": "play:a6_raid"
+ },
+ {
+  "id": 3566,
+  "en": "The wrong {they} swore to answer was never answered. It is the part of the story the tellers say quickly, and look away.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 3567,
+  "en": "Your might suits the mace.",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 3568,
+  "en": "Your wisdom suits the healer's satchel.",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 3569,
+  "en": "Your wisdom suits the vina.",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 3570,
+  "en": "Your teacher: {who}",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 3571,
+  "en": "On the eve of the war, Bhishma blessed you for keeping your vow, as he has kept his.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3572,
+  "en": "A friend for life: {who}",
+  "ctx": "play:a1_friend"
+ },
+ {
+  "id": 3573,
+  "en": "Married: {who}",
+  "ctx": "play:ev_lamps"
+ },
+ {
+  "id": 3574,
+  "en": "One of Duryodhana's men has beaten a farmer half to death over a boundary stone. The farmer's family has come to the king's court. Duryodhana finds you in the corridor before the hearing.",
+  "ctx": "play:v_word"
+ },
+ {
+  "id": 3575,
+  "en": "You were on the road that evening. Say the farmer struck first. They will believe you. Everyone knows you never lie.",
+  "ctx": "play:v_word"
+ },
+ {
+  "id": 3576,
+  "en": "You shout for {who}, but {who} is far down the line, in the thick of it.",
+  "ctx": "play:a6_day16"
+ },
+ {
+  "id": 3577,
+  "en": "A friendship ends: {who}",
+  "ctx": "play:a6_duryodhana"
+ },
+ {
+  "id": 3578,
+  "en": "\"I gave you my friendship when no one else would,\" Duryodhana says. \"I will not offer it twice.\"",
+  "ctx": "play:a7_question"
+ },
+ {
+  "id": 3579,
+  "en": "{They} lost {who}'s friendship, and never found the way back.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 3580,
+  "en": "A granary steward is accused of selling the king's grain, and the night it went missing {friend} was with him, at a dice table no one is supposed to know about. If the court asks where the steward was, {friend}'s name comes out with his.",
+  "ctx": "play:v_word"
+ },
+ {
+  "id": 3581,
+  "en": "{friend} takes your arm in the corridor before the hearing. \"Say he was with you,\" {friend} whispers. \"They will believe you. Everyone knows you never lie.\"",
+  "ctx": "play:v_word"
+ },
+ {
+  "id": 3582,
+  "en": "{friend} lets go of your arm. Later, Yudhishthira finds you on the steps and sits beside you for a while, without saying why.",
+  "ctx": "play:v_word"
+ },
+ {
+  "id": 3583,
+  "en": "Never against someone who cannot fight back.",
+  "ctx": "play:a5_court_armour"
+ },
+ {
+  "id": 3584,
+  "en": "A divine weapon",
+  "ctx": "play:a5_court_armour"
+ },
+ {
+  "id": 3585,
+  "en": "Before the war, you hear that {who} is camped half a day's ride away.",
+  "ctx": "play:v_mend"
+ },
+ {
+  "id": 3586,
+  "en": "You have not spoken since the friendship ended. You could ride over. You could also not.",
+  "ctx": "play:v_mend"
+ },
+ {
+  "id": 3587,
+  "en": "Ride over and find {who}",
+  "ctx": "play:v_mend"
+ },
+ {
+  "id": 3588,
+  "en": "You rode half a day to find me before the war. I had been hoping you would.",
+  "ctx": "play:v_mend"
+ },
+ {
+  "id": 3589,
+  "en": "Charu puts the hammer down. \"We were ten,\" Charu says. \"I thought that meant something to you too.\"",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 3590,
+  "en": "{They} swore “{vow!}”, broke it, and did penance for it.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3591,
+  "en": "On the thirteenth day {they} stood in Abhimanyu's way in the wheel, as the order said, and fell to his arrows.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3592,
+  "en": "Your penance is done. The shame of the broken vow ({vow!}) is lifted, though the vow itself cannot be sworn again.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3593,
+  "en": "As you go down, someone drags you out of the press by your collar. A soldier you once let live. \"Now we are even,\" he says, and is gone.",
+  "ctx": "play:a6_day13"
+ },
+ {
+  "id": 3594,
+  "en": "A soldier you once let live dragged you out of a deadly fight. He said he was only paying a debt.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3595,
+  "en": "You shout for help. In the roar of the wheel no one you trust is near enough to hear.",
+  "ctx": "play:a6_day13"
+ },
+ {
+  "id": 3596,
+  "en": "Your aim suits the bow.",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 3597,
+  "en": "the voice in the fire",
+  "ctx": "play:a5_forest_boon"
+ },
+ {
+  "id": 3598,
+  "en": "A company of your own",
+  "ctx": "play:a6_eve"
+ },
+ {
+  "id": 3599,
+  "en": "Duryodhana stares at you, then laughs without any warmth and walks away. That evening Vidura sends for you, and says nothing about it, and pours you a cup of water himself.",
+  "ctx": "play:v_word"
+ },
+ {
+  "id": 3600,
+  "en": "{They} broke the condition {their} divine weapon was given on.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 3601,
+  "en": "You broke the condition your divine weapon was given on. Its mantra will fail you at the worst hour.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 3602,
+  "en": "{who} hears you over the din, and comes.",
+  "ctx": "play:a6_day13"
+ },
+ {
+  "id": 3603,
+  "en": "You held firm through a deadly fight, as you swore you would. Your hand is surer for it.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3604,
+  "en": "\"I taught you to aim at what matters,\" Arjuna says. \"I see now that we were aiming at different things.\"",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3605,
+  "en": "You did the thing no one else would do, at the edge of the camp.",
+  "ctx": "play:v_captive"
+ },
+ {
+  "id": 3606,
+  "en": "Duryodhana hears you over the din and drives his chariot at the boy, roaring.",
+  "ctx": "play:a6_day13"
+ },
+ {
+  "id": 3607,
+  "en": "Karna looks at you for a long moment. \"Everyone I have trusted has had a reason to leave,\" he says. \"I did not think you would find one.\"",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3608,
+  "en": "Karna hears you across the lines. His chariot swings out of the Kaurava ranks and stands between you and your enemies, and none of them will come past him. He raises his bow to you once, and is gone.",
+  "ctx": "play:a6_day1"
+ },
+ {
+  "id": 3609,
+  "en": "Never lie to me, or before the court.",
+  "ctx": "play:a5_court_armour"
  }
 ]

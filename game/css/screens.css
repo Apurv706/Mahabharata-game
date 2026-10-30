@@ -792,6 +792,75 @@ html[lang="hi"] .beat-act b, html[lang="hi"] .beat-title b, html[lang="hi"] .bea
 html[lang="hi"] .beat-title b, html[lang="hi"] .beat-short b { font-size: clamp(30px, 5.4vw, 50px); }
 html[lang="hi"] .beat-act .b-num, html[lang="hi"] .beat-title .kind, html[lang="hi"] .beat-short .kind { letter-spacing: 0.04em; text-transform: none; }
 html[lang="hi"] .beat-act p { line-height: 1.7; }
+
+/* ---- Moments: a friend for life, a divine weapon, a teacher, a marriage, a vow, a company ---- */
+.moment { position: fixed; inset: 0; z-index: 60; display: grid; grid-template-rows: 1fr auto; overflow: hidden; background: #0d0a08; cursor: pointer; opacity: 0; transition: opacity .6s ease; }
+.moment.in { opacity: 1; } .moment.out { opacity: 0; transition-duration: .4s; }
+.moment .mo-art { position: absolute; inset: -4%; background: var(--img) center / cover no-repeat; transform: scale(1.0); }
+.moment.in .mo-art { animation: mo-zoom 9s ease-out forwards; }
+.moment.framed .mo-art { filter: brightness(.55) saturate(.8) blur(1.5px); }
+.moment.grey .mo-art { filter: grayscale(.85) brightness(.6); }
+.moment::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to bottom, rgba(10, 7, 5, .62) 0%, rgba(10, 7, 5, 0) 26%, rgba(10, 7, 5, 0) 58%, rgba(10, 7, 5, .82) 100%); }
+@keyframes mo-zoom { from { transform: scale(1.0); } to { transform: scale(1.08); } }
+.mo-frame { position: absolute; z-index: 1; left: 50%; top: 13%; width: min(34vw, 30vh); aspect-ratio: 3 / 4; transform: translateX(-50%); background: var(--img) center / cover; border-radius: 6px;
+  box-shadow: 0 0 0 3px #d9a53a, 0 0 0 7px rgba(20, 12, 6, .85), 0 0 0 9px #b8862e, 0 18px 40px rgba(0, 0, 0, .6); opacity: 0; }
+.moment.in .mo-frame { animation: mo-rise 1.2s .3s ease-out forwards; }
+.moment.grey .mo-frame { filter: grayscale(.9); }
+@keyframes mo-rise { from { opacity: 0; transform: translate(-50%, 18px); } to { opacity: 1; transform: translate(-50%, 0); } }
+.mo-figs { position: absolute; z-index: 2; left: 0; right: 0; bottom: 30%; height: 230px; pointer-events: none; }
+.mo-figs .mo-l, .mo-figs .mo-r { position: absolute; bottom: 0; transition: left 1.8s cubic-bezier(.3, .1, .3, 1), right 1.8s cubic-bezier(.3, .1, .3, 1); filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .55)); }
+.mo-figs .mo-l { left: -30%; } .mo-figs .mo-r { right: -30%; }
+.moment.in .mo-l { left: calc(50% - 150px); } .moment.in .mo-r { right: calc(50% - 150px); }
+/* Over a painting of the two of you, the figures keep to the clear side edges and reach toward each other. */
+.moment.painted.in .mo-l { left: 4%; } .moment.painted.in .mo-r { right: 4%; }
+.moment.painted.k-friend.met .mo-l { left: 7%; } .moment.painted.k-friend.met .mo-r { right: 7%; }
+.moment.k-astra.in .mo-l { left: calc(50% - 60px); }
+.moment.k-friend.met .mo-l { left: calc(50% - 118px); } .moment.k-friend.met .mo-r { right: calc(50% - 118px); }
+.mo-figs svg { display: block; }
+.mo-emblem { position: absolute; left: 50%; bottom: 220px; width: 108px; height: 108px; margin-left: -54px; background: var(--img) center / contain no-repeat; opacity: 0; filter: drop-shadow(0 0 18px rgba(255, 214, 128, .8)); }
+.moment > .mo-emblem { z-index: 2; bottom: auto; top: 16%; width: min(34vw, 26vh); height: min(34vw, 26vh); margin-left: calc(min(34vw, 26vh) / -2); }
+.moment.in .mo-emblem:not(.astra) { animation: mo-fade 1.2s .4s ease-out forwards; }
+.mo-emblem.astra { bottom: 104%; transition: bottom 1.2s cubic-bezier(.4, 0, .2, 1), opacity .6s, transform .8s; }
+.mo-emblem.astra svg { width: 100%; height: 100%; }
+.moment.risen .mo-emblem.astra { opacity: 1; bottom: 200px; }
+.moment.taken .mo-emblem.astra { bottom: 132px; transform: translateX(24px) scale(.55); opacity: .9; }
+@keyframes mo-fade { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
+.mo-dark { position: absolute; inset: 0; z-index: 1; background: #050308; opacity: 0; transition: opacity 1.2s; pointer-events: none; }
+.moment.k-astra.in .mo-dark { opacity: .5; } .moment.k-astra.taken .mo-dark { opacity: .2; }
+.mo-mantra { position: absolute; z-index: 2; left: 8%; right: 8%; top: 46%; height: 2px; pointer-events: none; }
+.mo-mantra i { position: absolute; left: 0; top: 0; height: 2px; width: 0; background: linear-gradient(90deg, rgba(255, 230, 160, 0), #fff3c8 40%, #ffd680 70%, rgba(255, 214, 128, 0)); box-shadow: 0 0 14px 3px rgba(255, 214, 128, .7); }
+.moment.k-astra.in .mo-mantra i { animation: mo-mantra 2.2s .5s ease-in-out forwards; }
+@keyframes mo-mantra { 0% { width: 0; opacity: 1; } 70% { width: 100%; opacity: 1; } 100% { width: 100%; opacity: 0; } }
+.mo-text { position: relative; z-index: 3; grid-row: 2; display: grid; justify-items: center; gap: 8px; text-align: center; padding: 0 16px max(46px, calc(env(safe-area-inset-bottom) + 40px)); opacity: 0; transform: translateY(10px); transition: opacity 1s .9s, transform 1s .9s; }
+.moment.in .mo-text { opacity: 1; transform: none; }
+.mo-orn { display: block; width: 168px; height: 16px; background: url("torana.svg") 0 0 / 28px 16px repeat-x; }
+.mo-title { font-family: var(--display); font-weight: 700; font-size: clamp(32px, min(7vw, 9vh), 64px); line-height: 1.05; color: #f3d27a; text-shadow: 0 2px 14px rgba(0, 0, 0, .8); text-wrap: balance; max-width: 22ch; }
+.moment.grey .mo-title { color: #d8cfc0; }
+.mo-line { margin: 0; max-width: 46ch; font-family: var(--display); font-style: italic; font-size: clamp(18px, 2.4vw, 24px); line-height: 1.4; color: #f4ead6; text-shadow: 0 1px 8px rgba(0, 0, 0, .9); text-wrap: balance; }
+.mo-sub { margin: 0; max-width: 52ch; font-size: clamp(14px, 1.8vw, 17px); line-height: 1.45; color: #e2d6bd; text-shadow: 0 1px 6px rgba(0, 0, 0, .9); }
+.mo-sub.down { color: #f0b8a2; }
+.mo-tap { position: absolute; z-index: 3; right: 16px; bottom: max(14px, env(safe-area-inset-bottom)); font-size: 13px; color: rgba(244, 234, 214, .7); }
+html[lang="hi"] .mo-title { line-height: 1.3; } html[lang="hi"] .mo-line { font-style: normal; line-height: 1.6; }
+.moment.still, .moment.still * { animation: none !important; transition: none !important; }
+.moment.still .mo-text, .moment.still .mo-frame, .moment.still .mo-emblem:not(.astra) { opacity: 1; transform: none; }
+.moment.still .mo-frame { transform: translateX(-50%); }
+.moment.still .mo-figs { display: none; }
+@media (max-width: 560px) { .mo-figs { bottom: 30%; height: 170px; } .mo-figs svg { height: 160px; width: auto; } .moment.in .mo-l { left: calc(50% - 120px); } .moment.in .mo-r { right: calc(50% - 120px); }
+  .moment.k-friend.met .mo-l { left: calc(50% - 96px); } .moment.k-friend.met .mo-r { right: calc(50% - 96px); }
+  .moment.painted.in .mo-l { left: 0; } .moment.painted.in .mo-r { right: 0; } .moment.painted.k-friend.met .mo-l { left: 2%; } .moment.painted.k-friend.met .mo-r { right: 2%; }
+  .moment.painted .mo-figs { bottom: 34%; } }
+/* Two new poses: hands reaching to clasp a friend's; an arm raised to take what is given. */
+.pose-clasp .armF { transform: rotate(-64deg); } .pose-clasp .foreF { transform: rotate(-12deg); } .pose-clasp .armB { transform: rotate(-8deg); } .pose-clasp .pp-body { transform: rotate(4deg); }
+.pose-lift .armF { transform: rotate(-150deg); } .pose-lift .foreF { transform: rotate(-10deg); } .pose-lift .armB { transform: rotate(-20deg); } .pose-lift .head { transform: rotate(-8deg); }
+.pose-clasp .armF, .pose-clasp .foreF, .pose-lift .armF, .pose-lift .foreF { transition: transform .6s ease; }
+/* Moments kept in the character sheet. */
+.momentlist { display: grid; gap: 8px; }
+.momentcard { display: grid; grid-template-columns: 54px 1fr; gap: 10px; align-items: center; padding: 6px 8px; border-radius: var(--r-card); background: var(--raised); }
+.momentcard .thumb { width: 54px; height: 40px; border-radius: 6px; }
+.momentcard b { font-family: var(--display); font-size: 18px; line-height: 1.15; display: block; }
+.momentcard small { color: var(--muted); font-size: 13px; }
+.momentcard.grey { opacity: .7; }
+.lifemoments { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
 @media (max-height: 520px) { .beat-title { max-width: 40ch; } .beat-title .ppbadge svg { height: 72px; } .beat-act { gap: 6px; max-width: 44ch; } .beat-short { max-width: 52ch; } }
 @media (prefers-reduced-motion: reduce) { .beat-in { transition: none; } }
 /* The menu's two-way switch (Scene titles: Full / Short). */
@@ -1004,8 +1073,11 @@ body.intest .leaf .text { background: none !important; }
 .aimsvg .path { stroke: rgba(255, 232, 175, 0.9); stroke-width: 3; stroke-dasharray: 1 9; stroke-linecap: round; }
 .aimsvg .aimpt { fill: none; stroke: rgba(255, 226, 160, 0.9); stroke-width: 2; }
 .aimsvg .tgt { filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.5)); }
-.aimsvg .tgt-art { transform: scale(1.35); }
 .aimsvg .flying { opacity: 0; }
+.aimsvg .flying.stone .shaft { stroke: #8f8676; stroke-width: 9; stroke-linecap: round; }
+.aimsvg .pop { fill: none; stroke: #fff1c4; stroke-width: 3; animation: aim-pop .45s ease-out forwards; }
+@keyframes aim-pop { from { r: 6; opacity: 1; } to { r: 26; opacity: 0; } }
+.aimsvg .tgt-mark { fill: rgba(255, 214, 128, 0.35); stroke: #ffd680; stroke-width: 2; filter: drop-shadow(0 0 4px rgba(255, 214, 128, 0.9)); }
 .aimsvg .shaft { stroke: #efe0bc; stroke-width: 3; }
 .aimsvg .fletch { fill: #b2432a; }
 .range.painted.hit .aimpt { stroke: var(--positive); } .range.painted.miss .aimpt { stroke: var(--negative); }

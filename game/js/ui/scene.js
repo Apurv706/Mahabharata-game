@@ -121,6 +121,7 @@
       setTimeout(() => U.fitBackdrop(), U.motion() ? 450 : 0);
     });
     U.livePlay();
+    if (U.playMoments && K.momentQueue && K.momentQueue.length) U.playMoments();
     // The paintings this scene's choices lead to, loaded while the player reads.
     setTimeout(() => {
       const keys = [];
@@ -296,7 +297,6 @@
     const res = K.choose(sc, c);
     if (lampOut) res.lampOut = true;
     if (res.peril === "death" && K.Sound) K.Sound.play("bell");
-    if (K.lastDelta.vowTaken && K.Sound) K.Sound.play("gong");
     if (res.combat) {
       U.startBattle(res.combat, (outcome) => {
         const o = K.combatOutcome(res.combat, outcome, res.next);
@@ -365,7 +365,8 @@
     if (res.pre || res.text || res.check || res.lampOut) {
       const r = res.check;
       added.push(story.appendChild(U.el('<div class="result">' +
-        (r ? '<span class="roll">' + U.tr("{label}: rolled {roll}, total {total} against {dc}", { label: r.ch ? K.checkLabel(r.ch) : r.label, roll: r.roll, total: r.total, dc: r.dc }) +
+        (r && r.word ? '<span class="roll">' + U.tr("Your word is enough. The court believes you without a test.") + "</span>" :
+          r ? '<span class="roll">' + U.tr("{label}: rolled {roll}, total {total} against {dc}", { label: r.ch ? K.checkLabel(r.ch) : r.label, roll: r.roll, total: r.total, dc: r.dc }) +
           ' · <b class="' + (r.pass ? "pass" : "fail") + '">' + U.tr(r.pass ? "Success" : "Failure") + "</b></span>" : "") +
         (res.lampOut ? '<p class="aside">' + U.tr("The lamp went out before you chose.") + "</p>" : "") +
         (res.pre ? "<p>" + U.t(res.pre) + "</p>" : "") + (res.text ? "<p>" + U.t(res.text) + "</p>" : "") + "</div>")));
@@ -401,5 +402,8 @@
     else if (won === null && ((D["duty.teacher"] || 0) > 0 || Object.keys(D).some((k) => k.startsWith("bond.") && D[k] >= 2))) setTimeout(() => U.puppetReact("fold"), 400);
     else if (won !== null) setTimeout(() => U.puppetReact(won ? "win" : "lose"), 400);
     U.stage(parts, () => { U.toEnd(story, true); U.keys([go]); cont.focus({ preventScroll: true }); });
+    // A milestone just reached (a friend for life, a divine weapon, a vow...) gets its moment now,
+    // over the page; the result is waiting underneath.
+    if (U.playMoments) U.playMoments();
   }
 })(window.K = window.K || {});

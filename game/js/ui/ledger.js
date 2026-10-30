@@ -25,12 +25,26 @@
     const duties = Object.entries(K.DUTIES).map(([k, n]) =>
       meter(K.tr(n) + (k === "teacher" ? teacherName : k === "court" ? kingName : ""), S.duty[k], "duty." + k)).join("");
 
-    const bondIds = Object.keys(S.bonds).filter((id) => !S.dead.includes(id))
+    // A friend who walked away is not shown among the bonds.
+    const lost = (S.lostFriends || []).map((x) => x.who);
+    const bondIds = Object.keys(S.bonds).filter((id) => !S.dead.includes(id) && !lost.includes(id))
       .sort((a, b) => (K.lastDelta["bond." + b] ? 1 : 0) - (K.lastDelta["bond." + a] ? 1 : 0) || S.bonds[b] - S.bonds[a]).slice(0, 6);
     const bonds = bondIds.map((id) => meter(K.personName(id), S.bonds[id], "bond." + id, 10, U.portraitKey(id))).join("") || '<p class="empty">' + U.tr("No close bonds yet.") + "</p>";
 
-    const vows = S.vows.map((v) => '<div class="vowcard ' + (v.broken ? "broken" : "") + '">' + U.thumb("vow_" + v.id, "emblem") + '<b>' + U.tr(K.VOWS[v.id].name) + "</b><small>" +
-      (v.released ? U.tr("Released through penance.") : v.broken ? U.tr("Broken at {n}. The shame is visible to everyone.", { n: v.brokenAge }) : U.tr(K.VOWS[v.id].gift)) + "</small></div>").join("") || '<p class="empty">' + U.tr("No vows taken.") + "</p>";
+    // Each vow: its gift while kept, who watches it, and what breaking it costs (or what it cost).
+    const vows = S.vows.map((v) => {
+      const V = K.VOWS[v.id], w = K.watcherNames(v.id, S);
+      const body = v.released ? U.tr("The vow was answered.") : v.broken && v.atoned ? U.tr("Broken at {n}. Your penance lifted the shame.", { n: v.brokenAge })
+        : v.broken ? U.tr("Broken at {n}. The shame is visible to everyone.", { n: v.brokenAge }) + (V.price ? " " + U.tr(V.price) : "")
+        : U.tr(V.keep || V.gift) + (w ? "<br>" + U.tr("Watched by {who}", { who: w }) : "") + (V.price ? '<br><span class="down">' + U.tr("Broken: {price}", { price: K.tr(V.price) }) + "</span>" : "");
+      return '<div class="vowcard ' + (v.broken ? "broken" : "") + '">' + U.thumb("vow_" + v.id, "emblem") + "<b>" + U.tr(V.name) + "</b><small>" + body + "</small></div>";
+    }).join("") || '<p class="empty">' + U.tr("No vows taken.") + "</p>";
+    // A divine weapon's condition, named by the one who gave it.
+    const g = S.astra && K.ASTRA_GIVERS[S.astra.from];
+    const astraNote = g ? '<p class="sub">' + (S.astra.broken ? U.tr(g.takes ? "You broke {who}'s condition, and the weapon was taken back." : "You broke the condition. The mantra will fail you at the worst hour.", { who: K.tr(g.who) })
+      : U.tr("Your divine weapon was given by {who}, on one condition: “{cond}”", { who: K.tr(g.who), cond: K.tr(g.cond) })) + "</p>" : "";
+    // The moments of this life, kept as cards.
+    const moments = (S.moments || []).map((m) => '<div class="momentcard' + (m.kind === "farewell" ? " grey" : "") + '">' + U.thumb(K.momentThumb ? K.momentThumb(m) : null, "card") + "<span><b>" + U.esc(K.momentTitle ? K.momentTitle(m, S) : "") + "</b><small>" + U.tr("Age {n}", { n: m.age }) + "</small></span></div>").join("");
 
     const chips = []
       .concat(S.boons.map((b) => '<span class="chip good" title="' + U.tr(K.BOONS[b].text) + '">' + U.tr(K.BOONS[b].name) + "</span>"))
@@ -47,7 +61,8 @@
       "<h2>" + U.tr("Obligations") + '</h2><p class="sub">' + U.tr("Choices pull these against each other. There is no good or evil bar.") + "</p>" + duties +
       "<h2>" + U.tr("Bonds") + "</h2>" + bonds +
       "<h2>" + U.tr("Vows ({n} / {max})", { n: K.activeVows().length, max: K.MAX_VOWS }) + "</h2>" + vows +
-      (chips.length ? "<h2>" + U.tr("Boons, curses and wounds") + '</h2><div class="chips">' + chips.join("") + "</div>" : "") +
+      (chips.length ? "<h2>" + U.tr("Boons, curses and wounds") + '</h2><div class="chips">' + chips.join("") + "</div>" + astraNote : "") +
+      (moments ? "<h2>" + U.tr("Moments") + '</h2><div class="momentlist">' + moments + "</div>" : "") +
       (secrets ? "<h2>" + U.tr("Secrets you keep") + '</h2><ul class="secrets">' + secrets + "</ul>" : "") +
       "<h2>" + U.tr("Memories") + "</h2>" + (mems ? '<ul class="mems">' + mems + "</ul>" : '<p class="empty">' + U.tr("Nothing remembered yet.") + "</p>");
   };

@@ -5,7 +5,8 @@
   "description": "Kurukshetra: A Life — a narrative RPG set inside the Mahabharata",
   "scripts": {
     "test": "node tests/playthrough.js 300",
-    "test:story": "node tests/playthrough.js 150 --story"
+    "test:story": "node tests/playthrough.js 150 --story",
+    "test:rules": "node tests/rules.js"
   },
   "devDependencies": {
     "jsdom": "24.1.3"

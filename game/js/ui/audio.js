@@ -599,8 +599,44 @@
     }
   };
 
+  // ---------- Moments (ui/moments.js): a short theme of its own for each kind ----------
+  // friend: the flute in Yaman over a tabla, rising to a held note. astra: a far conch, temple bells,
+  // a drone rising and opening into a chord. milestone: the flute in Desh and one bronze bell.
+  // farewell: the flute alone, falling.
+  function momentTheme(kind) {
+    const t0 = now() + 0.15, Y = SCALES.yaman, D = SCALES.desh, f = (sc, k) => SA * 2 * sc[((k % sc.length) + sc.length) % sc.length] * Math.pow(2, Math.floor(k / sc.length));
+    if (track) { track.gain.gain.cancelScheduledValues(t0); track.gain.gain.setTargetAtTime(0.03, t0, 0.3); const tr = track; setTimeout(() => { if (track === tr) tr.gain.gain.setTargetAtTime(TRACK_GAIN[tr.mood], now(), 1.2); }, 8000); }
+    musicBus.gain.cancelScheduledValues(t0); musicBus.gain.setTargetAtTime(musicLevel() * 1.8, t0, 0.2);
+    if (kind === "friend") {
+      phrase(t0 + 0.3, [0, 2, 3, 4, 3, 4, 5, 7].map((k, i) => ({ f: f(Y, k), d: i === 7 ? 2.4 : [0.5, 0.4, 0.6, 0.9, 0.4, 0.5, 0.7][i], accent: i === 0 })), 1);
+      // tabla: dha dhin dhin dha | dha dhin dhin dha | dha tin tin ta | ta dhin dhin dha
+      const bols = ["dha", "dhin", "dhin", "dha", "dha", "dhin", "dhin", "dha", "dha", "tin", "tin", "ta", "ta", "dhin", "dhin", "dha"];
+      bols.forEach((b, i) => BOLS[b](t0 + 0.3 + i * 0.36, i % 4 === 0 ? 0.9 : 0.6));
+      BOLS.dha(t0 + 0.3 + 16 * 0.36, 1);
+    } else if (kind === "astra") {
+      FX.conch();
+      [0.9, 1.6, 2.1, 2.9, 3.4].forEach((d) => amb("bells", t0 + d));
+      // The drone: Sa and Pa rising out of nothing, opening into Sa-Ga-Pa-Sa.
+      [[SA, 0], [SA * 1.5, 0], [SA * 1.25, 2.6], [SA * 2, 3.2]].forEach(([fr, at]) => {
+        const o = ctx.createOscillator(), o2 = ctx.createOscillator(), g = ctx.createGain(), lp = ctx.createBiquadFilter();
+        o.type = "sawtooth"; o2.type = "sine"; o.frequency.value = fr; o2.frequency.value = fr * 1.003;
+        lp.type = "lowpass"; lp.frequency.setValueAtTime(300, t0 + at); lp.frequency.exponentialRampToValueAtTime(2400, t0 + 4.2);
+        o.connect(lp); o2.connect(lp); lp.connect(g); g.connect(musicBus);
+        g.gain.setValueAtTime(0.0001, t0 + at); g.gain.exponentialRampToValueAtTime(0.05, t0 + at + 1.8); g.gain.setValueAtTime(0.05, t0 + 5.6); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 7.5);
+        [o, o2].forEach((x) => { x.start(t0 + at); x.stop(t0 + 7.6); });
+      });
+    } else if (kind === "farewell") {
+      phrase(t0 + 0.2, [7, 5, 4, 3, 2, 0].map((k, i) => ({ f: f(Y, k) * 0.5, d: i === 5 ? 2.6 : 0.8 })), 0.7);
+    } else {
+      FX.gong();
+      phrase(t0 + 0.8, [0, 1, 2, 3, 2, 3, 4].map((k, i) => ({ f: f(D, k), d: i === 6 ? 2.2 : [0.6, 0.5, 0.7, 0.9, 0.5, 0.6][i], accent: i === 0 })), 0.9);
+    }
+  }
+
   let lastQuill = 0;
   K.Sound = {
+    // A moment's own theme (ui/moments.js).
+    moment(kind) { try { if (!musicOn() || !init() || ctx.state !== "running") return; if (!noise) noise = noiseBuffer(1); ensStop(); momentTheme(kind); } catch (e) { /* never break the game */ } },
     play(name) {
       if (!on("sound") || !init() || ctx.state !== "running" || !FX[name]) return;
       if (!noise) noise = noiseBuffer(1);

@@ -26,14 +26,49 @@
     bhadra: orig("Bhadra"), sudatta: orig("Sudatta the moneylender"), ugra: orig("Ugra"), krishna: canon("Krishna")
   });
 
+  // A vow (PRD §18.12): a gift while it is kept, people who share its value and watch you keep it
+  // (watchers: people's bonds, or a group: company, sages, common), and a price when it is broken.
+  // All three are shown when you swear it and on any choice that would break it.
   Object.assign(K.VOWS, {
-    never_retreat: { name: "Never to retreat", gift: "+1 attack in every fight. You cannot withdraw from a battle without breaking it." },
-    never_lie: { name: "Never to speak a lie", gift: "Every court trusts your word." },
-    spare_karna: { name: "Never to strike Karna", gift: "Karna trusts you completely. You may never fight him." },
-    spare_unarmed: { name: "Never to strike the unarmed", gift: "Sages and common people honour you for it." },
-    celibacy: { name: "A vow of celibacy", gift: "+1 Wisdom. You may not marry." },
-    vengeance: { name: "A vow of vengeance", gift: "You will not rest until the wrong is answered." }
+    never_retreat: { name: "Never to retreat", gift: "+1 attack in every fight. You cannot withdraw from a battle without breaking it.",
+      keep: "+1 attack in every fight, and one more once you have held firm in a deadly fight.", watchers: ["bhima", "karna", "company"],
+      price: "Bhima and Karna turn from you, your company is shaken in its next fight, and the extra strength is lost for good.", priceShort: "your company will be shaken" },
+    never_lie: { name: "Never to speak a lie", gift: "Every court trusts your word.",
+      keep: "\"My word\": once in each part of your life, a court believes you without a test. +1 when you persuade honestly.", watchers: ["yudhishthira", "vidura", "sages"],
+      price: "Yudhishthira and Vidura turn from you, \"My word\" is gone, and once, at the worst moment, your chariot wheel will stick in the earth.", priceShort: "your chariot wheel will stick at the worst moment" },
+    spare_karna: { name: "Never to strike Karna", gift: "Karna trusts you completely. You may never fight him.",
+      keep: "Karna answers your call in battle, even across the lines (to stand off your enemies, never against his brothers).", watchers: ["karna"],
+      price: "Karna's friendship ends at once.", priceShort: "Karna's friendship ends at once" },
+    spare_unarmed: { name: "Never to strike the unarmed", gift: "Sages and common people honour you for it.",
+      keep: "Foes you spare may one day return the favour; common people warn you of ambushes (+1 stealth).", watchers: ["arjuna", "charu", "common"],
+      price: "Arjuna and Charu turn from you, and a divine weapon given on this condition is taken back.", priceShort: "a weapon given on this condition is lost" },
+    celibacy: { name: "A vow of celibacy", gift: "+1 Wisdom. You may not marry.",
+      keep: "+1 Wisdom, and Bhishma's blessing before the war (+1 defence in battle).", watchers: ["bhishma"],
+      price: "Bhishma withholds his blessing, and the Wisdom point is lost.", priceShort: "Bhishma will withhold his blessing" },
+    vengeance: { name: "A vow of vengeance", gift: "You will not rest until the wrong is answered.",
+      keep: "+1 attack against the one you swore against.", watchers: [],
+      price: "Left unanswered at the end of your life, it darkens how your story is told.", priceShort: "" }
   });
+  // Who your vow of vengeance is sworn against (by the flag set when you swore it).
+  K.VENGEANCE = { vengeance_dice: ["dushasana", "duryodhana", "shakuni"], vengeance_ashwatthama: ["ashwatthama"] };
+  K.WATCHER_GROUPS = { company: "your company", sages: "the sages", common: "the common people" };
+  // A divine weapon comes with a condition, named by the one who gives it. A teacher takes the weapon
+  // back at once if it is broken; a weapon won by penance stays, but its mantra fails at the worst hour.
+  // tag: the choice tag (or "name": telling who taught you) that breaks it.
+  K.ASTRA_GIVERS = {
+    drona: { who: "Drona", cond: "Never against someone who cannot fight back.", tag: "strike_unarmed", takes: true },
+    kripa: { who: "Kripa", cond: "Never lie to me, or before the court.", tag: "lie", takes: true },
+    mauni: { who: "Mauni", cond: "Never say who taught you.", tag: "name", takes: true },
+    penance: { who: "the voice in the fire", cond: "Never against someone who cannot fight back.", tag: "strike_unarmed", takes: false }
+  };
+  // The last words of a friend who walks away (the friendship falls below 3, or a vow it shared is broken).
+  K.FAREWELLS = {
+    arjuna: "\"I taught you to aim at what matters,\" Arjuna says. \"I see now that we were aiming at different things.\"",
+    bhima: "Bhima does not shout, which is worse. \"Go on, then,\" he says. \"I will not throw you in the river again.\"",
+    duryodhana: "\"I gave you my friendship when no one else would,\" Duryodhana says. \"I will not offer it twice.\"",
+    karna: "Karna looks at you for a long moment. \"Everyone I have trusted has had a reason to leave,\" he says. \"I did not think you would find one.\"",
+    charu: "Charu puts the hammer down. \"We were ten,\" Charu says. \"I thought that meant something to you too.\""
+  };
   Object.assign(K.BOONS, {
     astra: { name: "A divine weapon (astra)", text: "Once per battle, a devastating strike. Turning it on someone who cannot fight back brings a curse." },
     foresight: { name: "Foresight", text: "A sage's blessing: you sense danger a moment before it comes." },
@@ -42,7 +77,9 @@
   Object.assign(K.CURSES, {
     hermit: { name: "The hermit's curse", text: "You broke a promise to your teacher. At the worst hour, your skill will fail you.", fireText: "At the worst hour, the hermit's words come true. Your hands will not obey you." },
     sage: { name: "A sage's curse", text: "You mocked a sage. The curse is waiting.", fireText: "In the thick of the fighting, the sage's curse falls on you and your strength drains away." },
-    astra_misuse: { name: "Curse of the misused astra", text: "You turned a divine weapon on the helpless.", fireText: "The weapon you misused grows heavy in your hands. It will not answer you cleanly again." }
+    astra_misuse: { name: "Curse of the misused astra", text: "You turned a divine weapon on the helpless.", fireText: "The weapon you misused grows heavy in your hands. It will not answer you cleanly again." },
+    astra_condition: { name: "The broken condition", text: "You broke the condition the divine weapon was given on.", fireText: "You speak the mantra, and nothing answers. The condition you broke has found you." },
+    wheel: { name: "The broken word", text: "You swore never to lie, and lied. Once, at the worst moment, the earth will hold your wheel.", fireText: "Your chariot wheel sinks into the earth, as Yudhishthira's did after his half-truth. For a breath you cannot move." }
   });
   Object.assign(K.INJURIES, {
     eye: { name: "Lost an eye", text: "You see the world from one side now.", attrs: { aim: -1 } },
@@ -118,6 +155,8 @@
     karna: () => ({ name: "Karna", hp: 220, atk: 13, def: 4, abilities: ["strike", "arrows", "heavy"], person: "karna" }),
     duryodhana: () => ({ name: "Duryodhana", hp: 210, atk: 12, def: 4, abilities: ["strike", "heavy"], person: "duryodhana" }),
     abhimanyu: () => ({ name: "Abhimanyu", hp: 120, atk: 11, def: 3, abilities: ["strike", "arrows", "heavy"], person: "abhimanyu" }),
+    arjuna: () => ({ name: "Arjuna", hp: 220, atk: 14, def: 4, abilities: ["strike", "arrows", "aimed"], person: "arjuna" }),
+    bhima: () => ({ name: "Bhima", hp: 260, atk: 14, def: 4, abilities: ["strike", "heavy", "crush"], person: "bhima" }),
     // A company of your own, for those who passed the commander's test on the eve of the war.
     company: () => ({ name: "Your company", plural: true, hp: 72, atk: 8, def: 3, abilities: ["strike", "arrows", "guard"] })
   };

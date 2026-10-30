@@ -24,6 +24,9 @@
     astra: {
       name: "Invoke astra", target: "enemy", cd: 99, once: true, desc: "A divine weapon. Once per battle. Using it on an unarmed or helpless foe is a grave wrong.",
       use: (B, u, t) => {
+        // A weapon won by penance whose condition you broke: in a deadly fight, the mantra fails once.
+        const broken = B.enc.lethal && K.S.curses.find((c) => c.id === "astra_condition" && !c.fired);
+        if (broken) { K.apply({ fireCurse: "astra_condition", journal: K.CURSES.astra_condition.fireText }); B.say(K.CURSES.astra_condition.fireText); return; }
         if (!t.armed) {
           B.say("You loose the astra at a foe who cannot defend himself. The sky goes dark. Somewhere, a sage has seen.");
           K.apply({ curse: "astra_misuse", duty: { conscience: -3 }, rep: { sages: -2 }, journal: "You used a divine weapon on someone who could not fight back." });

@@ -23,7 +23,7 @@
   };
 
   // Portraits of the people you know (art/p_*.webp). Vasu grows up: the child portrait until 40.
-  const PORTRAITS = ["karna", "arjuna", "bhima", "drona", "kripa", "duryodhana", "abhimanyu", "mauni", "charu", "madhavi", "revat"];
+  const PORTRAITS = ["karna", "arjuna", "bhima", "drona", "kripa", "duryodhana", "abhimanyu", "mauni", "charu", "madhavi", "revat", "yudhishthira", "vidura"];
   U.portraitKey = function (id) {
     if (id === "vasu") return K.S && K.S.age >= 40 ? "p_vasu_16" : "p_vasu_6";
     return PORTRAITS.includes(id) ? "p_" + id : null;
@@ -66,7 +66,7 @@
   const FOCAL = { scene_teacher: "62% 45%", scene_dice_throws: "28% 35%", home_anga: "30% 50%", scene_princes: "34% 55%", scene_poison: "45% 45%" };
   U.hasWide = (key) => WIDE.has(key) || /^stage_/.test(key || "");
   // Tall (9:16) versions of the test stages, painted for upright screens (art/<key>_tall.webp).
-  const TALL = new Set(["fight_border_road", "fight_camp_gate_night", "fight_drupada_yard", "fight_fair_ring", "fight_forest_road", "fight_grazing", "fight_royal_camp", "fight_swayamvara", "fight_war_camp", "fight_war_chariot", "fight_war_field", "fight_war_sunset", "stage_battlefield_night", "stage_board_table", "stage_border_village", "stage_bow_courtyard", "stage_chakravyuha_top", "stage_city_night", "stage_dice_board_top", "stage_drupada_hall", "stage_elephant_grounds", "stage_forest_clearing_night", "stage_forest_edge", "stage_forest_lake", "stage_forest_maze_top", "stage_healers_hall", "stage_khandava_top", "stage_lac_wall", "stage_lotus_garden", "stage_mango_yard", "stage_matsya_ford", "stage_palace_corridor", "stage_palace_garden_night", "stage_prison_yard", "stage_racetrack", "stage_river_shallows", "stage_smithy", "stage_stable_yard", "stage_storm_sea", "stage_training_ground", "stage_vidura_table"]);
+  const TALL = new Set(["moment_astra", "moment_friend_arjuna", "moment_friend_bhima", "moment_friend_charu", "moment_friend_duryodhana", "moment_friend_karna", "moment_marriage", "moment_teacher", "fight_border_road", "fight_camp_gate_night", "fight_drupada_yard", "fight_fair_ring", "fight_forest_road", "fight_grazing", "fight_royal_camp", "fight_swayamvara", "fight_war_camp", "fight_war_chariot", "fight_war_field", "fight_war_sunset", "stage_battlefield_night", "stage_board_table", "stage_border_village", "stage_bow_courtyard", "stage_chakravyuha_top", "stage_city_night", "stage_dice_board_top", "stage_drupada_hall", "stage_elephant_grounds", "stage_forest_clearing_night", "stage_forest_edge", "stage_forest_lake", "stage_forest_maze_top", "stage_healers_hall", "stage_khandava_top", "stage_lac_wall", "stage_lotus_garden", "stage_mango_yard", "stage_matsya_ford", "stage_palace_corridor", "stage_palace_garden_night", "stage_prison_yard", "stage_racetrack", "stage_river_shallows", "stage_smithy", "stage_stable_yard", "stage_storm_sea", "stage_training_ground", "stage_vidura_table"]);
   U.upright = () => window.innerHeight > window.innerWidth * 1.15;
   U.tallOf = (key) => (TALL.has(key) ? key + "_tall" : null);
   // The file a painting shows from behind the page: tall on upright screens, wide where painted.

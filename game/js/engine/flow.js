@@ -31,13 +31,20 @@
   }
 
   // Optional scenes are skipped when their `when` condition fails.
+  // Scenes that come first, when they apply: K.BEFORE[id] = [scene ids], each played once (unseen,
+  // `when` passing) before the scene id is reached by any road. Each one's `next` is that scene.
+  K.BEFORE = {};
   K.resolveScene = function (id, S = K.S) {
     id = K.val(id, S);
+    const pre = (K.BEFORE[id] || []).find((p) => K.SCENES[p] && !S.seen.includes(p) && K.test(K.SCENES[p].when, S));
+    if (pre) id = pre;
     for (let g = 0; K.SLOTS[id] && g < 5; g++) id = slotScene(id, S);
     let sc = K.SCENES[id];
     for (let guard = 0; sc && sc.when && !K.test(sc.when, S); guard++) {
       if (guard > 60) throw new Error("Scene skip loop at " + sc.id);
       let next = K.val(sc.skipTo, S);
+      const pre2 = (K.BEFORE[next] || []).find((p) => K.SCENES[p] && !S.seen.includes(p) && K.test(K.SCENES[p].when, S));
+      if (pre2) next = pre2;
       for (let g = 0; K.SLOTS[next] && g < 5; g++) next = slotScene(next, S);
       sc = K.SCENES[next];
     }
@@ -68,6 +75,11 @@
   // Close bonds drift when they are neglected: at each new act, a friend or spouse whose bond you did
   // not raise during the last act loses a point, and you notice.
   function drift(S, newAct) {
+    // On the eve of the war, Bhishma blesses those who kept a vow of celibacy, as he did.
+    if (newAct === 6 && K.hasVow("celibacy", S) && !S.flags.includes("bhishma_blessing")) {
+      S.flags.push("bhishma_blessing");
+      S.journal.push({ age: S.age, act: newAct, src: "On the eve of the war, Bhishma blessed you for keeping your vow, as he has kept his.", p: null, text: "On the eve of the war, Bhishma blessed you for keeping your vow, as he has kept his." });
+    }
     for (const who of [S.friend, S.spouse]) {
       if (!who || S.dead.includes(who) || (S.bonds[who] ?? 0) < 4) continue;
       const last = (S.bondAct || {})[who];
@@ -114,8 +126,15 @@
   };
 
   // Merits from earlier in life that bear on a test (K.MERITS): +1 each, two at most either way.
+  // Kept vows count too: honest persuasion under a vow never to lie, the common people's warnings
+  // under a vow never to strike the unarmed.
+  const VOW_MERITS = [
+    { vow: "never_lie", on: ["statecraft"], n: 1, text: "Your word is trusted: you swore never to lie." },
+    { vow: "spare_unarmed", on: ["stealth"], n: 1, text: "Common people warn you of ambushes: you swore never to strike the unarmed." }
+  ];
   K.merits = function (ch, S = K.S) {
-    const hits = (K.MERITS || []).filter((m) => S.flags.includes(m.flag) && (m.on.includes(ch.attr) || m.on.includes(ch.skill)));
+    const hits = (K.MERITS || []).filter((m) => S.flags.includes(m.flag) && (m.on.includes(ch.attr) || m.on.includes(ch.skill)))
+      .concat(VOW_MERITS.filter((m) => K.hasVow(m.vow, S) && (m.on.includes(ch.attr) || m.on.includes(ch.skill))));
     const n = Math.max(-2, Math.min(2, hits.reduce((a, m) => a + m.n, 0)));
     return { n, hits };
   };
@@ -125,6 +144,9 @@
     const need = ch.dc - base; // need a d6 roll >= need
     return Math.max(0, Math.min(1, (7 - need) / 6));
   };
+  // "My word" (a vow never to lie): once in each act, a court believes you without a test, on a
+  // persuasion (a statecraft test) that is not itself a lie.
+  K.myWordReady = (c, S = K.S) => !!(c && c.check && c.check.skill === "statecraft" && K.hasVow("never_lie", S) && S.myWord !== S.act && !K.vowBreaksFor(c.tags, S).length && !c.peril);
   K.checkLabel = function (ch) {
     const parts = [ch.attr && K.ATTRS[ch.attr], ch.skill && K.SKILLS[ch.skill]].filter(Boolean).map(K.tr);
     return parts.join(" + ");
@@ -158,11 +180,31 @@
     for (const [k, n] of Object.entries(fx.rep || {})) out.push([cls(n), sign(n) + K.tr(K.FACTIONS[k])]);
     for (const [k, n] of Object.entries(fx.skill || {})) out.push([cls(n), sign(n) + K.tr(K.SKILLS[k])]);
     for (const [k, n] of Object.entries(fx.attr || {})) out.push([cls(n), sign(n) + K.tr(K.ATTRS[k])]);
-    if (fx.vowTake) out.push(["vow", K.tr("Vow: {vow}", { vow: K.tr(K.VOWS[fx.vowTake].name) })]);
+    if (fx.vowTake) {
+      const V = K.VOWS[fx.vowTake];
+      out.push(["vow", K.tr("Vow: {vow}", { vow: K.tr(V.name) })]);
+      if (V.keep) out.push(["up", K.tr("Kept: {gift}", { gift: K.tr(V.keep) })]);
+      const w = K.watcherNames(fx.vowTake, S);
+      if (w) out.push(["", K.tr("Watched by {who}", { who: w })]);
+      if (V.price) out.push(["down", K.tr("Broken: {price}", { price: K.tr(V.price) })]);
+    }
     if (fx.boon) out.push(["up", K.tr("Gain: {boon}", { boon: K.tr(K.BOONS[fx.boon].name) })]);
-    for (const id of K.vowBreaksFor(c.tags, S)) out.push(["down", K.tr("Breaks vow: {vow}", { vow: K.tr(K.VOWS[id].name) })]);
+    // A choice that would break a vow says so, with who will not forgive it and what it costs.
+    for (const id of K.vowBreaksFor(c.tags, S)) {
+      const V = K.VOWS[id], w = K.watcherNames(id, S, true);
+      out.push(["down", [K.tr("Breaks vow: {vow}", { vow: K.tr(V.name) }), w && K.tr("{who} will not forgive it", { who: w }), V.priceShort && K.tr(V.priceShort)].filter(Boolean).join(" · ")]);
+    }
+    // A friendship that would fall below 3 ends: said before you choose (a bond lost, or a vow it shared broken).
+    if (S.friend) {
+      const loss = Math.min(0, (fx.bond || {})[S.friend] || 0) - (K.vowBreaksFor(c.tags, S).some((id) => (K.VOWS[id].watchers || []).includes(S.friend)) ? 3 : 0);
+      const karna = S.friend === "karna" && K.vowBreaksFor(c.tags, S).includes("spare_karna");
+      if (karna || (loss < 0 && (S.bonds[S.friend] ?? 3) + loss < 3)) out.push(["down danger", K.tr("Ends your friendship with {who}", { who: K.personName(S.friend, S) })]);
+    }
+    const ab = K.astraBreaksFor(c.tags, S);
+    if (ab) out.push(["down", K.tr(ab.takes ? "Breaks the weapon's condition: {who} will take it back" : "Breaks the weapon's condition: its mantra will fail you", { who: K.tr(ab.who) })]);
     if (fx.memory) out.push(["", fx.memory[0] === "all" ? K.tr("People will remember") : K.tr("{who} will remember", { who: K.personName(fx.memory[0], S) })]);
-    if (c.check) {
+    if (c.check && K.myWordReady(c, S)) out.push(["up", K.tr("My word: the court will believe you without a test")]);
+    else if (c.check) {
       out.push(["check", K.tr("Test of {what}: {pct}%", { what: K.checkLabel(c.check), pct: Math.round(K.checkOdds(c.check, S) * 100) })]);
       // A risk: what a failure would cost, shown before you choose.
       const lose = c.check.fail && c.check.fail.fx && c.check.fail.fx.lose;
@@ -189,7 +231,17 @@
     let peril = null;
     addDelta(delta, K.apply(c.fx));
     addDelta(delta, K.apply(dyn));
-    if (c.check) {
+    if (c.check && K.myWordReady(c, S)) {
+      // Your word is enough: no roll.
+      S.myWord = S.act;
+      const br = c.check.pass || {};
+      res.check = { pass: true, word: true, ch: c.check };
+      K.record().passed++;
+      addDelta(delta, K.apply(br.fx));
+      if (br.text) res.text = K.val(br.text);
+      if (br.next) res.next = K.val(br.next);
+      if (br.combat) res.combat = br.combat;
+    } else if (c.check) {
       const ch = c.check;
       const roll = K.roll(6);
       const base = (ch.attr ? K.attr(ch.attr) : 0) + (ch.skill ? S.skills[ch.skill] || 0 : 0) + (K.val(ch.bonus) || 0) + K.merits(ch).n;
@@ -219,7 +271,7 @@
         if (back) { res.next = back; res.looped = true; }
       }
     }
-    for (const id of K.vowBreaksFor(c.tags)) addDelta(delta, K.apply({ vowBreak: id }));
+    addDelta(delta, K.breakTags(c.tags));
     S.log.push(sc.id + ":" + c.id);
     if (!res.text && c.text) res.text = K.val(c.text);
     res.next = res.next || K.val(c.next) || K.val(sc.next);
@@ -262,11 +314,22 @@
     if (outcome === "win" || outcome === "spare") { rec.won++; rec.last = "won"; }
     else if (outcome === "lose") { rec.lost++; rec.last = "lost"; }
     else rec.last = "fled";
-    if (outcome === "lose" && enc.lethal) {
+    // A vow never to strike the unarmed: a foe you spared may one day pull you out of a deadly fight.
+    if (outcome === "spare" && K.hasVow("spare_unarmed", S)) S.spared = (S.spared || 0) + 1;
+    let saved = null;
+    if (outcome === "lose" && enc.lethal && !S.storyMode && S.spared && K.hasVow("spare_unarmed", S) && !S.flags.includes("saved_by_spared")) {
+      K.apply({ flag: "saved_by_spared", injury: enc.injury || "scar", journal: "A soldier you once let live dragged you out of a deadly fight. He said he was only paying a debt." });
+      saved = "As you go down, someone drags you out of the press by your collar. A soldier you once let live. \"Now we are even,\" he says, and is gone.";
+    } else if (outcome === "lose" && enc.lethal) {
       if (S.storyMode) K.apply({ injury: enc.injury || "scar" });
       else { S.alive = false; S.deathText = K.val(br.deathText) || enc.deathText || "You fell in battle."; }
     }
+    // Holding firm through a deadly fight under a vow never to retreat makes you one point surer.
+    if (outcome === "win" && enc.lethal && K.hasVow("never_retreat", S) && !S.flags.includes("held_firm")) {
+      K.apply({ flag: "held_firm", journal: "You held firm through a deadly fight, as you swore you would. Your hand is surer for it." });
+    }
     K.lastDelta = delta;
+    if (saved) return { text: saved, next: S.alive ? K.val(br.next) || fallbackNext : "end_death" };
     return {
       text: br.text ? K.val(br.text) : null,
       next: S.alive ? K.val(br.next) || fallbackNext : "end_death"

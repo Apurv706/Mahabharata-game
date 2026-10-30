@@ -101,7 +101,11 @@
     if (has("objected_dice") || has("stood_between")) t.push("In the dice hall, when the elders were silent, {they} {were} not.");
     if (has("silent_draupadi")) t.push("In the dice hall {they} said nothing, like most of the people there.");
     if (has("left_dice") || has("absent_dice")) t.push("{They} {were} not in the hall to see the worst of it.");
-    S.vows.forEach((v) => t.push([v.released ? "{They} swore “{vow!}”, and the vow was answered." : v.broken ? "{They} swore “{vow!}” and broke it." : "{They} swore “{vow!}” and kept it.", { vow: K.VOWS[v.id].name }]));
+    S.vows.forEach((v) => t.push([v.released ? "{They} swore “{vow!}”, and the vow was answered." : v.broken && v.atoned ? "{They} swore “{vow!}”, broke it, and did penance for it." : v.broken ? "{They} swore “{vow!}” and broke it." : "{They} swore “{vow!}” and kept it.", { vow: K.VOWS[v.id].name }]));
+    // A vow of vengeance still unanswered at the end darkens the telling.
+    if (K.hasVow("vengeance", S) && Object.entries(K.VENGEANCE).some(([f, who]) => has(f) && who.some((w) => !S.dead.includes(w)))) t.push("The wrong {they} swore to answer was never answered. It is the part of the story the tellers say quickly, and look away.");
+    (S.lostFriends || []).forEach((x) => t.push(["{They} lost {who}'s friendship, and never found the way back.", { who: K.PEOPLE[x.who].name }]));
+    if (S.astra && S.astra.broken) t.push(K.ASTRA_GIVERS[S.astra.from].takes ? ["{They} {were} given a divine weapon, and lost it by breaking {who}'s one condition.", { who: K.ASTRA_GIVERS[S.astra.from].who }] : "{They} broke the condition {their} divine weapon was given on.");
     if (has("role_command")) t.push("At Kurukshetra {they} commanded a company of {their} own, and brought home as many as {they} could.");
     if (has("held_ring_open")) t.push(S.heldRing ? ["{They} held the ring open for {n} heartbeats beside Abhimanyu, in the heart of the wheel.", { n: S.heldRing }] : "{They} stood beside Abhimanyu in the heart of the wheel to the end.");
     if (has("fell_to_abhimanyu")) t.push("On the thirteenth day {they} stood in Abhimanyu's way in the wheel, as the order said, and fell to his arrows.");
@@ -130,7 +134,9 @@
     const CURSE_LINE = {
       hermit: "The hermit's curse found {them} at the worst hour.",
       sage: "The sage's curse found {them} at the worst hour.",
-      astra_misuse: "The curse of the misused astra found {them} at the worst hour."
+      astra_misuse: "The curse of the misused astra found {them} at the worst hour.",
+      astra_condition: "When {they} spoke the mantra at the worst hour, nothing answered.",
+      wheel: "At the worst hour the earth held {their} chariot wheel, as it had held Yudhishthira's."
     };
     S.curses.filter((c) => c.fired && CURSE_LINE[c.id]).forEach((c) => t.push(CURSE_LINE[c.id]));
     if (!S.alive) t.push(S.deathText || "{They} fell at Kurukshetra.");

@@ -34,6 +34,9 @@
   const IMMERSIVE = new Set(["aim", "board", "push", "steady", "retort", "draw", "sneak", "notice", "drill", "rhythm", "race", "herd", "rings", "formation"]);
   // What hangs and swings in the archery test, drawn centred on its middle (about 64 units across).
   const RUNNERS = new Set(["deer", "tiger", "elephant"]);
+  // Half the width of each target as drawn, in its own units. On the painting the target is drawn
+  // exactly as wide as its hit zone, so a shot that touches it is a hit and one that passes it is not.
+  const ART_HALF = { lamp: 18, fruit: 20, bell: 20, leaf: 20, bird: 28, deer: 30, tiger: 44, elephant: 36 };
   function AIM_ART(icon) {
     const loop = '<path d="M0 -40 L0 -30" stroke="#5a3a22" stroke-width="2"/>';
     if (icon === "lamp") return loop + '<path d="M-18 -6 Q0 18 18 -6 Z" fill="#b5793a" stroke="#4a2a12" stroke-width="2"/><path d="M0 -8 Q-7 -20 0 -32 Q7 -20 0 -8Z" fill="#ffd27a"/><circle cx="0" cy="-16" r="16" fill="#ffb648" opacity=".25"/>';
@@ -146,7 +149,7 @@
   U.games.aim = function (box, done, c) {
     return frame(box, done, c, "aim", ({ host, power, t, finish, onAct, cue }) => {
       const shots = t.shots || 3, need = t.need || 2;
-      const win = clamp(0.085 + power * 0.012 + (t.easy || 0), 0.08, 0.2) * (t.small ? 0.75 : 1); // half-width of the hit zone, as a share of the swing
+      const win = clamp(0.085 + power * 0.012 + (t.easy || 0), 0.08, t.practice ? 0.3 : 0.2) * (t.small ? 0.75 : 1); // half-width of the hit zone, as a share of the swing
       let shot = 0, hits = 0, speed = t.speed || 1.6, phase = 0, x = 0, busy = false;
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="range' + (t.dark ? " dark" : t.field ? " field" : "") + '"><div class="zone" style="width:' + win * 90 + '%"></div><div class="line"></div>' +
         '<div class="target"><i class="t-' + (t.icon || "lamp") + '"></i></div><div class="arrow"></div></div><p class="game-note" aria-live="polite"></p><div class="btnrow"></div>';
@@ -160,9 +163,9 @@
       let P = null;
       if (painted) {
         range.classList.add("painted");
-        range.insertAdjacentHTML("beforeend", '<svg class="aimsvg" aria-hidden="true"><line class="rope"/><line class="path"/><circle class="aimpt" r="5"/><g class="tgt"><g class="tgt-art">' + AIM_ART(t.icon) + '</g><g class="stuck"></g></g><g class="flying"><line class="shaft"/><path class="fletch"/></g></svg>');
+        range.insertAdjacentHTML("beforeend", '<svg class="aimsvg" aria-hidden="true"><line class="rope"/><line class="path"/><circle class="aimpt" r="5"/><g class="tgt"><g class="tgt-art">' + AIM_ART(t.icon) + '</g><circle class="tgt-mark" r="4"/></g><g class="stuck"></g><g class="flying"><line class="shaft"/><path class="fletch"/></g></svg>');
         const q = (sel) => range.querySelector(sel);
-        P = { rope: q(".rope"), path: q(".path"), pt: q(".aimpt"), tgt: q(".tgt"), stuck: q(".stuck"), fly: q(".flying"), shaft: q(".shaft"), fletch: q(".fletch"), W: 0, H: 0, L: 0, tx: 0, ty: 0, th: 0.6, cx: 0, sw: 0 };
+        P = { rope: q(".rope"), path: q(".path"), pt: q(".aimpt"), tgt: q(".tgt"), art: q(".tgt-art"), mark: q(".tgt-mark"), stuck: q(".stuck"), fly: q(".flying"), shaft: q(".shaft"), fletch: q(".fletch"), W: 0, H: 0, L: 0, tx: 0, ty: 0, th: 0.6, cx: 0, sw: 0, win };
       }
       // You stand in the lower left, facing right; the target hangs up and to the right of you. The
       // aim runs from your bow hand to the target, and your bow arm turns about the shoulder to follow.
@@ -176,33 +179,59 @@
         return { x: r.left - rr.left + (58 - vb.x) * k, y: r.top - rr.top + (73 - vb.y) * k, k };
       };
       const handAt = (sh, th) => ({ x: sh.x + ARM * sh.k * Math.cos(th), y: sh.y - ARM * sh.k * Math.sin(th) });
+      // The shot flies in a low arc from your hand to the target's height, crossing it exactly where
+      // the hit is judged (aimOff, as a share of the swing): a hit sticks there, in the target; a miss
+      // goes on past it, along the same line, out of the picture. (The target holds still meanwhile.)
       const shoot = (hit, aimOff) => {
         if (!P) return;
         const sh = shoulder(), h0 = sh ? handAt(sh, P.th) : { x: P.cx, y: P.H };
-        const xAim = P.cx + (aimOff || 0) * P.sw;
-        // A miss flies on past the target's height and off the painting.
-        let xB = P.tx, yB = P.ty;
-        if (!hit) { const dx = xAim - h0.x, dy = P.ty - h0.y, m = (h0.y + 60) / Math.max(1, -dy); xB = h0.x + dx * m; yB = -60; }
+        const xB = P.cx + (aimOff || 0) * P.sw, yB = P.ty;
+        range.dataset.shot = [xB.toFixed(1), P.tx.toFixed(1), (P.zone || 0).toFixed(1), hit ? 1 : 0].join(",");
         const dist = Math.hypot(xB - h0.x, yB - h0.y), lift = dist * 0.12;
         const at = (f) => ({ x: h0.x + (xB - h0.x) * f, y: h0.y + (yB - h0.y) * f - lift * 4 * f * (1 - f) });
-        const t0 = performance.now(), dur = U.motion() ? 300 : 1;
+        const t0 = performance.now(), dur = U.motion() ? 300 : 1, on = U.motion() ? 260 : 0, v = dist / Math.max(1, dur);
         P.fly.style.opacity = "1";
-        let dir = [xB - h0.x, yB - h0.y];
-        const step = () => {
-          const f = Math.min(1, (performance.now() - t0) / dur), p = at(f), q = at(Math.max(0, f - 0.04));
-          if (f > 0) { const dl = Math.hypot(p.x - q.x, p.y - q.y) || 1; dir = [(p.x - q.x) / dl, (p.y - q.y) / dl]; }
+        // A thrown stone is a stone, not an arrow; a hit knocks the fruit down.
+        const stone = t.verb === "Throw";
+        P.fly.classList.toggle("stone", stone);
+        let dir = [xB - h0.x, yB - h0.y], end = null;
+        const draw = (p, f) => {
+          if (stone) { P.shaft.setAttribute("x1", p.x); P.shaft.setAttribute("y1", p.y); P.shaft.setAttribute("x2", p.x + 0.01); P.shaft.setAttribute("y2", p.y); P.fletch.setAttribute("d", ""); return; }
           // The arrow shrinks as it flies away from you.
-          const len = 46 - 24 * f, tx = p.x - dir[0] * len, ty = p.y - dir[1] * len;
+          const len = 46 - 24 * Math.min(1, f), tx = p.x - dir[0] * len, ty = p.y - dir[1] * len;
           P.shaft.setAttribute("x1", p.x); P.shaft.setAttribute("y1", p.y); P.shaft.setAttribute("x2", tx); P.shaft.setAttribute("y2", ty);
           const nx = -dir[1] * 5, ny = dir[0] * 5;
           P.fletch.setAttribute("d", "M" + (tx + nx) + " " + (ty + ny) + "L" + (tx + dir[0] * 8) + " " + (ty + dir[1] * 8) + "L" + (tx - nx) + " " + (ty - ny) + "z");
-          if (f < 1) requestAnimationFrame(step);
-          else {
-            P.fly.style.opacity = "0";
-            // Stuck in the target at the angle it came in, allowing for the target's own swing.
-            const rot = Math.atan2(dir[0], -dir[1]) * 180 / Math.PI + (P.ang || 0);
-            if (hit) P.stuck.innerHTML = '<g transform="rotate(' + rot.toFixed(1) + ')"><line x1="0" y1="2" x2="0" y2="30" stroke="#efe0bc" stroke-width="3"/><path d="M-5 30l5 -8l5 8z" fill="#b2432a"/></g>';
+        };
+        const step = () => {
+          const ms = performance.now() - t0, f = Math.min(1, ms / dur);
+          if (f < 1 || !end) {
+            const p = at(f), q = at(Math.max(0, f - 0.04));
+            if (f > 0) { const dl = Math.hypot(p.x - q.x, p.y - q.y) || 1; dir = [(p.x - q.x) / dl, (p.y - q.y) / dl]; }
+            draw(p, f);
+            if (f < 1) return requestAnimationFrame(step);
+            end = p;
+            if (hit && stone) {
+              P.fly.style.opacity = "0";
+              P.stuck.innerHTML = '<circle class="pop" cx="' + xB.toFixed(1) + '" cy="' + yB.toFixed(1) + '" r="6"/>';
+              const d0 = performance.now();
+              const fall = () => { const k = Math.min(1, (performance.now() - d0) / 520); P.drop = 90 * k * k; P.tgt.style.opacity = String(1 - k * 0.6); if (k < 1 && P.drop != null) requestAnimationFrame(fall); };
+              requestAnimationFrame(fall);
+              return;
+            }
+            if (hit) {
+              P.fly.style.opacity = "0";
+              // Stuck where it struck, at the angle it came in.
+              const rot = Math.atan2(dir[0], -dir[1]) * 180 / Math.PI;
+              P.stuck.innerHTML = '<g transform="translate(' + xB.toFixed(1) + " " + yB.toFixed(1) + ") rotate(" + rot.toFixed(1) + ')"><line x1="0" y1="2" x2="0" y2="30" stroke="#efe0bc" stroke-width="3"/><path d="M-5 30l5 -8l5 8z" fill="#b2432a"/></g>';
+              return;
+            }
           }
+          // A miss: on past the target, along the line it came in on.
+          const k = ms - dur;
+          if (k >= on) { P.fly.style.opacity = "0"; return; }
+          draw({ x: end.x + dir[0] * v * k, y: end.y + dir[1] * v * k }, 1);
+          requestAnimationFrame(step);
         };
         requestAnimationFrame(step);
       };
@@ -212,18 +241,20 @@
       let wob = 0;
       const gauss = () => { let u = 0; for (let i = 0; i < 3; i++) u += K.rng(); return (u - 1.5) / 0.5; };
       const release = () => {
-        if (busy) return;
+        if (busy || (P && !P.sw)) return; // not before the target is on the painting
         busy = true;
         const err = gauss() * drift;
         const off = x - wob - err;
-        const hit = Math.abs(off) <= win;
+        const wz = P ? P.win : win; // on the painting: the hit zone the target is drawn to fill
+        const hit = Math.abs(off) <= wz;
         if (hit) hits++;
         shoot(hit, wob + err);
-        if (!hit && Math.abs(x - wob) <= win) note.dataset.gust = "1"; else delete note.dataset.gust;
+        if (!hit && Math.abs(x - wob) <= wz) note.dataset.gust = "1"; else delete note.dataset.gust;
         cue("act"); setTimeout(() => cue(hit ? "good" : "bad"), 260);
         range.classList.remove("hit", "miss"); void range.offsetWidth; range.classList.add(hit ? "hit" : "miss");
         if (K.Sound) K.Sound.play(hit ? "choose" : "quill");
-        note.textContent = K.tr(hit ? "A hit!" : note.dataset.gust ? "The wind took it." : Math.abs(off) <= win * 1.8 ? "So close." : "A miss.");
+        const touched = !hit && P && P.marked && Math.abs(off) * P.sw <= P.vis; // struck the target, but not its mark
+        note.textContent = K.tr(hit ? "A hit!" : note.dataset.gust ? "The wind took it." : touched ? "It struck, but not the mark." : Math.abs(off) <= wz * 1.8 ? "So close." : "A miss.");
         shot++;
         marks();
         const left = shots - shot;
@@ -231,7 +262,7 @@
           const out = hits >= need ? "win" : need > 1 && hits === need - 1 ? "close" : "lose";
           return setTimeout(() => finish(out, ["You hit {h} of {n}.", { h: hits, n: shot }]), 500);
         }
-        setTimeout(() => { busy = false; speed *= 1.15; note.textContent = ""; range.classList.remove("hit", "miss"); if (P) P.stuck.innerHTML = ""; }, 700);
+        setTimeout(() => { busy = false; speed *= 1.15; note.textContent = ""; range.classList.remove("hit", "miss"); if (P) { P.stuck.innerHTML = ""; P.drop = 0; P.tgt.style.opacity = ""; } }, 700);
       };
       host.querySelector(".btnrow").appendChild(pressButton(t.verb || "Release", release));
       onAct(release);
@@ -253,11 +284,22 @@
           P.cx = cx; P.sw = sw;
           // Animals run across the ground; everything else swings on its rope.
           const runs = RUNNERS.has(t.icon);
+          // The target is drawn exactly as wide as its hit zone (never so small it cannot be seen): what
+          // you see touched is what counts.
+          // A target too small to see at its true size (a hard test on a small screen) is drawn big enough
+          // to see, with a small gold mark that is the whole hit zone: hit the mark, not just the target.
+          const half = ART_HALF[t.icon] || 30, want = win * sw, marked = want - 2 < 14;
+          const vis = marked ? Math.max(22, Math.min(half * 1.35, 30)) : Math.min(want - 2, half * 3), sc = vis / half;
+          const zone = Math.min(want, half * 3 + 2);
+          P.win = zone / sw; P.zone = zone; P.vis = vis + 2; P.marked = marked;
+          P.mark.style.display = marked ? "" : "none";
+          if (marked) P.mark.setAttribute("r", Math.max(3, zone - 2).toFixed(1));
           const ty = runs ? P.L : Math.sqrt(Math.max(P.L * P.L - dx * dx, P.L * P.L * 0.25)), ang = runs ? 0 : Math.atan2(dx, ty) * 180 / Math.PI;
           P.tx = tx; P.ty = ty; P.ang = runs ? 0 : ang;
           if (runs) { P.rope.style.display = "none"; P.dir = Math.cos(phase * 2.2) >= 0 ? 1 : -1; }
           else { P.rope.setAttribute("x1", cx); P.rope.setAttribute("y1", -10); P.rope.setAttribute("x2", tx); P.rope.setAttribute("y2", ty - 30); }
-          P.tgt.setAttribute("transform", "translate(" + tx.toFixed(1) + " " + ty.toFixed(1) + ") rotate(" + (-ang).toFixed(1) + ")" + (runs ? " scale(" + (P.dir * 1.5) + " 1.5)" : ""));
+          P.tgt.setAttribute("transform", "translate(" + tx.toFixed(1) + " " + (ty + (P.drop || 0)).toFixed(1) + ") rotate(" + (-ang).toFixed(1) + ")");
+          P.art.setAttribute("transform", "scale(" + ((runs ? P.dir : 1) * sc).toFixed(3) + " " + sc.toFixed(3) + ")");
           const ax = cx + wob * sw, ay = P.L;
           const sh = shoulder();
           if (sh) {

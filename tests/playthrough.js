@@ -15,12 +15,14 @@ const scripts = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map((m) 
 // Language dictionaries load on demand in the browser; the harness loads them all up front.
 scripts.splice(scripts.indexOf("js/ui/dom.js"), 0, "js/i18n/hi.js");
 
+let lastWindow = null; // closed after each life, so a long run does not keep every life's page in memory
 function boot(seed) {
   const vc = new VirtualConsole();
   const jsErrors = [];
   vc.on("jsdomError", (e) => jsErrors.push(e.detail && e.detail.stack ? e.detail.stack : String(e.message || e)));
   const dom = new JSDOM(html.replace(/<script src="[^"]+"><\/script>/g, ""), { runScripts: "outside-only", pretendToBeVisual: true, url: "https://localhost/", virtualConsole: vc });
   const w = dom.window;
+  lastWindow = w;
   w.HTMLElement.prototype.scrollIntoView = () => {};
   let s = seed >>> 0;
   w.Math.random = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
@@ -80,7 +82,8 @@ function playLife(seed) {
       const book = K.lives();
       if (!book.length || book[0].title !== K.S.ending) errors.push("warn: the Book of Lives did not record this life");
       if (reborn && !K.S.flags.includes("reborn")) errors.push("warn: rebirth did not apply");
-      return { fights, ending: K.S.ending, alive: K.S.alive, age: K.S.age, path: path_, errors, problems, side: K.S.side, steps: step, seen: K.S.seen, flags: K.S.flags, road: K.S.road || [], moves, tests: testsOf(K), loops: (K.S.loops || []).length, crossed: K.S.crossed || {} };
+      return { fights, ending: K.S.ending, alive: K.S.alive, age: K.S.age, path: path_, errors, problems, side: K.S.side, steps: step, seen: K.S.seen, flags: K.S.flags, road: K.S.road || [], moves, tests: testsOf(K), loops: (K.S.loops || []).length, crossed: K.S.crossed || {},
+        moments: K.S.moments || [], broken: K.S.vows.filter((v) => v.broken && !v.released).length, penance: !!K.S.penanceDone, astraBroken: !!(K.S.astra && K.S.astra.broken) };
     }
     const acts = [...d.querySelectorAll("#battle-actions .act:not([disabled])")];
     const cta = [...d.querySelectorAll("#leaf .cta")].filter((b) => !b.disabled);
@@ -111,7 +114,7 @@ function playLife(seed) {
 }
 
 const results = [];
-for (let i = 1; i <= N; i++) results.push(playLife(i * 7919));
+for (let i = 1; i <= N; i++) { results.push(playLife(i * 7919)); try { lastWindow.close(); } catch (e) { /* ignore */ } }
 const crashes = results.filter((r) => r.crash);
 const stuck = results.filter((r) => r.stuck);
 const ends = {};
@@ -134,7 +137,11 @@ results.forEach((r) => (r.fights || []).forEach(([id, o]) => { fstat[id] = fstat
 console.log("Battles (win / lose / flee / spare):");
 Object.entries(fstat).forEach(([id, f]) => console.log("  " + id.padEnd(14) + [f.win, f.lose, f.flee, f.spare].join(" / ")));
 const evs = {};
-results.forEach((r) => (r.seen || []).forEach((id) => { if (/^ev_|^a1_pasha$|^a5_charu$|^a7_note$/.test(id)) evs[id] = (evs[id] || 0) + 1; }));
+results.forEach((r) => (r.seen || []).forEach((id) => { if (/^ev_|^v_|^a1_pasha$|^a5_charu$|^a7_note$/.test(id)) evs[id] = (evs[id] || 0) + 1; }));
+// Moments and vows (PRD §18.12): how often each kind of moment came, and what vows cost.
+const mos = {};
+results.forEach((r) => (r.moments || []).forEach((m) => { mos[m.kind] = (mos[m.kind] || 0) + 1; }));
+console.log("Moments: " + Object.entries(mos).sort().map(([k, v]) => k + " " + v).join(", ") + "; vows broken " + results.reduce((a, r) => a + (r.broken || 0), 0) + ", penances " + results.filter((r) => r.penance).length + ", weapons taken back " + results.filter((r) => r.astraBroken).length);
 console.log("Events and new scenes seen: " + Object.entries(evs).sort().map(([k, v]) => k + " " + v).join(", "));
 const fl = (f) => results.filter((r) => (r.flags || []).includes(f)).length;
 console.log("Dice: learned " + fl("learned_pasha") + ", beat Haridatta " + fl("beat_haridatta") + ", watched Shakuni " + fl("watched_hands") + ", saw the swap " + fl("saw_swap") + "; Nishada came " + fl("nishada_came") + "; reborn " + fl("reborn"));

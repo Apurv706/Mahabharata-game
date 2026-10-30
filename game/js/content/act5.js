@@ -47,7 +47,7 @@
       choices: [
         { id: "astra", t: "Practise penance and ask for a divine weapon",
           check: { attr: "wisdom", skill: "lore", dc: 8,
-            pass: { fx: { boon: "astra", journal: "After a season of penance you were granted a divine weapon." }, text: "On the last night of the season, a voice in the fire gives you a mantra. You will be able to call an astra once in any battle. You will also be responsible for where it lands." },
+            pass: { fx: { boon: "astra", astraFrom: "penance", journal: "After a season of penance you were granted a divine weapon." }, text: "On the last night of the season, a voice in the fire gives you a mantra. You will be able to call an astra once in any battle. You will also be responsible for where it lands." },
             fail: { fx: { attr: { wisdom: 1 } }, text: "No weapon comes. But you leave the ashram quieter and clearer than you arrived." } } },
         { id: "heal", t: "Learn from the ashram's healers", fx: { boon: "healing_hands", skill: { healing: 1 }, journal: "The ashram's healers taught you their remedies." } },
         { id: "serve", t: "Serve the sages: carry water, sweep, keep silent", req: { any: [{ flag: "kind_to_sage" }, { rep: ["sages", 5] }] }, locked: "The sages do not know you yet.", fx: { boon: "foresight", rep: { sages: 1 }, journal: "An old sage blessed you with foresight." },
@@ -122,7 +122,7 @@
         { id: "warn", t: "Push through and warn Karna it is a trick", fx: { bond: { karna: 2 }, memory: ["karna", "You tried to save his armour."] },
           text: "\"I know who he is,\" Karna says quietly. \"I gave my word to give what is asked.\" He cuts the armour from his own body, and the brahmin gives him a spear in return that can kill anyone, once." },
         { id: "watch", t: "Watch in silence", fx: {} },
-        { id: "astra", t: "Ask {teacher} to teach you the weapon you were promised", req: { teacher: ["drona", "kripa"], duty: ["teacher", 5] }, locked: "Your teacher must think you have earned it.", fx: { boon: "astra", duty: { teacher: 1 }, journal: "{teacher} taught you to call a divine weapon." },
+        { id: "astra", t: "Ask {teacher} to teach you the weapon you were promised", req: { teacher: ["drona", "kripa"], duty: ["teacher", 5] }, locked: "Your teacher must think you have earned it.", fx: { boon: "astra", astraFrom: "teacher", duty: { teacher: 1 }, journal: "{teacher} taught you to call a divine weapon." },
           text: "{teacher} looks at you for a long time, then teaches you the mantra in a whisper. \"Never against someone who cannot fight back,\" he says." }
       ],
       next: "a5_charu"
@@ -160,7 +160,7 @@
             pass: { fx: { rep: { common: 3 }, duty: { conscience: 1 }, journal: "You nursed your village through the fever year." }, text: "You lose eleven people. Without you it would have been many more." },
             fail: { fx: { rep: { common: 1 } }, text: "You do everything you can. The fever takes its own count." } } },
         { id: "grain", t: "Ride to the next kingdom and come back with grain", fx: { skill: { chariot: 1 }, rep: { common: 2 } } },
-        { id: "mauni", t: "Go into the forest to find Mauni, your old teacher", req: { teacher: "hermit", noFlag: "betrayed_hermit" }, locked: "", fx: { boon: "astra", rep: { common: 1 }, journal: "Mauni gave you medicine for the village, and a divine weapon for what was coming." },
+        { id: "mauni", t: "Go into the forest to find Mauni, your old teacher", req: { teacher: "hermit", noFlag: "betrayed_hermit" }, locked: "", fx: { boon: "astra", astraFrom: "mauni", rep: { common: 1 }, journal: "Mauni gave you medicine for the village, and a divine weapon for what was coming." },
           text: "Mauni is older, and just as silent. He gives you a bundle of roots for the fever, and then, before you leave, a mantra. \"You kept my secret,\" he says. \"Keep this one too.\"" }
       ],
       next: "a5_charu"

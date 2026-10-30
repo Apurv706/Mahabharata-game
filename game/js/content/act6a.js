@@ -242,8 +242,22 @@
     }
   ]);
 
+  // In any deadly fight of the war you may shout for a friend, once. Your friend for life comes if on
+  // your side of the field; under a vow never to strike Karna, Karna answers even across the lines,
+  // to stand your enemies off (never against his brothers). A friendship that has ended reaches no one.
+  const FRIEND_SIDE = { karna: "kaurava", duryodhana: "kaurava", arjuna: "pandava", bhima: "pandava" };
+  K.warHelp = (S) => {
+    const f = S.friend;
+    if (f && !S.dead.includes(f) && K.UNITS[f] && FRIEND_SIDE[f] === S.side)
+      return { unit: K.UNITS[f](S), stay: 2, text: ["{who} hears you over the din, and comes.", { who: K.PEOPLE[f].name }] };
+    if (K.hasVow("spare_karna", S) && !S.dead.includes("karna") && S.side === "pandava")
+      return { text: "Karna hears you across the lines. His chariot swings out of the Kaurava ranks and stands between you and your enemies, and none of them will come past him. He raises his bow to you once, and is gone.",
+        run: (B) => B.living("enemy").forEach((u) => { if (u.person !== "karna") B.status(u, "weakened", 2); }) };
+    if (f && f !== "charu" && !S.dead.includes(f)) return { text: ["You shout for {who}, but {who} is far down the line, in the thick of it.", { who: K.PEOPLE[f].name }] };
+    return { text: "You shout for help. In the roar of the battle no one you trust is near enough to hear." };
+  };
   const war = (K.warEncounter = (id, title, enemies, extra) => K.encounter(Object.assign({
-    id, title, art: "scene_day13", lethal: true, curse: true, allies: K.warAllies,
+    id, title, art: "scene_day13", lethal: true, curse: true, allies: K.warAllies, callHelp: K.warHelp,
     flee: { tags: ["retreat"] }, spare: true,
     deathText: "You fell at Kurukshetra."
   }, extra, { enemies })));
