@@ -104,6 +104,7 @@
     S.vows.forEach((v) => t.push([v.released ? "{They} swore “{vow!}”, and the vow was answered." : v.broken ? "{They} swore “{vow!}” and broke it." : "{They} swore “{vow!}” and kept it.", { vow: K.VOWS[v.id].name }]));
     if (has("role_command")) t.push("At Kurukshetra {they} commanded a company of {their} own, and brought home as many as {they} could.");
     if (has("held_ring_open")) t.push(S.heldRing ? ["{They} held the ring open for {n} heartbeats beside Abhimanyu, in the heart of the wheel.", { n: S.heldRing }] : "{They} stood beside Abhimanyu in the heart of the wheel to the end.");
+    if (has("fell_to_abhimanyu")) t.push("On the thirteenth day {they} stood in Abhimanyu's way in the wheel, as the order said, and fell to his arrows.");
     if (has("cut_abhimanyu_bow")) t.push("On the thirteenth day {they} obeyed the order to strike Abhimanyu from behind.");
     if (has("refused_bow_order")) t.push("On the thirteenth day {they} refused, out loud, to strike a boy from behind.");
     if (has("could_not_break_through")) t.push("On the thirteenth day {they} {were} among those who could not break through.");
@@ -171,6 +172,7 @@
     { title: "Glorious death", art: "end_death", hint: "Fall in battle with every vow kept." },
     { title: "Fallen at Kurukshetra", art: "end_death", hint: "Fall in battle." },
     { title: "Into the wheel", art: "end_wheel", hint: "Follow Abhimanyu to the end." },
+    { title: "Against the boy in the wheel", art: "end_wheel", hint: "On the Kaurava side, stand in Abhimanyu's way." },
     { title: "A life cut short", art: "scene_lake", hint: "Cross someone who does not forgive, before the war, and fail." },
     { title: "Beside Karna", art: "war_day17", hint: "Stand beside Karna on his last day." }
   ];
@@ -182,10 +184,10 @@
     const weakBonds = Object.values(S.bonds).filter((b) => b <= 2).length;
     let title, art = "end_survivor", caption = "Dawn over the field";
     if (!S.alive) {
-      const wheel = S.flags.includes("died_with_abhimanyu"), karna = S.flags.includes("died_with_karna");
+      const wheel = S.flags.includes("died_with_abhimanyu") || S.flags.includes("fell_to_abhimanyu"), karna = S.flags.includes("died_with_karna");
       art = wheel ? "end_wheel" : karna ? "war_day17" : "end_death";
       caption = wheel ? "The ring of chariots at sunset" : karna ? "A chariot wheel sinks into the earth" : "The day ends without you";
-      title = S.flags.includes("died_with_abhimanyu") ? "Into the wheel" : S.flags.includes("died_with_karna") ? "Beside Karna" : intact ? "Glorious death" : "Fallen at Kurukshetra";
+      title = S.flags.includes("died_with_abhimanyu") ? "Into the wheel" : S.flags.includes("fell_to_abhimanyu") ? "Against the boy in the wheel" : S.flags.includes("died_with_karna") ? "Beside Karna" : intact ? "Glorious death" : "Fallen at Kurukshetra";
       // A death by peril (see K.inPeril) shows where it happened; before the war it is not a death in battle.
       const at = S.deathAt;
       if (at && at.art) { art = at.art; caption = at.caption || caption; }

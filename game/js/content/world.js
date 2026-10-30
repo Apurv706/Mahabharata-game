@@ -114,6 +114,9 @@
     spouse: (S) => (S.spouse && !S.dead.includes(S.spouse) ? K.UNITS[S.spouse](S) : null),
     ugra: () => ({ name: "Ugra, the miller's son", hp: 46, atk: 7, def: 2, abilities: ["strike", "heavy"], person: "ugra" }),
     soldiers: () => ({ name: "Your soldiers", plural: true, hp: 50, atk: 6, def: 2, abilities: ["strike", "arrows"] }),
+    // Friends who can answer a call in the war (see abilities.js "call").
+    karna: () => ({ name: "Karna", hp: 220, atk: 13, def: 4, abilities: ["strike", "arrows", "heavy"], person: "karna" }),
+    duryodhana: () => ({ name: "Duryodhana", hp: 210, atk: 12, def: 4, abilities: ["strike", "heavy"], person: "duryodhana" }),
     abhimanyu: () => ({ name: "Abhimanyu", hp: 120, atk: 11, def: 3, abilities: ["strike", "arrows", "heavy"], person: "abhimanyu" }),
     // A company of your own, for those who passed the commander's test on the eve of the war.
     company: () => ({ name: "Your company", plural: true, hp: 72, atk: 8, def: 3, abilities: ["strike", "arrows", "guard"] })

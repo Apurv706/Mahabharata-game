@@ -86,6 +86,8 @@
   const api = {
     say(t) { B.log.push({ raw: t }); },                       // a line of story text (English source)
     tell(key, u, v, crit) { B.log.push({ key, u, v, crit }); }, // a combat event
+    // A friend who answers your call joins the fight for a while (leaves after `stay` rounds).
+    join(def, stay) { const u = makeUnit(def, "ally", B.units.length, B.enc); if (stay) u.leave = B.round + stay; B.units.push(u); return u; },
     hit(u, t, mult, o = {}) {
       if (!t || t.hp <= 0) return 0;
       if (u.side === "player" && t.vowTag) {
@@ -139,6 +141,9 @@
     B = Object.assign({ enc, units: [makePlayer(S)], round: 1, log: [], acts: [], over: null, used: {}, onEnd, bid: Date.now() + ":" + encId }, api);
     (K.val(enc.allies) || []).forEach((a, i) => { const d = typeof a === "string" ? K.UNITS[a] && K.UNITS[a](S) : a; if (d) B.units.push(makeUnit(d, "ally", i, enc)); });
     K.val(enc.enemies).forEach((e, i) => B.units.push(makeUnit(e, "enemy", i, enc)));
+    // Some fights let you shout for a friend (once), and show the divine weapon even to those who
+    // were never given one (greyed: "You were never given a divine weapon").
+    { const p = B.units[0]; if (enc.callHelp) p.abilities.push("call"); if (enc.showAstra && !p.abilities.includes("astra")) p.abilities.push("astra"); }
     B.habit = []; // what you have done lately: enemies learn from it
     if (S.boons.includes("healing_hands") && (S.items.herbs || 0) < 2) S.items.herbs = 2;
     B.pulled = {};
@@ -186,6 +191,7 @@
       if (p.cds[id]) why = K.tr(p.cds[id] === 1 ? "Ready in 1 turn" : "Ready in {n} turns", { n: p.cds[id] });
       if (ab.once && B.used[id]) why = K.tr("Used this battle");
       if (ab.item && !(S.items[ab.item] > 0)) why = K.tr("None left");
+      if (id === "astra" && !S.boons.includes("astra")) why = K.tr("You were never given a divine weapon");
       // Moves that need allies do nothing when you fight alone: the screen tucks them away.
       const idle = (ab.needsAlly || ab.target === "allies") && friendsOf(p).length < 2;
       if (idle) why = K.tr("No ally to command");
@@ -294,6 +300,8 @@
       for (const k of Object.keys(u.cds)) if (u.cds[k] > 0) u.cds[k]--;
     }
     B.round++;
+    // Friends who came at your call are pulled away by the fighting after a while.
+    for (const u of B.units.filter((x) => x.leave && B.round >= x.leave && x.hp > 0)) { api.tell("The press of the fighting carries {t} away from you.", { t: u }); B.units = B.units.filter((x) => x !== u); }
     // A fight can carry its own beats, round by round (the epic's moments in the wheel); otherwise
     // one field event as the third round begins.
     const beat = (K.val(B.enc.beats) || []).find((b) => b.round === B.round);

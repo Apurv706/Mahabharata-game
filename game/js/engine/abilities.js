@@ -11,6 +11,16 @@
       name: "Healing herbs", target: "ally", cd: 2, item: "herbs", desc: "Use one bundle of herbs to restore 30% health.",
       use: (B, u, t) => { K.S.items.herbs = Math.max(0, (K.S.items.herbs || 0) - 1); B.heal(u, t, pct(t, 0.3)); }
     },
+    // Shout for a friend, once. Who comes (if anyone) is the fight's to say (enc.callHelp).
+    call: {
+      name: "Call for help", target: "self", once: true, desc: "Shout for a friend. Once per battle; who comes depends on what you have been to them.",
+      use: (B, u) => {
+        const h = K.val(B.enc.callHelp, K.S) || {};
+        if (h.text) B.say(h.text);
+        if (h.unit) { const a = B.join(h.unit, h.stay || 2); B.status(a, "inspired", 2); }
+        if (h.run) h.run(B);
+      }
+    },
     astra: {
       name: "Invoke astra", target: "enemy", cd: 99, once: true, desc: "A divine weapon. Once per battle. Using it on an unarmed or helpless foe is a grave wrong.",
       use: (B, u, t) => {

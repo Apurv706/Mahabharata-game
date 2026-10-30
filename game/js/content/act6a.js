@@ -213,7 +213,7 @@
         { id: "gate", t: "Hold at the gate and try to force it open", req: { side: "pandava" }, combat: "e_gate" },
         { id: "pull_vasu", t: "Pull back to get Vasu out when the line breaks", req: (S) => S.side === "pandava" && vasuNear(S), tags: ["retreat"],
           fx: { duty: { family: 3 }, bond: { vasu: 3 }, flag: "saved_vasu_d13", journal: "On the thirteenth day you pulled back to save your son." } },
-        { id: "ring", t: "Hold your place in the ring as ordered", req: { side: "kaurava" }, combat: "e_ring", noAfter: true,
+        { id: "ring", t: "Hold your place in the ring as ordered", req: { side: "kaurava" }, combat: "e_ring", noAfter: true, hint: "He has killed everyone who stood in front of him today",
           fx: { duty: { court: 2 }, flag: "held_the_ring", memory: ["all", "You were part of the ring that closed on the boy."], journal: "On the thirteenth day you held your place in the ring that closed on Abhimanyu." } },
         { id: "refuse", t: "Refuse to close in on a lone boy", req: { side: "kaurava" },
           fx: { duty: { conscience: 3, court: -3 }, rep: { kuru: -2 }, flag: "refused_ring", memory: ["all", "You lowered your bow and would not close in."], journal: "On the thirteenth day you lowered your bow and would not close in on Abhimanyu." } },
@@ -310,7 +310,9 @@
     K.foe("Kripa", 6, { abilities: ["strike", "heavy"], person: "kripa" }),
     K.foe("Ashwatthama", 7, { abilities: ["strike", "heavy", "arrows"], hero: true })
   ], {
-    caption: "Inside the Chakravyuha", allies: ["abhimanyu"], rounds: 6, roundsText: "The ring tightens. There is no more room to fight in.", flee: null, spare: false,
+    caption: "Inside the Chakravyuha", allies: ["abhimanyu"], rounds: 6, showAstra: true,
+    // No one can follow you in: Jayadratha holds the breach (canon). The call is heard, and that is all.
+    callHelp: () => ({ text: "You shout for help. Beyond the ring Bhima roars back, but Jayadratha's line holds, and no one comes through.", run: (B) => { const a = abhi(B); if (a) B.status(a, "inspired", 2); } }), roundsText: "The ring tightens. There is no more room to fight in.", flee: null, spare: false,
     intro: "Behind you the gap has closed. Abhimanyu glances back, sees you, and laughs. \"Two of us,\" he says. \"That is twice as many as they thought.\"",
     beats: [
       { round: 2, text: "On Drona's word, Karna circles behind Abhimanyu and cuts his bowstring with one arrow.", run: (B) => { const a = abhi(B); if (a) { a.abilities = ["strike", "heavy"]; a.atk = Math.round(a.atk * 0.85); } } },
@@ -322,13 +324,30 @@
     win: { next: "a6_ring_closes", text: "You are still on your feet beside him when the ring of chariots begins to turn inward." },
     lose: { fx: { flag: "died_with_abhimanyu" }, deathText: "{They} fell beside Abhimanyu in the heart of the wheel, on the thirteenth day." }
   });
-  // Kaurava side: Abhimanyu breaks against your stretch of the ring. You only have to hold him.
-  war("e_ring", "Your stretch of the ring", [K.foe("Abhimanyu", 12, { abilities: ["strike", "heavy", "arrows"], hero: true, person: "abhimanyu", hp: 600 })], {
-    caption: "The boy in the wheel", allies: (S) => K.warAllies(S), rounds: 4, roundsText: "He turns away from your stretch of the ring, toward a weaker one.", flee: { tags: ["retreat"] }, spare: false,
-    intro: "A sixteen-year-old in a chariot comes at your part of the ring as if it were made of reeds.",
-    win: { next: "a6_d13_bow", fx: { duty: { conscience: -1 } }, text: "Your stretch of the ring holds. Further along, another does not." },
-    lose: { deathText: "{They} fell holding a stretch of the ring against Abhimanyu on the thirteenth day." },
-    flee: { next: "a6_d13_bow", fx: { duty: { conscience: 1 }, flag: "left_ring" }, text: "You pull back out of the ring. Others close the gap you leave." }
+  // Kaurava side: Abhimanyu comes at your stretch of the ring. That day no one who stood in front of
+  // him lived: the fight cannot be won, only fled. A friend may answer your call for a while; an astra
+  // is met by its counter, which Arjuna's son knows.
+  const KAURAVA_FRIEND = (S) => {
+    const ok = (id) => !S.dead.includes(id) && (S.friend === id || (S.bonds[id] || 0) >= 6);
+    if (ok("karna")) return { unit: "karna", text: "Karna hears you. His chariot swings out of the ring and comes in at Abhimanyu's flank." };
+    if (ok("duryodhana")) return { unit: "duryodhana", text: "Duryodhana hears you over the din and drives his chariot at the boy, roaring." };
+    return null;
+  };
+  const abhiFoe = (B) => B.units.find((u) => u.person === "abhimanyu" && u.side === "enemy");
+  war("e_ring", "Your stretch of the ring", [K.foe("Abhimanyu", 12, { abilities: ["strike", "heavy", "arrows"], hero: true, person: "abhimanyu", hp: 900, atk: 22 })], {
+    caption: "The boy in the wheel", allies: (S) => K.warAllies(S), spare: false, showAstra: true, injury: "arm",
+    intro: "A sixteen-year-old in a chariot comes at your part of the ring as if it were made of reeds. Behind him, the men who tried to stop him are lying in the dust.",
+    callHelp: (S) => {
+      const f = KAURAVA_FRIEND(S);
+      if (!f) return { text: "You shout for help. In the roar of the wheel no one you trust is near enough to hear." };
+      return { unit: K.UNITS[f.unit](S), stay: 2, text: f.text };
+    },
+    beats: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((r) => ({ round: r,
+      text: { 2: "His arrows find your charioteer. You take the reins yourself.", 3: "Duryodhana's son Lakshmana rides in beside you, and falls to Abhimanyu's first arrow.", 4: "He sees you now. Every arrow he looses is meant for you.", 5: "Your bow arm is going numb. He is not even tired.", 6: "Nothing you do slows him." }[r] || "He comes on, faster than anyone can follow.",
+      run: (B) => { const a = abhiFoe(B); if (a && r >= 3) a.atk = Math.round(a.atk * 1.3); if (r === 4) B.living("friends").forEach((u) => { if (u.side === "player") B.status(u, "exposed", 2); }); } })),
+    win: { next: "a6_d13_bow", text: "Somehow, he turns away from you, toward a weaker stretch of the ring." },
+    lose: { next: "a6_d13_bow", fx: { flag: "fell_to_abhimanyu" }, deathText: "{They} fell to Abhimanyu's arrows, holding a stretch of the ring in the Chakravyuha on the thirteenth day." },
+    flee: { tags: ["retreat"], next: "a6_d13_bow", fx: { duty: { conscience: 1 }, flag: "left_ring" }, text: "You pull back out of the ring. Others close the gap you leave, and die in it." }
   });
   war("e_gate", "Holding the gate", [K.foe("Jayadratha's guard", 4, { abilities: ["strike", "guard"] }), K.foe("Sindhu archer", 3, { abilities: ["strike", "arrows"] })], {
     caption: "The breach Jayadratha holds", rounds: 5, roundsText: "The gate never opens. But you held your ground in front of it.", spare: false,

@@ -255,7 +255,7 @@
     const deep = !!(U.inScene && !K.headless);
     leaf.className = "leaf fighting" + (deep ? " immersive" : "");
     if (deep) document.body.classList.add("intest");
-    if (leaf.dataset.battle !== B.bid || !U.$("arena")) {
+    if (leaf.dataset.battle !== B.bid || !U.$("arena") || U.$("arena").querySelectorAll(".actor").length !== B.units.length) {
       if (deep) {
         const bg = FIGHT_BG[enc.id];
         U.setBackdrop(U.upright() && bg && U.tallOf(bg) ? bg : K.val(enc.stage) || K.val(enc.art));
