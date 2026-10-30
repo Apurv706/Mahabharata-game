@@ -52,3 +52,7 @@ The full list of what is still needed, with thumbnails, prompts, layouts and the
 - **Priority 2, recommended (36):** 12 new 16:9 fight backgrounds for wide screens; 16:9 versions of the 9 endings, 5 war days (`war_bhishma`, `war_capture`, `war_day14`–`16`), `home_suta` and the 9 most-seen scenes (with a fix to Charu in `scene_smith`).
 - **Priority 3, optional (43):** 16:9 versions of the other 16 scenes, the 10 events, the 8 `roots_*` and the 8 `custom_*`; a sharper Steam library hero (the current one meets Steam's rules and stays in use; it is only slightly soft at full size on 4K screens).
 - **Not for the artist:** five 1920×1080 Steam screenshots (captured from the game); advisory review; a native reader's check of the Hindi logo.
+
+### Annex: the 29 October playtest changes
+
+**`docs/Art_Brief_Annex_Playtest.pdf`** (11 images, none blocking; PRD §18.11): recommended: `fight_chakravyuha_inner` tall and wide (the last stand beside Abhimanyu), portraits `p_bhishma` and `p_dhrishtadyumna` (the commanders' test), `scene_armoury` (choosing a weapon); optional: test stages `stage_muster_field_top`, `stage_drona_gate` and `stage_war_road`, each tall and wide. Fight backgrounds, including the 12 wide ones already ordered, keep level ground in the marked band and state the ground line's height.
