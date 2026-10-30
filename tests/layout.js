@@ -269,6 +269,29 @@ const PAGE = {
     if (blank > 48) out.push("empty band of " + Math.round(blank) + "px in the page while the story is written");
     return out;
   },
+  practice(o) {
+    // The practice ground: its page on screen, every kind of test listed (the ones met open, the
+    // rest locked), sparring, the blow drill and the way out reachable without scrolling the page.
+    const out = [];
+    const leaf = document.getElementById("leaf");
+    if (!leaf || !leaf.classList.contains("pr-page")) return ["the practice ground did not open"];
+    const H = innerHeight, lr = leaf.getBoundingClientRect(), head = document.querySelector("header.top").getBoundingClientRect();
+    if (lr.bottom > H + 1) out.push("practice page runs off the bottom (" + Math.round(lr.bottom) + " > " + H + ")");
+    if (lr.top < head.bottom - 1) out.push("practice page runs under the top bar");
+    const tiles = [...leaf.querySelectorAll(".pr-tile")];
+    if (tiles.length < 10) out.push("only " + tiles.length + " kinds of test listed");
+    if (!tiles.some((t) => !t.disabled)) out.push("no kind of test open, though some were met");
+    if (!tiles.some((t) => t.disabled)) out.push("no kind of test locked");
+    if (tiles.some((t) => t.getBoundingClientRect().height < 40)) out.push("test tiles shorter than a tap target");
+    const acts = [...leaf.querySelectorAll("#pr-acts .choice, #pr-acts .cta")];
+    if (acts.length < 3) out.push("sparring, the blow drill or the way out is missing");
+    const off = acts.filter((b) => { const r = b.getBoundingClientRect(); return r.bottom > H - (o.sab || 0) + 1 || r.top < head.bottom - 1 || r.height < 40; });
+    if (off.length) out.push(off.length + " practice action(s) off screen or too small");
+    const story = document.getElementById("pr-story");
+    if (story && story.scrollHeight > story.clientHeight + 2 && story.clientHeight < 90) out.push("practice page's list squeezed to " + story.clientHeight + "px");
+    if (o.small && parseFloat(getComputedStyle(story).fontSize) > 16.5 && !document.body.classList.contains("big-text")) out.push("practice text " + getComputedStyle(story).fontSize + " on a phone");
+    return out;
+  },
   modal(o) {
     const out = [];
     const m = document.querySelector(".scrim .modal");
@@ -494,6 +517,55 @@ async function runDevice(browser, base, o, report) {
   await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 17, act: 2 }); K.go("a2_spar"); K.UI.startBattle("e_spar", () => {}); }, LIFE);
   await page.waitForTimeout(900);
   await check("fight: sparring", ["battle"]);
+
+  // The practice ground (ui/practice.js). Beside a second chance, the offer; from the menu between
+  // scenes, the ground; there a test played to its end, a blow read and the drill stopped, a bout
+  // withdrawn from; and on leaving, the life exactly as it was (nothing done there counts).
+  await fresh(page, url, o);
+  await goScene(page, "a2_trial_again", { flags: ["a2_trial_drona_again"] });
+  {
+    const offer = await page.evaluate(() => { const b = document.querySelector("#choices .practice-offer"); return b ? b.getBoundingClientRect().height : 0; });
+    report.push({ browser: browser._name, device: label, screen: "practice offer beside a second chance", problems: offer >= 40 ? [] : [offer ? "practice offer shorter than a tap target" : "no practice offer beside the second chance"] });
+  }
+  await goScene(page, "a2_trial", { log: ["a1_friend:arjuna", "a1_friend:bhima"] });
+  const lifeBefore = await page.evaluate(() => JSON.stringify(K.S));
+  await page.click("#nav-menu");
+  await page.waitForTimeout(300);
+  await page.click("#m-practice");
+  await page.waitForTimeout(700);
+  await check("practice ground", ["practice"]);
+  await page.click('.pr-tile[data-kind="aim"]');
+  await page.waitForTimeout(700);
+  await check("practice: a test", ["trial"]);
+  await page.click(".trial .trial-body .btnrow .cta:not(.pr-show)");
+  await page.waitForTimeout(600);
+  for (let i = 0; i < 4 && !(await page.$(".trial.done")); i++) { await page.keyboard.press(" "); await page.waitForTimeout(900); }
+  const testBack = await page.waitForSelector(".pr-result", { timeout: 9000 }).then(() => true, () => false);
+  await page.click("#pr-acts .choice:nth-child(2)");
+  await page.waitForTimeout(700);
+  await check("practice: reading the blow", ["battle"]);
+  await page.click(".pr-card .cta:not(.pr-show)");
+  await page.waitForTimeout(700);
+  await page.keyboard.press("ArrowUp");
+  await page.waitForTimeout(500);
+  await page.click(".pr-stop");
+  await page.waitForTimeout(500);
+  await page.click("#pr-acts .choice:nth-child(1)");
+  await page.waitForTimeout(500);
+  await page.click("#pr-acts .choice");
+  await page.waitForTimeout(900);
+  await check("practice: a bout", ["battle"]);
+  await page.click(".pr-bout-stop");
+  await page.waitForTimeout(400);
+  await page.click("#battle-actions .cta");
+  await page.waitForTimeout(600);
+  await page.click(".pr-leave");
+  await page.waitForTimeout(700);
+  {
+    const after = await page.evaluate((b) => ({ same: JSON.stringify(K.S) === b, scene: !!document.querySelector("#choices .choice"), slow: document.body.classList.contains("pr-slow"), page: !!document.querySelector(".pr-page") }), lifeBefore);
+    report.push({ browser: browser._name, device: label, screen: "practice leaves the life as it was", problems: [testBack ? null : "the test did not return to the practice ground", after.same ? null : "the life changed after practice",
+      after.scene && !after.page ? null : "the scene did not come back", after.slow ? "the game clock stayed slowed" : null].filter(Boolean) });
+  }
 
   // The act card and the title card: shown, gone by themselves, and gone at a tap.
   await fresh(page, url, o, { beats: true });

@@ -46,6 +46,7 @@ function walkContent(K, add) {
   walk(K.BATTLE_EVENTS, "battle-events");
   walk(K.NOTICE_THINGS, "notice");
   walk(K.ENDINGS, "endings");
+  walk(K.PRACTICE, "practice");
   for (const [label] of K.karmaOf({ kept: true, broke: true, karna: true, teller: true, alive: false })) add(label, "rebirth");
   add(K.karmaOf({ alive: true })[0][0], "rebirth");
   for (const [term, def] of Object.entries(K.GLOSSARY)) { add(term, "glossary"); add(def, "glossary"); }
@@ -61,7 +62,7 @@ function walkContent(K, add) {
 
 // (2) Literals in interface and engine code that are passed to the translator.
 function walkCode(add) {
-  const files = ["js/engine/core.js", "js/engine/flow.js", "js/engine/combat.js", "js/engine/abilities.js", "js/ui/dom.js", "js/ui/ledger.js", "js/ui/scene.js", "js/ui/battle.js", "js/ui/screens.js", "js/ui/modals.js", "js/ui/games.js", "js/ui/lives.js", "js/ui/trials.js", "js/ui/play.js", "js/ui/boards.js", "js/ui/stage.js", "js/ui/puppet.js", "js/ui/map.js", "js/content/act7.js"];
+  const files = ["js/engine/core.js", "js/engine/flow.js", "js/engine/combat.js", "js/engine/abilities.js", "js/ui/dom.js", "js/ui/ledger.js", "js/ui/scene.js", "js/ui/battle.js", "js/ui/screens.js", "js/ui/modals.js", "js/ui/games.js", "js/ui/lives.js", "js/ui/trials.js", "js/ui/play.js", "js/ui/boards.js", "js/ui/stage.js", "js/ui/puppet.js", "js/ui/map.js", "js/ui/practice.js", "js/content/act7.js"];
   for (const f of files) {
     const src = fs.readFileSync(path.join(GAME, f), "utf8");
     // Literals inside K.tr(...) / U.tr(...) / K.text(...), and the screens' fixed tables.

@@ -18,7 +18,7 @@
   U.games = {};
 
   // ---------- Pasha at the fair: three long dice each, best of three rounds ----------
-  U.games.pasha = function (box, done) {
+  U.games.pasha = function (box, done, c) {
     const G = { round: 1, me: 0, them: 0, phase: "ready", mine: null, theirs: null, rolled: false, note: null };
     // In a scene, the game is played on the painted gaming cloth, full-screen, like the tests.
     const deep = !!(U.inScene && !K.headless);
@@ -26,7 +26,7 @@
     box.appendChild(wrap);
     const host = deep ? wrap.querySelector(".trial-body") : wrap;
     if (deep) { document.body.classList.add("intest"); U.setBackdrop("stage_dice_board_top"); }
-    const OPP = "Haridatta";
+    const OPP = (c && c.trial && c.trial.opponent) || "Haridatta"; // another opponent at the practice ground
     function draw() {
       const opp = K.tr(OPP);
       let html = '<p class="game-rules">' + U.tr("Three long dice each, marked one, two, five and six. The higher total takes the round; two rounds win the game. Once a round you may throw one of your dice again.") + "</p>" +
@@ -104,9 +104,11 @@
     if (deep) document.body.classList.add("intest");
     const host = wrap.querySelector(".trial-body");
     U.castStance(wrap, "think", "stand");
-    const call = (t) => K.tr("Shakuni calls {n}, and the dice show {n}.", { n: sum(t) });
+    // At the practice ground someone else throws (trial.thrower); in the dice hall it is Shakuni.
+    const who = c && c.trial && c.trial.thrower;
+    const call = (t) => (who ? K.tr("{who} calls {n}, and the dice show {n}.", { n: sum(t), who: K.tr(who) }) : K.tr("Shakuni calls {n}, and the dice show {n}.", { n: sum(t) }));
     function draw() {
-      let html = '<p class="game-rules">' + U.tr("Shakuni will throw five times. One throw is not honest. Watch his hands.") + "</p>";
+      let html = '<p class="game-rules">' + (who ? U.tr("{who} will throw five times. One throw is not honest. Watch the hands.", { who: K.tr(who) }) : U.tr("Shakuni will throw five times. One throw is not honest. Watch his hands.")) + "</p>";
       if (sharp) html += '<p class="game-note">' + U.tr("You remember the dice at the spring fair: a long die shows only one, two, five or six.") + "</p>";
       if (G.phase === "watch") {
         const t = throws[G.shown];
