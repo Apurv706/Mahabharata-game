@@ -62,9 +62,9 @@
 
   // Called as each scene is drawn. Returns [from, to] when this scene moved you.
   K.travel = function (sc, S = K.S) {
-    // Canon scenes before the war tell what happens to the princes, wherever you are; only the
-    // war gathers everyone in one place.
-    if (sc.canon && sc.act < 6 && !sc.to) return null;
+    // A scene whose place names a town moves you there; the story puts you in every scene it shows.
+    // A scene told as news (`away: true`) keeps you where you are.
+    if (sc.away) return null;
     const loc = K.val(sc.to, S) || K.locOf(K.val(sc.place), S);
     if (!loc) return null;
     S.road = S.road || [];

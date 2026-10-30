@@ -2,10 +2,27 @@
 (function (K) {
   "use strict";
   const COURTISH = ["hastinapura", "anga", "gandhara", "matsya"];
+  // The armoury: each thing laid out says whether it suits you (your best attribute), or what it is for.
+  const SUITS = { archer: "Your aim suits the bow.", mace: "Your might suits the mace.", charioteer: "Your grace suits the reins.", strategist: "Your command suits the scribe's tablet.",
+    healer: "Your wisdom suits the healer's satchel.", spy: "Your grace suits the dark cloak.", bard: "Your wisdom suits the vina." };
+  const suits = (id, S) => { const st = K.PATHS[id].stat, top = Math.max(...Object.keys(K.ATTRS).map((a) => K.attr(a, S))); return K.attr(st, S) >= top; };
   const pathChoice = (id, t, extra = {}) => ({
     id, t, img: "path_" + id, fx: Object.assign({ set: { path: id }, skill: { [K.PATHS[id].skill]: 2 }, journal: "You chose the path of the {path!}." }, extra),
-    hint: K.PATHS[id].desc
+    hint: (S) => (suits(id, S) ? SUITS[id] : K.PATHS[id].desc)
   });
+  // Drona takes the court's children; anyone else must first make a shot almost no one makes.
+  const COURT_CHILD = { any: [{ origin: "hastinapura" }, { rep: ["kuru", 5] }] };
+  const DRONA_TAKES = { set: { teacher: "drona" }, duty: { teacher: 5 }, skill: { archery: 2 }, flag: ["drona_student", "drona_audition"], rep: { kuru: 2 } };
+  const audition = (low) => ({ id: low ? "drona_ask_low" : "drona_ask", img: "teacher_drona", t: "Ask Drona to take you, though your family is not of the court",
+    req: low ? { origin: ["suta", "nishada"], noFlag: "drona_refused" } : { not: { any: [COURT_CHILD, { origin: ["suta", "nishada"] }] }, noFlag: "drona_refused" },
+    game: "aim", hint: low ? "He turned Ekalavya away. He will set you a shot no one makes" : "He will set you one shot, at a bird no one can hit",
+    trial: { attr: "aim", skill: "archery", icon: "bird", small: true, easy: low ? -0.06 : -0.04, speed: low ? 2.4 : 2.1, shots: 3, need: low ? 3 : 2, verb: "Release",
+      stage: "stage_training_ground", cast: ["drona", "arjuna"],
+      rules: low ? "Drona points to a wooden bird on the highest branch, far across the field. Three arrows, and every one must hit. He does not expect you to." : "Drona points to a wooden bird on the highest branch, far across the field. Three arrows. Hit it twice, and he will think about it.",
+      stakes: ["Drona takes you, grudgingly, and the whole court hears of it.", "Drona turns away. You will have to choose another teacher."] },
+    win: { fx: Object.assign({}, DRONA_TAKES, { journal: "You passed Drona's test at the gate, though your family was not of the court, and he took you as a student." }),
+      text: "The last arrow takes the bird off its branch. Drona looks at you for a long moment. \"Tomorrow, before dawn,\" he says. The princes stare." },
+    lose: { fx: { flag: "drona_refused" }, text: "Your arrows fall short and wide. Drona has already turned away. \"Find another teacher,\" he says, not unkindly.", next: "a2_teacher" } });
 
   K.scenes([
     {
@@ -18,7 +35,8 @@
         "A teacher shapes your skills, and you will owe them for the rest of your life."
       ],
       choices: [
-        { id: "drona", img: "teacher_drona", t: "Ask Drona to take you as a student", req: { not: { origin: ["suta", "nishada"] } }, locked: "Drona refuses you. He teaches only those born to the royal and priestly orders.",
+        audition(false), audition(true),
+        { id: "drona", img: "teacher_drona", t: "Ask Drona to take you as a student", req: COURT_CHILD, locked: "",
           fx: { set: { teacher: "drona" }, duty: { teacher: 5 }, skill: { archery: 2 }, rep: { kuru: 1 }, flag: "drona_student", journal: "Drona accepted you as a student." }, hint: "His fee may one day set you against your friends" },
         { id: "kripa", img: "teacher_kripa", t: "Train with Kripa, preceptor of the Kuru house", req: { any: [{ origin: COURTISH }, { rep: ["kuru", 5] }] }, locked: "Kripa teaches those tied to the Kuru court.",
           fx: { set: { teacher: "kripa" }, duty: { teacher: 3, court: 2 }, skill: { mace: 1, archery: 1 }, journal: "Kripa took you into his school." }, hint: "His price is loyalty to the Kuru throne" },
@@ -42,11 +60,11 @@
       next: "a2_path"
     },
     {
-      id: "a2_path", act: 2, age: 15, place: (S) => (S.teacher === "hermit" ? "Mauni's clearing" : S.teacher === "self" ? "A clearing at night" : "Your teacher's school"), art: "scene_path", plate: ["#3e8c72", "#d4a84b"], caption: "Your first year of training",
-      title: "Your path",
+      id: "a2_path", act: 2, age: 15, place: (S) => (S.teacher === "hermit" ? "Mauni's clearing" : S.teacher === "self" ? "A clearing at night" : "Your teacher's school"), art: "scene_path", plate: ["#3e8c72", "#d4a84b"], caption: "The armoury",
+      title: "Choose, then prove it",
       body: (S) => [
-        (S.teacher === "self" ? "After a year, you know what you are good at. The path you choose now decides how you fight, and how you are useful when you are not fighting." : "After a year, {teacher} knows what you are good at. The path you choose now decides how you fight, and how you are useful when you are not fighting."),
-        "Every path is open to you, wherever you were born. Some doors will still be harder to open than others."
+        (S.teacher === "self" ? "After a year alone, you lay out everything you have gathered on a mat: a bamboo bow, a mace, a set of chariot reins, a scribe's tablet, a healer's satchel, a dark cloak, a vina." : "After a year, {teacher} lays out everything the school has on a mat: a bamboo bow, a mace, a set of chariot reins, a scribe's tablet, a healer's satchel, a dark cloak, a vina. \"Pick one,\" {teacher} says. \"Then show me it was the right one.\""),
+        "What you choose decides how you fight, how you are useful when you are not fighting, and, one day, which blessings can find you. Fail its test twice and you will have to choose again."
       ],
       choices: [
         pathChoice("archer", "The bow, like Arjuna and Karna"),
@@ -57,10 +75,10 @@
         pathChoice("spy", "Listening and carrying secrets", { attr: { grace: 1 } }),
         pathChoice("bard", "The songs and stories of the sutas", { attr: { wisdom: 1 } })
       ],
-      next: "a2_trial"
+      next: "a2_pathtest"
     },
     {
-      id: "a2_ekalavya", act: 2, age: 16, canon: true, place: "The forest near Hastinapura", art: "scene_ekalavya", plate: ["#3e8c72", "#16131f"], caption: "A clay image in a forest clearing",
+      id: "a2_ekalavya", act: 2, age: 16, canon: true, place: "The forest near Hastinapura", travel: "Drona takes his students hunting in the forest near Hastinapura.", art: "scene_ekalavya", plate: ["#3e8c72", "#16131f"], caption: "A clay image in a forest clearing",
       title: "Ekalavya's fee",
       witness: [
         "On a hunt, the princes' dog barks at a dark-skinned boy in the forest. Seven arrows close its mouth without drawing blood. The boy is Ekalavya, a Nishada prince. Drona once refused to teach him, so he made a clay image of Drona and practised in front of it.",
@@ -117,7 +135,7 @@
       next: "a2_drupada"
     },
     {
-      id: "a2_drupada", act: 2, age: 18, canon: true, place: "The road to Panchala", art: "scene_drupada", plate: ["#c0472f", "#5c3361"], caption: "The road to Drupada's capital",
+      id: "a2_drupada", act: 2, age: 18, canon: true, place: "The road to Panchala", travel: "Drona marches his students east to Panchala to collect his fee.", art: "scene_drupada", plate: ["#c0472f", "#5c3361"], caption: "The road to Drupada's capital",
       title: "Drona's fee",
       witness: [
         "Their training is done, and Drona asks his students for his fee: bring him King Drupada of Panchala, the friend who once humiliated him, as a prisoner.",

@@ -387,11 +387,16 @@
   // mode "close": the wheel keeps drifting toward a straight way in; keep at least one ring off it.
   U.games.rings = function (box, done, c) {
     return U.trialFrame(box, done, c, "rings", ({ host, power, t, finish, cue }) => {
-      const N = 12, R = [128, 100, 72, 44], mode = t.mode || "open", LIMIT = t.secs || (mode === "open" ? 50 : 32);
-      const driftEvery = clamp((mode === "open" ? 6.5 : 2.3) + power * (mode === "open" ? 0.25 : 0.08), mode === "open" ? 6 : 2.1, mode === "open" ? 9 : 3);
+      const N = 12, R = [128, 100, 72, 44], mode = t.mode || "open", LIMIT = t.secs || (mode === "open" ? 50 : mode === "last" ? 120 : 32);
+      // "last": the rings start in line and are pushed out of line ever faster. It cannot be won;
+      // it counts how long you hold (in heartbeats).
+      let lastEvery = clamp(2.2 + power * 0.06, 2.2, 2.8);
+      const inLine = () => Math.max(...gaps.map((g) => gaps.filter((h) => h === g).length));
+      let driftEvery = clamp((mode === "open" ? 6.5 : 2.3) + power * (mode === "open" ? 0.25 : 0.08), mode === "open" ? 6 : 2.1, mode === "open" ? 9 : 3);
       const mod = (n) => ((n % N) + N) % N;
       let gaps, sel = 0, moves = 0, last = 0, drift = 0, over = false;
       if (mode === "open") { gaps = [0, 0, 0, 0].map(() => Math.floor(K.rng() * N)); if (gaps.every((g) => g === gaps[0])) gaps[2] = mod(gaps[2] + 4); }
+      else if (mode === "last") { const g = Math.floor(K.rng() * N); gaps = [g, g, g, g]; driftEvery = lastEvery; }
       else { const g = Math.floor(K.rng() * N); gaps = [g, g, mod(g + 2), mod(g - 2)]; }
       const theme = t.theme || "wheel";
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="ringfield ' + theme + '"><svg viewBox="-150 -150 300 300" role="img" aria-label="' + U.esc(K.tr(theme === "maze" ? "The rings of the forest" : "The rings of the wheel")) + '"></svg></div>' +
@@ -416,7 +421,8 @@
         svg.innerHTML = s;
         svg.querySelectorAll(".hitring").forEach((el) => el.addEventListener("pointerdown", (e) => { e.preventDefault(); pick(+el.dataset.i); }));
       }
-      const tally = (s) => { score.textContent = K.tr(mode === "open" ? t.tally || "Rings in line: {a} of 4 · Turns: {m} · {s} seconds" : t.tally || "Rings in line: {a} of 4 · Hold for {s} more seconds", { a: gaps.filter((g) => g === gaps[0]).length, m: moves, s: Math.max(0, Math.ceil(LIMIT - s)) }); };
+      const beats = (s) => Math.round((s || 0) * 1.2);
+      const tally = (s) => { if (mode === "last") { score.textContent = K.tr("Rings in line: {a} of 4 · Held for {n} heartbeats", { a: inLine(), n: beats(s) }); return; } score.textContent = K.tr(mode === "open" ? t.tally || "Rings in line: {a} of 4 · Turns: {m} · {s} seconds" : t.tally || "Rings in line: {a} of 4 · Hold for {s} more seconds", { a: gaps.filter((g) => g === gaps[0]).length, m: moves, s: Math.max(0, Math.ceil(LIMIT - s)) }); };
       const pick = (i) => { sel = clamp(i, 0, 3); draw(); };
       const turn = (d) => {
         if (over) return;
@@ -426,6 +432,7 @@
         draw(); check();
       };
       function check(s) {
+        if (mode === "last") return;
         if (mode === "open" && aligned()) { over = true; cue("good"); sfx("gong"); finish("win", ["The way to the centre opened after {m} turns.", { m: moves }]); }
         if (mode === "close" && aligned()) { over = true; cue("bad"); const frac = (s || 0) / LIMIT; finish(frac >= 0.7 ? "close" : "lose", ["The wheel opened after {s} seconds.", { s: Math.round(s || 0) }]); }
       }
@@ -442,6 +449,14 @@
         drift += dt;
         if (drift >= driftEvery) {
           drift = 0;
+          if (mode === "last") {
+            const i = Math.floor(K.rng() * 4); gaps[i] = mod(gaps[i] + (K.rng() < 0.5 ? 1 : -1));
+            driftEvery = Math.max(0.3, driftEvery * 0.86);
+            note.textContent = K.tr(t.push || "They push, and a ring gives.");
+            sfx("drum"); draw();
+            if (inLine() < 2) { over = true; cue("bad"); K.S.heldRing = beats(s); finish("lose", ["You held the ring open for {n} heartbeats.", { n: beats(s) }]); }
+            tally(s); return;
+          }
           if (mode === "open") { const i = Math.floor(K.rng() * 4); gaps[i] = mod(gaps[i] + (K.rng() < 0.5 ? 1 : -1)); note.textContent = K.tr(t.turns || "The wheel turns."); }
           else {
             // The attackers lean on the ring that is furthest out of line.
@@ -451,7 +466,111 @@
           sfx("drum"); draw(); check(s);
         }
         tally(s);
+        if (!over && s >= LIMIT && mode === "last") { over = true; K.S.heldRing = beats(s); finish("close", ["You held the ring open for {n} heartbeats.", { n: beats(s) }]); return; }
         if (!over && s >= LIMIT) { over = true; if (mode === "open") finish(gaps.filter((g) => g === gaps[0]).length >= 3 ? "close" : "lose", "Time ran out before the way opened."); else { cue("good"); finish("win", "The wheel held."); } }
+      }, host);
+      return () => { stop(); off(); };
+    });
+  };
+
+  // ---------- Formation: set your company in the array the commander names ----------
+  // The commander shows the array once (crane, eagle, crescent). Then the company comes onto the
+  // field unit by unit, and each must go on its mark before the drum stops. Then the enemy tests a
+  // flank, and you send the reserve to it. The field is the painting seen from above.
+  const UNIT_ART = {
+    archers: '<path d="M-7 -9 Q5 0 -7 9" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M-7 -9 L-7 9 M-9 0 H9 M5 -3 L9 0 L5 3" fill="none" stroke="currentColor" stroke-width="1.6"/>',
+    chariots: '<circle r="8" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M0 -8 V8 M-8 0 H8 M-5.6 -5.6 L5.6 5.6 M-5.6 5.6 L5.6 -5.6" stroke="currentColor" stroke-width="1.4"/>',
+    spearmen: '<path d="M0 10 V-6" stroke="currentColor" stroke-width="2.2"/><path d="M0 -11 L3.5 -4 H-3.5 Z" fill="currentColor"/><path d="M-6 6 H6" stroke="currentColor" stroke-width="1.6"/>',
+    elephants: '<path d="M-9 5 Q-10 -7 0 -8 Q9 -8 9 1 L9 9 M5 2 Q4 9 7 10 M-5 5 V10 M2 5 V10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="4" cy="-3" r="1.2" fill="currentColor"/>'
+  };
+  const UNIT_NAME = { archers: "Archers", chariots: "Chariots", spearmen: "Spearmen", elephants: "Elephants" };
+  // Each array: its name, and six marks [x, y, unit] (the enemy is at the top).
+  const ARRAYS = {
+    crane: ["The crane", [[0, -72, "chariots"], [0, -36, "chariots"], [-64, -12, "archers"], [64, -12, "archers"], [0, 12, "spearmen"], [0, 60, "elephants"]]],
+    eagle: ["The eagle", [[0, -70, "elephants"], [-40, -30, "chariots"], [40, -30, "chariots"], [-76, 12, "archers"], [76, 12, "archers"], [0, 34, "spearmen"]]],
+    crescent: ["The crescent", [[-78, -52, "archers"], [-46, -8, "chariots"], [0, 12, "elephants"], [46, -8, "chariots"], [78, -52, "archers"], [0, 62, "spearmen"]]]
+  };
+  U.games.formation = function (box, done, c) {
+    return U.trialFrame(box, done, c, "formation", ({ host, power, t, finish, cue }) => {
+      const key = t.array || K.pick(Object.keys(ARRAYS)), [aname, marks] = ARRAYS[key];
+      const look = clamp(2.6 + power * 0.25, 2.6, 5), per = clamp(2.6 + power * 0.15, 2.6, 4.2), react = clamp(1.3 + power * 0.08, 1.3, 2);
+      const order = marks.map((m) => m[2]).sort(() => K.rng() - 0.5);
+      const filled = marks.map(() => null);
+      let phase = "look", unit = 0, wrong = 0, probe = 0, probesHit = 0, t0 = 0, flank = null, over = false;
+      host.innerHTML = '<p class="score" aria-live="polite"></p><div class="formfield"><svg viewBox="-100 -100 200 200" role="img" aria-label="' + U.esc(K.tr("The field, seen from above")) + '"></svg></div>' +
+        '<div class="timer"><i></i></div><p class="game-note" aria-live="polite"></p><div class="btnrow form-btns"></div>';
+      const svg = host.querySelector("svg"), score = host.querySelector(".score"), note = host.querySelector(".game-note"), bar = host.querySelector(".timer i"), row = host.querySelector(".btnrow");
+      const icon = (u, x, y, cls) => '<g class="unit ' + u + (cls ? " " + cls : "") + '" transform="translate(' + x + " " + y + ')">' + UNIT_ART[u] + "</g>";
+      function draw() {
+        let s = '<path class="enemy-line" d="M-90 -92 H90"/>';
+        if (flank) s += '<g transform="translate(' + flank.x + ' -60)"><g class="probe ' + flank.state + '"><path d="M-10 -20 L0 0 L10 -20 M-10 -32 L0 -12 L10 -32"/></g></g>';
+        marks.forEach(([x, y, u], i) => {
+          const f = filled[i];
+          s += '<g class="mark' + (f ? " full" : "") + (f && f.bad ? " bad" : "") + '" data-i="' + i + '"><circle cx="' + x + '" cy="' + y + '" r="15"/><text x="' + (x + 12) + '" y="' + (y - 11) + '">' + (i + 1) + "</text></g>";
+          if (phase === "look") s += icon(u, x, y, "shown");
+          else if (f) s += icon(f.u, x, y, f.bad ? "bad" : "placed");
+        });
+        svg.innerHTML = s;
+        svg.querySelectorAll(".mark").forEach((el) => el.addEventListener("pointerdown", (e) => { e.preventDefault(); place(+el.dataset.i); }));
+      }
+      const tally = () => { score.textContent = phase === "reserve" ? K.tr("The reserve · Flanks held: {h} of {n}", { h: probesHit, n: 2 }) : K.tr("{array} · Placed: {p} of {n} · Mistakes: {w}", { array: K.tr(aname), p: unit, n: marks.length, w: wrong }); };
+      const say = (txt, vars) => { note.textContent = K.tr(txt, vars); };
+      function nextUnit() {
+        if (unit >= order.length) return startReserve();
+        t0 = U.clock();
+        say("Next: {unit}. Put them on their mark.", { unit: K.tr(UNIT_NAME[order[unit]]) });
+        tally(); draw();
+      }
+      function settle(i, bad) {
+        const u = order[unit];
+        // A wrong mark or a slow hand: the unit goes where it belongs, but the commander saw it.
+        const right = bad ? marks.findIndex((m, k) => m[2] === u && !filled[k]) : i;
+        filled[right] = { u, bad };
+        if (bad) { wrong++; cue("bad"); sfx("hit"); } else { cue("good"); sfx("tap"); }
+        unit++;
+        nextUnit();
+      }
+      function place(i) {
+        if (phase !== "place" || over || filled[i]) return;
+        settle(i, marks[i][2] !== order[unit]);
+      }
+      function startReserve() {
+        phase = "reserve"; probe = 0; flank = null; tally(); draw();
+        say("Now the enemy tests a flank. Send the reserve where they strike.");
+        ["Left", "Centre", "Right"].forEach((lbl, k) => row.appendChild(U.pressButton(lbl, () => send(k))));
+        setTimeout(startProbe, 1200);
+      }
+      function startProbe() {
+        if (over) return;
+        const k = Math.floor(K.rng() * 3);
+        flank = { k, x: [-62, 0, 62][k], state: "coming" }; t0 = U.clock(); draw();
+        say("They are coming!");
+      }
+      function send(k) {
+        if (phase !== "reserve" || !flank || flank.state !== "coming" || over) return;
+        endProbe(k === flank.k);
+      }
+      function endProbe(ok) {
+        flank.state = ok ? "held" : "broke";
+        if (ok) { probesHit++; cue("good"); sfx("choose"); say("The reserve meets them, and the line holds."); } else { cue("bad"); sfx("hit"); say("The reserve goes the wrong way. The line bends."); }
+        probe++; tally(); draw();
+        if (probe >= 2) return end();
+        setTimeout(startProbe, 1300);
+      }
+      function end() {
+        over = true;
+        const out = wrong <= 1 && probesHit >= 1 ? "win" : wrong <= 2 && probesHit >= 1 || wrong <= 1 ? "close" : "lose";
+        setTimeout(() => finish(out, ["Mistakes in the array: {w}. Flanks held: {h} of 2.", { w: wrong, h: probesHit }]), 700);
+      }
+      const off = keyset({ 1: () => place(0), 2: () => place(1), 3: () => place(2), 4: () => place(3), 5: () => place(4), 6: () => place(5), ArrowLeft: () => send(0), ArrowDown: () => send(1), ArrowUp: () => send(1), ArrowRight: () => send(2) });
+      say(t.shows || "\"{array}. Look well; I will not show you twice.\"", { array: K.tr(aname) });
+      tally(); draw(); t0 = U.clock();
+      const stop = U.loop(() => {
+        if (over) return;
+        const el = (U.clock() - t0) / 1000;
+        if (phase === "look") { bar.style.width = Math.max(0, 1 - el / look) * 100 + "%"; if (el >= look) { phase = "place"; nextUnit(); } }
+        else if (phase === "place") { bar.style.width = Math.max(0, 1 - el / per) * 100 + "%"; if (el >= per) { say("Too slow."); settle(-1, true); } }
+        else if (flank && flank.state === "coming") { bar.style.width = Math.max(0, 1 - el / react) * 100 + "%"; if (el >= react) endProbe(false); }
       }, host);
       return () => { stop(); off(); };
     });

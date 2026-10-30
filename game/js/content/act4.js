@@ -5,7 +5,7 @@
   "use strict";
   K.scenes([
     {
-      id: "a4_invite", act: 4, age: 30, canon: true, art: "scene_dice_hall", place: "Hastinapura", caption: "The new assembly hall",
+      id: "a4_invite", act: 4, age: 30, canon: true, art: "scene_dice_hall", place: "Hastinapura", travel: "Duryodhana's new hall is opening in Hastinapura, and everyone is summoned.", caption: "The new assembly hall",
       title: "An invitation to dice",
       witness: [
         "Dhritarashtra builds a new assembly hall and invites Yudhishthira to a friendly game of dice. Vidura carries the invitation, and his face says what his words cannot.",

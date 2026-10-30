@@ -58,7 +58,7 @@
     },
     {
       id: "a5_jayadratha", when: forest, skipTo: "a5_court_raid",
-      act: 5, age: 35, canon: true, place: "The Kamyaka forest", art: "scene_jayadratha", plate: ["#3e8c72", "#c0472f"], caption: "An empty hermitage",
+      act: 5, age: 35, canon: true, place: "The Kamyaka forest", travel: "The Pandavas' camp moves to the Kamyaka forest, and you move with it.", art: "scene_jayadratha", plate: ["#3e8c72", "#c0472f"], caption: "An empty hermitage",
       title: "Jayadratha",
       witness: ["While the Pandavas are out hunting, King Jayadratha of Sindhu, Duryodhana's brother-in-law, finds Draupadi alone at the hermitage and carries her off in his chariot."],
       body: ["You are the first to hear her shout. Jayadratha's guards are covering his escape."],
@@ -72,7 +72,7 @@
     },
     {
       id: "a5_yaksha", when: forest, skipTo: "a5_court_raid",
-      act: 5, age: 42, canon: true, place: "A lake in the forest", art: "scene_lake", plate: ["#6f8fd8", "#16131f"], caption: "A still lake in the heat",
+      act: 5, age: 42, canon: true, place: "A lake in the forest", to: "dvaita", travel: "The camp moves on to the Dvaita forest. The dry season comes.", art: "scene_lake", plate: ["#6f8fd8", "#16131f"], caption: "A still lake in the heat",
       title: "The lake of questions",
       witness: [
         "In the twelfth year, the brothers grow desperate with thirst. One by one, Nakula, Sahadeva, Arjuna and Bhima go to a lake, ignore a voice that tells them to answer its questions first, drink, and fall down as if dead.",
@@ -88,7 +88,7 @@
     },
     {
       id: "a5_yaksha_again", when: K.retryWhen("a5_yaksha", ["answer"]), skipTo: "a5_charu",
-      act: 5, age: 42, place: "A lake in the forest", art: "stage_forest_lake", caption: "The voice waits",
+      act: 5, age: 42, place: "A lake in the forest", to: "dvaita", art: "stage_forest_lake", caption: "The voice waits",
       title: "The voice waits", body: ["The voice in the water is still waiting. So is your thirst. You will not be asked a third time."],
       choices: [
         Object.assign(K.retryChoice("a5_yaksha", "answer", K.YAKSHA), { trial: Object.assign({}, K.YAKSHA.trial, { stakes: K.YAKSHA.retryStakes, rounds: K.YAKSHA_AGAIN }) }),
@@ -100,7 +100,7 @@
     // ---------- The court road ----------
     {
       id: "a5_court_raid", when: court, skipTo: "a5_own_life",
-      act: 5, age: 33, canon: true, place: "The edge of the Dvaita forest", art: "scene_cattle", plate: ["#d4a84b", "#3e8c72"], caption: "Royal tents near the forest",
+      act: 5, age: 33, canon: true, place: "The edge of the Dvaita forest", travel: "Duryodhana rides out to the Dvaita forest to count his cattle, and to gloat. The court goes with him.", art: "scene_cattle", plate: ["#d4a84b", "#3e8c72"], caption: "Royal tents near the forest",
       title: "The cattle count",
       witness: ["Duryodhana takes his court to the forest, saying it is to count the royal herds. Everyone knows it is to show off in front of the exiled Pandavas. A band of Gandharvas, forest warriors who serve no king, ambushes the royal camp. Karna's line breaks."],
       body: ["Duryodhana is being dragged off in chains."],
@@ -114,7 +114,7 @@
     },
     {
       id: "a5_court_armour", when: court, skipTo: "a5_own_life",
-      act: 5, age: 38, canon: true, place: "The river at dawn", art: "scene_armour", plate: ["#e5872e", "#6f8fd8"], caption: "Karna at his morning prayers",
+      act: 5, age: 38, canon: true, place: "The river at dawn", to: "hastinapura", art: "scene_armour", plate: ["#e5872e", "#6f8fd8"], caption: "Karna at his morning prayers",
       title: "Karna's armour",
       witness: ["Karna was born with armour and earrings that make him almost impossible to kill. Every morning after his prayers to the sun, he gives anyone whatever they ask. One morning an old brahmin asks for the armour. Everyone says it is Indra, Arjuna's father, in disguise."],
       body: (S) => [S.bonds.karna >= 6 ? { memory: "You have known Karna for most of your life. You know he already knows." } : "You are at the river with the morning crowd."],
@@ -186,7 +186,7 @@
 
     // ---------- Everyone: the incognito year ----------
     {
-      id: "a5_matsya", act: 5, age: 43, canon: true, art: "scene_virata", place: "King Virata's court, Matsya", caption: "The lake country of Matsya",
+      id: "a5_matsya", act: 5, age: 43, canon: true, art: "scene_virata", place: "King Virata's court, Matsya", travel: "In the thirteenth year, the road leads to King Virata's court in Matsya.", caption: "The lake country of Matsya",
       title: "The hidden year",
       witness: [
         "For the thirteenth year the Pandavas must live unrecognised. They take service at King Virata's court: Yudhishthira as a dice master, Bhima as a cook, Arjuna as Brihannala, a teacher of dance, Draupadi as a queen's maid.",
@@ -220,7 +220,7 @@
     },
     {
       id: "a5_karna_secret", when: { any: [{ flag: "left_arena" }, { bond: ["karna", 7] }] }, skipTo: "a5_side",
-      act: 5, age: 44, canon: true, place: "The river at dusk", art: "scene_birth", plate: ["#e5872e", "#16131f"], caption: "The river where a basket once floated",
+      act: 5, age: 44, canon: true, place: "The river at dusk", to: "hastinapura", art: "scene_birth", plate: ["#e5872e", "#16131f"], caption: "The river where a basket once floated",
       title: "The secret of Karna's birth",
       witness: [
         "Krishna meets Karna before the war and tells him the truth: he is Kunti's firstborn son, born before her marriage, set adrift on the river. He is the eldest Pandava. If he changes sides, he will be king.",
@@ -239,7 +239,7 @@
       next: "a5_side"
     },
     {
-      id: "a5_side", act: 5, age: 44, canon: true, art: "scene_envoy", place: "Hastinapura", caption: "Thirteen years, gone",
+      id: "a5_side", act: 5, age: 44, canon: true, art: "scene_envoy", place: "Hastinapura", travel: "Krishna comes to Hastinapura as the Pandavas' envoy, and the whole kingdom gathers to hear him.", caption: "Thirteen years, gone",
       title: "Not a needle's point",
       witness: [
         "The Pandavas ask for their kingdom back. When that is refused, they ask for five villages. Krishna goes to Hastinapura himself to plead for peace.",

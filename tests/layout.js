@@ -198,6 +198,10 @@ const PAGE = {
       const figs = [...document.querySelectorAll("#arena .actor")].map((e) => e.getBoundingClientRect());
       if (figs.some((b) => b.right > W + 24 || b.left < -24)) out.push("a figure stands off the edge of the screen");
       if (figs.some((b) => b.height < 60)) out.push("figures too small to see");
+      // On an upright screen the painting's ground meets the fighters' feet (dom.js U.groundFit).
+      const L = document.querySelector("#backdrop .bdl.on"), pic = L && L.querySelector(".pic"), key = L && L.dataset.key;
+      const gr = key && K.UI.upright() && K.UI.tallOf(key) ? K.UI.groundOf(key) : null, feet = K.UI.feetY();
+      if (gr && feet && pic) { const pr = pic.getBoundingClientRect(), gy = pr.top + gr * pr.height; if (Math.abs(gy - feet) > H * 0.06) out.push("figures float above the painting's ground (" + Math.round(feet) + " vs " + Math.round(gy) + ")"); }
       const head = leaf.querySelector(".pagehead");
       if (head && head.getBoundingClientRect().top < (o.sat || 0) - 1) out.push("fight name under the notch");
       return out;
@@ -354,7 +358,7 @@ const TESTS = [
   ["rings", { stage: "stage_chakravyuha_top", mode: "open" }], ["chaupar", { stage: "stage_board_table", cast: ["shakuni"], opponent: "Shakuni" }],
   ["baghchal", { stage: "stage_board_table", cast: ["shakuni"], opponent: "Shakuni" }], ["moksha", { stage: "stage_board_table", cast: ["boy"], opponent: "Vikarna" }],
   ["retort", { stage: "stage_lotus_garden", cast: ["duryodhana"], rounds: [{ line: "They say your family sweeps the stables.", replies: ["And yours sweeps the floor before the king.", "That is not true.", "Leave me alone."] }, { line: "Is that a bow or a broom?", replies: ["Come closer and find out.", "A bow.", "Go away."] }, { line: "Who taught you?", replies: ["Someone who could.", "Nobody.", "My mother."] }] }],
-  ["draw", { stage: "stage_bow_courtyard", cast: ["guard"] }], ["hands", { stage: "stage_dice_board_top", cast: ["shakuni"] }], ["pasha", null],
+  ["draw", { stage: "stage_bow_courtyard", cast: ["guard"] }], ["formation", { stage: "stage_chakravyuha_top", array: "eagle" }], ["hands", { stage: "stage_dice_board_top", cast: ["shakuni"] }], ["pasha", null],
 ];
 
 async function runDevice(browser, base, o, report) {
@@ -486,6 +490,10 @@ async function runDevice(browser, base, o, report) {
   await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 44, act: 6, side: "pandava" }); K.go("a6_capture"); K.UI.startBattle("e_guard", () => {}); }, LIFE);
   await page.waitForTimeout(900);
   await check("fight", ["battle"]);
+  // A fight on a borrowed test-stage painting (the sparring trial): the fighters stand on its ground.
+  await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 17, act: 2 }); K.go("a2_spar"); K.UI.startBattle("e_spar", () => {}); }, LIFE);
+  await page.waitForTimeout(900);
+  await check("fight: sparring", ["battle"]);
 
   // The act card and the title card: shown, gone by themselves, and gone at a tap.
   await fresh(page, url, o, { beats: true });
@@ -503,7 +511,7 @@ async function runDevice(browser, base, o, report) {
   if (!(await page.$("#choices .choice"))) probs.push("no choices after the cards");
   // An ordinary scene gets the short title, and fades by itself.
   await page.evaluate(() => K.prefs({ titles: "short", beats: false }));
-  await goScene(page, "a2_pathtest_again");
+  await goScene(page, "a2_path");
   await page.evaluate((life) => { K.prefs({ beats: true }); K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life); K.S.at = "hastinapura"; K.go("a2_trial"); }, LIFE);
   await page.waitForTimeout(350);
   if (!(await page.evaluate(() => !!document.querySelector(".beat-short")))) probs.push("short title missing with Scene titles: short");

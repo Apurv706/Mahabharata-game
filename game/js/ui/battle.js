@@ -83,7 +83,7 @@
     e_sudatta: "fight_grazing", e_cattle: "fight_grazing", e_cattle_k: "fight_grazing",
     e_day1: "fight_war_field", e_wheel: "fight_war_field", e_day16: "fight_war_field", e_day18: "fight_war_field",
     e_guard: "fight_war_chariot", e_hunt: "fight_war_chariot", e_road: "fight_war_sunset", e_jaya: "fight_war_sunset", e_gate: "fight_war_sunset",
-    e_night: "stage_battlefield_night", e_dushasana: "fight_war_camp", e_raid: "fight_camp_gate_night", e_ash: "fight_camp_gate_night"
+    e_night: "stage_battlefield_night", e_last_stand: "fight_war_field", e_ring: "fight_war_field", e_dushasana: "fight_war_camp", e_raid: "fight_camp_gate_night", e_ash: "fight_camp_gate_night"
   };
   U.FIGHT_BG = FIGHT_BG;
   function arenaHtml(B) {
@@ -108,8 +108,10 @@
 
   // Play what happened since the last draw: who moved, who was hit, who fell.
   function animate(B) {
-    if (!U.motion()) return;
     const acts = B.acts.slice(lastActs);
+    // A divine weapon: its own full-screen moment (ui/fx.js), which keeps to reduced motion itself.
+    acts.forEach((a) => { if (a.id === "astra" && B.astraOut && U.astraFx) { const o = B.astraOut; B.astraOut = null; U.astraFx({ kind: o.kind, clash: o.clash, from: actorEl(a.uid), to: actorEl(o.uid) }); } });
+    if (!U.motion()) return;
     const arena = U.$("arena");
     acts.forEach((a) => {
       const u = B.units.find((x) => x.uid === a.uid);
@@ -262,6 +264,8 @@
       leaf.innerHTML = U.plate({ art: K.val(enc.art), keepArt: deep, caption: K.val(enc.caption), tag: enc.lethal ? "war" : "yours", tagText: K.tr(enc.lethal ? "Battle · you can die here" : "A fight"), heading: K.val(enc.title), noFigure: true }) +
         arenaHtml(B) + '<div class="text battle" id="battle-body"></div>';
       lastActs = B.acts.length; // nothing to replay on a fresh draw
+      // Put the painting's ground under the fighters' feet, once they are laid out.
+      if (deep) requestAnimationFrame(() => U.fitBackdrop(true));
     }
     const body = U.$("battle-body");
     body.innerHTML = '<div class="sides"><div class="side"><span class="lbl">' + U.tr("Your side") + "</span>" + friends.map((u) => unitCard(u, B)).join("") +
@@ -314,7 +318,8 @@
     if (B.queue && B.queue.length) { runFoes(B, box); U.renderLedger(); return; }
 
     const acts = U.el('<div class="actions"></div>');
-    C.available().forEach((a, i) => {
+    const all = C.available(), idle = all.filter((a) => a.idle);
+    all.filter((a) => !a.idle).forEach((a, i) => {
       const special = !["strike", "guard", "herbs"].includes(a.id);
       const extra = a.count != null ? " (" + a.count + ")" : "";
       const b = U.button("act" + (special ? " special" : ""), "<b>" + (i + 1) + ". " + U.esc(a.name + extra) + "</b><small>" + U.esc(a.why || a.desc) + "</small>");
@@ -325,6 +330,8 @@
       acts.appendChild(b);
     });
     box.appendChild(acts);
+    // Moves that need allies, when you fight alone: named in one quiet line, not as dead buttons.
+    if (idle.length) box.appendChild(U.el('<p class="idle-moves">' + U.esc(U.tr("No allies here for: {moves}", { moves: idle.map((a) => a.name).join(", ") })) + "</p>"));
 
     const tools = U.el('<div class="battle-tools"></div>');
     C.fallen().forEach((u) => tools.appendChild(U.button("cta secondary", U.tr("Pull {name} out of the fighting", { name: K.text(u.src || u.name) }) + "<small>" + U.tr("Costs your turn") + "</small>", () => C.pull(u.uid))));

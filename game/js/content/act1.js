@@ -108,7 +108,7 @@
   };
   const UGRA_WIN = { fx: { rep: { common: 1 }, bond: { charu: 1 }, flag: ["beat_ugra", "balarama_noticed"], journal: "You beat Ugra in the ring at the spring fair. A giant of a man with a plough on his shoulder asked your name." },
     text: "Ugra hits the sand, and the crowd roars. He lets go of Charu and leaves the ring without a word. At the edge of the crowd a giant of a man with a plough on his shoulder asks your name." };
-  const ugraTrial = (retry) => ({ attr: "might", skill: "mace", foe: "Ugra", stage: "scene_fair", cast: ["ugra"], bpm: 84, verb: "Throw",
+  const ugraTrial = (retry) => ({ attr: "might", skill: "mace", foe: "Ugra", stage: "fight_fair_ring", cast: ["ugra"], bpm: 84, verb: "Throw",
     help: "Strike as each beat reaches the ring: every beat is Ugra shifting his weight.",
     tally: "Holds broken: {h} · Missed: {m} · {left} to go", clean: "He staggers!", okLine: "He gives ground.", soon: "Too soon. He reads you.", late: "Too late. He shoves you back.",
     rules: "Ugra fights the fair way: falls in the ring. He shifts his weight like a drummer keeping time. Catch him on the beat, again and again, and he goes down.",
@@ -243,7 +243,7 @@
       next: "s_child"
     },
     {
-      id: "a1_poison", act: 1, age: 12, canon: true, place: "Pramanakoti, on the Ganga", art: "scene_poison", plate: ["#3b5ba9", "#16131f"], caption: "Pavilions by the river",
+      id: "a1_poison", act: 1, age: 12, canon: true, place: "Pramanakoti, on the Ganga", travel: "The princes go down to Pramanakoti for the river games, and you go with them.", art: "scene_poison", plate: ["#3b5ba9", "#16131f"], caption: "Pavilions by the river",
       title: "The river at Pramanakoti",
       witness: [
         "Duryodhana holds a river festival at Pramanakoti. He feeds Bhima sweets laced with poison, and when Bhima falls asleep he has him tied with vines and rolled into the Ganga.",

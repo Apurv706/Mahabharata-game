@@ -113,7 +113,10 @@
     bhadra: () => ({ name: "Bhadra, an old soldier", hp: 48, atk: 7, def: 3, abilities: ["strike", "guard", "heavy"], person: "bhadra" }),
     spouse: (S) => (S.spouse && !S.dead.includes(S.spouse) ? K.UNITS[S.spouse](S) : null),
     ugra: () => ({ name: "Ugra, the miller's son", hp: 46, atk: 7, def: 2, abilities: ["strike", "heavy"], person: "ugra" }),
-    soldiers: () => ({ name: "Your soldiers", plural: true, hp: 50, atk: 6, def: 2, abilities: ["strike", "arrows"] })
+    soldiers: () => ({ name: "Your soldiers", plural: true, hp: 50, atk: 6, def: 2, abilities: ["strike", "arrows"] }),
+    abhimanyu: () => ({ name: "Abhimanyu", hp: 120, atk: 11, def: 3, abilities: ["strike", "arrows", "heavy"], person: "abhimanyu" }),
+    // A company of your own, for those who passed the commander's test on the eve of the war.
+    company: () => ({ name: "Your company", plural: true, hp: 72, atk: 8, def: 3, abilities: ["strike", "arrows", "guard"] })
   };
 
   // What you did earlier in life changes your chances later: each merit adds (or takes) one point on

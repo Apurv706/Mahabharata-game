@@ -43,7 +43,7 @@
       next: "a3_lac"
     },
     {
-      id: "a3_lac", act: 3, age: 23, canon: true, place: "Varnavata", to: "varnavata", travel: "You go to Varnavata for the spring festival.", art: "scene_lac", plate: ["#e5872e", "#2a1c1f"], caption: "A new house that smells of resin",
+      id: "a3_lac", act: 3, age: 23, canon: true, place: "Varnavata", to: "varnavata", travel: "You go to Varnavata for the spring festival.", art: "scene_lac", clipAfter: true, plate: ["#e5872e", "#2a1c1f"], caption: "A new house that smells of resin",
       title: "The house at Varnavata",
       witness: [
         "Duryodhana's minister Purochana builds a beautiful house at Varnavata for Kunti and her sons. It is made of lac, hemp and resin, and it is meant to burn.",
@@ -162,7 +162,7 @@
       next: "s_court"
     },
     {
-      id: "a3_rajasuya", act: 3, age: 29, canon: true, place: "Indraprastha", art: "scene_rajasuya", plate: ["#6f8fd8", "#d4a84b"], caption: "The hall that Maya built",
+      id: "a3_rajasuya", act: 3, age: 29, canon: true, place: "Indraprastha", travel: "All the kings of Bharata go to Indraprastha for Yudhishthira's great sacrifice, and you go too.", art: "scene_rajasuya", plate: ["#6f8fd8", "#d4a84b"], caption: "The hall that Maya built",
       title: "The Rajasuya",
       witness: [
         "Yudhishthira performs the Rajasuya sacrifice and is proclaimed emperor. When King Shishupala insults Krishna past all bearing, Krishna's discus ends his life, and the gathered kings fall silent.",

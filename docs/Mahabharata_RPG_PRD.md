@@ -522,7 +522,9 @@ The tholu bommalata puppets (drawn in code; no paintings needed) become fully an
 6. Divine weapons, shields, magic and tapas (31 pictures: 14 emblems, 6 test stages in tall and wide, 5 scenes; in `docs/Art_Brief_Weapons_Magic.pdf`).
 
 ### 18.11 Changes from the 29 October playtest
-Collected from play feedback and to be built together, with the next art batch (the working list is the project's `Change_List.md`). Numbers in brackets are the list's.
+Collected from play feedback. **Built 29 October** (all items below, D1 to F5; the owner asked to build them together, without waiting for the art batch). Numbers in brackets are the project's `Change_List.md`. Where the annex art (`docs/Art_Brief_Annex_Playtest.pdf`) has not arrived, the game uses existing paintings: the war field for the last stand, Drona's training ground for the audition, the wheel's top-down field for the formation test, the night battlefield for the chariot run, and the path painting for the armoury.
+
+As built, two details differ from the proposal: the armoury is the existing path choice reworked (seven things laid out, each saying whether it suits you; its test follows at once and a double failure sends you back to choose again), and divine gifts by weapon wait for §18.7, since the game still has one generic astra.
 
 **Decided**
 - **D1. Ugra's wrestling bout** [1] plays on the empty fair-ring painting (`fight_fair_ring`), not the fair scene that already shows two wrestlers.
@@ -531,7 +533,7 @@ Collected from play feedback and to be built together, with the next art batch (
 - **D4. Archery aim and placement** [4]. The player's puppet in the lower-left third facing right; the teacher at the left edge, smaller and further back; another student on the right, smaller; figures never overlap. The aim line starts at the bow hand and points diagonally at the target; the arrow flies along it in a slight arc, shrinking with distance; the bow arm and shoulders turn toward the target and follow moving targets.
 - **C1. Becoming a commander: "Set the formation"** [13]. On the eve of the war, strategist training or Command 4 only lets you *ask* for a company. The army's commander tests you: Dhrishtadyumna for the Pandavas, Bhishma for the Kauravas (Bhishma also refuses Karna a place while he commands). The test (Command + statecraft), on the top-down field painting already in the game (`stage_chakravyuha_top`, no new art): the commander names a formation (crane, eagle, crescent); archers, chariots, spearmen and elephants arrive one at a time and you place each on its mark before the drums stop; then the enemy probes one flank and you send the reserve to the right place. Second chance as usual; fail twice and the company goes to someone else and you fight in the front line, with a journal line (no peril; it is a drill). The role then matters (today the `role_command` flag is never read): commanders lead their company in every war battle (the Command move gets an ally), face the day-13 wheel as their company's leader, and are named in the telling and the ending.
 
-**Proposed (owner to confirm)**
+**Also built (proposed, then included in the build)**
 - **C2. Inside the Chakravyuha: a real last stand** [15]. Today "Stay beside Abhimanyu to the end" is a single choice that kills at once.
   - *The fight:* a holding fight beside Abhimanyu (an ally) against Drona and Karna, with Kripa, Ashwatthama and Duryodhana's sons as the ring. The epic's beats arrive round by round as field events: on Drona's word Karna cuts Abhimanyu's bow from behind; his charioteer and horses fall; his sword breaks; he fights on with a chariot wheel. Each round held spares Abhimanyu wounds and is counted.
   - *The divine weapon fails here, as in the epic:* an astra is answered by Drona's or Karna's counter-weapon in mid-air (C3). It buys a round, never the fight.

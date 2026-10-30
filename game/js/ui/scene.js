@@ -65,7 +65,7 @@
     const witness = K.val(sc.witness);
     const leaf = U.$("leaf");
     leaf.className = "leaf split";
-    leaf.innerHTML = U.plate({ art: artFor(sc), grad: sc.plate, caption: K.val(sc.caption), tag, tagText, heading: K.val(sc.title) }) +
+    leaf.innerHTML = U.plate({ art: artFor(sc), still: !!sc.clipAfter, grad: sc.plate, caption: K.val(sc.caption), tag, tagText, heading: K.val(sc.title) }) +
       '<div class="text"><div class="story" id="story" tabindex="0">' +
       (witness ? '<div class="witness"><div class="lbl">' + U.tr("As it is written") + "</div>" + U.blocks(witness) + "</div>" : "") +
       (S.loopThen && S.loopThen.scene === sc.id ? '<p class="aside loopnote">' + U.tr("You are back at the same choice. One way is closed to you now.") + "</p>" : "") +
@@ -155,7 +155,7 @@
   U.sceneBeats = function (sc, o, done) {
     const S = K.S;
     const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    U.setBackdrop(o.art !== undefined ? o.art : artFor(sc) || null);
+    U.setBackdrop(o.art !== undefined ? o.art : artFor(sc) || null, { still: !!sc.clipAfter });
     const leaf = U.$("leaf");
     leaf.className = "leaf"; leaf.innerHTML = "";
     document.body.classList.add("beating");
@@ -342,7 +342,9 @@
     const leaf = U.$("leaf");
     leaf.classList.remove("testing");
     if (U.stageFx) U.stageFx.stop();
-    U.setBackdrop(artFor(sc));
+    U.setBackdrop(artFor(sc), { still: !!sc.clipAfter });
+    // A clip that shows what happens after the choice (the fire) plays now.
+    if (sc.clipAfter && res.after) U.addClip();
     // What you chose and what came of it are written into the story; Continue waits below.
     const story = U.$("story"), box = U.$("choices");
     const pimg = K.val(c.img);

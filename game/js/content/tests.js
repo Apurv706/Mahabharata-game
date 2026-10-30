@@ -539,21 +539,21 @@
 
   K.scenes([].concat(
     K.trialScenes({
-      id: "a2_trial", next: "a2_pathtest", tests: TEACHER, back: { scene: "a2_teacher", then: "a2_trial" },
-      scene: { act: 2, age: 15, art: "scene_teacher", place: (S) => (S.teacher === "hermit" ? "Mauni's clearing" : S.teacher === "self" ? "A clearing at night" : "Your teacher's school"), caption: "The end of the first year",
+      id: "a2_trial", next: "a2_ekalavya", tests: TEACHER, back: { scene: "a2_teacher", then: "a2_trial" },
+      scene: { act: 2, age: 16, art: "scene_teacher", place: (S) => (S.teacher === "hermit" ? "Mauni's clearing" : S.teacher === "self" ? "A clearing at night" : "Your teacher's school"), caption: "The end of the second year",
         title: "Your teacher's test",
-        body: (S) => [S.teacher === "self" ? "A year of teaching yourself. Tonight you find out whether it worked." : "A year of training. Today {teacher} finds out what you have learned.", "If you fail, you will get one more chance. Only one."] },
+        body: (S) => [S.teacher === "self" ? "Two years of teaching yourself. Tonight you find out whether it worked." : "Two years of training. Today {teacher} finds out what you have learned.", "If you fail, you will get one more chance. Only one."] },
       retry: { id: "a2_trial_again", letGo: "Let it go. There will be other tests", letText: "You let it go. Your teacher does not mention it, and neither do you.",
-        scene: { act: 2, age: 15, art: "scene_teacher", place: (S) => (S.teacher === "hermit" ? "Mauni's clearing" : S.teacher === "self" ? "A clearing at night" : "Your teacher's school"), caption: "The next morning",
+        scene: { act: 2, age: 16, art: "scene_teacher", place: (S) => (S.teacher === "hermit" ? "Mauni's clearing" : S.teacher === "self" ? "A clearing at night" : "Your teacher's school"), caption: "The next morning",
           title: "Once more", body: ["You did not sleep. You have one more chance, and you will not be offered a third."] } }
     }),
     K.trialScenes({
-      id: "a2_pathtest", next: "a2_ekalavya", tests: PATH, back: { scene: "a2_path", then: "a2_pathtest" },
-      scene: { act: 2, age: 16, art: "scene_path", place: (S) => (S.path === "bard" ? "The spring fair" : S.path === "spy" ? "The palace, at night" : S.path === "healer" ? "The healers' hall" : S.path === "strategist" ? "Shakuni's rooms" : "Your teacher's school"), caption: "Your second year",
+      id: "a2_pathtest", next: "a2_trial", tests: PATH, back: { scene: "a2_path", then: "a2_pathtest" },
+      scene: { act: 2, age: 15, art: "scene_path", place: (S) => (S.path === "bard" ? "The spring fair" : S.path === "spy" ? "The palace, at night" : S.path === "healer" ? "The healers' hall" : S.path === "strategist" ? "Shakuni's rooms" : "Your teacher's school"), caption: "Your second year",
         title: "The test of your path",
-        body: (S) => ["You are sixteen, and you have chosen the path of the {path!}. Before the year is out, someone wants to see whether you were right.", "If you fail, you will get one more chance. Only one."] },
+        body: (S) => ["You have chosen the path of the {path!}. Before you may call it yours, you have to show it was the right choice.", "If you fail, you will get one more chance. Fail that too, and you choose again."] },
       retry: { id: "a2_pathtest_again", letGo: "Let it go. You will prove it some other way", letText: "You let it go. The path is still yours, whatever anyone says.",
-        scene: { act: 2, age: 16, art: "scene_path", place: (S) => (S.path === "bard" ? "The spring fair" : S.path === "spy" ? "The palace, at night" : S.path === "healer" ? "The healers' hall" : S.path === "strategist" ? "Shakuni's rooms" : "Your teacher's school"), caption: "The next day",
+        scene: { act: 2, age: 15, art: "scene_path", place: (S) => (S.path === "bard" ? "The spring fair" : S.path === "spy" ? "The palace, at night" : S.path === "healer" ? "The healers' hall" : S.path === "strategist" ? "Shakuni's rooms" : "Your teacher's school"), caption: "The next day",
           title: "Once more", body: ["One more try. After this, the path will have to prove itself some other way."] } }
     }),
     // Act III: the great bow, for those who rode to Kampilya and have not yet been tested.

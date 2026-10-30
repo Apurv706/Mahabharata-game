@@ -107,7 +107,7 @@
     },
     {
       id: "a6_duryodhana", when: { any: [{ friend: "duryodhana" }, { bond: ["duryodhana", 7] }] }, skipTo: "a6_raid",
-      act: 6, age: 44, war: true, place: "The lakeside at dusk", art: "scene_duryodhana", plate: ["#5c3361", "#2a1c1f"], caption: "A broken king by the water",
+      act: 6, age: 44, war: true, place: "The lakeside at dusk", to: "kurukshetra", art: "scene_duryodhana", plate: ["#5c3361", "#2a1c1f"], caption: "A broken king by the water",
       title: "Duryodhana at the lake",
       body: ["Duryodhana lies where Bhima left him, his thigh shattered. He is waiting to die. He sees you, and for a moment he looks like the boy at the lotus pond."],
       choices: [

@@ -26,12 +26,12 @@
 
   // The frame every test shares: stakes first, then the action, with one key for the action.
   // How each kind of test holds the figures, and how you move when you act.
-  const STANCE = { aim: "stand", push: "brace", draw: "aim", steady: "hold", sneak: "sneak", retort: "speak", notice: "think", rhythm: "brace", race: "hold", herd: "hold", board: "think", drill: "stand", rings: "think" };
+  const STANCE = { aim: "aim", push: "brace", draw: "aim", steady: "hold", sneak: "sneak", retort: "speak", notice: "think", rhythm: "brace", race: "hold", herd: "hold", board: "think", drill: "stand", rings: "think", formation: "think" };
   const ACT = { aim: "loose", push: "push", draw: "loose", steady: "hold", sneak: "walk", retort: "speak", notice: "think", rhythm: "strike", race: "hold", herd: "walk", board: "think", drill: "speak", rings: "think" };
   const FOE = { push: "brace", rhythm: "block" };
   K.TRIAL_STANCE = STANCE;
 
-  const IMMERSIVE = new Set(["aim", "board", "push", "steady", "retort", "draw", "sneak", "notice", "drill", "rhythm", "race", "herd", "rings"]);
+  const IMMERSIVE = new Set(["aim", "board", "push", "steady", "retort", "draw", "sneak", "notice", "drill", "rhythm", "race", "herd", "rings", "formation"]);
   // What hangs and swings in the archery test, drawn centred on its middle (about 64 units across).
   const RUNNERS = new Set(["deer", "tiger", "elephant"]);
   function AIM_ART(icon) {
@@ -162,22 +162,46 @@
         range.classList.add("painted");
         range.insertAdjacentHTML("beforeend", '<svg class="aimsvg" aria-hidden="true"><line class="rope"/><line class="path"/><circle class="aimpt" r="5"/><g class="tgt"><g class="tgt-art">' + AIM_ART(t.icon) + '</g><g class="stuck"></g></g><g class="flying"><line class="shaft"/><path class="fletch"/></g></svg>');
         const q = (sel) => range.querySelector(sel);
-        P = { rope: q(".rope"), path: q(".path"), pt: q(".aimpt"), tgt: q(".tgt"), stuck: q(".stuck"), fly: q(".flying"), shaft: q(".shaft"), fletch: q(".fletch"), W: 0, H: 0, L: 0, tx: 0, ty: 0 };
+        P = { rope: q(".rope"), path: q(".path"), pt: q(".aimpt"), tgt: q(".tgt"), stuck: q(".stuck"), fly: q(".flying"), shaft: q(".shaft"), fletch: q(".fletch"), W: 0, H: 0, L: 0, tx: 0, ty: 0, th: 0.6, cx: 0, sw: 0 };
       }
+      // You stand in the lower left, facing right; the target hangs up and to the right of you. The
+      // aim runs from your bow hand to the target, and your bow arm turns about the shoulder to follow.
+      const meSvg = painted ? host.closest(".trial").querySelector(".cast .actor.me svg") : null;
+      const ARM = 52.5; // shoulder to bow hand, in the puppet's own units
+      const shoulder = () => {
+        if (!meSvg || !meSvg.isConnected) return null;
+        const r = meSvg.getBoundingClientRect(), rr = range.getBoundingClientRect(), vb = meSvg.viewBox.baseVal;
+        if (!r.height || !vb || !vb.height) return null;
+        const k = r.height / vb.height;
+        return { x: r.left - rr.left + (58 - vb.x) * k, y: r.top - rr.top + (73 - vb.y) * k, k };
+      };
+      const handAt = (sh, th) => ({ x: sh.x + ARM * sh.k * Math.cos(th), y: sh.y - ARM * sh.k * Math.sin(th) });
       const shoot = (hit, aimOff) => {
         if (!P) return;
-        const sw = Math.min(P.W * 0.42, P.L * 0.85), xAim = P.W / 2 + (aimOff || 0) * sw;
-        const x0 = P.W / 2, yA = P.H, yB = hit ? P.ty : -40, xB = hit ? P.tx : xAim + (xAim - x0) * (P.H / Math.max(1, P.H - P.L));
-        const t0 = performance.now(), dur = U.motion() ? 240 : 1;
+        const sh = shoulder(), h0 = sh ? handAt(sh, P.th) : { x: P.cx, y: P.H };
+        const xAim = P.cx + (aimOff || 0) * P.sw;
+        // A miss flies on past the target's height and off the painting.
+        let xB = P.tx, yB = P.ty;
+        if (!hit) { const dx = xAim - h0.x, dy = P.ty - h0.y, m = (h0.y + 60) / Math.max(1, -dy); xB = h0.x + dx * m; yB = -60; }
+        const dist = Math.hypot(xB - h0.x, yB - h0.y), lift = dist * 0.12;
+        const at = (f) => ({ x: h0.x + (xB - h0.x) * f, y: h0.y + (yB - h0.y) * f - lift * 4 * f * (1 - f) });
+        const t0 = performance.now(), dur = U.motion() ? 300 : 1;
         P.fly.style.opacity = "1";
+        let dir = [xB - h0.x, yB - h0.y];
         const step = () => {
-          const f = Math.min(1, (performance.now() - t0) / dur), xx = x0 + (xB - x0) * f, yy = yA + (yB - yA) * f;
-          P.shaft.setAttribute("x1", xx); P.shaft.setAttribute("y1", yy); P.shaft.setAttribute("x2", xx); P.shaft.setAttribute("y2", yy + 46);
-          P.fletch.setAttribute("d", "M" + (xx - 5) + " " + (yy + 46) + "l5 -8l5 8z");
+          const f = Math.min(1, (performance.now() - t0) / dur), p = at(f), q = at(Math.max(0, f - 0.04));
+          if (f > 0) { const dl = Math.hypot(p.x - q.x, p.y - q.y) || 1; dir = [(p.x - q.x) / dl, (p.y - q.y) / dl]; }
+          // The arrow shrinks as it flies away from you.
+          const len = 46 - 24 * f, tx = p.x - dir[0] * len, ty = p.y - dir[1] * len;
+          P.shaft.setAttribute("x1", p.x); P.shaft.setAttribute("y1", p.y); P.shaft.setAttribute("x2", tx); P.shaft.setAttribute("y2", ty);
+          const nx = -dir[1] * 5, ny = dir[0] * 5;
+          P.fletch.setAttribute("d", "M" + (tx + nx) + " " + (ty + ny) + "L" + (tx + dir[0] * 8) + " " + (ty + dir[1] * 8) + "L" + (tx - nx) + " " + (ty - ny) + "z");
           if (f < 1) requestAnimationFrame(step);
           else {
             P.fly.style.opacity = "0";
-            if (hit) P.stuck.innerHTML = '<line x1="0" y1="2" x2="0" y2="40" stroke="#efe0bc" stroke-width="3"/><path d="M-5 40l5 -8l5 8z" fill="#b2432a"/>';
+            // Stuck in the target at the angle it came in, allowing for the target's own swing.
+            const rot = Math.atan2(dir[0], -dir[1]) * 180 / Math.PI + (P.ang || 0);
+            if (hit) P.stuck.innerHTML = '<g transform="rotate(' + rot.toFixed(1) + ')"><line x1="0" y1="2" x2="0" y2="30" stroke="#efe0bc" stroke-width="3"/><path d="M-5 30l5 -8l5 8z" fill="#b2432a"/></g>';
           }
         };
         requestAnimationFrame(step);
@@ -224,17 +248,28 @@
         if (P) {
           const W = range.clientWidth, H = range.clientHeight;
           P.W = W; P.H = H; P.L = Math.max(80, H * 0.6);
-          const sw = Math.min(W * 0.42, P.L * 0.85), tx = W / 2 + x * sw, dx = tx - W / 2;
+          // The rope hangs from a branch to the right of you; the target swings about it.
+          const narrow = W < 600, cx = W * (narrow ? 0.72 : 0.64), sw = Math.min(W * (narrow ? 0.22 : 0.3), P.L * 0.85), tx = cx + x * sw, dx = tx - cx;
+          P.cx = cx; P.sw = sw;
           // Animals run across the ground; everything else swings on its rope.
           const runs = RUNNERS.has(t.icon);
           const ty = runs ? P.L : Math.sqrt(Math.max(P.L * P.L - dx * dx, P.L * P.L * 0.25)), ang = runs ? 0 : Math.atan2(dx, ty) * 180 / Math.PI;
-          P.tx = tx; P.ty = ty;
+          P.tx = tx; P.ty = ty; P.ang = runs ? 0 : ang;
           if (runs) { P.rope.style.display = "none"; P.dir = Math.cos(phase * 2.2) >= 0 ? 1 : -1; }
-          else { P.rope.setAttribute("x1", W / 2); P.rope.setAttribute("y1", -10); P.rope.setAttribute("x2", tx); P.rope.setAttribute("y2", ty - 30); }
+          else { P.rope.setAttribute("x1", cx); P.rope.setAttribute("y1", -10); P.rope.setAttribute("x2", tx); P.rope.setAttribute("y2", ty - 30); }
           P.tgt.setAttribute("transform", "translate(" + tx.toFixed(1) + " " + ty.toFixed(1) + ") rotate(" + (-ang).toFixed(1) + ")" + (runs ? " scale(" + (P.dir * 1.5) + " 1.5)" : ""));
-          const ax = W / 2 + wob * sw;
-          P.path.setAttribute("x1", W / 2); P.path.setAttribute("y1", H); P.path.setAttribute("x2", ax); P.path.setAttribute("y2", P.L + 34);
-          P.pt.setAttribute("cx", ax); P.pt.setAttribute("cy", P.L);
+          const ax = cx + wob * sw, ay = P.L;
+          const sh = shoulder();
+          if (sh) {
+            // The bow arm points along the aim: up and to the right, between a low and a steep shot.
+            const th = clamp(Math.atan2(sh.y - ay, ax - sh.x), 0.12, 1.35);
+            P.th = th;
+            meSvg.style.setProperty("--aim", (th * 180 / Math.PI).toFixed(1) + "deg");
+            const hd = handAt(sh, th);
+            P.path.setAttribute("x1", hd.x); P.path.setAttribute("y1", hd.y);
+          } else { P.path.setAttribute("x1", cx); P.path.setAttribute("y1", H); }
+          P.path.setAttribute("x2", ax); P.path.setAttribute("y2", ay + 8);
+          P.pt.setAttribute("cx", ax); P.pt.setAttribute("cy", ay);
           if (t.blind) P.tgt.style.opacity = tgt.style.opacity;
         }
       }, host);
@@ -414,35 +449,67 @@
   U.games.sneak = function (box, done, c) {
     return frame(box, done, c, "sneak", ({ host, power, t, finish, onAct, cue }) => {
       const need = t.trips || 2, lives = t.spots || 2, light = clamp(0.26 - power * 0.012, 0.15, 0.26), LIMIT = t.secs || 45;
-      let pos = 0, trips = 0, seen = 0, sus = 0, holding = false, freeze = 0, lp = 0.5, lv = 0.22, last = 0;
-      host.innerHTML = '<p class="score" aria-live="polite"></p><div class="sneakway"><div class="torch"></div><div class="goal"></div><div class="me"></div></div><div class="sus"><i></i></div>' +
-        '<p class="game-note" aria-live="polite">' + U.tr(t.help || "Hold to move. Stop before the light reaches you.") + '</p><div class="btnrow"></div>';
-      const torch = host.querySelector(".torch"), me = host.querySelector(".me"), susBar = host.querySelector(".sus i"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
-      // On the painting your own puppet creeps along the ground through the torchlight.
+      let pos = 0, trips = 0, seen = 0, sus = 0, holding = false, freeze = 0, last = 0;
+      // The guard walks the far side carrying the torch; its light falls on the ground just ahead of
+      // him. He starts on the right and paces the back wall. Before he turns he stops and lifts the
+      // torch (the tell); now and then he stops to look. When he sees you he comes at you and the
+      // light stays on you.
+      let gp = 0.9, gdir = -1, gpause = 0, turning = false, glock = 0, spot = 0.9;
+      const gspeed = clamp(0.1 + (0.26 - light) * 0.25, 0.1, 0.13), REACH = 0.07;
       const painted = !!host.closest(".trial.immersive");
+      host.innerHTML = '<p class="score" aria-live="polite"></p><div class="sneakway' + (painted ? " painted" : "") + '">' +
+        '<svg class="beam" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sneak-beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd890" stop-opacity="0.85"/><stop offset="1" stop-color="#ffaa50" stop-opacity="0.32"/></linearGradient></defs><polygon fill="url(#sneak-beam)"/><ellipse class="pool" rx="1" ry="4"/></svg>' +
+        '<div class="goal"></div><div class="guard">' + (painted ? U.puppet(U.puppetFor(t.watch || "guard"), { h: 150, pose: "walk", flip: true }) : "") + '<i class="flame"></i></div><div class="me"></div></div><div class="sus"><i></i></div>' +
+        '<p class="game-note" aria-live="polite">' + U.tr(t.help || "Hold to move. Stop before the light reaches you.") + '</p><div class="btnrow"></div>';
+      const way = host.querySelector(".sneakway"), me = host.querySelector(".me"), susBar = host.querySelector(".sus i"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
+      const guard = host.querySelector(".guard"), flame = guard.querySelector(".flame"), poly = host.querySelector(".beam polygon"), pool = host.querySelector(".beam .pool");
+      // On the painting your own puppet creeps along the ground through the shadows.
       if (painted) me.innerHTML = U.puppet(K.puppetSpec(K.S), { h: 150, pose: "sneak" });
-      const fig = painted ? me.querySelector(".pp") : null;
-      const pose = (p) => { if (fig) fig.setAttribute("class", fig.getAttribute("class").replace(/pose-\S+/, "pose-" + p)); };
-      let posed = "";
+      const fig = painted ? me.querySelector(".pp") : null, gfig = painted ? guard.querySelector(".pp") : null;
+      const setPose = (el, p) => { if (el) el.setAttribute("class", el.getAttribute("class").replace(/pose-\S+/, "pose-" + p)); };
+      let posed = "", gposed = "", gface = 0;
       const down = () => { holding = true; cue("hold"); }, up = () => { holding = false; cue("rest"); };
       host.querySelector(".btnrow").appendChild(pressButton(t.verb || "Move", down, up));
       onAct(down, up);
       return loop((s) => {
         const dt = Math.min(0.05, s - last); last = s;
-        // The guard's torch wanders, turns back, sometimes lingers.
-        if (K.rng() < dt * 0.5) lv = (K.rng() < 0.5 ? -1 : 1) * (0.12 + K.rng() * 0.3);
-        lp += lv * dt; if (lp < 0.05 || lp > 0.95) { lv = -lv; lp = clamp(lp, 0.05, 0.95); }
-        const lit = Math.abs(pos - lp) < light / 2;
+        let gpose = "walk";
+        if (glock > 0) {
+          glock -= dt;
+          gp += clamp(pos - gp, -1, 1) * dt * 0.7; gdir = pos >= gp ? 1 : -1; spot = pos; gpose = "push";
+        } else if (gpause > 0) {
+          gpause -= dt; gpose = turning ? "cheer" : "stand";
+          if (gpause <= 0 && turning) { gdir = -gdir; turning = false; }
+        } else {
+          gp += gdir * gspeed * dt;
+          if ((gp <= 0.08 && gdir < 0) || (gp >= 0.92 && gdir > 0)) { gp = clamp(gp, 0.08, 0.92); gpause = 0.9; turning = true; }
+          else if (K.rng() < dt * 0.12) { gpause = 0.6 + K.rng() * 0.6; turning = K.rng() < 0.45; }
+        }
+        if (glock <= 0) spot = clamp(gp + gdir * REACH * (gpause > 0 && turning ? 0.4 : 1), 0, 1);
+        const lit = Math.abs(pos - spot) < light / 2;
         if (freeze > 0) freeze -= dt;
         else {
           if (holding) pos = Math.min(1, pos + dt * 0.11);
           sus = clamp(sus + (lit ? (holding ? dt * 2.4 : dt * 0.22) : -dt * 0.35), 0, 1);
-          if (sus >= 1) { seen++; sus = 0; pos = Math.max(0, pos - 0.35); freeze = 1.1; note.textContent = K.tr(t.spotted || "A shout. You drop the basket and run back into the dark."); if (K.Sound) K.Sound.play("hit"); cue("bad"); }
+          if (sus >= 1) { seen++; sus = 0; glock = 1.1; freeze = 1.1; note.textContent = K.tr(t.spotted || "A shout. You drop the basket and run back into the dark."); if (K.Sound) K.Sound.play("hit"); cue("bad");
+            setTimeout(() => { pos = Math.max(0, pos - 0.35); }, 650); }
           if (pos >= 1) { trips++; cue("good"); pos = 0; note.textContent = K.tr(t.made || "Out, and back for another load."); if (K.Sound) K.Sound.play("choose"); }
         }
-        torch.style.left = (lp - light / 2) * 100 + "%"; torch.style.width = light * 100 + "%";
+        // Draw: the guard, his torch, the cone of light from it to the ground.
+        guard.style.left = gp * 100 + "%";
+        guard.classList.toggle("left", gdir < 0); guard.classList.toggle("tell", gpause > 0 && turning); guard.classList.toggle("locked", glock > 0);
+        if (gfig && gface !== gdir) { gface = gdir; gfig.classList.toggle("flip", gdir < 0); }
+        if (gpose !== gposed) { gposed = gpose; setPose(gfig, gpose); }
+        const wr = way.getBoundingClientRect(), fr = flame.getBoundingClientRect();
+        if (wr.width && wr.height) {
+          const fx = ((fr.left + fr.width / 2 - wr.left) / wr.width) * 100, fy = ((fr.top + fr.height / 2 - wr.top) / wr.height) * 100;
+          const a = (spot - light / 2) * 100, b = (spot + light / 2) * 100;
+          poly.setAttribute("points", fx.toFixed(1) + "," + fy.toFixed(1) + " " + b.toFixed(1) + ",100 " + a.toFixed(1) + ",100");
+          pool.setAttribute("cx", (spot * 100).toFixed(1)); pool.setAttribute("cy", "98"); pool.setAttribute("rx", (light * 50).toFixed(1));
+        }
+        way.classList.toggle("caught", glock > 0);
         me.style.left = pos * 100 + "%"; me.classList.toggle("lit", lit);
-        if (fig) { const want = freeze > 0 ? "fall" : holding ? "walk" : "sneak"; if (want !== posed) { posed = want; pose(want); } }
+        if (fig) { const want = freeze > 0 ? "fall" : holding ? "walk" : "sneak"; if (want !== posed) { posed = want; setPose(fig, want); } }
         susBar.style.width = sus * 100 + "%";
         score.textContent = K.tr(t.tally || "Loads: {d} of {n} · Seen: {s} of {m} · {t} seconds", { d: trips, n: need, s: seen, m: lives, t: Math.max(0, Math.ceil(LIMIT - s)) });
         if (trips >= need) finish("win", ["{d} loads carried, seen {s} times.", { d: trips, s: seen }]);

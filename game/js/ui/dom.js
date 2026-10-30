@@ -70,7 +70,12 @@
   U.upright = () => window.innerHeight > window.innerWidth * 1.15;
   U.tallOf = (key) => (TALL.has(key) ? key + "_tall" : null);
   // The file a painting shows from behind the page: tall on upright screens, wide where painted.
-  U.bgUrl = (key) => (key ? U.artUrl(TALL.has(key) && U.upright() ? key + "_tall" : WIDE.has(key) ? key + "_wide" : key) : null);
+  // Fight backgrounds painted only tall so far: on wide screens a test played on one shows the
+  // nearest wide painting instead (until the 16:9 versions arrive).
+  const FIGHT_WIDE = { fight_fair_ring: "scene_fair" };
+  U.wideOf = (key) => (!U.upright() && FIGHT_WIDE[key]) || key;
+  U.stripOf = (key) => FIGHT_WIDE[key] || key;
+  U.bgUrl = (key) => { if (!key) return null; key = U.wideOf(key); return U.artUrl(TALL.has(key) && U.upright() ? key + "_tall" : WIDE.has(key) ? key + "_wide" : key); };
   // Load paintings a scene may lead to, quietly, so the next one is ready when it is needed.
   const warmed = new Set();
   U.preloadArt = function (keys) {
@@ -140,7 +145,28 @@
   let bdKey = null, bdFlip = 0, viewing = false;
   const sizes = {};
   function layer() { return U.$("backdrop").querySelectorAll(".bdl")[bdFlip]; }
-  U.setBackdrop = function (key) {
+  // opts.still: show the painting without its clip for now (U.addClip plays it later, when the
+  // story reaches what the clip shows: the lac house catching fire, say).
+  function makeVideo(key, pic) {
+    const v = document.createElement("video");
+    v.muted = true; v.defaultMuted = true; v.playsInline = true; v.preload = "auto";
+    v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("aria-hidden", "true");
+    // H.264 first (Safari, Chrome, Edge, Firefox); VP9 WebM where H.264 is missing.
+    ["mp4", "webm"].forEach((ext) => { const so = document.createElement("source"); so.src = "video/" + key + "." + ext; so.type = "video/" + ext; v.appendChild(so); });
+    v.addEventListener("playing", () => { v.classList.add("on"); v.dataset.playing = "1"; });
+    v.addEventListener("ended", () => { delete v.dataset.playing; });
+    // If neither plays, the painting simply stays.
+    const last = v.lastElementChild; if (last) last.addEventListener("error", () => v.remove());
+    pic.appendChild(v);
+    return v;
+  }
+  U.addClip = function () {
+    const L = layer(); if (!L || !bdKey || !VIDEOS.has(bdKey) || !U.living() || L.querySelector("video")) return;
+    makeVideo(bdKey, L.querySelector(".pic"));
+    L.dataset.played = "";
+    U.livePlay();
+  };
+  U.setBackdrop = function (key, opts) {
     const bd = U.$("backdrop");
     if (!bd || key === bdKey) return;
     bdKey = key;
@@ -157,18 +183,7 @@
     next.dataset.key = key || ""; next.dataset.flat = key && !wide ? "1" : ""; next.dataset.played = "";
     next.classList.add("on"); prev.classList.remove("on");
     const vprev = prev.querySelector("video"); if (vprev) vprev.pause();
-    if (key && VIDEOS.has(key) && U.living()) {
-      const v = document.createElement("video");
-      v.muted = true; v.defaultMuted = true; v.playsInline = true; v.preload = "auto";
-      v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("aria-hidden", "true");
-      // H.264 first (Safari, Chrome, Edge, Firefox); VP9 WebM where H.264 is missing.
-      ["mp4", "webm"].forEach((ext) => { const so = document.createElement("source"); so.src = "video/" + key + "." + ext; so.type = "video/" + ext; v.appendChild(so); });
-      v.addEventListener("playing", () => { v.classList.add("on"); v.dataset.playing = "1"; });
-      v.addEventListener("ended", () => { delete v.dataset.playing; });
-      // If neither plays, the painting simply stays.
-      const last = v.lastElementChild; if (last) last.addEventListener("error", () => v.remove());
-      pic.appendChild(v);
-    }
+    if (key && VIDEOS.has(key) && U.living() && !(opts && opts.still)) makeVideo(key, pic);
     const place = () => { U.fitBackdrop(true); };
     if (url && !sizes[url]) {
       const im = new Image();
@@ -237,6 +252,9 @@
       s = Math.max(W / iw, H / ih); w = iw * s; h = ih * s;
       const f = (FOCAL[L.dataset.key] || "50% 45%").split(" ").map((v) => parseFloat(v) / 100);
       x = (W - w) * f[0]; y = (H - h) * f[1];
+      // A fight on an upright screen: the painting's ground meets the fighters' feet (U.groundFit).
+      const g = U.groundFit(L.dataset.key);
+      if (g) ({ w, h, x, y } = g(iw, ih, w, h, W, H));
     } else if (mode === "fit" || mode === "whole") {
       // As large as the space allows, trimming at most two fifths of the width (around the painting's
       // own centre of interest), and sitting just above the page.
@@ -252,6 +270,28 @@
     pic.classList.toggle("now", !!instant);
     Object.assign(pic.style, { left: x.toFixed(1) + "px", top: y.toFixed(1) + "px", width: w.toFixed(1) + "px", height: h.toFixed(1) + "px" });
     placeViewButton(mode, x, y, w, h);
+  };
+  // Where the ground is in each tall fight painting (share of its height, from the top): the
+  // fighters' feet are put on it, by moving the painting (and zooming it a little, at most a third)
+  // so that line meets them. What the move uncovers shows the painting's soft glow.
+  const GROUND = { stage_training_ground: 0.74, stage_battlefield_night: 0.72 };
+  U.groundOf = (key) => (/^fight_/.test(key) ? 0.62 : GROUND[key] || null);
+  U.feetY = function () {
+    const lf = U.$("leaf");
+    if (!lf || !lf.classList.contains("fighting") || !lf.classList.contains("immersive")) return null;
+    const svgs = [...document.querySelectorAll("#arena .actor:not(.down) svg")];
+    if (!svgs.length) return null;
+    return Math.max(...svgs.map((el) => el.getBoundingClientRect().bottom));
+  };
+  U.groundFit = function (key) {
+    const gr = U.upright() && U.tallOf(key) ? U.groundOf(key) : null;
+    const feet = gr && U.feetY();
+    if (!feet) return null;
+    return (iw, ih, w, h, W, H) => {
+      const want = Math.max(h, (H - feet) / (1 - gr), feet / gr);
+      const h2 = Math.min(want, h * 1.33), w2 = h2 * iw / ih;
+      return { w: w2, h: h2, x: (W - w2) / 2, y: feet - gr * h2 };
+    };
   };
   // The small "see it whole" button sits on the painting's lower right corner.
   function placeViewButton(mode, x, y, w, h) {
@@ -308,7 +348,7 @@
   // In the story itself the painting goes behind the page, and the page gets a small header instead.
   U.plate = function (o) {
     if (U.inScene) {
-      if (!o.keepArt) U.setBackdrop(o.art || null);
+      if (!o.keepArt) U.setBackdrop(o.art || null, { still: o.still });
       const kind = o.tagText ? '<span class="kind ' + (o.tag || "") + '">' + U.esc(o.tagText) + "</span>" : "";
       const fig = K.S && K.puppetSpec && !o.noFigure ? U.puppetBadge(K.puppetSpec(K.S), { pose: o.pose, fit: true, cls: o.big ? "big" : "" }) : "";
       return '<header class="pagehead' + (o.big ? " big" : "") + '"><div class="ph-text"><div class="ph-line">' + kind +

@@ -74,7 +74,7 @@
     return {
       uid: side[0] + i, name: K.fmt(def.name), src: def.name, side, hp, maxHp: hp, atk: Math.round(def.atk * m.atk * 10) / 10, def: def.def || 1,
       abilities: def.abilities || ["strike"], cds: {}, status: {}, armed: def.armed !== false,
-      vowTag: def.vowTag || null, person: def.person || null, note: def.note || null, plural: !!def.plural
+      vowTag: def.vowTag || null, person: def.person || null, note: def.note || null, plural: !!def.plural, hero: !!def.hero
     };
   }
 
@@ -186,8 +186,10 @@
       if (p.cds[id]) why = K.tr(p.cds[id] === 1 ? "Ready in 1 turn" : "Ready in {n} turns", { n: p.cds[id] });
       if (ab.once && B.used[id]) why = K.tr("Used this battle");
       if (ab.item && !(S.items[ab.item] > 0)) why = K.tr("None left");
-      if (ab.needsAlly && friendsOf(p).length < 2) why = K.tr("No ally to command");
-      return { id, name: K.tr(ab.name), desc: K.tr(ab.desc), target: ab.target, why, count: ab.item ? S.items[ab.item] || 0 : null };
+      // Moves that need allies do nothing when you fight alone: the screen tucks them away.
+      const idle = (ab.needsAlly || ab.target === "allies") && friendsOf(p).length < 2;
+      if (idle) why = K.tr("No ally to command");
+      return { id, name: K.tr(ab.name), desc: K.tr(ab.desc), target: ab.target, why, idle, count: ab.item ? S.items[ab.item] || 0 : null };
     });
   };
 
@@ -292,7 +294,11 @@
       for (const k of Object.keys(u.cds)) if (u.cds[k] > 0) u.cds[k]--;
     }
     B.round++;
-    if (B.round === 3 && B.enc.lethal && !B.evented && living("enemy").length) fieldEvent();
+    // A fight can carry its own beats, round by round (the epic's moments in the wheel); otherwise
+    // one field event as the third round begins.
+    const beat = (K.val(B.enc.beats) || []).find((b) => b.round === B.round);
+    if (beat) { B.evented = true; const at = B.log.length; const u = (beat.run && beat.run(B)) || {}; B.log.splice(at, 0, { key: beat.text, u, ev: true }); }
+    else if (B.round === 3 && B.enc.lethal && !B.evented && !B.enc.beats && living("enemy").length) fieldEvent();
     planAll();
   }
 

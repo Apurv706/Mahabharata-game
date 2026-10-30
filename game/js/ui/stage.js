@@ -43,6 +43,7 @@
     stage_chakravyuha_top: { fx: "dust", top: true },
     stage_battlefield_night: { fx: "embers", side: true },
     scene_fair: { fx: "dust" },
+    fight_fair_ring: { fx: "dust" },
     scene_teaching: { fx: "mist" }
   };
   U.STAGES = STAGES;
@@ -54,8 +55,10 @@
     if (!t || !t.stage || !K.puppetSpec) return "";
     const info = U.stageInfo(t.stage);
     const me = U.puppet(K.puppetSpec(K.S), { h: 150, label: K.tr("You"), cls: "actor-me" });
-    const others = (K.val(t.cast) || []).slice(0, 3).map((id, i) => '<span class="actor foe f' + i + '" data-id="' + id + '">' + U.puppet(U.puppetFor(id), { h: 150, flip: true }) + "</span>").join("");
-    return '<div class="cast' + (info.top ? " top" : "") + (info.side ? " side" : "") + '" style="--stage:url(\'' + U.artUrl(t.stage) + '\')" aria-hidden="true">' +
+    // Elders (a teacher, a sage) are marked: some tests stand them apart, further back.
+    const others = (K.val(t.cast) || []).slice(0, 3).map((id, i) => { const sp = U.puppetFor(id) || {};
+      return '<span class="actor foe f' + i + (sp.stage === "elder" ? " elder" : "") + '" data-id="' + id + '">' + U.puppet(sp, { h: 150, flip: true }) + "</span>"; }).join("");
+    return '<div class="cast' + (info.top ? " top" : "") + (info.side ? " side" : "") + '" style="--stage:url(\'' + U.artUrl(U.stripOf(t.stage)) + '\')" aria-hidden="true">' +
       '<span class="actor me">' + me + "</span>" + others + "</div>";
   };
   // Set a pose for a while, then return to the stance for this test.

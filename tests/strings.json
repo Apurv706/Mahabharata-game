@@ -16573,5 +16573,660 @@
   "id": 3316,
   "en": "You sit by them until the women come with water and white cloth. When you finally stand, something in you stays sitting there.",
   "ctx": "scene:a7_field"
+ },
+ {
+  "id": 3317,
+  "en": "{t} answers with the counter-weapon. The two meet in the air in a blaze of light, and both are gone.",
+  "ctx": "code:abilities.js"
+ },
+ {
+  "id": 3318,
+  "en": "No allies here for: {moves}",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 3319,
+  "en": "Rings in line: {a} of 4 · Held for {n} heartbeats",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 3320,
+  "en": "The field, seen from above",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 3321,
+  "en": "The reserve · Flanks held: {h} of {n}",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 3322,
+  "en": "{array} · Placed: {p} of {n} · Mistakes: {w}",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 3323,
+  "en": "Next: {unit}. Put them on their mark.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 3324,
+  "en": "Now the enemy tests a flank. Send the reserve where they strike.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 3325,
+  "en": "They are coming!",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 3326,
+  "en": "The reserve meets them, and the line holds.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 3327,
+  "en": "The reserve goes the wrong way. The line bends.",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 3328,
+  "en": "\"{array}. Look well; I will not show you twice.\"",
+  "ctx": "code:play.js"
+ },
+ {
+  "id": 3329,
+  "en": "The end of the second year",
+  "ctx": "scene:a2_trial"
+ },
+ {
+  "id": 3330,
+  "en": "The princes go down to Pramanakoti for the river games, and you go with them.",
+  "ctx": "scene:a1_poison"
+ },
+ {
+  "id": 3331,
+  "en": "Ask Drona to take you, though your family is not of the court",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 3332,
+  "en": "He will set you one shot, at a bird no one can hit",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 3333,
+  "en": "Drona points to a wooden bird on the highest branch, far across the field. Three arrows. Hit it twice, and he will think about it.",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 3334,
+  "en": "Drona takes you, grudgingly, and the whole court hears of it.",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 3335,
+  "en": "Drona turns away. You will have to choose another teacher.",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 3336,
+  "en": "You passed Drona's test at the gate, though your family was not of the court, and he took you as a student.",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 3337,
+  "en": "The last arrow takes the bird off its branch. Drona looks at you for a long moment. \"Tomorrow, before dawn,\" he says. The princes stare.",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 3338,
+  "en": "Your arrows fall short and wide. Drona has already turned away. \"Find another teacher,\" he says, not unkindly.",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 3339,
+  "en": "He turned Ekalavya away. He will set you a shot no one makes",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 3340,
+  "en": "Drona points to a wooden bird on the highest branch, far across the field. Three arrows, and every one must hit. He does not expect you to.",
+  "ctx": "scene:a2_teacher"
+ },
+ {
+  "id": 3341,
+  "en": "The armoury",
+  "ctx": "scene:a2_path"
+ },
+ {
+  "id": 3342,
+  "en": "Choose, then prove it",
+  "ctx": "scene:a2_path"
+ },
+ {
+  "id": 3343,
+  "en": "Drona takes his students hunting in the forest near Hastinapura.",
+  "ctx": "scene:a2_ekalavya"
+ },
+ {
+  "id": 3344,
+  "en": "Drona marches his students east to Panchala to collect his fee.",
+  "ctx": "scene:a2_drupada"
+ },
+ {
+  "id": 3345,
+  "en": "All the kings of Bharata go to Indraprastha for Yudhishthira's great sacrifice, and you go too.",
+  "ctx": "scene:a3_rajasuya"
+ },
+ {
+  "id": 3346,
+  "en": "Duryodhana's new hall is opening in Hastinapura, and everyone is summoned.",
+  "ctx": "scene:a4_invite"
+ },
+ {
+  "id": 3347,
+  "en": "The Pandavas' camp moves to the Kamyaka forest, and you move with it.",
+  "ctx": "scene:a5_jayadratha"
+ },
+ {
+  "id": 3348,
+  "en": "The camp moves on to the Dvaita forest. The dry season comes.",
+  "ctx": "scene:a5_yaksha"
+ },
+ {
+  "id": 3349,
+  "en": "Duryodhana rides out to the Dvaita forest to count his cattle, and to gloat. The court goes with him.",
+  "ctx": "scene:a5_court_raid"
+ },
+ {
+  "id": 3350,
+  "en": "In the thirteenth year, the road leads to King Virata's court in Matsya.",
+  "ctx": "scene:a5_matsya"
+ },
+ {
+  "id": 3351,
+  "en": "Krishna comes to Hastinapura as the Pandavas' envoy, and the whole kingdom gathers to hear him.",
+  "ctx": "scene:a5_side"
+ },
+ {
+  "id": 3352,
+  "en": "Drive a chariot for a warrior who needs one",
+  "ctx": "scene:a6_eve"
+ },
+ {
+  "id": 3353,
+  "en": "He will ride with you once before he decides",
+  "ctx": "scene:a6_eve"
+ },
+ {
+  "id": 3354,
+  "en": "A wheel catches, and the old warrior grabs the rail.",
+  "ctx": "scene:a6_eve"
+ },
+ {
+  "id": 3355,
+  "en": "Steer between the carts and the stakes: up and down, or the buttons.",
+  "ctx": "scene:a6_eve"
+ },
+ {
+  "id": 3356,
+  "en": "An old warrior whose driver was killed in a raid will ride with you once, at dusk, along the road behind the lines: carts, stakes, tethered horses. Bring him to the end of it without a wheel touching anything.",
+  "ctx": "scene:a6_eve"
+ },
+ {
+  "id": 3357,
+  "en": "He climbs down and says: tomorrow, at first light.",
+  "ctx": "scene:a6_eve"
+ },
+ {
+  "id": 3358,
+  "en": "He climbs down and says nothing. One more run at dawn.",
+  "ctx": "scene:a6_eve"
+ },
+ {
+  "id": 3359,
+  "en": "On the eve of the war an old warrior rode with you once behind the lines, and chose you as his driver.",
+  "ctx": "scene:a6_eve"
+ },
+ {
+  "id": 3360,
+  "en": "You bring the chariot to a stop at the end of the road. He climbs down, slowly. \"First light,\" he says.",
+  "ctx": "scene:a6_eve"
+ },
+ {
+  "id": 3361,
+  "en": "A wheel clips a cart, and the old warrior nearly goes over the rail. He climbs down without a word.",
+  "ctx": "scene:a6_eve"
+ },
+ {
+  "id": 3362,
+  "en": "Ask for a company to command",
+  "ctx": "scene:a6_eve"
+ },
+ {
+  "id": 3363,
+  "en": "The commander will test you first",
+  "ctx": "scene:a6_eve"
+ },
+ {
+  "id": 3364,
+  "en": "A company of your own, under your banner.",
+  "ctx": "scene:a6_eve"
+ },
+ {
+  "id": 3365,
+  "en": "The company goes to someone else. One more chance at dawn.",
+  "ctx": "scene:a6_eve"
+ },
+ {
+  "id": 3366,
+  "en": "On the eve of the war you set your company in the commander's array, and he gave it to you.",
+  "ctx": "scene:a6_eve"
+ },
+ {
+  "id": 3367,
+  "en": "The commander watches your company stumble into place and says nothing, which is worse than anything he could say.",
+  "ctx": "scene:a6_eve"
+ },
+ {
+  "id": 3368,
+  "en": "Dawn, before the conches",
+  "ctx": "scene:a6_eve_again"
+ },
+ {
+  "id": 3369,
+  "en": "Once more, at dawn",
+  "ctx": "scene:a6_eve_again"
+ },
+ {
+  "id": 3370,
+  "en": "The company goes to someone else, and you take your place in the front line.",
+  "ctx": "scene:a6_eve_again"
+ },
+ {
+  "id": 3371,
+  "en": "On the eve of the war the commander gave your company to someone else. You fought in the front line.",
+  "ctx": "scene:a6_eve_again"
+ },
+ {
+  "id": 3372,
+  "en": "The company goes to another officer. You take a spear and a place in the front line, with everyone else.",
+  "ctx": "scene:a6_eve_again"
+ },
+ {
+  "id": 3373,
+  "en": "He finds another driver, and you take your place in the front line.",
+  "ctx": "scene:a6_eve_again"
+ },
+ {
+  "id": 3374,
+  "en": "On the eve of the war you were not chosen as a driver. You fought in the front line.",
+  "ctx": "scene:a6_eve_again"
+ },
+ {
+  "id": 3375,
+  "en": "He finds another driver before the conches sound. You take a spear and find a place in the front line.",
+  "ctx": "scene:a6_eve_again"
+ },
+ {
+  "id": 3376,
+  "en": "Take your place in the line instead",
+  "ctx": "scene:a6_eve_again"
+ },
+ {
+  "id": 3377,
+  "en": "You find a place in the front line, among people who do not know your name yet.",
+  "ctx": "scene:a6_eve_again"
+ },
+ {
+  "id": 3378,
+  "en": "The ring closing",
+  "ctx": "scene:a6_ring_closes"
+ },
+ {
+  "id": 3379,
+  "en": "The ring closes",
+  "ctx": "scene:a6_ring_closes"
+ },
+ {
+  "id": 3380,
+  "en": "Abhimanyu's bow is cut. His charioteer is dead. His sword is broken. He has a chariot wheel in his hands, and you are at his back.",
+  "ctx": "scene:a6_ring_closes"
+ },
+ {
+  "id": 3381,
+  "en": "The ring of chariots turns and tightens. Somewhere outside it, the Pandavas are still trying to break in. Hold a way open for them as long as you can.",
+  "ctx": "scene:a6_ring_closes"
+ },
+ {
+  "id": 3382,
+  "en": "Hold the ring open",
+  "ctx": "scene:a6_ring_closes"
+ },
+ {
+  "id": 3383,
+  "en": "No one has ever held it",
+  "ctx": "scene:a6_ring_closes"
+ },
+ {
+  "id": 3384,
+  "en": "The rings are in line, a way out for a breath. The Kaurava chariots push them out of line, faster and faster. Turn them back. Every heartbeat you hold is a heartbeat the Pandavas can use.",
+  "ctx": "scene:a6_ring_closes"
+ },
+ {
+  "id": 3385,
+  "en": "There is no winning this. Hold as long as you can.",
+  "ctx": "scene:a6_ring_closes"
+ },
+ {
+  "id": 3386,
+  "en": "The ring closes. Many warriors surround Abhimanyu at once. That night Arjuna swears to kill Jayadratha before the next sunset, or walk into fire.",
+  "ctx": "scene:a6_ring_closes"
+ },
+ {
+  "id": 3387,
+  "en": "Drona's order",
+  "ctx": "scene:a6_d13_bow"
+ },
+ {
+  "id": 3388,
+  "en": "Abhimanyu cannot be beaten from the front. Drona sees it. \"Cut his bow from behind,\" he says. \"Kill his horses. Then he is only a boy.\"",
+  "ctx": "scene:a6_d13_bow"
+ },
+ {
+  "id": 3389,
+  "en": "The order is passed along the ring, and it reaches you.",
+  "ctx": "scene:a6_d13_bow"
+ },
+ {
+  "id": 3390,
+  "en": "Do as Drona says",
+  "ctx": "scene:a6_d13_bow"
+ },
+ {
+  "id": 3391,
+  "en": "You were one of those who cut Abhimanyu's bow from behind.",
+  "ctx": "scene:a6_d13_bow"
+ },
+ {
+  "id": 3392,
+  "en": "On the thirteenth day you obeyed Drona and helped cut Abhimanyu's bow from behind.",
+  "ctx": "scene:a6_d13_bow"
+ },
+ {
+  "id": 3393,
+  "en": "Karna's arrow cuts the bowstring; yours finds a horse. Abhimanyu turns, and sees you.",
+  "ctx": "scene:a6_d13_bow"
+ },
+ {
+  "id": 3394,
+  "en": "Refuse, out loud",
+  "ctx": "scene:a6_d13_bow"
+ },
+ {
+  "id": 3395,
+  "en": "On the thirteenth day you refused Drona's order to cut Abhimanyu's bow from behind.",
+  "ctx": "scene:a6_d13_bow"
+ },
+ {
+  "id": 3396,
+  "en": "\"Not from behind,\" you say. Drona does not even look at you. Someone else does it.",
+  "ctx": "scene:a6_d13_bow"
+ },
+ {
+  "id": 3397,
+  "en": "Draw, and miss on purpose",
+  "ctx": "scene:a6_d13_bow"
+ },
+ {
+  "id": 3398,
+  "en": "On the thirteenth day you were ordered to shoot Abhimanyu's horses, and missed on purpose.",
+  "ctx": "scene:a6_d13_bow"
+ },
+ {
+  "id": 3399,
+  "en": "Your arrow goes wide. No one notices but you. It changes nothing, and you will think about it for the rest of your life.",
+  "ctx": "scene:a6_d13_bow"
+ },
+ {
+  "id": 3400,
+  "en": "Your stretch of the ring",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3401,
+  "en": "You pull back out of the ring. Others close the gap you leave.",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3402,
+  "en": "The boy in the wheel",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3403,
+  "en": "He turns away from your stretch of the ring, toward a weaker one.",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3404,
+  "en": "A sixteen-year-old in a chariot comes at your part of the ring as if it were made of reeds.",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3405,
+  "en": "Your stretch of the ring holds. Further along, another does not.",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3406,
+  "en": "{They} fell holding a stretch of the ring against Abhimanyu on the thirteenth day.",
+  "ctx": "fight:e_ring"
+ },
+ {
+  "id": 3407,
+  "en": "No one comes out of the heart of the wheel",
+  "ctx": "scene:a6_d13_inside"
+ },
+ {
+  "id": 3408,
+  "en": "The heart of the wheel",
+  "ctx": "fight:e_last_stand"
+ },
+ {
+  "id": 3409,
+  "en": "The ring tightens. There is no more room to fight in.",
+  "ctx": "fight:e_last_stand"
+ },
+ {
+  "id": 3410,
+  "en": "Behind you the gap has closed. Abhimanyu glances back, sees you, and laughs. \"Two of us,\" he says. \"That is twice as many as they thought.\"",
+  "ctx": "fight:e_last_stand"
+ },
+ {
+  "id": 3411,
+  "en": "On Drona's word, Karna circles behind Abhimanyu and cuts his bowstring with one arrow.",
+  "ctx": "fight:e_last_stand"
+ },
+ {
+  "id": 3412,
+  "en": "Abhimanyu's charioteer falls, then his horses. He leaps down with his sword and shield.",
+  "ctx": "fight:e_last_stand"
+ },
+ {
+  "id": 3413,
+  "en": "Drona shatters Abhimanyu's sword in his hand. He picks up a chariot wheel and swings it like a mace.",
+  "ctx": "fight:e_last_stand"
+ },
+ {
+  "id": 3414,
+  "en": "Six of them close in at once. There is no room left to turn.",
+  "ctx": "fight:e_last_stand"
+ },
+ {
+  "id": 3415,
+  "en": "The wheel in Abhimanyu's hands breaks. He picks up a mace from the ground.",
+  "ctx": "fight:e_last_stand"
+ },
+ {
+  "id": 3416,
+  "en": "You are still on your feet beside him when the ring of chariots begins to turn inward.",
+  "ctx": "fight:e_last_stand"
+ },
+ {
+  "id": 3417,
+  "en": "{They} fell beside Abhimanyu in the heart of the wheel, on the thirteenth day.",
+  "ctx": "fight:e_last_stand"
+ },
+ {
+  "id": 3418,
+  "en": "Pramanakoti",
+  "ctx": "play:a1_poison"
+ },
+ {
+  "id": 3419,
+  "en": "After a year alone, you lay out everything you have gathered on a mat: a bamboo bow, a mace, a set of chariot reins, a scribe's tablet, a healer's satchel, a dark cloak, a vina.",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 3420,
+  "en": "What you choose decides how you fight, how you are useful when you are not fighting, and, one day, which blessings can find you. Fail its test twice and you will have to choose again.",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 3421,
+  "en": "Your balance suits the reins.",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 3422,
+  "en": "Your light step suits the dark cloak.",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 3423,
+  "en": "You have chosen the path of the {path!}. Before you may call it yours, you have to show it was the right choice.",
+  "ctx": "play:a2_pathtest"
+ },
+ {
+  "id": 3424,
+  "en": "If you fail, you will get one more chance. Fail that too, and you choose again.",
+  "ctx": "play:a2_pathtest"
+ },
+ {
+  "id": 3425,
+  "en": "Two years of teaching yourself. Tonight you find out whether it worked.",
+  "ctx": "play:a2_trial"
+ },
+ {
+  "id": 3426,
+  "en": "After a year, {teacher} lays out everything the school has on a mat: a bamboo bow, a mace, a set of chariot reins, a scribe's tablet, a healer's satchel, a dark cloak, a vina. \"Pick one,\" {teacher} says. \"Then show me it was the right one.\"",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 3427,
+  "en": "Your strength suits the mace.",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 3428,
+  "en": "Your calm suits the healer's satchel.",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 3429,
+  "en": "Your memory suits the vina.",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 3430,
+  "en": "Two years of training. Today {teacher} finds out what you have learned.",
+  "ctx": "play:a2_trial"
+ },
+ {
+  "id": 3431,
+  "en": "Dvaita forest",
+  "ctx": "play:a5_court_raid"
+ },
+ {
+  "id": 3432,
+  "en": "Dhrishtadyumna names an array and shows it to you once. Then your company comes onto the field, unit by unit: put each on its mark before the drum stops. Then the enemy tests a flank, and you send the reserve.",
+  "ctx": "play:a6_eve"
+ },
+ {
+  "id": 3433,
+  "en": "Dhrishtadyumna has not given your company away yet. He will watch you set it once more, and then he will decide.",
+  "ctx": "play:a6_eve_again"
+ },
+ {
+  "id": 3434,
+  "en": "Kamyaka forest",
+  "ctx": "play:a5_jayadratha"
+ },
+ {
+  "id": 3435,
+  "en": "Your steady eye suits the bow.",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 3436,
+  "en": "On the thirteenth day {they} obeyed the order to strike Abhimanyu from behind.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3437,
+  "en": "Bhishma names an array and shows it to you once. Then your company comes onto the field, unit by unit: put each on its mark before the drum stops. Then the enemy tests a flank, and you send the reserve. He has just refused Karna a place under him. He will not be kinder to you.",
+  "ctx": "play:a6_eve"
+ },
+ {
+  "id": 3438,
+  "en": "Bhishma has not given your company away yet. He will watch you set it once more, and then he will decide.",
+  "ctx": "play:a6_eve_again"
+ },
+ {
+  "id": 3439,
+  "en": "The old warrior has not found another driver yet. He will ride with you once more before he decides.",
+  "ctx": "play:a6_eve_again"
+ },
+ {
+  "id": 3440,
+  "en": "On the thirteenth day {they} refused, out loud, to strike a boy from behind.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 3441,
+  "en": "The stampede at Champa",
+  "ctx": "play:a5_local"
+ },
+ {
+  "id": 3442,
+  "en": "Dhrishtadyumna watches the last unit find its mark. \"Good,\" he says. \"They are yours. Keep them alive.\"",
+  "ctx": "play:a6_eve"
+ },
+ {
+  "id": 3443,
+  "en": "Your company is behind you, waiting for your word. Whatever you do, they will follow.",
+  "ctx": "play:a6_day13"
+ },
+ {
+  "id": 3444,
+  "en": "Your company",
+  "ctx": "play:a6_day13"
+ },
+ {
+  "id": 3445,
+  "en": "At Kurukshetra {they} commanded a company of {their} own, and brought home as many as {they} could.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3446,
+  "en": "Bhishma watches the last unit find its mark and nods once. \"Take them,\" he says. \"Bring back as many as you can.\"",
+  "ctx": "play:a6_eve"
+ },
+ {
+  "id": 3447,
+  "en": "Your company holds a stretch of the ring. Whatever you do, they will do.",
+  "ctx": "play:a6_day13"
  }
 ]

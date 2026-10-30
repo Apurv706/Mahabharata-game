@@ -18,6 +18,10 @@
           B.say("You loose the astra at a foe who cannot defend himself. The sky goes dark. Somewhere, a sage has seen.");
           K.apply({ curse: "astra_misuse", duty: { conscience: -3 }, rep: { sages: -2 }, journal: "You used a divine weapon on someone who could not fight back." });
         }
+        // The epic's heroes know the counter to every astra: it is met in mid-air. The clash staggers
+        // them for a moment, and that is all it buys.
+        B.astraOut = { uid: t.uid, kind: B.enc.astraKind || "generic", clash: !!t.hero };
+        if (t.hero) { B.tell("{t} answers with the counter-weapon. The two meet in the air in a blaze of light, and both are gone.", { t }); B.status(t, "stun", 1); return; }
         B.hit(u, t, 3, { pierce: true, verb: "The astra strikes {t} for {n}." });
       }
     },

@@ -102,6 +102,10 @@
     if (has("silent_draupadi")) t.push("In the dice hall {they} said nothing, like most of the people there.");
     if (has("left_dice") || has("absent_dice")) t.push("{They} {were} not in the hall to see the worst of it.");
     S.vows.forEach((v) => t.push([v.released ? "{They} swore “{vow!}”, and the vow was answered." : v.broken ? "{They} swore “{vow!}” and broke it." : "{They} swore “{vow!}” and kept it.", { vow: K.VOWS[v.id].name }]));
+    if (has("role_command")) t.push("At Kurukshetra {they} commanded a company of {their} own, and brought home as many as {they} could.");
+    if (has("held_ring_open")) t.push(S.heldRing ? ["{They} held the ring open for {n} heartbeats beside Abhimanyu, in the heart of the wheel.", { n: S.heldRing }] : "{They} stood beside Abhimanyu in the heart of the wheel to the end.");
+    if (has("cut_abhimanyu_bow")) t.push("On the thirteenth day {they} obeyed the order to strike Abhimanyu from behind.");
+    if (has("refused_bow_order")) t.push("On the thirteenth day {they} refused, out loud, to strike a boy from behind.");
     if (has("could_not_break_through")) t.push("On the thirteenth day {they} {were} among those who could not break through.");
     if (has("held_the_ring")) t.push("On the thirteenth day {they} held {their} place in the ring that closed on Abhimanyu.");
     if (has("refused_ring")) t.push("On the thirteenth day {they} lowered {their} bow and would not close in on a lone boy.");
