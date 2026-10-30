@@ -134,7 +134,7 @@
   ];
   K.merits = function (ch, S = K.S) {
     const hits = (K.MERITS || []).filter((m) => S.flags.includes(m.flag) && (m.on.includes(ch.attr) || m.on.includes(ch.skill)))
-      .concat(VOW_MERITS.filter((m) => K.hasVow(m.vow, S) && (m.on.includes(ch.attr) || m.on.includes(ch.skill))));
+      .concat(VOW_MERITS.filter((m) => K.hasVow(m.vow, S) && (m.on.includes(ch.attr) || m.on.includes(ch.skill))).map((m) => (K.vowYears(m.vow, S) >= 15 ? Object.assign({}, m, { n: 2 }) : m)));
     const n = Math.max(-2, Math.min(2, hits.reduce((a, m) => a + m.n, 0)));
     return { n, hits };
   };
@@ -195,7 +195,7 @@
       out.push(["down", [K.tr("Breaks vow: {vow}", { vow: K.tr(V.name) }), w && K.tr("{who} will not forgive it", { who: w }), V.priceShort && K.tr(V.priceShort)].filter(Boolean).join(" · ")]);
     }
     // A friendship that would fall below 3 ends: said before you choose (a bond lost, or a vow it shared broken).
-    if (S.friend) {
+    if (S.friend && S.spouse !== S.friend) {
       const loss = Math.min(0, (fx.bond || {})[S.friend] || 0) - (K.vowBreaksFor(c.tags, S).some((id) => (K.VOWS[id].watchers || []).includes(S.friend)) ? 3 : 0);
       const karna = S.friend === "karna" && K.vowBreaksFor(c.tags, S).includes("spare_karna");
       if (karna || (loss < 0 && (S.bonds[S.friend] ?? 3) + loss < 3)) out.push(["down danger", K.tr("Ends your friendship with {who}", { who: K.personName(S.friend, S) })]);

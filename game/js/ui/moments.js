@@ -1,7 +1,7 @@
 /* Moments (PRD §18.12, Change List 22): the big milestones of a life get a few seconds of their own.
    A painting slowly moving, a gold title, one line of memory, a short theme; tap to go on. For a
    friend, your figure and your friend's step in and clasp hands; for a divine weapon the screen
-   darkens, the mantra runs as a line of light, and its emblem rises into your hand (its glow stays).
+   darkens, the mantra runs as a line of light, and its emblem rises from the ground into your raised hand (its glow stays).
    Where a moment has no painting of its own yet, the person's portrait stands in a gold frame over
    the painting of the place (option A). With reduced motion: the still painting and the title.
    Moments are noticed in the engine (core.js), kept in S.moments for the character sheet and the
@@ -79,8 +79,9 @@
     if (!info) return after();
     const still = reduced();
     const bg = info.art ? U.bgUrl(info.art) : U.bgUrl(info.place || (K.SCENES[S.scene] && typeof K.SCENES[S.scene].art === "string" ? K.SCENES[S.scene].art : "scene_vow"));
-    const me = K.puppetSpec ? U.puppet(K.puppetSpec(S), { h: 210, pose: info.astra ? "stand" : info.with ? "walk" : "stand", cls: "mo-me" }) : "";
-    const friend = info.with && U.puppetFor ? U.puppet(U.puppetFor(info.with, S), { h: 210, pose: "walk", flip: true, cls: "mo-friend" }) : "";
+    const big = window.innerWidth >= 900 && window.innerHeight >= 700 ? 260 : 210; // the figures stand taller on a big screen
+    const me = K.puppetSpec ? U.puppet(K.puppetSpec(S), { h: big, pose: info.astra ? "stand" : info.with ? "walk" : "stand", cls: "mo-me" }) : "";
+    const friend = info.with && U.puppetFor ? U.puppet(U.puppetFor(info.with, S), { h: big, pose: "walk", flip: true, cls: "mo-friend" }) : "";
     const frame = !info.art && info.portrait ? '<i class="mo-frame" style="--img:url(\'' + U.artUrl(info.portrait) + '\')" aria-hidden="true"></i>' : "";
     const emblem = info.astra ? '<span class="mo-emblem astra">' + ASTRA_SVG + "</span>" : info.emblem ? '<span class="mo-emblem" style="--img:url(\'' + U.artUrl(info.emblem) + '\')"></span>' : "";
     const el = U.el('<div class="moment k-' + m.kind + (still ? " still" : "") + (info.grey ? " grey" : "") + (info.art ? " painted" : " framed") + '" role="dialog" aria-modal="true" aria-label="' + U.esc(K.text(info.title)) + '">' +
@@ -95,22 +96,36 @@
     el.tabIndex = -1; try { el.focus({ preventScroll: true }); } catch (e) { /* older browsers */ }
     if (K.Sound && K.Sound.moment) K.Sound.moment(info.theme);
     const run = (running = { el });
-    // The figures meet: your friend's hand in yours; the weapon's emblem comes down into your hand.
+    // The figures meet: your friend's hand in yours; the weapon's emblem rises into your hand.
     const beats = [];
     const at = (ms, fn) => beats.push(setTimeout(() => { if (running === run) fn(); }, still ? 0 : ms));
-    // The painting comes in once it has loaded (or after a moment, whatever happens).
+    // The painting comes in once it has loaded (or after a moment, whatever happens); the figures'
+    // beats are timed from then, so a slow painting does not leave them behind.
     let shown = false;
-    const reveal = () => { if (shown || running !== run) return; shown = true; requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("in"))); };
+    const reveal = () => { if (shown || running !== run) return; shown = true; requestAnimationFrame(() => requestAnimationFrame(() => { el.classList.add("in"); plan(); })); };
+    const plan = () => {
+      beats.push(setTimeout(close, still ? 6000 : info.astra ? 8200 : 7200));
+      if (info.with) at(1900, () => {
+        el.classList.add("met");
+        el.querySelectorAll(".mo-figs svg").forEach((s) => s.setAttribute("class", s.getAttribute("class").replace(/\bpose-\S+/, "pose-clasp")));
+      });
+      if (info.astra) {
+        at(2600, () => { el.classList.add("risen"); const s = el.querySelector(".mo-l svg"); if (s) s.setAttribute("class", s.getAttribute("class").replace(/\bpose-\S+/, "pose-lift")); });
+        at(3600, () => {
+          el.classList.add("taken");
+          const s = el.querySelector(".mo-l svg"), em = el.querySelector(".mo-emblem.astra"), figs = el.querySelector(".mo-figs");
+          if (s && !/\bglow\b/.test(s.getAttribute("class"))) s.setAttribute("class", s.getAttribute("class") + " glow");
+          // Into the raised hand.
+          if (s && em && figs) {
+            const hand = s.querySelector(".foreF") || s, r = hand.getBoundingClientRect(), f = figs.getBoundingClientRect();
+            em.style.left = (r.left - f.left + r.width / 2) + "px";
+            em.style.bottom = (f.bottom - r.top) - 54 - 10 + "px";
+          }
+        });
+      }
+    };
     const im = new Image(); im.onload = reveal; im.onerror = reveal; im.src = bg; if (im.complete) reveal();
     setTimeout(reveal, 900);
-    if (info.with) at(1900, () => {
-      el.classList.add("met");
-      el.querySelectorAll(".mo-figs svg").forEach((s) => s.setAttribute("class", s.getAttribute("class").replace(/\bpose-\S+/, "pose-clasp")));
-    });
-    if (info.astra) {
-      at(2600, () => { el.classList.add("risen"); const s = el.querySelector(".mo-l svg"); if (s) s.setAttribute("class", s.getAttribute("class").replace(/\bpose-\S+/, "pose-lift")); });
-      at(3600, () => { el.classList.add("taken"); const s = el.querySelector(".mo-l svg"); if (s && !/\bglow\b/.test(s.getAttribute("class"))) s.setAttribute("class", s.getAttribute("class") + " glow"); });
-    }
     const close = () => {
       if (running !== run) return;
       running = null;
@@ -122,6 +137,5 @@
     const key = (e) => { if ([" ", "Enter", "Escape", "ArrowRight"].includes(e.key)) { e.preventDefault(); e.stopPropagation(); close(); } };
     window.addEventListener("keydown", key, true);
     el.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); close(); });
-    beats.push(setTimeout(close, still ? 6000 : info.astra ? 8200 : 7200));
   }
 })(window.K = window.K || {});

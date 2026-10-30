@@ -60,4 +60,11 @@ ok(!S.moments.some((m) => m.kind === "friend"), "no friendship moment for Charu 
 S = fresh({ friend: "charu", act: 3 }); S.vows.push({ id: "never_lie", broken: false });
 ok(K.resolveScene("a3_rajasuya").id === "v_word", "the lie scene comes before the Rajasuya when it applies");
 S.seen.push("v_word"); ok(K.resolveScene("a3_rajasuya").id === "a3_rajasuya", "and only once");
+// 10. A gift grows after fifteen years kept
+S = fresh({ age: 20 }); S.vows.push({ id: "spare_unarmed", broken: false, age: 19 });
+const n1 = K.merits({ attr: "grace", skill: "stealth" }).n; S.age = 35;
+ok(n1 === 1 && K.merits({ attr: "grace", skill: "stealth" }).n === 2, "the common people's warnings grow after fifteen years kept");
+// 11. The Karna pull comes before Karna's secret, after the captive scene
+S = fresh({ friend: "bhima", act: 5 }); S.vows.push({ id: "spare_karna", broken: false }); S.seen.push("v_captive");
+ok(K.resolveScene("a5_karna_secret").id === "v_ford", "the ford scene comes when the vow and a Pandava friend apply");
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

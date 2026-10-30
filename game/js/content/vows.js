@@ -65,6 +65,24 @@
           hint: "A test of stealth" }
       ]
     },
+    // Never to strike Karna: your friend wants you to loose at him, open in the ford.
+    {
+      id: "v_ford", when: (S) => K.hasVow("spare_karna", S) && ["arjuna", "bhima", "charu"].includes(S.friend) && !S.dead.includes("karna"), skipTo: "a5_karna_secret", next: "a5_karna_secret", away: true,
+      act: 5, age: 43, art: "scene_cattle", place: "A ford, at the end of the hidden year", caption: "Karna in the river",
+      title: "Open in the ford",
+      body: ["Duryodhana's men come raiding for cattle at the end of the hidden year, and you are caught up in the fighting at a ford. Karna's chariot is stuck halfway across, the water to its axles, and he has his back to you.",
+        ["\"Now!\" {friend} shouts. \"He will never be this open again. Loose!\"", null]],
+      choices: [
+        { id: "loose", t: "Loose at Karna", tags: ["strike_karna"], fx: (S) => ({ bond: { [S.friend]: 1 } }),
+          text: "Your arrow takes him in the shoulder. He turns in the water and looks straight at you, and you will see that look for the rest of your life." },
+        { id: "banner", t: "Loose at his banner instead, and let him go", check: { attr: "aim", skill: "archery", dc: 8,
+          pass: { fx: { duty: { conscience: 1 } }, text: "The elephant-rope banner falls into the river. Karna's men lose heart, and the raid turns back. {friend} grumbles that it was a waste of a good shot, and buys you a drink that night." },
+          fail: { fx: (S) => ({ bond: { [S.friend]: -1 } }), text: "Your arrow goes wide of the banner, and the chariot lurches out of the ford and away. {friend} says nothing, loudly." } },
+          hint: "A test of aim" },
+        { id: "lower", t: "Lower your bow", fx: (S) => ({ bond: { [S.friend]: -1, karna: 1 } }),
+          text: "You lower your bow. Karna's chariot heaves out of the water, and as it passes he sees you, and nods once. {friend} stares at you as if you were a stranger." }
+      ]
+    },
     // The way back from a broken vow: one heavy penance in a life.
     {
       id: "v_penance", when: (S) => !!atonable(S) && !S.penanceDone, skipTo: "a5_side", next: "a5_side", away: true,
@@ -99,6 +117,6 @@
   ]);
   K.BEFORE.a3_rajasuya = ["v_word"];
   K.BEFORE.a5_charu = ["v_hold"];
-  K.BEFORE.a5_karna_secret = ["v_captive"];
+  K.BEFORE.a5_karna_secret = ["v_captive", "v_ford"];
   K.BEFORE.a5_side = ["v_penance", "v_mend"];
 })(window.K = window.K || {});

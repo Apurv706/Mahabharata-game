@@ -36,7 +36,7 @@
       const V = K.VOWS[v.id], w = K.watcherNames(v.id, S);
       const body = v.released ? U.tr("The vow was answered.") : v.broken && v.atoned ? U.tr("Broken at {n}. Your penance lifted the shame.", { n: v.brokenAge })
         : v.broken ? U.tr("Broken at {n}. The shame is visible to everyone.", { n: v.brokenAge }) + (V.price ? " " + U.tr(V.price) : "")
-        : U.tr(V.keep || V.gift) + (w ? "<br>" + U.tr("Watched by {who}", { who: w }) : "") + (V.price ? '<br><span class="down">' + U.tr("Broken: {price}", { price: K.tr(V.price) }) + "</span>" : "");
+        : U.tr(V.keep || V.gift) + (["never_lie", "spare_unarmed"].includes(v.id) && S.age - v.age >= 15 ? "<br>" + U.tr("Kept {n} years: its gift has grown.", { n: S.age - v.age }) : "") + (w ? "<br>" + U.tr("Watched by {who}", { who: w }) : "") + (V.price ? '<br><span class="down">' + U.tr("Broken: {price}", { price: K.tr(V.price) }) + "</span>" : "");
       return '<div class="vowcard ' + (v.broken ? "broken" : "") + '">' + U.thumb("vow_" + v.id, "emblem") + "<b>" + U.tr(V.name) + "</b><small>" + body + "</small></div>";
     }).join("") || '<p class="empty">' + U.tr("No vows taken.") + "</p>";
     // A divine weapon's condition, named by the one who gave it.

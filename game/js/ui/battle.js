@@ -369,7 +369,9 @@
 
     const acts = U.el('<div class="actions"></div>');
     const all = C.available(), idle = all.filter((a) => a.idle);
-    all.filter((a) => !a.idle).forEach((a, i) => {
+    // Shouting for a friend is a once-a-battle thing: it waits with the other tools below, not among the moves.
+    const call = all.find((a) => a.id === "call");
+    all.filter((a) => !a.idle && a.id !== "call").forEach((a, i) => {
       const special = !["strike", "guard", "herbs"].includes(a.id);
       const extra = a.count != null ? " (" + a.count + ")" : "";
       const b = U.button("act" + (special ? " special" : ""), "<b>" + (i + 1) + ". " + U.esc(a.name + extra) + "</b><small>" + U.esc(a.why || a.desc) + "</small>");
@@ -384,6 +386,7 @@
     if (idle.length) box.appendChild(U.el('<p class="idle-moves">' + U.esc(U.tr("No allies here for: {moves}", { moves: idle.map((a) => a.name).join(", ") })) + "</p>"));
 
     const tools = U.el('<div class="battle-tools"></div>');
+    if (call && !call.why) { const cb = U.button("ghost call-help", U.esc(call.name), () => C.act("call", null)); cb.title = call.desc; tools.appendChild(cb); }
     C.fallen().forEach((u) => tools.appendChild(U.button("cta secondary", U.tr("Pull {name} out of the fighting", { name: K.text(u.src || u.name) }) + "<small>" + U.tr("Costs your turn") + "</small>", () => C.pull(u.uid))));
     C.spareable().forEach((e) => tools.appendChild(U.button("cta secondary", U.tr("Spare {name}", { name: K.text(e.src || e.name) }), () => C.spare(e.uid))));
     if (C.canFlee()) {

@@ -67,6 +67,8 @@
   };
   K.activeVows = (S = K.S) => S.vows.filter((v) => !v.broken);
   K.hasVow = (id, S = K.S) => S.vows.some((v) => v.id === id && !v.broken);
+  // How long a vow has been kept: its gift grows (flow.js VOW_MERITS) after fifteen years.
+  K.vowYears = (id, S = K.S) => { const v = S.vows.find((x) => x.id === id && !x.broken); return v ? S.age - (v.age || S.age) : 0; };
   K.isDead = (who, S = K.S) => S.dead.includes(who);
   // Display name of a person, in the current language.
   K.personName = (id, S = K.S) => {
@@ -344,7 +346,7 @@
     if (!b.company && S.flags.includes("role_command")) moment(S, d, { kind: "company" });
     // A friendship below 3 ends: the friend leaves the bonds panel, and will not answer a call for help.
     const f = S.friend;
-    if (f && !S.dead.includes(f) && (S.bonds[f] ?? 3) < 3) {
+    if (f && !S.dead.includes(f) && S.spouse !== f && (S.bonds[f] ?? 3) < 3) { // a marriage holds, whatever the bond
       (S.lostFriends = S.lostFriends || []).push({ who: f, age: S.age, act: S.act });
       S.friend = null; d.friendLost = f;
       FX.flag("lost_friend_" + f, S);

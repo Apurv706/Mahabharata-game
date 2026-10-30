@@ -808,22 +808,22 @@ html[lang="hi"] .beat-act p { line-height: 1.7; }
 .moment.grey .mo-frame { filter: grayscale(.9); }
 @keyframes mo-rise { from { opacity: 0; transform: translate(-50%, 18px); } to { opacity: 1; transform: translate(-50%, 0); } }
 .mo-figs { position: absolute; z-index: 2; left: 0; right: 0; bottom: 30%; height: 230px; pointer-events: none; }
-.mo-figs .mo-l, .mo-figs .mo-r { position: absolute; bottom: 0; transition: left 1.8s cubic-bezier(.3, .1, .3, 1), right 1.8s cubic-bezier(.3, .1, .3, 1); filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .55)); }
+.mo-figs .mo-l, .mo-figs .mo-r { position: absolute; bottom: 0; transition: left 1.4s cubic-bezier(.3, .1, .3, 1), right 1.4s cubic-bezier(.3, .1, .3, 1); filter: drop-shadow(0 6px 10px rgba(0, 0, 0, .55)); }
 .mo-figs .mo-l { left: -30%; } .mo-figs .mo-r { right: -30%; }
 .moment.in .mo-l { left: calc(50% - 150px); } .moment.in .mo-r { right: calc(50% - 150px); }
 /* Over a painting of the two of you, the figures keep to the clear side edges and reach toward each other. */
-.moment.painted.in .mo-l { left: 4%; } .moment.painted.in .mo-r { right: 4%; }
-.moment.painted.k-friend.met .mo-l { left: 7%; } .moment.painted.k-friend.met .mo-r { right: 7%; }
+.moment.painted.k-friend.in .mo-l { left: 8%; } .moment.painted.k-friend.in .mo-r { right: 8%; }
+.moment.painted.k-friend.met .mo-l { left: 11%; } .moment.painted.k-friend.met .mo-r { right: 11%; }
 .moment.k-astra.in .mo-l { left: calc(50% - 60px); }
 .moment.k-friend.met .mo-l { left: calc(50% - 118px); } .moment.k-friend.met .mo-r { right: calc(50% - 118px); }
 .mo-figs svg { display: block; }
 .mo-emblem { position: absolute; left: 50%; bottom: 220px; width: 108px; height: 108px; margin-left: -54px; background: var(--img) center / contain no-repeat; opacity: 0; filter: drop-shadow(0 0 18px rgba(255, 214, 128, .8)); }
 .moment > .mo-emblem { z-index: 2; bottom: auto; top: 16%; width: min(34vw, 26vh); height: min(34vw, 26vh); margin-left: calc(min(34vw, 26vh) / -2); }
 .moment.in .mo-emblem:not(.astra) { animation: mo-fade 1.2s .4s ease-out forwards; }
-.mo-emblem.astra { bottom: 104%; transition: bottom 1.2s cubic-bezier(.4, 0, .2, 1), opacity .6s, transform .8s; }
+.mo-emblem.astra { bottom: -40px; transition: bottom 1.4s cubic-bezier(.3, 0, .2, 1), opacity .8s, transform .8s; } /* it rises from the weapon laid on the ground */
 .mo-emblem.astra svg { width: 100%; height: 100%; }
 .moment.risen .mo-emblem.astra { opacity: 1; bottom: 200px; }
-.moment.taken .mo-emblem.astra { bottom: 132px; transform: translateX(24px) scale(.55); opacity: .9; }
+.moment.taken .mo-emblem.astra { transform: scale(.55); opacity: .9; transition: left .8s ease, bottom .8s ease, transform .8s ease, opacity .6s; }
 @keyframes mo-fade { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
 .mo-dark { position: absolute; inset: 0; z-index: 1; background: #050308; opacity: 0; transition: opacity 1.2s; pointer-events: none; }
 .moment.k-astra.in .mo-dark { opacity: .5; } .moment.k-astra.taken .mo-dark { opacity: .2; }
@@ -847,8 +847,8 @@ html[lang="hi"] .mo-title { line-height: 1.3; } html[lang="hi"] .mo-line { font-
 .moment.still .mo-figs { display: none; }
 @media (max-width: 560px) { .mo-figs { bottom: 30%; height: 170px; } .mo-figs svg { height: 160px; width: auto; } .moment.in .mo-l { left: calc(50% - 120px); } .moment.in .mo-r { right: calc(50% - 120px); }
   .moment.k-friend.met .mo-l { left: calc(50% - 96px); } .moment.k-friend.met .mo-r { right: calc(50% - 96px); }
-  .moment.painted.in .mo-l { left: 0; } .moment.painted.in .mo-r { right: 0; } .moment.painted.k-friend.met .mo-l { left: 2%; } .moment.painted.k-friend.met .mo-r { right: 2%; }
-  .moment.painted .mo-figs { bottom: 34%; } }
+  .moment.painted.k-friend.in .mo-l { left: 0; } .moment.painted.k-friend.in .mo-r { right: 0; } .moment.painted.k-friend.met .mo-l { left: 2%; } .moment.painted.k-friend.met .mo-r { right: 2%; }
+  .moment.painted.k-friend .mo-figs { bottom: 34%; } .moment.k-astra.in .mo-l { left: calc(50% - 60px); } }
 /* Two new poses: hands reaching to clasp a friend's; an arm raised to take what is given. */
 .pose-clasp .armF { transform: rotate(-64deg); } .pose-clasp .foreF { transform: rotate(-12deg); } .pose-clasp .armB { transform: rotate(-8deg); } .pose-clasp .pp-body { transform: rotate(4deg); }
 .pose-lift .armF { transform: rotate(-150deg); } .pose-lift .foreF { transform: rotate(-10deg); } .pose-lift .armB { transform: rotate(-20deg); } .pose-lift .head { transform: rotate(-8deg); }
