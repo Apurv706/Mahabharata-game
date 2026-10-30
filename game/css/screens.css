@@ -1294,6 +1294,9 @@ body.ax-shake #leaf { animation: ax-shake 0.38s ease-out; }
 /* ---------- Meeting a blow: jump, duck, sidestep, block ---------- */
 .qte-btns { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .qte-btns .trial-press, .qte-btns > * { min-width: 0; width: 100%; padding-left: 6px; padding-right: 6px; white-space: nowrap; }
+/* In a fight's narrow side panel on a wide screen, four buttons in a row: keep every label whole. */
+.qte { container-type: inline-size; }
+@media (min-width: 561px) { @container (max-width: 520px) { .qte-btns { gap: 6px; } .qte-btns .trial-press, .qte-btns > * { font-size: 14.5px; padding-left: 4px; padding-right: 4px; } } }
 @media (max-width: 560px) { .qte-btns { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .arena .incoming { position: absolute; z-index: 3; width: 74px; height: 22px; margin: -11px 0 0 -37px; color: #2a160c; pointer-events: none; transform: translateX(0); opacity: 0; filter: drop-shadow(0 0 6px rgba(255, 200, 120, .7)) drop-shadow(0 3px 2px rgba(0, 0, 0, .5)); }
 .arena .incoming svg { width: 100%; height: 100%; fill: #6b3a1c; stroke: #e9c98a; stroke-width: 1.4; }
