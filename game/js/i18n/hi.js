@@ -3607,6 +3607,22 @@
     "You shout for help. Beyond the ring Bhima roars back, but Jayadratha's line holds, and no one comes through.": "तुम मदद के लिए पुकारते हो। घेरे के पार भीम गरजकर उत्तर देता है, पर जयद्रथ की पंक्ति टिकी रहती है, और कोई भीतर नहीं आ पाता।",
     "Against the boy in the wheel": "चक्र में लड़के के सामने",
     "On the Kaurava side, stand in Abhimanyu's way.": "कौरव पक्ष में रहकर अभिमन्यु का रास्ता रोको।",
-    "On the thirteenth day {they} stood in Abhimanyu's way in the wheel, as the order said, and fell to his arrows.": "तेरहवें दिन {they} आदेश के अनुसार चक्र में अभिमन्यु का रास्ता रोककर खड़े हुए, और उसके बाणों से गिरे।"
+    "On the thirteenth day {they} stood in Abhimanyu's way in the wheel, as the order said, and fell to his arrows.": "तेरहवें दिन {they} आदेश के अनुसार चक्र में अभिमन्यु का रास्ता रोककर खड़े हुए, और उसके बाणों से गिरे।",
+    "A low sweep at your legs": "टाँगों पर नीचा वार",
+    "An arrow, low, at your legs": "टाँगों पर नीचा आता बाण",
+    "A swing at your head": "सिर पर घुमाकर वार",
+    "An arrow at your head": "सिर की ओर बाण",
+    "A straight thrust": "सीधा भोंकता वार",
+    "A charge, head down": "सिर झुकाकर धावा",
+    "Read the blow: jump, duck, sidestep or block, as the ring meets the mark. Swipe or use the arrow keys.": "वार को पढ़ो: जब छल्ला निशान से मिले, तब कूदो, झुको, बगल हटो या रोको। उँगली सरकाओ या तीर वाली कुंजियाँ दबाओ।",
+    "A perfect read! You strike back.": "बिल्कुल सही पढ़ा! तुम पलटवार करते हो।",
+    "Clear!": "बच गए!",
+    "Late: it grazes you.": "देर हो गई: वार तुम्हें छूकर निकलता है।",
+    "The wrong way!": "ग़लत दिशा!",
+    "Jump ↑": "कूदो ↑",
+    "Duck ↓": "झुको ↓",
+    "Sidestep ↔": "बगल हटो ↔",
+    "Hold to move your hand right; let go and it drifts back. Keep it on the horse's head as it shies.": "दबाए रखो तो हाथ दाईं ओर चलेगा; छोड़ो तो वापस खिसकेगा। घोड़ा बिदके तब भी हाथ उसके सिर पर रखो।",
+    "A festival drum has maddened one of the chariot horses, and Karna is trying to hold it. \"Help me,\" he says. Keep your hand on the horse's head until it is calm.": "उत्सव के एक नगाड़े ने रथ के एक घोड़े को बेक़ाबू कर दिया है, और कर्ण उसे थामने की कोशिश कर रहा है। \"मेरी मदद करो,\" वह कहता है। घोड़ा शांत होने तक अपना हाथ उसके सिर पर रखो।"
   });
 })(window.K = window.K || {});

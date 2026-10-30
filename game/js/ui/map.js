@@ -61,10 +61,12 @@
   };
 
   // Called as each scene is drawn. Returns [from, to] when this scene moved you.
-  K.travel = function (sc, S = K.S) {
+  K.travel = function (sc, S = K.S, after) {
     // A scene whose place names a town moves you there; the story puts you in every scene it shows.
     // A scene told as news (`away: true`) keeps you where you are.
     if (sc.away) return null;
+    // A scene that tells why you are leaving (`travelAfter`) moves you once its story is told.
+    if (sc.travelAfter && !after) return null;
     const loc = K.val(sc.to, S) || K.locOf(K.val(sc.place), S);
     if (!loc) return null;
     S.road = S.road || [];

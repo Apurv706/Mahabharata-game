@@ -42,6 +42,7 @@
       cracked: (S.flags || []).includes("amulet_broken"),
       item: S.path ? ITEM[S.path] : null,
       eye: inj.includes("eye"), sling: inj.includes("arm"), limp: inj.includes("leg"), scar: inj.includes("scar"),
+      glow: (S.boons || []).includes("astra"), // a faint light about one who carries a divine weapon
       chained: (S.flags || []).includes("imprisoned"), cuffed: (S.flags || []).includes("was_imprisoned") && !(S.flags || []).includes("imprisoned"), dead: S.alive === false
     };
   };
@@ -58,6 +59,8 @@
     balarama: { pronoun: "he", palette: ["#e9d9b8", "#2c4c86", "#e2b55a"], headgear: "kirita", item: "plough", big: true, stage: "adult" },
     mauni: { pronoun: "he", headgear: "jata", palette: ["#b88352", "#c7a46c", "#8a6a3a"], beard: true, stage: "elder", item: "staff" },
     vidura: { pronoun: "he", headgear: "jata", palette: ["#c08a56", "#f0e8d6", "#9b8a6a"], beard: true, stage: "elder", item: "scroll" },
+    // The sutradhara, who holds the strings of the story and opens each act.
+    sutradhara: { pronoun: "he", headgear: "band", palette: ["#c8925e", "#e9dcc0", "#b2432a"], beard: true, stage: "elder", item: "scroll" },
     bhishma: { pronoun: "he", headgear: "jata", palette: ["#cfa274", "#f4efe2", "#d6c08a"], beard: true, stage: "elder" },
     dhrishtadyumna: { pronoun: "he", headgear: "mukuta", palette: ["#c27a44", "#b2432a", "#e2b55a"], item: "sword", stage: "adult" },
     shakuni: { pronoun: "he", palette: ["#b78a5c", "#4b5a73", "#c9b07a"], headgear: "band", beard: true, stage: "elder", item: "dice" },
@@ -144,7 +147,7 @@
     const headScale = stage === "child" ? 1.38 : 1.14;
     const bear = spec.temper ? " t-" + spec.temper : "";
     const pose = o.pose || (spec.dead ? "dead" : "stand");
-    const clsx = ["pp", "pose-" + pose, "st-" + stage, bear, spec.limp ? "limp" : "", spec.sling ? "sling" : "", spec.chained ? "chained" : "", spec.dead ? "dead" : "", o.flip ? "flip" : "", o.cls || ""].filter(Boolean).join(" ");
+    const clsx = ["pp", "pose-" + pose, "st-" + stage, bear, spec.glow ? "glow" : "", spec.limp ? "limp" : "", spec.sling ? "sling" : "", spec.chained ? "chained" : "", spec.dead ? "dead" : "", o.flip ? "flip" : "", o.cls || ""].filter(Boolean).join(" ");
     const h = o.h || 120;
     // Clothing: a dhoti to the knee, a long sari, or a shawl over a dhoti; armour for Karna.
     const skirt = she ? "M48 106 L72 106 L85 190 L37 190 Z" : "M48.5 108 L71.5 108 L80 153 L40 153 Z";
@@ -194,7 +197,8 @@
       (she ? '<path d="M71 106 L50 73 L57 70 L75 101 Z" fill="' + cloth + '"' + OUT + '/><path d="M71 106 L50 73" stroke="' + trim + '" stroke-width="1.4"/>' : "") +
       (spec.heir === "amulet" ? '<circle cx="60" cy="81" r="2.6" fill="' + trim + '"' + OUT + "/>" + (spec.cracked ? '<path d="M58.6 79.2 L61 81 L59.6 82.8" stroke="#24120a" stroke-width="0.7" fill="none"/>' : "") : "") +
       (spec.armour ? '<path d="M52 72 Q60 66 68 72 L67 100 Q60 104 53 100 Z" fill="' + trim + '" opacity="0.9"' + OUT + '/><path d="M54 80h12M54 88h12M55 96h10" stroke="#a37a2a" stroke-width="0.8"/>' : "") +
-      (spec.scar ? '<path d="M56 86 l8 6 M58 84 l6 5" stroke="#5a2014" stroke-width="0.9"/>' : "");
+      // A scar: a patch of darker leather stitched over the wound, as puppet makers mend a tear.
+      (spec.scar ? '<path d="M54.5 83 L64 81.5 L65.5 89.5 L56 91 Z" fill="#7a4628" opacity="0.9"' + OUT + '/><path d="M55 82.6 l1.2 1.4 M57.6 82.2 l1.2 1.4 M60.2 81.8 l1.2 1.4 M62.8 81.4 l1.2 1.4 M56.4 90.6 l1.2 -1.4 M59 90.2 l1.2 -1.4 M61.6 89.8 l1.2 -1.4 M64.2 89.4 l1.2 -1.4" stroke="#efe2c0" stroke-width="0.6"/>' : "");
     const svg =
       // Smaller figures (children) are drawn by widening the view around the feet, so every joint
       // keeps its own coordinates and the CSS joint origins stay exact.
@@ -203,6 +207,8 @@
       '<svg class="' + clsx + '" viewBox="' + [60 - 60 / scale, 200 - 200 / scale, 120 / scale, 210 / scale].map((v) => +v.toFixed(2)).join(" ") + '" width="' + Math.round(h * 120 / 210) + '" height="' + h + '"') +
       (o.label ? ' role="img" aria-label="' + U.esc(o.label) + '"' : ' aria-hidden="true"') + ">" +
       '<g class="pp-all">' +
+      // The puppeteer's main rod, faintly, from the body down out of sight.
+      '<path class="rod main-rod" d="M60 112 L60 240" stroke="#1d0f08" stroke-width="1.1" opacity="0.45"/>' +
       '<g class="pp-body">' +
         // Back limbs, a shade darker, behind the body.
         '<g class="j legB" ' + back + ">" + thigh() + '<g class="j shinB">' + shin + "</g></g>" +
@@ -228,7 +234,7 @@
     const el = document.querySelector(".pagehead .ppbadge svg, .ppbadge svg");
     if (!el) return;
     const keep = el.getAttribute("class").replace(/\bpose-\S+/g, "").replace(/\breact-\S+/g, "").trim();
-    el.setAttribute("class", keep + " pose-" + ({ win: "cheer", lose: "slump", vow: "kneel" }[kind] || "stand") + " react-" + kind);
+    el.setAttribute("class", keep + " pose-" + ({ win: "cheer", lose: "slump", vow: "kneel", shame: "shame", fold: "fold", tremble: "tremble" }[kind] || "stand") + " react-" + kind);
     clearTimeout(U.puppetReact.t);
     U.puppetReact.t = setTimeout(() => { if (el.isConnected) el.setAttribute("class", keep + " pose-stand"); }, 2600);
   };

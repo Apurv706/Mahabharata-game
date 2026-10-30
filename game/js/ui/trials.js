@@ -321,12 +321,35 @@
   };
 
   // ---------- Steady: keep your hand over the horse's mood, by holding and letting go ----------
+  // The horse, cut from leather like the puppets: body, neck and head (the head is the target, at the
+  // horse's front, so the figure is drawn with its head over x = 0), four legs, mane and tail.
+  const HORSE = '<svg viewBox="-34 -78 150 98"><g class="h-all">' +
+    '<path class="h-tail" d="M96 -36 Q114 -30 110 -6 Q104 -20 94 -26 Z" fill="#3a2214" stroke="#1d0f08" stroke-width="1.2"/>' +
+    '<g class="h-legB"><path d="M84 -18 L88 14 L82 15 L76 -14 Z M28 -16 L26 14 L20 15 L20 -14 Z" fill="#7a4626" stroke="#1d0f08" stroke-width="1.2"/></g>' +
+    '<path class="h-body" d="M18 -40 Q50 -50 92 -40 Q100 -26 90 -14 Q54 -8 24 -14 Q12 -24 18 -40 Z" fill="#a8622f" stroke="#1d0f08" stroke-width="1.4"/>' +
+    '<path d="M30 -32 h4 M42 -34 h4 M54 -35 h4 M66 -34 h4 M78 -32 h4 M36 -24 h4 M50 -24 h4 M64 -24 h4" stroke="#1d0f08" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>' +
+    '<path d="M24 -38 Q60 -30 92 -38" fill="none" stroke="#e2b55a" stroke-width="2.2"/>' +
+    '<g class="h-legF"><path d="M88 -18 L94 14 L88 15 L82 -16 Z M24 -18 L18 14 L12 15 L14 -16 Z" fill="#a8622f" stroke="#1d0f08" stroke-width="1.2"/></g>' +
+    '<g class="h-neck"><path d="M24 -36 Q10 -58 -2 -68 L-16 -62 Q-6 -46 10 -26 Z" fill="#a8622f" stroke="#1d0f08" stroke-width="1.4"/>' +
+    '<path d="M22 -40 Q10 -58 0 -70 Q8 -56 18 -36 Z" fill="#3a2214"/>' +
+    '<path class="h-head" d="M-2 -70 Q-14 -76 -28 -58 Q-32 -50 -26 -48 L-16 -52 Q-8 -54 -4 -60 Z" fill="#a8622f" stroke="#1d0f08" stroke-width="1.4"/>' +
+    '<circle cx="-12" cy="-63" r="1.8" fill="#1d0f08"/><path d="M-4 -72 L0 -80 L2 -70 Z" fill="#a8622f" stroke="#1d0f08" stroke-width="1"/>' +
+    '<path d="M-26 -52 Q-14 -58 -4 -64" fill="none" stroke="#b2432a" stroke-width="1.6"/></g>' +
+    '<path class="h-rod" d="M56 -12 L56 30" stroke="#1d0f08" stroke-width="1" opacity="0.5"/></g></svg>';
   U.games.steady = function (box, done, c) {
     return frame(box, done, c, "steady", ({ host, power, t, finish, onAct, cue }) => {
       const band = clamp(0.11 + power * 0.015, 0.1, 0.2), LIMIT = t.secs || 15;
       let pos = 0.5, vel = 0, holding = false, mood = 0.5, moodV = 0, calm = 0, last = 0;
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="steady"><div class="mood" style="width:' + band * 100 + '%"></div><div class="hand"></div></div><div class="calm"><i></i></div><p class="game-note">' + U.tr(t.help || "Hold to move your hand right; let go and it drifts back. Keep it over the glow.") + '</p><div class="btnrow"></div>';
       const moodEl = host.querySelector(".mood"), hand = host.querySelector(".hand"), bar = host.querySelector(".calm i"), score = host.querySelector(".score");
+      // A frightened horse (trial.horse): a leather puppet horse instead of the glow. Its head is
+      // where your hand must be; it tosses its head and rears when frightened, lowers it as it calms.
+      let horse = null;
+      if (t.horse) {
+        host.querySelector(".steady").classList.add("with-horse");
+        horse = U.el('<div class="horse" aria-hidden="true">' + HORSE + "</div>");
+        host.querySelector(".steady").insertBefore(horse, hand);
+      }
       // On the painting: an open hand reaching toward the glow.
       if (host.closest(".trial.immersive")) hand.innerHTML = '<svg viewBox="0 0 60 80" aria-hidden="true"><path d="M18 78 L16 46 Q8 40 6 30 Q6 24 12 26 L18 36 L16 10 Q16 4 21 4 Q26 4 26 10 L27 30 L28 6 Q28 1 33 1 Q38 1 38 7 L38 30 L40 10 Q40 5 45 5 Q50 5 49 11 L48 34 L51 18 Q52 13 56 14 Q60 15 59 21 L56 48 Q54 62 44 70 L44 78 Z" fill="#d6a274" stroke="#4a2a14" stroke-width="2.4" stroke-linejoin="round"/><path d="M27 30 L27 40 M38 30 L38 40" stroke="#8a5a34" stroke-width="1.5"/></svg>';
       const down = () => { holding = true; cue("hold"); }, up = () => { holding = false; cue("rest"); };
@@ -346,6 +369,15 @@
         const inside = Math.abs(pos - mood) <= band / 2;
         calm = clamp(calm + (inside ? dt / 7 : -dt / 9), 0, 1);
         moodEl.style.left = (mood - band / 2) * 100 + "%";
+        if (horse) {
+          horse.style.left = mood * 100 + "%";
+          horse.classList.toggle("touched", inside);
+          horse.classList.toggle("rear", Math.abs(moodV) > 0.3 && calm < 0.8);
+          horse.classList.toggle("calm", calm > 0.6);
+          horse.classList.toggle("toss", !inside && calm <= 0.6);
+          horse.classList.toggle("left", moodV < -0.05); // it faces the way it shies
+          if (moodV > 0.05) horse.classList.remove("left");
+        }
         hand.style.left = pos * 100 + "%";
         moodEl.classList.toggle("on", inside);
         bar.style.width = calm * 100 + "%";

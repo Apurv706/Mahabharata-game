@@ -84,8 +84,9 @@
     },
     karna: {
       game: "steady", hint: "A test of a steady hand",
-      trial: { attr: "grace", skill: "chariot", stage: "stage_stable_yard", cast: ["karna"],
-        rules: "A festival drum has maddened one of the chariot horses, and Karna is trying to hold it. \"Help me,\" he says. Keep your hand over the glow until the horse is calm.",
+      trial: { attr: "grace", skill: "chariot", stage: "stage_stable_yard", cast: ["karna"], horse: true,
+        help: "Hold to move your hand right; let go and it drifts back. Keep it on the horse's head as it shies.",
+        rules: "A festival drum has maddened one of the chariot horses, and Karna is trying to hold it. \"Help me,\" he says. Keep your hand on the horse's head until it is calm.",
         stakes: ["Karna becomes your closest friend.", "Karna has to manage alone this time, and asks you to try once more."] },
       retryStakes: ["Karna becomes your closest friend.", "Karna stops asking, and you must choose another friend. It counts as two failures, and it will weigh on every chariot test to come."],
       crossWhy: "Twice Karna asked for your help with a horse, and twice it beat you.",
@@ -156,7 +157,7 @@
     // up the Ganga from Champa with Adhiratha's household.
     {
       id: "a1_journey", when: (S) => S.origin !== "hastinapura", skipTo: "a1_princes",
-      act: 1, age: 7, art: "scene_journey", place: "The road to Hastinapura", caption: "Hastinapura, at the end of the road", to: "hastinapura",
+      act: 1, age: 7, art: "scene_journey", place: "The road to Hastinapura", caption: "Hastinapura, at the end of the road", to: "hastinapura", travelAfter: true,
       travel: (S) => (S.origin === "suta" ? "Adhiratha's household is called to the Kuru court, and your family goes with it." : "Your family is moving to Hastinapura."),
       enter: { flag: "moved_capital" },
       title: "The road to Hastinapura",

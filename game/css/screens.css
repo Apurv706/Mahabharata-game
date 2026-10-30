@@ -1217,3 +1217,64 @@ body.ax-shake #leaf { animation: ax-shake 0.38s ease-out; }
 .arena .actor.ax-pushed { transform: translateX(40px); transition: transform 0.5s ease-out; }
 .arena .actor.ax-slump svg { filter: grayscale(0.4) brightness(0.8); }
 @media (prefers-reduced-motion: reduce) { body.ax-shake #leaf { animation: none; } }
+
+/* ---------- Meeting a blow: jump, duck, sidestep, block ---------- */
+.qte-btns { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.qte-btns .trial-press, .qte-btns > * { min-width: 0; width: 100%; padding-left: 6px; padding-right: 6px; white-space: nowrap; }
+@media (max-width: 560px) { .qte-btns { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.arena .incoming { position: absolute; z-index: 3; width: 74px; height: 22px; margin: -11px 0 0 -37px; color: #2a160c; pointer-events: none; transform: translateX(0); opacity: 0; filter: drop-shadow(0 0 6px rgba(255, 200, 120, .7)) drop-shadow(0 3px 2px rgba(0, 0, 0, .5)); }
+.arena .incoming svg { width: 100%; height: 100%; fill: #6b3a1c; stroke: #e9c98a; stroke-width: 1.4; }
+.arena .incoming.blade { width: 54px; height: 54px; margin: -27px 0 0 -27px; }
+.arena .incoming.charge { width: 70px; height: 44px; margin: -22px 0 0 -35px; }
+.arena .incoming.go { opacity: 1; transform: translateX(var(--to)); transition: transform var(--dur) linear, opacity .15s; }
+.arena .incoming.gone { opacity: 0; transition: opacity .25s; }
+.arena .actor.act-jump { animation: act-jump .56s cubic-bezier(.3, .7, .4, 1); }
+.arena .actor.act-duck svg { animation: act-duck .56s ease-out; transform-origin: 50% 100%; }
+.arena .actor.act-side { animation: act-side .56s ease-out; }
+@keyframes act-jump { 0% { transform: translateY(0); } 40% { transform: translateY(-34%); } 55% { transform: translateY(-36%); } 100% { transform: translateY(0); } } /* a hop with a little hang at the top */
+@keyframes act-duck { 0%, 100% { transform: scaleY(1); } 35%, 65% { transform: scaleY(.62); } }
+@keyframes act-side { 0%, 100% { transform: translateX(0); } 40%, 60% { transform: translateX(-38%); } }
+@media (prefers-reduced-motion: reduce) { .arena .incoming, .arena .actor.act-jump, .arena .actor.act-duck svg, .arena .actor.act-side { animation: none !important; transition: none !important; } }
+
+/* ---------- The puppet, closer to the craft ---------- */
+.pp .main-rod { pointer-events: none; }
+.pp.glow .pp-all { filter: drop-shadow(0 0 3px rgba(255, 214, 128, 0.95)) drop-shadow(0 0 1px rgba(255, 240, 200, 0.9)); }
+/* Dangling limbs sway a little when the figure stands. */
+@media (prefers-reduced-motion: no-preference) {
+  .pose-stand .foreB { animation: pp-sway 3.2s ease-in-out infinite; }
+  .pose-stand .shinB { animation: pp-sway 4.1s ease-in-out infinite reverse; }
+  .pose-tremble .pp-all { animation: pp-tremble 0.18s linear infinite; }
+}
+@keyframes pp-sway { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(4deg); } }
+@keyframes pp-tremble { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-0.6px, 0.3px); } 75% { transform: translate(0.6px, -0.3px); } }
+/* Hands folded (namaskara), a bow, shame (the face turned down and away), trembling. */
+.pose-fold .armF { transform: rotate(-38deg); } .pose-fold .foreF { transform: rotate(-118deg); } .pose-fold .armB { transform: rotate(-30deg); } .pose-fold .foreB { transform: rotate(-120deg); }
+.pose-bow .head { transform: rotate(24deg); } .pose-bow .pp-body { transform: rotate(6deg); } .pose-bow .armF { transform: rotate(-38deg); } .pose-bow .foreF { transform: rotate(-118deg); } .pose-bow .armB { transform: rotate(-30deg); } .pose-bow .foreB { transform: rotate(-120deg); }
+.pose-shame .head { transform: rotate(32deg); } .pose-shame .pp-body { transform: rotate(8deg) translateY(2px); } .pose-shame .armF { transform: rotate(-120deg); } .pose-shame .foreF { transform: rotate(-110deg); } .pose-shame .armB { transform: rotate(10deg); }
+.pose-tremble .armF { transform: rotate(4deg); } .pose-tremble .foreF { transform: rotate(-30deg); } .pose-tremble .head { transform: rotate(8deg); }
+/* The sutradhara opens each act, bowing, beside its name. */
+.beat-act .b-sutra { display: block; margin: 0 auto 8px; height: clamp(90px, 16vh, 150px); width: auto; }
+.beat-act .b-sutra svg { height: 100%; width: auto; filter: drop-shadow(0 0 10px rgba(255, 196, 110, 0.5)); }
+.track .me > * { transition: transform 0.25s ease-out; }
+.track .me.lean-u > * { transform: rotate(-7deg); } .track .me.lean-d > * { transform: rotate(6deg); }
+/* Wrestlers lock: in the push test the two figures close and lean into each other. */
+.trial.immersive.trial-push > .cast .actor.me .pp { transform-origin: 50% 100%; }
+.trial.immersive.trial-push > .cast .actor.foe { margin-left: -7vw; }
+/* The frightened horse in Karna's test: a leather puppet in place of the glow. */
+.steady.with-horse .mood { opacity: 0; }
+.steady.with-horse { --hw: clamp(150px, 34vw, 240px); }
+.steady .horse { position: absolute; bottom: 0; width: var(--hw); margin-left: calc(var(--hw) * -0.2); transition: left 0.08s linear; z-index: 1; }
+.steady .horse svg { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 0 8px rgba(255, 196, 110, 0.45)) drop-shadow(0 5px 4px rgba(0, 0, 0, 0.55)); }
+.steady .horse.left svg { transform: scaleX(-1); transform-origin: 20% 50%; }
+.steady .horse .h-all, .steady .horse .h-neck, .steady .horse .h-legF, .steady .horse .h-legB, .steady .horse .h-tail { transform-box: view-box; transition: transform 0.35s cubic-bezier(.3, .7, .3, 1); }
+.steady .horse .h-all { transform-origin: 90px 14px; }
+.steady .horse .h-neck { transform-origin: 20px -32px; }
+.steady .horse .h-legF { transform-origin: 20px -16px; }
+.steady .horse.rear .h-all { transform: rotate(18deg); } .steady .horse.rear .h-legF { transform: rotate(-34deg); }
+.steady .horse.toss .h-neck { animation: h-toss 0.7s ease-in-out infinite; }
+.steady .horse.calm .h-neck { transform: rotate(-22deg); }
+.steady .horse.touched svg { filter: drop-shadow(0 0 12px rgba(160, 230, 180, 0.8)) drop-shadow(0 5px 4px rgba(0, 0, 0, 0.55)); }
+@keyframes h-toss { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(14deg); } }
+.trial.immersive .steady.with-horse .hand { top: auto; bottom: calc(var(--hw) * 0.42); transform: none; z-index: 2; }
+.trial.immersive.trial-steady:has(.with-horse) > .cast .actor.me { display: none; } /* you are the hand on the horse's head */
+@media (prefers-reduced-motion: reduce) { .steady .horse .h-neck { animation: none !important; } }

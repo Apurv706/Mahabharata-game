@@ -71,7 +71,7 @@ function playLife(seed) {
   const moves = [];
   const tv = K.travel; K.travel = (sc, S) => { S = S || K.S; const m = tv(sc, S); if (m) moves.push(sc.id + (sc.travel ? "" : " (no line)") + " " + m[0] + ">" + m[1]);
     // The map must agree with the story: a scene that names a town shows the marker on it.
-    const named = sc.away ? null : K.locOf(String(K.val(sc.place, S) || ""), S);
+    const named = sc.away || sc.travelAfter ? null : K.locOf(String(K.val(sc.place, S) || ""), S);
     if (named && named !== S.at) errors.push("warn: map: " + sc.id + " names " + named + " but the marker is on " + S.at);
     return m; };
   K.on("combat", (B) => { if (B.over && !B._counted) { B._counted = true; fights.push([B.enc.id, B.over]); } });

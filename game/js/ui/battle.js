@@ -21,7 +21,8 @@
   U.startBattle = function (encId, onEnd) {
     target = null; lastHp = {}; lastLogLen = 0; lastActs = 0; foeKey = null; stopQte();
     onEndCb = onEnd;
-    if (K.ENCOUNTERS[encId] && K.ENCOUNTERS[encId].lethal && K.Sound) K.Sound.play("conch");
+    // The great war opens each fight with the call to arms; other fights with a drum call.
+    if (K.Sound && K.ENCOUNTERS[encId]) K.Sound.play(K.ENCOUNTERS[encId].lethal && K.S.act === 6 ? "callToArms" : "drumCall");
     if (K.Sound) K.Sound.mood("battle");
     C.stepNext = U.timed() && !K.headless;
     C.start(encId, onEnd);
@@ -132,6 +133,7 @@
     }
     const finisher = B.over === "win" && killed.some((u) => u.side === "enemy");
     if (finisher && arena) { arena.classList.add("slowmo"); if (K.Sound) setTimeout(() => K.Sound.play("gong"), 300); }
+    if (K.Sound && killed.some((u) => u.side === "ally" && u.person)) K.Sound.play("friendFalls");
     killed.forEach((u) => setTimeout(() => { const el = actorEl(u.uid); if (el) el.classList.add("down"); pose(u.uid, "fall"); }, finisher ? 260 : 160));
     if (B.lastDef && arena) { /* a blow you met: the defence shows on your figure */
       const P = C.player();
@@ -189,41 +191,82 @@
     qte = defend(B, n.u, n.threat, (result) => { qte = null; C.resolve(result); });
     qte.mount(box);
   }
+  // The shape of a blow, read from the enemy's move, and what gets you out of its way: jump a low
+  // arrow or sweep, duck a high swing or arrow, sidestep a thrust or a charge. Block meets anything,
+  // for half the harm.
+  const SHAPES = {
+    low: { need: "jump", line: "A low sweep at your legs", arrow: "An arrow, low, at your legs", y: 0.86 },
+    high: { need: "duck", line: "A swing at your head", arrow: "An arrow at your head", y: 0.2 },
+    thrust: { need: "side", line: "A straight thrust", y: 0.5 },
+    charge: { need: "side", line: "A charge, head down", y: 0.55 }
+  };
+  const shapeFor = (id) => K.pick({ arrows: ["low", "high"], strike: ["high", "thrust", "low"], heavy: ["high", "charge"], disarm: ["thrust"], breaker: ["charge"] }[id] || ["high", "thrust"]);
+  const CUT = { // leather cut-outs for what comes at you
+    arrow: '<svg viewBox="-40 -8 80 16"><path d="M-38 0 L-26 -6 L-26 -2 L30 -2 L36 -7 L36 7 L30 2 L-26 2 L-26 6 Z"/></svg>',
+    blade: '<svg viewBox="-30 -30 60 60"><path d="M-24 18 Q-30 -10 4 -26 Q-14 -6 -10 22 Z"/></svg>',
+    charge: '<svg viewBox="-30 -20 60 40"><path d="M-28 0 L-8 -16 L-8 -6 L26 -6 L26 6 L-8 6 L-8 16 Z"/></svg>'
+  };
   function defend(B, u, th, done) {
     const g = K.attr("grace");
     const T = 1.1 * th.speed, END = T * 1.32;
-    const W = { perfect: 0.045 + g * 0.003, block: 0.12 + g * 0.008, dodge: 0.07 + g * 0.005 };
-    const who = K.text(u.src || u.name);
-    const el = U.el('<div class="qte" role="group" aria-label="' + U.esc(K.tr("Meet the blow")) + '"><p class="qte-who"><b>' + U.esc(who) + "</b> · " + U.esc(K.tr(th.name)) + " → " + U.esc(K.tr("you")) + "</p>" +
-      '<div class="qte-ring"><i class="mark"></i><i class="ring"></i></div><p class="qte-note" aria-live="assertive">' + U.esc(K.tr("Block as the ring meets the mark. Dodge needs better timing.")) + '</p><div class="btnrow qte-btns"></div></div>');
+    const W = { perfect: 0.05 + g * 0.003, move: 0.13 + g * 0.008, block: 0.14 + g * 0.008 };
+    const who = K.text(u.src || u.name), shape = shapeFor(th.id), S2 = SHAPES[shape];
+    const what = th.id === "arrows" && S2.arrow ? S2.arrow : S2.line;
+    const el = U.el('<div class="qte" role="group" aria-label="' + U.esc(K.tr("Meet the blow")) + '"><p class="qte-who"><b>' + U.esc(who) + "</b> · " + U.esc(K.tr(what)) + "</p>" +
+      '<div class="qte-ring"><i class="mark"></i><i class="ring"></i></div><p class="qte-note" aria-live="assertive">' + U.esc(K.tr("Read the blow: jump, duck, sidestep or block, as the ring meets the mark. Swipe or use the arrow keys.")) + '</p><div class="btnrow qte-btns"></div></div>');
     const ring = el.querySelector(".ring"), note = el.querySelector(".qte-note");
-    let t0 = 0, raf = 0, over = false;
-    const LINES = { counter: "Countered!", block: "Blocked.", dodge: "Dodged!", early: "Too early.", late: "Too late." };
-    const finish = (result, line) => {
+    let t0 = 0, raf = 0, over = false, flyer = null;
+    const LINES = { counter: "A perfect read! You strike back.", block: "Blocked.", dodge: "Clear!", graze: "Late: it grazes you.", early: "Too early.", late: "Too late.", wrong: "The wrong way!" };
+    const P = C.player();
+    const finish = (result, line, move) => {
       if (over) return;
       over = true; cancelAnimationFrame(raf); off();
+      if (flyer) { flyer.classList.add("gone"); const f = flyer; setTimeout(() => f.remove(), 300); }
       note.textContent = K.tr(LINES[line || result] || line);
       el.classList.add(result === "miss" ? "bad" : "good");
+      // Your puppet does what you chose: a hop, a crouch, a step aside, the shield up.
+      if (P && move) { if (move === "jump") burst(P.uid, "act-jump", 560); else if (move === "duck") burst(P.uid, "act-duck", 560); else if (move === "side") burst(P.uid, "act-side", 560); else pose(P.uid, "block", 560); }
       if (K.Sound) K.Sound.play(result === "miss" ? "hit" : result === "dodge" ? "tap" : "clang");
-      setTimeout(() => done(result), U.motion() ? 380 : 120);
+      setTimeout(() => done(result), U.motion() ? 420 : 120);
     };
     const now = () => (U.clock() - t0) / 1000; // game time: stands still while the game is paused
-    const block = () => { if (over) return; const d = now() - T; if (Math.abs(d) <= W.perfect) finish("counter"); else if (Math.abs(d) <= W.block) finish("block"); else finish("miss", d < 0 ? "early" : "late"); };
-    const dodge = () => { if (over) return; const d = now() - T; if (Math.abs(d) <= W.dodge) finish("dodge"); else finish("miss", d < 0 ? "early" : "late"); };
+    const act = (move) => {
+      if (over) return;
+      const d = now() - T, a = Math.abs(d);
+      if (move === "block") { if (a <= W.perfect) finish("counter", null, move); else if (a <= W.block) finish("block", null, move); else finish("miss", d < 0 ? "early" : "late", move); return; }
+      if (move !== S2.need) return finish("miss", "wrong", move);
+      if (a <= W.perfect) finish("counter", null, move);
+      else if (a <= W.move) finish("dodge", null, move);
+      else if (d > 0 && a <= W.move * 1.8) finish("block", "graze", move); // the right move, late: a graze
+      else finish("miss", d < 0 ? "early" : "late", move);
+    };
     const row = el.querySelector(".qte-btns");
-    const b1 = U.pressButton("Block", block), b2 = U.pressButton("Dodge", dodge);
-    b2.classList.add("secondary");
-    row.appendChild(b1); row.appendChild(b2);
+    const bs = [["Jump ↑", "jump"], ["Duck ↓", "duck"], ["Sidestep ↔", "side"], ["Block", "block"]].map(([lbl, m]) => { const b = U.pressButton(lbl, () => act(m)); b.classList.add("mv-" + m); if (m !== "block") b.classList.add("secondary"); row.appendChild(b); return b; });
     const onKey = (e) => {
       if (e.repeat) return;
-      if (e.key === " " || e.key === "Enter" || e.key === "b" || e.key === "B") { e.preventDefault(); e.stopPropagation(); block(); }
-      else if (e.key === "d" || e.key === "D" || e.key === "Shift") { e.preventDefault(); e.stopPropagation(); dodge(); }
+      const k = e.key, m = { ArrowUp: "jump", w: "jump", W: "jump", ArrowDown: "duck", s: "duck", S: "duck", ArrowLeft: "side", ArrowRight: "side", a: "side", A: "side", d: "side", D: "side", Shift: "side", " ": "block", Enter: "block", b: "block", B: "block" }[k];
+      if (m) { e.preventDefault(); e.stopPropagation(); act(m); }
     };
-    document.addEventListener("keydown", onKey, true);
-    const off = () => document.removeEventListener("keydown", onKey, true);
+    // Swipes anywhere outside the buttons: up, down, sideways.
+    let sw = null;
+    const pd = (e) => { if (e.target.closest("button")) return; sw = { x: e.clientX, y: e.clientY }; };
+    const pu = (e) => { if (!sw) return; const dx = e.clientX - sw.x, dy = e.clientY - sw.y; sw = null; if (Math.max(Math.abs(dx), Math.abs(dy)) < 28) return; act(Math.abs(dy) > Math.abs(dx) ? (dy < 0 ? "jump" : "duck") : "side"); };
+    document.addEventListener("keydown", onKey, true); document.addEventListener("pointerdown", pd, true); document.addEventListener("pointerup", pu, true);
+    const off = () => { document.removeEventListener("keydown", onKey, true); document.removeEventListener("pointerdown", pd, true); document.removeEventListener("pointerup", pu, true); };
     U.keys([]);
-    // The enemy winds up while the ring closes.
+    // The enemy winds up; what he looses flies at you across the stage, at the height it will strike.
     pose(u.uid, th.id === "arrows" ? "aim" : "hold");
+    const launch = () => {
+      const ar = U.$("arena"), ae = actorEl(u.uid), pe = P && actorEl(P.uid);
+      if (!ar || !ae || !pe || !U.motion()) return;
+      const r0 = ar.getBoundingClientRect(), ra = ae.getBoundingClientRect(), rp = pe.getBoundingClientRect();
+      const kind = th.id === "arrows" ? "arrow" : shape === "charge" ? "charge" : "blade";
+      flyer = U.el('<i class="incoming ' + kind + " " + shape + '" aria-hidden="true">' + CUT[kind] + "</i>");
+      const y = rp.top - r0.top + rp.height * S2.y;
+      flyer.style.cssText = "left:" + (ra.left - r0.left + ra.width * 0.3) + "px;top:" + y + "px;--to:" + (rp.left - ra.left + rp.width * 0.2 - ra.width * 0.3) + "px;--dur:" + T + "s";
+      ar.appendChild(flyer);
+      requestAnimationFrame(() => flyer && flyer.classList.add("go"));
+    };
     const tick = () => {
       if (!el.isConnected && over) return;
       const s = now();
@@ -233,8 +276,8 @@
       raf = requestAnimationFrame(tick);
     };
     return {
-      mount(box) { if (el.parentNode !== box) box.appendChild(el); if (!t0) { try { el.scrollIntoView({ block: "nearest", behavior: U.motion() ? "smooth" : "auto" }); } catch (e) { /* old browsers */ } t0 = U.clock(); raf = requestAnimationFrame(tick); b1.focus({ preventScroll: true }); } },
-      stop() { over = true; cancelAnimationFrame(raf); off(); }
+      mount(box) { if (el.parentNode !== box) box.appendChild(el); if (!t0) { try { el.scrollIntoView({ block: "nearest", behavior: U.motion() ? "smooth" : "auto" }); } catch (e) { /* old browsers */ } t0 = U.clock(); launch(); raf = requestAnimationFrame(tick); bs[3].focus({ preventScroll: true }); } },
+      stop() { over = true; cancelAnimationFrame(raf); off(); if (flyer) flyer.remove(); }
     };
   }
 
@@ -305,6 +348,7 @@
     if (B.over) {
       stopQte(); drums.stop();
       const msg = { win: K.val(enc.winLine) || "The fight is won.", lose: enc.lethal && !K.S.storyMode ? "You have fallen." : "You are beaten.", flee: "You leave the fight behind.", spare: "You let them live." }[B.over];
+      if (K.Sound && !B._sounded) { B._sounded = true; if (B.over === "lose" && enc.lethal && !K.S.storyMode) K.Sound.play("fall"); }
       box.appendChild(U.el('<div class="result"><p><b>' + U.t(msg) + "</b></p></div>"));
       const done = () => { const cb = onEndCb; const out = C.end().over; onEndCb = null; const L = U.$("leaf"); if (L) L.dataset.battle = ""; document.body.classList.remove("intest"); cb(out); };
       const cont = U.button("cta", U.tr("Continue"), done);

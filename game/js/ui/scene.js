@@ -22,6 +22,7 @@
   }
 
   // Other moments where everything is at stake: the music turns tense for these too.
+  let lastPlace = null;
   const TENSE = new Set(["a1_poison", "a3_lac", "a5_karna_secret", "a5_side"]);
   // A conch for each day of the war, once per scene (not again when the screen is redrawn).
   let lastConch = null;
@@ -43,6 +44,8 @@
     // A new place on the map: the journey comes first, then the scene. The reason is the scene's
     // own travel line, or what lies ahead.
     const moved = K.travel ? K.travel(sc) : null;
+    // Arriving somewhere new: the place's own short piece (audio.js), once per arrival.
+    if (!moved && S.at && S.at !== lastPlace && K.Sound && K.Sound.place) { lastPlace = S.at; K.Sound.place(S.origin === "suta" && S.at === "anga" ? "suta" : S.at); }
     if (moved && U.journeyPage) {
       if (K.headless) U.mapOf(S);
       else {
@@ -112,6 +115,8 @@
     acts.dataset.hold = 0;
     U.stage([plate, ...story, acts, ...box.children, U.$("keyhint")], () => {
       U.keys(keys); startLamp(sc, rows);
+      // Before a choice that could cost your life or your freedom, the figure trembles.
+      if (K.inPeril && rows.some((r) => r.ok && r.c.peril && K.inPeril(r.c))) U.puppetReact("tremble");
       settledFor = sc.id; U.settled = true;
       setTimeout(() => U.fitBackdrop(), U.motion() ? 450 : 0);
     });
@@ -173,7 +178,7 @@
       const num = cut > 0 ? full.slice(0, cut) : U.tr("Act {n}", { n: ROMAN[S.act] || S.act });
       const name = cut > 0 ? full.slice(cut + 3) : full;
       const line = K.ACT_LINES && K.ACT_LINES[S.act];
-      steps.push({ cls: "dim", ms: 3000, html: '<div class="beat-act"><span class="b-num">' + U.esc(num) + "</span><b>" + U.esc(name) + "</b>" +
+      steps.push({ cls: "dim", ms: 3000, html: '<div class="beat-act">' + (U.puppetFor ? '<span class="b-sutra">' + U.puppet(U.puppetFor("sutradhara"), { h: 150, pose: "fold" }) + "</span>" : "") + '<span class="b-num">' + U.esc(num) + "</span><b>" + U.esc(name) + "</b>" +
         '<i class="b-orn" aria-hidden="true"></i>' + (line ? "<p>" + U.t(line) + "</p>" : "") + "</div>",
         on: () => { if (K.Sound) K.Sound.play("gong"); } });
     }
@@ -290,6 +295,7 @@
     if (c.game && U.games[c.game]) return playGame(sc, c);
     const res = K.choose(sc, c);
     if (lampOut) res.lampOut = true;
+    if (res.peril === "death" && K.Sound) K.Sound.play("bell");
     if (K.lastDelta.vowTaken && K.Sound) K.Sound.play("gong");
     if (res.combat) {
       U.startBattle(res.combat, (outcome) => {
@@ -326,10 +332,14 @@
     // The test is played inside its own painted stage, with its own weather.
     const stage = c.trial && K.val(c.trial.stage);
     if (stage) { U.setBackdrop(stage); U.stageFx.start(stage); }
+    if (K.Sound && K.Sound.test) K.Sound.test(c.game);
     const game = U.games[c.game](box, (outcome, summary) => {
+      if (K.Sound && K.Sound.test) K.Sound.test(null);
       // A won test gets its own short theme: archery, strength, stealth, wits or war.
       if (outcome === "win" && K.Sound && K.Sound.flourish) K.Sound.flourish((c.trial && c.trial.kind) || KIND[c.game] || "wits");
+      else if (outcome !== "win" && K.Sound && !(c.trial && c.trial.practice)) K.Sound.play("lose");
       const res = K.choose(sc, c, outcome);
+      if (res.peril === "death" && K.Sound) K.Sound.play("bell");
       res.pre = summary;
       showAfter(sc, c, res, res.next);
     }, c);
@@ -363,7 +373,12 @@
     if (res.after && K.S.alive) {
       added.push(story.appendChild(U.el('<div class="witness"><div class="lbl">' + U.tr("And then, as it is written") + "</div>" + U.blocks(res.after) + "</div>")));
     }
-    const go = () => K.go(next);
+    // A scene that tells why you are leaving: the journey on the map comes now, after its story.
+    const go = () => {
+      const moved = sc.travelAfter && K.S.alive && K.travel ? K.travel(sc, K.S, true) : null;
+      if (moved && U.journeyPage && !K.headless) return U.journeyPage(moved[0], moved[1], K.val(sc.travel) || ["Ahead: {what}", { what: "" }], () => K.go(next));
+      K.go(next);
+    };
     const cont = U.button("cta", U.tr("Continue"), go);
     box.appendChild(cont);
     U.$("keyhint").innerHTML = "";
@@ -379,7 +394,11 @@
     story.dataset.follow = "1";
     U.toEnd(story, true);
     const won = res.check ? res.check.pass : res.outcome ? res.outcome === "win" : null;
-    if (K.lastDelta && K.lastDelta.vowTaken) setTimeout(() => U.puppetReact("vow"), 400);
+    const D = K.lastDelta || {};
+    if (D.vowTaken) setTimeout(() => U.puppetReact("vow"), 400);
+    // The figure answers what you did: shame for a wrong done, folded hands for respect given.
+    else if ((D["duty.conscience"] || 0) <= -2) setTimeout(() => U.puppetReact("shame"), 400);
+    else if (won === null && ((D["duty.teacher"] || 0) > 0 || Object.keys(D).some((k) => k.startsWith("bond.") && D[k] >= 2))) setTimeout(() => U.puppetReact("fold"), 400);
     else if (won !== null) setTimeout(() => U.puppetReact(won ? "win" : "lose"), 400);
     U.stage(parts, () => { U.toEnd(story, true); U.keys([go]); cont.focus({ preventScroll: true }); });
   }

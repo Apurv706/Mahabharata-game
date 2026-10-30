@@ -199,7 +199,9 @@
         me.innerHTML = vehicleTop(t.vehicle);
         if (t.rival) { rivalEl = U.el('<div class="rivalcar lane' + (lane === 0 ? 2 : 0) + '">' + vehicleTop(t.vehicle, true) + "</div>"); track.appendChild(rivalEl); }
       }
-      const move = (d) => { if (over) return; lane = clamp(lane + d, 0, 2); me.className = "me lane" + lane; cue("act"); };
+      // The puppet leans into the turn, then rights itself.
+      let leanT = 0;
+      const move = (d) => { if (over) return; lane = clamp(lane + d, 0, 2); me.className = "me lane" + lane + (d < 0 ? " lean-u" : " lean-d"); clearTimeout(leanT); leanT = setTimeout(() => { me.className = "me lane" + lane; }, 320); cue("act"); };
       const row = host.querySelector(".btnrow");
       row.appendChild(U.pressButton(vertical ? "Left" : t.upVerb || "Up", () => move(-1)));
       row.appendChild(U.pressButton(vertical ? "Right" : t.downVerb || "Down", () => move(1)));
@@ -454,7 +456,7 @@
             driftEvery = Math.max(0.3, driftEvery * 0.86);
             note.textContent = K.tr(t.push || "They push, and a ring gives.");
             sfx("drum"); draw();
-            if (inLine() < 2) { over = true; cue("bad"); K.S.heldRing = beats(s); finish("lose", ["You held the ring open for {n} heartbeats.", { n: beats(s) }]); }
+            if (inLine() < 2) { over = true; cue("bad"); if (K.Sound && K.Sound.cut) K.Sound.cut(8); K.S.heldRing = beats(s); finish("lose", ["You held the ring open for {n} heartbeats.", { n: beats(s) }]); }
             tally(s); return;
           }
           if (mode === "open") { const i = Math.floor(K.rng() * 4); gaps[i] = mod(gaps[i] + (K.rng() < 0.5 ? 1 : -1)); note.textContent = K.tr(t.turns || "The wheel turns."); }
