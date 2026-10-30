@@ -79,6 +79,8 @@
     const prefs = K.prefs();
     U.openModal("Menu",
       '<div class="field"><span class="lbl">' + U.tr("Language") + '</span><div id="m-lang"></div></div>' +
+      (U.openPractice ? '<div class="field" id="m-practice-f"><span class="lbl">' + U.tr("The practice ground") + '</span><p class="note">' + U.tr("Practise any test you have met, spar with a training partner, or learn to read a blow. Nothing done there counts.") + "</p>" +
+        '<div class="btnrow"><button class="cta secondary" id="m-practice" type="button">' + U.tr("Go to the practice ground") + "</button></div></div>" : "") +
       '<div class="grid2"><div class="field"><span class="lbl">' + U.tr("Saving") + "</span>" +
       '<p class="note">' + U.tr("The game saves itself at every new scene, in this browser only.") + "</p>" +
       '<div class="btnrow"><button class="cta secondary" id="m-save" type="button">' + U.tr("Save a copy") + "</button>" +
@@ -101,6 +103,10 @@
       '<div class="btnrow"><button class="ghost" id="m-gloss" type="button">' + U.tr("Glossary") + '</button><button class="ghost" id="m-title" type="button">' + U.tr("Return to title") + "</button></div>",
       () => {
         U.$("m-lang").appendChild(U.langSwitch((id) => { U.closeModal(); U.setLang(id, U.openMenu); }));
+        // The practice ground, between scenes only (ui/practice.js).
+        const pr = U.$("m-practice");
+        if (pr && U.canPractise()) pr.addEventListener("click", () => { U.closeModal(); U.openPractice({ from: "menu" }); });
+        else if (pr) { pr.disabled = true; U.$("m-practice-f").appendChild(U.el('<p class="note">' + U.tr(K.PRACTICE.text[U.practising && U.practising() ? "here" : "notNow"]) + "</p>")); }
         U.$("m-save").addEventListener("click", () => { U.$("m-saved").textContent = K.tr(K.save("manual") ? "Saved." : "This browser is not allowing saves. Use the save code instead."); });
         if (manual) U.$("m-load").addEventListener("click", () => { U.closeModal(); K.S = manual; K.go(manual.scene); });
         U.$("m-story").addEventListener("change", (e) => { K.S.storyMode = e.target.checked; K.save("auto"); });

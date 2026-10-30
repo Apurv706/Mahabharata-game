@@ -88,6 +88,8 @@
       keys.push(ok ? run : null);
       box.appendChild(b);
     });
+    // Beside a second chance: "Practise first, then try again" (ui/practice.js).
+    if (U.practiceOffer) U.practiceOffer(sc, rows, box);
     U.$("keyhint").textContent = rows.length > 1 ? K.tr("Press 1 to {n} to choose.", { n: rows.length }) : "";
     U.renderLedger();
     U.scrollTop();
@@ -302,7 +304,7 @@
         const o = K.combatOutcome(res.combat, outcome, res.next);
         if (!K.S.alive) return K.go("end_death");
         U.renderScene(sc);
-        showAfter(sc, c, { text: o.text, after: res.after, check: null, pre: res.text, lampOut: res.lampOut }, o.next);
+        showAfter(sc, c, { text: o.text, after: res.after, check: null, pre: res.text, lampOut: res.lampOut, lostFight: outcome === "lose" ? res.combat : null }, o.next);
       });
       return;
     }
@@ -390,6 +392,8 @@
       else parts.push(el);
     }
     parts.push(cont);
+    // After a lost fight that was not deadly: the way to the practice ground (ui/practice.js).
+    { const pb = res.lostFight && U.practiceAfterFight ? U.practiceAfterFight(res.lostFight) : null; if (pb) { box.appendChild(pb); parts.push(pb); } }
     parts.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
     story.dataset.follow = "1";
     U.toEnd(story, true);

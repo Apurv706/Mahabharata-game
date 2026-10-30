@@ -1286,3 +1286,107 @@ body.ax-shake #leaf { animation: ax-shake 0.38s ease-out; }
 .trial.immersive .steady.with-horse .hand { top: auto; bottom: calc(var(--hw) * 0.42); transform: none; z-index: 2; }
 .trial.immersive.trial-steady:has(.with-horse) > .cast .actor.me { display: none; } /* you are the hand on the horse's head */
 @media (prefers-reduced-motion: reduce) { .steady .horse .h-neck { animation: none !important; } }
+
+/* ---- Practice ground ---- */
+/* The ground (ui/practice.js): the teacher with a tip, how the last try went, the speed, and a tile
+   for every kind of test, the ones not met yet locked. Sparring and reading the blow sit at the foot. */
+.pr-coach { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: end; gap: 4px 14px; }
+.pr-coach .pr-teach { display: block; line-height: 0; }
+.pr-coach .pr-teach svg { height: 112px; width: auto; overflow: visible; filter: drop-shadow(0 0 8px rgba(255, 196, 110, 0.4)) drop-shadow(0 4px 4px rgba(0, 0, 0, 0.5)); } /* taste-skill-ignore: the puppet lit from behind, as on a shadow-puppet screen */
+.pr-coach.small .pr-teach svg { height: 84px; }
+.pr-coach .pr-say { display: grid; gap: 2px; min-width: 0; padding-bottom: 8px; }
+.pr-coach .pr-who { font-family: var(--display); font-size: 18px; font-weight: 700; line-height: 1.2; color: var(--data); }
+.pr-coach .pr-line { margin: 0; font-family: var(--display); font-size: 21px; font-weight: 600; line-height: 1.28; color: var(--ink); max-width: 46ch; }
+.pr-coach.small .pr-line { font-size: 18px; }
+.pr-coach .pr-line.step { color: #ffe3a3; }
+@media (prefers-reduced-motion: no-preference) { .pr-coach .pr-line.step { animation: risein 0.4s ease both; } }
+.pr-coach .pr-show { justify-self: start; margin-top: 4px; }
+.pr-show:disabled { opacity: 0.55; cursor: default; }
+html[lang="hi"] .pr-coach .pr-line { line-height: 1.55; font-size: 19px; }
+.pr-result { gap: 6px; }
+.pr-result p { margin: 0; }
+.pr-result .pr-what { font-size: 12.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.pr-result .pr-res-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 14px; }
+.pr-result b { font-family: var(--display); font-size: 22px; margin-right: 6px; }
+.pr-result.win b { color: #ffe3a3; } .pr-result.lose b { color: #ffb4a0; }
+.pr-result .pr-again { min-height: 40px; padding: 8px 20px; font-size: 15.5px; background: var(--hover); border: 1px solid var(--gold-line); }
+/* The ground's two big things side by side on a wide page, the way out under them. */
+@media (min-width: 721px) and (min-height: 521px) {
+  .leaf.pr-lobby .choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .leaf.pr-lobby .choices > .pr-leave { grid-column: 1 / -1; }
+}
+.modal #m-practice-f { margin: 6px 0 14px; }
+.pr-lbl { font-size: 19px; }
+.pr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 168px), 1fr)); gap: 8px; }
+.pr-tile { display: grid; grid-template-columns: 26px minmax(0, 1fr); align-items: center; column-gap: 10px; min-height: 54px; padding: 8px 12px; border: 0; border-radius: var(--r-card);
+  background: var(--raised); color: var(--ink); text-align: left; cursor: pointer; font-size: 15.5px; font-weight: 700; line-height: 1.25; transition: background-color 0.15s, transform 0.15s; }
+.pr-tile svg { grid-row: span 2; width: 24px; height: 24px; fill: none; stroke: var(--data); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.pr-tile small { font-size: 12.5px; font-weight: 400; line-height: 1.3; color: var(--muted); }
+.pr-tile small:empty { display: none; }
+.pr-tile:hover:not(:disabled) { background: var(--hover); transform: translateY(-1px); }
+.pr-tile:disabled { cursor: default; background: transparent; box-shadow: inset 0 0 0 1px rgba(226, 181, 90, 0.24); color: var(--faint); }
+.pr-tile:disabled svg { stroke: var(--faint); opacity: 0.55; }
+.pr-tile:disabled small { color: var(--faint); }
+.pr-speed { font-size: 15px; }
+.pr-row { justify-content: flex-start; }
+.pr-fig { line-height: 0; }
+.pr-fig svg { height: 72px; width: auto; overflow: visible; filter: drop-shadow(0 0 5px rgba(255, 196, 110, 0.35)); }
+.leaf.pr-page .actions .pr-leave { justify-self: start; }
+/* On the card of rules before a test: the teacher, the speed, and "Show me" beside "Begin". */
+.trial .pr-coach { margin-top: 2px; }
+.trial .pr-coach .pr-line { font-size: 17px; }
+.trial .pr-speed { font-size: 14.5px; }
+.trial .pr-speed small { font-size: 13px; }
+/* The dice games have no card of rules: the teacher stands on glass above the game. */
+.trial.immersive > .pr-coach { position: relative; z-index: 3; align-self: start; justify-self: center; width: min(620px, 100%); margin: 0 0 8px; padding: 6px 14px 4px;
+  border-radius: 14px; background: rgba(var(--surface-rgb), 0.82); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border: 1px solid var(--gold-line); }
+.trial.immersive > .pr-coach .pr-teach svg { height: 64px; }
+.trial.immersive > .pr-coach .pr-say { grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 10px; }
+.trial.immersive > .pr-coach .pr-who { grid-column: 1 / -1; font-size: 15px; }
+.trial.immersive > .pr-coach .pr-line { font-size: 16px; }
+/* Reading the blow: the fight's own screen, with a card of its own and a tally. */
+.pr-drill #battle-actions { display: grid; gap: 8px; }
+.leaf.pr-drill > #battle-body { justify-content: flex-end; } /* a shorter card sits by the thumbs, where the blows were met */
+.pr-drill .pr-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 12px; }
+.pr-drill .pr-score { margin: 0; text-align: center; padding: 5px 14px; border-radius: 999px; background: rgba(var(--surface-rgb), 0.78); border: 1px solid var(--gold-line); font-size: 14px; }
+.pr-drill .pr-score:empty { display: none; }
+.pr-drill .pr-stop { min-height: 36px; padding: 4px 14px; font-size: 14px; background: rgba(var(--surface-rgb), 0.78); border: 1px solid var(--gold-line); border-radius: 999px; color: var(--ink); }
+.pr-drill .qte-btns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.pr-drill .pr-card .game-rules { margin: 0; font-size: 15.5px; color: var(--muted); }
+.pr-drill .qte-btns button:disabled:not(.pr-hint) { opacity: 0.45; }
+.qte-btns .pr-hint { background: var(--accent) !important; color: var(--accent-ink) !important; box-shadow: 0 0 0 2px #ffe3a3, 0 0 18px rgba(255, 214, 128, 0.6); } /* taste-skill-ignore: the move the teacher shows, lit */
+/* A practice bout: stopped from beside its name (the fight's own row of ways out is not needed). */
+body.pr-bout .battle-tools { display: none; }
+.leaf.fighting > .pagehead .pr-bout-stop { min-height: 34px; padding: 3px 14px; font-size: 14px; border-radius: 999px; color: var(--ink); background: rgba(var(--surface-rgb), 0.78); border: 1px solid var(--gold-line); }
+/* Slow and normal speed: what flies at you flies as slowly as the clock now runs. */
+body.pr-slow .arena .incoming.go { transition-duration: calc(var(--dur) / var(--pr-f, 1)), 0.15s; }
+/* The ways in: beside a second chance, and after a lost fight. */
+.practice-offer { width: 100%; display: grid; gap: 1px; justify-items: start; text-align: left; min-height: 48px; padding: 10px 16px; border-radius: var(--r-card);
+  border: 1px dashed var(--gold-line); background: transparent; color: var(--ink); cursor: pointer; transition: background-color 0.15s; }
+.practice-offer .t { font-weight: 700; font-size: 16px; line-height: 1.3; }
+.practice-offer small { font-size: 13.5px; color: var(--muted); }
+.practice-offer:hover { background: var(--raised); }
+.practice-after { display: grid; justify-items: start; gap: 1px; text-align: left; justify-self: start; padding: 8px 12px; }
+.practice-after .t { color: var(--ink); font-weight: 700; }
+.practice-after small { font-size: 13px; color: var(--faint); }
+@media (max-width: 720px), (max-height: 520px) {
+  .pr-coach { column-gap: 10px; }
+  .pr-coach .pr-teach svg { height: 78px; }
+  .pr-coach.small .pr-teach svg { height: 64px; }
+  .pr-coach .pr-who { font-size: 15px; }
+  .pr-coach .pr-line, .pr-coach.small .pr-line, .trial .pr-coach .pr-line { font-size: 16px; }
+  .pr-result b { font-size: 19px; }
+  .pr-lbl { font-size: 17px; }
+  .pr-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 140px), 1fr)); gap: 6px; }
+  .pr-tile { min-height: 46px; padding: 6px 10px; font-size: 14px; column-gap: 8px; grid-template-columns: 22px minmax(0, 1fr); }
+  .pr-tile svg { width: 21px; height: 21px; }
+  .pr-tile small { font-size: 11.5px; }
+  .pr-speed, .trial .pr-speed { font-size: 14px; } .pr-speed small, .trial .pr-speed small { font-size: 12.5px; }
+  .pr-fig svg { height: 52px; }
+  .pr-result .pr-again { min-height: 38px; padding: 6px 16px; font-size: 14.5px; }
+  .practice-offer { min-height: 44px; padding: 8px 12px; } .practice-offer .t { font-size: 14.5px; } .practice-offer small { font-size: 12.5px; }
+  .pr-drill .pr-card .game-rules { font-size: 14px; }
+  .pr-drill .qte { gap: 8px; padding: 10px 12px; }
+  .pr-drill .qte-ring { height: 84px; }
+  .pr-drill .qte-note { font-size: 14px; min-height: 1.3em; }
+}
