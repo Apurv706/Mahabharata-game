@@ -3,7 +3,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft v0.4 (browser edition, §16; remaining tasks, §17; proposed storylines, weapons, magic and the puppet, §18) |
+| **Status** | Draft v0.5 (browser edition, §16; remaining tasks, §17; proposed storylines, weapons, magic and the puppet, §18; changes from the 29 October playtest, §18.11) |
 | **Last updated** | October 29, 2026 |
 | **Owner** | [Founder / Creative Director] |
 | **Doc type** | Living PRD; sections marked **[OPEN]** still need decisions |
@@ -449,6 +449,7 @@ Ideas to deepen a life, all inside the canon lock (§4): the epic's events happe
 - New test kinds: escape (a maze under a clock) and fuse (trace and cut), on two new stages.
 
 ### 18.3 Rising to command, and holding against Karna or Duryodhana (Act VI)
+- The first rung is earned, not handed out: on the eve of the war the commander tests anyone who asks for a company ("Set the formation", §18.11 C1).
 - Rank: company leader, then division officer, then a seat at the war council, earned through duty, the command skill and each war day's result.
 - Army battles: deploy two or three companies into the day's array (vyuha: crane, wheel, crocodile, needle), then rounds of orders: hold, flank, fall back, send help.
 - Facing the other side's champions is won by holding, never by killing. Pandava side: keep Karna's chariot pinned until sunset; keep Duryodhana's division off the king's flank for ten rounds. Kaurava side: hold against Arjuna's chariot; stand against Bhima's charge. Losing breaks the company and costs scars, capture or, if the player stays, death.
@@ -463,7 +464,7 @@ Ideas to deepen a life, all inside the canon lock (§4): the epic's events happe
 ### 18.5 Episodes
 - **Exile:** a storm in the forest (survival run); the Yaksha's lake as a fuller riddle test where losing costs a friend.
 - **The hidden year:** keeping your false name in Virata's court (a test of nerve); Kichaka's court: help Draupadi with her dignity kept, by stealth in the dancing hall at night.
-- **War:** a night raid on the enemy's supply carts; carrying false orders across the river between the camps (burn them or deliver them); the truce at dusk, when soldiers of both sides meet at the river and you see an old friend; trying to break into the wheel after Abhimanyu, knowing the story will not let you save him.
+- **War:** a night raid on the enemy's supply carts; carrying false orders across the river between the camps (burn them or deliver them); the truce at dusk, when soldiers of both sides meet at the river and you see an old friend; trying to break into the wheel after Abhimanyu, knowing the story will not let you save him (designed as the last stand, §18.11 C2).
 - **Duty clashes:** asked to confirm "Ashwatthama is dead" (against the vow of truth); asked to help Shikhandi's charge at Bhishma; ordered to strike while Karna is out of his chariot (against the vow to spare the unarmed).
 - **After the war:** rebuilding Hastinapura's ruined quarter; whom to forgive (a riverside rite for the dead); teaching a student of your own path; a pilgrimage with the elders.
 
@@ -477,6 +478,7 @@ Builds on the existing boons (one generic astra, foresight, healing hands) and c
 - **Emphatic, not story-altering.** Against ordinary foes (bandits, a Gandharva, raiders, an enemy company) an astra wins the fight in one full-screen moment. Against the epic's heroes (Karna, Arjuna, Bhishma, Drona, Ashwatthama) it is met by its counter-weapon in mid-air, as it is throughout the epic: a spectacular clash that buys rounds in a holding fight, never a kill.
 - **Limits.** Once per battle. The mantra fails at the worst hour if the player broke their teacher's trust (the existing hermit's curse). Turning it on the helpless brings the existing curse.
 - **Out of reach:** Brahmastra, Pashupata, Narayanastra. At most the Brahmastra is offered once as a temptation with a terrible price, as it was to Ashwatthama, and can be refused.
+- **Seen and heard:** every invocation is a full-screen moment drawn in code over the battle painting, with its own effect per weapon and a mid-air clash against a counter-weapon (§18.11 C3).
 
 | Weapon | In a fight | Earned by |
 |---|---|---|
@@ -511,12 +513,40 @@ The tholu bommalata puppets (drawn in code; no paintings needed) become fully an
 - **Inside the tests:** move the puppet along the wall in stealth; the bow arm follows the aim; wrestlers lock and strain; the puppet rides the chariot or boat and leans into turns.
 
 ### 18.10 Order of work
+0. The playtest changes in §18.11, built together with the next art batch.
 1. Friends in fights (no art).
 2. The lac house escape (6 pictures), and three pictures for failure, already built (a cell, a prisoners' pen, a life cut short).
 3. Command, arrays and the holding fights, for both sides (12 pictures).
 4. Threads, episodes and the after-war scenes, a few at a time (21 pictures).
 5. The puppet: active defence (jump, duck, sidestep) first, then joints and pose blending, then gear, ageing and scars (no paintings).
 6. Divine weapons, shields, magic and tapas (31 pictures: 14 emblems, 6 test stages in tall and wide, 5 scenes; in `docs/Art_Brief_Weapons_Magic.pdf`).
+
+### 18.11 Changes from the 29 October playtest
+Collected from play feedback and to be built together, with the next art batch (the working list is the project's `Change_List.md`). Numbers in brackets are the list's.
+
+**Decided**
+- **D1. Ugra's wrestling bout** [1] plays on the empty fair-ring painting (`fight_fair_ring`), not the fair scene that already shows two wrestlers.
+- **D2. Drona is selective** [2]. Anyone may ask, but a player not of the court first passes a very hard archery audition (Drona's bird at long range, a tiny target, low odds). Pass: he takes you grudgingly, and the court remembers. Fail: choose another teacher (the existing loop-back). Court children go straight to his usual test.
+- **D3. Choosing a weapon: choose, then prove it** [3]. An armoury scene: bow, mace, sword, chariot reins, staff, each with a hint from your attributes ("Your might suits the mace"). Pick one, then its test. Fail twice and that weapon is crossed out (loop-back). The weapon later decides which divine gifts suit you (archers: astras; mace and wrestling: Bala and Atibala; healers: Sanjivani; spies: Antardhana).
+- **D4. Archery aim and placement** [4]. The player's puppet in the lower-left third facing right; the teacher at the left edge, smaller and further back; another student on the right, smaller; figures never overlap. The aim line starts at the bow hand and points diagonally at the target; the arrow flies along it in a slight arc, shrinking with distance; the bow arm and shoulders turn toward the target and follow moving targets.
+- **C1. Becoming a commander: "Set the formation"** [13]. On the eve of the war, strategist training or Command 4 only lets you *ask* for a company. The army's commander tests you: Dhrishtadyumna for the Pandavas, Bhishma for the Kauravas (Bhishma also refuses Karna a place while he commands). The test (Command + statecraft), on the top-down field painting already in the game (`stage_chakravyuha_top`, no new art): the commander names a formation (crane, eagle, crescent); archers, chariots, spearmen and elephants arrive one at a time and you place each on its mark before the drums stop; then the enemy probes one flank and you send the reserve to the right place. Second chance as usual; fail twice and the company goes to someone else and you fight in the front line, with a journal line (no peril; it is a drill). The role then matters (today the `role_command` flag is never read): commanders lead their company in every war battle (the Command move gets an ally), face the day-13 wheel as their company's leader, and are named in the telling and the ending.
+
+**Proposed (owner to confirm)**
+- **C2. Inside the Chakravyuha: a real last stand** [15]. Today "Stay beside Abhimanyu to the end" is a single choice that kills at once.
+  - *The fight:* a holding fight beside Abhimanyu (an ally) against Drona and Karna, with Kripa, Ashwatthama and Duryodhana's sons as the ring. The epic's beats arrive round by round as field events: on Drona's word Karna cuts Abhimanyu's bow from behind; his charioteer and horses fall; his sword breaks; he fights on with a chariot wheel. Each round held spares Abhimanyu wounds and is counted.
+  - *The divine weapon fails here, as in the epic:* an astra is answered by Drona's or Karna's counter-weapon in mid-air (C3). It buys a round, never the fight.
+  - *The last test, "The ring closes":* a rings test made deliberately unwinnable (the openings never all line up). Not scored as pass or fail; it measures how long you hold, and the ending says so ("{name} held the ring open for forty heartbeats beside Abhimanyu").
+  - *Then the fall:* its own death screen (`end_wheel`), not "Fallen at Kurukshetra". Story mode: dragged out unconscious, as with other deaths.
+  - Kaurava side: the same fight from the other side; the order to cut his bow comes to you (obey, refuse, hold back). "Cut your way back out" stays the escape.
+- **C3. Divine weapons look and feel divine** [16]. Every invocation is a short full-screen moment drawn in code over the battle painting (no new art, no video): the painting darkens, the mantra appears as a line of light, the puppet raises the weapon. Agneyastra: fire rains down, orange light and embers. Varunastra: sheets of rain, a blue tint, steam where fire was. Vayavyastra: wind and dust, banners whipping, the enemy pushed back. Sammohana: a violet haze, the foes slump asleep. Nagapasha: a serpent coil around one foe. Today's generic astra: a white bolt and a shockwave. Against a hero, the counter-weapon clash: two streaks meet in a white flash, a shockwave ring and a short screen shake. A synthesised sound swell. Reduced motion: one soft flash; nothing flashes more than three times a second. Can ship first with the one astra the game already has.
+- **C4. A test for the chariot driver** [14]. "Driving a chariot" on the eve of the war needs only chariot skill 2; add a short chariot run (the race mechanic, on the battlefield painting) before a warrior accepts you as driver.
+- **F1. Puppets floating in fights** [8]. Fights that borrow tall test-stage paintings put the figures on the sky. Each fight background records its ground line and the figures' feet stand on it; a soft shadow under each puppet; a screen check that every fight's figures stand on their painting's ground.
+- **F2. Moves that cannot be used** [9] ("Command: no ally to command", "Close formation" one-on-one): hide them, or grey them into a small "other moves" row.
+- **F3. The lac house burns before the fire** [10]. The Varnavata opening plays the clip that ends in flames. Open on the calm painting with no clip; play the fire clip when the story reaches the fire (and as the start of the escape, §18.2). Check every clip's last frame against the scene that plays it.
+- **F4. The guard in stealth tests** [11]. The guard carries the torch and the beam comes from it; he patrols the far side while the player moves from the left through the shadows; he pauses and lifts the torch before turning (a tell); when he sees you he steps toward you and the beam locks on. All stealth tests.
+- **F5. The map follows the story** [12]. Today the map ignores story scenes before the war unless they name a destination, though almost all put the player there; the marker stays put through Pramanakoti, the road to Panchala, the Rajasuya, the dice invitation and the whole exile (Kamyaka, Dvaita, Matsya, back to Hastinapura). Drop that exception so a scene naming a town moves you there; give towns to the Yaksha's lake (Dvaita), Karna at the river (Hastinapura), Ekalavya's forest (Hastinapura) and Duryodhana's lake (Kurukshetra); add a playthrough check that no scene names a town the marker isn't on.
+
+**Done** (pushed 29 October): the lotus-pond game and four other choices now show what happened; every second-chance scene opens on its test's painting.
 
 ## 19. Success metrics
 
