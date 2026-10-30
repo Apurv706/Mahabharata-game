@@ -37,6 +37,9 @@
   // Half the width of each target as drawn, in its own units. On the painting the target is drawn
   // exactly as wide as its hit zone, so a shot that touches it is a hit and one that passes it is not.
   const ART_HALF = { lamp: 18, fruit: 20, bell: 20, leaf: 20, bird: 28, deer: 30, tiger: 44, elephant: 36 };
+  // Where on the target a shot is aimed, in its own units, when that is not its middle: Arjuna's
+  // lamp is shot at the flame.
+  const AIM_AT = { lamp: [0, -18] };
   function AIM_ART(icon) {
     const loop = '<path d="M0 -40 L0 -30" stroke="#5a3a22" stroke-width="2"/>';
     if (icon === "lamp") return loop + '<path d="M-18 -6 Q0 18 18 -6 Z" fill="#b5793a" stroke="#4a2a12" stroke-width="2"/><path d="M0 -8 Q-7 -20 0 -32 Q7 -20 0 -8Z" fill="#ffd27a"/><circle cx="0" cy="-16" r="16" fill="#ffb648" opacity=".25"/>';
@@ -185,8 +188,8 @@
       const shoot = (hit, aimOff) => {
         if (!P) return;
         const sh = shoulder(), h0 = sh ? handAt(sh, P.th) : { x: P.cx, y: P.H };
-        const xB = P.cx + (aimOff || 0) * P.sw, yB = P.ty;
-        range.dataset.shot = [xB.toFixed(1), P.tx.toFixed(1), (P.zone || 0).toFixed(1), hit ? 1 : 0].join(",");
+        const xB = P.cx + (aimOff || 0) * P.sw, yB = P.ay;
+        range.dataset.shot = [xB.toFixed(1), P.ax.toFixed(1), (P.zone || 0).toFixed(1), hit ? 1 : 0].join(",");
         const dist = Math.hypot(xB - h0.x, yB - h0.y), lift = dist * 0.12;
         const at = (f) => ({ x: h0.x + (xB - h0.x) * f, y: h0.y + (yB - h0.y) * f - lift * 4 * f * (1 - f) });
         const t0 = performance.now(), dur = U.motion() ? 300 : 1, on = U.motion() ? 260 : 0, v = dist / Math.max(1, dur);
@@ -244,12 +247,12 @@
         if (busy || (P && !P.sw)) return; // not before the target is on the painting
         busy = true;
         const err = gauss() * drift;
-        const off = x - wob - err;
+        const off = x + (P ? P.xo || 0 : 0) - wob - err;
         const wz = P ? P.win : win; // on the painting: the hit zone the target is drawn to fill
         const hit = Math.abs(off) <= wz;
         if (hit) hits++;
         shoot(hit, wob + err);
-        if (!hit && Math.abs(x - wob) <= wz) note.dataset.gust = "1"; else delete note.dataset.gust;
+        if (!hit && Math.abs(x + (P ? P.xo || 0 : 0) - wob) <= wz) note.dataset.gust = "1"; else delete note.dataset.gust;
         cue("act"); setTimeout(() => cue(hit ? "good" : "bad"), 260);
         range.classList.remove("hit", "miss"); void range.offsetWidth; range.classList.add(hit ? "hit" : "miss");
         if (K.Sound) K.Sound.play(hit ? "choose" : "quill");
@@ -296,6 +299,10 @@
           if (marked) P.mark.setAttribute("r", Math.max(3, zone - 2).toFixed(1));
           const ty = runs ? P.L : Math.sqrt(Math.max(P.L * P.L - dx * dx, P.L * P.L * 0.25)), ang = runs ? 0 : Math.atan2(dx, ty) * 180 / Math.PI;
           P.tx = tx; P.ty = ty; P.ang = runs ? 0 : ang;
+          // The point aimed at (the flame of a lamp), on the swinging target, in screen space.
+          { const [ux, uy] = AIM_AT[t.icon] || [0, 0], a = -ang * Math.PI / 180, lx = ux * sc, ly = uy * sc;
+            P.ax = tx + lx * Math.cos(a) - ly * Math.sin(a); P.ay = ty + lx * Math.sin(a) + ly * Math.cos(a); P.xo = (P.ax - tx) / sw;
+            P.mark.setAttribute("cx", lx.toFixed(1)); P.mark.setAttribute("cy", ly.toFixed(1)); }
           if (runs) { P.rope.style.display = "none"; P.dir = Math.cos(phase * 2.2) >= 0 ? 1 : -1; }
           else { P.rope.setAttribute("x1", cx); P.rope.setAttribute("y1", -10); P.rope.setAttribute("x2", tx); P.rope.setAttribute("y2", ty - 30); }
           P.tgt.setAttribute("transform", "translate(" + tx.toFixed(1) + " " + (ty + (P.drop || 0)).toFixed(1) + ") rotate(" + (-ang).toFixed(1) + ")");
