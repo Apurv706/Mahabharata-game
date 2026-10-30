@@ -1228,12 +1228,20 @@ body.ax-shake #leaf { animation: ax-shake 0.38s ease-out; }
 .arena .incoming.charge { width: 70px; height: 44px; margin: -22px 0 0 -35px; }
 .arena .incoming.go { opacity: 1; transform: translateX(var(--to)); transition: transform var(--dur) linear, opacity .15s; }
 .arena .incoming.gone { opacity: 0; transition: opacity .25s; }
-.arena .actor.act-jump { animation: act-jump .56s cubic-bezier(.3, .7, .4, 1); }
-.arena .actor.act-duck svg { animation: act-duck .56s ease-out; transform-origin: 50% 100%; }
-.arena .actor.act-side { animation: act-side .56s ease-out; }
-@keyframes act-jump { 0% { transform: translateY(0); } 40% { transform: translateY(-34%); } 55% { transform: translateY(-36%); } 100% { transform: translateY(0); } } /* a hop with a little hang at the top */
-@keyframes act-duck { 0%, 100% { transform: scaleY(1); } 35%, 65% { transform: scaleY(.62); } }
-@keyframes act-side { 0%, 100% { transform: translateX(0); } 40%, 60% { transform: translateX(-38%); } }
+.arena .actor.act-jump { animation: act-jump .76s cubic-bezier(.3, .7, .4, 1); }
+.arena .actor.act-duck { animation: act-duck .76s ease-out; }
+.arena .actor.act-side { animation: act-side .76s ease-out; }
+/* While in the air the shadow stays on the ground, smaller. */
+.arena .actor.act-jump::before { animation: act-shadow .76s ease-out; }
+@keyframes act-shadow { 0%, 100% { transform: translateY(0) scale(1); opacity: 1; } 35%, 60% { transform: translateY(calc(var(--ah, 160px) * 0.5)) scale(.6); opacity: .5; } }
+/* The evasive poses: knees tucked in the air, a deep crouch, a step back leaning away. */
+.pose-jump .legF { transform: rotate(-78deg); } .pose-jump .shinF { transform: rotate(104deg); } .pose-jump .legB { transform: rotate(-48deg); } .pose-jump .shinB { transform: rotate(96deg); } .pose-jump .armF { transform: rotate(-150deg); } .pose-jump .armB { transform: rotate(-130deg); }
+.pose-duck .pp-body { transform: translateY(40px) rotate(14deg); } .pose-duck .legF { transform: rotate(-100deg); } .pose-duck .shinF { transform: rotate(124deg); } .pose-duck .legB { transform: rotate(18deg); } .pose-duck .shinB { transform: rotate(120deg); } .pose-duck .head { transform: rotate(18deg); } .pose-duck .armF { transform: rotate(-60deg); } .pose-duck .foreF { transform: rotate(-90deg); }
+.pose-side .pp-body { transform: rotate(-16deg); } .pose-side .legF { transform: rotate(26deg); } .pose-side .legB { transform: rotate(-30deg); } .pose-side .armF { transform: rotate(40deg); } .pose-side .head { transform: rotate(-10deg); }
+.arena .incoming.past { transform: translateX(calc(var(--to) - 220px)); opacity: 0; transition: transform .45s linear, opacity .45s ease-in; }
+@keyframes act-jump { 0% { transform: translateY(0); } 35% { transform: translateY(-48%); } 60% { transform: translateY(-50%); } 100% { transform: translateY(0); } } /* a hop with a little hang at the top */
+@keyframes act-duck { 0%, 100% { transform: translateY(0); } 25%, 75% { transform: translateY(6%); } }
+@keyframes act-side { 0%, 100% { transform: translateX(0); } 30%, 70% { transform: translateX(-60%); } }
 @media (prefers-reduced-motion: reduce) { .arena .incoming, .arena .actor.act-jump, .arena .actor.act-duck svg, .arena .actor.act-side { animation: none !important; transition: none !important; } }
 
 /* ---------- The puppet, closer to the craft ---------- */

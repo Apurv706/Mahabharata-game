@@ -221,11 +221,17 @@
     const finish = (result, line, move) => {
       if (over) return;
       over = true; cancelAnimationFrame(raf); off();
-      if (flyer) { flyer.classList.add("gone"); const f = flyer; setTimeout(() => f.remove(), 300); }
+      // Got out of its way: what was loosed flies on past you (over, under or beside). Otherwise it stops at you.
+      if (flyer) { const f = flyer; if (result === "dodge" || result === "counter") { f.classList.add("past"); setTimeout(() => f.remove(), 520); } else { f.classList.add("gone"); setTimeout(() => f.remove(), 300); } }
       note.textContent = K.tr(LINES[line || result] || line);
       el.classList.add(result === "miss" ? "bad" : "good");
       // Your puppet does what you chose: a hop, a crouch, a step aside, the shield up.
-      if (P && move) { if (move === "jump") burst(P.uid, "act-jump", 560); else if (move === "duck") burst(P.uid, "act-duck", 560); else if (move === "side") burst(P.uid, "act-side", 560); else pose(P.uid, "block", 560); }
+      if (P && move) {
+        if (move === "jump") { burst(P.uid, "act-jump", 760); pose(P.uid, "jump", 760); }
+        else if (move === "duck") { burst(P.uid, "act-duck", 760); pose(P.uid, "duck", 760); }
+        else if (move === "side") { burst(P.uid, "act-side", 760); pose(P.uid, "side", 760); }
+        else pose(P.uid, "block", 700);
+      }
       if (K.Sound) K.Sound.play(result === "miss" ? "hit" : result === "dodge" ? "tap" : "clang");
       setTimeout(() => done(result), U.motion() ? 420 : 120);
     };
