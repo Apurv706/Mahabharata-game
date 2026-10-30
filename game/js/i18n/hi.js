@@ -3773,6 +3773,20 @@
     "{They} {were} given a divine weapon, and lost it by breaking {who}'s one condition.": "{g:उसे|उसे|उन्हें} एक दिव्यास्त्र मिला, और {who} की एक शर्त तोड़कर {g:उसने|उसने|उन्होंने} उसे खो दिया।",
     "It struck, but not the mark.": "लगा तो, पर निशान पर नहीं।",
     "Your word is trusted: you swore never to lie.": "तुम्हारे वचन पर भरोसा है: तुमने कभी झूठ न बोलने का व्रत लिया।",
-    "Common people warn you of ambushes: you swore never to strike the unarmed.": "आम लोग तुम्हें घात से सचेत करते हैं: तुमने निहत्थे पर वार न करने का व्रत लिया।"
+    "Common people warn you of ambushes: you swore never to strike the unarmed.": "आम लोग तुम्हें घात से सचेत करते हैं: तुमने निहत्थे पर वार न करने का व्रत लिया।",
+    "A ford, at the end of the hidden year": "अज्ञातवास के अंत में एक घाट",
+    "Karna in the river": "नदी में कर्ण",
+    "Open in the ford": "घाट में खुला निशाना",
+    "Duryodhana's men come raiding for cattle at the end of the hidden year, and you are caught up in the fighting at a ford. Karna's chariot is stuck halfway across, the water to its axles, and he has his back to you.": "अज्ञातवास के अंत में दुर्योधन के आदमी गायें लूटने आते हैं, और तुम एक घाट पर लड़ाई में फँस जाते हो। कर्ण का रथ आधे रास्ते में अटका है, पानी धुरी तक है, और उसकी पीठ तुम्हारी ओर है।",
+    "\"Now!\" {friend} shouts. \"He will never be this open again. Loose!\"": "\"अभी!\" {friend} चिल्लाता है। \"वह फिर कभी इतना खुला नहीं होगा। छोड़ो तीर!\"",
+    "Loose at Karna": "कर्ण पर तीर छोड़ो",
+    "Your arrow takes him in the shoulder. He turns in the water and looks straight at you, and you will see that look for the rest of your life.": "तुम्हारा तीर उसके कंधे में लगता है। वह पानी में मुड़कर सीधे तुम्हें देखता है, और वह नज़र तुम्हें जीवन भर दिखती रहेगी।",
+    "Loose at his banner instead, and let him go": "उसकी जगह उसके ध्वज पर तीर छोड़ो, और उसे जाने दो",
+    "The elephant-rope banner falls into the river. Karna's men lose heart, and the raid turns back. {friend} grumbles that it was a waste of a good shot, and buys you a drink that night.": "हाथी-रस्सी वाला ध्वज नदी में गिर जाता है। कर्ण के आदमियों का हौसला टूट जाता है, और लूटने वाले लौट जाते हैं। {friend} बड़बड़ाता है कि एक अच्छा निशाना बेकार गया, और उस रात तुम्हें शरबत पिलाता है।",
+    "Your arrow goes wide of the banner, and the chariot lurches out of the ford and away. {friend} says nothing, loudly.": "तुम्हारा तीर ध्वज से चूक जाता है, और रथ झटके से घाट से निकलकर दूर चला जाता है। {friend} कुछ नहीं कहता, पर ज़ोर से।",
+    "Lower your bow": "धनुष नीचे कर लो",
+    "You lower your bow. Karna's chariot heaves out of the water, and as it passes he sees you, and nods once. {friend} stares at you as if you were a stranger.": "तुम धनुष नीचे कर लेते हो। कर्ण का रथ पानी से बाहर निकलता है, और गुज़रते हुए वह तुम्हें देखता है, और एक बार सिर हिलाता है। {friend} तुम्हें ऐसे घूरता है जैसे तुम कोई अजनबी हो।",
+    "Kept {n} years: its gift has grown.": "{n} वर्ष निभाया: इसका वरदान बढ़ गया है।",
+    "A test of aim": "निशाने की परीक्षा"
   });
 })(window.K = window.K || {});
