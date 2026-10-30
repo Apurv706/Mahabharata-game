@@ -12,7 +12,8 @@ const dir = path.join(ROOT, "i18n", lang);
 const byId = {};
 for (const f of fs.readdirSync(dir).filter((f) => /^part\d+\.json$/.test(f)).sort()) Object.assign(byId, JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")));
 let manual = {};
-try { manual = JSON.parse(fs.readFileSync(path.join(dir, "manual.json"), "utf8")); } catch (e) { manual = {}; }
+// manual.json and any manual_*.json (one per workstream), keyed by the English text.
+for (const f of fs.readdirSync(dir).filter((f) => /^manual(_[\w-]+)?\.json$/.test(f)).sort()) { try { Object.assign(manual, JSON.parse(fs.readFileSync(path.join(dir, f), "utf8"))); } catch (e) { /* skip a bad file */ } }
 
 const LIFE = new Set(["name", "origin", "teacher", "path", "spouse", "friend", "child", "king", "they", "them", "their", "They", "theyre", "were"]);
 const FORMS = ["", "ko", "ne", "ke", "ki", "par"];
