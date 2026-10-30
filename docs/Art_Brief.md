@@ -56,3 +56,7 @@ The full list of what is still needed, with thumbnails, prompts, layouts and the
 ### Annex: the 29 October playtest changes
 
 **`docs/Art_Brief_Annex_Playtest.pdf`** (11 images, none blocking; PRD §18.11): recommended: `fight_chakravyuha_inner` tall and wide (the last stand beside Abhimanyu), portraits `p_bhishma` and `p_dhrishtadyumna` (the commanders' test), `scene_armoury` (choosing a weapon); optional: test stages `stage_muster_field_top`, `stage_drona_gate` and `stage_war_road`, each tall and wide. Fight backgrounds, including the 12 wide ones already ordered, keep level ground in the marked band and state the ground line's height.
+
+### Annex: moments and watchers (30 October)
+
+**`docs/Art_Brief_Annex_Moments.pdf`** (18 images, none blocking): five friendship moments (Arjuna, Bhima, Duryodhana, Karna, Charu), the divine weapon granted, a teacher's acceptance and a marriage, each tall and wide (`moment_*`); portraits `p_yudhishthira` and `p_vidura` (watchers of the vow never to lie). Taking a vow and getting a company reuse `scene_vow` and `scene_command_banner`.
