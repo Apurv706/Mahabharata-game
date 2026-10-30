@@ -18038,5 +18038,890 @@
   "id": 3609,
   "en": "Never lie to me, or before the court.",
   "ctx": "play:a5_court_armour"
+ },
+ {
+  "id": 3610,
+  "en": "Kept {n} years: its gift has grown.",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3611,
+  "en": "Practise any test you have met, spar with a training partner, or learn to read a blow. Nothing done there counts.",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 3612,
+  "en": "Go to the practice ground",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 3613,
+  "en": "{who} calls {n}, and the dice show {n}.",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 3614,
+  "en": "{who} will throw five times. One throw is not honest. Watch the hands.",
+  "ctx": "code:games.js"
+ },
+ {
+  "id": 3615,
+  "en": "It struck, but not the mark.",
+  "ctx": "code:trials.js"
+ },
+ {
+  "id": 3616,
+  "en": "Practise first, then try again",
+  "ctx": "code:practice.js"
+ },
+ {
+  "id": 3617,
+  "en": "At the practice ground. Nothing done there counts.",
+  "ctx": "code:practice.js"
+ },
+ {
+  "id": 3618,
+  "en": "Spar with a training partner. It changes nothing.",
+  "ctx": "code:practice.js"
+ },
+ {
+  "id": 3619,
+  "en": "Speed",
+  "ctx": "code:practice.js"
+ },
+ {
+  "id": 3620,
+  "en": "Real is the speed of the test itself.",
+  "ctx": "code:practice.js"
+ },
+ {
+  "id": 3621,
+  "en": "Not met yet",
+  "ctx": "code:practice.js"
+ },
+ {
+  "id": 3622,
+  "en": "Practice",
+  "ctx": "code:practice.js"
+ },
+ {
+  "id": 3623,
+  "en": "Tests you have met",
+  "ctx": "code:practice.js"
+ },
+ {
+  "id": 3624,
+  "en": "Show me",
+  "ctx": "code:practice.js"
+ },
+ {
+  "id": 3625,
+  "en": "Stop the bout",
+  "ctx": "code:practice.js"
+ },
+ {
+  "id": 3626,
+  "en": "Stop",
+  "ctx": "code:practice.js"
+ },
+ {
+  "id": 3627,
+  "en": "Blow {n} of {m} · Read cleanly: {r}",
+  "ctx": "code:practice.js"
+ },
+ {
+  "id": 3628,
+  "en": "The swinging target",
+  "ctx": "practice"
+ },
+ {
+  "id": 3629,
+  "en": "The target swings on its rope. Loose as it crosses your line.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3630,
+  "en": "Do not chase the target. Hold your line and let it come to you.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3631,
+  "en": "Watch one whole swing before you loose. Count it: one, and two.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3632,
+  "en": "Loose as it meets your line, not after. Where it is when you let go is where you hit.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3633,
+  "en": "Drawing a heavy bow",
+  "ctx": "practice"
+ },
+ {
+  "id": 3634,
+  "en": "Draw the heavy practice bow, and let go while the bar is in the bright band.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3635,
+  "en": "Draw in one smooth pull, and watch the bar, not your hands.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3636,
+  "en": "Pull steadily. A jerk shakes the bow, and the bar with it.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3637,
+  "en": "Let go as the bar enters the band, not at its far end.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3638,
+  "en": "The wrestler's push",
+  "ctx": "practice"
+ },
+ {
+  "id": 3639,
+  "en": "Wrestle a fellow student. Push as the ring meets the mark. Three good pushes win; three slips lose.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3640,
+  "en": "Wait for the ring. Too soon and your partner braces; too late and you are shoved back.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3641,
+  "en": "Plant your feet and watch the ring close. Do not move yet.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3642,
+  "en": "Push as it touches the mark, all at once, from the legs.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3643,
+  "en": "Striking on the beat",
+  "ctx": "practice"
+ },
+ {
+  "id": 3644,
+  "en": "Strike the post on every beat as it reaches the ring.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3645,
+  "en": "Listen as much as you look. Strike with the sound.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3646,
+  "en": "Let the first few beats go by, and nod with them.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3647,
+  "en": "Then strike on the nod, every time a beat meets the ring.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3648,
+  "en": "Calming a frightened horse",
+  "ctx": "practice"
+ },
+ {
+  "id": 3649,
+  "en": "Keep your hand on the frightened horse's head as it shies, until it is calm.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3650,
+  "en": "Small touches. Hold a moment, let go, hold again. Chase the horse and it runs.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3651,
+  "en": "Hold for a moment to move your hand toward the horse. Let go before you reach it.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3652,
+  "en": "Your hand drifts back by itself. Use that: hold, let go, hold.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3653,
+  "en": "Moving unseen",
+  "ctx": "practice"
+ },
+ {
+  "id": 3654,
+  "en": "Your teacher walks the far side with a lamp. Cross the ground twice, and do not be seen twice.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3655,
+  "en": "Across. Back you go, for another.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3656,
+  "en": "Seen! You slip back into the shadow.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3657,
+  "en": "Stop before the light reaches you, not when it does. When the lamp turns away, go.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3658,
+  "en": "Watch the lamp-bearer stop and lift the lamp: that means he is about to turn.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3659,
+  "en": "Move while the light goes away from you, and stop well before it comes back.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3660,
+  "en": "Leading a line to safety",
+  "ctx": "practice"
+ },
+ {
+  "id": 3661,
+  "en": "Gather the strays into a line behind you, and lead them out through the gap.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3662,
+  "en": "Gather the near ones first, and turn early. A long line needs room to turn.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3663,
+  "en": "Sweep wide around the field. Every stray you reach falls in behind you.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3664,
+  "en": "Head for the gap before the line grows too long to turn.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3665,
+  "en": "Remembering what you saw",
+  "ctx": "practice"
+ },
+ {
+  "id": 3666,
+  "en": "Your teacher lays things out, then covers them. Say what was there.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3667,
+  "en": "Do not try to see everything at once. Name the things to yourself as you look.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3668,
+  "en": "Go along the row and name each thing under your breath: lamp, rope, coin.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3669,
+  "en": "When you are asked, say the names back. The one you named is the one you saw.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3670,
+  "en": "Quick answers",
+  "ctx": "practice"
+ },
+ {
+  "id": 3671,
+  "en": "Answer each line before the lamp burns down. Two right answers win.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3672,
+  "en": "\"Your feet are slower than your tongue.\"",
+  "ctx": "practice"
+ },
+ {
+  "id": 3673,
+  "en": "\"Then it is lucky my tongue is not the one fighting you.\"",
+  "ctx": "practice"
+ },
+ {
+  "id": 3674,
+  "en": "\"My feet are fine.\"",
+  "ctx": "practice"
+ },
+ {
+  "id": 3675,
+  "en": "\"Be quiet.\"",
+  "ctx": "practice"
+ },
+ {
+  "id": 3676,
+  "en": "\"The teacher only keeps you here out of pity.\"",
+  "ctx": "practice"
+ },
+ {
+  "id": 3677,
+  "en": "\"Then pity me again tomorrow, when I beat you.\"",
+  "ctx": "practice"
+ },
+ {
+  "id": 3678,
+  "en": "\"That is not true.\"",
+  "ctx": "practice"
+ },
+ {
+  "id": 3679,
+  "en": "\"Who told you that?\"",
+  "ctx": "practice"
+ },
+ {
+  "id": 3680,
+  "en": "\"Even the straw dummy is afraid of you. Afraid you will miss it.\"",
+  "ctx": "practice"
+ },
+ {
+  "id": 3681,
+  "en": "\"Stand beside it, and we will see which of you I miss.\"",
+  "ctx": "practice"
+ },
+ {
+  "id": 3682,
+  "en": "\"I never miss.\"",
+  "ctx": "practice"
+ },
+ {
+  "id": 3683,
+  "en": "\"That is unkind.\"",
+  "ctx": "practice"
+ },
+ {
+  "id": 3684,
+  "en": "The best answer turns their words back on them. Read all three before you choose.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3685,
+  "en": "Listen for the barb in what is said.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3686,
+  "en": "Then choose the answer that throws it back, not the one that only denies it.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3687,
+  "en": "Signs in order",
+  "ctx": "practice"
+ },
+ {
+  "id": 3688,
+  "en": "Watch the signs light up, then make them again in the same order.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3689,
+  "en": "Name each sign as it lights. Then say the names back as you press.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3690,
+  "en": "Flag, fist, peak: name them as they light.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3691,
+  "en": "Then press them in the order you named them.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3692,
+  "en": "Watching the thrower's hands",
+  "ctx": "practice"
+ },
+ {
+  "id": 3693,
+  "en": "Your teacher throws the long dice five times and palms a false die once. Say which throw was not honest.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3694,
+  "en": "A long die shows only one, two, five or six. Watch for a face it cannot show.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3695,
+  "en": "Count the pips on every die, at every throw.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3696,
+  "en": "A three or a four means a die from the sleeve.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3697,
+  "en": "Long dice",
+  "ctx": "practice"
+ },
+ {
+  "id": 3698,
+  "en": "Stand on a good total. Throw a die again only when you are behind.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3699,
+  "en": "Add up your three dice, and theirs.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3700,
+  "en": "Behind? Throw your lowest die again. Ahead? Stand.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3701,
+  "en": "Chaupar",
+  "ctx": "practice"
+ },
+ {
+  "id": 3702,
+  "en": "A game of chaupar with your teacher. Bring both your pieces home first.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3703,
+  "en": "Keep one piece on a safe square while the other runs.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3704,
+  "en": "The marked squares are safe: no piece can be taken there.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3705,
+  "en": "Run one piece while the other waits in safety, and take when you can.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3706,
+  "en": "You are the tigers. Take goats before they hem you in.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3707,
+  "en": "Keep your tigers apart, so the goats cannot pen them in together.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3708,
+  "en": "A tiger takes by jumping over a goat to an empty point.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3709,
+  "en": "Keep room around each tiger. A tiger with nowhere to go is lost.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3710,
+  "en": "The game of virtues and vices",
+  "ctx": "practice"
+ },
+ {
+  "id": 3711,
+  "en": "Throw two dice and move by the one you choose. Reach the top first.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3712,
+  "en": "Look ahead: choose the die that lands on a ladder, or away from a snake.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3713,
+  "en": "Count both moves before you choose.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3714,
+  "en": "A ladder carries you up; a snake brings you down.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3715,
+  "en": "Racing a chariot",
+  "ctx": "practice"
+ },
+ {
+  "id": 3716,
+  "en": "Steer through the course, and change lanes to miss what is in your way.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3717,
+  "en": "Look past the next rock to the one after it, and change lanes early.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3718,
+  "en": "Watch the road ahead, not your horses.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3719,
+  "en": "Move as soon as you see something in your lane, and only once.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3720,
+  "en": "Turning the rings",
+  "ctx": "practice"
+ },
+ {
+  "id": 3721,
+  "en": "Turn the rings until every opening lines up with the outer one.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3722,
+  "en": "Work from the outside in: each ring you turn drags the next one inward.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3723,
+  "en": "Line the second ring up with the outer one first.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3724,
+  "en": "Then the third, then the fourth. The innermost drags nothing, so it comes last.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3725,
+  "en": "Setting the array",
+  "ctx": "practice"
+ },
+ {
+  "id": 3726,
+  "en": "Your teacher names an array and shows it once. Put each unit on its mark, then send the reserve where the enemy strikes.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3727,
+  "en": "While it is shown, say each mark's unit to yourself, from the front to the back.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3728,
+  "en": "Front: chariots. Flanks: archers. Say it as you look.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3729,
+  "en": "When a unit comes, its mark is already in your head.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3730,
+  "en": "A straw dummy",
+  "ctx": "practice"
+ },
+ {
+  "id": 3731,
+  "en": "Gentle. A straw dummy on a post; its arm swings back when you hit it.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3732,
+  "en": "A fellow student",
+  "ctx": "practice"
+ },
+ {
+  "id": 3733,
+  "en": "Even. About as good as you are, and keen to prove it.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3734,
+  "en": "Your teacher",
+  "ctx": "practice"
+ },
+ {
+  "id": 3735,
+  "en": "Hard. Your teacher, at full strength. Expect to be beaten, and to learn.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3736,
+  "en": "A practice bout",
+  "ctx": "practice"
+ },
+ {
+  "id": 3737,
+  "en": "Blunted weapons",
+  "ctx": "practice"
+ },
+ {
+  "id": 3738,
+  "en": "Blunted weapons, and a teacher watching. No one is hurt here.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3739,
+  "en": "The bout is yours.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3740,
+  "en": "Choose what to work on. Here, a miss costs nothing.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3741,
+  "en": "Good. Now again, at real speed.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3742,
+  "en": "Nearly. Once more, and breathe before you act.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3743,
+  "en": "Again. Slowly, this time.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3744,
+  "en": "Good. Do not let it go to your head.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3745,
+  "en": "You are learning. That is what this ground is for.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3746,
+  "en": "Rest, then. Come back when you are ready.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3747,
+  "en": "Watch what your partner means to do next: it is written on their card. Guard before a heavy blow, and read every blow aimed at you.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3748,
+  "en": "A low blow: jump. A high one: duck. A thrust or a charge: step aside. Block meets anything, for half the harm.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3749,
+  "en": "Eight blows, slow at first, then faster. Meet each one as the ring meets the mark.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3750,
+  "en": "A low blow: jump.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3751,
+  "en": "A high blow: duck.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3752,
+  "en": "A thrust or a charge: step aside.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3753,
+  "en": "Anything at all: block, for half the harm.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3754,
+  "en": "Slow",
+  "ctx": "practice"
+ },
+ {
+  "id": 3755,
+  "en": "Normal",
+  "ctx": "practice"
+ },
+ {
+  "id": 3756,
+  "en": "Real",
+  "ctx": "practice"
+ },
+ {
+  "id": 3757,
+  "en": "Nothing done here changes your life.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3758,
+  "en": "Spar with a training partner",
+  "ctx": "practice"
+ },
+ {
+  "id": 3759,
+  "en": "The real rules of a fight. No one is hurt.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3760,
+  "en": "Read the blow",
+  "ctx": "practice"
+ },
+ {
+  "id": 3761,
+  "en": "Jump, duck, step aside or block. Slow at first, then faster.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3762,
+  "en": "Back to your second chance",
+  "ctx": "practice"
+ },
+ {
+  "id": 3763,
+  "en": "Leave the practice ground",
+  "ctx": "practice"
+ },
+ {
+  "id": 3764,
+  "en": "You won the bout.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3765,
+  "en": "You lost the bout.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3766,
+  "en": "You stopped the bout.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3767,
+  "en": "You win",
+  "ctx": "practice"
+ },
+ {
+  "id": 3768,
+  "en": "So close",
+  "ctx": "practice"
+ },
+ {
+  "id": 3769,
+  "en": "You lose",
+  "ctx": "practice"
+ },
+ {
+  "id": 3770,
+  "en": "{r} of {n} blows read cleanly.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3771,
+  "en": "You are at the practice ground now.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3772,
+  "en": "Not now. Finish this moment first.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3773,
+  "en": "The old master of the practice ground",
+  "ctx": "practice"
+ },
+ {
+  "id": 3774,
+  "en": "A ford, at the end of the hidden year",
+  "ctx": "scene:v_ford"
+ },
+ {
+  "id": 3775,
+  "en": "Karna in the river",
+  "ctx": "scene:v_ford"
+ },
+ {
+  "id": 3776,
+  "en": "Open in the ford",
+  "ctx": "scene:v_ford"
+ },
+ {
+  "id": 3777,
+  "en": "Duryodhana's men come raiding for cattle at the end of the hidden year, and you are caught up in the fighting at a ford. Karna's chariot is stuck halfway across, the water to its axles, and he has his back to you.",
+  "ctx": "scene:v_ford"
+ },
+ {
+  "id": 3778,
+  "en": "\"Now!\" {friend} shouts. \"He will never be this open again. Loose!\"",
+  "ctx": "scene:v_ford"
+ },
+ {
+  "id": 3779,
+  "en": "Loose at Karna",
+  "ctx": "scene:v_ford"
+ },
+ {
+  "id": 3780,
+  "en": "Your arrow takes him in the shoulder. He turns in the water and looks straight at you, and you will see that look for the rest of your life.",
+  "ctx": "scene:v_ford"
+ },
+ {
+  "id": 3781,
+  "en": "Loose at his banner instead, and let him go",
+  "ctx": "scene:v_ford"
+ },
+ {
+  "id": 3782,
+  "en": "The elephant-rope banner falls into the river. Karna's men lose heart, and the raid turns back. {friend} grumbles that it was a waste of a good shot, and buys you a drink that night.",
+  "ctx": "scene:v_ford"
+ },
+ {
+  "id": 3783,
+  "en": "Your arrow goes wide of the banner, and the chariot lurches out of the ford and away. {friend} says nothing, loudly.",
+  "ctx": "scene:v_ford"
+ },
+ {
+  "id": 3784,
+  "en": "A test of aim",
+  "ctx": "scene:v_ford"
+ },
+ {
+  "id": 3785,
+  "en": "Lower your bow",
+  "ctx": "scene:v_ford"
+ },
+ {
+  "id": 3786,
+  "en": "You lower your bow. Karna's chariot heaves out of the water, and as it passes he sees you, and nods once. {friend} stares at you as if you were a stranger.",
+  "ctx": "scene:v_ford"
  }
 ]

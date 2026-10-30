@@ -373,10 +373,12 @@
     stealth: { raga: "marwa", lead: null, drum: "heart", pat: [1, 0], bpm: 64, rise: 0.04, low: true },
     dhol: { raga: "bhairav", lead: null, drum: "dhol", pat: [1, 0, 0.6, 1, 0.6, 0, 1, 0.6], bpm: 104 },
     veena: { raga: "yaman", lead: "veena", drum: null, sparse: true },
-    war: { raga: "marwa", lead: null, drum: "nagara", pat: [1, 0, 0, 0.6, 0, 0.6, 0, 0], bpm: 116 }
+    war: { raga: "marwa", lead: null, drum: "nagara", pat: [1, 0, 0, 0.6, 0, 0.6, 0, 0], bpm: 116 },
+    // The practice ground: a calm tabla drill (dha on the strong beats, na between) over the drone.
+    akhara: { raga: "bhupali", lead: null, drum: "tabla", pat: [1.2, 0, 0.7, 0.7, 1.2, 0, 0.7, 0], bpm: 84 }
   };
   const TEST_STYLE = { aim: "drone", draw: "drone", steady: "drone", sneak: "stealth", herd: "stealth", push: "dhol", notice: "veena", hands: "veena", pasha: "veena", drill: "veena", retort: "veena",
-    chaupar: "veena", baghchal: "veena", moksha: "veena", rings: "war", race: "war", formation: "war" };
+    chaupar: "veena", baghchal: "veena", moksha: "veena", rings: "war", race: "war", formation: "war", akhara: "akhara" };
   let ens = null; // { spec, until, nextDrone, nextBeat, beatIdx, nextLead, nextAmb, nextAmb2, kind, id }
   function ensStart(spec, secs, kind) {
     ensStop();

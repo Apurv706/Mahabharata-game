@@ -34,7 +34,7 @@
     aim: { group: "bow", name: "The swinging target", partner: "teacher",
       trial: { attr: "aim", skill: "archery", shots: 3, need: 2, rules: "The target swings on its rope. Loose as it crosses your line." },
       tip: "Do not chase the target. Hold your line and let it come to you.",
-      show: [["aim", "Watch one whole swing before you loose. Count it: one, and two."], ["loose", "Loose a breath before it reaches your line. The arrow needs a moment to get there."]] },
+      show: [["aim", "Watch one whole swing before you loose. Count it: one, and two."], ["loose", "Loose as it meets your line, not after. Where it is when you let go is where you hit."]] },
     draw: { group: "bow", name: "Drawing a heavy bow", partner: "teacher",
       trial: { attr: "might", skill: "archery", shots: 3, need: 2, rules: "Draw the heavy practice bow, and let go while the bar is in the bright band." },
       tip: "Draw in one smooth pull, and watch the bar, not your hands.",
@@ -403,7 +403,7 @@
     U.fitBackdrop();
     U.renderLedger();
     // A quiet bed of music while you choose (started once, not again on every page).
-    if (K.Sound && PR.music !== "bed") { K.Sound.mood("calm"); if (K.Sound.test) K.Sound.test("drill"); PR.music = "bed"; }
+    if (K.Sound && PR.music !== "bed") { K.Sound.mood("calm"); if (K.Sound.test) K.Sound.test("akhara"); PR.music = "bed"; }
     return { leaf, acts: U.$("pr-acts") };
   }
   const card = (acts, n, title, fx, run, extra) => {
