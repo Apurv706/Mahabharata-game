@@ -475,8 +475,8 @@ async function runDevice(browser, base, o, report) {
   await goScene(page, "a2_trial");
   await page.waitForTimeout(2200);
   {
-    const v = await page.evaluate(() => { const v = document.querySelector("#backdrop .bdl.on video"); const t = document.createElement("video"); return { can: !!(t.canPlayType("video/mp4; codecs=avc1.42E01E") || t.canPlayType("video/webm; codecs=vp9")), el: v ? { t: v.currentTime, on: v.classList.contains("on") } : null }; });
-    // A test browser built without either codec cannot play clips; players' browsers can. The painting stays.
+    const v = await page.evaluate(() => { const v = document.querySelector("#backdrop .bdl.on video"); const t = document.createElement("video"); return { can: !!t.canPlayType("video/mp4; codecs=avc1.42E01E"), el: v ? { t: v.currentTime, on: v.classList.contains("on") } : null }; });
+    // Clips are MP4 (H.264) only. A test browser built without it cannot play them; players' browsers can. The painting stays.
     if (v.can) report.push({ browser: browser._name, device: label, screen: "living painting", problems: !v.el ? ["no clip on a painting that has one"] : v.el.on && v.el.t > 0.3 ? [] : ["clip did not play (" + JSON.stringify(v.el) + ")"] });
   }
   const picks = await page.evaluate(() => {

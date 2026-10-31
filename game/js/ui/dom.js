@@ -151,8 +151,8 @@
     const v = document.createElement("video");
     v.muted = true; v.defaultMuted = true; v.playsInline = true; v.preload = "auto";
     v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("aria-hidden", "true");
-    // H.264 first (Safari, Chrome, Edge, Firefox); VP9 WebM where H.264 is missing.
-    ["mp4", "webm"].forEach((ext) => { const so = document.createElement("source"); so.src = "video/" + key + "." + ext; so.type = "video/" + ext; v.appendChild(so); });
+    // MP4 (H.264) plays in every current browser; the WebM copies were dropped (the published game holds at most 512 files).
+    ["mp4"].forEach((ext) => { const so = document.createElement("source"); so.src = "video/" + key + "." + ext; so.type = "video/" + ext; v.appendChild(so); });
     v.addEventListener("playing", () => { v.classList.add("on"); v.dataset.playing = "1"; });
     v.addEventListener("ended", () => { delete v.dataset.playing; });
     // If neither plays, the painting simply stays.

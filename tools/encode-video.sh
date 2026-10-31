@@ -8,9 +8,7 @@ while read key file; do
   src="art_review/video/video_$key/$file"
   out="game/video/$key.mp4"
   ffmpeg -nostdin -loglevel error -y -i "$src" -an -vf "scale='min(1280,iw)':-2" -c:v libx264 -preset veryfast -crf 29 -pix_fmt yuv420p -movflags +faststart "$out"
-  # WebM (VP9) as well, for browsers without H.264 (some Linux builds of Chromium, test browsers).
-  ffmpeg -nostdin -loglevel error -y -i "$src" -an -vf "scale='min(1280,iw)':-2" -c:v libvpx-vp9 -crf 40 -b:v 0 -deadline realtime -cpu-used 6 -row-mt 1 "game/video/$key.webm"
-  echo "$key  $file  $(du -h "$out" | cut -f1)  $(du -h "game/video/$key.webm" | cut -f1)"
+  echo "$key  $file  $(du -h "$out" | cut -f1)"
 done <<'LIST'
 war_eve video_war_eve_try1.mp4
 scene_dice_hall video_scene_dice_hall_try2.mp4
