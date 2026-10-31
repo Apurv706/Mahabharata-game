@@ -392,6 +392,7 @@
       const bb = U.button("act", "<b>" + U.esc(U.tr("Back")) + "</b><small>" + U.esc(U.tr("Choose another move")) + "</small>", back);
       keys.push(back); pick.appendChild(bb);
       box.appendChild(pick); U.keys(keys); U.renderLedger();
+      if (U.upright()) requestAnimationFrame(() => U.fitBackdrop(true)); // the taller panel lifts the fighters
       return;
     }
     astraPick = false;

@@ -1572,3 +1572,8 @@ svg .pr-hint { outline: none; filter: drop-shadow(0 0 6px #ffd680) drop-shadow(0
 .laccellar .snip { stroke: #fff1cf; stroke-width: 1.2; }
 .laccellar .firept circle { fill: #c0472f; } .laccellar .firept path { fill: #ffd27a; }
 @media (max-width: 560px) { .trial.immersive .lac-btns .trial-press { font-size: 14px; min-height: 48px; } }
+/* Short phones with seven or more moves (a divine weapon adds one): the cards drop their one-line description so the tools below stay on screen. */
+@media (max-width: 560px) and (max-height: 700px) {
+  #battle-actions .actions:has(> .act:nth-child(7)) .act small { display: none; }
+  #battle-actions .actions:has(> .act:nth-child(7)) .act { min-height: 0; padding-top: 8px; padding-bottom: 8px; }
+}
