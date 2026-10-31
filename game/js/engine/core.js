@@ -223,6 +223,7 @@
       S.journal.push({ age: S.age, act: S.act, src: e.src, p: e.p || null, text: K.fmt(K.fill(e.src, e.p), S) });
     },
     set: (o, S) => { Object.assign(S, o); },
+    keepsake: (id, S, d) => { S.keepsakes = S.keepsakes || []; if (!S.keepsakes.includes(id)) { S.keepsakes.push(id); if (d) d.keepsake = id; } },
     vowTake: (id, S, d) => {
       if (K.activeVows(S).length >= K.MAX_VOWS || S.vows.some((v) => v.id === id)) return;
       S.vows.push({ id, broken: false, age: S.age }); d.vowTaken = id;

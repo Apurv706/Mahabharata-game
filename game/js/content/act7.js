@@ -150,6 +150,9 @@
       wheel: "At the worst hour the earth held {their} chariot wheel, as it had held Yudhishthira's."
     };
     S.curses.filter((c) => c.fired && CURSE_LINE[c.id]).forEach((c) => t.push(CURSE_LINE[c.id]));
+    for (const h of K.TELL_HOOKS || []) h(S, t, has);
+    const wrong = K.TELL_WRONG && K.TELL_WRONG(S);
+    if (wrong) t.push(wrong);
     if (!S.alive) t.push(S.deathText || "{They} fell at Kurukshetra.");
     return t;
   }

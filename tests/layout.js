@@ -386,6 +386,9 @@ const TESTS = [
   ["breath", { stage: "stage_forest_lake" }], ["race", { stage: "stage_forest_edge", vehicle: "foot", rival: "the mountain" }],
   // The night the lac house burns (§18.2): the escape through the burning rooms, and the cellar's oil lines.
   ["escape", { stage: "stage_lac_fire_top", start: "hall" }], ["fuse", { stage: "stage_lac_cellar", lines: 3, secs: 32 }],
+  // Episodes: a run on foot through the storm, and stealth on two of the long night strips.
+  ["race", { _label: "on foot", stage: "stage_exile_storm", vehicle: "foot", obstacles: ["rock", "fire"] }], ["sneak", { _label: "Kichaka's hall", stage: "stage_kichaka_hall_night", watch: "guard" }],
+  ["sneak", { _label: "river crossing", stage: "stage_river_crossing_night", watch: "soldier", verb: "Swim", trips: 1 }],
 ];
 
 async function runDevice(browser, base, o, report) {
@@ -510,7 +513,7 @@ async function runDevice(browser, base, o, report) {
   // Tests of every kind.
   for (const [game, trial] of TESTS) {
     await goTest(page, game, trial);
-    await check("test: " + game, ["trial"]);
+    await check("test: " + game + (trial && trial._label ? " (" + trial._label + ")" : ""), ["trial"]);
   }
 
   // A fight.

@@ -466,6 +466,8 @@ As built: two scenes follow the lac house tunnel, a3_fuse and a3_fire (act3.js),
 - **Mentor's fall:** Drona orders something wrong (Ekalavya, the capture plot); obey or refuse.
 - **A sibling on the other side** of the war.
 
+*As built (game/js/content/episodes.js; every scene there is optional, comes before a scene every road reaches, and has an id starting `ep_`):* Ugra, met at the spring fair, waits at the princes' tournament for a wrestling bout (push test, tournament arena); writes before the war as a captain of levies in the other camp; and meets you on the seventeenth day: fight him, or try to send him home with all his men. The secret: before Karna's own scene you may tell Duryodhana (Karna's bond falls, and he remembers who told), Yudhishthira, Kunti, or no one. The teacher's wrong ask comes from each teacher in their own way: Drona's are already in the main story; Vidura asks you to spy on your friend, Kripa asks you to swear the throne is right before the dice, Balarama and Mauni ask you not to fight at all (a promise kept or broken). An elder brother or sister (Dev or Devi) is chosen in childhood; before the war they come home in the other side's colours: promise to look away (and take their amulet), argue them round, or say nothing; on the seventeenth day you meet across a spear's length.
+
 ### 18.5 Episodes
 - **Exile:** a storm in the forest (survival run); the Yaksha's lake as a fuller riddle test where losing costs a friend.
 - **The hidden year:** keeping your false name in Virata's court (a test of nerve); Kichaka's court: help Draupadi with her dignity kept, by stealth in the dancing hall at night.
@@ -473,10 +475,14 @@ As built: two scenes follow the lac house tunnel, a3_fuse and a3_fire (act3.js),
 - **Duty clashes:** asked to confirm "Ashwatthama is dead" (against the vow of truth); asked to help Shikhandi's charge at Bhishma; ordered to strike while Karna is out of his chariot (against the vow to spare the unarmed).
 - **After the war:** rebuilding Hastinapura's ruined quarter; whom to forgive (a riverside rite for the dead); teaching a student of your own path; a pilgrimage with the elders.
 
+*As built:* the storm is a run on foot through the falling branches (race test, `vehicle: "foot"`, exile storm stage). At the Yaksha's lake, a player whose friend is Charu and who answers wrong the second time sees Charu drink first; a second riddle test answers for both, and losing it (or running for the camp) costs Charu's life. The hidden year: the steward's questions (retort test, Virata's court) and Kichaka's dancing hall (sneak test, Kichaka's hall at night), where Draupadi is helped out of the way and Bhima does what the story says. The war: the supply carts (sneak test on the supply camp stage; caught, you fight your way out), false orders (swim the river crossing with the packet, which weakens the enemy line in the next fight; or burn it, which inspires your own), the truce at dusk (when someone you love is across the river), and riding in front of Shikhandi (a fight held for three rounds against Bhishma's guard, never Bhishma; Pandava side only). The other two duty clashes are vow scenes (content/vows.js). After the war: the ruined quarter (with your hands or by organising it), the rite at the river (send a lamp for whoever killed your dead too), a student who is set the test of your own path, and the walk with Dhritarashtra, Gandhari and Kunti.
+
 ### 18.6 Small systems
 - Bards sing what you did, and get it wrong unless you correct them.
 - Letters from friends on the other side during the war.
 - Scars and keepsakes that become choices later.
+
+*As built:* the bard sings one thing you did turned the other way round (a lore check to correct him); if it stands, the Book of Lives ends with "They say that…", the wrong version. Two letters come under a truce flag from a friend, your sibling or Ugra on the other side (after the tenth day, and the night before the seventeenth); one kept becomes a keepsake. Keepsakes (`S.keepsakes`: the letter, your sibling's amulet, Kesava's hammer, an arrow from the supply camp) are laid out on a cloth after the war, and each is a choice: burn, return, send to the river, hang over your door. Every thread and episode adds its line to the telling (`K.TELL_HOOKS`).
 
 ### 18.7 Divine weapons and shields
 Builds on the existing boons (one generic astra, foresight, healing hands) and curses (misusing an astra on the helpless).
