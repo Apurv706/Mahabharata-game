@@ -17,6 +17,7 @@
   let lastActs = 0;
   let foeKey = null;      // the enemy turn being played, so a redraw does not start it twice
   let qte = null;
+  let groundWatch = null; // keeps the painting's ground under the fighters (see the fresh draw)
   let astraPick = false;  // the divine-weapon chooser is open         // the defence moment in progress
 
   U.startBattle = function (encId, onEnd) {
@@ -320,6 +321,11 @@
       lastActs = B.acts.length; // nothing to replay on a fresh draw
       // Put the painting's ground under the fighters' feet, once they are laid out.
       if (deep) requestAnimationFrame(() => U.fitBackdrop(true));
+      // And keep it there: whenever the figures' band or the moves' panel changes size (a chooser opens, a
+      // card wraps, fonts arrive late on Safari), the painting is moved again. A frame's wait is not enough.
+      if (groundWatch) groundWatch.disconnect();
+      groundWatch = deep && window.ResizeObserver ? new ResizeObserver(() => { if (U.upright()) U.fitBackdrop(true); }) : null;
+      if (groundWatch) ["arena", "battle-body"].forEach((id) => { const el = U.$(id); if (el) groundWatch.observe(el); });
     }
     const body = U.$("battle-body");
     body.innerHTML = '<div class="sides"><div class="side"><span class="lbl">' + U.tr("Your side") + "</span>" + friends.map((u) => unitCard(u, B)).join("") +
