@@ -118,6 +118,8 @@
       if (u.status.crit || K.rng() < 0.08) { crit = true; dmg *= 1.5; delete u.status.crit; }
       if (t.status.guard) { dmg *= o.breaks ? 0.85 : 0.5; delete t.status.guard; }
       dmg = Math.max(1, Math.round(dmg));
+      // A holding fight (enc.hold): the champion is held, never killed. He is never brought below a tenth.
+      if (B.enc.hold && t.hero) dmg = Math.min(dmg, Math.max(0, t.hp - Math.round(t.maxHp * 0.1)));
       t.hp = Math.max(0, t.hp - dmg);
       const key = def === "block" ? "You block, and {a}'s blow still hits you for {n}." : o.verb || (isP(u) ? "You hit {t} for {n}." : isP(t) ? (u.plural ? "{a} hit you for {n}." : "{a} hits you for {n}.") : u.plural ? "{a} hit {t} for {n}." : "{a} hits {t} for {n}.");
       B.lastHit = { by: u.uid, on: t.uid, n: dmg, crit };
@@ -169,6 +171,12 @@
     if (S.flags.includes("company_shaken")) {
       const co = B.units.find((u) => u.side === "ally" && u.plural);
       if (co) { api.status(co, "weakened", 3); api.say("Your company remembers the day you fell back. They look at each other before they look at you."); K.apply({ unflag: "company_shaken" }); }
+    }
+    // The day's line broke under your orders (content/command.js): the enemy comes in already through.
+    if (S.flags.includes("line_broken") && enc.lethal) {
+      living("enemy").forEach((u) => api.status(u, "inspired", 2));
+      api.say("The enemy is already through the line your division was holding. They come at you with the day's momentum.");
+      K.apply({ unflag: "line_broken" });
     }
     planAll();
     K.emit("combat", B);
@@ -280,6 +288,8 @@
     if (p.hp <= 0) return finish("lose");
     if (!living("enemy").length) return finish("win");
     if (B.enc.rounds && B.round > B.enc.rounds) { api.say(B.enc.roundsText || "You held long enough."); return finish("win"); }
+    // A holding fight is won by standing until the end, not by killing.
+    if (B.enc.hold && B.round > B.enc.hold) { api.say(B.enc.holdText || "You held until the end."); return finish("win"); }
     return false;
   }
   function finish(outcome) {
@@ -310,6 +320,7 @@
       for (const k of Object.keys(u.cds)) if (u.cds[k] > 0) u.cds[k]--;
     }
     B.round++;
+    if (B.enc.hold && B.round <= B.enc.hold) api.tell("Hold: {n} rounds left.", null, { n: B.enc.hold - B.round + 1 });
     // Friends who came at your call are pulled away by the fighting after a while.
     for (const u of B.units.filter((x) => x.leave && B.round >= x.leave && x.hp > 0)) { api.tell("The press of the fighting carries {t} away from you.", { t: u }); B.units = B.units.filter((x) => x !== u); }
     // A fight can carry its own beats, round by round (the epic's moments in the wheel); otherwise
