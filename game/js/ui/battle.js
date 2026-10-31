@@ -312,7 +312,7 @@
       if (deep) {
         const bg = FIGHT_BG[enc.id];
         // The fight's own background: tall on upright screens, its 16:9 painting on wide ones (all but the camp gate).
-        U.setBackdrop(bg && (U.upright() ? U.tallOf(bg) : bg !== "fight_camp_gate_night") ? bg : K.val(enc.stage) || K.val(enc.art));
+        U.setBackdrop(bg && (!U.upright() || U.tallOf(bg)) ? bg : K.val(enc.stage) || K.val(enc.art));
       }
       leaf.dataset.battle = B.bid;
       leaf.innerHTML = U.plate({ art: K.val(enc.art), keepArt: deep, caption: K.val(enc.caption), tag: enc.lethal ? "war" : "yours", tagText: K.tr(enc.lethal ? "Battle · you can die here" : "A fight"), heading: K.val(enc.title), noFigure: true }) +

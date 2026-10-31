@@ -72,7 +72,7 @@
   // The file a painting shows from behind the page: tall on upright screens, wide where painted.
   // Fight backgrounds painted only tall so far: on wide screens a test played on one shows the
   // nearest wide painting instead (until the 16:9 versions arrive).
-  const FIGHT_WIDE = {}; // every fight background now has its own 16:9 painting (31 Oct), except the camp gate
+  const FIGHT_WIDE = {}; // every fight background now has its own 16:9 painting (31 Oct), the camp gate too
   U.wideOf = (key) => (!U.upright() && FIGHT_WIDE[key]) || key;
   U.stripOf = (key) => FIGHT_WIDE[key] || key;
   U.bgUrl = (key) => { if (!key) return null; key = U.wideOf(key); return U.artUrl(TALL.has(key) && U.upright() ? key + "_tall" : WIDE.has(key) ? key + "_wide" : key); };

@@ -11,3 +11,6 @@ Notes for the artist
 - scene_years_remain (and its wide version): the gate on the far river bank looks like a Japanese torii. Accepted for now to match the painting already in the game; worth replacing with an Indian gateway (torana) on a later pass.
 - war_day14 keeps its eclipse: that is right for day 14 (the darkened sun of Jayadratha's day) and matches the existing painting.
 - smith3x1/scene_smith (3:1) not used: no screen shows that scene as a strip.
+
+## Corrections received 31 October (11, all accepted)
+fight_camp_gate_night (16:9, new) and _tall: moon instead of the eclipse. fight_drupada_yard_tall: flat tiled gateway roof. fight_swayamvara_tall: carved pillars. p_abhimanyu: scale armour and a turban-wrapped helmet. p_vidura: stylus and palm leaf. moment_friend_bhima: one face only. moment_friend_duryodhana and _tall: oil lamps, the friend dressed plainer than the prince. scene_years_remain and _wide: a torana instead of the torii. The camp gate fight now uses its own 16:9 painting on wide screens.
