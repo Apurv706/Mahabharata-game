@@ -453,6 +453,8 @@
   let settleUntil = 0;
   function settleGround() {
     if (!U.upright()) return;
+    // At once (measuring the feet lays the page out now), then again for a moment in case it moves.
+    U.fitBackdrop(true);
     const running = settleUntil > performance.now();
     settleUntil = performance.now() + 1600;
     if (running) return;

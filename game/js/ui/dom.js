@@ -215,6 +215,7 @@
   }
   U.fitBackdrop = function (instant) {
     const bd = U.$("backdrop"); if (!bd || !document.body.classList.contains("inscene")) return;
+    if (fightingNow()) instant = true; // in a fight the painting never glides: the floor must not slide under the fighters
     const L = layer(); if (!L) return;
     const pic = L.querySelector(".pic"), size = sizes[L.dataset.url];
     const W = window.innerWidth, H = window.innerHeight;
