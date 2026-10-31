@@ -1466,3 +1466,13 @@ body.pr-slow .arena .incoming.go { transition-duration: calc(var(--dur) / var(--
   .pr-drill .qte-ring { height: 84px; }
   .pr-drill .qte-note { font-size: 14px; min-height: 1.3em; }
 }
+
+/* ---- The army battle (ui/army.js) ---- */
+.linebar { height: 10px; border-radius: 5px; background: rgba(0, 0, 0, .35); border: 1px solid var(--gold-line); overflow: hidden; }
+.linebar i { display: block; height: 100%; width: 100%; background: var(--positive); transition: width .5s ease, background .5s; }
+.linebar i.mid { background: var(--data); } .linebar i.low { background: var(--negative); }
+.army-btns { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.army-btns .trial-press { min-width: 0; width: 100%; padding-left: 6px; padding-right: 6px; white-space: nowrap; font-size: 15px; }
+@media (max-width: 560px) { .army-btns { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.armyfield .mark.reserve circle { stroke: #9ad0ff; stroke-dasharray: 2 3; }
+.armyfield .unit.placed { color: #fff1cf; }

@@ -2,7 +2,7 @@
    Usage: node tests/rules.js */
 global.window = global; global.K = {};
 const G = require("path").join(__dirname, "..", "game", "js") + "/";
-["engine/i18n","engine/core","engine/flow","engine/abilities","engine/combat","content/world","content/tests","content/act1","content/roots","content/act2","content/act3","content/act4","content/act5","content/act6a","content/act6b","content/act7","content/events","content/vows"].forEach((f) => require(G + f + ".js"));
+["engine/i18n","engine/core","engine/flow","engine/abilities","engine/combat","content/world","content/tests","content/act1","content/roots","content/act2","content/act3","content/act4","content/act5","content/act6a","content/act6b","content/command","content/act7","content/events","content/vows"].forEach((f) => require(G + f + ".js"));
 K.save = () => true; K.emit = () => {};
 let fails = 0; const ok = (c, m) => { if (!c) { fails++; console.log("FAIL", m); } else console.log("ok  ", m); };
 const fresh = (o) => { K.S = Object.assign(K.newLife(), { name: "T", origin: "suta", age: 20, act: 3 }, o || {}); K.momentQueue.length = 0; return K.S; };
@@ -67,4 +67,20 @@ ok(n1 === 1 && K.merits({ attr: "grace", skill: "stealth" }).n === 2, "the commo
 // 11. The Karna pull comes before Karna's secret, after the captive scene
 S = fresh({ friend: "bhima", act: 5 }); S.vows.push({ id: "spare_karna", broken: false }); S.seen.push("v_captive");
 ok(K.resolveScene("a5_karna_secret").id === "v_ford", "the ford scene comes when the vow and a Pandava friend apply");
+// 12. Rising to command and holding fights (PRD §18.3)
+S = fresh({ act: 6, age: 44 }); S.flags.push("role_command");
+ok(K.rankOf(S) === "role_command", "a company leader's rank");
+S.flags.push("role_division", "role_council"); ok(K.rankOf(S) === "role_council", "the highest rank wins");
+S = fresh({ act: 6, age: 44, side: "pandava" }); S.flags.push("role_command"); S.attrs.command = 5; S.record.won = 3; S.record.last = "won";
+ok(K.resolveScene("a6_bhishma").id === "cmd_promotion_1", "the promotion comes before Bhishma's fall");
+S = fresh({ act: 6, age: 44, side: "pandava", path: "strategist" }); S.flags.push("role_command", "role_division");
+let HB = K.Combat.start("hold_duryodhana", () => {}); const hero = HB.units.find((u) => u.hero);
+hero.hp = Math.round(hero.maxHp * 0.12); let low = hero.hp, guard = 0;
+while (!HB.over && guard++ < 300) { const t = HB.units.find((u) => u.side === "enemy" && u.hp > 0 && u.hero) || HB.units.find((u) => u.side === "enemy" && u.hp > 0); K.Combat.act("strike", t.uid); low = Math.min(low, hero.hp); }
+ok(low >= Math.round(hero.maxHp * 0.1) - 1, "a champion in a holding fight cannot be brought below a tenth: " + low + "/" + hero.maxHp);
+ok(HB.over === "lose" || HB.round > 8, "a holding fight is won only by outlasting it (" + HB.over + " at round " + HB.round + ")");
+S = fresh({ act: 6, age: 44, side: "kaurava" }); S.flags.push("role_command", "role_division", "council_flank", "council_flank_chariot");
+ok(K.resolveScene("a6_day17").id !== "hold_bhima_offer", "choosing the chariot flank keeps Bhima's charge away");
+S = fresh({ act: 6, age: 44 }); S.flags.push("line_broken"); K.Combat.start("e_last_stand", () => {});
+ok(!S.flags.includes("line_broken"), "a broken line is paid for in the next deadly fight, once");
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

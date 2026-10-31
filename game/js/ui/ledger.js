@@ -22,7 +22,8 @@
     floatChanges();
     const teacherName = K.TEACHERS && K.TEACHERS[S.teacher] ? ": " + K.tr(K.TEACHERS[S.teacher].short) : "";
     const kingName = K.COURTS && K.COURTS[S.court] ? ": " + K.tr(K.COURTS[S.court].king) : "";
-    const duties = Object.entries(K.DUTIES).map(([k, n]) =>
+    const rank = K.rankOf ? K.rankOf(S) : null; // rising to command (content/command.js)
+    const duties = (rank ? '<p class="sub">' + U.tr("Rank: {rank}", { rank: K.tr(K.RANKS[rank]) }) + "</p>" : "") + Object.entries(K.DUTIES).map(([k, n]) =>
       meter(K.tr(n) + (k === "teacher" ? teacherName : k === "court" ? kingName : ""), S.duty[k], "duty." + k)).join("");
 
     // A friend who walked away is not shown among the bonds.

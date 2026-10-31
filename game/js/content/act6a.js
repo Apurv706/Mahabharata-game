@@ -5,7 +5,7 @@
   const fighting = { side: ["pandava", "kaurava"] };
   const vasuNear = (S) => S.child === "vasu" && !S.dead.includes("vasu") && S.flags.includes("vasu_with_you");
   K.warAllies = (S) => {
-    const a = [S.flags.includes("role_command") ? "company" : "soldiers"];
+    const a = [S.flags.includes("role_command") && !S.flags.includes("company_broken") ? "company" : "soldiers"]; // a company broken in a holding fight is gone (content/command.js)
     if (vasuNear(S)) a.push("vasu");
     if (S.spouse === "revat" && !S.dead.includes("revat")) a.push("revat");
     if (S.friend === "charu" && !S.dead.includes("charu") && S.side !== "neutral") a.push("charu");

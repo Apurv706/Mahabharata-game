@@ -382,6 +382,7 @@ const TESTS = [
   ["baghchal", { stage: "stage_board_table", cast: ["shakuni"], opponent: "Shakuni" }], ["moksha", { stage: "stage_board_table", cast: ["boy"], opponent: "Vikarna" }],
   ["retort", { stage: "stage_lotus_garden", cast: ["duryodhana"], rounds: [{ line: "They say your family sweeps the stables.", replies: ["And yours sweeps the floor before the king.", "That is not true.", "Leave me alone."] }, { line: "Is that a bow or a broom?", replies: ["Come closer and find out.", "A bow.", "Go away."] }, { line: "Who taught you?", replies: ["Someone who could.", "Nobody.", "My mother."] }] }],
   ["draw", { stage: "stage_bow_courtyard", cast: ["guard"] }], ["formation", { stage: "stage_chakravyuha_top", array: "eagle" }], ["hands", { stage: "stage_dice_board_top", cast: ["shakuni"] }], ["pasha", null],
+  ["array", { stage: "stage_vyuha_top", array: "crane", rounds: 5 }], // the army battle (ui/army.js)
 ];
 
 async function runDevice(browser, base, o, report) {
@@ -517,6 +518,10 @@ async function runDevice(browser, base, o, report) {
   await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 17, act: 2 }); K.go("a2_spar"); K.UI.startBattle("e_spar", () => {}); }, LIFE);
   await page.waitForTimeout(900);
   await check("fight: sparring", ["battle"]);
+  // A holding fight (content/command.js): the champion's own painting, the countdown in the log.
+  await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 44, act: 6, side: "pandava" }); K.S.flags.push("role_command", "role_division"); K.go("a6_day16"); K.UI.startBattle("hold_karna", () => {}); }, LIFE);
+  await page.waitForTimeout(900);
+  await check("fight: holding", ["battle"]);
 
   // The practice ground (ui/practice.js). Beside a second chance, the offer; from the menu between
   // scenes, the ground; there a test played to its end, a blow read and the drill stopped, a bout

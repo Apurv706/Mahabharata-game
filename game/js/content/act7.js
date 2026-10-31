@@ -107,6 +107,11 @@
     (S.lostFriends || []).forEach((x) => t.push(["{They} lost {who}'s friendship, and never found the way back.", { who: K.PEOPLE[x.who].name }]));
     if (S.astra && S.astra.broken) t.push(K.ASTRA_GIVERS[S.astra.from].takes ? ["{They} {were} given a divine weapon, and lost it by breaking {who}'s one condition.", { who: K.ASTRA_GIVERS[S.astra.from].who }] : "{They} broke the condition {their} divine weapon was given on.");
     if (has("role_command")) t.push("At Kurukshetra {they} commanded a company of {their} own, and brought home as many as {they} could.");
+    if (has("role_council")) t.push("{They} sat at the war council, at the edge of the lamplight, and {their} word was counted."); else if (has("role_division")) t.push("{They} led a division of three companies, and set its array in the field.");
+    ["karna", "duryodhana", "arjuna", "bhima"].forEach((w) => { if (has("held_" + w)) t.push(["{They} held the line against {who} until the day let go of it.", { who: K.PEOPLE[w].name }]); else if (has("broke_" + w)) t.push(["{They} broke in front of {who}, and {their} company with {them}.", { who: K.PEOPLE[w].name }]); });
+    if (has("stayed_with_the_line")) t.push("When the line broke, {they} stayed with the men who stayed.");
+    if (has("council_truce")) t.push("It was {their} word at the council that gave both armies a truce at dusk to gather their dead.");
+    if (has("council_mercy")) t.push("At the council {they} spoke for mercy, and some of them hated {them} for it.");
     if (has("held_ring_open")) t.push(S.heldRing ? ["{They} held the ring open for {n} heartbeats beside Abhimanyu, in the heart of the wheel.", { n: S.heldRing }] : "{They} stood beside Abhimanyu in the heart of the wheel to the end.");
     if (has("fell_to_abhimanyu")) t.push("On the thirteenth day {they} stood in Abhimanyu's way in the wheel, as the order said, and fell to his arrows.");
     if (has("cut_abhimanyu_bow")) t.push("On the thirteenth day {they} obeyed the order to strike Abhimanyu from behind.");

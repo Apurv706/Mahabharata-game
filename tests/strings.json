@@ -18923,5 +18923,695 @@
   "id": 3786,
   "en": "You lower your bow. Karna's chariot heaves out of the water, and as it passes he sees you, and nods once. {friend} stares at you as if you were a stranger.",
   "ctx": "scene:v_ford"
+ },
+ {
+  "id": 3787,
+  "en": "The enemy is already through the line your division was holding. They come at you with the day's momentum.",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 3788,
+  "en": "You held until the end.",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 3789,
+  "en": "Hold: {n} rounds left.",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 3790,
+  "en": "Rank: {rank}",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3791,
+  "en": "The camp at night",
+  "ctx": "scene:cmd_promotion_1"
+ },
+ {
+  "id": 3792,
+  "en": "After nine days",
+  "ctx": "scene:cmd_promotion_1"
+ },
+ {
+  "id": 3793,
+  "en": "Division officer",
+  "ctx": "scene:cmd_promotion_1"
+ },
+ {
+  "id": 3794,
+  "en": "Accept the division",
+  "ctx": "scene:cmd_promotion_1"
+ },
+ {
+  "id": 3795,
+  "en": "After nine days of the war you were given a division: three companies, and the array on your stretch of the line to set.",
+  "ctx": "scene:cmd_promotion_1"
+ },
+ {
+  "id": 3796,
+  "en": "He gives you the banner himself. It is heavier than it looks.",
+  "ctx": "scene:cmd_promotion_1"
+ },
+ {
+  "id": 3797,
+  "en": "Ask to stay with your company",
+  "ctx": "scene:cmd_promotion_1"
+ },
+ {
+  "id": 3798,
+  "en": "\"Your company, then,\" he says. \"Keep them alive.\" You intend to.",
+  "ctx": "scene:cmd_promotion_1"
+ },
+ {
+  "id": 3799,
+  "en": "The commander's tent",
+  "ctx": "scene:cmd_promotion_2"
+ },
+ {
+  "id": 3800,
+  "en": "After the thirteenth day",
+  "ctx": "scene:cmd_promotion_2"
+ },
+ {
+  "id": 3801,
+  "en": "A seat at the council",
+  "ctx": "scene:cmd_promotion_2"
+ },
+ {
+  "id": 3802,
+  "en": "Take the seat",
+  "ctx": "scene:cmd_promotion_2"
+ },
+ {
+  "id": 3803,
+  "en": "After the thirteenth day you were given a seat at the war council.",
+  "ctx": "scene:cmd_promotion_2"
+ },
+ {
+  "id": 3804,
+  "en": "You sit. For a long time you only listen.",
+  "ctx": "scene:cmd_promotion_2"
+ },
+ {
+  "id": 3805,
+  "en": "Stand at the back, as an officer should",
+  "ctx": "scene:cmd_promotion_2"
+ },
+ {
+  "id": 3806,
+  "en": "You stand at the back with the other officers. Later you will wonder what you might have said.",
+  "ctx": "scene:cmd_promotion_2"
+ },
+ {
+  "id": 3807,
+  "en": "Kurukshetra · day 11, at dawn",
+  "ctx": "scene:cmd_array_1"
+ },
+ {
+  "id": 3808,
+  "en": "The day's array",
+  "ctx": "scene:cmd_array_1"
+ },
+ {
+  "id": 3809,
+  "en": "Your part of the line",
+  "ctx": "scene:cmd_array_1"
+ },
+ {
+  "id": 3810,
+  "en": "At dawn the commander rides along the line naming the day's array to each division officer in turn. He reaches you, names it, points at your stretch of the field, and rides on.",
+  "ctx": "scene:cmd_array_1"
+ },
+ {
+  "id": 3811,
+  "en": "Three companies, and the morning to put them where they belong.",
+  "ctx": "scene:cmd_array_1"
+ },
+ {
+  "id": 3812,
+  "en": "Set your division in the day's array",
+  "ctx": "scene:cmd_array_1"
+ },
+ {
+  "id": 3813,
+  "en": "The orders are yours today",
+  "ctx": "scene:cmd_array_1"
+ },
+ {
+  "id": 3814,
+  "en": "The commander names the array and points at your part of the line. Put your companies on its marks. Then, round by round, the enemy pushes: hold, strike their flank, give ground, or send the reserve where they strike.",
+  "ctx": "scene:cmd_array_1"
+ },
+ {
+  "id": 3815,
+  "en": "The line holds, and the day's fighting goes your way.",
+  "ctx": "scene:cmd_array_1"
+ },
+ {
+  "id": 3816,
+  "en": "The line breaks, and the day's fighting finds you with the enemy already through.",
+  "ctx": "scene:cmd_array_1"
+ },
+ {
+  "id": 3817,
+  "en": "You set your division in the array and held the line to the end of the day.",
+  "ctx": "scene:cmd_array_1"
+ },
+ {
+  "id": 3818,
+  "en": "When the conches sound at dusk the line is where it was at dawn. The commander says nothing, which from him is praise.",
+  "ctx": "scene:cmd_array_1"
+ },
+ {
+  "id": 3819,
+  "en": "The line bends and holds, and holds, and at dusk it is still a line.",
+  "ctx": "scene:cmd_array_1"
+ },
+ {
+  "id": 3820,
+  "en": "The line breaks in the middle of the afternoon. What is left of your division fights its way back to the camp in pieces, and the enemy is already through.",
+  "ctx": "scene:cmd_array_1"
+ },
+ {
+  "id": 3821,
+  "en": "Let a senior officer set it, and fight in the line",
+  "ctx": "scene:cmd_array_1"
+ },
+ {
+  "id": 3822,
+  "en": "An older officer sets your division in the array. You take your place in it, like anyone.",
+  "ctx": "scene:cmd_array_1"
+ },
+ {
+  "id": 3823,
+  "en": "Kurukshetra · day 15, at dawn",
+  "ctx": "scene:cmd_array_2"
+ },
+ {
+  "id": 3824,
+  "en": "The line after the night",
+  "ctx": "scene:cmd_array_2"
+ },
+ {
+  "id": 3825,
+  "en": "The army that fought by torchlight is grey with tiredness. The commander names the array anyway, and points at your stretch of the field.",
+  "ctx": "scene:cmd_array_2"
+ },
+ {
+  "id": 3826,
+  "en": "The men you set today have not slept.",
+  "ctx": "scene:cmd_array_2"
+ },
+ {
+  "id": 3827,
+  "en": "Fight in the line today",
+  "ctx": "scene:cmd_array_2"
+ },
+ {
+  "id": 3828,
+  "en": "Someone else sets the array. You fight where you are put.",
+  "ctx": "scene:cmd_array_2"
+ },
+ {
+  "id": 3829,
+  "en": "A champion to hold",
+  "ctx": "scene:hold_karna_offer"
+ },
+ {
+  "id": 3830,
+  "en": "Karna's chariot",
+  "ctx": "scene:hold_karna_offer"
+ },
+ {
+  "id": 3831,
+  "en": "On the sixteenth day Karna commands the Kaurava army, and his chariot goes where it likes. Dhrishtadyumna wants it kept on one stretch of road until sunset, so that the king's wing can withdraw.",
+  "ctx": "scene:hold_karna_offer"
+ },
+ {
+  "id": 3832,
+  "en": "He does not say anyone will survive it. He asks whose division it will be.",
+  "ctx": "scene:hold_karna_offer"
+ },
+ {
+  "id": 3833,
+  "en": "Hold them, with your division",
+  "ctx": "scene:hold_karna_offer"
+ },
+ {
+  "id": 3834,
+  "en": "Won by standing, not by killing",
+  "ctx": "scene:hold_karna_offer"
+ },
+ {
+  "id": 3835,
+  "en": "Ask that another division take it",
+  "ctx": "scene:hold_karna_offer"
+ },
+ {
+  "id": 3836,
+  "en": "Another division takes it. You hear how it went for them before nightfall.",
+  "ctx": "scene:hold_karna_offer"
+ },
+ {
+  "id": 3837,
+  "en": "Karna's chariot, pinned",
+  "ctx": "fight:hold_karna"
+ },
+ {
+  "id": 3838,
+  "en": "You pull back off the road. Karna's chariot rolls through where you stood.",
+  "ctx": "fight:hold_karna"
+ },
+ {
+  "id": 3839,
+  "en": "The sun touches the horizon. You held.",
+  "ctx": "fight:hold_karna"
+ },
+ {
+  "id": 3840,
+  "en": "Until sunset",
+  "ctx": "fight:hold_karna"
+ },
+ {
+  "id": 3841,
+  "en": "The order is simple and impossible: keep Karna's chariot here, on this stretch of road, until the sun goes down. Not to beat him. To be in his way.",
+  "ctx": "fight:hold_karna"
+ },
+ {
+  "id": 3842,
+  "en": "Karna's arrows come in a sheet. Your company's shields go up together.",
+  "ctx": "fight:hold_karna"
+ },
+ {
+  "id": 3843,
+  "en": "He has found your charioteer. The horses are loose. You fight on foot now.",
+  "ctx": "fight:hold_karna"
+ },
+ {
+  "id": 3844,
+  "en": "On the sixteenth day you kept Karna's chariot pinned on the road until sunset.",
+  "ctx": "fight:hold_karna"
+ },
+ {
+  "id": 3845,
+  "en": "The sun goes down. Karna lowers his bow, looks at you once across the wreckage, and turns his chariot back toward his own lines.",
+  "ctx": "fight:hold_karna"
+ },
+ {
+  "id": 3846,
+  "en": "The line in front of Karna's chariot breaks, and your company breaks with it.",
+  "ctx": "fight:hold_karna"
+ },
+ {
+  "id": 3847,
+  "en": "Karna's charioteer",
+  "ctx": "fight:hold_karna"
+ },
+ {
+  "id": 3848,
+  "en": "The king's flank",
+  "ctx": "scene:hold_duryodhana_offer"
+ },
+ {
+  "id": 3849,
+  "en": "Duryodhana's division has found Yudhishthira's flank. The king must be got away, and someone must stand on the flank while it happens.",
+  "ctx": "scene:hold_duryodhana_offer"
+ },
+ {
+  "id": 3850,
+  "en": "Eight rounds, Dhrishtadyumna says. Eight rounds, and the king is gone.",
+  "ctx": "scene:hold_duryodhana_offer"
+ },
+ {
+  "id": 3851,
+  "en": "You fall back. Others close the flank, late.",
+  "ctx": "fight:hold_duryodhana"
+ },
+ {
+  "id": 3852,
+  "en": "Yudhishthira's chariot has moved on. The flank is safe.",
+  "ctx": "fight:hold_duryodhana"
+ },
+ {
+  "id": 3853,
+  "en": "Eight rounds",
+  "ctx": "fight:hold_duryodhana"
+ },
+ {
+  "id": 3854,
+  "en": "Duryodhana's division is coming at the king's flank, and yours is what stands between. Hold eight rounds and the king will be gone.",
+  "ctx": "fight:hold_duryodhana"
+ },
+ {
+  "id": 3855,
+  "en": "Duryodhana himself comes forward with his mace, roaring at his men to follow.",
+  "ctx": "fight:hold_duryodhana"
+ },
+ {
+  "id": 3856,
+  "en": "Your company is thinning. The ones who are left close the gaps without being told.",
+  "ctx": "fight:hold_duryodhana"
+ },
+ {
+  "id": 3857,
+  "en": "You kept Duryodhana's division off Yudhishthira's flank for eight rounds.",
+  "ctx": "fight:hold_duryodhana"
+ },
+ {
+  "id": 3858,
+  "en": "The king's chariot is gone from the flank. Duryodhana sees it, and his face does something you will not forget.",
+  "ctx": "fight:hold_duryodhana"
+ },
+ {
+  "id": 3859,
+  "en": "The flank gives way. Your company goes down around you.",
+  "ctx": "fight:hold_duryodhana"
+ },
+ {
+  "id": 3860,
+  "en": "Arjuna's chariot",
+  "ctx": "scene:hold_arjuna_offer"
+ },
+ {
+  "id": 3861,
+  "en": "Arjuna's white horses are turning toward your part of the line. Drona's order comes down the line ahead of them: stand, and keep standing, until something draws him away.",
+  "ctx": "scene:hold_arjuna_offer"
+ },
+ {
+  "id": 3862,
+  "en": "Nobody who has stood in front of that chariot has told anyone what it was like.",
+  "ctx": "scene:hold_arjuna_offer"
+ },
+ {
+  "id": 3863,
+  "en": "Against Arjuna's chariot",
+  "ctx": "fight:hold_arjuna"
+ },
+ {
+  "id": 3864,
+  "en": "You pull back out of the arrows. No one who saw it blames you.",
+  "ctx": "fight:hold_arjuna"
+ },
+ {
+  "id": 3865,
+  "en": "A conch calls Arjuna's chariot away. You are still standing.",
+  "ctx": "fight:hold_arjuna"
+ },
+ {
+  "id": 3866,
+  "en": "Six rounds under the arrows",
+  "ctx": "fight:hold_arjuna"
+ },
+ {
+  "id": 3867,
+  "en": "Arjuna's chariot is turning toward your stretch of the line. No one has stood in front of it and stayed. The order is to stand in front of it.",
+  "ctx": "fight:hold_arjuna"
+ },
+ {
+  "id": 3868,
+  "en": "His arrows come faster than you can see them. Men fall on either side of you.",
+  "ctx": "fight:hold_arjuna"
+ },
+ {
+  "id": 3869,
+  "en": "The white horses are close enough to see their eyes.",
+  "ctx": "fight:hold_arjuna"
+ },
+ {
+  "id": 3870,
+  "en": "You stood against Arjuna's chariot for six rounds, and were still standing when it turned away.",
+  "ctx": "fight:hold_arjuna"
+ },
+ {
+  "id": 3871,
+  "en": "Krishna turns the chariot toward some greater need, and Arjuna looks back once at the line that did not break.",
+  "ctx": "fight:hold_arjuna"
+ },
+ {
+  "id": 3872,
+  "en": "The arrows do what arrows do. The line in front of Arjuna's chariot is gone.",
+  "ctx": "fight:hold_arjuna"
+ },
+ {
+  "id": 3873,
+  "en": "Bhima's charge",
+  "ctx": "scene:hold_bhima_offer"
+ },
+ {
+  "id": 3874,
+  "en": "Bhima is coming across the field toward the Kaurava princes, and your division is in the way. Karna, who commands now, sends one word: hold.",
+  "ctx": "scene:hold_bhima_offer"
+ },
+ {
+  "id": 3875,
+  "en": "Seven rounds, the runner says. Then he looks at your company, and does not say anything else.",
+  "ctx": "scene:hold_bhima_offer"
+ },
+ {
+  "id": 3876,
+  "en": "You fall back before the charge reaches you. The men who stayed do not.",
+  "ctx": "fight:hold_bhima"
+ },
+ {
+  "id": 3877,
+  "en": "Bhima turns toward another part of the field, roaring. You held.",
+  "ctx": "fight:hold_bhima"
+ },
+ {
+  "id": 3878,
+  "en": "Seven rounds",
+  "ctx": "fight:hold_bhima"
+ },
+ {
+  "id": 3879,
+  "en": "Bhima comes across the field like a wall falling, with his mace up and his brothers' names in his mouth. Stand against it for seven rounds.",
+  "ctx": "fight:hold_bhima"
+ },
+ {
+  "id": 3880,
+  "en": "The first charge hits. The front rank is simply not there any more.",
+  "ctx": "fight:hold_bhima"
+ },
+ {
+  "id": 3881,
+  "en": "He has seen your banner. He is coming for it.",
+  "ctx": "fight:hold_bhima"
+ },
+ {
+  "id": 3882,
+  "en": "You stood against Bhima's charge for seven rounds.",
+  "ctx": "fight:hold_bhima"
+ },
+ {
+  "id": 3883,
+  "en": "Bhima wheels away toward the Kaurava princes he has sworn to kill. Your line is a ruin, and it is still a line.",
+  "ctx": "fight:hold_bhima"
+ },
+ {
+  "id": 3884,
+  "en": "Bhima goes through your company like a hand through smoke.",
+  "ctx": "fight:hold_bhima"
+ },
+ {
+  "id": 3885,
+  "en": "The line, after",
+  "ctx": "scene:hold_broken"
+ },
+ {
+  "id": 3886,
+  "en": "What is left",
+  "ctx": "scene:hold_broken"
+ },
+ {
+  "id": 3887,
+  "en": "The line is gone. Your company is gone, or scattered, or lying where it stood. The champion's banner is already moving on to the next stretch of the field.",
+  "ctx": "scene:hold_broken"
+ },
+ {
+  "id": 3888,
+  "en": "There is a moment, no longer, in which you can still choose what happens to you.",
+  "ctx": "scene:hold_broken"
+ },
+ {
+  "id": 3889,
+  "en": "Fall back with the wounded",
+  "ctx": "scene:hold_broken"
+ },
+ {
+  "id": 3890,
+  "en": "Your company broke in front of the enemy's champion. You fell back with the wounded, and carried the mark of it.",
+  "ctx": "scene:hold_broken"
+ },
+ {
+  "id": 3891,
+  "en": "You get the ones who can walk to the rear. You are one of them, barely.",
+  "ctx": "scene:hold_broken"
+ },
+ {
+  "id": 3892,
+  "en": "Try to rally the scattered men",
+  "ctx": "scene:hold_broken"
+ },
+ {
+  "id": 3893,
+  "en": "Your company broke, and you rallied what was left of it under the banner before dusk.",
+  "ctx": "scene:hold_broken"
+ },
+ {
+  "id": 3894,
+  "en": "Forty men. Then sixty. By dusk there is something that can be called a company again, standing around a torn banner.",
+  "ctx": "scene:hold_broken"
+ },
+ {
+  "id": 3895,
+  "en": "Nobody hears you. A spear finds your arm while you are still shouting.",
+  "ctx": "scene:hold_broken"
+ },
+ {
+  "id": 3896,
+  "en": "A test of command",
+  "ctx": "scene:hold_broken"
+ },
+ {
+  "id": 3897,
+  "en": "Stay with the men who stayed",
+  "ctx": "scene:hold_broken"
+ },
+ {
+  "id": 3898,
+  "en": "{They} stayed with the men who stayed, when the line broke in front of the enemy's champion, and fell with them.",
+  "ctx": "scene:hold_broken"
+ },
+ {
+  "id": 3899,
+  "en": "This is the end of the story",
+  "ctx": "scene:hold_broken"
+ },
+ {
+  "id": 3900,
+  "en": "The council tent, after the night of torches",
+  "ctx": "scene:cmd_council_1"
+ },
+ {
+  "id": 3901,
+  "en": "The war council",
+  "ctx": "scene:cmd_council_1"
+ },
+ {
+  "id": 3902,
+  "en": "Which flank",
+  "ctx": "scene:cmd_council_1"
+ },
+ {
+  "id": 3903,
+  "en": "The council sits late. Tomorrow's array is argued over, and then someone asks where your division will stand.",
+  "ctx": "scene:cmd_council_1"
+ },
+ {
+  "id": 3904,
+  "en": "You may ask for the flank where the enemy's chariots come, or the one where their divisions press. The council will give you what you ask.",
+  "ctx": "scene:cmd_council_1"
+ },
+ {
+  "id": 3905,
+  "en": "The flank where their chariots come",
+  "ctx": "scene:cmd_council_1"
+ },
+ {
+  "id": 3906,
+  "en": "\"The chariots, then,\" the commander says, and writes nothing down, because he does not need to.",
+  "ctx": "scene:cmd_council_1"
+ },
+ {
+  "id": 3907,
+  "en": "The flank where their divisions press",
+  "ctx": "scene:cmd_council_1"
+ },
+ {
+  "id": 3908,
+  "en": "\"The divisions, then.\" Someone at the far end of the tent lets out a breath he had been holding.",
+  "ctx": "scene:cmd_council_1"
+ },
+ {
+  "id": 3909,
+  "en": "Argue for a truce at dusk, to gather the dead",
+  "ctx": "scene:cmd_council_1"
+ },
+ {
+  "id": 3910,
+  "en": "There is a silence. Then the oldest man at the council says that his father's war had such truces, and the matter is agreed before anyone can argue.",
+  "ctx": "scene:cmd_council_1"
+ },
+ {
+  "id": 3911,
+  "en": "The council tent, the night Drona fell",
+  "ctx": "scene:cmd_council_2"
+ },
+ {
+  "id": 3912,
+  "en": "After Drona",
+  "ctx": "scene:cmd_council_2"
+ },
+ {
+  "id": 3913,
+  "en": "You say it. Some of them hate you for it. One or two will remember it when they are old.",
+  "ctx": "scene:cmd_council_2"
+ },
+ {
+  "id": 3914,
+  "en": "Counsel whatever ends the war soonest",
+  "ctx": "scene:cmd_council_2"
+ },
+ {
+  "id": 3915,
+  "en": "You say it. The commander nods. It is what he wanted to hear.",
+  "ctx": "scene:cmd_council_2"
+ },
+ {
+  "id": 3916,
+  "en": "Say nothing. It is not your council",
+  "ctx": "scene:cmd_council_2"
+ },
+ {
+  "id": 3917,
+  "en": "You say nothing. You think about it for the rest of your life.",
+  "ctx": "scene:cmd_council_2"
+ },
+ {
+  "id": 3918,
+  "en": "The council tent, before the seventeenth day",
+  "ctx": "scene:cmd_council_3"
+ },
+ {
+  "id": 3919,
+  "en": "Before Karna's day",
+  "ctx": "scene:cmd_council_3"
+ },
+ {
+  "id": 3920,
+  "en": "Throw everything at it",
+  "ctx": "scene:cmd_council_3"
+ },
+ {
+  "id": 3921,
+  "en": "\"Everything,\" you say. The commander counts the word.",
+  "ctx": "scene:cmd_council_3"
+ },
+ {
+  "id": 3922,
+  "en": "Keep the army whole for what comes after",
+  "ctx": "scene:cmd_council_3"
+ },
+ {
+  "id": 3923,
+  "en": "\"Whole,\" you say. Across the tent, an old man you have never spoken to nods at you.",
+  "ctx": "scene:cmd_council_3"
+ },
+ {
+  "id": 3924,
+  "en": "You say it out loud, into the lamplight. No one answers. Later, you will know whether anyone heard.",
+  "ctx": "scene:cmd_council_3"
  }
 ]
