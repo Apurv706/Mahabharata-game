@@ -47,7 +47,7 @@
         return { theme: "milestone", title: ["A vow: {vow}", { vow: V.name }], line: V.keep || V.gift, watch: w ? ["Watched by {who}", { who: w }, true] : null, price: V.price ? ["Broken: {price}", { price: V.price }] : null,
           art: null, place: "scene_vow", emblem: "vow_" + m.id };
       }
-      case "company": return { theme: "milestone", title: "A company of your own", line: "They are yours to command, and yours to bring home.", art: null, place: "war_eve", emblem: "path_strategist" };
+      case "company": return { theme: "milestone", title: "A company of your own", line: "They are yours to command, and yours to bring home.", art: "scene_command_banner", place: null, emblem: null };
       default: return null;
     }
   };
