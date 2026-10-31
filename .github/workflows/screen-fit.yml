@@ -8,6 +8,10 @@ on:
     paths: ["game/**", "tests/layout.js", ".github/workflows/screen-fit.yml"]
   pull_request:
   workflow_dispatch:
+# A newer push replaces the run still going for an older one (fewer stale failure emails).
+concurrency:
+  group: screen-fit-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   layout:
     runs-on: ubuntu-latest
