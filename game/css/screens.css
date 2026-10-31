@@ -1577,3 +1577,5 @@ svg .pr-hint { outline: none; filter: drop-shadow(0 0 6px #ffd680) drop-shadow(0
   #battle-actions .actions:has(> .act:nth-child(7)) .act small { display: none; }
   #battle-actions .actions:has(> .act:nth-child(7)) .act { min-height: 0; padding-top: 8px; padding-bottom: 8px; }
 }
+/* The dive: the diver in the lake is you, so no second figure stands on the lake bed below. */
+.trial.trial-breath > .cast { display: none; }
