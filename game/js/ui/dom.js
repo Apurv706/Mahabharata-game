@@ -225,7 +225,8 @@
     // An upright screen, while a scene opens (its cards, then its page being written): the whole
     // painting, large, in the middle of the screen. A wide painting cannot fill a tall screen
     // without being cut to a sliver, so it is shown whole on its glow instead.
-    else if (H > W * 1.15 && (!U.settled || document.body.classList.contains("beating"))) { mode = "whole"; rt = 0; rb = H; }
+    // (Never for a fight: its painting always fills the screen, its ground under the fighters' feet.)
+    else if (H > W * 1.15 && !fightingNow() && (!U.settled || document.body.classList.contains("beating"))) { mode = "whole"; rt = 0; rb = H; }
     // Until a new scene has fully appeared, its painting stays whole-screen behind the page;
     // then it moves, once, into the space above the page.
     else if (H > W * 1.15 && !document.body.classList.contains("beating") && U.settled) {
@@ -283,9 +284,12 @@
     if (!svgs.length) return null;
     return Math.max(...svgs.map((el) => el.getBoundingClientRect().bottom));
   };
+  function fightingNow() { const lf = U.$("leaf"); return !!(lf && lf.classList.contains("fighting") && lf.classList.contains("immersive")); }
+  U.fitFeet = null; // the feet the painting was last fitted to (battle.js re-fits when they move)
   U.groundFit = function (key) {
     const gr = U.upright() && U.tallOf(key) ? U.groundOf(key) : null;
-    const feet = gr && U.feetY();
+    U.fitFeet = U.feetY(); // remembered even when there is no ground to fit, so battle.js does not keep asking
+    const feet = gr && U.fitFeet;
     if (!feet) return null;
     return (iw, ih, w, h, W, H) => {
       const want = Math.max(h, (H - feet) / (1 - gr), feet / gr);

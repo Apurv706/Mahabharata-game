@@ -398,7 +398,7 @@
       const bb = U.button("act", "<b>" + U.esc(U.tr("Back")) + "</b><small>" + U.esc(U.tr("Choose another move")) + "</small>", back);
       keys.push(back); pick.appendChild(bb);
       box.appendChild(pick); U.keys(keys); U.renderLedger();
-      if (U.upright()) requestAnimationFrame(() => U.fitBackdrop(true)); // the taller panel lifts the fighters
+      settleGround(); // the taller panel lifts the fighters
       return;
     }
     astraPick = false;
@@ -446,8 +446,24 @@
     U.keys(keys);
     U.renderLedger();
     // The moves' panel can change height from turn to turn (a tool appears, a card wraps): keep the painting's ground under the fighters.
-    if (U.upright()) requestAnimationFrame(() => U.fitBackdrop(true));
+    settleGround();
   };
+  // For a moment after each draw, watch the fighters' feet: whenever they are not where the painting was
+  // last fitted (Safari lays the page out later than Chrome, and fonts and images arrive late), fit again.
+  let settleUntil = 0;
+  function settleGround() {
+    if (!U.upright()) return;
+    const running = settleUntil > performance.now();
+    settleUntil = performance.now() + 1600;
+    if (running) return;
+    const tick = () => {
+      if (!U.upright() || performance.now() > settleUntil) return;
+      const f = U.feetY();
+      if (f && (U.fitFeet == null || Math.abs(f - U.fitFeet) > 2)) U.fitBackdrop(true);
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
 
   K.on("combat", (B) => U.renderBattle(B));
 })(window.K = window.K || {});
