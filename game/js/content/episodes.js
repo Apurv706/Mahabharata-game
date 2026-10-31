@@ -18,12 +18,8 @@
 
   // The painting each scene wants (the brief's key) -> the painting it uses until that arrives.
   const STANDIN = {
-    scene_tournament_crowd: "scene_tournament", scene_ugra_letter: "scene_note", scene_ugra_field: "war_day17",
-    scene_secret_told: "scene_secret", scene_mentor_vidura: "scene_indraprastha", scene_mentor_kripa: "scene_dice_hall", scene_mentor_peace: "scene_ashram",
-    stage_forest_storm: "stage_exile_storm", scene_lake_charu: "scene_lake", stage_virata_hall: "stage_virata_court", stage_dancing_hall: "stage_kichaka_hall_night",
-    scene_supply_camp_night: "stage_supply_camp_night", fight_supply_carts: "fight_war_camp", scene_river_crossing: "stage_river_crossing_night",
-    scene_shikhandi: "war_bhishma", scene_letter_camp: "scene_vasu", scene_sibling_field: "war_day17",
-    scene_river_rite: "scene_forgiveness", scene_own_student: "scene_student", scene_bard: "end_teller"
+    stage_forest_storm: "stage_exile_storm", stage_virata_hall: "stage_virata_court", stage_dancing_hall: "stage_kichaka_hall_night",
+    scene_supply_camp_night: "stage_supply_camp_night", scene_river_crossing: "stage_river_crossing_night",
   };
   const art = (k) => STANDIN[k] || k;
   const homeArt = (S) => (S.origin === "suta" && !S.flags.includes("moved_capital") ? "home_anga" : "home_" + S.origin);

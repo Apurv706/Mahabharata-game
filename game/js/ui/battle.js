@@ -85,7 +85,7 @@
     e_sudatta: "fight_grazing", e_cattle: "fight_grazing", e_cattle_k: "fight_grazing",
     e_day1: "fight_war_field", e_wheel: "fight_war_field", e_day16: "fight_war_field", e_day18: "fight_war_field",
     e_guard: "fight_war_chariot", e_hunt: "fight_war_chariot", e_road: "fight_war_sunset", e_jaya: "fight_war_sunset", e_gate: "fight_war_sunset",
-    e_night: "stage_battlefield_night", e_last_stand: "fight_chakravyuha_inner", e_ring: "fight_chakravyuha_inner", e_dushasana: "fight_war_camp", e_raid: "fight_camp_gate_night", e_ash: "fight_camp_gate_night"
+    e_night: "stage_battlefield_night", e_last_stand: "fight_chakravyuha_inner", e_ring: "fight_chakravyuha_inner", e_dushasana: "fight_war_camp", e_ep_carts: "fight_supply_carts", e_raid: "fight_camp_gate_night", e_ash: "fight_camp_gate_night"
   };
   Object.assign(FIGHT_BG, K.COMMAND_FIGHT_BG || {}); // the holding fights (content/command.js)
   U.FIGHT_BG = FIGHT_BG;

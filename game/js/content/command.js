@@ -136,7 +136,7 @@
       ["Bhima is coming across the field toward the Kaurava princes, and your division is in the way. Karna, who commands now, sends one word: hold.", "Seven rounds, the runner says. Then he looks at your company, and does not say anything else."]),
     // After a broken line: fall back with a wound, be taken, or stay with the men who stayed.
     {
-      id: "hold_broken", act: 6, age: 44, war: true, away: true, art: "war_capture", place: "Kurukshetra", caption: "The line, after", title: "What is left",
+      id: "hold_broken", act: 6, age: 44, war: true, away: true, art: "scene_line_broken", place: "Kurukshetra", caption: "The line, after", title: "What is left",
       body: ["The line is gone. Your company is gone, or scattered, or lying where it stood. The champion's banner is already moving on to the next stretch of the field.", "There is a moment, no longer, in which you can still choose what happens to you."],
       choices: [
         { id: "back", t: "Fall back with the wounded", fx: { injury: "scar", journal: "Your company broke in front of the enemy's champion. You fell back with the wounded, and carried the mark of it." }, text: "You get the ones who can walk to the rear. You are one of them, barely." },

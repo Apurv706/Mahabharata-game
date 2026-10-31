@@ -14,9 +14,6 @@
 (function (K) {
   "use strict";
   const STANDIN = {
-    stage_fire_altar: "stage_forest_clearing_night", stage_deep_lake: "stage_forest_lake", stage_mountain_path: "stage_forest_edge",
-    stage_gandharva_grove: "stage_forest_clearing_night", stage_naga_bank: "stage_healers_hall", stage_shiva_mountain: "stage_forest_edge",
-    scene_temple_offering: "stage_palace_corridor", scene_sage_year: "scene_ashram", scene_brahmastra: "scene_raid", scene_raksha_sutra: "war_eve", scene_soma: "scene_rajasuya"
   };
   const art = (k) => STANDIN[k] || k;
 

@@ -14,3 +14,13 @@ Notes for the artist
 
 ## Corrections received 31 October (11, all accepted)
 fight_camp_gate_night (16:9, new) and _tall: moon instead of the eclipse. fight_drupada_yard_tall: flat tiled gateway roof. fight_swayamvara_tall: carved pillars. p_abhimanyu: scale armour and a turban-wrapped helmet. p_vidura: stylus and palm leaf. moment_friend_bhima: one face only. moment_friend_duryodhana and _tall: oil lamps, the friend dressed plainer than the prince. scene_years_remain and _wide: a torana instead of the torii. The camp gate fight now uses its own 16:9 painting on wide screens.
+
+## Finals for the 27-painting brief, received 31 October (54 files, all accepted)
+All 27 paintings from Art_Brief_Still_Needed.pdf, each in both sizes: 6 weapon-quest stages and their tall versions, 20 scenes (3:1 and 16:9), and fight_supply_carts with its tall version. Every stand-in in astras.js, episodes.js and command.js is replaced.
+
+Notes for a later retouch (none blocking):
+- stage_shiva_mountain and _tall: a wooden torii-shaped gate hung with Tibetan prayer flags. Use a carved stone torana, or no gate, and no prayer flags.
+- stage_naga_bank and _tall: the gateway on the far bank reads as a torii silhouette.
+- scene_bard and _wide: the two-bar wooden gate behind the bard reads as a torii.
+- stage_mountain_path and _tall: Tibetan prayer flags and chortens are later than the period; plain stone cairns would do.
+- Minor: scene_brahmastra's blurred two-bar gate; scene_sibling_field always shows a brother (the game has an elder brother or sister); a Sanchi stupa and torana appear in nearly every painting, including court and Vedic scenes. Vary the skyline in future work.
