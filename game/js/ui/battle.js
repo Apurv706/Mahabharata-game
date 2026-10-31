@@ -439,6 +439,8 @@
     if (tools.children.length) box.appendChild(tools);
     U.keys(keys);
     U.renderLedger();
+    // The moves' panel can change height from turn to turn (a tool appears, a card wraps): keep the painting's ground under the fighters.
+    if (U.upright()) requestAnimationFrame(() => U.fitBackdrop(true));
   };
 
   K.on("combat", (B) => U.renderBattle(B));
