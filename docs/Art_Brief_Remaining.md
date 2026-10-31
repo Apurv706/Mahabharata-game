@@ -1,67 +1,26 @@
-# Art Brief: what is still needed (31 October)
+# Art Brief: status (31 October)
 
-*Kurukshetra: A Life.* This replaces the "still needed" lists in the earlier briefs. Everything else ordered so far has been delivered and is in the game.
+*Kurukshetra: A Life.* **Everything ordered is delivered and in the game.** That covers all earlier briefs, the 31 October corrections, and the 27 paintings of `Art_Brief_Still_Needed.pdf` (54 files). No painting in the game is a stand-in any more.
 
-**Totals:** 27 new paintings. None of them block a release: until a painting arrives, the game uses the closest existing one. The same list, with a thumbnail of each stand-in, is **`Art_Brief_Still_Needed.pdf`**.
+## Retouches, when convenient (none blocking)
 
-## Rules for every image (unchanged)
+Same file names and sizes as delivered. Period rule as before: early historic India, with toranas in the Sanchi style (three carved crossbars). No Japanese torii, Tibetan prayer flags or chortens.
 
-- **No painted text.** No letters, numbers or captions in the picture.
-- **Composition:** main subject in the centre, because phones crop the sides. Keep the lower third calmer, because text sits over it.
-- **Period:** early historic India, with timber, brick and stone towns, toranas (gateways), courtyards and stupas. **Avoid:** domes, Gothic spires, castle towers, later temple spires, East Asian roofs and gates, Greek columns and helmets, glass lanterns, modern targets and pens.
-- **Content:** no gore (violence implied only). Krishna and the gods are not shown as figures. Draupadi is never shown humiliated.
-- **Delivery:** JPG with a `manifest.csv`, and the same file names as below. Label AI-made or AI-edited work, as you have been doing.
-
-| Kind | Sizes |
+| File | Retouch |
 |---|---|
-| Scene | 1800×600 (3:1) **and** 2560×1440 (16:9) `_wide` |
-| Stage (a test's ground) | 2560×1440 **and** 1080×1920 `_tall` |
-| Fight background | 2560×1440 **and** 1080×1920 `_tall`; level ground across the lower band, as before |
+| `stage_shiva_mountain` and `_tall` | The wooden torii-shaped gate with Tibetan prayer flags: replace with a carved stone torana, or leave the summit bare. No prayer flags. |
+| `stage_naga_bank` and `_tall` | The gateway on the far bank reads as a torii silhouette: make it a Sanchi-style torana, or remove it. |
+| `scene_bard` and `_wide` | The two-bar wooden gate behind the bard reads as a torii: make it a torana or a plain village gate. |
+| `stage_mountain_path` and `_tall` | Prayer flags and chortens are later than the period: plain stone cairns instead. |
 
-## New paintings for the new parts of the game (27)
+**Minor, kept as is:**
+- `scene_brahmastra`: a blurred two-bar gate in the background.
+- `scene_sibling_field` always shows a brother, though the game also has an elder sister.
 
-### Divine weapons and magic (11)
+**For future work:** a Sanchi stupa and torana appear in nearly every painting, including the Kuru court and the Vedic rites. Vary the skyline: timber palaces, brick towns, forest and river.
 
-| File | Kind | What it shows |
-|---|---|---|
-| `stage_fire_altar` | Stage | A fire altar at night in a forest clearing; the Agneyastra test is played in front of it. |
-| `stage_deep_lake` | Stage | A deep, clear lake seen from the surface and partly underwater. You dive for a sage's vessel on the bottom. |
-| `stage_mountain_path` | Stage | A steep Himalayan path with snow and ice, and a hermitage far above. You climb on foot. |
-| `stage_gandharva_grove` | Stage | A moonlit grove with mist, flowers and the hint of music. The Gandharva is only a glow between the trees. |
-| `stage_naga_bank` | Stage | A reedy riverbank at dusk, with carved serpent stones half in the water. |
-| `stage_shiva_mountain` | Stage | A high, bare mountain top at dawn, with a great light in the clouds. **No figure:** light and wind only. |
-| `scene_temple_offering` | Scene | A small temple's inner shrine at night, with a bronze lamp on the altar that the player may steal. |
-| `scene_sage_year` | Scene | A year in a forest ashram, with the player sweeping, fetching water and studying beside an old sage. |
-| `scene_brahmastra` | Scene | "The mantra no one should hold": a scroll in the dark, faintly glowing, with a hand stopping short of it. |
-| `scene_raksha_sutra` | Scene | The night before the war, lamps in the tents, and a sacred thread tied on a warrior's wrist. |
-| `scene_soma` | Scene | The pressing of the Soma at the Rajasuya: priests, stones, a fire, and a cup handed to the player. |
+## Not for the artist
 
-### Episodes and threads (15)
-
-| File | Kind | What it shows |
-|---|---|---|
-| `scene_tournament_crowd` | Scene | The morning before the princes' tournament: crowds filling the stands and banners going up. |
-| `scene_ugra_letter` | Scene | A letter in a miller's hand, read by lamplight. |
-| `scene_ugra_field` | Scene | Ugra, the miller's son, now grown, with a captain's spear on the other side of the field. |
-| `scene_secret_told` | Scene | "A thing known for twenty-seven years": two figures, one telling, in a quiet room. |
-| `scene_mentor_vidura` | Scene | A lamp, a table and Vidura asking a question across it. |
-| `scene_mentor_kripa` | Scene | Kripa taking the player aside in a corridor before the dice game. |
-| `scene_mentor_peace` | Scene | An old teacher's last request, in a simple hut. |
-| `scene_lake_charu` | Scene | The Yaksha's lake, with Charu lying at the water's edge (fallen, not hurt-looking). |
-| `fight_supply_carts` | Fight | Grain carts and watch-fires in an army camp at night, with level ground for the fight. |
-| `scene_shikhandi` | Scene | Shikhandi at the front of the chariot, with Bhishma lowering his bow in the distance. |
-| `scene_letter_camp` | Scene | A letter carried across the lines under a white truce flag. |
-| `scene_sibling_field` | Scene | A face you know across a spear's length: an elder brother or sister on the enemy side. |
-| `scene_river_rite` | Scene | Lamps set on the river for the dead after the war, by many people at dusk. |
-| `scene_own_student` | Scene | Years later, a child with a stick for a bow, waiting at the player's door. |
-| `scene_bard` | Scene | A bard singing the war to a village crowd and getting it wrong, while an old warrior listens at the back. |
-
-### Command (1)
-
-| File | Kind | What it shows |
-|---|---|---|
-| `scene_line_broken` | Scene | "The line, after": a broken company line, a fallen banner, and survivors regrouping in the dust. |
-
-## Received 31 October, with thanks
-
-Batches 3–6f, the 6-file patch and the 11 corrections (camp gate with its new 16:9 painting, Drupada's gate, swayamvara pillars, Abhimanyu, Vidura, the two friendship moments, the torana) are all accepted and in the game.
+- Advisory review of the canon portraits and sensitive scenes.
+- A native reader's check of the Hindi logo.
+- Five Steam screenshots, which we capture from the game.
