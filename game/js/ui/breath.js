@@ -36,7 +36,7 @@
         marks();
         const left = dives - dive;
         if (got >= need || got + left < need || left === 0) return setTimeout(() => finish(got >= need ? "win" : got === need - 1 ? "close" : "lose", ["You brought the vessel up {h} times of {n}.", { h: got, n: dive }]), 700);
-        setTimeout(() => { busy = false; depth = 0; vel = 0; air = BREATH; phase = "down"; x = 0.5; vdepth = clamp(0.78 + power * 0.01 + K.rng() * 0.08, 0.78, 0.92); note.textContent = ""; lake.classList.remove("got", "lost"); }, 900);
+        setTimeout(() => { busy = false; depth = 0; vel = 0; air = BREATH; phase = "down"; x = 0.5; vdepth = clamp(0.78 + power * 0.01 + K.rng() * 0.08, 0.78, 0.92); note.textContent = ""; lake.classList.remove("got", "lost"); vessel.classList.remove("held"); }, 900);
       };
       return U.loop((s) => {
         const dt = Math.min(0.05, s - last); last = s;

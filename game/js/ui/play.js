@@ -159,6 +159,8 @@
   };
   function vehicleSvg(kind, spec) {
     const fig = U.puppet(spec, { h: 70, pose: "hold" }).replace("<svg ", '<svg x="22" y="-22" width="40" height="70" ');
+    // On foot (the climb): only your figure, walking, a bundle on its back.
+    if (kind === "foot") return '<svg viewBox="0 0 110 70" class="veh" aria-hidden="true">' + U.puppet(spec, { h: 70, pose: "walk" }).replace("<svg ", '<svg x="30" y="-22" width="52" height="92" ') + '</svg>';
     if (kind === "boat") return '<svg viewBox="0 0 110 70" class="veh" aria-hidden="true">' + fig + '<path d="M4 44 L106 44 Q98 66 70 66 L30 66 Q10 66 4 44 Z" fill="#7a4a24" stroke="#2b1609" stroke-width="2"/><path d="M14 50 H96" stroke="#c8954f" stroke-width="2"/></svg>';
     return '<svg viewBox="0 0 110 70" class="veh" aria-hidden="true"><path d="M78 40 Q86 22 100 20 L106 24 L98 30 Q102 40 96 50 L84 50 Z" fill="#c9a679" stroke="#2b1609" stroke-width="2"/><path d="M80 48 L76 62 M94 48 L98 62" stroke="#2b1609" stroke-width="3"/>' + fig +
       '<path d="M18 44 H70 L66 30 H22 Z" fill="#a3302a" stroke="#2b1609" stroke-width="2"/><path d="M70 40 L84 42" stroke="#2b1609" stroke-width="3"/><g class="wheel"><circle cx="36" cy="52" r="14" fill="none" stroke="#2b1609" stroke-width="4"/><path d="M36 38 V66 M22 52 H50 M26 42 L46 62 M46 42 L26 62" stroke="#2b1609" stroke-width="2"/></g></svg>';

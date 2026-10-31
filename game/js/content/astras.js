@@ -113,7 +113,9 @@
   const offers = (S) => (S.astraOffers || 0);
   const open = (id) => (S) => S.act === 5 && offers(S) < 2 && !(S.astras || []).some((a) => a.id === id);
   const take = (S) => ({ set: { astraOffers: offers(S) + 1 } });
-  const quest = (o) => Object.assign({ act: 5, away: true, enter: take, next: o.then, skipTo: o.then, when: open(o.astra) }, o.scene);
+  // The lake and the mountain are both on the road to Matsya: the strong are sent diving, the nimble climbing.
+  const SPLIT = { varuna: (S) => S.attrs.might >= S.attrs.grace, vayavya: (S) => S.attrs.grace > S.attrs.might };
+  const quest = (o) => Object.assign({ act: 5, away: true, enter: take, next: o.then, skipTo: o.then, when: (S) => open(o.astra)(S) && (!SPLIT[o.astra] || SPLIT[o.astra](S)) }, o.scene);
 
   // Agneya: a season of penance at a fire altar, through the storms.
   const FIRE = { t: "Sit at the altar and keep the fire alive through the storms", game: "steady", hint: "A long test of stillness",
@@ -145,10 +147,12 @@
   // Vayavya: the climb to a Himalayan hermitage (a course up the mountain, on foot).
   const CLIMB = { t: "Climb to the hermitage", game: "race", hint: "A climb",
     trial: { attr: "grace", skill: "chariot", kind: "war", stage: art("stage_mountain_path"), vehicle: "foot", obstacles: ["rock", "ice"], hull: 3, speed: 2.8,
-      tally: "Climbed: {d}% · Falls: {h} of {l}", bump: "Your foot goes through the crust, and the mountain takes a little more of you.", help: "Step aside from the rocks and the ice: left and right, or the buttons.",
+      tally: "Climbed: {d}% · Falls: {h} of {l}", bump: "Your foot goes through the crust, and the mountain takes a little more of you.", help: "Step aside from the rocks and the ice: up and down, or the buttons.", helpSide: "Step left and right around the rocks and the ice.",
       rules: "A path up through snow to a hermitage no one has reached in years. Rocks come down it, and the ice gives way. Three falls and you turn back.",
-      stakes: ["The hermit of the heights gives you the Vayavyastra.", "You turn back below the snow line, frostbitten."] },
+      stakes: ["The hermit of the heights gives you the Vayavyastra. Nearly there, a sanjivani root on a ledge.", "You turn back below the snow line, frostbitten."] },
     win: { fx: { astraGrant: { id: "vayavya", from: "hermitage" }, tapas: 1 }, text: "The hermit is very old and very amused that anyone came. He teaches you the mantra of wind over three days, and makes you promise one thing: never to turn your back on a fight you chose." },
+    // Short of the hermitage, a ledge where the sanjivani root grows (§18.8: "a dangerous climb").
+    close: { fx: { boon: "sanjivani", charge: { sanjivani: 1 }, journal: "Short of the hermitage, on a ledge in the snow, you dug up a sanjivani root and wore it home on a cord." }, text: "You do not reach the hermitage. But on the last ledge, where you stop to breathe, a root glows faintly under the snow, the way the old songs say the sanjivani does. You dig it out with your knife, and wear it on a cord." },
     lose: { fx: {}, text: "Below the snow line your feet stop obeying you. You come down, and the hermitage stays where it is, above the clouds." } };
   K.scene(quest({ astra: "vayavya", then: "a5_matsya", scene: {
     id: "w_climb", age: 42, place: "The foot of the high mountains", art: art("stage_mountain_path"), caption: "A path into the snow", title: "The hermit of the heights",

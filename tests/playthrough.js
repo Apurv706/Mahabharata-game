@@ -137,7 +137,7 @@ results.forEach((r) => (r.fights || []).forEach(([id, o]) => { fstat[id] = fstat
 console.log("Battles (win / lose / flee / spare):");
 Object.entries(fstat).forEach(([id, f]) => console.log("  " + id.padEnd(14) + [f.win, f.lose, f.flee, f.spare].join(" / ")));
 const evs = {};
-results.forEach((r) => (r.seen || []).forEach((id) => { if (/^ev_|^v_|^a1_pasha$|^a5_charu$|^a7_note$/.test(id)) evs[id] = (evs[id] || 0) + 1; }));
+results.forEach((r) => (r.seen || []).forEach((id) => { if (/^ev_|^v_|^w_|^a1_pasha$|^a5_charu$|^a7_note$/.test(id)) evs[id] = (evs[id] || 0) + 1; }));
 // Moments and vows (PRD §18.12): how often each kind of moment came, and what vows cost.
 const mos = {};
 results.forEach((r) => (r.moments || []).forEach((m) => { mos[m.kind] = (mos[m.kind] || 0) + 1; }));

@@ -16,7 +16,8 @@
   let lastLogLen = 0;
   let lastActs = 0;
   let foeKey = null;      // the enemy turn being played, so a redraw does not start it twice
-  let qte = null;         // the defence moment in progress
+  let qte = null;
+  let astraPick = false;  // the divine-weapon chooser is open         // the defence moment in progress
 
   U.startBattle = function (encId, onEnd) {
     target = null; lastHp = {}; lastLogLen = 0; lastActs = 0; foeKey = null; stopQte();
@@ -372,12 +373,37 @@
     const all = C.available(), idle = all.filter((a) => a.idle);
     // Shouting for a friend is a once-a-battle thing: it waits with the other tools below, not among the moves.
     const call = all.find((a) => a.id === "call");
-    all.filter((a) => !a.idle && a.id !== "call").forEach((a, i) => {
+    // Several divine weapons share one card, "Invoke astra": with more than one ready, it opens a
+    // chooser in place of the moves (each weapon, and Back). One mantra a battle, whichever is spoken.
+    const isAstra = (a) => a.id === "astra" || (K.ASTRAS && K.ASTRAS[a.id]);
+    const astras = all.filter((a) => isAstra(a) && !a.idle);
+    if (astraPick && astras.filter((a) => !a.why).length > 1) {
+      const pick = U.el('<div class="actions astra-pick"></div>');
+      astras.filter((a) => !a.why).forEach((a, i) => {
+        const b = U.button("act special", "<b>" + (i + 1) + ". " + U.esc(a.name) + "</b><small>" + U.esc(a.desc) + "</small>");
+        const run = () => { astraPick = false; C.act(a.id, a.target === "enemy" ? target : null); };
+        b.addEventListener("click", run); keys.push(run); pick.appendChild(b);
+      });
+      const back = () => { astraPick = false; U.renderBattle(B); };
+      const bb = U.button("act", "<b>" + U.esc(U.tr("Back")) + "</b><small>" + U.esc(U.tr("Choose another move")) + "</small>", back);
+      keys.push(back); pick.appendChild(bb);
+      box.appendChild(pick); U.keys(keys); U.renderLedger();
+      return;
+    }
+    astraPick = false;
+    const firstAstra = astras[0];
+    // With several weapons, only the first stands for them all (as "Invoke astra").
+    all.filter((a) => !a.idle && a.id !== "call" && !(isAstra(a) && astras.length > 1 && a !== firstAstra)).forEach((a, i) => {
+      if (isAstra(a) && astras.length > 1) {
+        const ready = astras.filter((x) => !x.why);
+        a = Object.assign({}, a, { id: "astra-pick", name: K.tr("Invoke astra"), desc: K.tr("Choose which divine weapon to speak. One mantra a battle."), why: ready.length ? null : astras[0].why });
+      }
       const special = !["strike", "guard", "herbs"].includes(a.id);
       const extra = a.count != null ? " (" + a.count + ")" : "";
       const b = U.button("act" + (special ? " special" : ""), "<b>" + (i + 1) + ". " + U.esc(a.name + extra) + "</b><small>" + U.esc(a.why || a.desc) + "</small>");
       b.disabled = !!a.why;
-      const run = () => C.act(a.id, a.target === "enemy" ? target : null);
+      b.dataset.move = a.id;
+      const run = a.id === "astra-pick" ? () => { const ready = astras.filter((x) => !x.why); if (ready.length === 1) C.act(ready[0].id, ready[0].target === "enemy" ? target : null); else { astraPick = true; U.renderBattle(B); } } : () => C.act(a.id, a.target === "enemy" ? target : null);
       b.addEventListener("click", run);
       keys.push(a.why ? null : run);
       acts.appendChild(b);

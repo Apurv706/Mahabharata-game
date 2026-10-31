@@ -382,6 +382,7 @@ const TESTS = [
   ["baghchal", { stage: "stage_board_table", cast: ["shakuni"], opponent: "Shakuni" }], ["moksha", { stage: "stage_board_table", cast: ["boy"], opponent: "Vikarna" }],
   ["retort", { stage: "stage_lotus_garden", cast: ["duryodhana"], rounds: [{ line: "They say your family sweeps the stables.", replies: ["And yours sweeps the floor before the king.", "That is not true.", "Leave me alone."] }, { line: "Is that a bow or a broom?", replies: ["Come closer and find out.", "A bow.", "Go away."] }, { line: "Who taught you?", replies: ["Someone who could.", "Nobody.", "My mother."] }] }],
   ["draw", { stage: "stage_bow_courtyard", cast: ["guard"] }], ["formation", { stage: "stage_chakravyuha_top", array: "eagle" }], ["hands", { stage: "stage_dice_board_top", cast: ["shakuni"] }], ["pasha", null],
+  ["breath", { stage: "stage_forest_lake" }], ["race", { stage: "stage_forest_edge", vehicle: "foot", rival: "the mountain" }],
 ];
 
 async function runDevice(browser, base, o, report) {
@@ -513,6 +514,24 @@ async function runDevice(browser, base, o, report) {
   await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 44, act: 6, side: "pandava" }); K.go("a6_capture"); K.UI.startBattle("e_guard", () => {}); }, LIFE);
   await page.waitForTimeout(900);
   await check("fight", ["battle"]);
+  // A fight holding two divine weapons: one "Invoke astra" card, and the chooser behind it.
+  await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 44, act: 6, side: "pandava", astras: [{ id: "agneya", from: "fire_altar" }, { id: "varuna", from: "lake_sage" }], tapas: 9 }); K.go("a6_capture"); K.UI.startBattle("e_guard", () => {}); }, LIFE);
+  await page.waitForTimeout(900);
+  await check("fight: two astras", ["battle"]);
+  {
+    const cards = await page.$$eval("#battle .bmove, #battle button", (b) => b.map((x) => x.textContent));
+    const pick = await page.$("[data-move='astra-pick']");
+    if (pick) { await pick.click(); await page.waitForTimeout(400); await check("fight: astra chooser", ["battle"]); }
+    else report.push({ browser: browser._name, device: label, screen: "fight: astra chooser", problems: ["no Invoke astra card (" + cards.length + " buttons)"] });
+  }
+  // The character sheet holding tapas, weapons and charges.
+  await page.evaluate(() => K.UI.endBattle && K.UI.endBattle());
+  await goScene(page, "a2_trial", { tapas: 12, astras: [{ id: "agneya", from: "fire_altar" }, { id: "sammohana", from: "gandharva" }], charges: { sanjivani: 1, kavacha: 1 }, boons: ["kavacha"] });
+  await page.click("#nav-standing");
+  await page.waitForTimeout(500);
+  await check("Standing: weapons and tapas", []);
+  await page.click("#nav-standing");
+  await page.waitForTimeout(300);
   // A fight on a borrowed test-stage painting (the sparring trial): the fighters stand on its ground.
   await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 17, act: 2 }); K.go("a2_spar"); K.UI.startBattle("e_spar", () => {}); }, LIFE);
   await page.waitForTimeout(900);
