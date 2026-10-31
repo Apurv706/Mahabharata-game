@@ -4,7 +4,9 @@
   "use strict";
   const C = (K.Combat = {});
   let B = null;
-  const TIMED = ["guard", "evade", "exposed", "weakened", "inspired", "bleed", "taunt", "cursed"];
+  const TIMED = ["guard", "evade", "exposed", "weakened", "inspired", "bleed", "taunt", "cursed", "burn", "asleep", "bound"];
+  // Out of the fight for now: stunned, asleep (Sammohana) or bound (Nagapasha).
+  const held = (u) => !!(u.status.stun || u.status.asleep || u.status.bound);
   // The log stores events, not sentences: { key, u: { role: unit }, v: { name: value }, crit }.
   // C.line() phrases one in the current language, so switching language rewrites the whole log.
   // Keys are English templates; "{t} ..." lines about the player use a "You ..." key instead.
@@ -60,6 +62,7 @@
     if (rec.last === "lost") atk -= 1;            // the last fight still in your mind
     const abilities = ["strike", "guard"].concat(P.abilities || []);
     if (S.boons.includes("astra")) abilities.push("astra");
+    for (const a of S.astras || []) if (K.ABILITIES[a.id]) abilities.push(a.id); // the named divine weapons (§18.7)
     abilities.push("herbs");
     // Bhishma's blessing, for a vow of celibacy kept to the war.
     const def = 1 + Math.floor(grace / 2) + (S.flags.includes("bhishma_blessing") && K.hasVow("celibacy", S) ? 1 : 0);
@@ -97,6 +100,8 @@
         K.breakTags([t.vowTag]);
       }
       if (t.status.evade) { delete t.status.evade; api.tell(subjectKey(t, "avoids the attack"), { t }); return 0; }
+      // A charmed shield turns the first blow of every fight (§18.7).
+      if (isP(t) && u.side === "enemy" && K.S.boons.includes("charm_shield") && !B.charmUsed) { B.charmUsed = true; api.tell("The charmed shield on your arm turns {a}'s first blow aside.", { a: u }); return 0; }
       // A blow aimed at you that you met in time (C.resolve): dodged, blocked, or turned into a counter.
       const def = isP(t) && u.side === "enemy" ? B.defNow : null;
       if (def === "dodge") { api.tell("You dodge {a}'s blow.", { a: u }); B.lastDef = "dodge"; return 0; }
@@ -120,6 +125,8 @@
       dmg = Math.max(1, Math.round(dmg));
       // A holding fight (enc.hold): the champion is held, never killed. He is never brought below a tenth.
       if (B.enc.hold && t.hero) dmg = Math.min(dmg, Math.max(0, t.hp - Math.round(t.maxHp * 0.1)));
+      // A sage's kavacha: one blow that would have killed you, in the whole war, leaves you standing (§18.7).
+      if (isP(t) && dmg >= t.hp && B.enc.lethal && (K.S.charges || {}).kavacha) { K.S.charges.kavacha = 0; dmg = t.hp - 1; api.tell("The blow that should have ended you breaks on the kavacha. It will not do so twice."); }
       t.hp = Math.max(0, t.hp - dmg);
       const key = def === "block" ? "You block, and {a}'s blow still hits you for {n}." : o.verb || (isP(u) ? "You hit {t} for {n}." : isP(t) ? (u.plural ? "{a} hit you for {n}." : "{a} hits you for {n}.") : u.plural ? "{a} hit {t} for {n}." : "{a} hits {t} for {n}.");
       B.lastHit = { by: u.uid, on: t.uid, n: dmg, crit };
@@ -208,6 +215,7 @@
       let why = null;
       if (p.cds[id]) why = K.tr(p.cds[id] === 1 ? "Ready in 1 turn" : "Ready in {n} turns", { n: p.cds[id] });
       if (ab.once && B.used[id]) why = K.tr("Used this battle");
+      if (ab.group && B.used[ab.group]) why = K.tr("Used this battle"); // one mantra a battle, whichever weapon
       if (ab.item && !(S.items[ab.item] > 0)) why = K.tr("None left");
       if (id === "astra" && !S.boons.includes("astra")) why = K.tr("You were never given a divine weapon");
       // Moves that need allies do nothing when you fight alone: the screen tucks them away.
@@ -223,6 +231,7 @@
     ab.use(B, u, targetsFor(u, ab, uid));
     if (ab.cd) u.cds[id] = ab.cd;
     if (ab.once) B.used[id] = true;
+    if (ab.group) B.used[ab.group] = true;
   }
 
   // What a unit means to do: the same rules for allies (decided on their turn) and enemies (decided
@@ -247,6 +256,8 @@
   function aiTurn(u) {
     const it = u.intent;
     delete u.intent;
+    if (u.status.asleep) { api.tell("{t} sleeps on.", { t: u }); return; }
+    if (u.status.bound) { api.tell("{t} strains against the serpent-noose.", { t: u }); return; }
     if (u.status.stun) { delete u.status.stun; api.tell("{t} is stunned and loses the turn.", { t: u }); return; }
     const plan = it && !u.cds[it.id] ? it : decide(u);
     const ab = K.ABILITIES[plan.id];
@@ -256,7 +267,7 @@
   }
   // The enemy's next move, for its card: { ab, who } where who is "you", a name, "all" or null.
   C.intent = function (u) {
-    if (!B || B.over || !u.intent || u.hp <= 0 || u.status.stun) return null;
+    if (!B || B.over || !u.intent || u.hp <= 0 || held(u)) return null;
     const ab = K.ABILITIES[u.intent.id];
     let t = null;
     if (ab.target === "enemy") {
@@ -315,6 +326,7 @@
 
   function endRound() {
     for (const u of B.units) {
+      if (u.hp > 0 && u.status.burn) { const d = Math.max(1, Math.round(u.maxHp * 0.07)); u.hp = Math.max(0, u.hp - d); api.tell(subjectKey(u, "burns for {n}"), { t: u }, { n: d }); }
       if (u.hp > 0 && u.status.bleed) { const d = Math.max(1, Math.round(u.maxHp * 0.06)); u.hp = Math.max(0, u.hp - d); api.tell(subjectKey(u, "bleeds for {n}"), { t: u }, { n: d }); }
       for (const s of TIMED) if (u.status[s]) { u.status[s]--; if (!u.status[s]) delete u.status[s]; }
       for (const k of Object.keys(u.cds)) if (u.cds[k] > 0) u.cds[k]--;
@@ -334,7 +346,7 @@
   // Does this enemy's next move come at you? Then you get a moment to meet it (block, dodge, counter).
   const DAMAGING = ["strike", "heavy", "arrows", "disarm", "breaker"];
   C.threat = function (u) {
-    if (!u || u.hp <= 0 || u.status.stun || !u.intent || !DAMAGING.includes(u.intent.id)) return null;
+    if (!u || u.hp <= 0 || held(u) || !u.intent || !DAMAGING.includes(u.intent.id)) return null;
     const ab = K.ABILITIES[u.intent.id];
     const taunt = foesOf(u).find((f) => f.status.taunt);
     const onMe = ab.target === "enemies" || (taunt ? taunt.side === "player" : (B.units.find((x) => x.uid === u.intent.uid) || {}).side === "player");
@@ -419,7 +431,8 @@
     api.tell("You withdraw from the fight.");
     finish("flee");
   };
-  C.spareable = () => (B && B.enc.spare && !B.over ? living("enemy").filter((e) => e.hp <= e.maxHp * 0.3) : []);
+  // A foe asleep under the Sammohana or bound in the Nagapasha can be spared whole: capture, not a kill.
+  C.spareable = () => (B && B.enc.spare && !B.over ? living("enemy").filter((e) => e.hp <= e.maxHp * 0.3 || e.status.asleep || e.status.bound) : []);
   C.spare = function (uid) {
     const t = C.spareable().find((e) => e.uid === uid);
     if (!t) return;

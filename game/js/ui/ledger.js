@@ -44,6 +44,12 @@
     const g = S.astra && K.ASTRA_GIVERS[S.astra.from];
     const astraNote = g ? '<p class="sub">' + (S.astra.broken ? U.tr(g.takes ? "You broke {who}'s condition, and the weapon was taken back." : "You broke the condition. The mantra will fail you at the worst hour.", { who: K.tr(g.who) })
       : U.tr("Your divine weapon was given by {who}, on one condition: “{cond}”", { who: K.tr(g.who), cond: K.tr(g.cond) })) + "</p>" : "";
+    // Tapas (§18.8), the named weapons and their conditions, and the charges of magic and shields (§18.7).
+    const tapas = (S.tapas || 0) > 0 || (S.vows && S.vows.length) ? meter(K.tr("Tapas"), S.tapas || 0, "tapas", 20) + '<p class="sub">' + U.tr("Spiritual merit: earned by vows kept through an act, penance and hard right choices; spent on the mantras and rites of the sages.") + "</p>" : "";
+    const weapons = (S.astras || []).map((a) => { const A = K.ASTRAS[a.id], g = K.ASTRA_GIVERS[a.from] || {}; return '<div class="vowcard' + (a.broken ? " broken" : "") + '">' + U.thumb("path_archer", "emblem") + "<b>" + U.tr(A.name) + "</b><small>" + U.tr(A.mantra) + (g.cond ? "<br>" + U.tr("Given by {who}, on one condition: “{cond}”", { who: K.tr(g.who), cond: K.tr(g.cond) }) : "") + "</small></div>"; }).join("");
+    const ch = S.charges || {};
+    const charges = [ch.sanjivani ? U.tr("The sanjivani root: one death, still unspent.") : "", ch.kavacha ? U.tr("The kavacha: one killing blow, still unspent.") : "", ch.raksha ? U.tr("The raksha sutra: still tied.") : "",
+      S.boons.includes("antardhana") ? (K.vanishReady(S) ? U.tr("Antardhana: ready this act.") : U.tr("Antardhana: used this act.")) : "", S.blessed > S.log.length ? U.tr("An elder's blessing is on you today.") : "", S.soma ? (S.soma.down ? U.tr("The Soma's hangover: -1 for a day.") : U.tr("The Soma in you: +2 for a day.")) : ""].filter(Boolean);
     // The moments of this life, kept as cards.
     const moments = (S.moments || []).map((m) => '<div class="momentcard' + (m.kind === "farewell" ? " grey" : "") + '">' + U.thumb(K.momentThumb ? K.momentThumb(m) : null, "card") + "<span><b>" + U.esc(K.momentTitle ? K.momentTitle(m, S) : "") + "</b><small>" + U.tr("Age {n}", { n: m.age }) + "</small></span></div>").join("");
 
@@ -63,6 +69,9 @@
       "<h2>" + U.tr("Bonds") + "</h2>" + bonds +
       "<h2>" + U.tr("Vows ({n} / {max})", { n: K.activeVows().length, max: K.MAX_VOWS }) + "</h2>" + vows +
       (chips.length ? "<h2>" + U.tr("Boons, curses and wounds") + '</h2><div class="chips">' + chips.join("") + "</div>" + astraNote : "") +
+      (weapons ? "<h2>" + U.tr("Divine weapons") + "</h2>" + weapons : "") +
+      (charges.length ? '<ul class="secrets">' + charges.map((x) => "<li>" + x + "</li>").join("") + "</ul>" : "") +
+      (tapas ? "<h2>" + U.tr("Tapas") + "</h2>" + tapas : "") +
       (moments ? "<h2>" + U.tr("Moments") + '</h2><div class="momentlist">' + moments + "</div>" : "") +
       (secrets ? "<h2>" + U.tr("Secrets you keep") + '</h2><ul class="secrets">' + secrets + "</ul>" : "") +
       "<h2>" + U.tr("Memories") + "</h2>" + (mems ? '<ul class="mems">' + mems + "</ul>" : '<p class="empty">' + U.tr("Nothing remembered yet.") + "</p>");

@@ -312,10 +312,10 @@
     K.go(res.next);
   }
 
-  const KIND = { aim: "archery", push: "strength", draw: "strength", steady: "strength", sneak: "stealth", retort: "wits", notice: "wits", hands: "wits", pasha: "wits",
+  const KIND = { breath: "strength", aim: "archery", push: "strength", draw: "strength", steady: "strength", sneak: "stealth", retort: "wits", notice: "wits", hands: "wits", pasha: "wits",
     rhythm: "strength", race: "war", herd: "stealth", drill: "wits", rings: "wits", chaupar: "wits", baghchal: "wits", moksha: "wits", array: "war" };
   // A test written without a painted stage is still played on one: the usual ground for its kind.
-  const STAGE_FOR = { aim: "stage_training_ground", push: "stage_training_ground", draw: "stage_bow_courtyard", steady: "stage_healers_hall", sneak: "stage_palace_corridor",
+  const STAGE_FOR = { breath: "stage_forest_lake", aim: "stage_training_ground", push: "stage_training_ground", draw: "stage_bow_courtyard", steady: "stage_healers_hall", sneak: "stage_palace_corridor",
     retort: "stage_lotus_garden", notice: "stage_vidura_table", hands: "stage_dice_board_top", rhythm: "stage_smithy", race: "stage_racetrack", herd: "stage_khandava_top",
     drill: "stage_training_ground", rings: "stage_chakravyuha_top", chaupar: "stage_board_table", baghchal: "stage_board_table", moksha: "stage_board_table", array: "stage_vyuha_top" };
   // A choice that is a game: the game takes the place of the choices, and its outcome picks the branch.

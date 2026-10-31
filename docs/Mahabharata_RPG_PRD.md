@@ -507,6 +507,31 @@ Other ways to earn: a year serving a sage; returning a stolen temple offering (s
 
 - Every effect is temporary, charged or once only, and shown before the player chooses (spend and gain), like odds and danger today. Magic can carry a player through a peril, a holding fight or a hard test; the epic's events still happen as written. Spent carelessly, it costs tapas or brings a curse.
 
+#### 18.7 and 18.8 as built (31 October)
+Code: `content/astras.js` (weapons, givers, quests, magic, shields, the temptation), `ui/breath.js` (the new breath test), hooks in `engine/core.js`, `flow.js`, `combat.js`, `abilities.js` and the sheet (`ui/ledger.js`). Hindi in `i18n/hi/manual_weapons.json`. Rule checks in `tests/rules.js` §12–18.
+- **Tapas** (0–20, on the sheet as a meter): +1 an act for each kept vow (celibacy +2), +3 for penance, +2 for serving the sages or answering the Yaksha, +1 for hard right choices (Ekalavya, Charu, water for Bhishma, freeing the captive, forgiving the debt) and for each quest won. A broken vow halves it. Choices preview "Tapas +n" / "Costs n tapas"; locked choices read "Needs n tapas".
+- **Named weapons** live in `S.astras` ([{id, from}]); the old generic astra (`boons:["astra"]`, `S.astra`) still works beside them. All astras share one "once a battle" mantra. With two or more, the fight shows a single "Invoke astra" card that opens a chooser. The moment names the weapon and its mantra. Against the epic's heroes each one is met by its counter-weapon (a clash, never a kill).
+
+| Weapon | In a fight | Quest (act 5, before) | Condition (giver) |
+|---|---|---|---|
+| Agneyastra | Strikes all; burning (7% a round) | Fire altar, steady test (before Jayadratha) | Never on one who cannot fight back (the fire: stays, mantra cursed) |
+| Varunastra | Puts out burning, stuns | Deep lake, new **breath** test (before Matsya; the strong) | Never lie about where it came from (the sage takes it back) |
+| Vayavyastra | Scatters, breaks guards, +2 rounds held | Climb on foot through rock and ice (before Matsya; the nimble); or a year serving a sage; or Shiva's mountain | Never turn from a fight you chose (the hermit takes it back) |
+| Sammohana | Puts enemies to sleep (spareable) | Gandharva's riddles, retort test (before Vikarna); or sparing the Gandharva | Never on the sleeping or unarmed |
+| Nagapasha | Binds one foe alive (spareable) | Healing a naga, steady test (before the forge) | Never on one who cannot fight back |
+
+At most two quests are offered in a life (`S.astraOffers`). The dive and the climb share a road, so the player's stronger side (might or grace) decides which one comes.
+- **Shields:** the charmed shield (returning the stolen temple lamp, a sneak test) turns the first enemy blow of every fight. The kavacha (Shiva's mountain, only light and a voice, with sages rep 6 or more) leaves you at 1 hp once in a lethal fight. The raksha sutra (the night before the war) undoes one death outside battle as a scar.
+- **Magic:**
+  - Bala and Atibala: 3 tapas at the forest sages, +1 might and grace until act 6.
+  - Sanjivani root: the near-miss on the climb; undoes one death, after the raksha.
+  - Antardhana: from the spared Gandharva; once an act a failed stealth check passes, or a sneak/herd test is skipped ("Vanish instead").
+  - Elders' blessing: war eve, +1 to every test for the next few choices.
+  - Soma: 2 tapas at the Rajasuya; +2 to your best attribute for a day, then −1 for a day.
+  - Rite to lift a curse: 6 tapas at the forest sages.
+- **The Brahmastra** is offered once, on the last night (before the raid). Taking it costs all tapas, brings a curse and costs conscience −3; it is never a usable weapon. Refusing it gives tapas +2. The Pashupata and Narayanastra do not appear.
+- **Art still wanted** (stand-ins in `STANDIN` in `astras.js`): fire altar, deep lake, mountain path, Gandharva grove, naga bank, Shiva's mountain, temple offering, sage's year, Brahmastra night, raksha sutra, Soma.
+
 ### 18.9 The puppet as the heart of the action
 The tholu bommalata puppets (drawn in code; no paintings needed) become fully animated and playable.
 - **Active defence in fights**, replacing the button-and-bar block and dodge: the enemy puppet visibly winds up, then the player **jumps** a low arrow (swipe up or ↑), **ducks** a high swing (swipe down or ↓), **sidesteps** a thrust or an elephant's charge (swipe sideways or ←/→) or **blocks** with a shield (hold or space). Arrows fly as leather cut-outs with a shadow trail. A perfect move opens a counter-strike; late takes a graze; wrong takes the hit. Fits the existing timed defence, so balance holds; story mode and an assist setting dodge automatically. Holding fights against Karna's arrows or Bhima's charge become a run of reads and dodges.

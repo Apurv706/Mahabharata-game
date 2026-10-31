@@ -51,6 +51,7 @@
       flags: [], memories: [], journal: [], dead: [], seen: [], log: [],
       alive: true, storyMode: false, ending: null, deathText: null, endChoice: null,
       slots: {}, bondAct: {}, karma: null, moments: [],
+      tapas: 0, astras: [], charges: {}, // spiritual merit (§18.8); named divine weapons and their givers (§18.7); magic and shields left
       record: { won: 0, lost: 0, passed: 0, failed: 0, gamesWon: 0, gamesLost: 0, last: null }
     };
   };
@@ -164,7 +165,11 @@
     has: (v, S) => S[v] != null,
     hasNot: (v, S) => S[v] == null,
     ageGte: (n, S) => S.age >= n,
-    storyMode: (v, S) => S.storyMode === v
+    storyMode: (v, S) => S.storyMode === v,
+    tapas: (n, S) => (S.tapas || 0) >= n,
+    astra: (id, S) => (S.astras || []).some((a) => a.id === id),
+    noAstra: (id, S) => !(S.astras || []).some((a) => a.id === id),
+    charge: (k, S) => !!(S.charges || {})[k]
   };
   K.test = function (c, S = K.S) {
     if (!c) return true;
@@ -230,6 +235,7 @@
       FX.flag("broke_" + id, S);
       S.rep.common = K.clamp(S.rep.common - 1); S.duty.conscience = K.clamp(S.duty.conscience - 1);
       FX.journal({ src: "You broke your vow: {vow!}.", p: { vow: K.VOWS[id].name } }, S);
+      if (S.tapas) { S.tapas = Math.floor(S.tapas / 2); d.tapas = -S.tapas; } // half the merit of a life goes with a broken vow
       // The price (world.js K.VOWS): the people who shared the vow's value turn from you...
       for (const w of K.VOWS[id].watchers || []) {
         if (K.WATCHER_GROUPS && K.WATCHER_GROUPS[w]) { if (w === "sages" || w === "common") S.rep[w] = K.clamp(S.rep[w] - 2); continue; }
@@ -248,6 +254,15 @@
     astraFrom: (who, S) => { S.astra = { from: who === "teacher" ? S.teacher : who, act: S.act, age: S.age }; },
     // Breaking the condition: a teacher takes the weapon back; the fire's gift stays, but will fail.
     astraBreak: (v, S, d) => {
+      // A named weapon (v = its id): its giver takes it back, or its mantra will fail.
+      const named = typeof v === "string" && (S.astras || []).find((a) => a.id === v && !a.broken);
+      if (named) {
+        const gg = K.ASTRA_GIVERS[named.from] || {};
+        named.broken = true; d.astraBroken = named.from;
+        if (gg.takes !== false) { S.astras = S.astras.filter((a) => a !== named); FX.journal({ src: "{who} took back the {name}. You had broken the one condition it was given on.", p: { who: gg.who || "The giver", name: K.ASTRAS[v].name } }, S); }
+        else { FX.curse("astra_condition", S, d); FX.journal({ src: "You broke the condition the {name} was given on. Its mantra will fail you at the worst hour.", p: { name: K.ASTRAS[v].name } }, S); }
+        return;
+      }
       const g = S.astra && K.ASTRA_GIVERS[S.astra.from];
       if (!g || S.astra.broken || !S.boons.includes("astra")) return;
       S.astra.broken = true; d.astraBroken = S.astra.from;
@@ -276,13 +291,34 @@
       S.friend = who; S.bonds[who] = Math.max(4, S.bonds[who] || 0); d["bond." + who] = 1;
       FX.flag("reconciled_" + who, S);
     },
+    // Spiritual merit (tapas, §18.8): earned by kept vows, penance and hard right choices, spent on magic.
+    tapas: (n, S, d) => { S.tapas = K.clamp((S.tapas || 0) + n, 0, 20); d.tapas = (d.tapas || 0) + n; },
+    // A named divine weapon (K.ASTRAS), with who gave it (K.ASTRA_GIVERS) and so its condition.
+    astraGrant: (v, S, d) => {
+      const id = typeof v === "string" ? v : v.id, from = typeof v === "string" ? null : v.from;
+      S.astras = S.astras || [];
+      if (S.astras.some((a) => a.id === id)) return;
+      S.astras.push({ id, from, age: S.age });
+      d.astraGranted = id;
+      FX.journal({ src: "You were granted the {name}.", p: { name: (K.ASTRAS && K.ASTRAS[id] && K.ASTRAS[id].name) || id } }, S);
+    },
+    // A charge of magic or a shield (once-only things): charges.sanjivani = 1, charges.kavacha = 1...
+    charge: (o, S, d) => { S.charges = S.charges || {}; for (const [k, n] of Object.entries(o)) { S.charges[k] = n; d["charge." + k] = n; } },
+    liftCurse: (v, S, d) => { const c = S.curses.find((x) => !x.fired); if (c) { S.curses = S.curses.filter((x) => x !== c); d.curseLifted = c.id; FX.journal({ src: "The rite is done. The {curse!} is lifted from you.", p: { curse: K.CURSES[c.id].name } }, S); } },
     vowRelease: (id, S) => { const v = S.vows.find((x) => x.id === id && !x.broken); if (v) { v.broken = true; v.released = true; } },
     boon: (id, S, d) => { if (!S.boons.includes(id)) { S.boons.push(id); d.boon = id; } },
     curse: (id, S, d) => { if (!S.curses.some((c) => c.id === id)) { S.curses.push({ id, fired: false, age: S.age }); d.curse = id; } },
     fireCurse: (id, S) => { const c = S.curses.find((x) => (id === "any" || x.id === id) && !x.fired); if (c) c.fired = true; },
     injury: (id, S, d) => { if (!S.injuries.includes(id)) { S.injuries.push(id); d.injury = id; } },
-    die: (who, S) => {
-      if (who === true || who === "self") { if (!S.storyMode) S.alive = false; else FX.injury("scar", S, {}); }
+    die: (who, S, d) => {
+      if (who === true || who === "self") {
+        if (S.storyMode) return FX.injury("scar", S, {});
+        // A thread tied by mother or spouse, or the sanjivani root: the death is undone, once (§18.7, §18.8).
+        const ch = S.charges || {};
+        if (ch.raksha) { ch.raksha = 0; d.saved = "raksha"; FX.injury("scar", S, {}); FX.journal({ src: "The thread on your wrist snapped as the blow fell, and you lived. It had been tied for exactly this." }, S); return; }
+        if (ch.sanjivani) { ch.sanjivani = 0; d.saved = "sanjivani"; FX.injury("scar", S, {}); FX.journal({ src: "You died, and the sanjivani root on its cord burned to ash, and you breathed again. There will not be another." }, S); return; }
+        S.alive = false;
+      }
       else for (const w of [].concat(who)) if (!S.dead.includes(w)) S.dead.push(w);
     },
     deathText: (t, S) => { S.deathText = t; },
@@ -304,14 +340,17 @@
     [].concat(tags || []).map((t) => K.VOW_TAGS[t]).filter((id) => id && K.hasVow(id, S));
   // Would these tags break the condition your divine weapon was given on?
   K.astraBreaksFor = (tags, S = K.S) => {
+    const t = [].concat(tags || []);
     const g = S.astra && !S.astra.broken && S.boons.includes("astra") && K.ASTRA_GIVERS && K.ASTRA_GIVERS[S.astra.from];
-    return g && [].concat(tags || []).includes(g.tag) ? g : null;
+    if (g && t.includes(g.tag)) return g;
+    for (const a of S.astras || []) { const gg = !a.broken && K.ASTRA_GIVERS && K.ASTRA_GIVERS[a.from]; if (gg && t.includes(gg.tag)) return Object.assign({ which: a.id }, gg); }
+    return null;
   };
   // Everything a choice's tags break: vows, and the weapon's condition. Returns the delta.
   K.breakTags = function (tags, S = K.S) {
     const d = {};
     for (const id of K.vowBreaksFor(tags, S)) Object.assign(d, K.apply({ vowBreak: id }, S));
-    if (K.astraBreaksFor(tags, S)) Object.assign(d, K.apply({ astraBreak: true }, S));
+    for (let g = K.astraBreaksFor(tags, S), n = 0; g && n < 6; g = K.astraBreaksFor(tags, S), n++) Object.assign(d, K.apply({ astraBreak: g.which || true }, S));
     return d;
   };
 
@@ -324,7 +363,7 @@
   const TWICE = ["missed_lamp_twice", "thrown_by_bhima_twice", "backed_down_twice", "horse_beat_you_twice"];
   function snap(S) {
     return { friend: S.friend, teacher: S.teacher, spouse: S.spouse, astra: S.boons.includes("astra"), vows: S.vows.length,
-      company: S.flags.includes("role_command"), hermit: S.flags.includes("betrayed_hermit") };
+      company: S.flags.includes("role_command"), hermit: S.flags.includes("betrayed_hermit"), astras: (S.astras || []).length };
   }
   function moment(S, d, m) {
     m = Object.assign({ age: S.age, act: S.act }, m);
@@ -343,6 +382,7 @@
       moment(S, d, { kind: "astra", from: S.astra.from });
     }
     if (S.vows.length > b.vows) moment(S, d, { kind: "vow", id: S.vows[S.vows.length - 1].id });
+    if ((S.astras || []).length > b.astras) { const a = S.astras[S.astras.length - 1]; moment(S, d, { kind: "astra", from: a.from, which: a.id }); }
     if (!b.company && S.flags.includes("role_command")) moment(S, d, { kind: "company" });
     // A friendship below 3 ends: the friend leaves the bonds panel, and will not answer a call for help.
     const f = S.friend;
