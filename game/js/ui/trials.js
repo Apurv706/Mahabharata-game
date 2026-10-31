@@ -26,12 +26,12 @@
 
   // The frame every test shares: stakes first, then the action, with one key for the action.
   // How each kind of test holds the figures, and how you move when you act.
-  const STANCE = { breath: "fold", aim: "aim", push: "brace", draw: "aim", steady: "hold", sneak: "sneak", retort: "speak", notice: "think", rhythm: "brace", race: "hold", herd: "hold", board: "think", drill: "stand", rings: "think", formation: "think", array: "think" };
-  const ACT = { breath: "fold", aim: "loose", push: "push", draw: "loose", steady: "hold", sneak: "walk", retort: "speak", notice: "think", rhythm: "strike", race: "hold", herd: "walk", board: "think", drill: "speak", rings: "think" };
+  const STANCE = { breath: "fold", aim: "aim", push: "brace", draw: "aim", steady: "hold", sneak: "sneak", retort: "speak", notice: "think", rhythm: "brace", race: "hold", herd: "hold", board: "think", drill: "stand", rings: "think", formation: "think", array: "think", escape: "walk", fuse: "sneak" };
+  const ACT = { breath: "fold", aim: "loose", push: "push", draw: "loose", steady: "hold", sneak: "walk", retort: "speak", notice: "think", rhythm: "strike", race: "hold", herd: "walk", board: "think", drill: "speak", rings: "think", escape: "walk", fuse: "hold" };
   const FOE = { push: "brace", rhythm: "block" };
   K.TRIAL_STANCE = STANCE;
 
-  const IMMERSIVE = new Set(["aim", "board", "push", "steady", "retort", "draw", "sneak", "notice", "drill", "rhythm", "race", "herd", "rings", "formation", "array", "breath"]);
+  const IMMERSIVE = new Set(["aim", "board", "push", "steady", "retort", "draw", "sneak", "notice", "drill", "rhythm", "race", "herd", "rings", "formation", "array", "breath", "escape", "fuse"]);
   // What hangs and swings in the archery test, drawn centred on its middle (about 64 units across).
   const RUNNERS = new Set(["deer", "tiger", "elephant"]);
   // Half the width of each target as drawn, in its own units. On the painting the target is drawn
@@ -130,7 +130,7 @@
     // The harness rolls instead of playing: the better your stats, the likelier the win.
     function auto() {
       const p = clamp((t.auto != null ? t.auto : 0.2) + power * 0.055, 0.1, 0.72), r = K.rng();
-      finish(r < p ? "win" : r < p + 0.15 && (kind === "aim" || kind === "steady") ? "close" : "lose", null);
+      finish(r < p ? "win" : r < p + 0.15 && (kind === "aim" || kind === "steady" || kind === "escape") ? "close" : "lose", null);
     }
     intro();
     return { draw: () => { if (phase === "intro") intro(); } };

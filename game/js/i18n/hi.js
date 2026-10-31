@@ -4079,7 +4079,6 @@
     "The mantra is yours now, and so is every place it lands.": "मंत्र अब तुम्हारा है, और हर वह जगह भी जहाँ यह गिरे।",
     "They are yours to command, and yours to bring home.": "इन्हें आदेश देना तुम्हारा काम है, और इन्हें घर वापस लाना भी।",
     "Tap to go on": "आगे बढ़ने के लिए छुओ",
-    "Never say who taught you.": "कभी मत बताना कि तुम्हें किसने सिखाया।",
     "Bhima does not shout, which is worse. \"Go on, then,\" he says. \"I will not throw you in the river again.\"": "भीम चिल्लाता नहीं, जो और भी बुरा है। \"तो जाओ,\" वह कहता है। \"मैं तुम्हें फिर कभी नदी में नहीं फेंकूँगा।\"",
     "{who} took back the divine weapon. You had broken the one condition it was given on.": "{who} ने दिव्यास्त्र वापस ले लिया। जिस एक शर्त पर वह मिला था, तुमने उसे तोड़ दिया था।",
     "{They} {were} given a divine weapon, and lost it by breaking {who}'s one condition.": "{g:उसे|उसे|उन्हें} एक दिव्यास्त्र मिला, और {who} की एक शर्त तोड़कर {g:उसने|उसने|उन्होंने} उसे खो दिया।",

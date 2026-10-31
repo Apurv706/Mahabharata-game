@@ -149,4 +149,25 @@ ok(S.dead.includes("charu"), "Charu falls in a deadly fight you called them into
 // With the assist off, a fight played by chance (no step mode) resolves blows exactly as before: same seed, same log.
 const runFight = () => { K.seed(7); S = fresh({ act: 3, age: 24, path: "archer" }); K.Combat.stepNext = false; const B = K.Combat.start("e_bandits", () => {}); for (let i = 0; i < 12 && !B.over; i++) K.Combat.act("strike"); const out = B.log.map((l) => l.key || l.raw).join("|"); K.Combat.end(); return out; };
 ok(runFight() === runFight(), "the same fight plays the same way twice: assist off changes nothing in the engine");
+// 28. The night the lac house burns (§18.2)
+S = fresh({ act: 3 });
+ok(K.resolveScene("a3_fuse").id === "a3_fire", "the cellar scene is skipped by someone who does not know the plot");
+S = fresh({ act: 3, teacher: "vidura" });
+ok(K.resolveScene("a3_fuse").id === "a3_fuse", "a pupil of Vidura gets the cellar scene");
+const fuse = K.SCENES.a3_fuse, fire = K.SCENES.a3_fire;
+K.choose(fuse, fuse.choices.find((x) => x.id === "warn"));
+ok(S.flags.includes("warned_pandavas") && S.flags.includes("bhima_debt"), "warning the Pandavas leaves Bhima in your debt");
+S = fresh({ act: 3, teacher: "vidura" }); K.choose(fuse, fuse.choices.find((x) => x.id === "silent"));
+ok(!S.flags.includes("bhima_debt"), "silence earns no debt");
+S = fresh({ act: 3, teacher: "vidura" }); K.choose(fuse, fuse.choices.find((x) => x.id === "cut"), "win");
+ok(S.flags.includes("cut_fuses") && S.flags.includes("bhima_debt"), "cutting the oil lines: cut_fuses and bhima_debt");
+const run = fire.choices.find((x) => x.id === "run");
+S = fresh({ act: 3, teacher: "vidura" }); S.flags.push("warned_pandavas"); K.choose(fire, run, "lose");
+ok(!S.alive && S.flags.includes("died_in_fire"), "a failed escape is death, not a second try");
+const endF = K.composeEnding(S); ok(endF.title === "The burnt house" && endF.art === "end_fire", "the fire death has its own ending");
+S = fresh({ act: 3, storyMode: true }); S.flags.push("warned_pandavas"); K.choose(fire, run, "lose");
+ok(S.alive && S.flags.includes("lac_burnt"), "story mode: burnt, not killed");
+S = fresh({ act: 3 }); S.flags.push("warned_pandavas"); S.lacCarried = 1; K.choose(fire, run, "win");
+ok(S.flags.includes("escaped_lac") && S.flags.includes("carried_out_lac"), "carrying a sleeper out is remembered");
+ok(K.ENDINGS.some((e) => e.title === "The burnt house" && e.art === "end_fire"), "the burnt house is in the endings list");
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

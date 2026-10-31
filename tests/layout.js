@@ -384,6 +384,8 @@ const TESTS = [
   ["draw", { stage: "stage_bow_courtyard", cast: ["guard"] }], ["formation", { stage: "stage_chakravyuha_top", array: "eagle" }], ["hands", { stage: "stage_dice_board_top", cast: ["shakuni"] }], ["pasha", null],
   ["array", { stage: "stage_vyuha_top", array: "crane", rounds: 5 }], // the army battle (ui/army.js)
   ["breath", { stage: "stage_forest_lake" }], ["race", { stage: "stage_forest_edge", vehicle: "foot", rival: "the mountain" }],
+  // The night the lac house burns (§18.2): the escape through the burning rooms, and the cellar's oil lines.
+  ["escape", { stage: "stage_lac_fire_top", start: "hall" }], ["fuse", { stage: "stage_lac_cellar", lines: 3, secs: 32 }],
 ];
 
 async function runDevice(browser, base, o, report) {
