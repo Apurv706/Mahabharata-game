@@ -149,7 +149,7 @@
     // Some fights let you shout for a friend (once), and show the divine weapon even to those who
     // were never given one (greyed: "You were never given a divine weapon").
     // Any fight lets you shout for a friend once; fights without a rule of their own use K.friendHelp.
-    { const p = B.units[0]; if (enc.callHelp !== null && (enc.callHelp || K.friendHelp)) p.abilities.push("call"); if (enc.showAstra && !p.abilities.includes("astra")) p.abilities.push("astra"); }
+    { const p = B.units[0]; if (enc.callHelp !== null && (enc.callHelp || (K.friendHelp && !enc.bout))) p.abilities.push("call"); if (enc.showAstra && !p.abilities.includes("astra")) p.abilities.push("astra"); }
     B.habit = []; // what you have done lately: enemies learn from it
     if (S.boons.includes("healing_hands") && (S.items.herbs || 0) < 2) S.items.herbs = 2;
     B.pulled = {};
