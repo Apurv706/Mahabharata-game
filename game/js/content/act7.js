@@ -98,6 +98,12 @@
     if (has("helped_ekalavya")) t.push("{They} bound Ekalavya's hand when no one else would.");
     if (has("refused_dakshina")) t.push("{They} refused to ride against Panchala, and Drona never forgot it.");
     if (has("helped_tunnel")) t.push("{They} carried earth out of the tunnel at Varnavata, night after night.");
+    if (has("cut_fuses")) t.push("On the last night at Varnavata {they} went down to the cellar and cut Purochana's oil lines by lamplight.");
+    if (has("warned_pandavas")) t.push("{They} told Yudhishthira in plain words what the house of lac was for.");
+    if (has("carried_out_lac")) t.push("When the house of lac burned, {they} carried someone out through the smoke to the tunnel.");
+    else if (has("lac_late")) t.push("{They} came through the flames of the house of lac, and lost the one {they} carried.");
+    else if (has("escaped_lac")) t.push("{They} {were} inside the house of lac when it burned, and got out through the tunnel.");
+    if (has("lac_burnt")) t.push("The fire at Varnavata caught {them}, and someone dragged {them} out with {their} skin burnt.");
     if (has("objected_dice") || has("stood_between")) t.push("In the dice hall, when the elders were silent, {they} {were} not.");
     if (has("silent_draupadi")) t.push("In the dice hall {they} said nothing, like most of the people there.");
     if (has("left_dice") || has("absent_dice")) t.push("{They} {were} not in the hall to see the worst of it.");
@@ -180,7 +186,8 @@
     { title: "Into the wheel", art: "end_wheel", hint: "Follow Abhimanyu to the end." },
     { title: "Against the boy in the wheel", art: "end_wheel", hint: "On the Kaurava side, stand in Abhimanyu's way." },
     { title: "A life cut short", art: "scene_lake", hint: "Cross someone who does not forgive, before the war, and fail." },
-    { title: "Beside Karna", art: "war_day17", hint: "Stand beside Karna on his last day." }
+    { title: "Beside Karna", art: "war_day17", hint: "Stand beside Karna on his last day." },
+    { title: "The burnt house", art: "scene_lac", hint: "Be inside the house of lac when it burns, and not get out." }
   ];
 
   K.composeEnding = function (S) {
@@ -198,6 +205,7 @@
       const at = S.deathAt;
       if (at && at.art) { art = at.art; caption = at.caption || caption; }
       if (S.flags.includes("peril_death") && (at ? at.act : S.act) < 6) title = "A life cut short";
+      if (S.flags.includes("died_in_fire")) { title = "The burnt house"; art = "scene_lac"; caption = "The house at Varnavata, at dawn"; }
     } else {
       const c = S.endChoice;
       if (c === "elder") { title = "The wise elder"; art = "end_elder"; caption = "The palace school, in old age"; }

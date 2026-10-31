@@ -378,7 +378,7 @@
     akhara: { raga: "bhupali", lead: null, drum: "tabla", pat: [1.2, 0, 0.7, 0.7, 1.2, 0, 0.7, 0], bpm: 84 }
   };
   const TEST_STYLE = { aim: "drone", draw: "drone", steady: "drone", sneak: "stealth", herd: "stealth", push: "dhol", notice: "veena", hands: "veena", pasha: "veena", drill: "veena", retort: "veena",
-    chaupar: "veena", baghchal: "veena", moksha: "veena", rings: "war", race: "war", formation: "war", akhara: "akhara" };
+    chaupar: "veena", baghchal: "veena", moksha: "veena", rings: "war", race: "war", formation: "war", akhara: "akhara", escape: "stealth", fuse: "stealth" };
   let ens = null; // { spec, until, nextDrone, nextBeat, beatIdx, nextLead, nextAmb, nextAmb2, kind, id }
   function ensStart(spec, secs, kind) {
     ensStop();

@@ -15,6 +15,10 @@
       deathText: "{They} carried earth out of the tunnel at Varnavata by night, and one of Purochana's guards took {them} for a thief." },
     retryLose: { penalty: 1, fx: { rep: { kuru: -2 }, flag: ["seen_at_tunnel", "tunnel_twice"] }, text: "One of Purochana's guards sees a figure near the house at night. He does not see your face, but he will keep looking." } };
 
+  // The night of the fire: who knows what the house is for, and who is inside it when it burns.
+  const KNOWS_PLOT = { any: [{ teacher: "vidura" }, { path: "spy" }, { flag: "helped_tunnel" }] };
+  const INSIDE = (S) => S.flags.includes("tried_nishada") || S.flags.includes("helped_tunnel") || S.flags.includes("warned_pandavas") || S.flags.includes("cut_fuses");
+
   K.scenes([
     {
       id: "a3_secret", when: { flag: "hermit_secret" }, skipTo: "a3_debt",
@@ -56,17 +60,75 @@
       choices: [
         Object.assign(K.testChoice("a3_lac", "dig", TUNNEL), { locked: "Only Vidura's people know about the tunnel." }),
         { id: "warn", t: "Try to wake the Nishada woman and her sons sleeping in the house", fx: (S) => ({ duty: { conscience: 2 }, flag: "tried_nishada", memory: ["all", "You tried to wake the family who died at Varnavata."], rep: S.origin === "nishada" ? { common: 2 } : {} }),
-          text: "They drank deep at Kunti's feast and do not wake, however hard you shake them. Then the smoke comes, and someone drags you out by the collar." },
+          text: "They drank deep at Kunti's feast and do not wake, however hard you shake them. You sit down beside them in the dark, meaning to try again in a little while." },
         { id: "tell", t: "Warn Duryodhana that people are talking about the house", req: { friend: "duryodhana" }, fx: { bond: { duryodhana: 2 }, duty: { court: 1, conscience: -2 }, flag: "warned_duryodhana" } },
         { id: "stay", t: "Keep away from the house", fx: {} }
       ],
-      after: ["That night the house burns to the ground. In the ashes they find six bodies: a Nishada woman and her five sons. Everyone believes they are Kunti and the Pandavas. In Hastinapura, Dhritarashtra weeps, and Duryodhana weeps louder."],
+      after: ["On the last night of the festival, the house of lac burns."],
       next: "a3_tunnel_again"
     },
     {
-      id: "a3_tunnel_again", when: K.retryWhen("a3_lac", ["dig"]), skipTo: "a3_kampilya", act: 3, age: 23, art: "stage_lac_wall", place: "Varnavata", caption: "The next night",
+      id: "a3_tunnel_again", when: K.retryWhen("a3_lac", ["dig"]), skipTo: "a3_fuse", act: 3, age: 23, art: "stage_lac_wall", place: "Varnavata", caption: "The next night",
       title: "The next night", body: ["The miner is waiting at the mouth of the tunnel with an empty basket. You will not be asked a third time."],
       choices: [K.retryChoice("a3_lac", "dig", TUNNEL), { id: "let", t: "Leave the digging to the miner", fx: {}, text: "You stay away. The miner digs on alone." }],
+      next: "a3_fuse"
+    },
+    // ---------- The night the house burns (PRD §18.2) ----------
+    // Earlier that night, those who know the plot can go down to the cellar and cut Purochana's oil
+    // lines; every line cut buys time when the fire comes. Or warn Yudhishthira plainly. Or say
+    // nothing, and keep your own family out of it.
+    {
+      id: "a3_fuse", when: KNOWS_PLOT, skipTo: "a3_fire", act: 3, age: 23, away: true, art: "stage_lac_wall", place: "Varnavata", caption: "The cellar under the house of lac",
+      title: "The last night of the festival",
+      body: ["The feast is over. Kunti and her sons are asleep upstairs, and so are the Nishada woman and her five sons, who drank what was given them. In the cellar, Purochana's oil lines run from the door to every sleeping room.",
+        "He means to light them tonight. The fire will come whatever you do. What you do before it comes is yours."],
+      choices: [
+        { id: "cut", t: "Go down to the cellar and cut the oil lines", game: "fuse", hint: "A test of stealth",
+          trial: { attr: "grace", skill: "stealth", stage: "stage_lac_wall", lines: 3, secs: 32, verb: "Cut",
+            rules: "Purochana's guard walks the cellar with a lamp. Choose a line and hold to cut it while the light is away; caught in the light, let go. Cut two of the three before the guard has seen you twice.",
+            stakes: ["Every line cut slows the fire tonight, and the Pandavas will owe you.", "The guard sends you up the stairs with the lines whole. The fire will run as fast as Purochana meant it to."] },
+          win: { fx: { flag: ["cut_fuses", "bhima_debt"], bond: { yudhishthira: 1, bhima: 1 }, journal: "On the last night at Varnavata you cut Purochana's oil lines in the cellar." }, text: "The oil runs out across the stone and soaks into the earth. Upstairs, someone turns over in their sleep." },
+          close: { fx: { flag: ["cut_fuses", "bhima_debt"] }, text: "One line parts before the lamp comes back for good. It will have to be enough." },
+          lose: { fx: {}, text: "The lamp finds you twice, and the second time the guard does not look away. You go up the stairs with the lines whole." } },
+        { id: "warn", t: "Tell Yudhishthira plainly what is in the walls, and that it is tonight", fx: { flag: ["warned_pandavas", "bhima_debt"], bond: { yudhishthira: 2, bhima: 1 }, rep: { kuru: -1 }, duty: { conscience: 1 } },
+          text: "Yudhishthira listens without surprise. \"Vidura told me in a riddle,\" he says. \"You have told me in plain words. We will not forget either.\"" },
+        { id: "silent", t: "Say nothing. Your family lives under Duryodhana's hand", fx: { duty: { family: 1, conscience: -2 }, memory: ["all", "You knew what the house at Varnavata was for, and said nothing."] },
+          text: "You go to bed with the smell of resin in your clothes, and do not sleep." }
+      ],
+      next: "a3_fire"
+    },
+    // The fire. Those inside the house play the escape through the burning rooms to the tunnel;
+    // those outside can run in. The epic has written who dies here: a Nishada woman and her five
+    // sons, and Purochana. A failed escape is death, not a second chance.
+    {
+      id: "a3_fire", act: 3, age: 23, canon: true, art: "scene_lac", place: "Varnavata", plate: ["#e5872e", "#2a1c1f"], caption: "The house of lac, burning",
+      title: "The night of the fire",
+      witness: ["The house of lac burns on the last night of the festival. Kunti and the Pandavas go down into the tunnel and out into the forest. Purochana dies in his own fire."],
+      body: (S) => [
+        INSIDE(S) ? (S.flags.includes("tried_nishada") ? "You wake beside the sleepers who would not wake, with smoke in your mouth. The far wall is already light." : "You are in the house when it goes up, between the sleeping rooms and the storeroom where the tunnel mouth is.")
+          : "Shouting wakes you. From the lane you can see the roof of the new house burning, and the heat of it on your face.",
+        S.flags.includes("cut_fuses") ? { memory: "The oil lines you cut have slowed it. There is a little more time than Purochana meant there to be." } : null
+      ],
+      choices: [
+        { id: "run", t: (S) => (INSIDE(S) ? "Get to the tunnel" : "Run into the house to get people out"), game: "escape", hint: "The way through the burning rooms",
+          trial: { attr: "grace", skill: "stealth", stage: "stage_forest_maze_top", start: (S) => (INSIDE(S) ? (S.flags.includes("tried_nishada") ? "deep" : "hall") : "door"), auto: 0.35,
+            rules: "The fire comes from Purochana's side, room by room, with the smoke ahead of it. Move through the doors to the storeroom, where the tunnel mouth is. Some doors are stuck: hold to force them. Sleepers can be woken and carried, and each one slows you.",
+            stakes: ["You reach the tunnel, and whoever you carried comes with you.", "The fire catches you in the house. There is no second chance tonight."] },
+          win: { fx: (S) => Object.assign({ flag: ["escaped_lac"], duty: { conscience: 1 }, journal: "You got out of the burning house at Varnavata through the tunnel." },
+              S.lacCarried ? { flag: ["escaped_lac", "carried_out_lac"], rep: { common: 1 }, duty: { conscience: 2 }, memory: ["all", "You carried someone out of the house of lac."] } : {}),
+            text: (S) => (S.lacCarried ? "The tunnel mouth is cold and black and smells of earth. You put the one you carried down at the bottom of the shaft, and only then feel your hands shaking." : "You drop into the tunnel mouth as the storeroom roof comes down behind you. The dark smells of earth, and of nothing burning.") },
+          close: { fx: { flag: ["escaped_lac", "lac_late"], injury: "scar", journal: "You came through the flames at Varnavata, and not everyone you carried came with you." },
+            text: "You come through the last room with your sleeve alight. Whoever was on your back is not there when you drop into the dark, and you cannot go back." },
+          lose: { fx: (S) => (S.storyMode ? { injury: "scar", flag: ["lac_burnt"], journal: "The fire caught you in the house at Varnavata. Someone dragged you out, burnt." }
+              : { die: true, flag: ["died_in_fire"], deathText: "{They} died in the house of lac at Varnavata, on the night everyone believes the Pandavas died.", set: { deathAt: { art: "scene_lac", caption: "The house at Varnavata, at dawn", act: 3 } } }),
+            text: (S) => (S.storyMode ? "The smoke takes your legs before the fire does. The next thing you know is cold air, and someone's hands under your arms, and your own skin." : "The smoke takes your legs before the fire does. The last thing you hear is the roof.") } },
+        { id: "stay", t: "Stay with the sleepers and keep shaking them", req: { flag: "tried_nishada" }, locked: "", hint: "They will not wake",
+          fx: (S) => (S.storyMode ? { injury: "scar", flag: ["lac_burnt"], duty: { conscience: 1 } } : { die: true, flag: ["died_in_fire"], duty: { conscience: 1 }, deathText: "{They} would not leave the Nishada woman and her sons in the house of lac, and died beside them.", set: { deathAt: { art: "scene_lac", caption: "The house at Varnavata, at dawn", act: 3 } } }),
+          text: (S) => (S.storyMode ? "They do not wake. You are still shaking the youngest when the smoke takes you, and still holding him when someone drags you out by the collar." : "They do not wake. You are still shaking the youngest when the smoke takes you.") },
+        { id: "back", t: "Stay back with the crowd", req: (S) => !INSIDE(S), locked: "", fx: { memory: ["all", "You watched the house of lac burn from the lane."] },
+          text: "You stand in the lane with everyone else and watch the roof fall in. Nobody comes out." }
+      ],
+      after: ["In the ashes they find six bodies: a Nishada woman and her five sons. Everyone believes they are Kunti and the Pandavas. In Hastinapura, Dhritarashtra weeps, and Duryodhana weeps louder."],
       next: "a3_kampilya"
     },
     // Going to Kampilya is a choice. Those who go may try the great bow; those who stay have the
