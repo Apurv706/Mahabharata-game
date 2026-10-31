@@ -2,9 +2,7 @@
 
 *Kurukshetra: A Life.* This replaces the "still needed" lists in the earlier briefs. Everything else ordered so far has been delivered and is in the game.
 
-**Totals:** 9 fixes and 27 new paintings. None of them block a release: until a painting arrives, the game uses the closest existing one.
-
-The current version of each painting to fix is in **`kurukshetra_corrections_originals.zip`**, with a README listing the fix for each file.
+**Totals:** 27 new paintings. None of them block a release: until a painting arrives, the game uses the closest existing one. The same list, with a thumbnail of each stand-in, is **`Art_Brief_Still_Needed.pdf`**.
 
 ## Rules for every image (unchanged)
 
@@ -20,23 +18,7 @@ The current version of each painting to fix is in **`kurukshetra_corrections_ori
 | Stage (a test's ground) | 2560×1440 **and** 1080×1920 `_tall` |
 | Fight background | 2560×1440 **and** 1080×1920 `_tall`; level ground across the lower band, as before |
 
-## Priority 1: fixes (9)
-
-Some of these were asked for before. If any are already on the way, ignore them. The originals are in the zip.
-
-| File | Fix |
-|---|---|
-| `fight_camp_gate_night_tall` | The banners are now right (sun disc), thanks. The **black eclipse sun is still in the sky**: make it a plain night sky with stars or a moon. |
-| `fight_camp_gate_night` (16:9) | **Never delivered.** The same scene as the tall version, without the eclipse. It is the only fight with no wide painting. |
-| `fight_drupada_yard_tall` | Replace the East Asian roof with a timber-and-brick Panchala hall. |
-| `fight_swayamvara_tall` | Replace the Greek columns with carved timber or stone pillars. |
-| `p_abhimanyu` | Replace the Greek cuirass and crested helmet with Indian armour: quilted or scale armour, a simple cap or turban-helmet. |
-| `moment_friend_duryodhana` and `_tall` | Remove the glass lanterns and pagoda roofs, and use oil lamps instead. In the wide one, the two boys are dressed alike: make the player's friend plainer than the prince. |
-| `moment_friend_bhima` (wide) | Show only one face: Bhima's, or the player's from behind. |
-| `p_vidura` | Replace the modern pen with a stylus and palm leaf. |
-| `scene_years_remain` and `_wide` | The gate on the far bank reads as a **Japanese torii**. Replace it with an Indian torana or a simple ghat gateway. |
-
-## Priority 2: new paintings for the new parts of the game (27)
+## New paintings for the new parts of the game (27)
 
 ### Divine weapons and magic (11)
 
@@ -82,4 +64,4 @@ Some of these were asked for before. If any are already on the way, ignore them.
 
 ## Received 31 October, with thanks
 
-We received batches 3–6f, the corrections and the 6-file patch. Every painting is accepted and in the game, except the 16:9 camp-gate painting, which is in the zip to redo. The only open notes are the camp gate's eclipse and the torii gate, both listed under Priority 1.
+Batches 3–6f, the 6-file patch and the 11 corrections (camp gate with its new 16:9 painting, Drupada's gate, swayamvara pillars, Abhimanyu, Vidura, the two friendship moments, the torana) are all accepted and in the game.
