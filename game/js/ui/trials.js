@@ -26,12 +26,12 @@
 
   // The frame every test shares: stakes first, then the action, with one key for the action.
   // How each kind of test holds the figures, and how you move when you act.
-  const STANCE = { aim: "aim", push: "brace", draw: "aim", steady: "hold", sneak: "sneak", retort: "speak", notice: "think", rhythm: "brace", race: "hold", herd: "hold", board: "think", drill: "stand", rings: "think", formation: "think" };
-  const ACT = { aim: "loose", push: "push", draw: "loose", steady: "hold", sneak: "walk", retort: "speak", notice: "think", rhythm: "strike", race: "hold", herd: "walk", board: "think", drill: "speak", rings: "think" };
+  const STANCE = { breath: "fold", aim: "aim", push: "brace", draw: "aim", steady: "hold", sneak: "sneak", retort: "speak", notice: "think", rhythm: "brace", race: "hold", herd: "hold", board: "think", drill: "stand", rings: "think", formation: "think" };
+  const ACT = { breath: "fold", aim: "loose", push: "push", draw: "loose", steady: "hold", sneak: "walk", retort: "speak", notice: "think", rhythm: "strike", race: "hold", herd: "walk", board: "think", drill: "speak", rings: "think" };
   const FOE = { push: "brace", rhythm: "block" };
   K.TRIAL_STANCE = STANCE;
 
-  const IMMERSIVE = new Set(["aim", "board", "push", "steady", "retort", "draw", "sneak", "notice", "drill", "rhythm", "race", "herd", "rings", "formation"]);
+  const IMMERSIVE = new Set(["aim", "board", "push", "steady", "retort", "draw", "sneak", "notice", "drill", "rhythm", "race", "herd", "rings", "formation", "breath"]);
   // What hangs and swings in the archery test, drawn centred on its middle (about 64 units across).
   const RUNNERS = new Set(["deer", "tiger", "elephant"]);
   // Half the width of each target as drawn, in its own units. On the painting the target is drawn
@@ -85,6 +85,10 @@
         '<div class="btnrow"></div>';
       const go = () => begin();
       host.querySelector(".btnrow").appendChild(U.button("cta", U.tr("Begin"), go));
+      // Antardhana (§18.8): once in each act, a stealth test can be skipped: you were simply not there.
+      if ((kind === "sneak" || kind === "herd") && K.vanishReady && K.vanishReady() && !t.practice && !K.headless) {
+        host.querySelector(".btnrow").appendChild(U.button("ghost", U.tr("Vanish instead (Antardhana)"), () => { K.S.vanishedAct = K.S.act; phase = "play"; finish("win", "You were simply not there. No one can say how."); }));
+      }
       U.keys([go]);
     }
     function finish(outcome, summary) {

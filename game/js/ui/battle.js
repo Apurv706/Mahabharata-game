@@ -111,7 +111,7 @@
   function animate(B) {
     const acts = B.acts.slice(lastActs);
     // A divine weapon: its own full-screen moment (ui/fx.js), which keeps to reduced motion itself.
-    acts.forEach((a) => { if (a.id === "astra" && B.astraOut && U.astraFx) { const o = B.astraOut; B.astraOut = null; U.astraFx({ kind: o.kind, clash: o.clash, from: actorEl(a.uid), to: actorEl(o.uid) }); } });
+    acts.forEach((a) => { if ((a.id === "astra" || (K.ASTRAS && K.ASTRAS[a.id])) && B.astraOut && U.astraFx) { const o = B.astraOut; B.astraOut = null; U.astraFx({ kind: o.kind, clash: o.clash, from: actorEl(a.uid), to: actorEl(o.uid) }); } });
     if (!U.motion()) return;
     const arena = U.$("arena");
     acts.forEach((a) => {

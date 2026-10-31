@@ -75,6 +75,11 @@
   // Close bonds drift when they are neglected: at each new act, a friend or spouse whose bond you did
   // not raise during the last act loses a point, and you notice.
   function drift(S, newAct) {
+    // Tapas (§18.8): each vow kept through an act earns a point of merit; celibacy, Bhishma's own vow, two.
+    const kept = K.activeVows(S).reduce((a, v) => a + (v.id === "celibacy" ? 2 : 1), 0);
+    if (kept) S.tapas = K.clamp((S.tapas || 0) + kept, 0, 20);
+    // The Bala and Atibala mantras hold for one act.
+    if (S.balaUntil != null && newAct > S.balaUntil) { S.attrs.might = K.clamp(S.attrs.might - 1, 0, 8); S.attrs.grace = K.clamp(S.attrs.grace - 1, 0, 8); delete S.balaUntil; S.boons = S.boons.filter((b) => b !== "bala"); }
     // On the eve of the war, Bhishma blesses those who kept a vow of celibacy, as he did.
     if (newAct === 6 && K.hasVow("celibacy", S) && !S.flags.includes("bhishma_blessing")) {
       S.flags.push("bhishma_blessing");
@@ -135,6 +140,8 @@
   K.merits = function (ch, S = K.S) {
     const hits = (K.MERITS || []).filter((m) => S.flags.includes(m.flag) && (m.on.includes(ch.attr) || m.on.includes(ch.skill)))
       .concat(VOW_MERITS.filter((m) => K.hasVow(m.vow, S) && (m.on.includes(ch.attr) || m.on.includes(ch.skill))).map((m) => (K.vowYears(m.vow, S) >= 15 ? Object.assign({}, m, { n: 2 }) : m)));
+    // An elder's blessing (§18.8): +1 to every test for a day (the next few choices).
+    if (S.blessed && S.blessed > S.log.length) hits.push({ n: 1, text: S.blessedBy || "An elder's blessing is on you." });
     const n = Math.max(-2, Math.min(2, hits.reduce((a, m) => a + m.n, 0)));
     return { n, hits };
   };
@@ -147,6 +154,16 @@
   // "My word" (a vow never to lie): once in each act, a court believes you without a test, on a
   // persuasion (a statecraft test) that is not itself a lie.
   K.myWordReady = (c, S = K.S) => !!(c && c.check && c.check.skill === "statecraft" && K.hasVow("never_lie", S) && S.myWord !== S.act && !K.vowBreaksFor(c.tags, S).length && !c.peril);
+  // Antardhana, the vanishing (§18.8): held, and not yet used this act.
+  K.vanishReady = (S = K.S) => S.boons.includes("antardhana") && S.vanishedAct !== S.act;
+  // Soma (§18.8): +2 to one attribute for a test day (three choices), then -1 for the next day, then as before.
+  K.somaTick = function (S, delta) {
+    const so = S.soma;
+    if (!so) return;
+    const n = S.log.length;
+    if (!so.down && n >= so.until) { so.down = true; so.hang = n + 3; S.attrs[so.attr] = K.clamp(S.attrs[so.attr] - 3, 0, 8); if (delta) delta["attr." + so.attr] = -3; }
+    else if (so.down && n >= so.hang) { S.attrs[so.attr] = K.clamp(S.attrs[so.attr] + 1, 0, 8); if (delta) delta["attr." + so.attr] = 1; delete S.soma; }
+  };
   K.checkLabel = function (ch) {
     const parts = [ch.attr && K.ATTRS[ch.attr], ch.skill && K.SKILLS[ch.skill]].filter(Boolean).map(K.tr);
     return parts.join(" + ");
@@ -180,6 +197,9 @@
     for (const [k, n] of Object.entries(fx.rep || {})) out.push([cls(n), sign(n) + K.tr(K.FACTIONS[k])]);
     for (const [k, n] of Object.entries(fx.skill || {})) out.push([cls(n), sign(n) + K.tr(K.SKILLS[k])]);
     for (const [k, n] of Object.entries(fx.attr || {})) out.push([cls(n), sign(n) + K.tr(K.ATTRS[k])]);
+    if (typeof fx.tapas === "number" && fx.tapas) out.push([fx.tapas > 0 ? "up" : "down", fx.tapas > 0 ? K.tr("Tapas +{n}", { n: fx.tapas }) : K.tr("Costs {n} tapas", { n: -fx.tapas })]);
+    if (fx.astraGrant) out.push(["up", K.tr("Gain: {boon}", { boon: K.tr(K.ASTRAS[typeof fx.astraGrant === "string" ? fx.astraGrant : fx.astraGrant.id].name) })]);
+    if (c.check && c.check.skill === "stealth" && K.vanishReady(S)) out.push(["up", K.tr("Antardhana: if the test fails, you vanish instead")]);
     if (fx.vowTake) {
       const V = K.VOWS[fx.vowTake];
       out.push(["vow", K.tr("Vow: {vow}", { vow: K.tr(V.name) })]);
@@ -245,10 +265,12 @@
       const ch = c.check;
       const roll = K.roll(6);
       const base = (ch.attr ? K.attr(ch.attr) : 0) + (ch.skill ? S.skills[ch.skill] || 0 : 0) + (K.val(ch.bonus) || 0) + K.merits(ch).n;
-      const pass = base + roll >= ch.dc;
+      let pass = base + roll >= ch.dc, vanished = false;
+      // Antardhana (§18.8): once in each act, a failed test of stealth becomes a pass: you were simply not there.
+      if (!pass && ch.skill === "stealth" && K.vanishReady(S)) { pass = true; vanished = true; S.vanishedAct = S.act; }
       K.record()[pass ? "passed" : "failed"]++;
       const br = (pass ? ch.pass : ch.fail) || {};
-      res.check = { pass, roll, total: base + roll, dc: ch.dc, ch };
+      res.check = { pass, roll, total: base + roll, dc: ch.dc, ch, vanished };
       addDelta(delta, K.apply(br.fx));
       if (br.text) res.text = K.val(br.text); // raw English: the UI translates and fills it
       if (br.next) res.next = K.val(br.next);
@@ -273,6 +295,7 @@
     }
     addDelta(delta, K.breakTags(c.tags));
     S.log.push(sc.id + ":" + c.id);
+    K.somaTick(S, delta);
     if (!res.text && c.text) res.text = K.val(c.text);
     res.next = res.next || K.val(c.next) || K.val(sc.next);
     if (peril) {
@@ -320,6 +343,9 @@
     if (outcome === "lose" && enc.lethal && !S.storyMode && S.spared && K.hasVow("spare_unarmed", S) && !S.flags.includes("saved_by_spared")) {
       K.apply({ flag: "saved_by_spared", injury: enc.injury || "scar", journal: "A soldier you once let live dragged you out of a deadly fight. He said he was only paying a debt." });
       saved = "As you go down, someone drags you out of the press by your collar. A soldier you once let live. \"Now we are even,\" he says, and is gone.";
+    } else if (outcome === "lose" && enc.lethal && !S.storyMode && (S.charges || {}).sanjivani) {
+      K.apply({ die: true, injury: enc.injury || "scar" }); // the sanjivani root undoes this death (core.js FX.die)
+      saved = "You fall, and the dark comes. Then the root on its cord burns against your chest, and you are breathing again among the dead. There will not be another.";
     } else if (outcome === "lose" && enc.lethal) {
       if (S.storyMode) K.apply({ injury: enc.injury || "scar" });
       else { S.alive = false; S.deathText = K.val(br.deathText) || enc.deathText || "You fell in battle."; }
@@ -351,6 +377,7 @@
   // Saves from before the Yadava homeland moved from Dwaraka to Mathura.
   K.migrate = function (s) {
     if (s && s.origin === "dwaraka") { s.origin = "mathura"; s.flags = (s.flags || []).map((f) => (f === "origin_dwaraka" ? "origin_mathura" : f)); }
+    if (s) { s.tapas = s.tapas || 0; s.astras = s.astras || []; s.charges = s.charges || {}; } // saves from before §18.7/18.8
     return s;
   };
   K.loadSlot = function (slot) {

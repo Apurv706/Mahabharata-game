@@ -42,7 +42,7 @@
       cracked: (S.flags || []).includes("amulet_broken"),
       item: S.path ? ITEM[S.path] : null,
       eye: inj.includes("eye"), sling: inj.includes("arm"), limp: inj.includes("leg"), scar: inj.includes("scar"),
-      glow: (S.boons || []).includes("astra"), // a faint light about one who carries a divine weapon
+      glow: (S.boons || []).includes("astra") || (S.astras || []).length > 0, // a faint light about one who carries a divine weapon
       chained: (S.flags || []).includes("imprisoned"), cuffed: (S.flags || []).includes("was_imprisoned") && !(S.flags || []).includes("imprisoned"), dead: S.alive === false
     };
   };
