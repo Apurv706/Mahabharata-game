@@ -84,7 +84,7 @@
     e_sudatta: "fight_grazing", e_cattle: "fight_grazing", e_cattle_k: "fight_grazing",
     e_day1: "fight_war_field", e_wheel: "fight_war_field", e_day16: "fight_war_field", e_day18: "fight_war_field",
     e_guard: "fight_war_chariot", e_hunt: "fight_war_chariot", e_road: "fight_war_sunset", e_jaya: "fight_war_sunset", e_gate: "fight_war_sunset",
-    e_night: "stage_battlefield_night", e_last_stand: "fight_war_field", e_ring: "fight_war_field", e_dushasana: "fight_war_camp", e_raid: "fight_camp_gate_night", e_ash: "fight_camp_gate_night"
+    e_night: "stage_battlefield_night", e_last_stand: "fight_chakravyuha_inner", e_ring: "fight_chakravyuha_inner", e_dushasana: "fight_war_camp", e_raid: "fight_camp_gate_night", e_ash: "fight_camp_gate_night"
   };
   U.FIGHT_BG = FIGHT_BG;
   function arenaHtml(B) {
@@ -309,7 +309,8 @@
     if (leaf.dataset.battle !== B.bid || !U.$("arena") || U.$("arena").querySelectorAll(".actor").length !== B.units.length) {
       if (deep) {
         const bg = FIGHT_BG[enc.id];
-        U.setBackdrop(U.upright() && bg && U.tallOf(bg) ? bg : K.val(enc.stage) || K.val(enc.art));
+        // The fight's own background: tall on upright screens, its 16:9 painting on wide ones (all but the camp gate).
+        U.setBackdrop(bg && (U.upright() ? U.tallOf(bg) : bg !== "fight_camp_gate_night") ? bg : K.val(enc.stage) || K.val(enc.art));
       }
       leaf.dataset.battle = B.bid;
       leaf.innerHTML = U.plate({ art: K.val(enc.art), keepArt: deep, caption: K.val(enc.caption), tag: enc.lethal ? "war" : "yours", tagText: K.tr(enc.lethal ? "Battle · you can die here" : "A fight"), heading: K.val(enc.title), noFigure: true }) +

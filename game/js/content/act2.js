@@ -17,7 +17,7 @@
     req: low ? { origin: ["suta", "nishada"], noFlag: "drona_refused" } : { not: { any: [COURT_CHILD, { origin: ["suta", "nishada"] }] }, noFlag: "drona_refused" },
     game: "aim", hint: low ? "He turned Ekalavya away. He will set you a shot no one makes" : "He will set you one shot, at a bird no one can hit",
     trial: { attr: "aim", skill: "archery", icon: "bird", small: true, easy: low ? -0.06 : -0.04, speed: low ? 2.4 : 2.1, shots: 3, need: low ? 3 : 2, verb: "Release",
-      stage: "stage_training_ground", cast: ["drona", "arjuna"],
+      stage: "stage_drona_gate", cast: ["drona", "arjuna"],
       rules: low ? "Drona points to a wooden bird on the highest branch, far across the field. Three arrows, and every one must hit. He does not expect you to." : "Drona points to a wooden bird on the highest branch, far across the field. Three arrows. Hit it twice, and he will think about it.",
       stakes: ["Drona takes you, grudgingly, and the whole court hears of it.", "Drona turns away. You will have to choose another teacher."] },
     win: { fx: Object.assign({}, DRONA_TAKES, { journal: "You passed Drona's test at the gate, though your family was not of the court, and he took you as a student." }),
@@ -60,7 +60,7 @@
       next: "a2_path"
     },
     {
-      id: "a2_path", act: 2, age: 15, place: (S) => (S.teacher === "hermit" ? "Mauni's clearing" : S.teacher === "self" ? "A clearing at night" : "Your teacher's school"), art: "scene_path", plate: ["#3e8c72", "#d4a84b"], caption: "The armoury",
+      id: "a2_path", act: 2, age: 15, place: (S) => (S.teacher === "hermit" ? "Mauni's clearing" : S.teacher === "self" ? "A clearing at night" : "Your teacher's school"), art: "scene_armoury", plate: ["#3e8c72", "#d4a84b"], caption: "The armoury",
       title: "Choose, then prove it",
       body: (S) => [
         (S.teacher === "self" ? "After a year alone, you lay out everything you have gathered on a mat: a bamboo bow, a mace, a set of chariot reins, a scribe's tablet, a healer's satchel, a dark cloak, a vina." : "After a year, {teacher} lays out everything the school has on a mat: a bamboo bow, a mace, a set of chariot reins, a scribe's tablet, a healer's satchel, a dark cloak, a vina. \"Pick one,\" {teacher} says. \"Then show me it was the right one.\""),

@@ -23,9 +23,10 @@
   };
 
   // Portraits of the people you know (art/p_*.webp). Vasu grows up: the child portrait until 40.
-  const PORTRAITS = ["karna", "arjuna", "bhima", "drona", "kripa", "duryodhana", "abhimanyu", "mauni", "charu", "madhavi", "revat", "yudhishthira", "vidura"];
+  const PORTRAITS = ["karna", "arjuna", "bhima", "drona", "kripa", "duryodhana", "abhimanyu", "mauni", "charu", "madhavi", "revat", "yudhishthira", "vidura", "bhishma", "dhrishtadyumna"];
   U.portraitKey = function (id) {
     if (id === "vasu") return K.S && K.S.age >= 40 ? "p_vasu_16" : "p_vasu_6";
+    if (id === "ugra") return K.S && K.S.age >= 25 ? "p_ugra_adult" : "p_ugra_young";
     return PORTRAITS.includes(id) ? "p_" + id : null;
   };
   U.personByName = function (name) {
@@ -61,20 +62,17 @@
   // version is used when there is one; the older 3:1 paintings are dimmed and softened behind the
   // page. Each painting can carry a focal point, so a phone (which shows only the middle of a wide
   // picture) crops around its subject.
-  const WIDE = new Set(["home_anga", "home_gandhara", "home_hastinapura", "home_mathura", "home_matsya", "home_nishada", "home_panchala",
-    "scene_day13", "scene_dice_hall", "scene_dice_throws", "scene_exile", "scene_fair", "scene_indraprastha", "scene_lac", "scene_poison",
-    "scene_princes", "scene_swayamvara", "scene_teacher", "scene_teaching", "scene_tournament", "scene_virata", "scene_women_field",
-    "war_day17", "war_day18", "war_eve"]);
+  const WIDE = new Set(["custom_anga", "custom_gandhara", "custom_hastinapura", "custom_mathura", "custom_matsya", "custom_nishada", "custom_panchala", "custom_suta", "end_broken", "end_death", "end_elder", "end_forest", "end_river", "end_survivor", "end_teller", "end_vengeance", "end_wheel", "ev_bandits", "ev_bard", "ev_deer", "ev_flood", "ev_horses", "ev_lamps", "ev_letter", "ev_riddle", "ev_snake", "ev_teacher", "home_anga", "home_gandhara", "home_hastinapura", "home_mathura", "home_matsya", "home_nishada", "home_panchala", "home_suta", "roots_anga", "roots_gandhara", "roots_hastinapura", "roots_mathura", "roots_matsya", "scene_day13", "scene_dice_hall", "scene_dice_throws", "scene_exile", "scene_fair", "scene_indraprastha", "scene_lac", "scene_poison", "scene_princes", "scene_swayamvara", "scene_teacher", "scene_teaching", "scene_tournament", "scene_virata", "scene_women_field", "war_day17", "war_day18", "war_eve"]);
   const FOCAL = { scene_teacher: "62% 45%", scene_dice_throws: "28% 35%", home_anga: "30% 50%", scene_princes: "34% 55%", scene_poison: "45% 45%" };
   U.hasWide = (key) => WIDE.has(key) || /^stage_/.test(key || "");
   // Tall (9:16) versions of the test stages, painted for upright screens (art/<key>_tall.webp).
-  const TALL = new Set(["moment_astra", "moment_friend_arjuna", "moment_friend_bhima", "moment_friend_charu", "moment_friend_duryodhana", "moment_friend_karna", "moment_marriage", "moment_teacher", "fight_border_road", "fight_camp_gate_night", "fight_drupada_yard", "fight_fair_ring", "fight_forest_road", "fight_grazing", "fight_royal_camp", "fight_swayamvara", "fight_war_camp", "fight_war_chariot", "fight_war_field", "fight_war_sunset", "stage_battlefield_night", "stage_board_table", "stage_border_village", "stage_bow_courtyard", "stage_chakravyuha_top", "stage_city_night", "stage_dice_board_top", "stage_drupada_hall", "stage_elephant_grounds", "stage_forest_clearing_night", "stage_forest_edge", "stage_forest_lake", "stage_forest_maze_top", "stage_healers_hall", "stage_khandava_top", "stage_lac_wall", "stage_lotus_garden", "stage_mango_yard", "stage_matsya_ford", "stage_palace_corridor", "stage_palace_garden_night", "stage_prison_yard", "stage_racetrack", "stage_river_shallows", "stage_smithy", "stage_stable_yard", "stage_storm_sea", "stage_training_ground", "stage_vidura_table"]);
+  const TALL = new Set(["fight_arjuna_chariot", "fight_bhima_charge", "fight_border_road", "fight_camp_gate_night", "fight_chakravyuha_inner", "fight_drupada_yard", "fight_duryodhana_line", "fight_fair_ring", "fight_forest_road", "fight_grazing", "fight_karna_chariot", "fight_royal_camp", "fight_swayamvara", "fight_war_camp", "fight_war_chariot", "fight_war_field", "fight_war_sunset", "moment_astra", "moment_friend_arjuna", "moment_friend_bhima", "moment_friend_charu", "moment_friend_duryodhana", "moment_friend_karna", "moment_marriage", "moment_teacher", "stage_battlefield_night", "stage_board_table", "stage_border_village", "stage_bow_courtyard", "stage_chakravyuha_top", "stage_city_night", "stage_city_ruins", "stage_dice_board_top", "stage_drona_gate", "stage_drupada_hall", "stage_elephant_grounds", "stage_exile_storm", "stage_forest_clearing_night", "stage_forest_edge", "stage_forest_lake", "stage_forest_maze_top", "stage_healers_hall", "stage_khandava_top", "stage_kichaka_hall_night", "stage_lac_cellar", "stage_lac_fire_top", "stage_lac_wall", "stage_lotus_garden", "stage_mango_yard", "stage_matsya_ford", "stage_muster_field_top", "stage_palace_corridor", "stage_palace_garden_night", "stage_prison_yard", "stage_racetrack", "stage_river_crossing_night", "stage_river_shallows", "stage_smithy", "stage_stable_yard", "stage_storm_sea", "stage_supply_camp_night", "stage_tournament_arena", "stage_training_ground", "stage_vidura_table", "stage_virata_court", "stage_vyuha_top", "stage_war_road"]);
   U.upright = () => window.innerHeight > window.innerWidth * 1.15;
   U.tallOf = (key) => (TALL.has(key) ? key + "_tall" : null);
   // The file a painting shows from behind the page: tall on upright screens, wide where painted.
   // Fight backgrounds painted only tall so far: on wide screens a test played on one shows the
   // nearest wide painting instead (until the 16:9 versions arrive).
-  const FIGHT_WIDE = { fight_fair_ring: "scene_fair" };
+  const FIGHT_WIDE = {}; // every fight background now has its own 16:9 painting (31 Oct), except the camp gate
   U.wideOf = (key) => (!U.upright() && FIGHT_WIDE[key]) || key;
   U.stripOf = (key) => FIGHT_WIDE[key] || key;
   U.bgUrl = (key) => { if (!key) return null; key = U.wideOf(key); return U.artUrl(TALL.has(key) && U.upright() ? key + "_tall" : WIDE.has(key) ? key + "_wide" : key); };
