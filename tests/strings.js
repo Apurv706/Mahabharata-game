@@ -63,7 +63,7 @@ function walkContent(K, add) {
 
 // (2) Literals in interface and engine code that are passed to the translator.
 function walkCode(add) {
-  const files = ["js/engine/core.js", "js/engine/flow.js", "js/engine/combat.js", "js/engine/abilities.js", "js/engine/friends.js", "js/ui/dom.js", "js/ui/ledger.js", "js/ui/scene.js", "js/ui/battle.js", "js/ui/screens.js", "js/ui/modals.js", "js/ui/games.js", "js/ui/lives.js", "js/ui/trials.js", "js/ui/play.js", "js/ui/boards.js", "js/ui/stage.js", "js/ui/puppet.js", "js/ui/map.js", "js/ui/practice.js", "js/content/act7.js"];
+  const files = ["js/engine/core.js", "js/engine/flow.js", "js/engine/combat.js", "js/engine/abilities.js", "js/engine/friends.js", "js/ui/dom.js", "js/ui/ledger.js", "js/ui/scene.js", "js/ui/battle.js", "js/ui/screens.js", "js/ui/modals.js", "js/ui/games.js", "js/ui/lives.js", "js/ui/trials.js", "js/ui/play.js", "js/ui/boards.js", "js/ui/stage.js", "js/ui/puppet.js", "js/ui/map.js", "js/ui/practice.js", "js/ui/moments.js", "js/ui/army.js", "js/ui/breath.js", "js/ui/lachouse.js", "js/content/act7.js"];
   for (const f of files) {
     const src = fs.readFileSync(path.join(GAME, f), "utf8");
     // Literals inside K.tr(...) / U.tr(...) / K.text(...), and the screens' fixed tables.
@@ -120,6 +120,7 @@ if (mode === "collect") {
     w.K.seenText = new Set();
     w.K.seenText.add = function (s) { add(s, "play:" + (w.K.S && w.K.S.scene)); return this; };
     try { playAndRecord(w.K, w, w.document, i % 4 === 0, i % 5 === 0); } catch (e) { console.error("life " + i + ": " + e.message); }
+    try { w.close(); } catch (e) {} // jsdom keeps every window alive otherwise
   }
   // Keep existing ids stable; append new strings.
   let prev = [];
@@ -139,6 +140,7 @@ if (mode === "collect") {
     w.K.missing = new Set();
     try { playAndRecord(w.K, w, w.document, i % 3 === 0, i % 5 === 0); } catch (e) { console.error("life " + i + ": " + (e.stack || e.message).split("\n").slice(0, 3).join(" | ")); }
     for (const s of w.K.missing) missing.set(s, (missing.get(s) || 0) + 1);
+    try { w.close(); } catch (e) {}
   }
   console.log("Untranslated strings seen in " + lives + " lives (" + lang + "): " + missing.size);
   [...missing.entries()].sort((a, b) => b[1] - a[1]).slice(0, 80).forEach(([s, n]) => console.log(String(n).padStart(4) + "  " + s.slice(0, 150)));
