@@ -271,5 +271,7 @@
  "You broke the condition the {name} was given on. Its mantra will fail you at the worst hour.": "जिस शर्त पर {name} मिला था, तुमने उसे तोड़ दिया। सबसे बुरी घड़ी में उसका मंत्र तुम्हारा साथ छोड़ देगा।",
  "The rite is done. The {curse!} is lifted from you.": "अनुष्ठान पूरा हुआ। {curse} तुम पर से उतर गया।",
  "The thread on your wrist snapped as the blow fell, and you lived. It had been tied for exactly this.": "वार पड़ते ही तुम्हारी कलाई का धागा टूट गया, और तुम जीवित {g:रहे|रहीं|रहे}। यह ठीक इसी के लिए बाँधा गया था।",
- "You died, and the sanjivani root on its cord burned to ash, and you breathed again. There will not be another.": "तुम {g:मर गए|मर गईं|मर गए}, और डोरी में बँधी संजीवनी की जड़ जलकर राख हो गई, और तुम फिर साँस लेने {g:लगे|लगीं|लगे}। दूसरी बार ऐसा नहीं होगा।"
+ "You died, and the sanjivani root on its cord burned to ash, and you breathed again. There will not be another.": "तुम {g:मर गए|मर गईं|मर गए}, और डोरी में बँधी संजीवनी की जड़ जलकर राख हो गई, और तुम फिर साँस लेने {g:लगे|लगीं|लगे}। दूसरी बार ऐसा नहीं होगा।",
+ "burns for {n}": "{n} की जलन",
+ "When {they} spoke the mantra at the worst hour, nothing answered.": "सबसे बुरी घड़ी में {g:उसने|उसने|उन्होंने} मंत्र पढ़ा, पर कोई उत्तर नहीं आया।"
 }

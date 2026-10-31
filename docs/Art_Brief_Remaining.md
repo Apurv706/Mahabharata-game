@@ -2,7 +2,9 @@
 
 *Kurukshetra: A Life.* This replaces the "still needed" lists in the earlier briefs. Everything else ordered so far has been delivered and is in the game.
 
-**Totals:** 9 fixes, 27 new paintings for the new parts of the game, 24 optional wide versions. None of them block a release: until a painting arrives, the game uses the closest existing one.
+**Totals:** 9 fixes and 27 new paintings. None of them block a release: until a painting arrives, the game uses the closest existing one.
+
+The current version of each painting to fix is in **`kurukshetra_corrections_originals.zip`**, with a README listing the fix for each file.
 
 ## Rules for every image (unchanged)
 
@@ -20,7 +22,7 @@
 
 ## Priority 1: fixes (9)
 
-Some of these were asked for before. If any are already on the way, ignore them.
+Some of these were asked for before. If any are already on the way, ignore them. The originals are in the zip.
 
 | File | Fix |
 |---|---|
@@ -78,14 +80,6 @@ Some of these were asked for before. If any are already on the way, ignore them.
 |---|---|---|
 | `scene_line_broken` | Scene | "The line, after": a broken company line, a fallen banner, and survivors regrouping in the dust. |
 
-## Priority 3, optional: 16:9 versions (24)
-
-These have a painting already. A `_wide` (2560×1440) version would fill desktop screens instead of being cropped:
-
-- **Scenes (19):** `scene_armour`, `scene_armoury`, `scene_arrows`, `scene_ashram`, `scene_birth`, `scene_cattle`, `scene_cell`, `scene_command_banner`, `scene_dice_cloth`, `scene_dice_question`, `scene_drupada`, `scene_forgiveness`, `scene_lac_fire`, `scene_pilgrimage`, `scene_prisoners_pen`, `scene_rebuild`, `scene_student`, `scene_truce_river`, `scene_war_council`.
-- **Endings (2):** `end_cut_short`, `end_fire`.
-- **Homelands (3):** `roots_nishada`, `roots_panchala`, `roots_suta`.
-
 ## Received 31 October, with thanks
 
-We received batches 3–6f, the corrections and the 6-file patch. Every painting is accepted and in the game, except the first camp-gate painting, which is replaced by the patched one. The only open notes are the camp gate's eclipse and the torii gate, both listed under Priority 1.
+We received batches 3–6f, the corrections and the 6-file patch. Every painting is accepted and in the game, except the 16:9 camp-gate painting, which is in the zip to redo. The only open notes are the camp gate's eclipse and the torii gate, both listed under Priority 1.

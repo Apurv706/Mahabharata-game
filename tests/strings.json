@@ -19613,5 +19613,4060 @@
   "id": 3924,
   "en": "You say it out loud, into the lamplight. No one answers. Later, you will know whether anyone heard.",
   "ctx": "scene:cmd_council_3"
+ },
+ {
+  "id": 3925,
+  "en": "Tapas +{n}",
+  "ctx": "code:flow.js"
+ },
+ {
+  "id": 3926,
+  "en": "Costs {n} tapas",
+  "ctx": "code:flow.js"
+ },
+ {
+  "id": 3927,
+  "en": "Antardhana: if the test fails, you vanish instead",
+  "ctx": "code:flow.js"
+ },
+ {
+  "id": 3928,
+  "en": "The charmed shield on your arm turns {a}'s first blow aside.",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 3929,
+  "en": "The blow that should have ended you breaks on the kavacha. It will not do so twice.",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 3930,
+  "en": "{t} sleeps on.",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 3931,
+  "en": "{t} strains against the serpent-noose.",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 3932,
+  "en": "burns for {n}",
+  "ctx": "code:combat.js"
+ },
+ {
+  "id": 3933,
+  "en": "Fire falls on {t} for {n}.",
+  "ctx": "code:abilities.js"
+ },
+ {
+  "id": 3934,
+  "en": "The water strikes {t} like a falling wall, for {n}.",
+  "ctx": "code:abilities.js"
+ },
+ {
+  "id": 3935,
+  "en": "The wind throws {t} back for {n}.",
+  "ctx": "code:abilities.js"
+ },
+ {
+  "id": 3936,
+  "en": "You loose a divine weapon at foes who cannot defend themselves. The sky goes dark. Somewhere, a sage has seen.",
+  "ctx": "code:abilities.js"
+ },
+ {
+  "id": 3937,
+  "en": "scarred for you",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3938,
+  "en": "Tapas",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3939,
+  "en": "Given by {who}, on one condition: “{cond}”",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3940,
+  "en": "The sanjivani root: one death, still unspent.",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3941,
+  "en": "The kavacha: one killing blow, still unspent.",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3942,
+  "en": "The raksha sutra: still tied.",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3943,
+  "en": "Antardhana: ready this act.",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3944,
+  "en": "Antardhana: used this act.",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3945,
+  "en": "An elder's blessing is on you today.",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3946,
+  "en": "The Soma's hangover: -1 for a day.",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3947,
+  "en": "The Soma in you: +2 for a day.",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3948,
+  "en": "Divine weapons",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3949,
+  "en": "Choose another move",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 3950,
+  "en": "Choose which divine weapon to speak. One mantra a battle.",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 3951,
+  "en": "Charu has no armour",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 3952,
+  "en": "Meet blows for me",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 3953,
+  "en": "In fights, blows aimed at you are met for you, on kinder odds. On by itself in story mode.",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 3954,
+  "en": "Tests met: {list}",
+  "ctx": "code:lives.js"
+ },
+ {
+  "id": 3955,
+  "en": "Tap to go on",
+  "ctx": "code:moments.js"
+ },
+ {
+  "id": 3956,
+  "en": "{array} · Companies set: {p} of {n}",
+  "ctx": "code:army.js"
+ },
+ {
+  "id": 3957,
+  "en": "{array} · Round {r} of {n} · The line: {l}%",
+  "ctx": "code:army.js"
+ },
+ {
+  "id": 3958,
+  "en": "Next: {unit}. Put them on a mark of the {array}.",
+  "ctx": "code:army.js"
+ },
+ {
+  "id": 3959,
+  "en": "They push on the {a} and the {b}. Your order?",
+  "ctx": "code:army.js"
+ },
+ {
+  "id": 3960,
+  "en": "Send the reserve where? Tap the sector.",
+  "ctx": "code:army.js"
+ },
+ {
+  "id": 3961,
+  "en": "\"{array}, today,\" says the commander. Put {unit} on a mark.",
+  "ctx": "code:army.js"
+ },
+ {
+  "id": 3962,
+  "en": "Breath",
+  "ctx": "code:breath.js"
+ },
+ {
+  "id": 3963,
+  "en": "Hold to dive, let go to rise. Reach the glow, then surface before your breath is gone.",
+  "ctx": "code:breath.js"
+ },
+ {
+  "id": 3964,
+  "en": "Dive {n} of {m}",
+  "ctx": "code:breath.js"
+ },
+ {
+  "id": 3965,
+  "en": "Brought up: {h}",
+  "ctx": "code:breath.js"
+ },
+ {
+  "id": 3966,
+  "en": "You have it. Up, now.",
+  "ctx": "code:breath.js"
+ },
+ {
+  "id": 3967,
+  "en": "Dive",
+  "ctx": "code:breath.js"
+ },
+ {
+  "id": 3968,
+  "en": "The house, seen from above",
+  "ctx": "code:lachouse.js"
+ },
+ {
+  "id": 3969,
+  "en": "Rooms burning: {f} of {n} · Carrying: {c}",
+  "ctx": "code:lachouse.js"
+ },
+ {
+  "id": 3970,
+  "en": "The cellar, seen from above",
+  "ctx": "code:lachouse.js"
+ },
+ {
+  "id": 3971,
+  "en": "Lines cut: {c} of {n} · Seen: {s} of 2",
+  "ctx": "code:lachouse.js"
+ },
+ {
+  "id": 3972,
+  "en": "Wake",
+  "ctx": "code:lachouse.js"
+ },
+ {
+  "id": 3973,
+  "en": "Cut",
+  "ctx": "code:lachouse.js"
+ },
+ {
+  "id": 3974,
+  "en": "That room is burning.",
+  "ctx": "code:lachouse.js"
+ },
+ {
+  "id": 3975,
+  "en": "The door is stuck. Hold to force it.",
+  "ctx": "code:lachouse.js"
+ },
+ {
+  "id": 3976,
+  "en": "You get them up and over your shoulder.",
+  "ctx": "code:lachouse.js"
+ },
+ {
+  "id": 3977,
+  "en": "The fire comes from Purochana's side. Get to the tunnel mouth in the storeroom.",
+  "ctx": "code:lachouse.js"
+ },
+ {
+  "id": 3978,
+  "en": "Hold to cut while the lamp is away.",
+  "ctx": "code:lachouse.js"
+ },
+ {
+  "id": 3979,
+  "en": "The guard has seen enough. You slip back up the stairs.",
+  "ctx": "code:lachouse.js"
+ },
+ {
+  "id": 3980,
+  "en": "The line parts. Oil runs out onto the stone.",
+  "ctx": "code:lachouse.js"
+ },
+ {
+  "id": 3981,
+  "en": "Burning",
+  "ctx": "ui:STATUS_TEXT"
+ },
+ {
+  "id": 3982,
+  "en": "Asleep",
+  "ctx": "ui:STATUS_TEXT"
+ },
+ {
+  "id": 3983,
+  "en": "Bound",
+  "ctx": "ui:STATUS_TEXT"
+ },
+ {
+  "id": 3984,
+  "en": "Agneyastra",
+  "ctx": "ability"
+ },
+ {
+  "id": 3985,
+  "en": "Fire falls on every foe, and burns on. Once per battle.",
+  "ctx": "ability"
+ },
+ {
+  "id": 3986,
+  "en": "Varunastra",
+  "ctx": "ability"
+ },
+ {
+  "id": 3987,
+  "en": "Water: puts out fire, cures burns, and stuns one foe. Once per battle.",
+  "ctx": "ability"
+ },
+ {
+  "id": 3988,
+  "en": "Vayavyastra",
+  "ctx": "ability"
+ },
+ {
+  "id": 3989,
+  "en": "Wind scatters the line: guards broken, every foe pushed back and weakened. Once per battle.",
+  "ctx": "ability"
+ },
+ {
+  "id": 3990,
+  "en": "Sammohana",
+  "ctx": "ability"
+ },
+ {
+  "id": 3991,
+  "en": "Every foe falls asleep for two turns. A sleeping foe can be spared, not killed. Once per battle.",
+  "ctx": "ability"
+ },
+ {
+  "id": 3992,
+  "en": "Nagapasha",
+  "ctx": "ability"
+ },
+ {
+  "id": 3993,
+  "en": "The serpent-noose binds one foe for three turns, alive: capture, not a kill. Once per battle.",
+  "ctx": "ability"
+ },
+ {
+  "id": 3994,
+  "en": "Bala and Atibala",
+  "ctx": "world:BOONS"
+ },
+ {
+  "id": 3995,
+  "en": "The two mantras against hunger and weariness: +1 Might and +1 Grace for the rest of this act.",
+  "ctx": "world:BOONS"
+ },
+ {
+  "id": 3996,
+  "en": "The sanjivani root",
+  "ctx": "world:BOONS"
+ },
+ {
+  "id": 3997,
+  "en": "One death, undone. Then it is gone.",
+  "ctx": "world:BOONS"
+ },
+ {
+  "id": 3998,
+  "en": "Antardhana, the vanishing",
+  "ctx": "world:BOONS"
+ },
+ {
+  "id": 3999,
+  "en": "Once in each act, a failed test of stealth becomes a pass, or a stealth test is skipped: you were simply not there.",
+  "ctx": "world:BOONS"
+ },
+ {
+  "id": 4000,
+  "en": "A charmed shield",
+  "ctx": "world:BOONS"
+ },
+ {
+  "id": 4001,
+  "en": "Turns the first blow of every fight.",
+  "ctx": "world:BOONS"
+ },
+ {
+  "id": 4002,
+  "en": "A sage's kavacha",
+  "ctx": "world:BOONS"
+ },
+ {
+  "id": 4003,
+  "en": "Once in the whole war, a blow that would have killed you leaves you standing.",
+  "ctx": "world:BOONS"
+ },
+ {
+  "id": 4004,
+  "en": "A raksha sutra",
+  "ctx": "world:BOONS"
+ },
+ {
+  "id": 4005,
+  "en": "A thread tied on your wrist before the war. Once, it turns a death outside battle into a wound.",
+  "ctx": "world:BOONS"
+ },
+ {
+  "id": 4006,
+  "en": "The Brahmastra's price",
+  "ctx": "world:CURSES"
+ },
+ {
+  "id": 4007,
+  "en": "You took the mantra no one should hold. It is waiting in you like a coal.",
+  "ctx": "world:CURSES"
+ },
+ {
+  "id": 4008,
+  "en": "The mantra you should never have taken stirs in you at the worst hour, and your hands shake so that nothing you hold will obey them.",
+  "ctx": "world:CURSES"
+ },
+ {
+  "id": 4009,
+  "en": "Dev",
+  "ctx": "world:PEOPLE"
+ },
+ {
+  "id": 4010,
+  "en": "Devi",
+  "ctx": "world:PEOPLE"
+ },
+ {
+  "id": 4011,
+  "en": "The burnt house",
+  "ctx": "endings"
+ },
+ {
+  "id": 4012,
+  "en": "Be inside the house of lac when it burns, and not get out.",
+  "ctx": "endings"
+ },
+ {
+  "id": 4013,
+  "en": "Point it out",
+  "ctx": "practice"
+ },
+ {
+  "id": 4014,
+  "en": "When I ask",
+  "ctx": "practice"
+ },
+ {
+  "id": 4015,
+  "en": "No help",
+  "ctx": "practice"
+ },
+ {
+  "id": 4016,
+  "en": "Help",
+  "ctx": "practice"
+ },
+ {
+  "id": 4017,
+  "en": "Point it out: the teacher shows the best move each turn. When I ask: a \"Show me\" button.",
+  "ctx": "practice"
+ },
+ {
+  "id": 4018,
+  "en": "Move piece {n}.",
+  "ctx": "practice"
+ },
+ {
+  "id": 4019,
+  "en": "A goat can be taken: that tiger, then the point beyond the goat.",
+  "ctx": "practice"
+ },
+ {
+  "id": 4020,
+  "en": "Keep the tigers free: that tiger, then the open point.",
+  "ctx": "practice"
+ },
+ {
+  "id": 4021,
+  "en": "Move {n}: a ladder waits there.",
+  "ctx": "practice"
+ },
+ {
+  "id": 4022,
+  "en": "Move {n}: the other die lands on a snake.",
+  "ctx": "practice"
+ },
+ {
+  "id": 4023,
+  "en": "Move {n}: the longer step.",
+  "ctx": "practice"
+ },
+ {
+  "id": 4024,
+  "en": "You are behind: throw your lowest die again.",
+  "ctx": "practice"
+ },
+ {
+  "id": 4025,
+  "en": "You are ahead: stand.",
+  "ctx": "practice"
+ },
+ {
+  "id": 4026,
+  "en": "Charu comes through the crowd with a smith's hammer and no armour at all, and stands at your shoulder.",
+  "ctx": "friends"
+ },
+ {
+  "id": 4027,
+  "en": "An arrow takes the man in front of you through the arm. Arjuna is on the wall behind you, already nocking the next.",
+  "ctx": "friends"
+ },
+ {
+  "id": 4028,
+  "en": "Bhima comes through the gate like a falling tree, laughing, and puts himself between you and the worst of it.",
+  "ctx": "friends"
+ },
+ {
+  "id": 4029,
+  "en": "Karna is suddenly beside you, bow in hand, looking as if he has been there all along.",
+  "ctx": "friends"
+ },
+ {
+  "id": 4030,
+  "en": "Duryodhana shoulders in with his mace and a look that dares anyone to touch you.",
+  "ctx": "friends"
+ },
+ {
+  "id": 4031,
+  "en": "You shout for help. No one you trust is near enough to hear.",
+  "ctx": "friends"
+ },
+ {
+  "id": 4032,
+  "en": "Charu died beside you, with no armour, because you called.",
+  "ctx": "friends"
+ },
+ {
+  "id": 4033,
+  "en": "I carry a scar from the day you called me, and I would come again.",
+  "ctx": "friends"
+ },
+ {
+  "id": 4034,
+  "en": "{who} came when you called, and carries a scar for it.",
+  "ctx": "friends"
+ },
+ {
+  "id": 4035,
+  "en": "They drank deep at Kunti's feast and do not wake, however hard you shake them. You sit down beside them in the dark, meaning to try again in a little while.",
+  "ctx": "scene:a3_lac"
+ },
+ {
+  "id": 4036,
+  "en": "On the last night of the festival, the house of lac burns.",
+  "ctx": "scene:a3_lac"
+ },
+ {
+  "id": 4037,
+  "en": "The cellar under the house of lac",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4038,
+  "en": "The last night of the festival",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4039,
+  "en": "The feast is over. Kunti and her sons are asleep upstairs, and so are the Nishada woman and her five sons, who drank what was given them. In the cellar, Purochana's oil lines run from the door to every sleeping room.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4040,
+  "en": "He means to light them tonight. The fire will come whatever you do. What you do before it comes is yours.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4041,
+  "en": "Go down to the cellar and cut the oil lines",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4042,
+  "en": "Purochana's guard walks the cellar with a lamp. Choose a line and hold to cut it while the light is away; caught in the light, let go. Cut two of the three before the guard has seen you twice.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4043,
+  "en": "Every line cut slows the fire tonight, and the Pandavas will owe you.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4044,
+  "en": "The guard sends you up the stairs with the lines whole. The fire will run as fast as Purochana meant it to.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4045,
+  "en": "On the last night at Varnavata you cut Purochana's oil lines in the cellar.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4046,
+  "en": "The oil runs out across the stone and soaks into the earth. Upstairs, someone turns over in their sleep.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4047,
+  "en": "One line parts before the lamp comes back for good. It will have to be enough.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4048,
+  "en": "The lamp finds you twice, and the second time the guard does not look away. You go up the stairs with the lines whole.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4049,
+  "en": "Tell Yudhishthira plainly what is in the walls, and that it is tonight",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4050,
+  "en": "Yudhishthira listens without surprise. \"Vidura told me in a riddle,\" he says. \"You have told me in plain words. We will not forget either.\"",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4051,
+  "en": "Say nothing. Your family lives under Duryodhana's hand",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4052,
+  "en": "You knew what the house at Varnavata was for, and said nothing.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4053,
+  "en": "You go to bed with the smell of resin in your clothes, and do not sleep.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 4054,
+  "en": "The house of lac, burning",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 4055,
+  "en": "The night of the fire",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 4056,
+  "en": "The house of lac burns on the last night of the festival. Kunti and the Pandavas go down into the tunnel and out into the forest. Purochana dies in his own fire.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 4057,
+  "en": "The way through the burning rooms",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 4058,
+  "en": "The fire comes from Purochana's side, room by room, with the smoke ahead of it. Move through the doors to the storeroom, where the tunnel mouth is. Some doors are stuck: hold to force them. Sleepers can be woken and carried, and each one slows you.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 4059,
+  "en": "You reach the tunnel, and whoever you carried comes with you.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 4060,
+  "en": "The fire catches you in the house. There is no second chance tonight.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 4061,
+  "en": "You came through the flames at Varnavata, and not everyone you carried came with you.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 4062,
+  "en": "You come through the last room with your sleeve alight. Whoever was on your back is not there when you drop into the dark, and you cannot go back.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 4063,
+  "en": "Stay with the sleepers and keep shaking them",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 4064,
+  "en": "They will not wake",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 4065,
+  "en": "Stay back with the crowd",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 4066,
+  "en": "You watched the house of lac burn from the lane.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 4067,
+  "en": "You stand in the lane with everyone else and watch the roof fall in. Nobody comes out.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 4068,
+  "en": "In the ashes they find six bodies: a Nishada woman and her five sons. Everyone believes they are Kunti and the Pandavas. In Hastinapura, Dhritarashtra weeps, and Duryodhana weeps louder.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 4069,
+  "en": "Ask the sages for the mantras against hunger and weariness",
+  "ctx": "scene:a5_forest_boon"
+ },
+ {
+  "id": 4070,
+  "en": "Needs {n} tapas",
+  "ctx": "scene:a5_forest_boon"
+ },
+ {
+  "id": 4071,
+  "en": "The sages taught you Bala and Atibala. For a season you were never tired and never hungry.",
+  "ctx": "scene:a5_forest_boon"
+ },
+ {
+  "id": 4072,
+  "en": "Costs 3 tapas: +1 Might, +1 Grace until the war",
+  "ctx": "scene:a5_forest_boon"
+ },
+ {
+  "id": 4073,
+  "en": "Two mantras, one for the morning and one for the night. The old sage makes you say them until he is satisfied, which takes four days.",
+  "ctx": "scene:a5_forest_boon"
+ },
+ {
+  "id": 4074,
+  "en": "Ask the sages to lift the curse on you",
+  "ctx": "scene:a5_forest_boon"
+ },
+ {
+  "id": 4075,
+  "en": "Needs a curse to lift, and 6 tapas.",
+  "ctx": "scene:a5_forest_boon"
+ },
+ {
+  "id": 4076,
+  "en": "Costs 6 tapas",
+  "ctx": "scene:a5_forest_boon"
+ },
+ {
+  "id": 4077,
+  "en": "Seven nights of fire and fasting. On the last morning the oldest sage pours water over your head and says the thing that was waiting for you is waiting no longer.",
+  "ctx": "scene:a5_forest_boon"
+ },
+ {
+  "id": 4078,
+  "en": "Stay a whole year in the sage's service, and let the camp go on without you",
+  "ctx": "scene:a5_forest_boon"
+ },
+ {
+  "id": 4079,
+  "en": "You served a sage for a year in the exile, and he gave you the mantra of the wind.",
+  "ctx": "scene:a5_forest_boon"
+ },
+ {
+  "id": 4080,
+  "en": "A year of your life: tapas +3, and a divine weapon",
+  "ctx": "scene:a5_forest_boon"
+ },
+ {
+  "id": 4081,
+  "en": "A year of water carried and silence kept. On the last day the sage gives you the mantra of the wind, and tells you never to turn your back on a fight you chose.",
+  "ctx": "scene:a5_forest_boon"
+ },
+ {
+  "id": 4082,
+  "en": "You spared a beaten Gandharva, and he taught you the mantra of sleep and the art of vanishing.",
+  "ctx": "fight:e_gandharva"
+ },
+ {
+  "id": 4083,
+  "en": "The Gandharva you have beaten lowers his sword and laughs. \"Arjuna spared Chitraratha once, and was given a gift for it,\" he says. \"Here is yours.\" He teaches you two things before dawn: the mantra that puts a host to sleep, and the trick of not being where you are looked for.",
+  "ctx": "fight:e_gandharva"
+ },
+ {
+  "id": 4084,
+  "en": "Indraprastha, the morning of the sacrifice",
+  "ctx": "scene:w_soma"
+ },
+ {
+  "id": 4085,
+  "en": "The pressing of the Soma",
+  "ctx": "scene:w_soma"
+ },
+ {
+  "id": 4086,
+  "en": "The Soma",
+  "ctx": "scene:w_soma"
+ },
+ {
+  "id": 4087,
+  "en": "Before the great sacrifice the priests press the Soma, and a cup of it is offered to those who have kept their vows. One of them holds a cup out to you.",
+  "ctx": "scene:w_soma"
+ },
+ {
+  "id": 4088,
+  "en": "Drink the Soma",
+  "ctx": "scene:w_soma"
+ },
+ {
+  "id": 4089,
+  "en": "You drank the Soma at Yudhishthira's sacrifice. For a day you were more than yourself, and the day after, less.",
+  "ctx": "scene:w_soma"
+ },
+ {
+  "id": 4090,
+  "en": "Costs 2 tapas: +2 to your best attribute for a day, then -1 for a day",
+  "ctx": "scene:w_soma"
+ },
+ {
+  "id": 4091,
+  "en": "It is bitter and bright, and the hall is suddenly very clear. You will pay for it tomorrow.",
+  "ctx": "scene:w_soma"
+ },
+ {
+  "id": 4092,
+  "en": "Pass the cup on",
+  "ctx": "scene:w_soma"
+ },
+ {
+  "id": 4093,
+  "en": "The priest nods as if you had answered a question.",
+  "ctx": "scene:w_soma"
+ },
+ {
+  "id": 4094,
+  "en": "The camp, the night before the first day",
+  "ctx": "scene:w_eve"
+ },
+ {
+  "id": 4095,
+  "en": "You march to Kurukshetra with the army.",
+  "ctx": "scene:w_eve"
+ },
+ {
+  "id": 4096,
+  "en": "Lamps in the tents",
+  "ctx": "scene:w_eve"
+ },
+ {
+  "id": 4097,
+  "en": "The night before",
+  "ctx": "scene:w_eve"
+ },
+ {
+  "id": 4098,
+  "en": "The night before the first arrow, the camp does the small things: threads are tied, blessings asked, letters written that may not be sent.",
+  "ctx": "scene:w_eve"
+ },
+ {
+  "id": 4099,
+  "en": "Once, outside battle, it turns a death into a wound",
+  "ctx": "scene:w_eve"
+ },
+ {
+  "id": 4100,
+  "en": "A red and yellow thread, tied with a prayer you half hear. It is only a thread. You do not take it off.",
+  "ctx": "scene:w_eve"
+ },
+ {
+  "id": 4101,
+  "en": "+1 to every test for the next day",
+  "ctx": "scene:w_eve"
+ },
+ {
+  "id": 4102,
+  "en": "A hand on your head, a few words. You walk back to your tent lighter than you went.",
+  "ctx": "scene:w_eve"
+ },
+ {
+  "id": 4103,
+  "en": "Sleep while you can",
+  "ctx": "scene:w_eve"
+ },
+ {
+  "id": 4104,
+  "en": "A bare hill above the hermitages",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4105,
+  "en": "An altar in the rain",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4106,
+  "en": "The fire altar",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4107,
+  "en": "Arjuna has gone north for weapons. A sage at the hermitage tells you there is a smaller road: a fire altar on the hill above, where those who can sit still through a season of storms are sometimes answered.",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4108,
+  "en": "It is the rains. The altar is open to the sky.",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4109,
+  "en": "Sit at the altar and keep the fire alive through the storms",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4110,
+  "en": "A long test of stillness",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4111,
+  "en": "Shield the flame",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4112,
+  "en": "Flame kept: {c}% · {s} seconds of storm left",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4113,
+  "en": "The storm passes. The flame is still there, and so are you.",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4114,
+  "en": "The flame gutters, and comes back, and gutters. Not yet.",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4115,
+  "en": "The wind takes the flame, and the season with it.",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4116,
+  "en": "A fire altar on a bare hill, and the rains coming. Keep your hands around the flame as the gusts push it: hold to shield it, let go when the wind drops. If it goes out, the season is lost.",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4117,
+  "en": "On the last night, a voice in the fire gives you the Agneyastra.",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4118,
+  "en": "The flame goes out. You come down the hill with nothing but a cough.",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4119,
+  "en": "On the last night a voice speaks out of the coals, and gives you the mantra of fire, and one condition: never against someone who cannot fight back.",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4120,
+  "en": "The flame goes out on the fortieth night. You come down the hill thinner, with no weapon and a little more patience.",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4121,
+  "en": "Stay with the camp. Someone has to hunt",
+  "ctx": "scene:w_fire"
+ },
+ {
+  "id": 4122,
+  "en": "A deep lake in the hills",
+  "ctx": "scene:w_dive"
+ },
+ {
+  "id": 4123,
+  "en": "Still water over deep water",
+  "ctx": "scene:w_dive"
+ },
+ {
+  "id": 4124,
+  "en": "The sage's offering",
+  "ctx": "scene:w_dive"
+ },
+ {
+  "id": 4125,
+  "en": "An old sage sits by a lake that no one fishes. His golden vessel, the one he pours the morning offering from, slipped from his hands into the deep water a month ago, and he has not eaten since.",
+  "ctx": "scene:w_dive"
+ },
+ {
+  "id": 4126,
+  "en": "The lake is cold and very deep, and something moves the water at the bottom.",
+  "ctx": "scene:w_dive"
+ },
+ {
+  "id": 4127,
+  "en": "Dive for the offering",
+  "ctx": "scene:w_dive"
+ },
+ {
+  "id": 4128,
+  "en": "A test of breath",
+  "ctx": "scene:w_dive"
+ },
+ {
+  "id": 4129,
+  "en": "The sage's golden vessel lies on the lake bed, and the current moves it. Hold to dive and let go to rise; reach the glow before your breath runs out, and surface before it is gone. Three dives: bring it up on two.",
+  "ctx": "scene:w_dive"
+ },
+ {
+  "id": 4130,
+  "en": "The sage gives you the Varunastra for it.",
+  "ctx": "scene:w_dive"
+ },
+ {
+  "id": 4131,
+  "en": "The lake keeps the vessel, and nearly keeps you.",
+  "ctx": "scene:w_dive"
+ },
+ {
+  "id": 4132,
+  "en": "You come up with the vessel the second time, half-drowned. The sage takes it without a word, then gives you one: the mantra of water, on the condition that you never lie about where it came from.",
+  "ctx": "scene:w_dive"
+ },
+ {
+  "id": 4133,
+  "en": "The current is stronger than you. The vessel stays on the lake bed, and the sage goes on sitting by the water as if you had never come.",
+  "ctx": "scene:w_dive"
+ },
+ {
+  "id": 4134,
+  "en": "Leave him food, and go on",
+  "ctx": "scene:w_dive"
+ },
+ {
+  "id": 4135,
+  "en": "The foot of the high mountains",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4136,
+  "en": "A path into the snow",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4137,
+  "en": "The hermit of the heights",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4138,
+  "en": "In the last year of the forest a herdsman tells you of a hermit who lives above the snow, who knows the mantra of the wind and gives it to no one, because no one comes.",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4139,
+  "en": "Climb to the hermitage",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4140,
+  "en": "A climb",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4141,
+  "en": "Climbed: {d}% · Falls: {h} of {l}",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4142,
+  "en": "Your foot goes through the crust, and the mountain takes a little more of you.",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4143,
+  "en": "Step aside from the rocks and the ice: up and down, or the buttons.",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4144,
+  "en": "Step left and right around the rocks and the ice.",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4145,
+  "en": "A path up through snow to a hermitage no one has reached in years. Rocks come down it, and the ice gives way. Three falls and you turn back.",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4146,
+  "en": "The hermit of the heights gives you the Vayavyastra. Nearly there, a sanjivani root on a ledge.",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4147,
+  "en": "You turn back below the snow line, frostbitten.",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4148,
+  "en": "The hermit is very old and very amused that anyone came. He teaches you the mantra of wind over three days, and makes you promise one thing: never to turn your back on a fight you chose.",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4149,
+  "en": "Short of the hermitage, on a ledge in the snow, you dug up a sanjivani root and wore it home on a cord.",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4150,
+  "en": "You do not reach the hermitage. But on the last ledge, where you stop to breathe, a root glows faintly under the snow, the way the old songs say the sanjivani does. You dig it out with your knife, and wear it on a cord.",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4151,
+  "en": "Below the snow line your feet stop obeying you. You come down, and the hermitage stays where it is, above the clouds.",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4152,
+  "en": "It is too late in the year. Go on",
+  "ctx": "scene:w_climb"
+ },
+ {
+  "id": 4153,
+  "en": "A pool at the edge of the Dvaita forest",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4154,
+  "en": "A voice in the branches",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4155,
+  "en": "The Gandharva at the pool",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4156,
+  "en": "Riding the forest's edge on the court's business, you stop at a pool to drink, and a voice in the branches tells you that you may not, yet.",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4157,
+  "en": "Answer the Gandharva's riddles",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4158,
+  "en": "\"What is heavier than a mountain, and a child can carry it?\"",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4159,
+  "en": "A debt.",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4160,
+  "en": "Grief.",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4161,
+  "en": "Gold.",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4162,
+  "en": "\"What goes out of the house every morning and is home before it leaves?\"",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4163,
+  "en": "The mind.",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4164,
+  "en": "The sun.",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4165,
+  "en": "A dog.",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4166,
+  "en": "\"I am taken from you every night and given back every morning, and you are poorer each time.\"",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4167,
+  "en": "A day.",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4168,
+  "en": "Sleep.",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4169,
+  "en": "A dream.",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4170,
+  "en": "The Gandharva sits in the branches above the pool and will not let you drink until you have answered him. Three riddles; answer before the lamp burns down. Two right of three.",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4171,
+  "en": "He gives you the mantra of sleep, laughing.",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4172,
+  "en": "He lets you drink anyway, and keeps the mantra.",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4173,
+  "en": "He drops out of the tree, delighted. \"No one has answered me in a hundred years. Here: the mantra that puts a host to sleep. Never against one who is asleep already, or unarmed, or I will come and take it back.\"",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4174,
+  "en": "\"Drink,\" he says, bored. \"You are no worse than the last hundred.\"",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4175,
+  "en": "Ride on thirsty",
+  "ctx": "scene:w_riddle"
+ },
+ {
+  "id": 4176,
+  "en": "The riverbank below the village",
+  "ctx": "scene:w_naga"
+ },
+ {
+  "id": 4177,
+  "en": "A stranger on the bank",
+  "ctx": "scene:w_naga"
+ },
+ {
+  "id": 4178,
+  "en": "The wounded naga",
+  "ctx": "scene:w_naga"
+ },
+ {
+  "id": 4179,
+  "en": "Coming down to the river at dusk you find a man on the bank with an arrow through his shoulder, and eyes that are not quite a man's. The naga folk do not come out of the water. This one has.",
+  "ctx": "scene:w_naga"
+ },
+ {
+  "id": 4180,
+  "en": "Draw the arrow and dress the wound",
+  "ctx": "scene:w_naga"
+ },
+ {
+  "id": 4181,
+  "en": "The wound closing: {c}% · {s} seconds",
+  "ctx": "scene:w_naga"
+ },
+ {
+  "id": 4182,
+  "en": "The bleeding stops. The naga lets out a long breath that is almost a word.",
+  "ctx": "scene:w_naga"
+ },
+ {
+  "id": 4183,
+  "en": "Nearly. The wound keeps opening.",
+  "ctx": "scene:w_naga"
+ },
+ {
+  "id": 4184,
+  "en": "The naga pulls away from you and slides into the river, trailing blood.",
+  "ctx": "scene:w_naga"
+ },
+ {
+  "id": 4185,
+  "en": "A man of the naga folk lies on the bank with a hunter's arrow through his shoulder, and he does not trust your hands. Keep your hand steady on the wound as he flinches: hold to press, let go when he pulls away.",
+  "ctx": "scene:w_naga"
+ },
+ {
+  "id": 4186,
+  "en": "He gives you the serpent-noose for it.",
+  "ctx": "scene:w_naga"
+ },
+ {
+  "id": 4187,
+  "en": "He goes back into the river without a word.",
+  "ctx": "scene:w_naga"
+ },
+ {
+  "id": 4188,
+  "en": "Before he goes back into the water he teaches you the mantra of the serpent-noose, which binds and does not kill, on one condition: never against someone who cannot fight back.",
+  "ctx": "scene:w_naga"
+ },
+ {
+  "id": 4189,
+  "en": "He goes into the river, and the water closes over him, and you do not know whether he lived.",
+  "ctx": "scene:w_naga"
+ },
+ {
+  "id": 4190,
+  "en": "Leave him. The river people look after their own",
+  "ctx": "scene:w_naga"
+ },
+ {
+  "id": 4191,
+  "en": "A village temple on the road to Matsya",
+  "ctx": "scene:w_offering"
+ },
+ {
+  "id": 4192,
+  "en": "An empty hook over the altar",
+  "ctx": "scene:w_offering"
+ },
+ {
+  "id": 4193,
+  "en": "The stolen offering",
+  "ctx": "scene:w_offering"
+ },
+ {
+  "id": 4194,
+  "en": "On the road to Matsya you sleep in a village whose temple lamp was carried off by a robber band in the spring. The priest does not ask you for anything. He only looks at the empty hook.",
+  "ctx": "scene:w_offering"
+ },
+ {
+  "id": 4195,
+  "en": "Go into the robber chief's house by night and bring it back",
+  "ctx": "scene:w_offering"
+ },
+ {
+  "id": 4196,
+  "en": "The temple's golden lamp hangs in the robber chief's own room. His men keep watch with torches. Cross the house twice, in and out, and do not be seen twice.",
+  "ctx": "scene:w_offering"
+ },
+ {
+  "id": 4197,
+  "en": "The temple gets its lamp back, and its priest gives you a charmed shield.",
+  "ctx": "scene:w_offering"
+ },
+ {
+  "id": 4198,
+  "en": "You are caught, and beaten, and let go as a fool.",
+  "ctx": "scene:w_offering"
+ },
+ {
+  "id": 4199,
+  "en": "The lamp is back on its chain by dawn. The old priest gives you a shield that hung in the temple longer than anyone remembers. \"It turns the first blow,\" he says. \"After that you are on your own.\"",
+  "ctx": "scene:w_offering"
+ },
+ {
+  "id": 4200,
+  "en": "A torch finds you on the stair. They beat you and throw you out, and keep the lamp.",
+  "ctx": "scene:w_offering"
+ },
+ {
+  "id": 4201,
+  "en": "Give the priest a coin, and sleep",
+  "ctx": "scene:w_offering"
+ },
+ {
+  "id": 4202,
+  "en": "High in the mountains",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4203,
+  "en": "A light where no lamp is",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4204,
+  "en": "The light on the mountain",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4205,
+  "en": "Arjuna came back from the north with weapons from the gods, and will not say much about it. A sage of the camp tells you that there is a place on the mountain where a light stands at dusk, with no lamp in it, and those who stand in it are sometimes given something, and sometimes only frightened.",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4206,
+  "en": "Climb to the light, and stand in it",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4207,
+  "en": "A test of stillness",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4208,
+  "en": "Hold still",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4209,
+  "en": "Stillness: {c}% · {s} seconds",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4210,
+  "en": "The light goes through you, and the voice says one word, and you do not remember it afterwards.",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4211,
+  "en": "The light wavers, and so do you.",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4212,
+  "en": "You step out of the light, shaking, and it is only snow.",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4213,
+  "en": "A light on the mountain, with no lamp in it, and a voice with no one speaking. Stand in it and do not move: hold to keep still as the cold and the fear push you. No one has told you what is in there.",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4214,
+  "en": "Something is given to you: a weapon, or a kavacha against one death in the war.",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4215,
+  "en": "You come down, and never tell anyone what you saw.",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4216,
+  "en": "When you can see again you are kneeling in the snow and something is yours that was not yours before. You will not lie about what happened here. You could not if you tried.",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4217,
+  "en": "You come down the mountain and do not speak for three days. Something was there. It did not stay.",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4218,
+  "en": "Some things are not for you. Stay below",
+  "ctx": "scene:w_mountain"
+ },
+ {
+  "id": 4219,
+  "en": "The camp, the night after the last day",
+  "ctx": "scene:w_brahmastra"
+ },
+ {
+  "id": 4220,
+  "en": "A scroll in the dark",
+  "ctx": "scene:w_brahmastra"
+ },
+ {
+  "id": 4221,
+  "en": "The mantra no one should hold",
+  "ctx": "scene:w_brahmastra"
+ },
+ {
+  "id": 4222,
+  "en": "An old brahmin of the camp, whose sons are all dead, finds you in the dark with a palm-leaf scroll. \"It was given to Drona's son tonight, as it was given to him,\" he says. \"The Brahmastra. The weapon that ends everything it is pointed at, and the one who points it, slower. I can give it to you too. You have the merit to hold it.\"",
+  "ctx": "scene:w_brahmastra"
+ },
+ {
+  "id": 4223,
+  "en": "He is not lying. You can feel it in the scroll, like heat.",
+  "ctx": "scene:w_brahmastra"
+ },
+ {
+  "id": 4224,
+  "en": "Take it",
+  "ctx": "scene:w_brahmastra"
+ },
+ {
+  "id": 4225,
+  "en": "All your tapas, a curse, and a darker telling",
+  "ctx": "scene:w_brahmastra"
+ },
+ {
+  "id": 4226,
+  "en": "You learn it in an hour, and it is the easiest thing you have ever learned, and you are never again entirely alone in your own head.",
+  "ctx": "scene:w_brahmastra"
+ },
+ {
+  "id": 4227,
+  "en": "Refuse it",
+  "ctx": "scene:w_brahmastra"
+ },
+ {
+  "id": 4228,
+  "en": "On the last night of the war you were offered the Brahmastra, and refused it.",
+  "ctx": "scene:w_brahmastra"
+ },
+ {
+  "id": 4229,
+  "en": "You push the scroll back into his hands. He looks at you for a long moment, and then, for the first time all night, he weeps.",
+  "ctx": "scene:w_brahmastra"
+ },
+ {
+  "id": 4230,
+  "en": "The one who went ahead of you",
+  "ctx": "scene:ep_sibling"
+ },
+ {
+  "id": 4231,
+  "en": "The one born before you",
+  "ctx": "scene:ep_sibling"
+ },
+ {
+  "id": 4232,
+  "en": "In most houses there is someone a few years older who went first: first to the river, first to the drills, first to be shouted at. Was there one in yours?",
+  "ctx": "scene:ep_sibling"
+ },
+ {
+  "id": 4233,
+  "en": "A brother, Dev, three years older, who lets you follow him everywhere",
+  "ctx": "scene:ep_sibling"
+ },
+ {
+  "id": 4234,
+  "en": "You followed me everywhere when you were six.",
+  "ctx": "scene:ep_sibling"
+ },
+ {
+  "id": 4235,
+  "en": "Dev pretends to mind. Dev never once sends you home.",
+  "ctx": "scene:ep_sibling"
+ },
+ {
+  "id": 4236,
+  "en": "A sister, Devi, four years older, who taught you to swim by pushing you in",
+  "ctx": "scene:ep_sibling"
+ },
+ {
+  "id": 4237,
+  "en": "I pushed you in the river when you were six, and you swam.",
+  "ctx": "scene:ep_sibling"
+ },
+ {
+  "id": 4238,
+  "en": "Devi watches from the bank with her arms folded until you reach it. Then she claps, once.",
+  "ctx": "scene:ep_sibling"
+ },
+ {
+  "id": 4239,
+  "en": "No one. You were the eldest, or the only one",
+  "ctx": "scene:ep_sibling"
+ },
+ {
+  "id": 4240,
+  "en": "The morning before the princes' tournament",
+  "ctx": "scene:ep_ugra_tournament"
+ },
+ {
+  "id": 4241,
+  "en": "The miller's son, again",
+  "ctx": "scene:ep_ugra_tournament"
+ },
+ {
+  "id": 4242,
+  "en": "Step into the dust with him, here and now",
+  "ctx": "scene:ep_ugra_tournament"
+ },
+ {
+  "id": 4243,
+  "en": "A wrestling bout",
+  "ctx": "scene:ep_ugra_tournament"
+ },
+ {
+  "id": 4244,
+  "en": "Ugra plants his feet in the dust where the horses are watered. Push as the ring meets the mark. Three good pushes win; three slips lose.",
+  "ctx": "scene:ep_ugra_tournament"
+ },
+ {
+  "id": 4245,
+  "en": "Ugra laughs, and shakes your hand, and the levies cheer.",
+  "ctx": "scene:ep_ugra_tournament"
+ },
+ {
+  "id": 4246,
+  "en": "Ugra puts you in the horse trough, and the levies cheer louder.",
+  "ctx": "scene:ep_ugra_tournament"
+ },
+ {
+  "id": 4247,
+  "en": "Ugra goes down in the dust, gets up, and laughs so loud the horses shy. \"Again at the next fair,\" he says.",
+  "ctx": "scene:ep_ugra_tournament"
+ },
+ {
+  "id": 4248,
+  "en": "You come up out of the horse trough to find Ugra holding out a hand. \"Again at the next fair,\" he says.",
+  "ctx": "scene:ep_ugra_tournament"
+ },
+ {
+  "id": 4249,
+  "en": "Ask him what a miller's son is doing at the princes' tournament",
+  "ctx": "scene:ep_ugra_tournament"
+ },
+ {
+  "id": 4250,
+  "en": "\"Holding horses,\" he says. \"And watching. Someone has to see how the princes fight, for when we have to fight them.\" He says it lightly. He does not mean it lightly.",
+  "ctx": "scene:ep_ugra_tournament"
+ },
+ {
+  "id": 4251,
+  "en": "Walk past him. You have a tournament to watch",
+  "ctx": "scene:ep_ugra_tournament"
+ },
+ {
+  "id": 4252,
+  "en": "You feel his eyes on your back all the way to the stands.",
+  "ctx": "scene:ep_ugra_tournament"
+ },
+ {
+  "id": 4253,
+  "en": "Vidura's house",
+  "ctx": "scene:ep_mentor_vidura"
+ },
+ {
+  "id": 4254,
+  "en": "A lamp, a table, a question",
+  "ctx": "scene:ep_mentor_vidura"
+ },
+ {
+  "id": 4255,
+  "en": "What Vidura asks",
+  "ctx": "scene:ep_mentor_vidura"
+ },
+ {
+  "id": 4256,
+  "en": "Vidura sends for you after dark, which he never does.",
+  "ctx": "scene:ep_mentor_vidura"
+ },
+ {
+  "id": 4257,
+  "en": "\"{friend} is close to you,\" he says. \"Closer than to anyone. I need to know what {friend} says when the court is not listening: who is spoken to, what is promised. For the kingdom's sake. You would be doing nothing wrong.\" He does not quite meet your eyes when he says the last part.",
+  "ctx": "scene:ep_mentor_vidura"
+ },
+ {
+  "id": 4258,
+  "en": "Do as he asks, and report what your friend says",
+  "ctx": "scene:ep_mentor_vidura"
+ },
+ {
+  "id": 4259,
+  "en": "You carry Vidura what you hear, a little at a time. {friend} never finds out. You find that you cannot look at {friend} for very long.",
+  "ctx": "scene:ep_mentor_vidura"
+ },
+ {
+  "id": 4260,
+  "en": "Tell him you will listen, and then tell him nothing he does not already know",
+  "ctx": "scene:ep_mentor_vidura"
+ },
+ {
+  "id": 4261,
+  "en": "You bring Vidura gossip the whole court knows. He listens gravely, and after a month stops asking, and you are fairly sure he always knew.",
+  "ctx": "scene:ep_mentor_vidura"
+ },
+ {
+  "id": 4262,
+  "en": "Vidura sees through it in a week. \"If you would not do it, you should have said so,\" he says, and it is the only time he is ever cold with you.",
+  "ctx": "scene:ep_mentor_vidura"
+ },
+ {
+  "id": 4263,
+  "en": "Refuse him to his face",
+  "ctx": "scene:ep_mentor_vidura"
+ },
+ {
+  "id": 4264,
+  "en": "Vidura is quiet for a long moment. \"Good,\" he says at last. \"I hoped you would say that. Forget I asked.\" You never quite do.",
+  "ctx": "scene:ep_mentor_vidura"
+ },
+ {
+  "id": 4265,
+  "en": "Before the dice are thrown",
+  "ctx": "scene:ep_mentor_kripa"
+ },
+ {
+  "id": 4266,
+  "en": "What Kripa asks",
+  "ctx": "scene:ep_mentor_kripa"
+ },
+ {
+  "id": 4267,
+  "en": "Before the game begins, Kripa finds you by the pillars. He has served the Kuru throne all his life, and he will serve it to the end, whatever it does.",
+  "ctx": "scene:ep_mentor_kripa"
+ },
+ {
+  "id": 4268,
+  "en": "Whatever happens in this hall today, the throne is in the right, because it is the throne. If anyone asks you afterwards, that is what you will say. Swear it to me.",
+  "ctx": "scene:ep_mentor_kripa"
+ },
+ {
+  "id": 4269,
+  "en": "Swear it",
+  "ctx": "scene:ep_mentor_kripa"
+ },
+ {
+  "id": 4270,
+  "en": "You swear it. An hour later you watch what the throne does, and the oath sits in your mouth like a stone.",
+  "ctx": "scene:ep_mentor_kripa"
+ },
+ {
+  "id": 4271,
+  "en": "Tell him you will say what you see",
+  "ctx": "scene:ep_mentor_kripa"
+ },
+ {
+  "id": 4272,
+  "en": "\"That is what I am afraid of,\" Kripa says, and goes to his seat.",
+  "ctx": "scene:ep_mentor_kripa"
+ },
+ {
+  "id": 4273,
+  "en": "Refuse. A throne can be wrong",
+  "ctx": "scene:ep_mentor_kripa"
+ },
+ {
+  "id": 4274,
+  "en": "Kripa looks at you as if you had struck him. \"Then you have learned nothing from me,\" he says. You think you have learned the one thing that matters.",
+  "ctx": "scene:ep_mentor_kripa"
+ },
+ {
+  "id": 4275,
+  "en": "A teacher's last asking",
+  "ctx": "scene:ep_mentor_peace"
+ },
+ {
+  "id": 4276,
+  "en": "Promise not to fight in the war",
+  "ctx": "scene:ep_mentor_peace"
+ },
+ {
+  "id": 4277,
+  "en": "Fight anyway, and the promise is broken",
+  "ctx": "scene:ep_mentor_peace"
+ },
+ {
+  "id": 4278,
+  "en": "Tell the truth: you will go where your duty takes you",
+  "ctx": "scene:ep_mentor_peace"
+ },
+ {
+  "id": 4279,
+  "en": "Hastinapura, before the war",
+  "ctx": "scene:ep_secret_tell"
+ },
+ {
+  "id": 4280,
+  "en": "A thing known for twenty-seven years",
+  "ctx": "scene:ep_secret_tell"
+ },
+ {
+  "id": 4281,
+  "en": "Who to tell",
+  "ctx": "scene:ep_secret_tell"
+ },
+ {
+  "id": 4282,
+  "en": "You have known since you were seventeen what Karna does not: whose son he is. The war is coming. A secret kept this long starts to feel like a weapon, and weapons want to be used.",
+  "ctx": "scene:ep_secret_tell"
+ },
+ {
+  "id": 4283,
+  "en": "Tell Duryodhana. He should know whom he has made a king",
+  "ctx": "scene:ep_secret_tell"
+ },
+ {
+  "id": 4284,
+  "en": "Duryodhana would need to listen to you.",
+  "ctx": "scene:ep_secret_tell"
+ },
+ {
+  "id": 4285,
+  "en": "You told Duryodhana what I was before you told me.",
+  "ctx": "scene:ep_secret_tell"
+ },
+ {
+  "id": 4286,
+  "en": "Duryodhana is silent for a long time. \"It changes nothing,\" he says at last. \"He is my friend.\" But he looks at Karna differently after that, and Karna, who notices everything, notices.",
+  "ctx": "scene:ep_secret_tell"
+ },
+ {
+  "id": 4287,
+  "en": "Tell Yudhishthira. He would not fight his own brother",
+  "ctx": "scene:ep_secret_tell"
+ },
+ {
+  "id": 4288,
+  "en": "Yudhishthira would need to know you.",
+  "ctx": "scene:ep_secret_tell"
+ },
+ {
+  "id": 4289,
+  "en": "Yudhishthira weeps, and then asks you to tell no one else, and then goes to Krishna, who already knows, and who tells him what Kunti herself will tell Karna at the river. Nothing changes. Everything in Yudhishthira's face has.",
+  "ctx": "scene:ep_secret_tell"
+ },
+ {
+  "id": 4290,
+  "en": "Go to Kunti, and tell her you know",
+  "ctx": "scene:ep_secret_tell"
+ },
+ {
+  "id": 4291,
+  "en": "Kunti does not ask how you know. \"Then you know what I am going to the river to do,\" she says. \"Pray that I am braver than I was.\"",
+  "ctx": "scene:ep_secret_tell"
+ },
+ {
+  "id": 4292,
+  "en": "Keep it. It was never yours",
+  "ctx": "scene:ep_secret_tell"
+ },
+ {
+  "id": 4293,
+  "en": "You keep it, as you have for twenty-seven years. Karna will hear it from the two people who should tell him.",
+  "ctx": "scene:ep_secret_tell"
+ },
+ {
+  "id": 4294,
+  "en": "Before the war",
+  "ctx": "scene:ep_ugra_rise"
+ },
+ {
+  "id": 4295,
+  "en": "A letter in a miller's hand",
+  "ctx": "scene:ep_ugra_rise"
+ },
+ {
+  "id": 4296,
+  "en": "Ugra's letter",
+  "ctx": "scene:ep_ugra_rise"
+ },
+ {
+  "id": 4297,
+  "en": "A letter comes, written in a large careful hand that learned late. Ugra, the miller's son, is a captain of levies now. He does not say whose. He says the pay is good, and that he thinks of the fair more than a grown man should, and that if the war comes he hopes to be on the same side as you, and that if he is not, he will not look for you in the press.",
+  "ctx": "scene:ep_ugra_rise"
+ },
+ {
+  "id": 4298,
+  "en": "Write back",
+  "ctx": "scene:ep_ugra_rise"
+ },
+ {
+  "id": 4299,
+  "en": "You write back about the fair. You do not mention the war. He will have understood.",
+  "ctx": "scene:ep_ugra_rise"
+ },
+ {
+  "id": 4300,
+  "en": "Burn it. There is a war coming",
+  "ctx": "scene:ep_ugra_rise"
+ },
+ {
+  "id": 4301,
+  "en": "You burn it, and remember every word anyway.",
+  "ctx": "scene:ep_ugra_rise"
+ },
+ {
+  "id": 4302,
+  "en": "Two spears in one house",
+  "ctx": "scene:ep_sibling_side"
+ },
+ {
+  "id": 4303,
+  "en": "The other side of the house",
+  "ctx": "scene:ep_sibling_side"
+ },
+ {
+  "id": 4304,
+  "en": "Promise to look the other way",
+  "ctx": "scene:ep_sibling_side"
+ },
+ {
+  "id": 4305,
+  "en": "Argue, all night, to change your sibling's side",
+  "ctx": "scene:ep_sibling_side"
+ },
+ {
+  "id": 4306,
+  "en": "At dawn {who} puts the other side's colours in the fire. \"If we die, we die together, then,\" {who} says. \"Our mother will be furious.\"",
+  "ctx": "scene:ep_sibling_side"
+ },
+ {
+  "id": 4307,
+  "en": "{who} leaves before dawn without saying goodbye. You tell yourself there will be time afterwards.",
+  "ctx": "scene:ep_sibling_side"
+ },
+ {
+  "id": 4308,
+  "en": "Say nothing. There is nothing to say",
+  "ctx": "scene:ep_sibling_side"
+ },
+ {
+  "id": 4309,
+  "en": "You sit up together until the lamp goes out. In the morning you leave by different gates.",
+  "ctx": "scene:ep_sibling_side"
+ },
+ {
+  "id": 4310,
+  "en": "The sky goes black at noon",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4311,
+  "en": "The storm",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4312,
+  "en": "In the fourth year of the exile the rains come early and all at once. The camp is in a ravine, and the children are furthest from the rock shelter.",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4313,
+  "en": "Run for the rock shelter before the flood comes down the ravine",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4314,
+  "en": "A run through the storm",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4315,
+  "en": "Distance: {d}% · Falls: {h} of {l}",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4316,
+  "en": "A branch takes you off your feet.",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4317,
+  "en": "Step aside from the branches and the water: up and down, or the buttons.",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4318,
+  "en": "Step left and right around what the storm throws down.",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4319,
+  "en": "The sky goes black at noon and the ravine fills. Run for the rock shelter: round the falling branches and the water coming down the gullies. Three falls and the flood has you.",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4320,
+  "en": "You reach the shelter with the camp's children, and the storm passes over you.",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4321,
+  "en": "The flood takes your pack, and you limp in after dark.",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4322,
+  "en": "In the exile years you ran the camp's children to shelter through a forest storm.",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4323,
+  "en": "You are under the rock with the last child when the ravine goes white. Nobody is lost.",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4324,
+  "en": "The third branch takes you down and the water takes your pack, herbs and all. You crawl in after dark with a knee that will never be right.",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4325,
+  "en": "Climb a tree with whoever is nearest and wait it out",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4326,
+  "en": "You spend the night in the branches with two children clinging to you. In the morning the camp is a riverbed. Three people are missing, and found.",
+  "ctx": "scene:ep_storm"
+ },
+ {
+  "id": 4327,
+  "en": "Charu, face down at the water's edge",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4328,
+  "en": "Charu drinks",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4329,
+  "en": "While you stand with your wrong answer in your mouth, Charu, who came behind you and heard no voice at all, kneels and drinks. Charu falls face down at the water's edge and does not move.",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4330,
+  "en": "\"One of you drank without answering,\" says the voice.",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4331,
+  "en": "Answer for Charu",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4332,
+  "en": "\"What is the one companion who follows a person past death?\"",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4333,
+  "en": "\"What they did.\"",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4334,
+  "en": "\"Their name.\"",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4335,
+  "en": "\"Their eldest son.\"",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4336,
+  "en": "\"That the living see the dead every day, and think they will not die.\"",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4337,
+  "en": "\"That the sun rises.\"",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4338,
+  "en": "\"That a king can be beaten at dice.\"",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4339,
+  "en": "\"By what is a person made a brahmin: birth, learning, or conduct?\"",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4340,
+  "en": "\"One of you drank without answering,\" says the voice. \"Answer for both, and both of you may drink.\" Two right answers of three.",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4341,
+  "en": "Charu sits up on the bank, coughing, and asks what you are staring at.",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4342,
+  "en": "The voice falls silent. Charu does not move again.",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4343,
+  "en": "I drank first at the lake. You answered for me.",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4344,
+  "en": "At the lake in the forest Charu drank first and fell. You answered the voice for both of you.",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4345,
+  "en": "\"Drink,\" says the voice. Charu sits up on the bank, coughing up lake water, and asks what you are staring at.",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4346,
+  "en": "At the lake in the forest Charu drank first and fell, and your answers could not bring Charu back.",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4347,
+  "en": "Your last answer is wrong, and the voice is gone. The lake is only a lake. Charu does not move again.",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4348,
+  "en": "Drag Charu away from the water and run for the camp",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4349,
+  "en": "At the lake in the forest Charu drank first and fell, and you could not carry Charu back to the camp in time.",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4350,
+  "en": "You get Charu halfway to the camp. It is not far enough.",
+  "ctx": "scene:ep_lake_charu"
+ },
+ {
+  "id": 4351,
+  "en": "The steward asks questions",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4352,
+  "en": "Your false name",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4353,
+  "en": "In Virata's household you are someone else: a groom, a cook's helper, a hanger-on of the new dancing teacher. The steward has begun to count the new faces, and to ask.",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4354,
+  "en": "Answer the steward's questions without a flicker",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4355,
+  "en": "\"You hold that bow like a soldier, not a groom. Where did a groom learn that?\"",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4356,
+  "en": "\"Horses kick, my lord. One learns to hold things firmly.\"",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4357,
+  "en": "\"I was a soldier once.\"",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4358,
+  "en": "\"I hold it as I was taught.\"",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4359,
+  "en": "\"The queen's maid says you speak like someone raised in a palace.\"",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4360,
+  "en": "\"The queen's maid is kind. My mother beat good speech into me with a ladle.\"",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4361,
+  "en": "\"I was raised in a palace.\"",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4362,
+  "en": "\"The queen's maid should mind her own business.\"",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4363,
+  "en": "\"Tell me the name of the village you came from, and your father's name, quickly.\"",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4364,
+  "en": "\"Kundapur, on the river, my lord, and my father was Haridas who kept the ferry.\"",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4365,
+  "en": "\"I would rather not say.\"",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4366,
+  "en": "\"My father was a charioteer of Hastinapura.\"",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4367,
+  "en": "Virata's steward has started asking questions about the new people in the household. Answer each one before the lamp burns down, and never say anything true. Two of three.",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4368,
+  "en": "The steward loses interest, and your name stays yours.",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4369,
+  "en": "The steward keeps looking at you, and sends to Hastinapura to ask.",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4370,
+  "en": "The steward grunts and goes to bother the cooks. Nobody asks again.",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4371,
+  "en": "The steward says nothing more, which is worse. A rider leaves for Hastinapura that evening.",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4372,
+  "en": "Leave the household before he asks you anything",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4373,
+  "en": "You take work in the town instead, and hear the rest of the year as rumour.",
+  "ctx": "scene:ep_false_name"
+ },
+ {
+  "id": 4374,
+  "en": "The dancing hall, Matsya",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4375,
+  "en": "The night Bhima waited in the dark",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4376,
+  "en": "The dancing hall",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4377,
+  "en": "Kichaka, the queen's brother and the kingdom's commander, will not leave the queen's maid alone. The maid is Draupadi. Bhima tells her to send Kichaka to the dancing hall at midnight, and goes in her place.",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4378,
+  "en": "Draupadi must be somewhere else when it happens, seen by people who will swear to it. Bhima asks you to see to it.",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4379,
+  "en": "Cross the dancing hall in the dark and get her out before he comes",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4380,
+  "en": "Hold to move along the pillars. Stop when Kichaka's lamp turns your way.",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4381,
+  "en": "Crossed: {d} of {n} · Seen: {s} of {m} · {t} seconds",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4382,
+  "en": "Across. Now back, with her.",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4383,
+  "en": "The lamp swings toward you. You press into a pillar.",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4384,
+  "en": "Kichaka has told the queen's maid to come to the dancing hall tonight. Bhima is going in her place, and the maid must be somewhere else, seen by no one. Cross the hall to her and back along the pillars while Kichaka's lamp sweeps the floor.",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4385,
+  "en": "She is in the kitchens, among the women, when the screaming starts.",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4386,
+  "en": "Kichaka's lamp finds you, and you have to run before you reach her.",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4387,
+  "en": "In the hidden year you got Draupadi out of Kichaka's way the night Bhima was waiting for him.",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4388,
+  "en": "She is sitting among the kitchen women with her head covered when the screaming starts in the dancing hall. She does not look up. Her hands are perfectly still.",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4389,
+  "en": "The lamp finds you, and you run. Bhima does the rest alone, as he would have anyway. In the morning he looks at you and says nothing.",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4390,
+  "en": "Stay out of it. It is a family matter",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4391,
+  "en": "Bhima does it alone, as he would have anyway. In the morning there is a thing in the dancing hall that used to be a man.",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4392,
+  "en": "Bhima kills Kichaka in the dark, and leaves what is left for the court to find. The dancers say a Gandharva did it. Nobody believes the dancers, and nobody says so.",
+  "ctx": "scene:ep_kichaka"
+ },
+ {
+  "id": 4393,
+  "en": "Kurukshetra · the tenth day",
+  "ctx": "scene:ep_shikhandi"
+ },
+ {
+  "id": 4394,
+  "en": "Shikhandi at the front of the chariot",
+  "ctx": "scene:ep_shikhandi"
+ },
+ {
+  "id": 4395,
+  "en": "In front of Shikhandi",
+  "ctx": "scene:ep_shikhandi"
+ },
+ {
+  "id": 4396,
+  "en": "On the tenth morning the word goes down the line: Shikhandi will ride at the front of Arjuna's chariot, and the grandsire will not loose at one who was born a woman. Someone must ride in front of Shikhandi, to take the arrows of the men around Bhishma who have no such scruple.",
+  "ctx": "scene:ep_shikhandi"
+ },
+ {
+  "id": 4397,
+  "en": "Ride in front of Shikhandi",
+  "ctx": "scene:ep_shikhandi"
+ },
+ {
+  "id": 4398,
+  "en": "Refuse. There is no honour in this",
+  "ctx": "scene:ep_shikhandi"
+ },
+ {
+  "id": 4399,
+  "en": "Someone else rides. You watch the grandsire fall from the back of the line, and are not sure which of you was right.",
+  "ctx": "scene:ep_shikhandi"
+ },
+ {
+  "id": 4400,
+  "en": "The grandsire's arrows",
+  "ctx": "fight:e_ep_bhishma"
+ },
+ {
+  "id": 4401,
+  "en": "Shikhandi's chariot draws level with the grandsire's, and Bhishma lowers his bow.",
+  "ctx": "fight:e_ep_bhishma"
+ },
+ {
+  "id": 4402,
+  "en": "Bhishma will not loose at Shikhandi. The men around him have no such scruple, and every one of them is looking at you.",
+  "ctx": "fight:e_ep_bhishma"
+ },
+ {
+  "id": 4403,
+  "en": "Kaurava chariot-guard",
+  "ctx": "fight:e_ep_bhishma"
+ },
+ {
+  "id": 4404,
+  "en": "Bhishma's archers",
+  "ctx": "fight:e_ep_bhishma"
+ },
+ {
+  "id": 4405,
+  "en": "The grandsire's arrows come like rain, and none of them is aimed at you. His guard's are.",
+  "ctx": "fight:e_ep_bhishma"
+ },
+ {
+  "id": 4406,
+  "en": "On the tenth day you rode in front of Shikhandi, and took the arrows meant for him until the grandsire lowered his bow.",
+  "ctx": "fight:e_ep_bhishma"
+ },
+ {
+  "id": 4407,
+  "en": "Shikhandi's chariot draws level with Bhishma's. The old man looks at Shikhandi, and lowers his bow, and Arjuna's arrows begin.",
+  "ctx": "fight:e_ep_bhishma"
+ },
+ {
+  "id": 4408,
+  "en": "{They} rode in front of Shikhandi on the tenth day, and the grandsire's guard did what the grandsire would not.",
+  "ctx": "fight:e_ep_bhishma"
+ },
+ {
+  "id": 4409,
+  "en": "Your tent, after the tenth day",
+  "ctx": "scene:ep_letter_1"
+ },
+ {
+  "id": 4410,
+  "en": "A letter carried under a truce flag",
+  "ctx": "scene:ep_letter_1"
+ },
+ {
+  "id": 4411,
+  "en": "A letter from across the field",
+  "ctx": "scene:ep_letter_1"
+ },
+ {
+  "id": 4412,
+  "en": "Write back, and keep the letter",
+  "ctx": "scene:ep_letter_1"
+ },
+ {
+  "id": 4413,
+  "en": "You write three lines and send the boy back with them. The letter you fold small and keep against your skin.",
+  "ctx": "scene:ep_letter_1"
+ },
+ {
+  "id": 4414,
+  "en": "Send the boy back with nothing",
+  "ctx": "scene:ep_letter_1"
+ },
+ {
+  "id": 4415,
+  "en": "The boy waits a long time before he understands, and goes.",
+  "ctx": "scene:ep_letter_1"
+ },
+ {
+  "id": 4416,
+  "en": "Burn it unread. You cannot afford it",
+  "ctx": "scene:ep_letter_1"
+ },
+ {
+  "id": 4417,
+  "en": "You put it in the lamp without opening it. You tell yourself it was the right thing. You do not sleep.",
+  "ctx": "scene:ep_letter_1"
+ },
+ {
+  "id": 4418,
+  "en": "Behind the enemy lines, the night of the twelfth day",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4419,
+  "en": "Grain carts under the watch-fires",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4420,
+  "en": "The supply carts",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4421,
+  "en": "The night after the twelfth day a captain asks for someone who can move quietly. The enemy's grain and fodder stand in carts behind their lines, and hungry horses pull badly.",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4422,
+  "en": "Go in through the horse lines and cut the carts loose",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4423,
+  "en": "Hold to move between the carts. Stop when the sentry's torch turns.",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4424,
+  "en": "Carts reached: {d} of {n} · Seen: {s} of {m} · {t} seconds",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4425,
+  "en": "The ropes are cut. Back to the dark.",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4426,
+  "en": "The sentry turns. You drop behind a wheel.",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4427,
+  "en": "The enemy's grain and fodder carts stand in a camp behind their lines. A sentry walks the far side with a torch. Reach the carts twice: once to cut the horse lines, once to fire the fodder.",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4428,
+  "en": "The fodder burns, and tomorrow the enemy's horses are hungry.",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4429,
+  "en": "The sentry raises the alarm, and you fight your way out.",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4430,
+  "en": "One night in the war you crept into the enemy's supply camp and burned their fodder.",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4431,
+  "en": "The fodder goes up with a sound like wind. You are back in the horse lines before the first shout.",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4432,
+  "en": "The sentry turns too soon, and the camp wakes around you.",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4433,
+  "en": "Say no. You fight by daylight",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4434,
+  "en": "Someone else goes. Someone else does not come back.",
+  "ctx": "scene:ep_carts"
+ },
+ {
+  "id": 4435,
+  "en": "The enemy's supply camp",
+  "ctx": "scene:ep_carts_fight"
+ },
+ {
+  "id": 4436,
+  "en": "The camp wakes",
+  "ctx": "scene:ep_carts_fight"
+ },
+ {
+  "id": 4437,
+  "en": "Out of the camp",
+  "ctx": "scene:ep_carts_fight"
+ },
+ {
+  "id": 4438,
+  "en": "Torches, shouting, men coming out of tents with whatever is nearest to hand. The horse lines are behind you.",
+  "ctx": "scene:ep_carts_fight"
+ },
+ {
+  "id": 4439,
+  "en": "Fight your way out",
+  "ctx": "scene:ep_carts_fight"
+ },
+ {
+  "id": 4440,
+  "en": "Out of the supply camp",
+  "ctx": "fight:e_ep_carts"
+ },
+ {
+  "id": 4441,
+  "en": "Torches in the horse lines",
+  "ctx": "fight:e_ep_carts"
+ },
+ {
+  "id": 4442,
+  "en": "Camp sentry",
+  "ctx": "fight:e_ep_carts"
+ },
+ {
+  "id": 4443,
+  "en": "Half-dressed spearman",
+  "ctx": "fight:e_ep_carts"
+ },
+ {
+  "id": 4444,
+  "en": "You go over the horse lines and into the dark.",
+  "ctx": "fight:e_ep_carts"
+ },
+ {
+  "id": 4445,
+  "en": "You leave the last of them in the mud and go over the horse lines.",
+  "ctx": "fight:e_ep_carts"
+ },
+ {
+  "id": 4446,
+  "en": "You are out and running before the rest of the camp finds its boots.",
+  "ctx": "fight:e_ep_carts"
+ },
+ {
+  "id": 4447,
+  "en": "They take you, and trade you back at the next truce, with your hands tied in front of you and nothing to show for the night.",
+  "ctx": "fight:e_ep_carts"
+ },
+ {
+  "id": 4448,
+  "en": "The river between the camps, the night of the thirteenth day",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4449,
+  "en": "A packet, sealed with the wrong seal",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4450,
+  "en": "False orders",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4451,
+  "en": "After the wheel closed, a captain of your own side puts a sealed packet in your hands: orders in the enemy's own cipher, with the enemy's own seal, telling their left division to be somewhere it should not be at dawn. \"Someone they trust has to carry it,\" he says. \"You have a face no one has seen.\"",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4452,
+  "en": "Swim the river with the packet in your teeth",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4453,
+  "en": "Swim",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4454,
+  "en": "Hold to swim. Stop and go under when the watch-fire's light reaches the water.",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4455,
+  "en": "Across: {d} of {n} · Seen: {s} of {m} · {t} seconds",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4456,
+  "en": "The far bank.",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4457,
+  "en": "A sentry shouts. You go under and let the current take you.",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4458,
+  "en": "Between the camps the river runs black under the watch-fires. Swim it with the packet dry and come up under the enemy's bank unseen.",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4459,
+  "en": "You come up under their bank with the packet dry.",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4460,
+  "en": "A sentry sees the water move, and the night goes wrong.",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4461,
+  "en": "You come up under the enemy's bank with the packet dry, and lie in the reeds until your breath is quiet.",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4462,
+  "en": "An arrow finds your shoulder in the water. You deliver the packet bleeding, and swim back the long way.",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4463,
+  "en": "On the night of the thirteenth day you carried false orders across the river, and in the morning the enemy's line was in the wrong place.",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4464,
+  "en": "Burn the packet, and tell the captain the river was watched",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4465,
+  "en": "You would not carry a lie across the river, even in a war.",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4466,
+  "en": "You burn it in the lamp and tell the captain the river was watched. He looks at you for a long moment and does not call you a liar. In the morning the line goes in honestly, and knows it.",
+  "ctx": "scene:ep_orders"
+ },
+ {
+  "id": 4467,
+  "en": "The river at dusk, after the fifteenth day",
+  "ctx": "scene:ep_truce"
+ },
+ {
+  "id": 4468,
+  "en": "Soldiers of both sides at the water",
+  "ctx": "scene:ep_truce"
+ },
+ {
+  "id": 4469,
+  "en": "The truce at dusk",
+  "ctx": "scene:ep_truce"
+ },
+ {
+  "id": 4470,
+  "en": "Wade across and speak",
+  "ctx": "scene:ep_truce"
+ },
+ {
+  "id": 4471,
+  "en": "You talk about nothing: the water, the mosquitoes, a horse. Neither of you mentions tomorrow. When the horns sound you wade back without looking round.",
+  "ctx": "scene:ep_truce"
+ },
+ {
+  "id": 4472,
+  "en": "Raise a hand, and no more",
+  "ctx": "scene:ep_truce"
+ },
+ {
+  "id": 4473,
+  "en": "A hand raised, a hand raised back. It will have to do.",
+  "ctx": "scene:ep_truce"
+ },
+ {
+  "id": 4474,
+  "en": "Turn away before you are seen",
+  "ctx": "scene:ep_truce"
+ },
+ {
+  "id": 4475,
+  "en": "You fill your skin upstream and do not look back.",
+  "ctx": "scene:ep_truce"
+ },
+ {
+  "id": 4476,
+  "en": "Your tent, the night before the seventeenth day",
+  "ctx": "scene:ep_letter_2"
+ },
+ {
+  "id": 4477,
+  "en": "A second letter, shorter",
+  "ctx": "scene:ep_letter_2"
+ },
+ {
+  "id": 4478,
+  "en": "The second letter",
+  "ctx": "scene:ep_letter_2"
+ },
+ {
+  "id": 4479,
+  "en": "Write back the same",
+  "ctx": "scene:ep_letter_2"
+ },
+ {
+  "id": 4480,
+  "en": "Three words. The boy runs.",
+  "ctx": "scene:ep_letter_2"
+ },
+ {
+  "id": 4481,
+  "en": "Keep it, and send nothing. Words are used up",
+  "ctx": "scene:ep_letter_2"
+ },
+ {
+  "id": 4482,
+  "en": "You fold it into the first one.",
+  "ctx": "scene:ep_letter_2"
+ },
+ {
+  "id": 4483,
+  "en": "Kurukshetra · the seventeenth day",
+  "ctx": "scene:ep_sibling_field"
+ },
+ {
+  "id": 4484,
+  "en": "A face you know, across a spear's length",
+  "ctx": "scene:ep_sibling_field"
+ },
+ {
+  "id": 4485,
+  "en": "Across a spear's length",
+  "ctx": "scene:ep_sibling_field"
+ },
+ {
+  "id": 4486,
+  "en": "Lower your weapon and turn your chariot away",
+  "ctx": "scene:ep_sibling_field"
+ },
+ {
+  "id": 4487,
+  "en": "Strike first. This is war",
+  "ctx": "scene:ep_sibling_field"
+ },
+ {
+  "id": 4488,
+  "en": "Shout to your driver to turn, and do not look",
+  "ctx": "scene:ep_sibling_field"
+ },
+ {
+  "id": 4489,
+  "en": "The miller's son, with a captain's spear",
+  "ctx": "scene:ep_ugra_last"
+ },
+ {
+  "id": 4490,
+  "en": "The miller's son, the last time",
+  "ctx": "scene:ep_ugra_last"
+ },
+ {
+  "id": 4491,
+  "en": "On the seventeenth day a captain of levies comes through the smoke with his spear up and stops dead. It is Ugra. He has been looking for you after all.",
+  "ctx": "scene:ep_ugra_last"
+ },
+ {
+  "id": 4492,
+  "en": "Fight him, as you did at the fair",
+  "ctx": "scene:ep_ugra_last"
+ },
+ {
+  "id": 4493,
+  "en": "Lower your weapon and tell him to go home to his mill",
+  "ctx": "scene:ep_ugra_last"
+ },
+ {
+  "id": 4494,
+  "en": "Ugra looks at you for a long time. Then he turns his levies round and walks them off the field, and does not come back. He is the only captain on either side who goes home that day with all his men.",
+  "ctx": "scene:ep_ugra_last"
+ },
+ {
+  "id": 4495,
+  "en": "\"I have a hundred men behind me,\" he says, \"and they have fathers.\" He goes past you into the smoke, and you let him.",
+  "ctx": "scene:ep_ugra_last"
+ },
+ {
+  "id": 4496,
+  "en": "Ugra, the last time",
+  "ctx": "fight:e_ep_ugra"
+ },
+ {
+  "id": 4497,
+  "en": "A captain of levies, and his hundred",
+  "ctx": "fight:e_ep_ugra"
+ },
+ {
+  "id": 4498,
+  "en": "On the seventeenth day you had Ugra, the miller's son, at your mercy, and let him go.",
+  "ctx": "fight:e_ep_ugra"
+ },
+ {
+  "id": 4499,
+  "en": "He is on his knees in the mud. \"Go home to your mill,\" you say. He looks at you a long time, and goes.",
+  "ctx": "fight:e_ep_ugra"
+ },
+ {
+  "id": 4500,
+  "en": "Ugra's levies",
+  "ctx": "fight:e_ep_ugra"
+ },
+ {
+  "id": 4501,
+  "en": "Ugra comes on the way he did at the fair, head down, and his levies behind him.",
+  "ctx": "fight:e_ep_ugra"
+ },
+ {
+  "id": 4502,
+  "en": "On the seventeenth day you fought Ugra, the miller's son, and he did not get up.",
+  "ctx": "fight:e_ep_ugra"
+ },
+ {
+  "id": 4503,
+  "en": "He goes down the way he never did at the fair, and this time he does not laugh, and does not get up.",
+  "ctx": "fight:e_ep_ugra"
+ },
+ {
+  "id": 4504,
+  "en": "{They} fell on the seventeenth day to Ugra, the miller's son, whom {they} first fought at a spring fair.",
+  "ctx": "fight:e_ep_ugra"
+ },
+ {
+  "id": 4505,
+  "en": "Hastinapura, the ruined quarter",
+  "ctx": "scene:ep_rebuild"
+ },
+ {
+  "id": 4506,
+  "en": "A quarter of the city, roofless",
+  "ctx": "scene:ep_rebuild"
+ },
+ {
+  "id": 4507,
+  "en": "The ruined quarter",
+  "ctx": "scene:ep_rebuild"
+ },
+ {
+  "id": 4508,
+  "en": "The quarter below the walls burned in the last week of the war, when nobody was left to put it out. The new king has no men to spare. The people who lived there are living in it anyway.",
+  "ctx": "scene:ep_rebuild"
+ },
+ {
+  "id": 4509,
+  "en": "Work on the roofs yourself, every day, until they are done",
+  "ctx": "scene:ep_rebuild"
+ },
+ {
+  "id": 4510,
+  "en": "After the war you rebuilt the roofs of the burned quarter with your own hands.",
+  "ctx": "scene:ep_rebuild"
+ },
+ {
+  "id": 4511,
+  "en": "By the rains the quarter has roofs. People call the lane you worked on by your name, and will for a generation, long after they have forgotten why.",
+  "ctx": "scene:ep_rebuild"
+ },
+ {
+  "id": 4512,
+  "en": "Organise it: find the timber, set the carpenters, argue with the treasury",
+  "ctx": "scene:ep_rebuild"
+ },
+ {
+  "id": 4513,
+  "en": "It takes a season of arguing and the quarter is rebuilt before the rains. Nobody thanks you, which is how you know it was done properly.",
+  "ctx": "scene:ep_rebuild"
+ },
+ {
+  "id": 4514,
+  "en": "The treasury has no timber, the carpenters have gone home to their own ruined villages, and the rains come first.",
+  "ctx": "scene:ep_rebuild"
+ },
+ {
+  "id": 4515,
+  "en": "It is not your city. Go home",
+  "ctx": "scene:ep_rebuild"
+ },
+ {
+  "id": 4516,
+  "en": "The river, below Hastinapura",
+  "ctx": "scene:ep_rite"
+ },
+ {
+  "id": 4517,
+  "en": "Lamps on the water for the dead",
+  "ctx": "scene:ep_rite"
+ },
+ {
+  "id": 4518,
+  "en": "The rite for the dead",
+  "ctx": "scene:ep_rite"
+ },
+ {
+  "id": 4519,
+  "en": "Send a lamp for your dead, and one for whoever killed them",
+  "ctx": "scene:ep_rite"
+ },
+ {
+  "id": 4520,
+  "en": "Two lamps. The second is harder to let go of than the first. It goes out around the bend, like the other one.",
+  "ctx": "scene:ep_rite"
+ },
+ {
+  "id": 4521,
+  "en": "Send lamps for your own, and no one else's",
+  "ctx": "scene:ep_rite"
+ },
+ {
+  "id": 4522,
+  "en": "You send them out one by one, saying each name. The river takes them.",
+  "ctx": "scene:ep_rite"
+ },
+ {
+  "id": 4523,
+  "en": "Stay on the bank. You have nothing to say to the river",
+  "ctx": "scene:ep_rite"
+ },
+ {
+  "id": 4524,
+  "en": "You watch the lamps go. Someone else lights one for yours.",
+  "ctx": "scene:ep_rite"
+ },
+ {
+  "id": 4525,
+  "en": "A child with a stick, waiting at your door",
+  "ctx": "scene:ep_student"
+ },
+ {
+  "id": 4526,
+  "en": "A student of your own",
+  "ctx": "scene:ep_student"
+ },
+ {
+  "id": 4527,
+  "en": "A child from the lane has been waiting at your door every morning for a week, with a stick for a spear, the way you once followed the soldiers. There is no one else left to teach.",
+  "ctx": "scene:ep_student"
+ },
+ {
+  "id": 4528,
+  "en": "The road to the forest",
+  "ctx": "scene:ep_pilgrimage"
+ },
+ {
+  "id": 4529,
+  "en": "Three old people on the road, and you",
+  "ctx": "scene:ep_pilgrimage"
+ },
+ {
+  "id": 4530,
+  "en": "The pilgrimage",
+  "ctx": "scene:ep_pilgrimage"
+ },
+ {
+  "id": 4531,
+  "en": "Before they leave the city for the last time, the old king, the queen and Kunti go on foot to the holy places along the river. They ask for someone to walk with them who is not their son.",
+  "ctx": "scene:ep_pilgrimage"
+ },
+ {
+  "id": 4532,
+  "en": "Walk with them the whole way",
+  "ctx": "scene:ep_pilgrimage"
+ },
+ {
+  "id": 4533,
+  "en": "After the war you walked the holy places with Dhritarashtra, Gandhari and Kunti.",
+  "ctx": "scene:ep_pilgrimage"
+ },
+ {
+  "id": 4534,
+  "en": "Dhritarashtra asks you every evening how many of his sons you killed. Gandhari asks you nothing at all. Kunti, on the last night, asks whether you ever met Karna, and you tell her the truth, and she holds your hand until the fire goes out.",
+  "ctx": "scene:ep_pilgrimage"
+ },
+ {
+  "id": 4535,
+  "en": "Walk the first day, and turn back",
+  "ctx": "scene:ep_pilgrimage"
+ },
+ {
+  "id": 4536,
+  "en": "At the first shrine you turn back. Kunti raises a hand. You think she understands.",
+  "ctx": "scene:ep_pilgrimage"
+ },
+ {
+  "id": 4537,
+  "en": "Let them go without you",
+  "ctx": "scene:ep_pilgrimage"
+ },
+ {
+  "id": 4538,
+  "en": "A few small things on a cloth",
+  "ctx": "scene:ep_keepsakes"
+ },
+ {
+  "id": 4539,
+  "en": "What you kept",
+  "ctx": "scene:ep_keepsakes"
+ },
+ {
+  "id": 4540,
+  "en": "A courtyard in Hastinapura",
+  "ctx": "scene:ep_bard"
+ },
+ {
+  "id": 4541,
+  "en": "A bard sings the war, and gets it wrong",
+  "ctx": "scene:ep_bard"
+ },
+ {
+  "id": 4542,
+  "en": "What the bards sing",
+  "ctx": "scene:ep_bard"
+ },
+ {
+  "id": 4543,
+  "en": "Correct him, there in front of everyone",
+  "ctx": "scene:ep_bard"
+ },
+ {
+  "id": 4544,
+  "en": "You tell him what happened. He listens, nods, and sings it again, right this time, and the right version is the one that travels.",
+  "ctx": "scene:ep_bard"
+ },
+ {
+  "id": 4545,
+  "en": "You tell him what happened. He thanks you kindly and sings it the old way the next night, because it rhymes better.",
+  "ctx": "scene:ep_bard"
+ },
+ {
+  "id": 4546,
+  "en": "Lore helps",
+  "ctx": "scene:ep_bard"
+ },
+ {
+  "id": 4547,
+  "en": "Let it stand. Songs are not the truth",
+  "ctx": "scene:ep_bard"
+ },
+ {
+  "id": 4548,
+  "en": "You put a coin in his bowl and walk on. The wrong version travels, and in a hundred years it will be the only one.",
+  "ctx": "scene:ep_bard"
+ },
+ {
+  "id": 4549,
+  "en": "Spiritual merit: earned by vows kept through an act, penance and hard right choices; spent on the mantras and rites of the sages.",
+  "ctx": "play:a3_debt"
+ },
+ {
+  "id": 4550,
+  "en": "You are in the house when it goes up, between the sleeping rooms and the storeroom where the tunnel mouth is.",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 4551,
+  "en": "Get to the tunnel",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 4552,
+  "en": "You drop into the tunnel mouth as the storeroom roof comes down behind you. The dark smells of earth, and of nothing burning.",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 4553,
+  "en": "Let {kin} tie the raksha sutra on your wrist",
+  "ctx": "play:w_eve"
+ },
+ {
+  "id": 4554,
+  "en": "Go to {teacher} for a blessing",
+  "ctx": "play:w_eve"
+ },
+ {
+  "id": 4555,
+  "en": "{They} told Yudhishthira in plain words what the house of lac was for.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4556,
+  "en": "{They} {were} inside the house of lac when it burned, and got out through the tunnel.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4557,
+  "en": "The night Bhima waited in the dancing hall, {they} saw to it that Draupadi was somewhere else, and seen.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4558,
+  "en": "You got out of the burning house at Varnavata through the tunnel.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4559,
+  "en": "The morning before the tournament, the grounds are full of levies from the villages come to carry water and hold horses. One of them is a head taller than the rest and has a miller's shoulders.",
+  "ctx": "play:ep_ugra_tournament"
+ },
+ {
+  "id": 4560,
+  "en": "You. You ran from my ring. Do you still run?",
+  "ctx": "play:ep_ugra_tournament"
+ },
+ {
+  "id": 4561,
+  "en": "Shouting wakes you. From the lane you can see the roof of the new house burning, and the heat of it on your face.",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 4562,
+  "en": "Run into the house to get people out",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 4563,
+  "en": "Let {spouse} tie the raksha sutra on your wrist",
+  "ctx": "play:w_eve"
+ },
+ {
+  "id": 4564,
+  "en": "A boy under a truce flag brings a letter from {who}, across the field.",
+  "ctx": "play:ep_letter_1"
+ },
+ {
+  "id": 4565,
+  "en": "I said I would not look for you in the press. I am looking anyway. Stay alive, you stubborn fool.",
+  "ctx": "play:ep_letter_1"
+ },
+ {
+  "id": 4566,
+  "en": "Every evening after the horns there is an hour at the river when both sides go down for water and the dead, and nobody draws.",
+  "ctx": "play:ep_truce"
+ },
+ {
+  "id": 4567,
+  "en": "Across the water, filling a skin, is {who}.",
+  "ctx": "play:ep_truce"
+ },
+ {
+  "id": 4568,
+  "en": "Your student's first test",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4569,
+  "en": "Set your student the test you were set",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4570,
+  "en": "Send the child away. You have taught enough people to die",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4571,
+  "en": "The child comes back the next morning anyway. You close the door. The morning after, the stick is leaning against it, and the child is gone.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4572,
+  "en": "On the last night of the war you took the mantra of the Brahmastra. You never spoke it. It spoke in you.",
+  "ctx": "play:ep_pilgrimage"
+ },
+ {
+  "id": 4573,
+  "en": "Kesava's hammer",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4574,
+  "en": "You lay out on a cloth the few small things you kept through all of it.",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4575,
+  "en": "On the cloth: {list}.",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4576,
+  "en": "Hang Kesava's hammer over your own door",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4577,
+  "en": "Wrap them up again. They are yours",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4578,
+  "en": "In a courtyard a bard is singing the war to anyone who will listen. He has a fine voice and he has your name in it, and he has one thing wrong.",
+  "ctx": "play:ep_bard"
+ },
+ {
+  "id": 4579,
+  "en": "The bard",
+  "ctx": "play:ep_bard"
+ },
+ {
+  "id": 4580,
+  "en": "...and {name} fled the field on the first day, and was not seen again...",
+  "ctx": "play:ep_bard"
+ },
+ {
+  "id": 4581,
+  "en": "In the forest storm {they} ran the camp's children to the rock shelter.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4582,
+  "en": "{They} walked the holy places with the old king and queen and Kunti.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4583,
+  "en": "They say that {name} fled the field on the first day, and was not seen again.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4584,
+  "en": "You wake beside the sleepers who would not wake, with smoke in your mouth. The far wall is already light.",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 4585,
+  "en": "The mantra of wind: Vayu, who is never seen and never still.",
+  "ctx": "play:w_mountain"
+ },
+ {
+  "id": 4586,
+  "en": "the voice on the mountain",
+  "ctx": "play:w_mountain"
+ },
+ {
+  "id": 4587,
+  "en": "Never to lie about what you saw there.",
+  "ctx": "play:w_mountain"
+ },
+ {
+  "id": 4588,
+  "en": "The {name}",
+  "ctx": "play:w_mountain"
+ },
+ {
+  "id": 4589,
+  "en": "Go to the elders of the camp for a blessing",
+  "ctx": "play:w_eve"
+ },
+ {
+  "id": 4590,
+  "en": "You were granted the {name}.",
+  "ctx": "play:a6_day13"
+ },
+ {
+  "id": 4591,
+  "en": "In the hidden year {they} kept {their} false name under the steward's questions.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4592,
+  "en": "On the tenth day {they} rode in front of Shikhandi and took the arrows meant for him.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4593,
+  "en": "One night in the war {they} crept into the enemy's camp and burned their fodder.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4594,
+  "en": "the hermit of the heights",
+  "ctx": "play:a5_forest_boon"
+ },
+ {
+  "id": 4595,
+  "en": "Never turn your back on a fight you chose.",
+  "ctx": "play:a5_forest_boon"
+ },
+ {
+  "id": 4596,
+  "en": "...and when the forest boy cut off his thumb, {name} laughed with the princes...",
+  "ctx": "play:ep_bard"
+ },
+ {
+  "id": 4597,
+  "en": "When a bard sang it wrong, {they} corrected him, and the right version is the one that travelled.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4598,
+  "en": "You. The one from the fair. I have been practising.",
+  "ctx": "play:ep_ugra_tournament"
+ },
+ {
+  "id": 4599,
+  "en": "The oil lines you cut have slowed it. There is a little more time than Purochana meant there to be.",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 4600,
+  "en": "They do not wake. You are still shaking the youngest when the smoke takes you.",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 4601,
+  "en": "The house at Varnavata, at dawn",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4602,
+  "en": "On the last night at Varnavata {they} went down to the cellar and cut Purochana's oil lines by lamplight.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4603,
+  "en": "{They} would not leave the Nishada woman and her sons in the house of lac, and died beside them.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4604,
+  "en": "The smoke takes your legs before the fire does. The last thing you hear is the roof.",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 4605,
+  "en": "{They} died in the house of lac at Varnavata, on the night everyone believes the Pandavas died.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4606,
+  "en": "At seventeen {they} put the miller's son in the dust before the princes' tournament.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4607,
+  "en": "After the war {they} rebuilt the roofs of the burned quarter.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4608,
+  "en": "The mantra of water: Varuna, who holds the oceans in a cupped hand.",
+  "ctx": "play:w_dive"
+ },
+ {
+  "id": 4609,
+  "en": "the sage of the lake",
+  "ctx": "play:w_dive"
+ },
+ {
+  "id": 4610,
+  "en": "Never lie about where it came from.",
+  "ctx": "play:w_dive"
+ },
+ {
+  "id": 4611,
+  "en": "{who} comes home the night before you leave for the field, in the colours of the other side.",
+  "ctx": "play:ep_sibling_side"
+ },
+ {
+  "id": 4612,
+  "en": "\"I serve who I serve,\" {who} says. \"So do you. If we meet out there, look the other way. I will.\"",
+  "ctx": "play:ep_sibling_side"
+ },
+ {
+  "id": 4613,
+  "en": "Company leader",
+  "ctx": "play:a6_eve"
+ },
+ {
+  "id": 4614,
+  "en": "Mother sends word that she is not speaking to either of us. Look the other way. I am.",
+  "ctx": "play:ep_letter_1"
+ },
+ {
+  "id": 4615,
+  "en": "Across the field the enemy's line is in the wrong place. Someone read your orders.",
+  "ctx": "play:a6_day14"
+ },
+ {
+  "id": 4616,
+  "en": "The same boy, thinner. A second letter from {who}, shorter than the first.",
+  "ctx": "play:ep_letter_2"
+ },
+ {
+  "id": 4617,
+  "en": "Tomorrow is the day. Whatever happens, I was glad of you.",
+  "ctx": "play:ep_letter_2"
+ },
+ {
+  "id": 4618,
+  "en": "In the press of the seventeenth day a chariot comes broadside to yours, and the one on it is {who}.",
+  "ctx": "play:ep_sibling_field"
+ },
+ {
+  "id": 4619,
+  "en": "{who} lowers the spear a heartbeat after you do. The press carries you apart. You will both deny it afterwards.",
+  "ctx": "play:ep_sibling_field"
+ },
+ {
+  "id": 4620,
+  "en": "On the seventeenth day you turned your chariot away from mine.",
+  "ctx": "play:ep_sibling_field"
+ },
+ {
+  "id": 4621,
+  "en": "Your student asks the questions every student asks. Answer each before the lamp burns down. Two of three.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4622,
+  "en": "Your student writes your answers down.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4623,
+  "en": "Your student finds a better teacher.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4624,
+  "en": "Your student looks at you the way you once looked at your teacher. You understand, suddenly, several things your teacher never said.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4625,
+  "en": "a letter from across the lines",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4626,
+  "en": "Read the letter from across the lines one last time, and put it in the fire",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4627,
+  "en": "...and on the thirteenth day {name} was among those who closed on the boy in the wheel...",
+  "ctx": "play:ep_bard"
+ },
+ {
+  "id": 4628,
+  "en": "{They} came through the flames of the house of lac, and lost the one {they} carried.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4629,
+  "en": "{They} told Duryodhana whose son Karna was, before Karna knew it himself.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4630,
+  "en": "On the seventeenth day {they} turned {their} chariot away from {who}, {their} own {kin}.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4631,
+  "en": "{They} carried false orders across the river between the camps.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4632,
+  "en": "{They} took a student of {their} own, and set the first test {they} were ever set.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4633,
+  "en": "The thread on your wrist snapped as the blow fell, and you lived. It had been tied for exactly this.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4634,
+  "en": "After the war you took a student of your own, and set the first test you were ever set.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4635,
+  "en": "The serpent-noose: the mantra of the naga folk, who bind and do not kill.",
+  "ctx": "play:w_naga"
+ },
+ {
+  "id": 4636,
+  "en": "the naga",
+  "ctx": "play:w_naga"
+ },
+ {
+  "id": 4637,
+  "en": "{t} is bound in the serpent-noose.",
+  "ctx": "play:a6_capture"
+ },
+ {
+  "id": 4638,
+  "en": "...and on the seventeenth day {name} struck down {their} own kin without a word...",
+  "ctx": "play:ep_bard"
+ },
+ {
+  "id": 4639,
+  "en": "{who} took back the {name}. You had broken the one condition it was given on.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4640,
+  "en": "...and every vow {name} swore, {they} broke before the end...",
+  "ctx": "play:ep_bard"
+ },
+ {
+  "id": 4641,
+  "en": "A boy with a broken arm, and your student watching your hands. Set it while your student counts.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4642,
+  "en": "Your student has seen a bone set properly.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4643,
+  "en": "Your student has seen that it is hard.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4644,
+  "en": "Your student fails the first test, as you did. \"Again tomorrow,\" you hear yourself say, in your teacher's voice.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4645,
+  "en": "It hangs there for the rest of your life, and your children's.",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4646,
+  "en": "{They} went to Kunti before the war and told her {they} knew.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4647,
+  "en": "You talked all night, and in the morning I came with you.",
+  "ctx": "play:ep_sibling_side"
+ },
+ {
+  "id": 4648,
+  "en": "{They} talked {who}, {their} {kin}, round to {their} own side in one night.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4649,
+  "en": "The mantra of fire: Agni, who eats everything and is never full.",
+  "ctx": "play:w_fire"
+ },
+ {
+  "id": 4650,
+  "en": "{t} burns for {n}.",
+  "ctx": "play:a5_jayadratha"
+ },
+ {
+  "id": 4651,
+  "en": "{who} takes off the copper amulet {who} has worn since you were children and ties it on your wrist. Neither of you says anything else.",
+  "ctx": "play:ep_sibling_side"
+ },
+ {
+  "id": 4652,
+  "en": "We promised to look the other way on the field, and I gave you my amulet to remember it.",
+  "ctx": "play:ep_sibling_side"
+ },
+ {
+  "id": 4653,
+  "en": "You. The one who came back for a second throw. I told everyone in my village about you.",
+  "ctx": "play:ep_ugra_tournament"
+ },
+ {
+  "id": 4654,
+  "en": "{a} hit you for {n}.",
+  "ctx": "play:ep_shikhandi"
+ },
+ {
+  "id": 4655,
+  "en": "Someone told Vidura things I said only to you. I never asked who.",
+  "ctx": "play:ep_mentor_vidura"
+ },
+ {
+  "id": 4656,
+  "en": "The mantra of sleep: the one Arjuna spoke over the Kaurava host at Virata's border.",
+  "ctx": "play:w_riddle"
+ },
+ {
+  "id": 4657,
+  "en": "the Gandharva",
+  "ctx": "play:w_riddle"
+ },
+ {
+  "id": 4658,
+  "en": "Never against one who is asleep or unarmed.",
+  "ctx": "play:w_riddle"
+ },
+ {
+  "id": 4659,
+  "en": "{t} slumps down asleep.",
+  "ctx": "play:ep_shikhandi"
+ },
+ {
+  "id": 4660,
+  "en": "I have not forgotten who stood with me when I was ten. Stay out of my path and I will stay out of yours.",
+  "ctx": "play:ep_letter_1"
+ },
+ {
+  "id": 4661,
+  "en": "{They} carried a friend's words to Vidura, and the friend never knew.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4662,
+  "en": "What Mauni asks",
+  "ctx": "play:ep_mentor_peace"
+ },
+ {
+  "id": 4663,
+  "en": "A boy brings a leaf with three words burned into it, in Mauni's hand: never fight them. It is the longest message he has ever sent you.",
+  "ctx": "play:ep_mentor_peace"
+ },
+ {
+  "id": 4664,
+  "en": "You send the boy back with no answer. Mauni will understand the silence. He always did.",
+  "ctx": "play:ep_mentor_peace"
+ },
+ {
+  "id": 4665,
+  "en": "They say that when the forest boy cut off his thumb, {name} laughed with the princes.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4666,
+  "en": "On the seventeenth day {they} had Ugra at {their} mercy, and let him go.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4667,
+  "en": "You hang a lamp from a branch and set it swinging, as Arjuna once did. Show your student how it is done: two hits of three.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4668,
+  "en": "Your student sees it can be done.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4669,
+  "en": "Your student sees that even teachers miss.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4670,
+  "en": "When Vidura asked {them} to spy on a friend, {they} refused him to his face.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4671,
+  "en": "They say that every vow {name} swore, {they} broke before the end.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4672,
+  "en": "You set your student to watch with a lamp, and cross the corridor twice unseen, as you were once made to.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4673,
+  "en": "Your student never sees you cross.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4674,
+  "en": "Your student catches you, and is very pleased.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4675,
+  "en": "If we meet, I will aim at your chariot and not at you. Do the same for me, and we can argue about it afterwards.",
+  "ctx": "play:ep_letter_1"
+ },
+ {
+  "id": 4676,
+  "en": "At the lake in the forest {they} answered the voice for Charu, who had drunk first.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4677,
+  "en": "It is quick. {who} looks surprised, and then looks like nothing at all. You do not remember the rest of the day.",
+  "ctx": "play:ep_sibling_field"
+ },
+ {
+  "id": 4678,
+  "en": "A month after the war the whole city goes down to the river with lamps for the dead. You have your own to send out.",
+  "ctx": "play:ep_rite"
+ },
+ {
+  "id": 4679,
+  "en": "Yours: {list}.",
+  "ctx": "play:ep_rite"
+ },
+ {
+  "id": 4680,
+  "en": "On the seventeenth day {they} struck down {who}, {their} own {kin}, and did not remember the rest of the day.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4681,
+  "en": "On the seventeenth day you struck first, and it was your own sibling.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4682,
+  "en": "What Balarama asks",
+  "ctx": "play:ep_mentor_peace"
+ },
+ {
+  "id": 4683,
+  "en": "Balarama finds you on the road. He has refused both sides and is going on pilgrimage along the Sarasvati rather than watch his students kill each other.",
+  "ctx": "play:ep_mentor_peace"
+ },
+ {
+  "id": 4684,
+  "en": "Come with me. Everything I taught you was for a quarrel, not for this. Promise me you will not fight in it.",
+  "ctx": "play:ep_mentor_peace"
+ },
+ {
+  "id": 4685,
+  "en": "Balarama grips your shoulder. \"Then there is one of you I will not have to mourn.\"",
+  "ctx": "play:ep_mentor_peace"
+ },
+ {
+  "id": 4686,
+  "en": "Your student braces against you in the ring. Push as the ring meets the mark, and do not push too hard.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4687,
+  "en": "Your student learns what a clean push feels like.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4688,
+  "en": "Your student learns that the teacher can slip too.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4689,
+  "en": "...and in the dice hall {name} was silent, like all the rest...",
+  "ctx": "play:ep_bard"
+ },
+ {
+  "id": 4690,
+  "en": "{They} promised {their} teacher not to fight in the war, and kept the promise in the healers' tents.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4691,
+  "en": "They say that in the dice hall {name} was silent, like all the rest.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4692,
+  "en": "Before the dice {they} swore to Kripa that the throne was in the right, and watched what the throne did.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4693,
+  "en": "You take your student round the old track with you at the reins, and show how a chariot threads the stakes.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4694,
+  "en": "Your student sees how it is done.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4695,
+  "en": "Your student sees a wheel catch, and learns that too.",
+  "ctx": "play:ep_student"
+ },
+ {
+  "id": 4696,
+  "en": "You burn the leaf, as Mauni would want, and keep the words.",
+  "ctx": "play:ep_mentor_peace"
+ },
+ {
+  "id": 4697,
+  "en": "{They} promised {their} teacher not to fight in the war, and fought in it.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4698,
+  "en": "I saw your banner today and turned my chariot the other way. Do not make me do it twice.",
+  "ctx": "play:ep_letter_1"
+ },
+ {
+  "id": 4699,
+  "en": "When {they} spoke the mantra at the worst hour, nothing answered.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4700,
+  "en": "{They} told Kripa that a throne can be wrong.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4701,
+  "en": "You promised to look the other way. The amulet is on your wrist.",
+  "ctx": "play:ep_sibling_field"
+ },
+ {
+  "id": 4702,
+  "en": "You waded across the river at dusk to speak to me, in the middle of the war.",
+  "ctx": "play:ep_truce"
+ },
+ {
+  "id": 4703,
+  "en": "your sibling's amulet",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4704,
+  "en": "Take the amulet to the river and send it after your sibling",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4705,
+  "en": "The copper disc sinks at once. You stand there until your feet are numb.",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4706,
+  "en": "At the worst hour the earth held {their} chariot wheel, as it had held Yudhishthira's.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4707,
+  "en": "At the truce at dusk {they} waded the river to speak to someone on the other side.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4708,
+  "en": "They say that on the thirteenth day {name} was among those who closed on the boy in the wheel.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4709,
+  "en": "On the seventeenth day {they} killed Ugra, the miller's son, whom {they} first fought at a fair.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4710,
+  "en": "You broke the condition the {name} was given on. Its mantra will fail you at the worst hour.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4711,
+  "en": "At the river {they} sent a lamp for {their} dead, and one for whoever killed them.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4712,
+  "en": "On the ninth night Dhrishtadyumna sends for you. Your company has held every day it was asked to, and he has lost three division officers in nine days.",
+  "ctx": "play:cmd_promotion_1"
+ },
+ {
+  "id": 4713,
+  "en": "\"Three companies,\" he says. \"Yours and two more. From tomorrow the array on your part of the line is yours to set.\"",
+  "ctx": "play:cmd_promotion_1"
+ },
+ {
+  "id": 4714,
+  "en": "{They} led a division of three companies, and set its array in the field.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4715,
+  "en": "Give the amulet back, and say what it meant",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4716,
+  "en": "You know it by heart. The fire takes the paper. The words stay where they were.",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4717,
+  "en": "You turn away, and the press closes between you. {who} lives through the day. So do you.",
+  "ctx": "play:ep_sibling_field"
+ },
+ {
+  "id": 4718,
+  "en": "On the seventeenth day {they} sent Ugra, the miller's son, home to his mill with all his men.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4719,
+  "en": "Your command suits the scribe's tablet.",
+  "ctx": "play:a2_path"
+ },
+ {
+  "id": 4720,
+  "en": "Never say who taught you.",
+  "ctx": "play:a5_own_crisis"
+ },
+ {
+  "id": 4721,
+  "en": "On the ninth night Bhishma sends for you. Your company has held every day it was asked to, and he has lost three division officers in nine days.",
+  "ctx": "play:cmd_promotion_1"
+ },
+ {
+  "id": 4722,
+  "en": "After the wheel, Yudhishthira calls the council: Krishna, Arjuna, Bhima, Dhrishtadyumna, Satyaki, and the officers whose divisions still stand. Yours stands. There is a mat for you at the edge of the lamplight.",
+  "ctx": "play:cmd_promotion_2"
+ },
+ {
+  "id": 4723,
+  "en": "No one says what the seat means. Everyone knows.",
+  "ctx": "play:cmd_promotion_2"
+ },
+ {
+  "id": 4724,
+  "en": "A seat at the war council",
+  "ctx": "play:cmd_promotion_2"
+ },
+ {
+  "id": 4725,
+  "en": "Your own line is where it should be this morning, and knows it.",
+  "ctx": "play:a6_day14"
+ },
+ {
+  "id": 4726,
+  "en": "{They} sat at the war council, at the edge of the lamplight, and {their} word was counted.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4727,
+  "en": "{They} would not carry a lie across the river, even in a war.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4728,
+  "en": "an arrow from the supply camp",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4729,
+  "en": "Break the arrow from the supply camp and bury the pieces",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4730,
+  "en": "It was never a trophy. You bury it where nobody will dig.",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4731,
+  "en": "You turn away. That evening they bring you {who}'s amulet. Someone else did not turn.",
+  "ctx": "play:ep_sibling_field"
+ },
+ {
+  "id": 4732,
+  "en": "{who}, {their} {kin}, fell on the other side of the field.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4733,
+  "en": "You turned away from your sibling on the seventeenth day. Someone else did not.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4734,
+  "en": "I will throw you in the river again when this is over. Keep your head down until then.",
+  "ctx": "play:ep_letter_1"
+ },
+ {
+  "id": 4735,
+  "en": "The last thing between you was a quarrel, and a gate closing before dawn.",
+  "ctx": "play:ep_sibling_field"
  }
 ]
