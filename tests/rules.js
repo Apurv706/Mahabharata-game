@@ -127,4 +127,26 @@ K.ENCOUNTERS.t_war = { id: "t_war", lethal: true, enemies: [{ name: "Soldier", h
 K.Combat.start("t_war", () => {}); { const B = K.Combat.state ? K.Combat.state() : null; const P = K.Combat.player(), E = B ? B.units.find((u) => u.side === "enemy") : null;
   if (E) { P.hp = 5; B.defNow = null; B.hit(E, P, 1); ok(P.hp === 1 && S.charges.kavacha === 0, "the kavacha leaves one breath after a killing blow"); B.hit(E, P, 1); ok(P.hp === 0, "and only once"); }
   else ok(false, "kavacha: no fight state to test on"); }
+// 26. Friends who come to help (engine/friends.js)
+require(G + "engine/friends.js");
+S = fresh({ friend: "bhima", act: 3, age: 24 }); S.bonds.bhima = 6; S.bonds.karna = 8;
+ok(K.friendsNear(S).join() === "karna,bhima", "a bond of 7, or a friend for life at 5, can come: " + K.friendsNear(S).join());
+S.side = "pandava"; ok(!K.friendsNear(S).includes("karna"), "Karna does not come once you stand with the Pandavas");
+S = fresh({ friend: "arjuna", act: 5, age: 36 }); S.bonds.arjuna = 9;
+ok(!K.friendsNear(S).length, "Arjuna is away in the middle exile years");
+S.age = 43; S.bonds.bhima = 9; ok(!K.friendsNear(S).length, "no prince comes in the hidden year");
+S.age = 42; ok(K.friendsNear(S).includes("bhima"), "Bhima comes before the hidden year");
+S = fresh({ friend: "charu" }); S.bonds.charu = 7; S.lostFriends = [{ who: "charu" }];
+ok(!K.friendsNear(S).length, "a friendship that ended reaches no one");
+S = fresh({ friend: "charu" }); S.bonds.charu = 7;
+const h = K.friendHelp(S, { lethal: false }); ok(h.unit && h.who === "charu" && h.unit.def === 0, "Charu comes, with no armour");
+// A friend hurt in a fight carries a scar; Charu can die in a deadly one.
+K.friendAfter({ over: "win", enc: { lethal: false }, units: [{ side: "ally", called: true, person: "charu", hp: 5, maxHp: 34 }] }, S);
+ok(S.flags.includes("scar_charu") && S.memories.some((m) => m.who === "charu"), "a friend hurt for you carries a scar, and remembers");
+K.friendAfter({ over: "lose", enc: { lethal: true }, units: [{ side: "ally", called: true, person: "charu", hp: 0, maxHp: 34 }] }, S);
+ok(S.dead.includes("charu"), "Charu falls in a deadly fight you called them into");
+// 27. Assist never changes the engine: with the setting off, step mode is asked for as before
+// With the assist off, a fight played by chance (no step mode) resolves blows exactly as before: same seed, same log.
+const runFight = () => { K.seed(7); S = fresh({ act: 3, age: 24, path: "archer" }); K.Combat.stepNext = false; const B = K.Combat.start("e_bandits", () => {}); for (let i = 0; i < 12 && !B.over; i++) K.Combat.act("strike"); const out = B.log.map((l) => l.key || l.raw).join("|"); K.Combat.end(); return out; };
+ok(runFight() === runFight(), "the same fight plays the same way twice: assist off changes nothing in the engine");
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

@@ -57,6 +57,20 @@
         return took;
       }
       const won = (side) => G[side].every((p) => p >= END);
+      // The teacher's hint at the practice ground: the piece a careful player would move.
+      function bestMine() {
+        const opts = [0, 1].filter((i) => legal("me", i, G.roll.v));
+        if (!opts.length) return null;
+        const score = (i) => {
+          const to = G.me[i] + G.roll.v, k = key(cellOf("me", to));
+          let s = to;
+          if (to === END) s += 60;
+          if (to < END && !SAFE.has(k) && G.them.some((p) => p > 0 && p < END && key(cellOf("them", p)) === k)) s += 80;
+          if (to < END && SAFE.has(k)) s += 10;
+          return s;
+        };
+        return opts.sort((a, b) => score(b) - score(a))[0];
+      }
       function aiPick() {
         const opts = [0, 1].filter((i) => legal("them", i, G.roll.v));
         if (!opts.length) return null;
@@ -96,6 +110,7 @@
           roll + '<p class="game-note" aria-live="polite">' + (G.note ? U.t(G.note) : U.tr(G.turn === "me" ? (G.phase === "move" ? "Choose a piece to move: click it, or press 1 or 2." : "Your throw.") : "{who} throws.", { who: opp })) + '</p><div class="btnrow"></div>';
         const row = host.querySelector(".btnrow");
         if (G.turn === "me" && G.phase === "throw") row.appendChild(U.button("cta", U.tr("Throw the cowries"), throwMine));
+        if (U.boardHint) U.boardHint(host, G.turn === "me" && G.phase === "move" ? { el: host.querySelector('.pc.me[data-i="' + bestMine() + '"]'), line: "Move piece {n}.", p: { n: bestMine() + 1 } } : null);
         host.querySelectorAll(".pc.me.can").forEach((g) => {
           const go = () => pickMine(+g.dataset.i);
           g.addEventListener("click", go);
@@ -198,6 +213,13 @@
         host.innerHTML = '<p class="score" aria-live="polite">' + U.tr("Goats taken: {g} of {n} · Goats still to come: {w} · Tiger moves left: {m}", { g: taken, n: need, w: GOATS - placed, m: MAXM - moves }) + "</p>" +
           boardWrap(t, '<svg class="bagh" viewBox="0 0 260 260" role="img" aria-label="' + U.esc(K.tr("The tigers and goats board")) + '"><g class="lines">' + lines + "</g>" + pts + "</svg>") +
           '<p class="game-note" aria-live="polite">' + (note ? U.t(note) : U.tr(sel == null ? "Choose a tiger: click it, or move with the arrow keys and press Space." : "Now choose where it goes. A tiger takes a goat by jumping over it to an empty point.")) + "</p>";
+        if (U.boardHint) {
+          const all = busy ? [] : allTiger(B);
+          const cap = all.find((m) => m.take != null);
+          const best = cap || all.sort((a, b) => { const bb = B.slice(), ba = B.slice(); bb[b.from] = 0; bb[b.to] = 1; ba[a.from] = 0; ba[a.to] = 1; return allTiger(bb).length - allTiger(ba).length; })[0];
+          const want = best ? (sel === best.from ? best.to : best.from) : null;
+          U.boardHint(host, best ? { el: host.querySelector('.pt[data-p="' + want + '"]'), line: cap ? "A goat can be taken: that tiger, then the point beyond the goat." : "Keep the tigers free: that tiger, then the open point." } : null);
+        }
         host.querySelectorAll(".pt").forEach((g) => g.addEventListener("click", () => tap(+g.dataset.p)));
       }
       function tap(p) {
@@ -278,6 +300,12 @@
         if (G.phase === "throw") host.querySelector(".btnrow").appendChild(U.button("cta", U.tr("Throw the dice"), throwMine));
         const pd = host.querySelector(".pickdice");
         if (pd) G.dice.forEach((v, i) => { const b = U.button("cta secondary die-pick", U.tr("Move {n}", { n: v }), () => choose(i)); b.disabled = G.phase !== "choose" || G.me + v > 64; pd.appendChild(b); });
+        if (U.boardHint && pd && G.phase === "choose") {
+          const val = (v) => (G.me + v > 64 ? -99 : land(G.me + v));
+          const bi = G.dice[0] === G.dice[1] ? 0 : val(G.dice[0]) >= val(G.dice[1]) ? 0 : 1;
+          const to = G.me + G.dice[bi];
+          U.boardHint(host, { el: pd.children[bi], line: LADDERS[to] ? "Move {n}: a ladder waits there." : SNAKES[G.me + G.dice[1 - bi]] ? "Move {n}: the other die lands on a snake." : "Move {n}: the longer step.", p: { n: G.dice[bi] } });
+        }
       }
       function throwMine() {
         if (G.phase !== "throw") return;

@@ -160,6 +160,13 @@
   const DEMO = [["low", "jump", "A low blow: jump."], ["high", "duck", "A high blow: duck."], ["thrust", "side", "A thrust or a charge: step aside."], ["charge", "block", "Anything at all: block, for half the harm."]];
   const SPEEDS = { slow: 0.6, normal: 0.8, real: 1 };
   const SPEED_NAMES = { slow: "Slow", normal: "Normal", real: "Real" };
+  // The board games take turns, so speed means nothing there: the same three buttons set how much
+  // the teacher helps instead (Slow: points out the best move each turn; Normal: when you ask; Real: not at all).
+  const BOARDS = new Set(["pasha", "chaupar", "baghchal", "moksha"]);
+  const HELP_NAMES = { slow: "Point it out", normal: "When I ask", real: "No help" };
+  // The hints the board games give (ui/boards.js, ui/games.js), listed here for the translators.
+  const HINTS = ["Move piece {n}.", "A goat can be taken: that tiger, then the point beyond the goat.", "Keep the tigers free: that tiger, then the open point.", "Move {n}: a ladder waits there.", "Move {n}: the other die lands on a snake.", "Move {n}: the longer step.", "You are behind: throw your lowest die again.", "You are ahead: stand."];
+  const HELP_TEXT = { title: "Help", note: "Point it out: the teacher shows the best move each turn. When I ask: a \"Show me\" button.", show: "Show me" };
   // The words of the ground's own pages (passed around before they are translated).
   const TEXT = {
     ground: "The practice ground", note: "Nothing done here changes your life.",
@@ -172,7 +179,7 @@
   };
 
   // Every string the player can see here, for the translators (tests/strings.js walks this).
-  K.PRACTICE = { kinds: KINDS, partners: PARTNERS, rounds: ROUNDS, fight: FIGHT, lines: LINES, demo: DEMO.map((d) => d[2]), speeds: SPEED_NAMES, text: TEXT,
+  K.PRACTICE = { kinds: KINDS, partners: PARTNERS, rounds: ROUNDS, fight: FIGHT, lines: LINES, demo: DEMO.map((d) => d[2]), speeds: SPEED_NAMES, help: HELP_NAMES, helpText: HELP_TEXT, hints: HINTS, text: TEXT,
     people: ["The old master of the practice ground", "A fellow student"] };
 
   const ICONS = {
@@ -215,9 +222,14 @@
     }
     return out;
   }
+  K.testsMet = metHere;
   function metBefore() {
     if (!K.lives || !K.lives().length) return [];
-    try { const a = JSON.parse(K.store.get(MET) || "[]"); return Array.isArray(a) ? a.filter((k) => KINDS[k]) : []; } catch (e) { return []; }
+    const out = new Set();
+    try { const a = JSON.parse(K.store.get(MET) || "[]"); if (Array.isArray(a)) a.forEach((k) => { if (KINDS[k]) out.add(k); }); } catch (e) { /* none kept */ }
+    // Each life in the Book of Lives also keeps its own list.
+    for (const r of K.lives()) for (const k of r.met || []) if (KINDS[k]) out.add(k);
+    return [...out];
   }
   const metAll = () => { const s = new Set(metBefore()); metHere().forEach((k) => s.add(k)); return s; };
   function remember() {
@@ -270,6 +282,28 @@
 
   const speedKey = () => (SPEEDS[K.prefs().practiceSpeed] ? K.prefs().practiceSpeed : "normal");
   const speedNow = () => SPEEDS[speedKey()];
+  // The factor the timed shows divide their waits by (games.js, play.js): 1 outside the ground.
+  K.practiceSpeed = () => (PR && baseClock ? (parseFloat(document.body.style.getPropertyValue("--pr-f")) || 1) : 1);
+  // How much the teacher helps in a board game here: "show" every turn, "ask" on request, or null.
+  let boardKind = null;
+  K.practiceHelp = () => (PR && boardKind ? { slow: "show", normal: "ask", real: null }[speedKey()] : null);
+  // A board game hands its best move here after each draw: { el, line, p }. Shown at once, or behind a
+  // "Show me" button, or not at all.
+  U.boardHint = function (host, hint) {
+    const level = K.practiceHelp();
+    host.querySelectorAll(".pr-hint").forEach((el) => el.classList.remove("pr-hint"));
+    const old = host.querySelector(".pr-hintrow"); if (old) old.remove();
+    if (!level || !hint || !hint.el) return;
+    const show = () => {
+      hint.el.classList.add("pr-hint");
+      const row = host.querySelector(".pr-hintrow") || host.appendChild(U.el('<p class="pr-hintrow"></p>'));
+      row.innerHTML = '<span class="pr-hintline">' + U.esc(K.tr(hint.line, hint.p || {})) + "</span>";
+    };
+    if (level === "show") return show();
+    const row = U.el('<p class="pr-hintrow"></p>');
+    row.appendChild(U.button("ghost pr-ask", U.tr(HELP_TEXT.show), show));
+    host.appendChild(row);
+  };
   const second = (c) => !!(c && c.game && ((c.lose && c.lose.penalty) || (c.close && c.close.penalty)));
 
   // ---------- Ways in ----------
@@ -329,10 +363,10 @@
     return '<div class="pr-coach' + (small ? " small" : "") + '"><span class="pr-teach">' + U.puppet(U.puppetFor(t.puppet), { h: small ? 84 : 112, pose: "speak" }) + "</span>" +
       '<div class="pr-say"><b class="pr-who">' + U.tr(t.name) + '</b><p class="pr-line">' + U.t(line) + "</p></div></div>";
   }
-  function speedHtml() {
-    const cur = speedKey();
-    return '<div class="seg-row pr-speed"><span>' + U.tr("Speed") + "<small>" + U.tr("Real is the speed of the test itself.") + "</small></span>" +
-      '<div class="seg" role="radiogroup" aria-label="' + U.tr("Speed") + '">' + Object.keys(SPEEDS).map((v) => '<button type="button" role="radio" data-speed="' + v + '" aria-checked="' + (v === cur) + '">' + U.tr(SPEED_NAMES[v]) + "</button>").join("") + "</div></div>";
+  function speedHtml(board) {
+    const cur = speedKey(), names = board ? HELP_NAMES : SPEED_NAMES, title = board ? HELP_TEXT.title : "Speed", note = board ? HELP_TEXT.note : "Real is the speed of the test itself.";
+    return '<div class="seg-row pr-speed"><span>' + U.tr(title) + "<small>" + U.tr(note) + "</small></span>" +
+      '<div class="seg" role="radiogroup" aria-label="' + U.tr(title) + '">' + Object.keys(SPEEDS).map((v) => '<button type="button" role="radio" data-speed="' + v + '" aria-checked="' + (v === cur) + '">' + U.tr(names[v]) + "</button>").join("") + "</div></div>";
   }
   function bindSpeed(root, onChange) {
     root.querySelectorAll("[data-speed]").forEach((b) => b.addEventListener("click", () => {
@@ -478,10 +512,12 @@
     if (U.stageFx) U.stageFx.start(t.stage);
     if (K.Sound && K.Sound.test) K.Sound.test(kind);
     PR.music = null;
+    boardKind = BOARDS.has(kind) ? kind : null;
     slow(speedNow());
     let game = null;
     game = U.games[kind](box, (outcome, summary) => {
       if (!PR) return;
+      boardKind = null;
       fast();
       if (K.Sound && K.Sound.test) K.Sound.test(null);
       restore();
@@ -498,13 +534,14 @@
     const d = KINDS[kind], coach = U.el(coachHtml(d.tip, true));
     if (FRAMELESS.has(kind)) {
       wrap.insertBefore(coach, host);
+      if (BOARDS.has(kind)) { const sp = U.el(speedHtml(true)); wrap.insertBefore(sp, host); bindSpeed(sp); }
       coach.querySelector(".pr-say").appendChild(U.button("ghost pr-show", U.tr("Show me"), (e) => showMe(coach, d.show, wrap, e.currentTarget)));
       return;
     }
     const row = host.querySelector(":scope > .btnrow");
     if (!row || wrap.classList.contains("playing")) return;
     host.insertBefore(coach, row);
-    const sp = U.el(speedHtml());
+    const sp = U.el(speedHtml(BOARDS.has(kind)));
     host.insertBefore(sp, row);
     bindSpeed(sp, (v) => slow(SPEEDS[v]));
     row.appendChild(U.button("cta secondary pr-show", U.tr("Show me"), (e) => showMe(coach, d.show, wrap, e.currentTarget)));

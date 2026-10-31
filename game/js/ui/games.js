@@ -9,7 +9,10 @@
   const NUM = ["", "One", "Two", "Three", "Four", "Five", "Six"];
   const throwDie = () => K.pick(FACES);
   const sum = (a) => a.reduce((n, x) => n + x, 0);
-  const wait = (ms, fn) => (U.motion() ? setTimeout(fn, ms) : fn());
+  // Waits scale with the practice ground's speed (K.practiceSpeed: 1 outside it), so the timed
+  // shows slow down there like the other tests.
+  const slowed = (ms) => ms / (K.practiceSpeed ? K.practiceSpeed() : 1);
+  const wait = (ms, fn) => (U.motion() ? setTimeout(fn, slowed(ms)) : fn());
   // A long die seen from above: its value as a row of pips.
   const die = (v, i, live) => '<button type="button" class="die' + (live ? " live" : "") + '" data-i="' + i + '"' + (live ? "" : " disabled") +
     ' aria-label="' + U.esc(K.tr(NUM[v])) + '">' + "<i></i>".repeat(v) + "</button>";
@@ -40,6 +43,7 @@
       if (G.phase === "ready") row.appendChild(U.button("cta", U.tr(G.round === 1 && !G.me && !G.them ? "Throw the dice" : "Throw again"), roll));
       if (G.phase === "decide") {
         row.appendChild(U.button("cta", U.tr("Stand on {n}", { n: sum(G.mine) }), () => settle()));
+        if (U.boardHint) { const behind = sum(G.mine) < sum(G.theirs), low = G.mine.indexOf(Math.min(...G.mine)); U.boardHint(host, { el: behind ? host.querySelectorAll(".die.live")[low] : row.firstElementChild, line: behind ? "You are behind: throw your lowest die again." : "You are ahead: stand." }); }
         host.querySelectorAll(".die.live").forEach((b) => b.addEventListener("click", () => rethrow(+b.dataset.i)));
       }
       if (G.phase === "next") row.appendChild(U.button("cta", U.tr("Next round"), () => { G.phase = "ready"; G.mine = G.theirs = null; G.note = null; G.rolled = false; draw(); }));
@@ -131,7 +135,7 @@
       G.phase = "watch"; G.shown = i;
       if (K.Sound) K.Sound.play("dice");
       draw();
-      setTimeout(() => (i < 4 ? watch(i + 1) : (G.phase = "ask", draw())), sharp ? 1500 : 950);
+      setTimeout(() => (i < 4 ? watch(i + 1) : (G.phase = "ask", draw())), slowed(sharp ? 1500 : 950));
     }
     function answer(i) {
       const right = i === swap;

@@ -30,7 +30,7 @@
     const lost = (S.lostFriends || []).map((x) => x.who);
     const bondIds = Object.keys(S.bonds).filter((id) => !S.dead.includes(id) && !lost.includes(id))
       .sort((a, b) => (K.lastDelta["bond." + b] ? 1 : 0) - (K.lastDelta["bond." + a] ? 1 : 0) || S.bonds[b] - S.bonds[a]).slice(0, 6);
-    const bonds = bondIds.map((id) => meter(K.personName(id), S.bonds[id], "bond." + id, 10, U.portraitKey(id))).join("") || '<p class="empty">' + U.tr("No close bonds yet.") + "</p>";
+    const bonds = bondIds.map((id) => meter(K.personName(id) + (S.flags.includes("scar_" + id) ? " · " + K.tr("scarred for you") : ""), S.bonds[id], "bond." + id, 10, U.portraitKey(id))).join("") || '<p class="empty">' + U.tr("No close bonds yet.") + "</p>";
 
     // Each vow: its gift while kept, who watches it, and what breaking it costs (or what it cost).
     const vows = S.vows.map((v) => {

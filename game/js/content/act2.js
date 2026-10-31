@@ -186,7 +186,7 @@
   ]);
 
   K.encounter({
-    id: "e_spar", title: "The sparring trial", art: "scene_teacher", caption: "Blunted weapons, real bruises", lethal: false,
+    id: "e_spar", title: "The sparring trial", art: "scene_teacher", caption: "Blunted weapons, real bruises", lethal: false, bout: true,
     intro: "Ketan bows, then comes at you fast.",
     enemies: [K.foe("Ketan, the armourer's son", 2, { hp: 40 })],
     win: { fx: (S) => ({ skill: { [K.PATHS[S.path].skill]: 1 }, duty: { teacher: 1 }, journal: "You won the sparring trial against Ketan." }), text: "Ketan yields, grinning through a bloody nose. Your teacher nods once, which is more than most students get." },
