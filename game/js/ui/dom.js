@@ -246,6 +246,7 @@
       if (tp != null && ph) document.documentElement.style.setProperty("--pupmax", Math.max(64, Math.round(tp - hb - 6 + ph.offsetHeight - 6)) + "px"); }
     bd.dataset.mode = mode;
     bd.classList.toggle("fitted", mode !== "cover");
+    L.dataset.sized = size ? "1" : "0";
     if (!size) { pic.style.cssText += ";left:0;top:0;width:100%;height:100%"; return; }
     const [iw, ih] = size;
     let s, w, h, x, y;

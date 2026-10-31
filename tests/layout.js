@@ -201,7 +201,10 @@ const PAGE = {
       // On an upright screen the painting's ground meets the fighters' feet (dom.js U.groundFit).
       const L = document.querySelector("#backdrop .bdl.on"), pic = L && L.querySelector(".pic"), key = L && L.dataset.key;
       const gr = key && K.UI.upright() && K.UI.tallOf(key) ? K.UI.groundOf(key) : null, feet = K.UI.feetY();
-      if (gr && feet && pic) { const pr = pic.getBoundingClientRect(), gy = pr.top + gr * pr.height; if (Math.abs(gy - feet) > H * 0.06) out.push("figures float above the painting's ground (" + Math.round(feet) + " vs " + Math.round(gy) + ")"); }
+      if (gr && feet && pic) { const pr = pic.getBoundingClientRect(), gy = pr.top + gr * pr.height; if (Math.abs(gy - feet) > H * 0.06) { const bd = document.getElementById("backdrop");
+        // What the painting was fitted to, so a failure in one browser can be read from its report alone.
+        const why = "mode " + (bd && bd.dataset.mode) + ", pic " + Math.round(pr.top) + "+" + Math.round(pr.height) + " of " + H + ", fitted to " + Math.round(K.UI.fitFeet || 0) + ", settled " + K.UI.settled + ", sized " + (L.dataset.sized || "?") + (document.body.classList.contains("beating") ? ", beating" : "");
+        out.push("figures float above the painting's ground (" + Math.round(feet) + " vs " + Math.round(gy) + "; " + why + ")"); } }
       const head = leaf.querySelector(".pagehead");
       if (head && head.getBoundingClientRect().top < (o.sat || 0) - 1) out.push("fight name under the notch");
       return out;
