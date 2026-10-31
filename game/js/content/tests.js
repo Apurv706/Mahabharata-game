@@ -698,7 +698,7 @@
   // A way out over the wall (a test of stealth), or the long wait. Either way the story goes on
   // from where it would have gone (S.captive.then).
   const CAPTOR = (S) => (S.captive && S.captive.by) || "the guards";
-  const captiveArt = (S) => (S.act >= 6 ? "war_capture" : "scene_secret");
+  const captiveArt = (S) => (S.act >= 6 ? "scene_prisoners_pen" : "scene_cell");
   const captivePlace = (S) => (S.captive && S.captive.place) || "A cell";
   const captiveThen = (S) => (S.captive && S.captive.then) || "end_life";
   const waitThen = (S) => (S.captive && (S.captive.waitThen || S.captive.then)) || "end_life"; // the long wait can outlast what was happening (a war)

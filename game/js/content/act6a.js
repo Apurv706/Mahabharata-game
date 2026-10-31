@@ -17,7 +17,7 @@
   // Kauravas, Dhrishtadyumna for the Pandavas) sees you set one in the day's array first.
   // A warrior does not hand his life to a driver he has not seen drive.
   const CHARIOT = { t: "Drive a chariot for a warrior who needs one", req: { side: ["pandava", "kaurava"], skill: ["chariot", 2] }, locked: "You need some skill with a chariot.", game: "race", hint: "He will ride with you once before he decides",
-    trial: { attr: "grace", skill: "chariot", kind: "war", stage: "stage_battlefield_night", vehicle: "chariot", obstacles: ["rock", "wreck"], hull: 3, speed: 3.2,
+    trial: { attr: "grace", skill: "chariot", kind: "war", stage: "stage_war_road", vehicle: "chariot", obstacles: ["rock", "wreck"], hull: 3, speed: 3.2,
       tally: "Distance: {d}% · Hits: {h} of {l}", bump: "A wheel catches, and the old warrior grabs the rail.", help: "Steer between the carts and the stakes: up and down, or the buttons.",
       rules: "An old warrior whose driver was killed in a raid will ride with you once, at dusk, along the road behind the lines: carts, stakes, tethered horses. Bring him to the end of it without a wheel touching anything.",
       stakes: ["He climbs down and says: tomorrow, at first light.", "He climbs down and says nothing. One more run at dawn."] },
@@ -27,7 +27,7 @@
     retryLose: { penalty: 1, fx: { flag: ["role_front", "driver_refused"], journal: "On the eve of the war you were not chosen as a driver. You fought in the front line." }, text: "He finds another driver before the conches sound. You take a spear and find a place in the front line." } };
   const COMMAND = { t: "Ask for a company to command", req: { side: ["pandava", "kaurava"], any: [{ path: "strategist" }, { attr: ["command", 4] }] },
     locked: "You need a strategist's training or a commander's presence.", game: "formation", hint: "The commander will test you first",
-    trial: { attr: "command", skill: "statecraft", stage: "stage_chakravyuha_top", cast: (S) => [S.side === "kaurava" ? "bhishma" : "dhrishtadyumna"],
+    trial: { attr: "command", skill: "statecraft", stage: "stage_muster_field_top", cast: (S) => [S.side === "kaurava" ? "bhishma" : "dhrishtadyumna"],
       rules: (S) => (S.side === "kaurava"
         ? "Bhishma names an array and shows it to you once. Then your company comes onto the field, unit by unit: put each on its mark before the drum stops. Then the enemy tests a flank, and you send the reserve. He has just refused Karna a place under him. He will not be kinder to you."
         : "Dhrishtadyumna names an array and shows it to you once. Then your company comes onto the field, unit by unit: put each on its mark before the drum stops. Then the enemy tests a flank, and you send the reserve."),
