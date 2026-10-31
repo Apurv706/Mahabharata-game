@@ -18923,5 +18923,280 @@
   "id": 3786,
   "en": "You lower your bow. Karna's chariot heaves out of the water, and as it passes he sees you, and nods once. {friend} stares at you as if you were a stranger.",
   "ctx": "scene:v_ford"
+ },
+ {
+  "id": 3787,
+  "en": "The burnt house",
+  "ctx": "endings"
+ },
+ {
+  "id": 3788,
+  "en": "Be inside the house of lac when it burns, and not get out.",
+  "ctx": "endings"
+ },
+ {
+  "id": 3789,
+  "en": "They drank deep at Kunti's feast and do not wake, however hard you shake them. You sit down beside them in the dark, meaning to try again in a little while.",
+  "ctx": "scene:a3_lac"
+ },
+ {
+  "id": 3790,
+  "en": "On the last night of the festival, the house of lac burns.",
+  "ctx": "scene:a3_lac"
+ },
+ {
+  "id": 3791,
+  "en": "The cellar under the house of lac",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3792,
+  "en": "The last night of the festival",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3793,
+  "en": "The feast is over. Kunti and her sons are asleep upstairs, and so are the Nishada woman and her five sons, who drank what was given them. In the cellar, Purochana's oil lines run from the door to every sleeping room.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3794,
+  "en": "He means to light them tonight. The fire will come whatever you do. What you do before it comes is yours.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3795,
+  "en": "Go down to the cellar and cut the oil lines",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3796,
+  "en": "Cut",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3797,
+  "en": "Purochana's guard walks the cellar with a lamp. Choose a line and hold to cut it while the light is away; caught in the light, let go. Cut two of the three before the guard has seen you twice.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3798,
+  "en": "Every line cut slows the fire tonight, and the Pandavas will owe you.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3799,
+  "en": "The guard sends you up the stairs with the lines whole. The fire will run as fast as Purochana meant it to.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3800,
+  "en": "On the last night at Varnavata you cut Purochana's oil lines in the cellar.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3801,
+  "en": "The oil runs out across the stone and soaks into the earth. Upstairs, someone turns over in their sleep.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3802,
+  "en": "One line parts before the lamp comes back for good. It will have to be enough.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3803,
+  "en": "The lamp finds you twice, and the second time the guard does not look away. You go up the stairs with the lines whole.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3804,
+  "en": "Tell Yudhishthira plainly what is in the walls, and that it is tonight",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3805,
+  "en": "Yudhishthira listens without surprise. \"Vidura told me in a riddle,\" he says. \"You have told me in plain words. We will not forget either.\"",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3806,
+  "en": "Say nothing. Your family lives under Duryodhana's hand",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3807,
+  "en": "You knew what the house at Varnavata was for, and said nothing.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3808,
+  "en": "You go to bed with the smell of resin in your clothes, and do not sleep.",
+  "ctx": "scene:a3_fuse"
+ },
+ {
+  "id": 3809,
+  "en": "The house of lac, burning",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 3810,
+  "en": "The night of the fire",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 3811,
+  "en": "The house of lac burns on the last night of the festival. Kunti and the Pandavas go down into the tunnel and out into the forest. Purochana dies in his own fire.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 3812,
+  "en": "The way through the burning rooms",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 3813,
+  "en": "The fire comes from Purochana's side, room by room, with the smoke ahead of it. Move through the doors to the storeroom, where the tunnel mouth is. Some doors are stuck: hold to force them. Sleepers can be woken and carried, and each one slows you.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 3814,
+  "en": "You reach the tunnel, and whoever you carried comes with you.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 3815,
+  "en": "The fire catches you in the house. There is no second chance tonight.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 3816,
+  "en": "You came through the flames at Varnavata, and not everyone you carried came with you.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 3817,
+  "en": "You come through the last room with your sleeve alight. Whoever was on your back is not there when you drop into the dark, and you cannot go back.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 3818,
+  "en": "Stay with the sleepers and keep shaking them",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 3819,
+  "en": "They will not wake",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 3820,
+  "en": "Stay back with the crowd",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 3821,
+  "en": "You watched the house of lac burn from the lane.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 3822,
+  "en": "You stand in the lane with everyone else and watch the roof fall in. Nobody comes out.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 3823,
+  "en": "In the ashes they find six bodies: a Nishada woman and her five sons. Everyone believes they are Kunti and the Pandavas. In Hastinapura, Dhritarashtra weeps, and Duryodhana weeps louder.",
+  "ctx": "scene:a3_fire"
+ },
+ {
+  "id": 3824,
+  "en": "Shouting wakes you. From the lane you can see the roof of the new house burning, and the heat of it on your face.",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 3825,
+  "en": "Run into the house to get people out",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 3826,
+  "en": "You wake beside the sleepers who would not wake, with smoke in your mouth. The far wall is already light.",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 3827,
+  "en": "Get to the tunnel",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 3828,
+  "en": "They do not wake. You are still shaking the youngest when the smoke takes you.",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 3829,
+  "en": "The house at Varnavata, at dawn",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3830,
+  "en": "{They} would not leave the Nishada woman and her sons in the house of lac, and died beside them.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3831,
+  "en": "{They} came through the flames of the house of lac, and lost the one {they} carried.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3832,
+  "en": "You are in the house when it goes up, between the sleeping rooms and the storeroom where the tunnel mouth is.",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 3833,
+  "en": "You drop into the tunnel mouth as the storeroom roof comes down behind you. The dark smells of earth, and of nothing burning.",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 3834,
+  "en": "{They} told Yudhishthira in plain words what the house of lac was for.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3835,
+  "en": "{They} {were} inside the house of lac when it burned, and got out through the tunnel.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3836,
+  "en": "You got out of the burning house at Varnavata through the tunnel.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3837,
+  "en": "The oil lines you cut have slowed it. There is a little more time than Purochana meant there to be.",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 3838,
+  "en": "On the last night at Varnavata {they} went down to the cellar and cut Purochana's oil lines by lamplight.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 3839,
+  "en": "Never say who taught you.",
+  "ctx": "play:a5_own_crisis"
+ },
+ {
+  "id": 3840,
+  "en": "The smoke takes your legs before the fire does. The last thing you hear is the roof.",
+  "ctx": "play:a3_fire"
+ },
+ {
+  "id": 3841,
+  "en": "{They} died in the house of lac at Varnavata, on the night everyone believes the Pandavas died.",
+  "ctx": "play:end_death"
  }
 ]

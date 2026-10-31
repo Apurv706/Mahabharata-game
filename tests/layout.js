@@ -382,6 +382,8 @@ const TESTS = [
   ["baghchal", { stage: "stage_board_table", cast: ["shakuni"], opponent: "Shakuni" }], ["moksha", { stage: "stage_board_table", cast: ["boy"], opponent: "Vikarna" }],
   ["retort", { stage: "stage_lotus_garden", cast: ["duryodhana"], rounds: [{ line: "They say your family sweeps the stables.", replies: ["And yours sweeps the floor before the king.", "That is not true.", "Leave me alone."] }, { line: "Is that a bow or a broom?", replies: ["Come closer and find out.", "A bow.", "Go away."] }, { line: "Who taught you?", replies: ["Someone who could.", "Nobody.", "My mother."] }] }],
   ["draw", { stage: "stage_bow_courtyard", cast: ["guard"] }], ["formation", { stage: "stage_chakravyuha_top", array: "eagle" }], ["hands", { stage: "stage_dice_board_top", cast: ["shakuni"] }], ["pasha", null],
+  // The night the lac house burns (§18.2): the escape through the burning rooms, and the cellar's oil lines.
+  ["escape", { stage: "stage_lac_fire_top", start: "hall" }], ["fuse", { stage: "stage_lac_cellar", lines: 3, secs: 32 }],
 ];
 
 async function runDevice(browser, base, o, report) {

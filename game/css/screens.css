@@ -1473,10 +1473,10 @@ body.pr-slow .arena .incoming.go { transition-duration: calc(var(--dur) / var(--
 .trial.immersive.trial-escape > .cast, .trial.immersive.trial-fuse > .cast { display: none; }
 .trial.immersive .lacplan, .trial.immersive .laccellar { flex: 1 1 0; min-height: 0; background: none; display: flex; align-items: center; justify-content: center; }
 .trial.immersive .lacplan svg, .trial.immersive .laccellar svg { width: auto; height: 100%; max-width: 100%; max-height: 520px; filter: drop-shadow(0 8px 14px rgba(0, 0, 0, .5)); }
-.lacplan rect.room { fill: rgba(60, 40, 24, .78); stroke: #c9a06a; stroke-width: .6; cursor: pointer; }
-.lacplan rect.smoke { fill: rgba(70, 62, 58, .88); stroke: #c9a06a; stroke-width: .6; cursor: pointer; animation: lac-smoke 1.6s ease-in-out infinite alternate; }
+.lacplan rect.room { fill: rgba(30, 18, 10, .38); stroke: #c9a06a; stroke-width: .6; cursor: pointer; }
+.lacplan rect.smoke { fill: rgba(70, 62, 58, .72); stroke: #c9a06a; stroke-width: .6; cursor: pointer; animation: lac-smoke 1.6s ease-in-out infinite alternate; }
 .lacplan rect.fire { fill: #c0472f; stroke: #ffb04a; stroke-width: .8; animation: lac-fire .5s steps(2) infinite alternate; }
-@keyframes lac-smoke { from { fill: rgba(70, 62, 58, .78); } to { fill: rgba(96, 88, 84, .92); } }
+@keyframes lac-smoke { from { fill: rgba(70, 62, 58, .6); } to { fill: rgba(96, 88, 84, .82); } }
 @keyframes lac-fire { from { fill: #c0472f; } to { fill: #e06a2a; } }
 .lacplan .wall { stroke: #f3d9a4; stroke-width: 1.6; stroke-linecap: square; }
 .lacplan .door.stuck { stroke: #8a5a2a; stroke-width: 2.4; stroke-dasharray: 2 1.2; }
@@ -1491,8 +1491,10 @@ body.pr-slow .arena .incoming.go { transition-duration: calc(var(--dur) / var(--
 .lacplan .hold { fill: none; stroke: #ffd680; stroke-width: 1.6; transform: rotate(-90deg); transform-box: fill-box; transform-origin: center; }
 .lac-btns, .fuse-btns { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
 .fuse-btns { grid-template-columns: 1fr; }
-.lac-btns .trial-press, .lac-btns > *, .fuse-btns .trial-press { min-width: 0; width: 100%; padding-left: 4px; padding-right: 4px; white-space: nowrap; }
-.laccellar .floor { fill: rgba(40, 26, 16, .82); stroke: #c9a06a; stroke-width: .6; }
+.trial.immersive .btnrow.lac-btns { width: min(100%, 560px); align-self: center; }
+.trial.immersive .lac-btns .trial-press { min-width: 0; width: 100%; padding-left: 4px; padding-right: 4px; white-space: nowrap; font-size: 17px; }
+.trial.immersive .fuse-btns .trial-press { width: min(100%, 420px); justify-self: center; }
+.laccellar .floor { fill: rgba(20, 12, 6, .5); stroke: #c9a06a; stroke-width: .6; }
 .laccellar .lamp { fill: #ffd680; filter: drop-shadow(0 0 6px rgba(255, 214, 128, .9)); }
 .laccellar .light { fill: rgba(255, 200, 120, .16); }
 .laccellar .oil { fill: none; stroke: #6b4a2a; stroke-width: 2.2; stroke-linecap: round; cursor: pointer; }
@@ -1502,4 +1504,4 @@ body.pr-slow .arena .incoming.go { transition-duration: calc(var(--dur) / var(--
 .laccellar .cutpt { fill: #fff1cf; stroke: #ffb04a; stroke-width: .8; }
 .laccellar .snip { stroke: #fff1cf; stroke-width: 1.2; }
 .laccellar .firept circle { fill: #c0472f; } .laccellar .firept path { fill: #ffd27a; }
-@media (max-width: 560px) { .lac-btns { grid-template-columns: repeat(5, minmax(0, 1fr)); font-size: 14px; } }
+@media (max-width: 560px) { .trial.immersive .lac-btns .trial-press { font-size: 14px; min-height: 48px; } }

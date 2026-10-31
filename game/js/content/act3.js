@@ -78,13 +78,13 @@
     // lines; every line cut buys time when the fire comes. Or warn Yudhishthira plainly. Or say
     // nothing, and keep your own family out of it.
     {
-      id: "a3_fuse", when: KNOWS_PLOT, skipTo: "a3_fire", act: 3, age: 23, away: true, art: "stage_lac_wall", place: "Varnavata", caption: "The cellar under the house of lac",
+      id: "a3_fuse", when: KNOWS_PLOT, skipTo: "a3_fire", act: 3, age: 23, away: true, art: "stage_lac_cellar", place: "Varnavata", caption: "The cellar under the house of lac",
       title: "The last night of the festival",
       body: ["The feast is over. Kunti and her sons are asleep upstairs, and so are the Nishada woman and her five sons, who drank what was given them. In the cellar, Purochana's oil lines run from the door to every sleeping room.",
         "He means to light them tonight. The fire will come whatever you do. What you do before it comes is yours."],
       choices: [
         { id: "cut", t: "Go down to the cellar and cut the oil lines", game: "fuse", hint: "A test of stealth",
-          trial: { attr: "grace", skill: "stealth", stage: "stage_lac_wall", lines: 3, secs: 32, verb: "Cut",
+          trial: { attr: "grace", skill: "stealth", stage: "stage_lac_cellar", lines: 3, secs: 32, verb: "Cut",
             rules: "Purochana's guard walks the cellar with a lamp. Choose a line and hold to cut it while the light is away; caught in the light, let go. Cut two of the three before the guard has seen you twice.",
             stakes: ["Every line cut slows the fire tonight, and the Pandavas will owe you.", "The guard sends you up the stairs with the lines whole. The fire will run as fast as Purochana meant it to."] },
           win: { fx: { flag: ["cut_fuses", "bhima_debt"], bond: { yudhishthira: 1, bhima: 1 }, journal: "On the last night at Varnavata you cut Purochana's oil lines in the cellar." }, text: "The oil runs out across the stone and soaks into the earth. Upstairs, someone turns over in their sleep." },
@@ -101,7 +101,7 @@
     // those outside can run in. The epic has written who dies here: a Nishada woman and her five
     // sons, and Purochana. A failed escape is death, not a second chance.
     {
-      id: "a3_fire", act: 3, age: 23, canon: true, art: "scene_lac", place: "Varnavata", plate: ["#e5872e", "#2a1c1f"], caption: "The house of lac, burning",
+      id: "a3_fire", act: 3, age: 23, canon: true, art: "scene_lac_fire", place: "Varnavata", plate: ["#e5872e", "#2a1c1f"], caption: "The house of lac, burning",
       title: "The night of the fire",
       witness: ["The house of lac burns on the last night of the festival. Kunti and the Pandavas go down into the tunnel and out into the forest. Purochana dies in his own fire."],
       body: (S) => [
@@ -111,7 +111,7 @@
       ],
       choices: [
         { id: "run", t: (S) => (INSIDE(S) ? "Get to the tunnel" : "Run into the house to get people out"), game: "escape", hint: "The way through the burning rooms",
-          trial: { attr: "grace", skill: "stealth", stage: "stage_forest_maze_top", start: (S) => (INSIDE(S) ? (S.flags.includes("tried_nishada") ? "deep" : "hall") : "door"), auto: 0.35,
+          trial: { attr: "grace", skill: "stealth", stage: "stage_lac_fire_top", start: (S) => (INSIDE(S) ? (S.flags.includes("tried_nishada") ? "deep" : "hall") : "door"), auto: 0.7,
             rules: "The fire comes from Purochana's side, room by room, with the smoke ahead of it. Move through the doors to the storeroom, where the tunnel mouth is. Some doors are stuck: hold to force them. Sleepers can be woken and carried, and each one slows you.",
             stakes: ["You reach the tunnel, and whoever you carried comes with you.", "The fire catches you in the house. There is no second chance tonight."] },
           win: { fx: (S) => Object.assign({ flag: ["escaped_lac"], duty: { conscience: 1 }, journal: "You got out of the burning house at Varnavata through the tunnel." },
@@ -120,10 +120,10 @@
           close: { fx: { flag: ["escaped_lac", "lac_late"], injury: "scar", journal: "You came through the flames at Varnavata, and not everyone you carried came with you." },
             text: "You come through the last room with your sleeve alight. Whoever was on your back is not there when you drop into the dark, and you cannot go back." },
           lose: { fx: (S) => (S.storyMode ? { injury: "scar", flag: ["lac_burnt"], journal: "The fire caught you in the house at Varnavata. Someone dragged you out, burnt." }
-              : { die: true, flag: ["died_in_fire"], deathText: "{They} died in the house of lac at Varnavata, on the night everyone believes the Pandavas died.", set: { deathAt: { art: "scene_lac", caption: "The house at Varnavata, at dawn", act: 3 } } }),
+              : { die: true, flag: ["died_in_fire"], deathText: "{They} died in the house of lac at Varnavata, on the night everyone believes the Pandavas died.", set: { deathAt: { art: "end_fire", caption: "The house at Varnavata, at dawn", act: 3 } } }),
             text: (S) => (S.storyMode ? "The smoke takes your legs before the fire does. The next thing you know is cold air, and someone's hands under your arms, and your own skin." : "The smoke takes your legs before the fire does. The last thing you hear is the roof.") } },
         { id: "stay", t: "Stay with the sleepers and keep shaking them", req: { flag: "tried_nishada" }, locked: "", hint: "They will not wake",
-          fx: (S) => (S.storyMode ? { injury: "scar", flag: ["lac_burnt"], duty: { conscience: 1 } } : { die: true, flag: ["died_in_fire"], duty: { conscience: 1 }, deathText: "{They} would not leave the Nishada woman and her sons in the house of lac, and died beside them.", set: { deathAt: { art: "scene_lac", caption: "The house at Varnavata, at dawn", act: 3 } } }),
+          fx: (S) => (S.storyMode ? { injury: "scar", flag: ["lac_burnt"], duty: { conscience: 1 } } : { die: true, flag: ["died_in_fire"], duty: { conscience: 1 }, deathText: "{They} would not leave the Nishada woman and her sons in the house of lac, and died beside them.", set: { deathAt: { art: "end_fire", caption: "The house at Varnavata, at dawn", act: 3 } } }),
           text: (S) => (S.storyMode ? "They do not wake. You are still shaking the youngest when the smoke takes you, and still holding him when someone drags you out by the collar." : "They do not wake. You are still shaking the youngest when the smoke takes you.") },
         { id: "back", t: "Stay back with the crowd", req: (S) => !INSIDE(S), locked: "", fx: { memory: ["all", "You watched the house of lac burn from the lane."] },
           text: "You stand in the lane with everyone else and watch the roof fall in. Nobody comes out." }

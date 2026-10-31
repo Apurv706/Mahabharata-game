@@ -9,7 +9,7 @@
              running from the fire-point to the sleeping rooms. Choose a line, hold to cut it while
              the guard's lamp is away; caught in the light, let go. Each line cut buys time in the
              escape. The fire still comes.
-   Art comes later: STANDIN maps the pictures the briefs ask for to paintings the game has. */
+   Played on their own paintings: the burning house from above, and the cellar. */
 (function (K) {
   "use strict";
   const U = K.UI;
@@ -20,14 +20,9 @@
     document.addEventListener("keydown", on, true);
     return () => document.removeEventListener("keydown", on, true);
   }
-  // Pictures asked for in docs/Art_Brief_New_Storylines.pdf, and what stands in until they arrive.
-  const STANDIN = {
-    stage_lac_house_plan: "stage_forest_maze_top",   // the burning house from above (tall + wide)
-    stage_lac_cellar: "stage_lac_wall",              // the cellar with the oil lines (tall + wide)
-    scene_lac_dawn: "scene_lac",                     // the burnt house at dawn (the ending)
-    scene_lac_escape: "scene_lac"                    // the tunnel mouth in the garden, smoke behind
-  };
-  K.LAC_STANDIN = STANDIN;
+  // The pictures (arrived 31 October): the burning house from above (stage_lac_fire_top, 16:9 and
+  // tall) for the escape; the cellar (stage_lac_cellar, a 3:1 strip and tall) for the fuse; the
+  // house burning (scene_lac_fire) for the scene; the burnt house at dawn (end_fire) for the ending.
 
   // ---------- The house, as a plan ----------
   // 5 columns by 5 rows of rooms; walls are listed as door-less edges. Purochana's room (the
@@ -55,10 +50,12 @@
       const fuses = t.fuses != null ? t.fuses : (S.fusesCut || 0);
       // The fire spreads one room every few seconds: a little slower for a quick, calm player, and
       // slower again for every oil line cut in the cellar.
-      const spread = clamp(2.5 + power * 0.1, 2.5, 3.4) + 0.5 * Math.min(3, fuses);
+      // (Tuned so a straight run is safe, and carrying the sleepers out is the gamble.)
+      const spread = clamp(1.4 + power * 0.04, 1.4, 1.75) + 0.3 * Math.min(3, fuses);
       const fire = new Set([at(4, 0)]), smoke = new Set();
       const tunnel = at(0, 4), fireAt = at(4, 0);
-      let me = t.start === "door" ? at(0, 0) : t.start === "deep" ? at(3, 1) : at(2, 0);
+      const start = K.val(t.start, S);
+      let me = start === "door" ? at(0, 0) : start === "deep" ? at(3, 1) : at(2, 0);
       const sleepers = new Set([at(3, 3), at(1, 2)]);
       let carrying = 0, lost = 0, over = false, holding = null, holdFrom = 0, lastSpread = 0, moving = null, elapsed = 0, lastT = 0;
       const stuckOpened = new Set();
@@ -106,8 +103,8 @@
         take.forEach((j) => { fire.add(j); smoke.delete(j); });
         fire.forEach((i) => neighbours(i).forEach((j) => { if (!fire.has(j)) smoke.add(j); }));
         sfx("drum");
-        if (fire.has(me)) return caught();
         tally(); draw();
+        if (fire.has(me)) return caught();
       }
       const dist = (a, b) => Math.abs(a % COLS - b % COLS) + Math.abs(Math.floor(a / COLS) - Math.floor(b / COLS));
       function caught() {
@@ -151,7 +148,7 @@
       // Buttons: four directions and a hold.
       const dir = (dc, dr) => () => { const c0 = me % COLS + dc, r0 = Math.floor(me / COLS) + dr; if (c0 < 0 || c0 >= COLS || r0 < 0 || r0 >= ROWS) return; stepTo(at(c0, r0)); };
       const up = dir(0, -1), down = dir(0, 1), left = dir(-1, 0), right = dir(1, 0);
-      [["Up", up], ["Left", left], ["Right", right], ["Down", down]].forEach(([l, f]) => row.appendChild(U.pressButton(l, f)));
+      [["↑", up], ["←", left], ["→", right], ["↓", down]].forEach(([l, f]) => row.appendChild(U.pressButton(l, f)));
       row.appendChild(U.pressButton("Wake", startWake, () => {}));
       const offKeys = keyset({ ArrowUp: up, ArrowDown: down, ArrowLeft: left, ArrowRight: right, w: up, s: down, a: left, d: right, " ": startWake, Enter: startWake });
       // A swipe on the plan.

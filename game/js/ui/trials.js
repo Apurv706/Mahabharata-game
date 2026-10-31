@@ -126,7 +126,7 @@
     // The harness rolls instead of playing: the better your stats, the likelier the win.
     function auto() {
       const p = clamp((t.auto != null ? t.auto : 0.2) + power * 0.055, 0.1, 0.72), r = K.rng();
-      finish(r < p ? "win" : r < p + 0.15 && (kind === "aim" || kind === "steady") ? "close" : "lose", null);
+      finish(r < p ? "win" : r < p + 0.15 && (kind === "aim" || kind === "steady" || kind === "escape") ? "close" : "lose", null);
     }
     intro();
     return { draw: () => { if (phase === "intro") intro(); } };
