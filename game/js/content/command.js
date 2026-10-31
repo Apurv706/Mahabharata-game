@@ -10,10 +10,10 @@
   const fighting = { side: ["pandava", "kaurava"] };
   const won = (S) => K.record(S).last === "won";
   const foeSide = (S) => (S.side === "kaurava" ? "Pandava" : "Kaurava");
-  // Until the paintings in docs/Art_Brief_New_Storylines.pdf arrive, each screen borrows one.
+  // The paintings for each screen (arrived 31 Oct; docs/Art_Brief_New_Storylines.pdf).
   const STANDIN = {
-    scene_war_council: "scene_envoy", stage_array_field: "stage_chakravyuha_top", scene_promotion: "war_eve",
-    fight_hold_karna: "fight_war_sunset", fight_hold_duryodhana: "fight_war_field", fight_hold_arjuna: "fight_war_chariot", fight_hold_bhima: "fight_war_field"
+    scene_war_council: "scene_war_council", stage_array_field: "stage_vyuha_top", scene_promotion: "scene_command_banner",
+    fight_hold_karna: "fight_karna_chariot", fight_hold_duryodhana: "fight_duryodhana_line", fight_hold_arjuna: "fight_arjuna_chariot", fight_hold_bhima: "fight_bhima_charge"
   };
   K.COMMAND_STANDIN = STANDIN;
   const companies = (S) => { const a = K.warAllies(S); return [a[0]].concat(a.length > 1 ? ["ally"] : [], ["soldiers"]); };
@@ -36,28 +36,28 @@
   // ---------- The holding fights ----------
   // Each is a fight that cannot be won by killing: the champion is held for N rounds, or the line breaks.
   const holdEnc = (id, title, hold, foes, extra) => K.encounter(Object.assign({
-    id, title, hold, lethal: false, curse: true, allies: K.warAllies, spare: false, flee: { tags: ["retreat"] },
+    id, title, hold, hard: true, lethal: false, curse: true, allies: K.warAllies, spare: false, flee: { tags: ["retreat"] },
     holdText: "The sun touches the horizon. You held.", art: STANDIN["fight_" + id] || "scene_day13", callHelp: K.warHelp
   }, extra, { enemies: foes }));
   holdEnc("hold_karna", "Karna's chariot, pinned", 6,
-    [K.foe("Karna", 10, { abilities: ["strike", "arrows", "heavy"], hero: true, person: "karna", hp: 900, atk: 18 }), K.foe("Karna's charioteer", 4, { abilities: ["strike", "guard"] })],
+    [K.foe("Karna", 10, { abilities: ["strike", "arrows", "heavy"], hero: true, person: "karna", hp: 900, atk: 8 }), K.foe("Karna's charioteer", 4, { abilities: ["strike", "guard"] })],
     { caption: "Until sunset", intro: "The order is simple and impossible: keep Karna's chariot here, on this stretch of road, until the sun goes down. Not to beat him. To be in his way.",
       beats: [{ round: 2, text: "Karna's arrows come in a sheet. Your company's shields go up together.", run: (B) => B.living("friends").forEach((u) => B.status(u, "guard", 1)) },
         { round: 4, text: "He has found your charioteer. The horses are loose. You fight on foot now.", run: (B) => { const p = B.living("player")[0]; if (p) B.status(p, "weakened", 2); } }],
       win: { fx: { flag: "held_karna", rep: { pandava: 2 }, journal: "On the sixteenth day you kept Karna's chariot pinned on the road until sunset." }, text: "The sun goes down. Karna lowers his bow, looks at you once across the wreckage, and turns his chariot back toward his own lines." },
       lose: { fx: { flag: ["broke_karna", "company_broken"] }, next: "hold_broken", text: "The line in front of Karna's chariot breaks, and your company breaks with it." },
       flee: { fx: { flag: "broke_karna" }, text: "You pull back off the road. Karna's chariot rolls through where you stood." } });
-  holdEnc("hold_duryodhana", "The king's flank", 10,
-    [K.foe("Duryodhana", 9, { abilities: ["strike", "heavy"], hero: true, person: "duryodhana", hp: 800, atk: 15 }), K.foe("Kaurava spearman", 5), K.foe("Kaurava spearman", 5)],
-    { caption: "Ten rounds", holdText: "Yudhishthira's chariot has moved on. The flank is safe.",
-      intro: "Duryodhana's division is coming at the king's flank, and yours is what stands between. Hold ten rounds and the king will be gone.",
+  holdEnc("hold_duryodhana", "The king's flank", 8,
+    [K.foe("Duryodhana", 9, { abilities: ["strike", "heavy"], hero: true, person: "duryodhana", hp: 800, atk: 6 }), K.foe("Kaurava spearman", 3)],
+    { caption: "Eight rounds", holdText: "Yudhishthira's chariot has moved on. The flank is safe.",
+      intro: "Duryodhana's division is coming at the king's flank, and yours is what stands between. Hold eight rounds and the king will be gone.",
       beats: [{ round: 3, text: "Duryodhana himself comes forward with his mace, roaring at his men to follow.", run: (B) => B.living("enemy").forEach((u) => B.status(u, "inspired", 2)) },
         { round: 7, text: "Your company is thinning. The ones who are left close the gaps without being told.", run: (B) => B.living("friends").forEach((u) => B.status(u, "guard", 1)) }],
-      win: { fx: { flag: "held_duryodhana", bond: { yudhishthira: 2 }, journal: "You kept Duryodhana's division off Yudhishthira's flank for ten rounds." }, text: "The king's chariot is gone from the flank. Duryodhana sees it, and his face does something you will not forget." },
+      win: { fx: { flag: "held_duryodhana", bond: { yudhishthira: 2 }, journal: "You kept Duryodhana's division off Yudhishthira's flank for eight rounds." }, text: "The king's chariot is gone from the flank. Duryodhana sees it, and his face does something you will not forget." },
       lose: { fx: { flag: ["broke_duryodhana", "company_broken"] }, next: "hold_broken", text: "The flank gives way. Your company goes down around you." },
       flee: { fx: { flag: "broke_duryodhana" }, text: "You fall back. Others close the flank, late." } });
   holdEnc("hold_arjuna", "Against Arjuna's chariot", 6,
-    [K.foe("Arjuna", 10, { abilities: ["strike", "arrows", "aimed"], hero: true, person: "arjuna", hp: 900, atk: 18 }), K.foe("Pandava chariot-warrior", 5, { abilities: ["strike", "arrows"] })],
+    [K.foe("Arjuna", 10, { abilities: ["strike", "arrows", "aimed"], hero: true, person: "arjuna", hp: 900, atk: 6 }), K.foe("Pandava chariot-warrior", 4, { abilities: ["strike", "arrows"] })],
     { caption: "Six rounds under the arrows", holdText: "A conch calls Arjuna's chariot away. You are still standing.",
       intro: "Arjuna's chariot is turning toward your stretch of the line. No one has stood in front of it and stayed. The order is to stand in front of it.",
       beats: [{ round: 2, text: "His arrows come faster than you can see them. Men fall on either side of you.", run: (B) => B.living("friends").forEach((u) => { if (u.side !== "player") u.hp = Math.max(1, u.hp - Math.round(u.maxHp * 0.15)); }) },
@@ -65,13 +65,13 @@
       win: { fx: { flag: "held_arjuna", rep: { kuru: 2 }, journal: "You stood against Arjuna's chariot for six rounds, and were still standing when it turned away." }, text: "Krishna turns the chariot toward some greater need, and Arjuna looks back once at the line that did not break." },
       lose: { fx: { flag: ["broke_arjuna", "company_broken"] }, next: "hold_broken", text: "The arrows do what arrows do. The line in front of Arjuna's chariot is gone." },
       flee: { fx: { flag: "broke_arjuna" }, text: "You pull back out of the arrows. No one who saw it blames you." } });
-  holdEnc("hold_bhima", "Bhima's charge", 8,
-    [K.foe("Bhima", 10, { abilities: ["strike", "heavy", "crush"], hero: true, person: "bhima", hp: 950, atk: 17 }), K.foe("Pandava footsoldier", 5)],
-    { caption: "Eight rounds", holdText: "Bhima turns toward another part of the field, roaring. You held.",
-      intro: "Bhima comes across the field like a wall falling, with his mace up and his brothers' names in his mouth. Stand against it for eight rounds.",
+  holdEnc("hold_bhima", "Bhima's charge", 7,
+    [K.foe("Bhima", 10, { abilities: ["strike", "heavy"], hero: true, person: "bhima", hp: 950, atk: 6 }), K.foe("Pandava footsoldier", 3)],
+    { caption: "Seven rounds", holdText: "Bhima turns toward another part of the field, roaring. You held.",
+      intro: "Bhima comes across the field like a wall falling, with his mace up and his brothers' names in his mouth. Stand against it for seven rounds.",
       beats: [{ round: 2, text: "The first charge hits. The front rank is simply not there any more.", run: (B) => B.living("friends").forEach((u) => { if (u.side !== "player") u.hp = Math.max(1, u.hp - Math.round(u.maxHp * 0.2)); }) },
         { round: 5, text: "He has seen your banner. He is coming for it.", run: (B) => { const p = B.living("player")[0]; if (p) B.status(p, "exposed", 2); } }],
-      win: { fx: { flag: "held_bhima", rep: { kuru: 2 }, journal: "You stood against Bhima's charge for eight rounds." }, text: "Bhima wheels away toward the Kaurava princes he has sworn to kill. Your line is a ruin, and it is still a line." },
+      win: { fx: { flag: "held_bhima", rep: { kuru: 2 }, journal: "You stood against Bhima's charge for seven rounds." }, text: "Bhima wheels away toward the Kaurava princes he has sworn to kill. Your line is a ruin, and it is still a line." },
       lose: { fx: { flag: ["broke_bhima", "company_broken"] }, next: "hold_broken", text: "Bhima goes through your company like a hand through smoke." },
       flee: { fx: { flag: "broke_bhima" }, text: "You fall back before the charge reaches you. The men who stayed do not." } });
 
@@ -129,11 +129,11 @@
     holdScene("hold_karna_offer", "Karna's chariot", "hold_karna", (S) => S.side === "pandava" && ranked(S) && flank(S, "chariot") && !S.flags.includes("company_broken") && !K.hasVow("spare_karna", S) && !S.dead.includes("karna"), "a6_day17",
       ["On the sixteenth day Karna commands the Kaurava army, and his chariot goes where it likes. Dhrishtadyumna wants it kept on one stretch of road until sunset, so that the king's wing can withdraw.", "He does not say anyone will survive it. He asks whose division it will be."]),
     holdScene("hold_duryodhana_offer", "The king's flank", "hold_duryodhana", (S) => S.side === "pandava" && ranked(S) && flank(S, "division") && !S.flags.includes("company_broken"), "a6_day16",
-      ["Duryodhana's division has found Yudhishthira's flank. The king must be got away, and someone must stand on the flank while it happens.", "Ten rounds, Dhrishtadyumna says. Ten rounds, and the king is gone."]),
+      ["Duryodhana's division has found Yudhishthira's flank. The king must be got away, and someone must stand on the flank while it happens.", "Eight rounds, Dhrishtadyumna says. Eight rounds, and the king is gone."]),
     holdScene("hold_arjuna_offer", "Arjuna's chariot", "hold_arjuna", (S) => S.side === "kaurava" && ranked(S) && flank(S, "chariot") && !S.flags.includes("company_broken"), "a6_day16",
       ["Arjuna's white horses are turning toward your part of the line. Drona's order comes down the line ahead of them: stand, and keep standing, until something draws him away.", "Nobody who has stood in front of that chariot has told anyone what it was like."]),
     holdScene("hold_bhima_offer", "Bhima's charge", "hold_bhima", (S) => S.side === "kaurava" && ranked(S) && flank(S, "division") && !S.flags.includes("company_broken"), "a6_day17",
-      ["Bhima is coming across the field toward the Kaurava princes, and your division is in the way. Karna, who commands now, sends one word: hold.", "Eight rounds, the runner says. Then he looks at your company, and does not say anything else."]),
+      ["Bhima is coming across the field toward the Kaurava princes, and your division is in the way. Karna, who commands now, sends one word: hold.", "Seven rounds, the runner says. Then he looks at your company, and does not say anything else."]),
     // After a broken line: fall back with a wound, be taken, or stay with the men who stayed.
     {
       id: "hold_broken", act: 6, age: 44, war: true, away: true, art: "war_capture", place: "Kurukshetra", caption: "The line, after", title: "What is left",
@@ -183,6 +183,9 @@
       ]
     }
   ]);
+
+  // Holding fights stand on their own painting, tall on upright screens (ui/battle.js).
+  K.COMMAND_FIGHT_BG = { hold_karna: STANDIN.fight_hold_karna, hold_duryodhana: STANDIN.fight_hold_duryodhana, hold_arjuna: STANDIN.fight_hold_arjuna, hold_bhima: STANDIN.fight_hold_bhima };
 
   // Where each comes: before a day's scene, when it applies (other streams add to these lists too).
   const before = (id, pre) => { K.BEFORE[id] = (K.BEFORE[id] || []).concat(pre); };
