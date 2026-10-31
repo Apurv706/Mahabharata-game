@@ -567,6 +567,41 @@ async function runDevice(browser, base, o, report) {
       after.scene && !after.page ? null : "the scene did not come back", after.slow ? "the game clock stayed slowed" : null].filter(Boolean) });
   }
 
+  // Stream F: a friend who comes when called in an ordinary fight (engine/friends.js), the call's
+  // risk note in the tools row; a board game at the practice ground with the teacher's hint showing;
+  // the "Meet blows for me" switch in the menu.
+  await fresh(page, url, o);
+  await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 24, act: 3, friend: "charu" }); K.S.bonds.charu = 7; K.go("a3_lac"); K.UI.startBattle("e_bandits", () => {}); }, LIFE);
+  await page.waitForTimeout(900);
+  {
+    const r = await page.evaluate(() => { const b = document.querySelector(".call-help"); if (!b) return { no: true }; const rb = b.getBoundingClientRect(); b.click(); return { note: !!b.querySelector(".call-note"), on: rb.bottom <= innerHeight + 1 && rb.top >= 0 }; });
+    await page.waitForTimeout(900);
+    const came = await page.evaluate(() => K.Combat.state() && K.Combat.state().units.some((u) => u.person === "charu" && u.called));
+    report.push({ browser: browser._name, device: label, screen: "a friend called into a fight", problems: [r.no ? "no Call for help in an ordinary fight" : null, r.no || r.note ? null : "no risk note on the call", r.no || r.on ? null : "the call button is off screen", came ? null : "Charu did not come when called"].filter(Boolean) });
+  }
+  await check("fight with a friend", ["battle"]);
+  await fresh(page, url, o);
+  await goScene(page, "a2_trial", { log: ["a2_pathtest:strategist"] });
+  await page.evaluate(() => K.prefs({ practiceSpeed: "slow" }));
+  await page.click("#nav-menu"); await page.waitForTimeout(300);
+  {
+    const sw = await page.evaluate(() => { const i = document.querySelector("#m-assist"); return i ? i.getBoundingClientRect().height : 0; });
+    report.push({ browser: browser._name, device: label, screen: "menu: Meet blows for me", problems: sw ? [] : ["no assist switch in the menu"] });
+  }
+  await page.click("#m-practice"); await page.waitForTimeout(700);
+  await page.click('.pr-tile[data-kind="chaupar"]'); await page.waitForTimeout(700);
+  {
+    const seg = await page.evaluate(() => { const s = document.querySelector(".pr-speed span"); return s ? s.textContent : ""; });
+    report.push({ browser: browser._name, device: label, screen: "practice: help segment on a board game", problems: /Help|मदद/.test(seg) ? [] : ["the speed segment did not become Help: " + seg] });
+  }
+  await page.click(".trial .trial-body .btnrow .cta:not(.pr-show)"); await page.waitForTimeout(700);
+  for (let i = 0; i < 8 && !(await page.$(".pc.me.can")); i++) { await page.click(".trial .btnrow .cta").catch(() => {}); await page.waitForTimeout(1300); }
+  {
+    const hint = await page.evaluate(() => ({ moving: !!document.querySelector(".pc.me.can"), hint: !!document.querySelector(".pr-hint"), row: !!document.querySelector(".pr-hintrow") }));
+    report.push({ browser: browser._name, device: label, screen: "practice: the teacher points out the move", problems: !hint.moving || hint.hint || hint.row ? [] : ["no hint shown on a chaupar turn at Slow"] });
+  }
+  await check("practice: a board game with help", ["trial"]);
+
   // The act card and the title card: shown, gone by themselves, and gone at a tap.
   await fresh(page, url, o, { beats: true });
   await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life); K.S.at = "hastinapura"; K.go("a2_trial"); }, LIFE);

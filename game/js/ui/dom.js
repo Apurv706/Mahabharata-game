@@ -44,8 +44,10 @@
     return [].concat(K.val(arr) || []).filter(Boolean).map((b) => {
       if (typeof b === "string" || Array.isArray(b)) return "<p>" + U.t(b) + "</p>";
       if (b.speaker) {
-        const face = U.portraitKey(U.personByName(b.speaker));
-        return '<div class="said' + (face ? " with-face" : "") + '">' + (face ? U.thumb(face, "face") : "") + '<div><div class="lbl">' + U.t(b.speaker) + '</div><p class="speech">' + U.t(b.line) + "</p></div></div>";
+        const who = U.personByName(b.speaker), face = U.portraitKey(who);
+        // A speaker with a puppet of their own speaks through it: the small figure's jaw moves while the line is written.
+        const fig = who && K.PUPPETS && K.PUPPETS[who] && U.puppetBadge ? U.puppetBadge(U.puppetFor(who), { h: 64, cls: "said-fig" }) : "";
+        return '<div class="said' + (face || fig ? " with-face" : "") + (fig ? " with-fig" : "") + '">' + (fig || (face ? U.thumb(face, "face") : "")) + '<div><div class="lbl">' + U.t(b.speaker) + '</div><p class="speech">' + U.t(b.line) + "</p></div></div>";
       }
       if (b.memory) return '<p class="memory">' + U.t(b.memory) + "</p>";
       if (b.curse) return '<p class="curse">' + U.t(b.curse) + "</p>";
@@ -428,7 +430,9 @@
       const el = run.items[run.i++];
       if (!el) return U.stageFinish(true);
       el.classList.add("shown");
-      if (el.classList.contains("write")) U.write(el, () => { if (stageRun === run) run.timer = setTimeout(step, 320); });
+      const fig = el.classList.contains("said") ? el.querySelector(".said-fig .pp") : null;
+      if (fig) fig.classList.add("talk");
+      if (el.classList.contains("write")) U.write(el, () => { if (fig) fig.classList.remove("talk"); if (stageRun === run) run.timer = setTimeout(step, 320); });
       else run.timer = setTimeout(step, holdAfter(el));
     };
     run.timer = setTimeout(step, 60);

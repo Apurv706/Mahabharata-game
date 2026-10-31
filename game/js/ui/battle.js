@@ -24,7 +24,7 @@
     // The great war opens each fight with the call to arms; other fights with a drum call.
     if (K.Sound && K.ENCOUNTERS[encId]) K.Sound.play(K.ENCOUNTERS[encId].lethal && K.S.act === 6 ? "callToArms" : "drumCall");
     if (K.Sound) K.Sound.mood("battle");
-    C.stepNext = U.timed() && !K.headless;
+    C.stepNext = U.timed() && !K.headless && !U.assist();
     C.start(encId, onEnd);
     drums.start();
   };
@@ -89,7 +89,7 @@
   U.FIGHT_BG = FIGHT_BG;
   function arenaHtml(B) {
     const stage = K.val(B.enc.stage) || K.val(B.enc.art);
-    const actor = (u) => '<span class="actor ' + u.side + (u.hp <= 0 ? " down" : "") + '" data-uid="' + u.uid + '">' +
+    const actor = (u) => '<span class="actor ' + u.side + (u.hp <= 0 ? " down" : "") + (u.side === "enemy" && u.hp > 0 ? " far" : "") + '" data-uid="' + u.uid + '">' +
       U.puppet(specFor(u), { h: 150, flip: u.side === "enemy", pose: u.hp <= 0 ? "dead" : u.side === "player" ? "brace" : "stand", label: u.side === "player" ? K.tr("You") : null }) + '<span class="pops"></span></span>';
     const friends = B.units.filter((u) => u.side !== "enemy"), foes = B.units.filter((u) => u.side === "enemy");
     return '<div class="arena" id="arena" style="--stage:url(\'' + U.artUrl(stage) + '\')" aria-hidden="true"><div class="team left">' + friends.map(actor).join("") +
@@ -101,6 +101,8 @@
     const svg = el && el.querySelector(".pp");
     if (!svg) return;
     svg.setAttribute("class", svg.getAttribute("class").replace(/pose-\S+/, "pose-" + p));
+    // An enemy steps into the light to act, and back into the soft distance after.
+    if (el.classList.contains("enemy")) el.classList.toggle("far", p === "stand" && !el.classList.contains("down"));
     clearTimeout(svg._t);
     if (ms) svg._t = setTimeout(() => { if (svg.isConnected && !el.classList.contains("down")) svg.setAttribute("class", svg.getAttribute("class").replace(/pose-\S+/, "pose-" + (el.classList.contains("player") ? "brace" : "stand"))); }, ms);
   }
@@ -353,6 +355,7 @@
 
     if (B.over) {
       stopQte(); drums.stop();
+      if (B.over === "flee") { const P = C.player(); if (P) pose(P.uid, "turn"); } // you turn your back on the fight
       const msg = { win: K.val(enc.winLine) || "The fight is won.", lose: enc.lethal && !K.S.storyMode ? "You have fallen." : "You are beaten.", flee: "You leave the fight behind.", spare: "You let them live." }[B.over];
       if (K.Sound && !B._sounded) { B._sounded = true; if (B.over === "lose" && enc.lethal && !K.S.storyMode) K.Sound.play("fall"); }
       box.appendChild(U.el('<div class="result"><p><b>' + U.t(msg) + "</b></p></div>"));
@@ -386,7 +389,12 @@
     if (idle.length) box.appendChild(U.el('<p class="idle-moves">' + U.esc(U.tr("No allies here for: {moves}", { moves: idle.map((a) => a.name).join(", ") })) + "</p>"));
 
     const tools = U.el('<div class="battle-tools"></div>');
-    if (call && !call.why) { const cb = U.button("ghost call-help", U.esc(call.name), () => C.act("call", null)); cb.title = call.desc; tools.appendChild(cb); }
+    if (call && !call.why) {
+      // Who would come, and the risk to them: Charu has no armour.
+      const near = enc.callHelp === undefined && K.friendsNear ? K.friendsNear(K.S, enc) : [];
+      const note = near[0] === "charu" ? U.tr("Charu has no armour") : near[0] ? K.personName(near[0]) : "";
+      const cb = U.button("ghost call-help", U.esc(call.name) + (note ? '<small class="call-note">' + U.esc(note) + "</small>" : ""), () => C.act("call", null)); cb.title = call.desc; tools.appendChild(cb);
+    }
     C.fallen().forEach((u) => tools.appendChild(U.button("cta secondary", U.tr("Pull {name} out of the fighting", { name: K.text(u.src || u.name) }) + "<small>" + U.tr("Costs your turn") + "</small>", () => C.pull(u.uid))));
     C.spareable().forEach((e) => tools.appendChild(U.button("cta secondary", U.tr("Spare {name}", { name: K.text(e.src || e.name) }), () => C.spare(e.uid))));
     if (C.canFlee()) {

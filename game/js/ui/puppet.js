@@ -180,11 +180,16 @@
       '<path d="M73.6 41.8 L74.3 45.6" stroke="#c0281e" stroke-width="1.3" stroke-linecap="round"/>' +
       (spec.eye ? '<path d="M62 44 L76 53" stroke="#24120a" stroke-width="2.4"/><ellipse cx="68.5" cy="49" rx="4" ry="3.2" fill="#2a1a12"/>' : "") +
       (!she && grown && !spec.beard ? '<path d="M71 58.2 Q74.5 56.6 77.4 58.4 Q78.6 60.4 76.6 60.6 Q76.8 59.2 74.6 59.2 Q72.8 59.4 71 58.2 Z" fill="' + hair + '"/>' : "") +
-      (spec.beard ? '<path d="M58 60 Q63 76 71 63 Q72.5 60 72 58 Q66 64 58 60 Z" fill="' + hair + '"' + OUT + "/>" : "") +
+      // The lower jaw is a separate piece on a hinge (the beard rides on it), so the puppet can speak.
+      '<g class="jaw"><path d="M56 59 Q63 67 73 60 L73.5 62 Q63 71 55.5 61 Z" fill="' + skin + '"' + OUT + "/>" +
+      (spec.beard ? '<path d="M58 60 Q63 76 71 63 Q72.5 60 72 58 Q66 64 58 60 Z" fill="' + hair + '"' + OUT + "/>" : "") + "</g>" +
       (she ? '<circle cx="78.6" cy="57.2" r="1.7" fill="none" stroke="' + trim + '" stroke-width="0.9"/>' : "") +
       (stage !== "child" ? '<circle cx="56.5" cy="58.5" r="2.9" fill="' + trim + '"' + OUT + '/><circle cx="56.5" cy="58.5" r="1.1" fill="' + cloth + '"/>' : "") +
       headgearSvg(she ? (spec.headgear === "kirita" || spec.headgear === "mukuta" ? spec.headgear : null) : spec.headgear || (they ? "band" : "jata"), trim, cloth, hair, stage === "elder");
-    const backItem = spec.heir === "bow" && spec.item !== "bow" ? '<path d="M46 74 Q34 98 46 122" fill="none" stroke="#5a3418" stroke-width="2.4"/><path d="M46 74 L46 122" stroke="#efe2c0" stroke-width="0.6"/>' : "";
+    const backItem = (spec.heir === "bow" && spec.item !== "bow" ? '<path d="M46 74 Q34 98 46 122" fill="none" stroke="#5a3418" stroke-width="2.4"/><path d="M46 74 L46 122" stroke="#efe2c0" stroke-width="0.6"/>' : "") +
+      // An archer's quiver over the shoulder; a healer's satchel at the hip.
+      (spec.item === "bow" ? '<path d="M44 76 L52 74 L50 104 L44 105 Z" fill="#7a4a24"' + OUT + '/><path d="M46 76 L45 66 M48.5 75.5 L48 65 M51 75 L51 64" stroke="#efe2c0" stroke-width="1.2"/><path d="M45 66l1.6-3 1.4 3M47.5 65l1.6-3 1.4 3M50 64l1.6-3 1.4 3" fill="#b2432a" stroke="none"/>' : "") +
+      (spec.item === "bowl" ? '<path d="M70 104 L80 104 L81 116 L69 116 Z" fill="#8a6a3a"' + OUT + '/><path d="M70 104 Q75 100 80 104" fill="none" stroke="#5a3418" stroke-width="1.4"/><path d="M50 73 L76 104" stroke="#5a3418" stroke-width="1.2"/>' : "");
     // The dhoti's pleats fall from the waist, with the end of the waist-sash hanging in front.
     const pleats = she ? '<path d="M58 110 L54 188 M62 110 L63 188 M66 110 L72 188" stroke="' + trim + '" stroke-width="0.9" opacity="0.55"/>'
       : '<path d="M58 110 L55 151 M61.5 110 L61 151 M65 110 L67 151" stroke="' + trim + '" stroke-width="0.9" opacity="0.6"/><path d="M66 108 L71 130 L66.5 128 L64 109 Z" fill="' + trim + '"' + OUT + "/>";

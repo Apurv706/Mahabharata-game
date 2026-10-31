@@ -53,7 +53,7 @@
         items.map((id, i) => '<button type="button" class="tile" data-id="' + id + '" aria-label="' + U.esc(K.tr(SETS[set].names[id])) + '"><span class="n">' + (i + 1) + "</span>" + tileFace(set, id) + (set !== "verse" ? '<span class="nm">' + U.tr(SETS[set].names[id]) + "</span>" : "") + "</button>").join("") +
         '</div><p class="game-note" aria-live="polite"></p>';
       const tiles = [...host.querySelectorAll(".tile")], score = host.querySelector(".score"), note = host.querySelector(".game-note");
-      const later = (ms, f) => timers.push(setTimeout(f, ms));
+      const later = (ms, f) => timers.push(setTimeout(f, ms / (K.practiceSpeed ? K.practiceSpeed() : 1))); // slower at the practice ground
       const tally = () => { score.textContent = K.tr(t.tally || "Round {n} of {m} · Right: {r}", { n: Math.min(round + 1, lengths.length), m: lengths.length, r: right }); };
       const light = (i, cls, ms) => { const el = tiles[i]; el.classList.add(cls); later(ms, () => el.classList.remove(cls)); };
       function start() {

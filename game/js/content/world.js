@@ -143,7 +143,7 @@
 
   // Allies who can fight beside you.
   K.UNITS = {
-    charu: () => ({ name: "Charu", hp: 40, atk: 7, def: 2, abilities: ["strike", "heavy"], person: "charu" }),
+    charu: () => ({ name: "Charu", hp: 34, atk: 7, def: 0, abilities: ["strike", "heavy"], person: "charu", armed: true }), // no armour
     vasu: (S) => ({ name: "Vasu", hp: S.age >= 34 ? 44 : 26, atk: S.age >= 34 ? 8 : 4, def: 2, abilities: ["strike", "guard"], person: "vasu" }),
     madhavi: () => ({ name: "Madhavi", hp: 34, atk: 4, def: 1, abilities: ["strike", "salve"], person: "madhavi" }),
     revat: () => ({ name: "Revat", hp: 42, atk: 7, def: 2, abilities: ["strike", "swerve"], person: "revat" }),
@@ -152,11 +152,11 @@
     ugra: () => ({ name: "Ugra, the miller's son", hp: 46, atk: 7, def: 2, abilities: ["strike", "heavy"], person: "ugra" }),
     soldiers: () => ({ name: "Your soldiers", plural: true, hp: 50, atk: 6, def: 2, abilities: ["strike", "arrows"] }),
     // Friends who can answer a call in the war (see abilities.js "call").
-    karna: () => ({ name: "Karna", hp: 220, atk: 13, def: 4, abilities: ["strike", "arrows", "heavy"], person: "karna" }),
-    duryodhana: () => ({ name: "Duryodhana", hp: 210, atk: 12, def: 4, abilities: ["strike", "heavy"], person: "duryodhana" }),
+    karna: () => ({ name: "Karna", hp: 220, atk: 13, def: 4, abilities: ["strike", "arrows", "heavy", "feint"], person: "karna" }), // fierce and unpredictable
+    duryodhana: () => ({ name: "Duryodhana", hp: 210, atk: 12, def: 4, abilities: ["strike", "heavy", "crush"], person: "duryodhana" }),
     abhimanyu: () => ({ name: "Abhimanyu", hp: 120, atk: 11, def: 3, abilities: ["strike", "arrows", "heavy"], person: "abhimanyu" }),
-    arjuna: () => ({ name: "Arjuna", hp: 220, atk: 14, def: 4, abilities: ["strike", "arrows", "aimed"], person: "arjuna" }),
-    bhima: () => ({ name: "Bhima", hp: 260, atk: 14, def: 4, abilities: ["strike", "heavy", "crush"], person: "bhima" }),
+    arjuna: () => ({ name: "Arjuna", hp: 220, atk: 14, def: 4, abilities: ["arrows", "aimed", "pin"], person: "arjuna" }), // strikes from range
+    bhima: () => ({ name: "Bhima", hp: 260, atk: 14, def: 4, abilities: ["strike", "heavy", "roar"], person: "bhima" }), // takes the blows
     // A company of your own, for those who passed the commander's test on the eve of the war.
     company: () => ({ name: "Your company", plural: true, hp: 72, atk: 8, def: 3, abilities: ["strike", "arrows", "guard"] })
   };

@@ -18923,5 +18923,140 @@
   "id": 3786,
   "en": "You lower your bow. Karna's chariot heaves out of the water, and as it passes he sees you, and nods once. {friend} stares at you as if you were a stranger.",
   "ctx": "scene:v_ford"
+ },
+ {
+  "id": 3787,
+  "en": "scarred for you",
+  "ctx": "code:ledger.js"
+ },
+ {
+  "id": 3788,
+  "en": "Charu has no armour",
+  "ctx": "code:battle.js"
+ },
+ {
+  "id": 3789,
+  "en": "Meet blows for me",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 3790,
+  "en": "In fights, blows aimed at you are met for you, on kinder odds. On by itself in story mode.",
+  "ctx": "code:modals.js"
+ },
+ {
+  "id": 3791,
+  "en": "Tests met: {list}",
+  "ctx": "code:lives.js"
+ },
+ {
+  "id": 3792,
+  "en": "Point it out",
+  "ctx": "practice"
+ },
+ {
+  "id": 3793,
+  "en": "When I ask",
+  "ctx": "practice"
+ },
+ {
+  "id": 3794,
+  "en": "No help",
+  "ctx": "practice"
+ },
+ {
+  "id": 3795,
+  "en": "Help",
+  "ctx": "practice"
+ },
+ {
+  "id": 3796,
+  "en": "Point it out: the teacher shows the best move each turn. When I ask: a \"Show me\" button.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3797,
+  "en": "Move piece {n}.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3798,
+  "en": "A goat can be taken: that tiger, then the point beyond the goat.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3799,
+  "en": "Keep the tigers free: that tiger, then the open point.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3800,
+  "en": "Move {n}: a ladder waits there.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3801,
+  "en": "Move {n}: the other die lands on a snake.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3802,
+  "en": "Move {n}: the longer step.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3803,
+  "en": "You are behind: throw your lowest die again.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3804,
+  "en": "You are ahead: stand.",
+  "ctx": "practice"
+ },
+ {
+  "id": 3805,
+  "en": "Charu comes through the crowd with a smith's hammer and no armour at all, and stands at your shoulder.",
+  "ctx": "friends"
+ },
+ {
+  "id": 3806,
+  "en": "An arrow takes the man in front of you through the arm. Arjuna is on the wall behind you, already nocking the next.",
+  "ctx": "friends"
+ },
+ {
+  "id": 3807,
+  "en": "Bhima comes through the gate like a falling tree, laughing, and puts himself between you and the worst of it.",
+  "ctx": "friends"
+ },
+ {
+  "id": 3808,
+  "en": "Karna is suddenly beside you, bow in hand, looking as if he has been there all along.",
+  "ctx": "friends"
+ },
+ {
+  "id": 3809,
+  "en": "Duryodhana shoulders in with his mace and a look that dares anyone to touch you.",
+  "ctx": "friends"
+ },
+ {
+  "id": 3810,
+  "en": "You shout for help. No one you trust is near enough to hear.",
+  "ctx": "friends"
+ },
+ {
+  "id": 3811,
+  "en": "Charu died beside you, with no armour, because you called.",
+  "ctx": "friends"
+ },
+ {
+  "id": 3812,
+  "en": "I carry a scar from the day you called me, and I would come again.",
+  "ctx": "friends"
+ },
+ {
+  "id": 3813,
+  "en": "{who} came when you called, and carries a scar for it.",
+  "ctx": "friends"
  }
 ]

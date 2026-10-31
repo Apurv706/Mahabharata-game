@@ -1466,3 +1466,29 @@ body.pr-slow .arena .incoming.go { transition-duration: calc(var(--dur) / var(--
   .pr-drill .qte-ring { height: 84px; }
   .pr-drill .qte-note { font-size: 14px; min-height: 1.3em; }
 }
+
+/* ---- The puppet speaks, turns, and keeps its distance (PRD §18.9) ---- */
+.pp .jaw { transform-origin: 56px 60px; }
+.pp.talk .jaw { animation: pp-talk .26s ease-in-out infinite alternate; }
+@keyframes pp-talk { from { transform: rotate(0deg); } to { transform: rotate(7deg) translateY(.6px); } }
+/* The turn: the figure flips to face the other way; the rods stay where the puppeteer holds them. */
+.pp.pose-turn .pp-body { transform: scaleX(-1); transform-origin: 60px 120px; transition: transform .35s ease-in; }
+.pp.pose-turn .legF { animation: pp-legF 0.7s ease-in-out infinite alternate; } .pp.pose-turn .legB { animation: pp-legB 0.7s ease-in-out infinite alternate; }
+/* Light and distance: an enemy far from you is a little larger and softer in the lamplight, and sharpens as he steps in. */
+#arena .actor.enemy.far .pp { filter: blur(.45px) brightness(.92); opacity: .86; transform: scale(1.06); transform-origin: 50% 100%; transition: filter .35s, opacity .35s, transform .35s; }
+#arena .actor.enemy .pp { transition: filter .25s, opacity .25s, transform .25s; }
+/* Age: elders stoop a little more, and their hair and beard have gone grey. */
+.pose-stand.st-elder .pp-body { transform: rotate(7deg) translateY(1px); }
+.call-help small.call-note { display: block; font-size: 12px; opacity: .8; }
+@media (prefers-reduced-motion: reduce) { .pp.talk .jaw, .pp.pose-turn .legF, .pp.pose-turn .legB { animation: none; } }
+.said.with-fig .said-fig { width: 48px; height: 72px; display: grid; place-items: end center; overflow: visible; }
+.said.with-fig .said-fig svg { height: 72px; width: auto; }
+/* The teacher's hint in a board game at the practice ground. */
+.pr-hint { outline: 3px solid #ffd680; outline-offset: 2px; border-radius: 6px; box-shadow: 0 0 14px rgba(255, 214, 128, .7); }
+svg .pr-hint { outline: none; filter: drop-shadow(0 0 6px #ffd680) drop-shadow(0 0 2px #ffd680); }
+.pr-hintrow { margin: 6px 0 0; text-align: center; font-size: 14px; color: #f3d27a; }
+.lifemet { display: block; color: var(--muted); font-size: 13px; margin: 0 0 8px; }
+/* A full-screen test sits inside the page's actions box: the box's own dark background must not show as a band behind the test's name. */
+.leaf.testing .actions { background: transparent; box-shadow: none; }
+/* The menu's columns size to their content; the Saving field does not stretch to the Settings column's height. */
+.grid2 > .field { align-content: start; }

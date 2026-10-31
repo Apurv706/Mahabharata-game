@@ -15,9 +15,9 @@
     call: {
       name: "Call for help", target: "self", once: true, desc: "Shout for a friend. Once per battle; who comes depends on what you have been to them.",
       use: (B, u) => {
-        const h = K.val(B.enc.callHelp, K.S) || {};
+        const h = K.val(B.enc.callHelp === undefined && K.friendHelp ? K.friendHelp(K.S, B.enc) : B.enc.callHelp, K.S) || {};
         if (h.text) B.say(h.text);
-        if (h.unit) { const a = B.join(h.unit, h.stay || 2); B.status(a, "inspired", 2); }
+        if (h.unit) { const a = B.join(h.unit, h.stay || 2); a.called = true; B.status(a, "inspired", 2); }
         if (h.run) h.run(B);
       }
     },

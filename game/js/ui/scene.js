@@ -236,6 +236,9 @@
   // The lamp pauses while the tab is hidden or a window is open, keeps its oil through a language
   // switch, and is off in the tests and when "Timed moments" is turned off in the menu.
   U.timed = () => !/jsdom/i.test(navigator.userAgent || "") && K.prefs().timed !== false;
+  // "Meet blows for me": the defence moments in fights are resolved for you, on the kinder odds. On
+  // by default in story mode, unless you have turned it off.
+  U.assist = () => { const a = K.prefs().assist; return a === undefined ? !!(K.S && K.S.storyMode) : !!a; };
   // The painted clay lamp (art/diya.png) with its flame as a separate layer, so the flame alone shrinks.
   const DIYA = '<img class="body" src="art/diya.png" alt="">' +
     '<svg class="smoke" viewBox="0 0 330 264" aria-hidden="true"><path d="M285 140 C266 112 302 96 284 68 C266 40 298 26 288 2" fill="none" stroke="#c3a585" stroke-width="7" stroke-linecap="round"/></svg>' +

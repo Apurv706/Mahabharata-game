@@ -148,7 +148,8 @@
     K.val(enc.enemies).forEach((e, i) => B.units.push(makeUnit(e, "enemy", i, enc)));
     // Some fights let you shout for a friend (once), and show the divine weapon even to those who
     // were never given one (greyed: "You were never given a divine weapon").
-    { const p = B.units[0]; if (enc.callHelp) p.abilities.push("call"); if (enc.showAstra && !p.abilities.includes("astra")) p.abilities.push("astra"); }
+    // Any fight lets you shout for a friend once; fights without a rule of their own use K.friendHelp.
+    { const p = B.units[0]; if (enc.callHelp !== null && (enc.callHelp || K.friendHelp)) p.abilities.push("call"); if (enc.showAstra && !p.abilities.includes("astra")) p.abilities.push("astra"); }
     B.habit = []; // what you have done lately: enemies learn from it
     if (S.boons.includes("healing_hands") && (S.items.herbs || 0) < 2) S.items.herbs = 2;
     B.pulled = {};
@@ -285,6 +286,7 @@
   function finish(outcome) {
     B.over = outcome;
     const p = C.player();
+    if (K.friendAfter) K.friendAfter(B);
     // A fight won on your last legs can leave a mark for life: any wound in a deadly fight, a scar in
     // any other.
     if (outcome === "win" && !B.enc.lethal && p.hp <= p.maxHp * 0.2 && K.rng() < 0.35 && !K.S.injuries.includes("scar")) {
