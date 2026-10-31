@@ -185,9 +185,9 @@
     { title: "Fallen at Kurukshetra", art: "end_death", hint: "Fall in battle." },
     { title: "Into the wheel", art: "end_wheel", hint: "Follow Abhimanyu to the end." },
     { title: "Against the boy in the wheel", art: "end_wheel", hint: "On the Kaurava side, stand in Abhimanyu's way." },
-    { title: "A life cut short", art: "scene_lake", hint: "Cross someone who does not forgive, before the war, and fail." },
+    { title: "A life cut short", art: "end_cut_short", hint: "Cross someone who does not forgive, before the war, and fail." },
     { title: "Beside Karna", art: "war_day17", hint: "Stand beside Karna on his last day." },
-    { title: "The burnt house", art: "scene_lac", hint: "Be inside the house of lac when it burns, and not get out." }
+    { title: "The burnt house", art: "end_fire", hint: "Be inside the house of lac when it burns, and not get out." }
   ];
 
   K.composeEnding = function (S) {
@@ -205,7 +205,7 @@
       const at = S.deathAt;
       if (at && at.art) { art = at.art; caption = at.caption || caption; }
       if (S.flags.includes("peril_death") && (at ? at.act : S.act) < 6) title = "A life cut short";
-      if (S.flags.includes("died_in_fire")) { title = "The burnt house"; art = "scene_lac"; caption = "The house at Varnavata, at dawn"; }
+      if (S.flags.includes("died_in_fire")) { title = "The burnt house"; art = "end_fire"; caption = "The house at Varnavata, at dawn"; }
     } else {
       const c = S.endChoice;
       if (c === "elder") { title = "The wise elder"; art = "end_elder"; caption = "The palace school, in old age"; }
