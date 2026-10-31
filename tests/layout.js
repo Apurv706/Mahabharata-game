@@ -383,7 +383,11 @@ const TESTS = [
   ["retort", { stage: "stage_lotus_garden", cast: ["duryodhana"], rounds: [{ line: "They say your family sweeps the stables.", replies: ["And yours sweeps the floor before the king.", "That is not true.", "Leave me alone."] }, { line: "Is that a bow or a broom?", replies: ["Come closer and find out.", "A bow.", "Go away."] }, { line: "Who taught you?", replies: ["Someone who could.", "Nobody.", "My mother."] }] }],
   ["draw", { stage: "stage_bow_courtyard", cast: ["guard"] }], ["formation", { stage: "stage_chakravyuha_top", array: "eagle" }], ["hands", { stage: "stage_dice_board_top", cast: ["shakuni"] }], ["pasha", null],
   ["array", { stage: "stage_vyuha_top", array: "crane", rounds: 5 }], // the army battle (ui/army.js)
-  ["breath", { stage: "stage_forest_lake" }], ["race", { stage: "stage_forest_edge", vehicle: "foot", rival: "the mountain" }],
+  // The weapon quests on their own grounds (content/astras.js).
+  ["breath", { stage: "stage_deep_lake" }], ["race", { _label: "the climb", stage: "stage_mountain_path", vehicle: "foot", obstacles: ["rock", "ice"], rival: "the mountain" }],
+  ["steady", { _label: "fire altar", stage: "stage_fire_altar", verb: "Shield the flame" }], ["steady", { _label: "naga bank", stage: "stage_naga_bank", verb: "Hold" }],
+  ["steady", { _label: "Shiva's mountain", stage: "stage_shiva_mountain", verb: "Hold still" }], ["sneak", { _label: "temple lamp", stage: "scene_temple_offering" }],
+  ["retort", { _label: "Gandharva grove", stage: "stage_gandharva_grove", rounds: [{ line: "What runs and never walks?", replies: ["A river.", "A horse.", "A thief."] }] }],
   // The night the lac house burns (§18.2): the escape through the burning rooms, and the cellar's oil lines.
   ["escape", { stage: "stage_lac_fire_top", start: "hall" }], ["fuse", { stage: "stage_lac_cellar", lines: 3, secs: 32 }],
   // Episodes: a run on foot through the storm, and stealth on two of the long night strips.
