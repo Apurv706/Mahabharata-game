@@ -158,6 +158,8 @@
   };
   function vehicleSvg(kind, spec) {
     const fig = U.puppet(spec, { h: 70, pose: "hold" }).replace("<svg ", '<svg x="22" y="-22" width="40" height="70" ');
+    // On foot: only you, running, with nothing under you.
+    if (kind === "foot") return '<svg viewBox="0 0 110 70" class="veh" aria-hidden="true">' + U.puppet(spec, { h: 70, pose: "walk" }).replace("<svg ", '<svg x="30" y="-6" width="44" height="76" ') + "</svg>";
     if (kind === "boat") return '<svg viewBox="0 0 110 70" class="veh" aria-hidden="true">' + fig + '<path d="M4 44 L106 44 Q98 66 70 66 L30 66 Q10 66 4 44 Z" fill="#7a4a24" stroke="#2b1609" stroke-width="2"/><path d="M14 50 H96" stroke="#c8954f" stroke-width="2"/></svg>';
     return '<svg viewBox="0 0 110 70" class="veh" aria-hidden="true"><path d="M78 40 Q86 22 100 20 L106 24 L98 30 Q102 40 96 50 L84 50 Z" fill="#c9a679" stroke="#2b1609" stroke-width="2"/><path d="M80 48 L76 62 M94 48 L98 62" stroke="#2b1609" stroke-width="3"/>' + fig +
       '<path d="M18 44 H70 L66 30 H22 Z" fill="#a3302a" stroke="#2b1609" stroke-width="2"/><path d="M70 40 L84 42" stroke="#2b1609" stroke-width="3"/><g class="wheel"><circle cx="36" cy="52" r="14" fill="none" stroke="#2b1609" stroke-width="4"/><path d="M36 38 V66 M22 52 H50 M26 42 L46 62 M46 42 L26 62" stroke="#2b1609" stroke-width="2"/></g></svg>';
@@ -165,6 +167,7 @@
   // Seen from above, for the upright course: the horses ahead, the car, you in it.
   function vehicleTop(kind, rival) {
     const car = rival ? "#3d5a8a" : "#a3302a", skin = rival ? "#b98656" : "#c9905a";
+    if (kind === "foot") return '<svg viewBox="0 0 60 110" class="veh" aria-hidden="true"><path d="M14 52 L4 30 M46 52 L56 74" stroke="' + skin + '" stroke-width="7" stroke-linecap="round"/><path d="M22 70 L18 104 M38 70 L42 36" stroke="#5a3a22" stroke-width="8" stroke-linecap="round"/><ellipse cx="30" cy="58" rx="18" ry="11" fill="' + car + '" stroke="#2b1609" stroke-width="2.5"/><circle cx="30" cy="56" r="9" fill="' + skin + '" stroke="#2b1609" stroke-width="2"/><circle cx="30" cy="54" r="5.5" fill="#1d120b"/></svg>';
     if (kind === "boat") return '<svg viewBox="0 0 60 110" class="veh" aria-hidden="true"><path d="M30 2 Q52 30 50 80 Q48 104 30 108 Q12 104 10 80 Q8 30 30 2Z" fill="#7a4a24" stroke="#2b1609" stroke-width="2.5"/><path d="M30 14 Q44 36 42 80 Q40 96 30 98 Q20 96 18 80 Q16 36 30 14Z" fill="#a8703f"/><path d="M8 58 L-6 66 M52 58 L66 66" stroke="#2b1609" stroke-width="3"/><circle cx="30" cy="66" r="8" fill="' + skin + '" stroke="#2b1609" stroke-width="2"/><circle cx="30" cy="62" r="4" fill="#1d120b"/></svg>';
     return '<svg viewBox="0 0 70 120" class="veh" aria-hidden="true"><g fill="#c9a679" stroke="#2b1609" stroke-width="2"><ellipse cx="22" cy="26" rx="8" ry="18"/><ellipse cx="48" cy="26" rx="8" ry="18"/><ellipse cx="22" cy="7" rx="5" ry="7"/><ellipse cx="48" cy="7" rx="5" ry="7"/></g><path d="M35 40 V62 M22 42 L35 62 M48 42 L35 62" stroke="#2b1609" stroke-width="2.5"/><rect x="4" y="74" width="8" height="30" rx="3" fill="#2b1609"/><rect x="58" y="74" width="8" height="30" rx="3" fill="#2b1609"/><rect x="12" y="62" width="46" height="46" rx="8" fill="' + car + '" stroke="#2b1609" stroke-width="2.5"/><circle cx="35" cy="88" r="10" fill="' + skin + '" stroke="#2b1609" stroke-width="2"/><circle cx="35" cy="83" r="5" fill="#1d120b"/></svg>';
   }

@@ -42,6 +42,16 @@
     stage_border_village: { fx: "embers" },
     stage_chakravyuha_top: { fx: "dust", top: true },
     stage_battlefield_night: { fx: "embers", side: true },
+    // Episodes (content/episodes.js): long strips are side: true; the rest are 16:9.
+    stage_exile_storm: { fx: "rain", side: true },
+    stage_kichaka_hall_night: { fx: "torch", torches: [[0.22, 0.34], [0.78, 0.34]], side: true },
+    stage_supply_camp_night: { fx: "embers", side: true },
+    stage_river_crossing_night: { fx: "mist", side: true },
+    stage_war_road: { fx: "dust", side: true },
+    stage_virata_court: { fx: "torch", torches: [[0.14, 0.36], [0.86, 0.36]] },
+    stage_tournament_arena: { fx: "dust" },
+    stage_drona_gate: { fx: "leaves" },
+    stage_city_ruins: { fx: "embers" },
     scene_fair: { fx: "dust" },
     fight_fair_ring: { fx: "dust" },
     scene_teaching: { fx: "mist" }

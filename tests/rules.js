@@ -67,4 +67,20 @@ ok(n1 === 1 && K.merits({ attr: "grace", skill: "stealth" }).n === 2, "the commo
 // 11. The Karna pull comes before Karna's secret, after the captive scene
 S = fresh({ friend: "bhima", act: 5 }); S.vows.push({ id: "spare_karna", broken: false }); S.seen.push("v_captive");
 ok(K.resolveScene("a5_karna_secret").id === "v_ford", "the ford scene comes when the vow and a Pandava friend apply");
+// 12. Episodes (content/episodes.js): where they come, keepsakes, the telling
+require(G + "content/episodes.js");
+S = fresh({ act: 1, age: 6 });
+ok(K.resolveScene("a1_first").id === "ep_sibling", "the elder sibling is asked about before the first scene");
+K.apply({ set: { sibling: "devi" }, flag: "has_sibling" }); S.seen.push("ep_sibling");
+ok(K.resolveScene("a1_first").id === "a1_first", "and only once");
+ok(K.BEFORE.a3_rajasuya[0] !== "ep_mentor_vidura" && K.BEFORE.a3_rajasuya.includes("ep_mentor_vidura"), "episodes join the vow scenes before the Rajasuya, after them");
+S = fresh(); K.apply({ keepsake: "letter" }); K.apply({ keepsake: "letter" });
+ok(S.keepsakes.length === 1 && S.keepsakes[0] === "letter", "a keepsake is kept once");
+S = fresh({ act: 6, side: "kaurava" }); K.apply({ flag: "beat_ugra" });
+ok(K.resolveScene("a6_day18").id === "a6_day18", "Ugra is not on the field unless he rose in the other camp");
+K.apply({ flag: "ugra_across" });
+ok(K.resolveScene("a6_day18").id === "ep_ugra_last", "Ugra meets you on the seventeenth day once he rose in the other camp");
+S = fresh({ act: 7, age: 45, path: "archer", side: "pandava" }); K.apply({ flag: ["carried_false_orders", "bard_wrong"] });
+const tl = K.composeEnding(S).telling.map((x) => (Array.isArray(x) ? x[0] : x)).join(" | ");
+ok(/false orders across the river/.test(tl) && /^.*They say that /.test(tl), "the telling carries the false orders and the bard's wrong version");
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

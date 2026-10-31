@@ -9,21 +9,24 @@
    the dead, a student of your own, the pilgrimage).
    Small systems: letters from across the lines; keepsakes that become choices; the bard who gets it
    wrong unless you correct him.
-   Art: the paintings these scenes want are not painted yet (docs/Art_Brief_New_Storylines.pdf); each
-   uses a stand-in from the game until then (STANDIN). */
+   Art: the truce, the ruined quarter, the rite, the student and the pilgrimage have their own
+   paintings, and the tests play on their own stages (the storm, Virata's court, Kichaka's hall, the
+   supply camp, the river crossing, the tournament arena, Drona's gate). The rest still use a painting
+   from the game (STANDIN) until theirs is painted. */
 (function (K) {
   "use strict";
 
   // The painting each scene wants (the brief's key) -> the painting it uses until that arrives.
   const STANDIN = {
-    scene_sibling_home: "origin", scene_tournament_crowd: "scene_tournament", scene_ugra_letter: "scene_note", scene_ugra_field: "war_day17",
+    scene_tournament_crowd: "scene_tournament", scene_ugra_letter: "scene_note", scene_ugra_field: "war_day17",
     scene_secret_told: "scene_secret", scene_mentor_vidura: "scene_indraprastha", scene_mentor_kripa: "scene_dice_hall", scene_mentor_peace: "scene_ashram",
     stage_forest_storm: "stage_forest_edge", scene_lake_charu: "scene_lake", stage_virata_hall: "stage_drupada_hall", stage_dancing_hall: "stage_palace_corridor",
-    scene_supply_camp_night: "stage_city_night", fight_supply_carts: "fight_war_camp", scene_river_crossing: "scene_birth", scene_truce_river: "scene_arrows",
+    scene_supply_camp_night: "fight_war_camp", fight_supply_carts: "fight_war_camp", scene_river_crossing: "scene_birth",
     scene_shikhandi: "war_bhishma", scene_letter_camp: "scene_vasu", scene_sibling_field: "war_day17",
-    scene_rebuild: "scene_indraprastha", scene_river_rite: "scene_women_field", scene_own_student: "scene_teaching", scene_pilgrimage: "end_forest", scene_bard: "end_teller"
+    scene_river_rite: "scene_forgiveness", scene_own_student: "scene_student", scene_bard: "end_teller"
   };
   const art = (k) => STANDIN[k] || k;
+  const homeArt = (S) => (S.origin === "suta" && !S.flags.includes("moved_capital") ? "home_anga" : "home_" + S.origin);
 
   const sib = (S) => S.sibling && K.PEOPLE[S.sibling] ? K.PEOPLE[S.sibling].name : "your sibling";
   const sibAlive = (S) => !!S.sibling && !S.dead.includes(S.sibling);
@@ -37,16 +40,17 @@
   const warring = (S) => S.side === "pandava" || S.side === "kaurava";
 
   Object.assign(K.PEOPLE, { dev: { name: "Dev", canon: false }, devi: { name: "Devi", canon: false } });
-  Object.assign(K.PUPPETS || (K.PUPPETS = {}), {
+  // Shadow puppets for the sibling (puppet.js loads after the content, so they join on the first scene).
+  const PUPPETS = {
     dev: { pronoun: "he", palette: ["#b8743f", "#5a4630", "#c9a066"], item: "spear", peer: true },
     devi: { pronoun: "she", palette: ["#b9743f", "#6b4a32", "#e2b55a"], item: "bow", peer: true }
-  });
+  };
   // A keepsake is a small thing kept from a moment, that becomes a choice later (S.keepsakes).
   K.KEEPSAKES = {
-    letter: { name: "A letter from across the lines", text: "Folded small, read many times." },
-    amulet: { name: "Your sibling's amulet", text: "A thread of dark cord with a copper disc." },
+    letter: { name: "a letter from across the lines", text: "Folded small, read many times." },
+    amulet: { name: "your sibling's amulet", text: "A thread of dark cord with a copper disc." },
     hammer: { name: "Kesava's hammer", text: "The old smith put it in your hands on his last morning." },
-    arrow: { name: "An arrow from the supply camp", text: "Picked out of a cart on the night of the raid." }
+    arrow: { name: "an arrow from the supply camp", text: "Picked out of a cart on the night of the raid." }
   };
   const hasKeep = (S, id) => (S.keepsakes || []).includes(id);
 
@@ -62,8 +66,8 @@
   });
 
   // ---------- Tests reused with new words ----------
-  const STORM = { t: "Run for the rock shelter before the flood comes down the ravine", game: "race", hint: "A run through the storm",
-    trial: { attr: "grace", skill: "stealth", stage: "stage_forest_edge", vehicle: "foot", obstacles: ["rock", "fire"], hull: 3, speed: 3,
+  const STORM = { id: "storm", t: "Run for the rock shelter before the flood comes down the ravine", game: "race", hint: "A run through the storm",
+    trial: { attr: "grace", skill: "stealth", stage: "stage_exile_storm", vehicle: "foot", obstacles: ["rock", "fire"], hull: 3, speed: 3,
       tally: "Distance: {d}% · Falls: {h} of {l}", bump: "A branch takes you off your feet.", help: "Step aside from the branches and the water: up and down, or the buttons.", helpSide: "Step left and right around what the storm throws down.",
       rules: "The sky goes black at noon and the ravine fills. Run for the rock shelter: round the falling branches and the water coming down the gullies. Three falls and the flood has you.",
       stakes: ["You reach the shelter with the camp's children, and the storm passes over you.", "The flood takes your pack, and you limp in after dark."] },
@@ -75,7 +79,7 @@
     { line: "\"What is the greatest wonder?\"", replies: ["\"That the living see the dead every day, and think they will not die.\"", "\"That the sun rises.\"", "\"That a king can be beaten at dice.\""] },
     { line: "\"By what is a person made a brahmin: birth, learning, or conduct?\"", replies: ["\"Conduct.\"", "\"Birth.\"", "\"Learning.\""] }
   ];
-  const CHARU_LAKE = { t: "Answer for Charu", game: "retort", hint: "A test of wisdom",
+  const CHARU_LAKE = { id: "answer", t: "Answer for Charu", game: "retort", hint: "A test of wisdom",
     trial: { attr: "wisdom", skill: "lore", rounds: SECOND_RIDDLES, stage: "stage_forest_lake",
       rules: "\"One of you drank without answering,\" says the voice. \"Answer for both, and both of you may drink.\" Two right answers of three.",
       stakes: ["Charu sits up on the bank, coughing, and asks what you are staring at.", "The voice falls silent. Charu does not move again."] },
@@ -89,15 +93,15 @@
     { line: "\"The queen's maid says you speak like someone raised in a palace.\"", replies: ["\"The queen's maid is kind. My mother beat good speech into me with a ladle.\"", "\"I was raised in a palace.\"", "\"The queen's maid should mind her own business.\""] },
     { line: "\"Tell me the name of the village you came from, and your father's name, quickly.\"", replies: ["\"Kundapur, on the river, my lord, and my father was Haridas who kept the ferry.\"", "\"I would rather not say.\"", "\"My father was a charioteer of Hastinapura.\""] }
   ];
-  const NERVE = { t: "Answer the steward's questions without a flicker", game: "retort", hint: "A test of nerve",
-    trial: { attr: "wisdom", skill: "statecraft", rounds: FALSE_NAME, stage: "stage_drupada_hall",
+  const NERVE = { id: "nerve", t: "Answer the steward's questions without a flicker", game: "retort", hint: "A test of nerve",
+    trial: { attr: "wisdom", skill: "statecraft", rounds: FALSE_NAME, stage: "stage_virata_court",
       rules: "Virata's steward has started asking questions about the new people in the household. Answer each one before the lamp burns down, and never say anything true. Two of three.",
       stakes: ["The steward loses interest, and your name stays yours.", "The steward keeps looking at you, and sends to Hastinapura to ask."] },
     win: { fx: { skill: { statecraft: 1 }, flag: "kept_false_name" }, text: "The steward grunts and goes to bother the cooks. Nobody asks again." },
     lose: { fx: { rep: { kuru: -1 }, flag: "name_suspected" }, text: "The steward says nothing more, which is worse. A rider leaves for Hastinapura that evening." } };
 
-  const DANCE_HALL = { t: "Cross the dancing hall in the dark and get her out before he comes", game: "sneak", hint: "A test of stealth",
-    trial: { attr: "grace", skill: "stealth", stage: "stage_palace_corridor", trips: 2, spots: 2, watch: "guard", verb: "Move",
+  const DANCE_HALL = { id: "hall", t: "Cross the dancing hall in the dark and get her out before he comes", game: "sneak", hint: "A test of stealth",
+    trial: { attr: "grace", skill: "stealth", stage: "stage_kichaka_hall_night", trips: 2, spots: 2, watch: "guard", verb: "Move",
       help: "Hold to move along the pillars. Stop when Kichaka's lamp turns your way.", tally: "Crossed: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "Across. Now back, with her.", spotted: "The lamp swings toward you. You press into a pillar.",
       rules: "Kichaka has told the queen's maid to come to the dancing hall tonight. Bhima is going in her place, and the maid must be somewhere else, seen by no one. Cross the hall to her and back along the pillars while Kichaka's lamp sweeps the floor.",
       stakes: ["She is in the kitchens, among the women, when the screaming starts.", "Kichaka's lamp finds you, and you have to run before you reach her."] },
@@ -105,16 +109,16 @@
       text: "She is sitting among the kitchen women with her head covered when the screaming starts in the dancing hall. She does not look up. Her hands are perfectly still." },
     lose: { fx: { bond: { bhima: -1 }, flag: "hall_seen" }, text: "The lamp finds you, and you run. Bhima does the rest alone, as he would have anyway. In the morning he looks at you and says nothing." } };
 
-  const CARTS = { t: "Go in through the horse lines and cut the carts loose", game: "sneak", hint: "A test of stealth",
-    trial: { attr: "grace", skill: "stealth", stage: "stage_city_night", trips: 2, spots: 2, watch: "soldier", verb: "Move",
+  const CARTS = { id: "carts", t: "Go in through the horse lines and cut the carts loose", game: "sneak", hint: "A test of stealth",
+    trial: { attr: "grace", skill: "stealth", stage: "stage_supply_camp_night", trips: 2, spots: 2, watch: "soldier", verb: "Move",
       help: "Hold to move between the carts. Stop when the sentry's torch turns.", tally: "Carts reached: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "The ropes are cut. Back to the dark.", spotted: "The sentry turns. You drop behind a wheel.",
       rules: "The enemy's grain and fodder carts stand in a camp behind their lines. A sentry walks the far side with a torch. Reach the carts twice: once to cut the horse lines, once to fire the fodder.",
       stakes: ["The fodder burns, and tomorrow the enemy's horses are hungry.", "The sentry raises the alarm, and you fight your way out."] },
     win: { fx: { flag: "burned_carts", keepsake: "arrow", journal: "One night in the war you crept into the enemy's supply camp and burned their fodder." }, text: "The fodder goes up with a sound like wind. You are back in the horse lines before the first shout." },
     lose: { fx: { flag: "carts_alarm" }, next: "ep_carts_fight", text: "The sentry turns too soon, and the camp wakes around you." } };
 
-  const RIVER = { t: "Swim the river with the packet in your teeth", game: "sneak", hint: "A test of stealth",
-    trial: { attr: "grace", skill: "stealth", stage: "stage_matsya_ford", trips: 1, spots: 2, watch: "soldier", verb: "Swim",
+  const RIVER = { id: "swim", t: "Swim the river with the packet in your teeth", game: "sneak", hint: "A test of stealth",
+    trial: { attr: "grace", skill: "stealth", stage: "stage_river_crossing_night", trips: 1, spots: 2, watch: "soldier", verb: "Swim",
       help: "Hold to swim. Stop and go under when the watch-fire's light reaches the water.", tally: "Across: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "The far bank.", spotted: "A sentry shouts. You go under and let the current take you.",
       rules: "Between the camps the river runs black under the watch-fires. Swim it with the packet dry and come up under the enemy's bank unseen.",
       stakes: ["You come up under their bank with the packet dry.", "A sentry sees the water move, and the night goes wrong."] },
@@ -129,11 +133,11 @@
   ];
   function studentTest(S) {
     const kind = SIDE_PATH[S.path] || "retort";
-    const base = { t: "Set your student the test you were set", hint: "Your student's first test",
+    const base = { id: "test", t: "Set your student the test you were set", hint: "Your student's first test",
       win: { fx: { flag: "taught_student", attr: { wisdom: 1 }, rep: { common: 1 }, journal: "After the war you took a student of your own, and set the first test you were ever set." }, text: "Your student looks at you the way you once looked at your teacher. You understand, suddenly, several things your teacher never said." },
       lose: { fx: { flag: "taught_student" }, text: "Your student fails the first test, as you did. \"Again tomorrow,\" you hear yourself say, in your teacher's voice." } };
     const trials = {
-      aim: { game: "aim", trial: { attr: "aim", skill: "archery", icon: "lamp", dark: true, shots: 3, need: 2, verb: "Release", stage: "stage_palace_garden_night", cast: ["boy"], rules: "You hang a lamp from a branch and set it swinging, as Arjuna once did. Show your student how it is done: two hits of three.", stakes: ["Your student sees it can be done.", "Your student sees that even teachers miss."] } },
+      aim: { game: "aim", trial: { attr: "aim", skill: "archery", icon: "lamp", dark: true, shots: 3, need: 2, verb: "Release", stage: "stage_drona_gate", cast: ["boy"], rules: "You hang a lamp from a branch and set it swinging, as Arjuna once did. Show your student how it is done: two hits of three.", stakes: ["Your student sees it can be done.", "Your student sees that even teachers miss."] } },
       push: { game: "push", trial: { attr: "might", skill: "mace", stage: "stage_training_ground", cast: ["boy"], foe: "your student", rules: "Your student braces against you in the ring. Push as the ring meets the mark, and do not push too hard.", stakes: ["Your student learns what a clean push feels like.", "Your student learns that the teacher can slip too."] } },
       race: { game: "race", trial: { attr: "grace", skill: "chariot", stage: "stage_racetrack", vehicle: "chariot", obstacles: ["rock", "wreck"], hull: 3, speed: 3, rules: "You take your student round the old track with you at the reins, and show how a chariot threads the stakes.", stakes: ["Your student sees how it is done.", "Your student sees a wheel catch, and learns that too."] } },
       steady: { game: "steady", trial: { attr: "wisdom", skill: "healing", stage: "stage_healers_hall", cast: ["healer", "boy"], verb: "Hold", secs: 16, help: "Hold to press; let go to ease off. Keep your hands over the glow until it is set.", tally: "Set: {c}% · {s} seconds", rules: "A boy with a broken arm, and your student watching your hands. Set it while your student counts.", stakes: ["Your student has seen a bone set properly.", "Your student has seen that it is hard."] } },
@@ -147,7 +151,7 @@
     // ---------- Threads: an elder sibling ----------
     {
       id: "ep_sibling", act: 1, age: 6, away: true, when: (S) => !S.sibling && !S.flags.includes("no_sibling"), skipTo: "a1_first", next: "a1_first",
-      art: (S) => (S.origin === "suta" && !S.flags.includes("moved_capital") ? "home_anga" : "home_" + S.origin), place: (S) => K.childPlace(S), caption: "The one who went ahead of you",
+      art: homeArt, place: (S) => K.childPlace(S), caption: "The one who went ahead of you",
       title: "The one born before you",
       body: ["In most houses there is someone a few years older who went first: first to the river, first to the drills, first to be shouted at. Was there one in yours?"],
       choices: [
@@ -168,7 +172,7 @@
         S.flags.includes("beat_ugra") ? { speaker: "Ugra", line: "You. The one from the fair. I have been practising." } : S.flags.includes("lost_to_ugra") ? { speaker: "Ugra", line: "You. The one who came back for a second throw. I told everyone in my village about you." } : { speaker: "Ugra", line: "You. You ran from my ring. Do you still run?" }
       ],
       choices: [
-        { id: "bout", t: "Step into the dust with him, here and now", game: "push", hint: "A wrestling bout", trial: { attr: "might", skill: "mace", stage: "stage_training_ground", cast: ["ugra"], foe: "Ugra", rules: "Ugra plants his feet in the dust where the horses are watered. Push as the ring meets the mark. Three good pushes win; three slips lose.", stakes: ["Ugra laughs, and shakes your hand, and the levies cheer.", "Ugra puts you in the horse trough, and the levies cheer louder."] },
+        { id: "bout", t: "Step into the dust with him, here and now", game: "push", hint: "A wrestling bout", trial: { attr: "might", skill: "mace", stage: "stage_tournament_arena", cast: ["ugra"], foe: "Ugra", rules: "Ugra plants his feet in the dust where the horses are watered. Push as the ring meets the mark. Three good pushes win; three slips lose.", stakes: ["Ugra laughs, and shakes your hand, and the levies cheer.", "Ugra puts you in the horse trough, and the levies cheer louder."] },
           win: { fx: { bond: { ugra: 2 }, flag: "ugra_tournament_won", rep: { common: 1 } }, text: "Ugra goes down in the dust, gets up, and laughs so loud the horses shy. \"Again at the next fair,\" he says." },
           lose: { fx: { bond: { ugra: 1 }, flag: "ugra_tournament_lost" }, text: "You come up out of the horse trough to find Ugra holding out a hand. \"Again at the next fair,\" he says." } },
         { id: "talk", t: "Ask him what a miller's son is doing at the princes' tournament", fx: { bond: { ugra: 1 }, attr: { wisdom: 1 } },
@@ -250,7 +254,7 @@
     // ---------- Threads: the sibling takes the other side ----------
     {
       id: "ep_sibling_side", act: 5, age: 44, away: true, when: (S) => sibAlive(S) && warring(S), skipTo: "a6_eve", next: "a6_eve",
-      art: art("scene_sibling_home"), place: (S) => K.homePlace(S), caption: "Two spears in one house",
+      art: homeArt, place: (S) => K.homePlace(S), caption: "Two spears in one house",
       title: "The other side of the house",
       body: (S) => [["{who} comes home the night before you leave for the field, in the colours of the other side.", sibP(S)],
         ["\"I serve who I serve,\" {who} says. \"So do you. If we meet out there, look the other way. I will.\"", sibP(S)]],
@@ -349,8 +353,8 @@
       title: "False orders",
       body: ["After the wheel closed, a captain of your own side puts a sealed packet in your hands: orders in the enemy's own cipher, with the enemy's own seal, telling their left division to be somewhere it should not be at dawn. \"Someone they trust has to carry it,\" he says. \"You have a face no one has seen.\""],
       choices: [
-        Object.assign({}, RIVER, { fx: { flag: "orders_delivered", duty: { court: 2, conscience: -2 }, journal: "On the night of the thirteenth day you carried false orders across the river, and in the morning the enemy's line was in the wrong place." } }),
-        { id: "burn", t: "Burn the packet, and tell the captain the river was watched", fx: { flag: "orders_burned", duty: { conscience: 2, court: -1 }, memory: ["all", "You would not carry a lie across the river, even in a war."] },
+        Object.assign({}, RIVER, { fx: { flag: ["orders_delivered", "carried_false_orders"], duty: { court: 2, conscience: -2 }, journal: "On the night of the thirteenth day you carried false orders across the river, and in the morning the enemy's line was in the wrong place." } }),
+        { id: "burn", t: "Burn the packet, and tell the captain the river was watched", fx: { flag: ["orders_burned", "refused_false_orders"], duty: { conscience: 2, court: -1 }, memory: ["all", "You would not carry a lie across the river, even in a war."] },
           text: "You burn it in the lamp and tell the captain the river was watched. He looks at you for a long moment and does not call you a liar. In the morning the line goes in honestly, and knows it." }
       ]
     },
@@ -449,7 +453,7 @@
       title: "The pilgrimage",
       body: ["Before they leave the city for the last time, the old king, the queen and Kunti go on foot to the holy places along the river. They ask for someone to walk with them who is not their son."],
       choices: [
-        { id: "walk", t: "Walk with them the whole way", fx: { attr: { wisdom: 1 }, rep: { sages: 1 }, bond: { bhishma: 0 }, flag: "walked_with_elders", journal: "After the war you walked the holy places with Dhritarashtra, Gandhari and Kunti." },
+        { id: "walk", t: "Walk with them the whole way", fx: { attr: { wisdom: 1 }, rep: { sages: 1 }, flag: "walked_with_elders", journal: "After the war you walked the holy places with Dhritarashtra, Gandhari and Kunti." },
           text: "Dhritarashtra asks you every evening how many of his sons you killed. Gandhari asks you nothing at all. Kunti, on the last night, asks whether you ever met Karna, and you tell her the truth, and she holds your hand until the fire goes out." },
         { id: "part", t: "Walk the first day, and turn back", fx: { duty: { family: 1 } }, text: "At the first shrine you turn back. Kunti raises a hand. You think she understands." },
         { id: "no", t: "Let them go without you", fx: {} }
@@ -460,7 +464,7 @@
       enter: (S) => (S.flags.includes("sat_with_kesava") && !hasKeep(S, "hammer") ? { keepsake: "hammer" } : null),
       art: "scene_note", place: (S) => K.homePlace(S), caption: "A few small things on a cloth",
       title: "What you kept",
-      body: (S) => ["You lay out on a cloth the few small things you kept through all of it.", ["{list}.", { list: K.list((S.keepsakes || []).map((k) => K.tr(K.KEEPSAKES[k].name))) }, true]],
+      body: (S) => ["You lay out on a cloth the few small things you kept through all of it.", ["On the cloth: {list}.", { list: K.list((S.keepsakes || []).map((k) => K.tr(K.KEEPSAKES[k].name))) }, true]],
       choices: (S) => [
         hasKeep(S, "letter") ? { id: "letter", t: "Read the letter from across the lines one last time, and put it in the fire", fx: { duty: { conscience: 1 }, flag: "burned_letter_after" }, text: "You know it by heart. The fire takes the paper. The words stay where they were." } : null,
         hasKeep(S, "amulet") && S.sibling && S.dead.includes(S.sibling) ? { id: "amulet_pyre", t: "Take the amulet to the river and send it after your sibling", fx: { duty: { family: 2 }, flag: "amulet_to_river" }, text: "The copper disc sinks at once. You stand there until your feet are numb." } : null,
@@ -503,7 +507,8 @@
     id: "e_ep_bhishma", title: "In front of Shikhandi", art: "war_bhishma", caption: "The grandsire's arrows", lethal: true, curse: true, rounds: 3, roundsText: "Shikhandi's chariot draws level with the grandsire's, and Bhishma lowers his bow.",
     allies: (S) => K.warAllies(S), spare: false, flee: { tags: ["retreat"] }, callHelp: K.warHelp,
     intro: "Bhishma will not loose at Shikhandi. The men around him have no such scruple, and every one of them is looking at you.",
-    enemies: [K.foe("Bhishma", 14, { hero: true, hp: 999, atk: 16, abilities: ["arrows", "strike"], person: "bhishma", armed: true }), K.foe("Kaurava chariot-guard", 5, { abilities: ["strike", "arrows", "heavy"] })],
+    // Bhishma himself does not loose at Shikhandi's chariot: only his guard is fought.
+    enemies: [K.foe("Kaurava chariot-guard", 4, { abilities: ["strike", "arrows"] }), K.foe("Bhishma's archers", 3, { plural: true, abilities: ["arrows"] })],
     beats: [{ round: 2, text: "The grandsire's arrows come like rain, and none of them is aimed at you. His guard's are.", run: (B) => B.living("friends").forEach((u) => B.status(u, "exposed", 1)) }],
     win: { fx: { rep: { pandava: 2 }, bond: { arjuna: 1 }, flag: "held_for_shikhandi", journal: "On the tenth day you rode in front of Shikhandi, and took the arrows meant for him until the grandsire lowered his bow." }, text: "Shikhandi's chariot draws level with Bhishma's. The old man looks at Shikhandi, and lowers his bow, and Arjuna's arrows begin." },
     lose: { deathText: "{They} rode in front of Shikhandi on the tenth day, and the grandsire's guard did what the grandsire would not." }
@@ -549,6 +554,7 @@
   // The sibling's side is drawn when yours is: the other one, unless you talked them round.
   K.on("scene", (sc) => {
     const S = K.S;
+    if (K.PUPPETS && !K.PUPPETS.dev) Object.assign(K.PUPPETS, PUPPETS);
     if (sc.id === "a6_eve" && S.sibling && !S.flags.includes("sibling_other_side_set") && !S.flags.includes("sibling_same_side") && warring(S)) S.flags.push("sibling_other_side_set");
   });
 
@@ -578,8 +584,8 @@
     if (has("helped_draupadi_hall")) t.push("The night Bhima waited in the dancing hall, {they} saw to it that Draupadi was somewhere else, and seen.");
     if (has("held_for_shikhandi")) t.push("On the tenth day {they} rode in front of Shikhandi and took the arrows meant for him.");
     if (has("burned_carts")) t.push("One night in the war {they} crept into the enemy's camp and burned their fodder.");
-    if (has("orders_delivered") || S.journal.some((j) => j.src && j.src.startsWith("On the night of the thirteenth day you carried false orders"))) t.push("{They} carried false orders across the river between the camps.");
-    if (has("orders_burned") || S.memories.some((m) => m.src === "You would not carry a lie across the river, even in a war.")) t.push("{They} would not carry a lie across the river, even in a war.");
+    if (has("carried_false_orders")) t.push("{They} carried false orders across the river between the camps.");
+    if (has("refused_false_orders")) t.push("{They} would not carry a lie across the river, even in a war.");
     if (has("truce_spoke")) t.push("At the truce at dusk {they} waded the river to speak to someone on the other side.");
     if (has("rebuilt_quarter")) t.push("After the war {they} rebuilt the roofs of the burned quarter.");
     if (has("forgave_at_river")) t.push("At the river {they} sent a lamp for {their} dead, and one for whoever killed them.");

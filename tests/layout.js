@@ -382,6 +382,9 @@ const TESTS = [
   ["baghchal", { stage: "stage_board_table", cast: ["shakuni"], opponent: "Shakuni" }], ["moksha", { stage: "stage_board_table", cast: ["boy"], opponent: "Vikarna" }],
   ["retort", { stage: "stage_lotus_garden", cast: ["duryodhana"], rounds: [{ line: "They say your family sweeps the stables.", replies: ["And yours sweeps the floor before the king.", "That is not true.", "Leave me alone."] }, { line: "Is that a bow or a broom?", replies: ["Come closer and find out.", "A bow.", "Go away."] }, { line: "Who taught you?", replies: ["Someone who could.", "Nobody.", "My mother."] }] }],
   ["draw", { stage: "stage_bow_courtyard", cast: ["guard"] }], ["formation", { stage: "stage_chakravyuha_top", array: "eagle" }], ["hands", { stage: "stage_dice_board_top", cast: ["shakuni"] }], ["pasha", null],
+  // Episodes: a run on foot through the storm, and stealth on two of the long night strips.
+  ["race", { _label: "on foot", stage: "stage_exile_storm", vehicle: "foot", obstacles: ["rock", "fire"] }], ["sneak", { _label: "Kichaka's hall", stage: "stage_kichaka_hall_night", watch: "guard" }],
+  ["sneak", { _label: "river crossing", stage: "stage_river_crossing_night", watch: "soldier", verb: "Swim", trips: 1 }],
 ];
 
 async function runDevice(browser, base, o, report) {
@@ -506,7 +509,7 @@ async function runDevice(browser, base, o, report) {
   // Tests of every kind.
   for (const [game, trial] of TESTS) {
     await goTest(page, game, trial);
-    await check("test: " + game, ["trial"]);
+    await check("test: " + game + (trial && trial._label ? " (" + trial._label + ")" : ""), ["trial"]);
   }
 
   // A fight.
