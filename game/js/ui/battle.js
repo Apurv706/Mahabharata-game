@@ -368,7 +368,7 @@
       const msg = { win: K.val(enc.winLine) || "The fight is won.", lose: enc.lethal && !K.S.storyMode ? "You have fallen." : "You are beaten.", flee: "You leave the fight behind.", spare: "You let them live." }[B.over];
       if (K.Sound && !B._sounded) { B._sounded = true; if (B.over === "lose" && enc.lethal && !K.S.storyMode) K.Sound.play("fall"); }
       box.appendChild(U.el('<div class="result"><p><b>' + U.t(msg) + "</b></p></div>"));
-      const done = () => { const cb = onEndCb; const out = C.end().over; onEndCb = null; const L = U.$("leaf"); if (L) L.dataset.battle = ""; document.body.classList.remove("intest"); cb(out); };
+      const done = () => { if (!onEndCb) return; /* once */ const cb = onEndCb; const out = C.end().over; onEndCb = null; const L = U.$("leaf"); if (L) L.dataset.battle = ""; document.body.classList.remove("intest"); cb(out); };
       const cont = U.button("cta", U.tr("Continue"), done);
       box.appendChild(cont);
       U.keys([done]);

@@ -64,12 +64,17 @@
     '<path d="M57 96 L50 108 M63 96 L70 108 M60 96 L60 110" stroke="#fff6d8" stroke-width="2.4" stroke-linecap="round"/></svg>';
 
   let running = null;
+  let playing = null; // the run of moments in progress: { q, dones }
   // Play every moment waiting in the queue, one after another, then call done. Returns false (and
   // does not call done) when there is nothing to play.
   U.playMoments = function (done) {
     const q = K.momentQueue.splice(0).filter((m) => (K.S.moments || []).includes(m)); // only this life's
     if (!q.length || K.headless || /jsdom/i.test(navigator.userAgent || "")) return false; // nothing to play: the caller goes on
-    const next = () => { const m = q.shift(); if (!m) { if (done) done(); return; } show(m, next); };
+    U.keys([]);
+    // Moments already playing: these join the end of that run (two overlays never share one slot).
+    if (playing) { playing.q.push(...q); if (done) playing.dones.push(done); return true; }
+    const run = (playing = { q, dones: done ? [done] : [] });
+    const next = () => { const m = run.q.shift(); if (!m) { playing = null; run.dones.forEach((f) => f()); return; } show(m, next); };
     next();
     return true;
   };

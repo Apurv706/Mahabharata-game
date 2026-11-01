@@ -179,11 +179,66 @@ ok(K.resolveScene("a1_first").id === "a1_first", "and only once");
 ok(K.BEFORE.a3_rajasuya[0] !== "ep_mentor_vidura" && K.BEFORE.a3_rajasuya.includes("ep_mentor_vidura"), "episodes join the vow scenes before the Rajasuya, after them");
 S = fresh(); K.apply({ keepsake: "letter" }); K.apply({ keepsake: "letter" });
 ok(S.keepsakes.length === 1 && S.keepsakes[0] === "letter", "a keepsake is kept once");
-S = fresh({ act: 6, side: "kaurava" }); K.apply({ flag: "beat_ugra" });
-ok(K.resolveScene("a6_day18").id === "a6_day18", "Ugra is not on the field unless he rose in the other camp");
-K.apply({ flag: "ugra_across" });
-ok(K.resolveScene("a6_day18").id === "ep_ugra_last", "Ugra meets you on the seventeenth day once he rose in the other camp");
+S = fresh({ act: 6, side: "kaurava" }); K.apply({ flag: ["beat_ugra", "ugra_across"] });
+ok(K.resolveScene("a6_day18").id === "a6_day18", "Ugra, beaten fairly at the fair, fights beside you and is never across the field");
+ok(K.warAllies(S).includes("ugra"), "... he is in your line");
+S = fresh({ act: 6, side: "kaurava" }); K.apply({ flag: ["shamed_ugra", "ugra_across"] });
+ok(K.resolveScene("a6_day18").id === "ep_ugra_last", "Ugra, shamed at the fair, meets you across the field on the seventeenth day");
+ok(!K.warAllies(S).includes("ugra"), "... and is never in your line");
 S = fresh({ act: 7, age: 45, path: "archer", side: "pandava" }); K.apply({ flag: ["carried_false_orders", "bard_wrong"] });
 const tl = K.composeEnding(S).telling.map((x) => (Array.isArray(x) ? x[0] : x)).join(" | ");
 ok(/false orders across the river/.test(tl) && /^.*They say that /.test(tl), "the telling carries the false orders and the bard's wrong version");
+// 30. Saves and save codes (code review, 1 Nov): cleaned before use, never half a choice, Continue stays put
+{
+  const evil = Object.assign(K.newLife(), { scene: "a1_home", seen: ["a1_home"], temperament: "x\"><img src=x onerror=alert(1)>", injuries: undefined, bonds: { arjuna: "<img src=x>" }, name: 7 });
+  delete evil.injuries;
+  const code = Buffer.from(unescape(encodeURIComponent(JSON.stringify(evil)))).toString("base64");
+  const s2 = K.importCode(code);
+  ok(s2.temperament === null && Array.isArray(s2.injuries) && !("arjuna" in s2.bonds) && typeof s2.name === "string", "a hostile save code is cleaned: unknown temperament dropped, missing lists restored, bonds are numbers");
+  let msg = ""; try { K.importCode("123"); } catch (e) { msg = e.message; }
+  ok(/could not be read/.test(msg), "a save code that is not a life gives the plain message, not a TypeError");
+}
+S = fresh({ act: 1, age: 6 }); K.go("a1_home");
+{
+  const sc = K.SCENES[S.scene], c = K.choiceList(sc).find((x) => x.ok).c, before = S.log.length;
+  K.choose(sc, c);
+  const exported = JSON.parse(decodeURIComponent(escape(Buffer.from(K.exportCode(), "base64").toString("binary"))));
+  ok(S.log.length === before + 1 && exported.log.length === before, "the save code on a result page holds the life as the scene opened (the choice is not made twice)");
+}
+S = fresh({ act: 6, age: 44, side: "pandava" }); K.go("a6_eve"); // reaches w_eve first (its own flag is set on entry)
+{
+  const at = S.scene, saved = K.cleanLife(JSON.parse(JSON.stringify(S)));
+  K.resume(saved);
+  ok(at === "w_eve" && K.S.scene === "w_eve", "Continue returns to the scene that was saved, even one whose own flag would skip it");
+}
+// 31. A slot that draws nothing still plays the scenes that come before its `then` scene
+S = fresh();
+K.SCENES.zz_then = { id: "zz_then", act: 3, age: 20, body: ["x"], choices: [] }; K.SCENES.zz_pre = { id: "zz_pre", act: 3, age: 20, body: ["x"], choices: [], next: "zz_then" };
+K.BEFORE.zz_then = ["zz_pre"]; K.slot("zz_slot", { pool: [], then: "zz_then", none: 1 });
+ok(K.resolveScene("zz_slot").id === "zz_pre", "an empty event slot hands on to the scenes before its next scene");
+// 32. Soma and Bala give back exactly what they took
+S = fresh(); S.attrs.might = 7; S.attrs.aim = 1; S.attrs.grace = 1; S.attrs.wisdom = 1; S.attrs.command = 1;
+K.apply(K.SCENES.w_soma.choices.find((c) => c.resolve).resolve(S));
+ok(S.attrs.might === 8, "Soma at might 7 reaches the cap of 8");
+for (let i = 0; i < 12; i++) { S.log.push("t" + i); K.somaTick(S, {}); }
+ok(S.attrs.might === 7 && !S.soma, "... and wears off back to 7, not 6 (" + S.attrs.might + ")");
+S = fresh({ act: 5, age: 32, tapas: 5, exile: "forest" }); S.attrs.might = 8; S.attrs.grace = 3;
+{ const sc = K.SCENES.a5_forest_boon, c = sc.choices.find((x) => x.id === "bala"); K.choose(sc, c); }
+K.SCENES.zz_act6 = { id: "zz_act6", act: 6, age: 44, body: ["x"], choices: [] }; K.go("zz_act6");
+ok(S.attrs.might === 8 && S.attrs.grace === 3, "Bala at might 8 wears off without costing a point (might " + S.attrs.might + ", grace " + S.attrs.grace + ")");
+// 33. Story fixes
+S = fresh({ act: 5, age: 43, exile: "court" }); S.seen.push("a5_matsya");
+ok(K.resolveScene("a5_herd").id !== "ep_false_name", "the hidden-year scenes are only for those hiding in Matsya");
+S = fresh({ act: 5, age: 43, exile: "forest" }); S.seen.push("a5_matsya", "ep_false_name"); K.apply({ flag: "left_virata" });
+ok(!K.test(K.SCENES.ep_kichaka.when, S), "leaving Virata's household keeps you out of the dancing hall");
+S = fresh({ act: 6, age: 44, side: "pandava", child: "vasu" }); K.apply({ flag: ["vasu_in_camp", "slowed_ashwatthama"] });
+ok(!K.vasuLostInRaid(S), "holding Ashwatthama at the gate saves Vasu, in the raid's lines and in Act VII alike");
+ok(K.SCENES.a6_wheel_again && K.SCENES.a6_day13.next === "a6_day14", "the wheel test comes before the day-13 scene, which goes on to day 14");
+S = fresh({ act: 7, age: 45, side: "pandava" }); S.vows.push({ id: "vengeance", broken: true, released: true, age: 30 }); K.apply({ vowTake: "vengeance" });
+ok(K.hasVow("vengeance", S), "a released vow of vengeance can be sworn again");
+S = fresh({ act: 6, age: 44, side: "kaurava" });
+{ const sc = K.SCENES.a6_raid || Object.values(K.SCENES).find((x) => (x.choices || []).some && (x.choices || []).some((c) => c.id === "refuse" && /Refuse him/.test(String(c.t)))); const c = sc.choices.find((x) => x.id === "refuse"); K.choose(sc, c); }
+ok(S.flags.includes("refused_ashwatthama") && !S.flags.includes("refused_raid"), "refusing the night raid is its own flag, not refusing Matsya");
+S = fresh({ act: 5, age: 43, friend: "charu" }); S.vows.push({ id: "spare_unarmed", broken: false, age: 20 }); S.dead.push("charu");
+ok(!K.test(K.SCENES.v_captive.when, S), "a dead friend does not ask you to silence a spy");
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

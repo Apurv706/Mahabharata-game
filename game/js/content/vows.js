@@ -49,7 +49,7 @@
     },
     // Never to strike the unarmed: your friend wants a captive silenced.
     {
-      id: "v_captive", when: (S) => K.hasVow("spare_unarmed", S) && !!S.friend, skipTo: "a5_karna_secret", next: "a5_karna_secret", away: true,
+      id: "v_captive", when: (S) => K.hasVow("spare_unarmed", S) && !!S.friend && !S.dead.includes(S.friend) && !(S.lostFriends || []).some((x) => x.who === S.friend), skipTo: "a5_karna_secret", next: "a5_karna_secret", away: true,
       act: 5, age: 43, art: "scene_secret", place: "A camp at night", caption: "A spy, bound at the wrists",
       title: "Before he talks",
       body: ["A spy is caught at the edge of the camp, a boy hardly older than you were when you first held a bow. He has seen where everyone sleeps.",
@@ -67,7 +67,7 @@
     },
     // Never to strike Karna: your friend wants you to loose at him, open in the ford.
     {
-      id: "v_ford", when: (S) => K.hasVow("spare_karna", S) && ["arjuna", "bhima", "charu"].includes(S.friend) && !S.dead.includes("karna"), skipTo: "a5_karna_secret", next: "a5_karna_secret", away: true,
+      id: "v_ford", when: (S) => K.hasVow("spare_karna", S) && ["arjuna", "bhima", "charu"].includes(S.friend) && !S.dead.includes(S.friend) && !S.dead.includes("karna"), skipTo: "a5_karna_secret", next: "a5_karna_secret", away: true,
       act: 5, age: 43, art: "scene_cattle", place: "A ford, at the end of the hidden year", caption: "Karna in the river",
       title: "Open in the ford",
       body: ["Duryodhana's men come raiding for cattle at the end of the hidden year, and you are caught up in the fighting at a ford. Karna's chariot is stuck halfway across, the water to its axles, and he has his back to you.",

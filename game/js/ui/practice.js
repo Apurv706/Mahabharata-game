@@ -352,7 +352,7 @@
     if (K.Sound && K.Sound.test) K.Sound.test(null);
     if (U.stageFx) U.stageFx.stop();
     document.body.classList.remove("intest");
-    if (typeof back === "function") back(); else K.go(K.S.scene);
+    if (typeof back === "function") back(); else K.resume(K.S);
   }
   const leaveLabel = () => (PR.from === "retry" ? TEXT.backRetry : PR.from === "fight" ? TEXT.backFight : TEXT.leave);
 

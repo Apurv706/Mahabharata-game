@@ -24,11 +24,11 @@
     scarJournal: "{who} came when you called, and carries a scar for it."
   };
   // The friends who could come to this fight, in order of closeness.
-  K.friendsNear = function (S = K.S, enc) {
+  K.friendsNear = function (S = K.S, enc, here) {
     const lost = (S.lostFriends || []).map((x) => x.who);
     const out = [];
     for (const who of ["charu", "arjuna", "bhima", "karna", "duryodhana"]) {
-      if (!K.UNITS[who] || S.dead.includes(who) || lost.includes(who)) continue;
+      if (!K.UNITS[who] || S.dead.includes(who) || lost.includes(who) || (here && here.has(who))) continue;
       const bond = S.bonds[who] ?? 0;
       if (!(bond >= 7 || (S.friend === who && bond >= 5))) continue;
       if (PRINCES.includes(who)) {
@@ -42,8 +42,8 @@
     return out.sort((a, b) => (S.bonds[b] ?? 0) - (S.bonds[a] ?? 0) || (a === S.friend ? -1 : 1));
   };
   // What "Call for help" does in a fight that has no rule of its own.
-  K.friendHelp = function (S = K.S, enc) {
-    const who = K.friendsNear(S, enc)[0];
+  K.friendHelp = function (S = K.S, enc, here) {
+    const who = K.friendsNear(S, enc, here)[0];
     if (!who) return { text: K.FRIEND_LINES.none };
     const def = K.UNITS[who](S);
     const LINE = K.FRIEND_LINES;

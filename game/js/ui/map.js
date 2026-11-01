@@ -235,6 +235,7 @@
   // two and a half seconds, skippable), "From X to Y" and why, below the map. With reduced motion
   // the trail is drawn at once and the figure stands at the end.
   U.journeyPage = function (from, to, why, done) {
+    U.keys([]);
     const S = K.S, a = P(from), b = P(to), d = leg(a, b);
     const road = S.road || [];
     const still = !U.motion();

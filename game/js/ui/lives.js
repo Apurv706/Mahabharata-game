@@ -31,7 +31,7 @@
     const all = K.lives();
     all.unshift(rec);
     K.store.set(KEY, JSON.stringify(all.slice(0, MAX)));
-    K.save("auto");
+    K.commit(); // the life, now marked as recorded
   };
 
   // What a remembered life gives the next one: [label, effects] pairs.

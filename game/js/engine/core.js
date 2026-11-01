@@ -225,7 +225,8 @@
     set: (o, S) => { Object.assign(S, o); },
     keepsake: (id, S, d) => { S.keepsakes = S.keepsakes || []; if (!S.keepsakes.includes(id)) { S.keepsakes.push(id); if (d) d.keepsake = id; } },
     vowTake: (id, S, d) => {
-      if (K.activeVows(S).length >= K.MAX_VOWS || S.vows.some((v) => v.id === id)) return;
+      // A vow can be sworn again once the earlier one was released (fulfilled), never while it stands or after it was broken.
+      if (K.activeVows(S).length >= K.MAX_VOWS || S.vows.some((v) => v.id === id && !v.released)) return;
       S.vows.push({ id, broken: false, age: S.age }); d.vowTaken = id;
       FX.journal({ src: "You swore a vow: {vow!}.", p: { vow: K.VOWS[id].name } }, S);
     },

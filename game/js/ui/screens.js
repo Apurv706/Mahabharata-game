@@ -52,7 +52,7 @@
     const keys = [];
     if (auto && auto.scene !== "title") {
       const info = auto.alive ? K.tr("{name}, age {n}", { name: auto.name || K.tr("Unnamed"), n: auto.age }) : K.tr("{name}, age {n} (ended)", { name: auto.name || K.tr("Unnamed"), n: auto.age });
-      const cont = () => { K.S = auto; K.go(auto.scene); };
+      const cont = () => K.resume(auto);
       row.appendChild(U.button("cta", U.tr("Continue · {info}", { info }), cont, "btn-continue"));
       keys.push(cont);
     }

@@ -32,7 +32,9 @@
   // A friend for life who fights on the other side of the field.
   const friendAcross = (S) => (S.friend && FRIEND_SIDE[S.friend] && S.side && S.side !== "neutral" && FRIEND_SIDE[S.friend] !== S.side && !S.dead.includes(S.friend) ? S.friend : null);
   const ugraMet = (S) => ["beat_ugra", "lost_to_ugra", "shamed_ugra"].some((f) => S.flags.includes(f));
-  const ugraAcross = (S) => S.flags.includes("ugra_across") && !S.dead.includes("ugra") && S.side && S.side !== "neutral";
+  // Ugra is across the field only from those who shamed him at the fair; those who beat him or lost to
+  // him fairly have him in the line beside them (act6a.js K.warAllies, day one).
+  const ugraAcross = (S) => S.flags.includes("shamed_ugra") && !S.dead.includes("ugra") && S.side && S.side !== "neutral";
   const warring = (S) => S.side === "pandava" || S.side === "kaurava";
 
   Object.assign(K.PEOPLE, { dev: { name: "Dev", canon: false }, devi: { name: "Devi", canon: false } });
@@ -258,8 +260,8 @@
         { id: "promise", t: "Promise to look the other way", fx: (S) => ({ bond: { [S.sibling]: 2 }, flag: "sibling_promise", keepsake: "amulet", memory: [S.sibling, "We promised to look the other way on the field, and I gave you my amulet to remember it."] }),
           text: (S) => ["{who} takes off the copper amulet {who} has worn since you were children and ties it on your wrist. Neither of you says anything else.", sibP(S)] },
         { id: "argue", t: "Argue, all night, to change your sibling's side", check: { attr: "wisdom", skill: "statecraft", dc: 9,
-          pass: { fx: (S) => ({ bond: { [S.sibling]: 1 }, flag: "sibling_same_side", memory: [S.sibling, "You talked all night, and in the morning I came with you."] }), text: "At dawn {who} puts the other side's colours in the fire. \"If we die, we die together, then,\" {who} says. \"Our mother will be furious.\"" },
-          fail: { fx: (S) => ({ bond: { [S.sibling]: -2 }, flag: "sibling_quarrel" }), text: "{who} leaves before dawn without saying goodbye. You tell yourself there will be time afterwards." } }, hint: "A test of wits" },
+          pass: { fx: (S) => ({ bond: { [S.sibling]: 1 }, flag: "sibling_same_side", memory: [S.sibling, "You talked all night, and in the morning I came with you."] }), text: (S) => ["At dawn {who} puts the other side's colours in the fire. \"If we die, we die together, then,\" {who} says. \"Our mother will be furious.\"", sibP(S)] },
+          fail: { fx: (S) => ({ bond: { [S.sibling]: -2 }, flag: "sibling_quarrel" }), text: (S) => ["{who} leaves before dawn without saying goodbye. You tell yourself there will be time afterwards.", sibP(S)] } }, hint: "A test of wits" },
         { id: "silent", t: "Say nothing. There is nothing to say", fx: {}, text: "You sit up together until the lamp goes out. In the morning you leave by different gates." }
       ]
     },
@@ -283,14 +285,14 @@
     },
     // ---------- Episodes: the hidden year ----------
     {
-      id: "ep_false_name", act: 5, age: 43, away: true, when: (S) => S.seen.includes("a5_matsya"), skipTo: "a5_herd", next: "a5_herd",
+      id: "ep_false_name", act: 5, age: 43, away: true, when: (S) => S.seen.includes("a5_matsya") && S.exile === "forest", skipTo: "a5_herd", next: "a5_herd", // only those hiding with the Pandavas
       art: art("stage_virata_hall"), place: "King Virata's court, Matsya", caption: "The steward asks questions",
       title: "Your false name",
       body: ["In Virata's household you are someone else: a groom, a cook's helper, a hanger-on of the new dancing teacher. The steward has begun to count the new faces, and to ask."],
-      choices: [NERVE, { id: "leave", t: "Leave the household before he asks you anything", fx: { rep: { common: -1 } }, text: "You take work in the town instead, and hear the rest of the year as rumour." }]
+      choices: [NERVE, { id: "leave", t: "Leave the household before he asks you anything", fx: { rep: { common: -1 }, flag: "left_virata" }, text: "You take work in the town instead, and hear the rest of the year as rumour." }]
     },
     {
-      id: "ep_kichaka", act: 5, age: 43, away: true, when: (S) => S.seen.includes("a5_matsya") && !S.flags.includes("left_virata"), skipTo: "a5_herd", next: "a5_herd",
+      id: "ep_kichaka", act: 5, age: 43, away: true, when: (S) => S.seen.includes("a5_matsya") && S.exile === "forest" && !S.flags.includes("left_virata"), skipTo: "a5_herd", next: "a5_herd",
       art: art("stage_dancing_hall"), place: "The dancing hall, Matsya", caption: "The night Bhima waited in the dark",
       title: "The dancing hall",
       witness: ["Kichaka, the queen's brother and the kingdom's commander, will not leave the queen's maid alone. The maid is Draupadi. Bhima tells her to send Kichaka to the dancing hall at midnight, and goes in her place."],
@@ -330,7 +332,7 @@
       ]
     },
     {
-      id: "ep_carts", act: 6, age: 44, away: true, war: true, when: (S) => warring(S) && (S.path === "spy" || (S.skills.stealth || 0) >= 2), skipTo: "a6_day13", next: "a6_day13",
+      id: "ep_carts", act: 6, age: 44, away: true, war: true, when: (S) => warring(S) && (S.path === "spy" || (S.skills.stealth || 0) >= 2), skipTo: "a6_wheel", next: "a6_wheel",
       art: art("scene_supply_camp_night"), place: "Behind the enemy lines, the night of the twelfth day", caption: "Grain carts under the watch-fires",
       title: "The supply carts",
       body: ["The night after the twelfth day a captain asks for someone who can move quietly. The enemy's grain and fodder stand in carts behind their lines, and hungry horses pull badly."],
@@ -341,7 +343,7 @@
       title: "Out of the camp",
       body: ["Torches, shouting, men coming out of tents with whatever is nearest to hand. The horse lines are behind you."],
       choices: [{ id: "fight", t: "Fight your way out", combat: "e_ep_carts" }],
-      next: "a6_day13"
+      next: "a6_wheel"
     },
     {
       id: "ep_orders", act: 6, age: 44, away: true, war: true, when: (S) => warring(S) && S.flags.includes("role_command"), skipTo: "a6_day14", next: "a6_day14",
@@ -399,7 +401,7 @@
       ]
     },
     {
-      id: "ep_ugra_last", act: 6, age: 44, away: true, war: true, when: (S) => ugraAcross(S) && !S.flags.includes("shamed_ugra"), skipTo: "a6_day18", next: "a6_day18",
+      id: "ep_ugra_last", act: 6, age: 44, away: true, war: true, when: (S) => ugraAcross(S), skipTo: "a6_day18", next: "a6_day18",
       art: art("scene_ugra_field"), place: "Kurukshetra · the seventeenth day", caption: "The miller's son, with a captain's spear",
       title: "The miller's son, the last time",
       body: ["On the seventeenth day a captain of levies comes through the smoke with his spear up and stops dead. It is Ugra. He has been looking for you after all."],
@@ -540,7 +542,7 @@
   before("a6_eve", ["ep_sibling_side"]);
   before("a6_bhishma", ["ep_shikhandi"]);
   before("a6_capture", ["ep_letter_1"]);
-  before("a6_day13", ["ep_carts"]);
+  before("a6_wheel", ["ep_carts"]); // the night of the twelfth day, before the wheel
   before("a6_day14", ["ep_orders"]);
   before("a6_day16", ["ep_truce"]);
   before("a6_day17", ["ep_letter_2"]);

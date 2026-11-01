@@ -15,7 +15,10 @@
     call: {
       name: "Call for help", target: "self", once: true, desc: "Shout for a friend. Once per battle; who comes depends on what you have been to them.",
       use: (B, u) => {
-        const h = K.val(B.enc.callHelp === undefined && K.friendHelp ? K.friendHelp(K.S, B.enc) : B.enc.callHelp, K.S) || {};
+        // Nobody comes twice: a friend already on the field (beside you, or across it) is not called in again.
+        const here = new Set(B.units.filter((x) => x.hp > 0 && x.person).map((x) => x.person));
+        let h = K.val(B.enc.callHelp === undefined && K.friendHelp ? K.friendHelp(K.S, B.enc, here) : B.enc.callHelp, K.S) || {};
+        if (h.unit && h.unit.person && here.has(h.unit.person)) h = { text: ["{who} is already in this fight.", { who: K.personName(h.unit.person) }] };
         if (h.text) B.say(h.text);
         if (h.unit) { const a = B.join(h.unit, h.stay || 2); a.called = true; B.status(a, "inspired", 2); }
         if (h.run) h.run(B);

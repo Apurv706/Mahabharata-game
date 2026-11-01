@@ -67,8 +67,20 @@
     U.openModal("Load a save code", '<p class="note">' + U.tr("Paste a save code from this game, on any device.") + '</p><label class="lbl" for="code-in">' + U.tr("Save code") + '</label><textarea id="code-in" spellcheck="false"></textarea>' +
       '<div class="btnrow"><button class="cta" id="code-load" type="button">' + U.tr("Load this life") + '</button></div><p class="err" id="code-err"></p>', () => {
       U.$("code-load").addEventListener("click", () => {
-        try { const s = K.importCode(U.$("code-in").value); U.closeModal(); K.S = s; K.go(s.scene); }
-        catch (e) { U.$("code-err").textContent = e.message; }
+        let s;
+        try { s = K.importCode(U.$("code-in").value); }
+        catch (e) { const er = U.$("code-err"); if (er) er.textContent = e.message; return; }
+        // The code is read and cleaned; if the life still will not open, the current one is put back
+        // (and saved again), and the dialog says so. A bad code never replaces a good life.
+        const prev = K.S;
+        U.closeModal();
+        try { K.resume(s); }
+        catch (e) {
+          K.S = prev;
+          try { K.resume(prev); } catch (e2) { /* the title screen is still there */ }
+          U.openLoad();
+          const er = U.$("code-err"); if (er) er.textContent = K.tr("That save code could not be read. Copy the whole code and try again.");
+        }
       });
     });
   };
@@ -109,8 +121,8 @@
         if (pr && U.canPractise()) pr.addEventListener("click", () => { U.closeModal(); U.openPractice({ from: "menu" }); });
         else if (pr) { pr.disabled = true; U.$("m-practice-f").appendChild(U.el('<p class="note">' + U.tr(K.PRACTICE.text[U.practising && U.practising() ? "here" : "notNow"]) + "</p>")); }
         U.$("m-save").addEventListener("click", () => { U.$("m-saved").textContent = K.tr(K.save("manual") ? "Saved." : "This browser is not allowing saves. Use the save code instead."); });
-        if (manual) U.$("m-load").addEventListener("click", () => { U.closeModal(); K.S = manual; K.go(manual.scene); });
-        U.$("m-story").addEventListener("change", (e) => { K.S.storyMode = e.target.checked; K.save("auto"); });
+        if (manual) U.$("m-load").addEventListener("click", () => { U.closeModal(); K.resume(manual); });
+        U.$("m-story").addEventListener("change", (e) => { K.setStoryMode(e.target.checked); });
         U.$("m-gradual").addEventListener("change", (e) => { K.prefs({ gradual: e.target.checked }); });
         document.querySelectorAll("[data-titles]").forEach((b) => b.addEventListener("click", () => {
           K.prefs({ titles: b.dataset.titles });

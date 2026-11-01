@@ -137,7 +137,11 @@
       draw();
       setTimeout(() => (i < 4 ? watch(i + 1) : (G.phase = "ask", draw())), slowed(sharp ? 1500 : 950));
     }
+    let answered = false;
     function answer(i) {
+      if (answered) return; // one answer: a second key or tap while the result shows does nothing
+      answered = true;
+      U.keys([]);
       const right = i === swap;
       U.castStance(wrap, right ? "cheer" : "slump", right ? "slump" : "stand");
       host.querySelectorAll(".btnrow button").forEach((b) => { b.disabled = true; });

@@ -10,6 +10,46 @@ Four separate reviews covered the engine, the story content, the interface, and 
 
 **Totals:** 18 critical issues and about 60 good-to-improve issues.
 
+## Status (1 November)
+
+**All 18 critical issues are fixed** (version 54). For each fix:
+
+- a check in `tests/rules.js` (93 checks now);
+- a new engine test, `tests/lives.js`, which replays random lives and checks four things:
+  - saves come back from the cleaner unchanged;
+  - Continue stays on the saved scene;
+  - no unfilled `{token}` reaches the screen;
+  - nobody is on both sides of a fight.
+- The reviewers' browser reproductions were run again against the fixed game: the save-code injection, the returning lamp, and the number keys during title cards.
+
+A new GitHub check, "Engine checks", runs the rules and 600 replayed lives on every push.
+
+How each was fixed:
+
+1. Saves are cleaned by `K.cleanLife` before use, on import and on load. Only known temperament ids become a class, and the meter values are numbers.
+2. A save code that will not open puts the current life back, and the dialog says so.
+3. `K.resume` reopens the saved scene directly.
+4. `K.commit` keeps the life as the scene opened, and manual saves, the save code and the story-mode switch write that.
+5. Keys are cleared when a scene, a title card, a moment or a journey begins.
+   - A held key, or one pressed with Ctrl, Alt or Meta, is ignored.
+   - Continue, the fight's done and the dice-hall answer all act once.
+   - Moments queue instead of overlapping.
+6. One choice per visit to a scene; `showAfter` stops and removes the lamp.
+7. Soma and Bala remember what they actually added.
+8. The scenes that come before are asked for again after an event slot.
+9. The hidden-year scenes are only for players in exile with the Pandavas, and "Leave the household" sets `left_virata`.
+10. Ugra is across the field only from players who shamed him. A friend already in a fight is not called in again, and the disguised Bhima is "The huge brahmin".
+11. One shared rule, `K.vasuLostInRaid`.
+12. The wheel test comes before the day-13 scene.
+13. A released vow can be sworn again.
+14. The sibling's lines fill `{who}`.
+15. `refused_ashwatthama` is its own flag, with its own line in the telling.
+16. A dead friend no longer asks things of you, ties your thread or "grows old beside you", and is counted once.
+17. The string collector stops on an unreadable `strings.json`.
+18. The Hindi tools stop on an unreadable file, and the build fails on missing strings or token problems.
+
+The good-to-improve list below is still open. Two items from it were fixed along the way: a friend already in a fight is no longer called in again, and the ally name no longer gives away Bhima's disguise.
+
 ---
 
 ## Critical (fix before the next release)

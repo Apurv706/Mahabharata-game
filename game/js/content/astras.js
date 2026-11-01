@@ -69,7 +69,9 @@
   const push = (scene, choice) => { const sc = K.SCENES[scene]; if (sc && Array.isArray(sc.choices)) sc.choices.push(choice); };
   // At the ashram in the exile years: the two mantras, the vanishing, the rite.
   push("a5_forest_boon", { id: "bala", t: "Ask the sages for the mantras against hunger and weariness", req: { tapas: 3, noFlag: "had_bala" }, locked: needs(3),
-    fx: { tapas: -3, boon: "bala", attr: { might: 1, grace: 1 }, flag: "had_bala", set: { balaUntil: 5 }, journal: "The sages taught you Bala and Atibala. For a season you were never tired and never hungry." },
+    // What the mantras actually add (an attribute already at 8 gains nothing), so exactly that is taken back.
+    resolve: (S) => ({ attr: { might: 1, grace: 1 }, set: { balaUntil: 5, balaGain: { might: Math.min(1, 8 - S.attrs.might), grace: Math.min(1, 8 - S.attrs.grace) } } }),
+    fx: { tapas: -3, boon: "bala", flag: "had_bala", journal: "The sages taught you Bala and Atibala. For a season you were never tired and never hungry." },
     hint: "Costs 3 tapas: +1 Might, +1 Grace until the war",
     text: "Two mantras, one for the morning and one for the night. The old sage makes you say them until he is satisfied, which takes four days." });
   push("a5_forest_boon", { id: "rite", t: "Ask the sages to lift the curse on you", req: { tapas: 6, cursed: true }, locked: "Needs a curse to lift, and 6 tapas.",
@@ -87,7 +89,7 @@
     body: ["Before the great sacrifice the priests press the Soma, and a cup of it is offered to those who have kept their vows. One of them holds a cup out to you."],
     choices: [
       { id: "drink", t: "Drink the Soma", req: { tapas: 2 }, locked: needs(2),
-        resolve: (S) => { const best = ["might", "aim", "grace", "wisdom", "command"].sort((a, b) => S.attrs[b] - S.attrs[a])[0]; return { attr: { [best]: 2 }, set: { soma: { attr: best, until: S.log.length + 4 } } }; },
+        resolve: (S) => { const best = ["might", "aim", "grace", "wisdom", "command"].sort((a, b) => S.attrs[b] - S.attrs[a])[0]; return { attr: { [best]: 2 }, set: { soma: { attr: best, until: S.log.length + 4, gain: Math.min(2, 8 - S.attrs[best]) } } }; },
         fx: { tapas: -2, flag: "drank_soma", journal: "You drank the Soma at Yudhishthira's sacrifice. For a day you were more than yourself, and the day after, less." },
         hint: "Costs 2 tapas: +2 to your best attribute for a day, then -1 for a day", text: "It is bitter and bright, and the hall is suddenly very clear. You will pay for it tomorrow." },
       { id: "no", t: "Pass the cup on", fx: { rep: { sages: 1 } }, text: "The priest nods as if you had answered a question." }
@@ -97,7 +99,8 @@
     place: "The camp, the night before the first day", to: "kurukshetra", travel: "You march to Kurukshetra with the army.", art: art("scene_raksha_sutra"), caption: "Lamps in the tents", title: "The night before",
     body: ["The night before the first arrow, the camp does the small things: threads are tied, blessings asked, letters written that may not be sent."],
     choices: [
-      { id: "sutra", t: (S) => (S.spouse ? ["Let {spouse} tie the raksha sutra on your wrist", null] : S.kin ? ["Let {kin} tie the raksha sutra on your wrist", { kin: S.kin }] : "Let the old women of the camp tie the raksha sutra on your wrist"),
+      // Tied by a living spouse, or by the parent who raised you (a grandparent is long gone by the war), or by the camp's old women.
+      { id: "sutra", t: (S) => (S.spouse && !S.dead.includes(S.spouse) ? ["Let {spouse} tie the raksha sutra on your wrist", null] : S.kin && !K.kinElder(S) ? ["Let {kin} tie the raksha sutra on your wrist", { kin: S.kin }] : "Let the old women of the camp tie the raksha sutra on your wrist"),
         fx: { boon: "raksha", charge: { raksha: 1 }, flag: "has_raksha", duty: { family: 1 } }, hint: "Once, outside battle, it turns a death into a wound",
         text: "A red and yellow thread, tied with a prayer you half hear. It is only a thread. You do not take it off." },
       { id: "bless", t: (S) => (S.teacher && S.teacher !== "self" ? ["Go to {teacher} for a blessing", null] : "Go to the elders of the camp for a blessing"),

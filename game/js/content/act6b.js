@@ -4,6 +4,11 @@
   const fighting = { side: ["pandava", "kaurava"] };
   const war = K.warEncounter;
   const vasuAt = (S, where) => S.child === "vasu" && !S.dead.includes("vasu") && S.flags.includes(where);
+  // Vasu dies in the night raid unless someone stood in the way (saved him, woke the camp, or held
+  // Ashwatthama at the gate). One rule, read by the raid's closing lines and by Act VII.
+  K.vasuLostInRaid = (S) => S.side !== "kaurava" && S.child === "vasu" && !S.dead.includes("vasu") &&
+    (S.flags.includes("vasu_in_camp") || S.flags.includes("vasu_with_you")) &&
+    !["saved_vasu_raid", "woke_camp", "slowed_ashwatthama"].some((f) => S.flags.includes(f));
 
   K.scenes([
     {
@@ -143,13 +148,12 @@
           text: "They come out of the trees without a sound. They know the whistle: Ekalavya taught it to them, long ago, and told them who had bound his hand. Their arrows hold the gate long enough for half the camp to run." },
         { id: "join", t: "Go with Ashwatthama into the sleeping camp", req: { side: "kaurava" }, tags: ["strike_unarmed"],
           fx: { duty: { conscience: -5 }, rep: { sages: -3, common: -2 }, flag: "joined_raid", journal: "You went into the sleeping Pandava camp with Ashwatthama." } },
-        { id: "refuse", t: "Refuse him", req: { side: "kaurava" }, fx: { duty: { conscience: 2 }, flag: "refused_raid" }, text: "\"Then go home,\" he says, \"and live with that.\"" },
+        { id: "refuse", t: "Refuse him", req: { side: "kaurava" }, fx: { duty: { conscience: 2 }, flag: "refused_ashwatthama" }, text: "\"Then go home,\" he says, \"and live with that.\"" },
         { id: "stop", t: "Try to stop him", req: { side: "kaurava" }, combat: "e_ash" }
       ],
       after: (S) => [
         "Ashwatthama kills Dhrishtadyumna, Shikhandi and all five of Draupadi's sons in their sleep, and sets the camp on fire. Of the eighteen armies, a handful of people are left alive.",
-        S.side !== "kaurava" && S.child === "vasu" && !S.dead.includes("vasu") && (S.flags.includes("vasu_in_camp") || S.flags.includes("vasu_with_you")) && !S.flags.includes("saved_vasu_raid") && !S.flags.includes("woke_camp")
-          ? { curse: "You find Vasu at dawn, in what is left of his tent." } : null
+        K.vasuLostInRaid(S) ? { curse: "You find Vasu at dawn, in what is left of his tent." } : null
       ],
       next: "a7_field"
     }

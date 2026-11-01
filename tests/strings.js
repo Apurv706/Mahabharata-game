@@ -123,8 +123,12 @@ if (mode === "collect") {
     try { w.close(); } catch (e) {} // jsdom keeps every window alive otherwise
   }
   // Keep existing ids stable; append new strings.
+  // A strings.json that exists but will not parse stops the collector: starting again from nothing would
+  // give every string a new id, and every translation (keyed by id) would land on the wrong text.
   let prev = [];
-  try { prev = JSON.parse(fs.readFileSync(OUT, "utf8")); } catch (e) { prev = []; }
+  if (fs.existsSync(OUT)) {
+    try { prev = JSON.parse(fs.readFileSync(OUT, "utf8")); } catch (e) { console.error("tests/strings.json cannot be read (" + e.message + "). Fix it (or restore it from git) before collecting; nothing was written."); process.exit(2); }
+  }
   const known = new Set(prev.map((x) => x.en));
   let id = prev.reduce((m, x) => Math.max(m, x.id), 0);
   const added = order.filter((s) => !known.has(s)).map((s) => ({ id: ++id, en: s, ctx: ctxOf.get(s) }));

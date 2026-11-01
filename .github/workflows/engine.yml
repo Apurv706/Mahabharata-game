@@ -1,0 +1,25 @@
+# Engine checks: the rules of the game (tests/rules.js) and random lives played through the engine
+# alone (tests/lives.js: save codes cleaned, Continue resumes where it was saved, no unfilled text,
+# no one on both sides of a fight, every life ends). Both run in seconds, with no browser.
+name: Engine checks
+on:
+  push:
+    branches: [main]
+    paths: ["game/js/**", "game/index.html", "tests/rules.js", "tests/lives.js", ".github/workflows/engine.yml"]
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: engine-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: node tests/rules.js
+      - run: node tests/lives.js 600 1

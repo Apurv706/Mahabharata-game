@@ -5,6 +5,7 @@
   const U = K.UI;
 
   function meter(label, v, key, max = 10, face = null) {
+    v = Number(v) || 0; // a number, whatever a save holds
     const d = K.lastDelta[key] || 0;
     let pips = "";
     for (let i = 0; i < 10; i++) {

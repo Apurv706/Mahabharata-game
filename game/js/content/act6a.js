@@ -96,7 +96,7 @@
         text: (S) => (S.storyMode ? "Something strikes you from behind, and the world goes dark. You wake in the healers' tents. Someone dragged you out of the wheel. No one will say who."
           : S.boons.includes("astra") ? "The astra you were given is spent, and its light is gone. There is only the boy at your back, and the wheel in his hands, and then nothing."
           : "There is only the boy at your back, and the wheel in his hands, and then nothing.") }],
-      next: "a6_wheel"
+      next: "a6_day14"
     },
     {
       // Kaurava side: you held your stretch of the ring against the boy. Then the order comes down.
@@ -112,7 +112,7 @@
           text: "Your arrow goes wide. No one notices but you. It changes nothing, and you will think about it for the rest of your life." }
       ],
       after: ["Abhimanyu fights until his bow is broken, then with his sword, then with a chariot wheel. Many warriors surround him at once, and he falls. That night Arjuna swears to kill Jayadratha before the next sunset, or walk into fire."],
-      next: "a6_wheel"
+      next: "a6_day14"
     },
     {
       id: "a6_vasu", when: { child: "vasu", alive: "vasu" }, skipTo: "a6_day1",
@@ -187,7 +187,7 @@
             pass: { fx: { rep: { common: 2 }, duty: { conscience: 1 }, journal: "You carried the wounded off the field on the eleventh and twelfth days." }, text: "Seven trips into the dust and back. Seven people who will see their families again." },
             fail: { fx: { injury: "leg" }, text: "On the fourth trip a horse goes down on top of you." } } }
       ],
-      next: "a6_day13"
+      next: "a6_wheel"
     },
     {
       id: "a6_day13", act: 6, age: 44, canon: true, war: true, art: "scene_day13", place: "Kurukshetra · day 13", caption: "The wheel formation",
@@ -221,7 +221,7 @@
         { id: "tend", t: "Work the tents behind the wheel", req: { side: "neutral" }, fx: { rep: { common: 1 }, flag: "tended_d13" } }
       ],
       after: ["Abhimanyu fights until his bow is broken, then with his sword, then with a chariot wheel. Many warriors surround him at once, and he falls. That night Arjuna swears to kill Jayadratha before the next sunset, or walk into fire."],
-      next: "a6_wheel"
+      next: "a6_day14"
     },
     {
       id: "a6_d13_inside", act: 6, age: 44, canon: true, war: true, art: "scene_day13", place: "Inside the Chakravyuha", caption: "The gap closing behind you",
@@ -238,7 +238,7 @@
           text: "You turn the chariot and drive at the weakest part of the wall. You come out the other side bleeding, alone, and alive." }
       ],
       after: ["Abhimanyu fights until his bow is broken, then with his sword, then with a chariot wheel. Many warriors surround him at once, and he falls. That night Arjuna swears to kill Jayadratha before the next sunset, or walk into fire."],
-      next: "a6_wheel"
+      next: "a6_day14"
     }
   ]);
 

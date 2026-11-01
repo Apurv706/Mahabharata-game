@@ -665,9 +665,12 @@
     }),
     // Act VI: the wheel on the thirteenth day.
     K.trialScenes({
-      id: "a6_wheel", next: "a6_day14", tests: WHEEL,
+      // Played before the day-13 scene (whose closing lines tell of Abhimanyu's fall), never after it.
+      id: "a6_wheel", next: "a6_day13", tests: WHEEL,
       scene: { act: 6, age: 44, war: true, art: "scene_day13", place: "Kurukshetra · day 13", caption: "The wheel formation",
-        title: "What the wheel asks", body: ["The wheel turns. Everything you have learned comes down to the next few heartbeats."] },
+        title: "What the wheel asks", body: (S) => [S.side === "pandava" ? "On the thirteenth morning Drona sets the Chakravyuha, a wheel of warriors turning ring within ring. Abhimanyu rides at its face, looking for the way in, and your company waits on you."
+          : S.side === "kaurava" ? "On the thirteenth morning Drona sets the Chakravyuha, a wheel of warriors turning ring within ring, and you are one of its rings. The Pandava chariots are already coming."
+          : "On the thirteenth morning the drums start before dawn, and by noon the carts are bringing the wounded in faster than anyone can count."] },
       retry: { id: "a6_wheel_again", letGo: "Fall back", letText: "You fall back with the others. Someone else takes your place.",
         scene: { act: 6, age: 44, war: true, art: "scene_day13", place: "Kurukshetra · day 13", caption: "The second wave", title: "Again", body: ["There is no time to think. Again."] } }
     }),

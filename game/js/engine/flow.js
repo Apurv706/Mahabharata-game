@@ -36,26 +36,29 @@
   K.BEFORE = {};
   K.resolveScene = function (id, S = K.S) {
     id = K.val(id, S);
-    const pre = (K.BEFORE[id] || []).find((p) => K.SCENES[p] && !S.seen.includes(p) && K.test(K.SCENES[p].when, S));
-    if (pre) id = pre;
-    for (let g = 0; K.SLOTS[id] && g < 5; g++) id = slotScene(id, S);
+    // The scenes that come first are asked for again after an event slot resolves: a slot that draws
+    // nothing hands on its `then` scene, which may have its own (the vow of the word before the Rajasuya).
+    const before = (x) => (K.BEFORE[x] || []).find((p) => K.SCENES[p] && !S.seen.includes(p) && K.test(K.SCENES[p].when, S)) || x;
+    id = before(id);
+    for (let g = 0; K.SLOTS[id] && g < 5; g++) id = before(slotScene(id, S));
     let sc = K.SCENES[id];
     for (let guard = 0; sc && sc.when && !K.test(sc.when, S); guard++) {
       if (guard > 60) throw new Error("Scene skip loop at " + sc.id);
-      let next = K.val(sc.skipTo, S);
-      const pre2 = (K.BEFORE[next] || []).find((p) => K.SCENES[p] && !S.seen.includes(p) && K.test(K.SCENES[p].when, S));
-      if (pre2) next = pre2;
-      for (let g = 0; K.SLOTS[next] && g < 5; g++) next = slotScene(next, S);
+      let next = before(K.val(sc.skipTo, S));
+      for (let g = 0; K.SLOTS[next] && g < 5; g++) next = before(slotScene(next, S));
       sc = K.SCENES[next];
     }
     if (!sc) throw new Error("Missing scene: " + K.val(id, S));
     return sc;
   };
 
-  K.go = function (id) {
+  K.go = function (id, resuming) {
     const S = K.S;
     if (!S.alive) id = "end_death";
-    const sc = K.resolveScene(id);
+    // Continue (or a loaded save) returns to the very scene that was saved: its conditions, the scenes
+    // that come before it and its event slot were settled when it was first reached, and are not asked again.
+    K.visit = (K.visit || 0) + 1; // each arrival at a scene is a new visit (the page allows one choice per visit)
+    const sc = resuming && id === S.scene && S.seen.includes(id) && K.SCENES[id] ? K.SCENES[id] : K.resolveScene(id);
     S.scene = sc.id;
     if (sc.act && sc.act > S.act) drift(S, sc.act);
     if (sc.act) S.act = sc.act;
@@ -67,7 +70,7 @@
       if (sc.enter) delta = K.apply(sc.enter);
     }
     K.lastDelta = delta;
-    K.save("auto");
+    K.commit();
     K.emit("scene", sc);
     return sc;
   };
@@ -79,7 +82,7 @@
     const kept = K.activeVows(S).reduce((a, v) => a + (v.id === "celibacy" ? 2 : 1), 0);
     if (kept) S.tapas = K.clamp((S.tapas || 0) + kept, 0, 20);
     // The Bala and Atibala mantras hold for one act.
-    if (S.balaUntil != null && newAct > S.balaUntil) { S.attrs.might = K.clamp(S.attrs.might - 1, 0, 8); S.attrs.grace = K.clamp(S.attrs.grace - 1, 0, 8); delete S.balaUntil; S.boons = S.boons.filter((b) => b !== "bala"); }
+    if (S.balaUntil != null && newAct > S.balaUntil) { const g = S.balaGain || { might: 1, grace: 1 }; S.attrs.might = K.clamp(S.attrs.might - g.might, 0, 8); S.attrs.grace = K.clamp(S.attrs.grace - g.grace, 0, 8); delete S.balaUntil; delete S.balaGain; S.boons = S.boons.filter((b) => b !== "bala"); }
     // On the eve of the war, Bhishma blesses those who kept a vow of celibacy, as he did.
     if (newAct === 6 && K.hasVow("celibacy", S) && !S.flags.includes("bhishma_blessing")) {
       S.flags.push("bhishma_blessing");
@@ -161,8 +164,11 @@
     const so = S.soma;
     if (!so) return;
     const n = S.log.length;
-    if (!so.down && n >= so.until) { so.down = true; so.hang = n + 3; S.attrs[so.attr] = K.clamp(S.attrs[so.attr] - 3, 0, 8); if (delta) delta["attr." + so.attr] = -3; }
-    else if (so.down && n >= so.hang) { S.attrs[so.attr] = K.clamp(S.attrs[so.attr] + 1, 0, 8); if (delta) delta["attr." + so.attr] = 1; delete S.soma; }
+    // It wears off into a day one point below where you were, then you are as before. The changes are the
+    // ones actually made (the gain was capped at 8; the low may stop at 0), so nothing is lost for good.
+    const gain = so.gain != null ? so.gain : 2;
+    if (!so.down && n >= so.until) { so.down = true; so.hang = n + 3; const was = S.attrs[so.attr]; S.attrs[so.attr] = K.clamp(was - gain - 1, 0, 8); so.drop = S.attrs[so.attr] - was; if (delta) delta["attr." + so.attr] = so.drop; }
+    else if (so.down && n >= so.hang) { const back = -gain - (so.drop != null ? so.drop : -gain - 1); S.attrs[so.attr] = K.clamp(S.attrs[so.attr] + back, 0, 8); if (delta) delta["attr." + so.attr] = back; delete S.soma; }
   };
   K.checkLabel = function (ch) {
     const parts = [ch.attr && K.ATTRS[ch.attr], ch.skill && K.SKILLS[ch.skill]].filter(Boolean).map(K.tr);
@@ -369,10 +375,27 @@
     set(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } },
     del(k) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } }
   };
+  // The life as it stood when its current scene opened. A choice changes K.S at once, but the page moves
+  // on only at the next scene; a save made on a result page (a copy, the save code, the story-mode switch)
+  // writes this committed life, so loading it never offers a choice that was already made.
+  K.committed = null;
+  K.commit = function () {
+    const S = K.S;
+    if (!S || !K.SCENES[S.scene]) return false;
+    K.committed = JSON.stringify(S);
+    return K.store.set(KEY + ".auto", K.committed);
+  };
+  const committedFor = (S) => (K.committed && JSON.parse(K.committed).scene === S.scene ? K.committed : JSON.stringify(S));
   K.save = function (slot) {
     const S = K.S;
     if (!S || !K.SCENES[S.scene]) return false;
-    return K.store.set(KEY + "." + slot, JSON.stringify(S));
+    return K.store.set(KEY + "." + slot, committedFor(S));
+  };
+  // Story mode changes both the live life and the committed one, and is saved at once.
+  K.setStoryMode = function (on) {
+    K.S.storyMode = !!on;
+    if (K.committed) { const c = JSON.parse(K.committed); c.storyMode = !!on; K.committed = JSON.stringify(c); }
+    return K.store.set(KEY + ".auto", K.committed || JSON.stringify(K.S));
   };
   // Saves from before the Yadava homeland moved from Dwaraka to Mathura.
   K.migrate = function (s) {
@@ -380,10 +403,52 @@
     if (s) { s.tapas = s.tapas || 0; s.astras = s.astras || []; s.charges = s.charges || {}; } // saves from before §18.7/18.8
     return s;
   };
+  // A life read from storage or from a pasted code, made safe to play. It must be an object; every
+  // field the game relies on gets the right type (else the new-life default); ids are ones the game
+  // knows; text is text. Fields this function does not know (added by newer scenes) are kept as they are.
+  K.cleanLife = function (raw) {
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) throw new Error(K.tr("That save code could not be read. Copy the whole code and try again."));
+    const base = K.newLife(), s = Object.assign({}, raw);
+    const kind = (v) => (v === null ? "null" : Array.isArray(v) ? "array" : typeof v);
+    const isId = (v) => typeof v === "string" && /^[A-Za-z0-9_-]{1,60}$/.test(v); // no quotes, brackets or spaces
+    const num = (v, d) => (typeof v === "number" && isFinite(v) ? v : d);
+    const numbers = (o, d) => { const r = Object.assign({}, d); if (kind(o) === "object") for (const [k, v] of Object.entries(o)) if (isId(k) && typeof v === "number" && isFinite(v)) r[k] = v; return r; };
+    const ids = (a, table) => (kind(a) === "array" ? a.filter((x) => isId(x) && (!table || table[x])) : []);
+    const texts = (a) => (kind(a) === "array" ? a.filter((x) => typeof x === "string") : []);
+    const objs = (a, ok) => (kind(a) === "array" ? a.filter((x) => kind(x) === "object" && ok(x)) : []);
+    for (const [k, d] of Object.entries(base)) {
+      const want = kind(d), got = kind(s[k]);
+      if (want === "null") { if (got !== "null" && got !== "string") s[k] = null; }
+      else if (want !== got) s[k] = d;
+    }
+    s.name = String(s.name).slice(0, 40);
+    if (!["she", "he", "they"].includes(s.pronoun)) s.pronoun = "they";
+    const known = { origin: K.ORIGINS, temperament: K.TEMPERAMENTS, heirloom: K.HEIRLOOMS, path: K.PATHS, teacher: K.TEACHERS };
+    for (const [k, table] of Object.entries(known)) if (s[k] != null && !(isId(s[k]) && (!table || table[s[k]]))) s[k] = null;
+    for (const k of ["court", "side", "spouse", "friend", "child", "exile", "karma", "endChoice"]) if (s[k] != null && !isId(s[k])) s[k] = null;
+    for (const k of ["ending", "deathText"]) if (s[k] != null && typeof s[k] !== "string") s[k] = null;
+    s.age = num(s.age, base.age); s.act = num(s.act, base.act); s.tapas = Math.max(0, Math.min(20, num(s.tapas, 0)));
+    for (const k of ["attrs", "skills", "duty", "rep", "items", "charges", "bonds", "bondAct"]) s[k] = numbers(s[k], base[k]);
+    s.record = Object.assign(numbers(s.record, base.record), { last: typeof (s.record || {}).last === "string" ? s.record.last : null });
+    s.slots = kind(s.slots) === "object" ? Object.fromEntries(Object.entries(s.slots).filter(([k, v]) => isId(k) && (v === null || v === 0 || isId(v)))) : {};
+    for (const k of ["flags", "seen", "dead"]) s[k] = ids(s[k]);
+    s.log = texts(s.log);
+    s.boons = ids(s.boons, K.BOONS); s.injuries = ids(s.injuries, K.INJURIES);
+    if (s.keepsakes !== undefined) s.keepsakes = ids(s.keepsakes, K.KEEPSAKES);
+    s.vows = objs(s.vows, (v) => isId(v.id) && K.VOWS[v.id]).map((v) => Object.assign({}, v, { broken: !!v.broken, age: num(v.age, s.age) }));
+    s.curses = objs(s.curses, (c) => isId(c.id) && K.CURSES[c.id]).map((c) => Object.assign({}, c, { fired: !!c.fired }));
+    s.astras = objs(s.astras, (a) => isId(a.id));
+    s.memories = objs(s.memories, (m) => typeof m.text === "string" || typeof m.src === "string");
+    s.journal = objs(s.journal, (j) => typeof j.text === "string" || typeof j.src === "string");
+    s.moments = objs(s.moments, (m) => isId(m.kind));
+    if (s.lostFriends !== undefined) s.lostFriends = objs(s.lostFriends, (f) => isId(f.who));
+    s.alive = s.alive !== false; s.storyMode = !!s.storyMode;
+    return s;
+  };
   K.loadSlot = function (slot) {
     const t = K.store.get(KEY + "." + slot);
     if (!t) return null;
-    try { const s = K.migrate(JSON.parse(t)); return s && s.v === 2 && K.SCENES[s.scene] ? s : null; } catch (e) { return null; }
+    try { const s = K.cleanLife(K.migrate(JSON.parse(t))); return s.v === 2 && K.SCENES[s.scene] ? s : null; } catch (e) { return null; }
   };
   K.deleteSlot = (slot) => K.store.del(KEY + "." + slot);
   K.prefs = function (patch) {
@@ -392,15 +457,18 @@
     if (patch) { Object.assign(p, patch); K.store.set(KEY + ".prefs", JSON.stringify(p)); }
     return p;
   };
-  K.exportCode = () => btoa(unescape(encodeURIComponent(JSON.stringify(K.S))));
+  // Open a saved life on the scene it was saved on.
+  K.resume = (S) => { K.S = S; return K.go(S.scene, true); };
+  K.exportCode = () => btoa(unescape(encodeURIComponent(K.S ? committedFor(K.S) : "{}")));
   K.importCode = function (txt) {
     txt = String(txt || "").trim();
     let s;
     try { s = JSON.parse(txt); } catch (e) {
       try { s = JSON.parse(decodeURIComponent(escape(atob(txt)))); } catch (e2) { throw new Error(K.tr("That save code could not be read. Copy the whole code and try again.")); }
     }
-    K.migrate(s);
-    if (!s || s.v !== 2 || !K.SCENES[s.scene]) throw new Error(K.tr("That save code is from a different version of the game."));
+    if (!s || typeof s !== "object" || Array.isArray(s)) throw new Error(K.tr("That save code could not be read. Copy the whole code and try again."));
+    s = K.cleanLife(K.migrate(s));
+    if (s.v !== 2 || !K.SCENES[s.scene]) throw new Error(K.tr("That save code is from a different version of the game."));
     return s;
   };
 })(window.K = window.K || {});

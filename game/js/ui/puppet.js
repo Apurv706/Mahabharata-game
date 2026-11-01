@@ -37,7 +37,7 @@
     const inj = S.injuries || [];
     return {
       stage: K.puppetStage(S.age || 6), pronoun: S.pronoun || "they", palette: PALETTE[S.origin] || PALETTE.none,
-      headgear: HEADGEAR[S.origin] || null, temper: S.temperament || null,
+      headgear: HEADGEAR[S.origin] || null, temper: K.TEMPERAMENTS && K.TEMPERAMENTS[S.temperament] ? S.temperament : null,
       heir: S.heirloom && !(S.flags || []).includes("heirloom_lost") ? S.heirloom : null,
       cracked: (S.flags || []).includes("amulet_broken"),
       item: S.path ? ITEM[S.path] : null,
@@ -145,7 +145,8 @@
     const stage = spec.stage || "adult";
     const scale = o.fit ? (stage === "child" ? 0.86 : 1) : { child: 0.66, youth: 0.86, adult: 1, elder: 0.96 }[stage] * (spec.big ? 1.1 : 1);
     const headScale = stage === "child" ? 1.38 : 1.14;
-    const bear = spec.temper ? " t-" + spec.temper : "";
+    // Only a known temperament id becomes a class (a stored figure or a pasted save code could hold anything).
+    const bear = spec.temper && /^[a-z_]+$/.test(spec.temper) ? " t-" + spec.temper : "";
     const pose = o.pose || (spec.dead ? "dead" : "stand");
     const clsx = ["pp", "pose-" + pose, "st-" + stage, bear, spec.glow ? "glow" : "", spec.limp ? "limp" : "", spec.sling ? "sling" : "", spec.chained ? "chained" : "", spec.dead ? "dead" : "", o.flip ? "flip" : "", o.cls || ""].filter(Boolean).join(" ");
     const h = o.h || 120;

@@ -250,7 +250,7 @@
   K.encounter({
     id: "e_kings", title: "The brawl at the swayamvara", art: "scene_swayamvara", caption: "Kings with drawn swords", lethal: false,
     intro: "The angry kings' guards rush the two brahmins. You are in the way.",
-    allies: [{ name: "The huge brahmin (Bhima)", hp: 90, atk: 11, def: 3, abilities: ["strike", "heavy"] }],
+    allies: [{ name: "The huge brahmin", person: "bhima", hp: 90, atk: 11, def: 3, abilities: ["strike", "heavy"] }],
     enemies: [K.foe("A king's bodyguard", 3), K.foe("A king's bodyguard", 2)],
     win: { fx: { bond: { arjuna: 2, bhima: 2 }, rep: { panchala: 2, kuru: -2 }, flag: "swayamvara_fought", journal: "You fought beside two brahmins at Draupadi's swayamvara. They were Bhima and Arjuna." }, text: "The guards fall back. The huge brahmin claps you on the shoulder hard enough to bruise." },
     lose: { fx: { bond: { bhima: 1 }, injury: "scar" }, text: "You go down early, and the huge brahmin steps over you to finish the fight." }

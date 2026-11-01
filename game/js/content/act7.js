@@ -1,9 +1,7 @@
 /* Act VII — Aftermath, and every ending (PRD §6, §11). */
 (function (K) {
   "use strict";
-  const vasuLost = (S) => S.side !== "kaurava" && S.child === "vasu" && !S.dead.includes("vasu") &&
-    (S.flags.includes("vasu_in_camp") || S.flags.includes("vasu_with_you")) &&
-    !["saved_vasu_raid", "woke_camp", "slowed_ashwatthama"].some((f) => S.flags.includes(f));
+  const vasuLost = (S) => K.vasuLostInRaid(S); // the one rule (act6b.js)
 
   K.scenes([
     {
@@ -24,7 +22,7 @@
           text: "You carry wood for three days. Nobody asks which side the dead fought for. The smoke goes up the same." },
         { id: "mourn", t: "Sit with your own dead and let no one move you", fx: { duty: { family: 1 }, attr: { wisdom: 1 } },
           text: "You sit by them until the women come with water and white cloth. When you finally stand, something in you stays sitting there." },
-        { id: "hunt", t: "Swear vengeance on Ashwatthama", req: (S) => S.side !== "kaurava" && K.activeVows(S).length < K.MAX_VOWS && !K.hasVow("vengeance", S),
+        { id: "hunt", t: "Swear vengeance on Ashwatthama", req: (S) => S.side !== "kaurava" && K.activeVows(S).length < K.MAX_VOWS && !S.vows.some((v) => v.id === "vengeance" && !v.released), // the same test vowTake uses
           fx: { vowTake: "vengeance", flag: "vengeance_ashwatthama" }, hint: "He has been cursed to wander the earth. You could follow" }
       ],
       next: "a7_bhishma"
@@ -137,6 +135,7 @@
     if (has("household_out")) t.push("The night after the dice game, {they} got a steward's family out past Duryodhana's patrols.");
     if (has("turned_herd")) t.push("{They} brought Virata's herd across the ford when the Kauravas raided Matsya.");
     if (has("refused_raid")) t.push(has("escaped_prison") ? "{They} refused to ride on Matsya, and went over Duryodhana's prison wall for it." : "{They} refused to ride on Matsya, and sat in Duryodhana's prison yard for it.");
+    if (has("refused_ashwatthama")) t.push("On the last night, when Ashwatthama asked who would ride into the sleeping camp with him, {they} said no.");
     if (has("was_imprisoned") && !has("refused_raid")) t.push(has("escaped_captivity") ? "{They} {were} locked away once for crossing the wrong people, and went over the wall." : "{They} {were} locked away once for crossing the wrong people, and lost a season of {their} life in the dark.");
     if (has("killed_maneater")) t.push("{They} killed the man-eater at the edge of the Kamyaka forest.");
     if (has("answered_yaksha")) t.push("At the lake in the forest, {they} answered the voice in the water.");
@@ -166,8 +165,8 @@
     }
     if (S.kin && K.kinElder(S)) f.push(["You taught your own children what {kin} taught you.", { kin: S.kin }]);
     else if (S.kin) f.push(S.alive && S.endChoice === "home" ? ["{kin}, who shaped you as a child, lived to see you come home.", { kin: S.kin }] : S.alive ? ["{kin} kept every message you sent from the war.", { kin: S.kin }] : ["In {origin}, {kin} told the children who you had been.", { kin: S.kin }]);
-    if (S.spouse) f.push(S.alive ? "{spouse} grew old beside you." : "{spouse} never remarried.");
-    if (S.friend === "charu") f.push(S.alive ? "Charu outlived everyone, and complained about it." : "Charu kept a lamp lit for you every year.");
+    if (S.spouse && !S.dead.includes(S.spouse)) f.push(S.alive ? "{spouse} grew old beside you." : "{spouse} never remarried.");
+    if (S.friend === "charu" && S.spouse !== "charu") f.push(S.dead.includes("charu") ? "Charu's hammer hangs over a forge that went cold the day Charu died." : S.alive ? "Charu outlived everyone, and complained about it." : "Charu kept a lamp lit for you every year.");
     if (S.flags.includes("debt_paid_late")) f.push("Sudatta's grandson told everyone that you paid what your grandfather owed.");
     if (S.flags.includes("debt_forgiven")) f.push("Sudatta's grandson tore up your family's note himself, and never spoke of it.");
     if (S.flags.includes("debt_torn_twice")) f.push("Sudatta's family still keeps the pieces of your grandfather's note.");
@@ -201,7 +200,7 @@
   K.composeEnding = function (S) {
     const vows = S.vows;
     const intact = vows.length > 0 && vows.every((v) => !v.broken || v.released);
-    const lost = [S.spouse, S.child, S.friend].filter((p) => p && S.dead.includes(p)).length;
+    const lost = new Set([S.spouse, S.child, S.friend].filter((p) => p && S.dead.includes(p))).size; // a friend who was also your spouse counts once
     const weakBonds = Object.values(S.bonds).filter((b) => b <= 2).length;
     let title, art = "end_survivor", caption = "Dawn over the field";
     if (!S.alive) {

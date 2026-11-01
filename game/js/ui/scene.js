@@ -28,6 +28,7 @@
   let lastConch = null;
   let settledFor = null; // the scene whose painting has moved up above its page
   U.renderScene = function (sc) {
+    U.keys([]); // the previous screen's keys end here, before any title card plays
     stopLamp();
     if (U.stageFx) U.stageFx.stop();
     if (sc.ending) return U.renderEnding(sc);
@@ -248,6 +249,7 @@
   function stopLamp() { if (lampRun) { clearTimeout(lampRun.timer); lampRun = null; } }
   function startLamp(sc, rows) {
     stopLamp();
+    if (pickedVisit === K.visit) return; // already chosen here: a redraw of the result never lights it again
     const L = K.val(sc.lamp);
     if (!L || !U.timed()) return;
     const silent = rows.find((r) => r.ok && r.c.id === K.val(L.silent));
@@ -284,8 +286,13 @@
   }
 
   // The chosen card lights up and the others fall away before the result comes in.
+  // One choice per visit to a scene (K.visit counts K.go): a second key, a double click, or a lamp that
+  // comes back after a redraw can never choose again once something was chosen here.
+  let pickedVisit = -1;
   function pick(sc, c, btn, lampOut) {
     if (btn !== null) {
+      if (pickedVisit === K.visit) return;
+      pickedVisit = K.visit;
       stopLamp();
       lampMemo.key = null;
       if (!lampOut) { const l = U.$("leaf").querySelector(".lamp"); if (l) l.remove(); }
@@ -354,6 +361,9 @@
   function showAfter(sc, c, res, next) {
     // A language switch now must repaint this state, never offer the choices again.
     U.redraw = () => { U.renderScene(sc); showAfter(sc, c, res, next); };
+    pickedVisit = K.visit;
+    stopLamp();
+    U.$("leaf").querySelectorAll(".lamp").forEach((l) => l.remove());
     const leaf = U.$("leaf");
     leaf.classList.remove("testing");
     if (U.stageFx) U.stageFx.stop();
@@ -380,7 +390,10 @@
       added.push(story.appendChild(U.el('<div class="witness"><div class="lbl">' + U.tr("And then, as it is written") + "</div>" + U.blocks(res.after) + "</div>")));
     }
     // A scene that tells why you are leaving: the journey on the map comes now, after its story.
+    let went = false;
     const go = () => {
+      if (went) return; // Continue once
+      went = true;
       const moved = sc.travelAfter && K.S.alive && K.travel ? K.travel(sc, K.S, true) : null;
       if (moved && U.journeyPage && !K.headless) return U.journeyPage(moved[0], moved[1], K.val(sc.travel) || ["Ahead: {what}", { what: "" }], () => K.go(next));
       K.go(next);

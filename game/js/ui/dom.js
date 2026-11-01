@@ -528,6 +528,10 @@
   document.addEventListener("keydown", (e) => {
     if (e.target.closest && e.target.closest("input, textarea, select")) return;
     if (document.querySelector(".scrim")) { if (e.key === "Escape") U.closeModal(); return; }
+    // A held key repeats, and a key with Ctrl, Alt or Meta is the browser's; neither chooses anything.
+    if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+    // While a title card or a moment covers the page, the page underneath takes no keys.
+    if (document.getElementById("beat") || document.querySelector(".moment")) return;
     if (stageRun && (e.key === " " || e.key === "Enter" || /^[1-9]$/.test(e.key))) { e.preventDefault(); U.stageFinish(true); return; }
     const n = parseInt(e.key, 10);
     if (n >= 1 && n <= 9 && keyActions[n - 1]) { e.preventDefault(); keyActions[n - 1](); }
