@@ -1,6 +1,6 @@
-# Change list (29–31 Oct 2026)
+# Change list (29 Oct – 1 Nov 2026)
 
-Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct); see PRD §18.11 for the full description of each. **Items 22–25 are built** (30 Oct); see PRD §18.12. **Items 26–31 are built** (31 Oct); see PRD §18.1–18.9. Item 5 (art) is done.
+Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct); see PRD §18.11 for the full description of each. **Items 22–25 are built** (30 Oct); see PRD §18.12. **Items 26–31 are built** (31 Oct); see PRD §18.1–18.9. **Item 32** (1 Nov) fixes the 18 critical issues from the code review (`Code_Review_2026-10-31.md`). Item 5 (art) is done.
 
 ## Built 29 Oct
 1. **Ugra's wrestling bout** plays on the empty fair ring (`fight_fair_ring`).
@@ -50,6 +50,25 @@ Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct);
     - The string collector and the playthrough test no longer run out of memory.
     - Every new line has its Hindi.
     - Puppets checked standing on the painted ground in every test and fight, on every phone, tablet and desktop size.
+
+## Fixed 1 Nov (code review)
+32. **The 18 critical issues from the 31 Oct code review**:
+    - **Save codes:** pasted codes and stored lives are cleaned before use, so a crafted code can no longer run code in the page. A bad code never replaces the current life.
+    - **Saving:** Continue reopens the scene you saved on. A save made on a result page no longer lets a choice be made twice.
+    - **Keys and the lamp:** number keys no longer reach the hidden screen during title cards, and a held key doesn't repeat. The timed lamp never returns after a result.
+    - **Soma and Bala** no longer cost a point for good.
+    - **Story:**
+      - six scenes are no longer lost in about 30% of lives;
+      - the hidden year plays only for those in Matsya;
+      - Ugra fights on one side only;
+      - Vasu's fate is consistent;
+      - the wheel test comes before Abhimanyu's death;
+      - vengeance on Ashwatthama can be sworn;
+      - the sibling's {who} is filled;
+      - refusing the night raid has its own line;
+      - a dead Charu no longer acts.
+    - **Hindi tools** can no longer scramble or drop translations.
+    - **Tests:** a new engine test (`tests/lives.js`) and a GitHub "Engine checks" run on every push.
 
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**
