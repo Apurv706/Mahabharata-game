@@ -78,6 +78,24 @@ Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct);
 34. **Fixed from the first tester screenshots:**
     - Distant enemies faced away from you; they face you again, and the screen-fit test now checks every enemy faces you.
     - On tall phones the archery target hung across the archer's raised bow. It now always swings above the archer's head.
+35. **Fixed from the second round of tester screenshots:**
+    - **The fire at Varnavata:**
+      - The burning-house clip now opens "The night of the fire" full-screen. It used to play earlier, after the arrival scene, where it was easy to miss.
+      - The burning-house painting also has a fire drawn in code: embers rising from the burning wing, and the glow flickering. This plays even where the phone will not play clips (iPhone Low Power Mode, for example).
+    - **Endings:**
+      - Every ending now opens full-screen under its name; before, only endings with a clip did.
+      - "The burnt house" has smoke still rising from the ashes. A fallen figure is kept off the title card.
+    - **Friendship moments:** a painting that shows the friends (two boys in the river) no longer has puppets standing over it.
+    - **Puppets:**
+      - The thin rods on the hands are gone. They swung out ahead of every raised or reaching arm like a stick.
+      - A fallen figure has no rod.
+    - **Weapons redrawn:**
+      - A gada: haft, wrapped grip, gold collar, a heavy ribbed head and a spike.
+      - A khadga with a cross-guard.
+      - A spear with a leaf-shaped head and a red tassel.
+      - A recurved bow held at its grip.
+      - A dagger.
+      - Raised or swinging, a weapon carries on past the fist instead of hanging upside down.
 
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**

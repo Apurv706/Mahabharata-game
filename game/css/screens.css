@@ -458,6 +458,10 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 .pp .foreB, .pp .foreF { transform-origin: 58px 98px; }
 .pp .head { transform-origin: 60px 65px; }
 .pp.flip { transform: scaleX(-1); }
+/* A weapon rests up along a hanging arm; with the arm raised or reaching it carries on past the fist. */
+.pp .it-w { transform-box: view-box; transform-origin: 58px 126px; transition: transform 0.3s ease; }
+.pp:not(.pose-stand):not(.pose-walk):not(.pose-slump):not(.pose-tremble):not(.pose-side):not(.pose-dead):not(.pose-fall) .it-w,
+.pp.pose-stand.t-thoughtful .it-w, .pp.pose-stand.t-devoted .it-w, .pp.pose-stand.chained .it-w, .pp.sling .it-w { transform: rotate(180deg); }
 .pp.dead { filter: grayscale(0.85) brightness(0.8) drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.45)); }
 /* Standing, breathing; bearing from temperament and age. */
 .pose-stand .armF { transform: rotate(8deg); } .pose-stand .foreF { transform: rotate(-16deg); } .pose-stand .armB { transform: rotate(-6deg); }

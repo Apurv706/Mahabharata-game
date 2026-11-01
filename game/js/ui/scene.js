@@ -69,12 +69,13 @@
     const witness = K.val(sc.witness);
     const leaf = U.$("leaf");
     leaf.className = "leaf split";
-    leaf.innerHTML = U.plate({ art: artFor(sc), still: !!sc.clipAfter, grad: sc.plate, caption: K.val(sc.caption), tag, tagText, heading: K.val(sc.title) }) +
+    leaf.innerHTML = U.plate({ art: artFor(sc), still: !!(sc.clipAfter || sc.still), grad: sc.plate, caption: K.val(sc.caption), tag, tagText, heading: K.val(sc.title) }) +
       '<div class="text"><div class="story" id="story" tabindex="0">' +
       (witness ? '<div class="witness"><div class="lbl">' + U.tr("As it is written") + "</div>" + U.blocks(witness) + "</div>" : "") +
       (S.loopThen && S.loopThen.scene === sc.id ? '<p class="aside loopnote">' + U.tr("You are back at the same choice. One way is closed to you now.") + "</p>" : "") +
       U.blocks(sc.body) + '</div><div class="actions"><div class="choices" id="choices"></div><p class="hint" id="keyhint"></p></div></div>';
     U.follow(U.$("story"));
+    storyFx(sc);
     const box = U.$("choices");
     const rows = K.choiceList(sc);
     const keys = [];
@@ -161,17 +162,32 @@
     document.body.classList.remove("beating");
     U.fitBackdrop();
   };
+  // A living effect drawn over the scene's painting (sc.fx: "fire", "smoke"), whether or not the
+  // painting has a clip: the house of lac burning has embers even where clips cannot play.
+  function storyFx(sc, kind, art) {
+    kind = kind || K.val(sc.fx);
+    if (kind && U.stageFx) U.stageFx.start(art || artFor(sc), kind, { story: true, at: FX_AT[art || artFor(sc)] });
+  }
+  // Where in each painting its effect rises from: the burning wing of the lac house; the ashes at dawn.
+  const FX_AT = { scene_lac_fire: [0.12, 0.66, 0.18, 0.62], scene_lac: [0.15, 0.85, 0.2, 0.6], end_fire: [0.3, 0.8, 0.35, 0.7] };
+  U.storyFx = (kind, art) => { if (kind && U.stageFx) U.stageFx.start(art, kind, { story: true, at: FX_AT[art] }); };
   U.sceneBeats = function (sc, o, done) {
     const S = K.S;
     const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    U.setBackdrop(o.art !== undefined ? o.art : artFor(sc) || null, { still: !!sc.clipAfter });
+    // sc.clip: a clip that opens the scene full-screen before its own painting takes over (the
+    // lac house catching fire, before the night of the fire is told).
+    const clip = o.art === undefined && sc.clip && U.hasVideo(sc.clip) && U.living() ? sc.clip : null;
+    const bgKey = o.art !== undefined ? o.art : clip || artFor(sc) || null;
+    U.setBackdrop(bgKey, { still: !!(sc.clipAfter || sc.still) });
+    storyFx(sc, o.fx, bgKey);
     const leaf = U.$("leaf");
     leaf.className = "leaf"; leaf.innerHTML = "";
     document.body.classList.add("beating");
     const el = U.el('<div class="beat" id="beat" role="presentation"></div>');
     document.body.appendChild(el);
     const title = o.title || K.val(sc.title) || K.val(sc.caption) || "";
-    const where = U.tr("Age {n}", { n: S.age }) + " · " + U.t(K.val(sc.place) || "");
+    const place = K.val(sc.place);
+    const where = U.tr(S.alive === false ? "Fell at {n}" : "Age {n}", { n: S.age }) + (place ? " · " + U.t(place) : "");
     // A living painting plays full-screen under the cards, then for a few seconds on its own.
     const live = U.liveReady();
     if (live) U.livePlay();
@@ -187,9 +203,11 @@
         on: () => { if (K.Sound) K.Sound.play("gong"); } });
     }
     if (title && (o.full && K.prefs().titles !== "short")) {
-      const fig = K.puppetSpec ? U.puppetBadge(K.puppetSpec(S), { fit: true }) : "";
+      // A fallen figure lies along the ground and would not fit the card; the ending page shows it.
+      const spec = K.puppetSpec ? K.puppetSpec(S) : null;
+      const fig = spec && !spec.dead && S.alive !== false ? U.puppetBadge(spec, { fit: true }) : "";
       steps.push({ cls: "veil", ms: 1500, html: '<div class="beat-title">' + fig + '<span class="kind ' + o.tag + '">' + U.esc(o.tagText) + "</span><b>" + U.t(title) + "</b><small>" + where + "</small></div>" });
-      steps.push({ cls: "clear", ms: live ? 4200 : 2000, html: "" });
+      steps.push({ cls: "clear", ms: live ? (clip ? 7600 : 4200) : 2000, html: "" });
     } else if (title) {
       steps.push({ cls: "low", ms: 1100, html: '<div class="beat-short"><span class="kind ' + o.tag + '">' + U.esc(o.tagText) + "</span><b>" + U.t(title) + "</b></div>" });
       steps.push({ cls: "clear", ms: live ? 3600 : 1300, html: "" });
@@ -367,7 +385,8 @@
     const leaf = U.$("leaf");
     leaf.classList.remove("testing");
     if (U.stageFx) U.stageFx.stop();
-    U.setBackdrop(artFor(sc), { still: !!sc.clipAfter });
+    U.setBackdrop(artFor(sc), { still: !!(sc.clipAfter || sc.still) });
+    storyFx(sc);
     // A clip that shows what happens after the choice (the fire) plays now.
     if (sc.clipAfter && res.after) U.addClip();
     // What you chose and what came of it are written into the story; Continue waits below.

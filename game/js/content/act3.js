@@ -47,7 +47,7 @@
       next: "a3_lac"
     },
     {
-      id: "a3_lac", act: 3, age: 23, canon: true, place: "Varnavata", to: "varnavata", travel: "You go to Varnavata for the spring festival.", art: "scene_lac", clipAfter: true, plate: ["#e5872e", "#2a1c1f"], caption: "A new house that smells of resin",
+      id: "a3_lac", act: 3, age: 23, canon: true, place: "Varnavata", to: "varnavata", travel: "You go to Varnavata for the spring festival.", art: "scene_lac", still: true, plate: ["#e5872e", "#2a1c1f"], caption: "A new house that smells of resin",
       title: "The house at Varnavata",
       witness: [
         "Duryodhana's minister Purochana builds a beautiful house at Varnavata for Kunti and her sons. It is made of lac, hemp and resin, and it is meant to burn.",
@@ -101,7 +101,7 @@
     // those outside can run in. The epic has written who dies here: a Nishada woman and her five
     // sons, and Purochana. A failed escape is death, not a second chance.
     {
-      id: "a3_fire", act: 3, age: 23, canon: true, art: "scene_lac_fire", place: "Varnavata", plate: ["#e5872e", "#2a1c1f"], caption: "The house of lac, burning",
+      id: "a3_fire", act: 3, age: 23, canon: true, art: "scene_lac_fire", clip: "scene_lac", fx: "fire", place: "Varnavata", plate: ["#e5872e", "#2a1c1f"], caption: "The house of lac, burning",
       title: "The night of the fire",
       witness: ["The house of lac burns on the last night of the festival. Kunti and the Pandavas go down into the tunnel and out into the forest. Purochana dies in his own fire."],
       body: (S) => [

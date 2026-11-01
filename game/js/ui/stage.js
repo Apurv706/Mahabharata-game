@@ -94,20 +94,38 @@
   let run = null;
   const calm = () => !U.motion() || window.innerWidth < 720 || /jsdom/i.test(navigator.userAgent || "");
   U.stageFx = {
-    start(stageKey, kindOverride) {
+    // opts.story: a living effect over a story painting (the lac house burning, its smoke at dawn).
+    // It plays on phones too, with fewer particles, and follows "living paintings" (off with reduced
+    // motion, when the device saves data, or when the player turns living paintings off).
+    start(stageKey, kindOverride, opts) {
       this.stop();
+      const story = !!(opts && opts.story);
+      // opts.at: [left, right, top, bottom] of the painting, as fractions, where the effect rises from.
+      const at = (opts && opts.at) || null;
       const info = U.stageInfo(stageKey), kind = kindOverride || info.fx;
       const cv = U.$("stagefx");
-      if (!cv || !kind || calm()) return;
+      if (!cv || !kind || (story ? !U.living() : calm())) return;
       const ctx = cv.getContext && cv.getContext("2d");
       if (!ctx) return;
       const dpr = Math.min(2, window.devicePixelRatio || 1);
       const size = () => { cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; };
       size();
       const W = () => cv.width, H = () => cv.height;
+      // Where the painting is on screen (story effects keep to it; on an upright phone it is a band).
+      let box = null, boxAt = -1;
+      const area = () => {
+        if (!story) return { x: 0, y: 0, w: W(), h: H() };
+        const now = performance.now();
+        if (box && now - boxAt < 250) return box;
+        boxAt = now;
+        const pic = document.querySelector("#backdrop .bdl.on .pic"), r = pic && pic.getBoundingClientRect();
+        box = r && r.width > 20 ? { x: r.left * dpr, y: Math.max(0, r.top) * dpr, w: r.width * dpr, h: (Math.min(innerHeight, r.bottom) - Math.max(0, r.top)) * dpr } : { x: 0, y: 0, w: W(), h: H() };
+        return box;
+      };
       const R = Math.random;
       const ps = [];
-      const N = { fireflies: 46, dust: 60, rain: 160, embers: 70, sparks: 0, mist: 7, leaves: 22, torch: 0 }[kind] || 30;
+      const small = window.innerWidth < 720;
+      const N = Math.round(({ fireflies: 46, dust: 60, rain: 160, embers: 70, sparks: 0, mist: 7, leaves: 22, torch: 0, fire: 90, smoke: 16 }[kind] || 30) * (small ? (story ? 0.8 : 0.6) : 1));
       for (let i = 0; i < N; i++) ps.push(spawn(kind, true));
       function spawn(k, anywhere) {
         const w = W(), h = H();
@@ -118,6 +136,10 @@
           case "embers": return { x: R() * w, y: anywhere ? R() * h : h + 10, vx: (R() - 0.5) * 20 * dpr, vy: -(30 + R() * 60) * dpr, r: (1 + R() * 2.2) * dpr, life: 1, ph: R() * 6.3 };
           case "mist": return { x: R() * w, y: h * (0.45 + R() * 0.45), vx: (8 + R() * 12) * dpr * (R() < 0.5 ? -1 : 1), r: (180 + R() * 220) * dpr, a: 0.05 + R() * 0.06 };
           case "leaves": return { x: R() * w, y: anywhere ? R() * h : -20, vx: (10 + R() * 25) * dpr, vy: (25 + R() * 30) * dpr, rot: R() * 6.3, vr: (R() - 0.5) * 3, s: (4 + R() * 4) * dpr, ph: R() * 6.3 };
+          // The house burning: embers thrown up from the fire, faster and brighter than a stage's.
+          case "fire": { const a = area(), z = at || [0.08, 0.92, 0.5, 0.95]; return { x: a.x + a.w * (z[0] + R() * (z[1] - z[0])), y: a.y + a.h * (anywhere ? 0.05 + R() * (z[3] - 0.05) : z[2] + R() * (z[3] - z[2])), vx: (R() - 0.35) * 40 * dpr, vy: -(40 + R() * 90) * dpr * Math.max(0.6, a.h / (500 * dpr)), r: (1.3 + R() * 2.6) * dpr, life: 0.6 + R() * 0.4, ph: R() * 6.3, top: a.y }; }
+          // Smoke still rising from the ashes: soft grey puffs that grow, drift and fade.
+          case "smoke": { const a = area(), k = Math.max(0.5, a.h / (600 * dpr)), z = at || [0.15, 0.85, 0.6, 0.9]; return { x: a.x + a.w * (z[0] + R() * (z[1] - z[0])), y: a.y + a.h * (anywhere ? 0.1 + R() * (z[3] - 0.1) : z[2] + R() * (z[3] - z[2])), vx: (6 + R() * 14) * dpr * k, vy: -(8 + R() * 14) * dpr * k, r: (24 + R() * 40) * dpr * k, life: anywhere ? R() : 1, a: 0.08 + R() * 0.08, top: a.y }; }
           case "spark": return { x: w * (0.3 + R() * 0.08), y: h * 0.62, vx: (R() - 0.3) * 260 * dpr, vy: -(120 + R() * 260) * dpr, life: 0.6 + R() * 0.6 };
           default: return {};
         }
@@ -139,6 +161,14 @@
             g.addColorStop(0, "rgba(255,190,110," + 0.32 * f + ")"); g.addColorStop(1, "rgba(255,150,60,0)");
             ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
           }
+        }
+        if (kind === "fire") {
+          // The light of the fire breathes: a warm glow from below, never steady.
+          const f = 0.6 + 0.22 * Math.sin(t * 7.3) + 0.12 * Math.sin(t * 17.1 + 1.3) + 0.06 * Math.sin(t * 31);
+          const a = area();
+          const g = ctx.createLinearGradient(0, a.y + a.h, 0, a.y + a.h * 0.2);
+          g.addColorStop(0, "rgba(255,140,50," + 0.3 * f + ")"); g.addColorStop(1, "rgba(255,120,40,0)");
+          ctx.fillStyle = g; ctx.fillRect(a.x, a.y, a.w, a.h);
         }
         if (kind === "sparks") {
           burst -= dt;
@@ -173,6 +203,24 @@
               ctx.fillStyle = "rgba(255," + (120 + Math.round(80 * p.life)) + ",60," + 0.8 * p.life + ")"; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.3); ctx.fill();
               break;
             }
+            case "fire": {
+              p.x += (p.vx + Math.sin(t * 3 + p.ph) * 18 * dpr) * dt; p.y += p.vy * dt; p.life -= dt * 0.45;
+              if (p.y < (p.top || 0) - 10 || p.life <= 0) Object.assign(p, spawn(kind));
+              const a = Math.max(0, p.life) * (0.7 + 0.3 * Math.sin(t * 14 + p.ph));
+              const col = "255," + (80 + Math.round(100 * p.life)) + ",40,";
+              ctx.fillStyle = "rgba(255,120,40," + a * 0.18 + ")"; ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 2.2, 0, 6.3); ctx.fill();
+              ctx.fillStyle = "rgba(" + col + a + ")"; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.3); ctx.fill();
+              break;
+            }
+            case "smoke": {
+              p.x += p.vx * dt; p.y += p.vy * dt; p.r += 6 * dpr * dt; p.life -= dt * 0.07;
+              if (p.life <= 0 || p.y < (p.top || 0) - p.r * 0.5) Object.assign(p, spawn(kind));
+              const a = p.a * Math.sin(Math.PI * Math.max(0, Math.min(1, p.life)));
+              const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+              g.addColorStop(0, "rgba(205,200,190," + a + ")"); g.addColorStop(1, "rgba(205,200,190,0)");
+              ctx.fillStyle = g; ctx.fillRect(p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
+              break;
+            }
             case "mist": {
               p.x += p.vx * dt; if (p.x < -p.r) p.x = w + p.r; if (p.x > w + p.r) p.x = -p.r;
               const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
@@ -201,8 +249,10 @@
       id = requestAnimationFrame(frame);
       addEventListener("resize", size);
       cv.classList.add("on");
-      run = { stop() { on = false; cancelAnimationFrame(id); removeEventListener("resize", size); ctx.clearRect(0, 0, cv.width, cv.height); cv.classList.remove("on"); } };
+      run = { story: story ? stageKey : null, stop() { on = false; cancelAnimationFrame(id); removeEventListener("resize", size); ctx.clearRect(0, 0, cv.width, cv.height); cv.classList.remove("on"); } };
     },
-    stop() { if (run) { run.stop(); run = null; } }
+    stop() { if (run) { run.stop(); run = null; } },
+    // The painting a story effect belongs to (it ends when that painting leaves the screen).
+    storyFor() { return run && run.story; }
   };
 })(window.K = window.K || {});

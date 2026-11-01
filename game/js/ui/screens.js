@@ -218,16 +218,20 @@
 
   // ---------- Ending ----------
   let endingShown = null;
+  // Endings whose painting is given a living effect in code (no clip was made for them).
+  const ENDING_FX = { end_fire: "smoke" };
   U.renderEnding = function (sc) {
     // A moment reached in the life's last scene (a farewell, a vow answered) is still shown, first.
     if (U.playMoments && K.momentQueue && K.momentQueue.length && U.playMoments(() => U.renderEnding(sc))) return;
-    // An ending with a living painting plays it full-screen first, under the ending's name.
+    // Every ending plays its painting full-screen first, under the ending's name: a living painting
+    // runs its clip; one without a clip gets the full title card (with its smoke, for the burnt house).
     if (endingShown !== sc.id && U.beatsOn && U.beatsOn() && U.sceneBeats && K.composeEnding) {
       const e0 = K.composeEnding(K.S);
       endingShown = sc.id;
-      if (e0 && e0.art && U.hasVideo(e0.art) && U.living()) {
+      if (e0 && e0.art) {
+        const clip = U.hasVideo(e0.art) && U.living();
         U.setNav(true);
-        return U.sceneBeats(sc, { art: e0.art, title: K.val(e0.title), full: false, tag: "yours", tagText: K.tr("Your ending") }, () => U.renderEnding(sc));
+        return U.sceneBeats(sc, { art: e0.art, fx: ENDING_FX[e0.art], title: K.val(e0.title), full: !clip, tag: "yours", tagText: K.tr("Your ending") }, () => U.renderEnding(sc));
       }
     }
     const S = K.S;
@@ -247,6 +251,7 @@
       (S.road && S.road.length > 1 && U.mapOf ? '<div class="end-map"><span class="lbl">' + U.tr("Your road") + "</span>" + U.mapOf(S, { px: Math.min(700, window.innerWidth - 40) }) + "</div>" : "") +
       '<div class="btnrow"><button class="cta" id="again" type="button">' + U.tr("Live another life") + '</button><button class="ghost" id="readj" type="button">' + U.tr("Read your journal") + "</button></div></div>";
     setTimeout(() => { U.fitBackdrop(); U.livePlay(); }, 0);
+    if (U.storyFx && ENDING_FX[e.art]) U.storyFx(ENDING_FX[e.art], e.art);
     const again = () => { K.deleteSlot("auto"); U.renderCreate(); };
     if (U.fitEmblems) U.fitEmblems(leaf);
     U.$("again").addEventListener("click", again);

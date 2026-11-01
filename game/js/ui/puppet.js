@@ -92,18 +92,42 @@
   const OUT = ' stroke="#24120a" stroke-width="1.1" stroke-linejoin="round"';
   const holes = (d) => '<path d="' + d + '" fill="url(#pp-dots)"/>';
   // The things a puppet carries, drawn near the front hand (58,126).
+  // Weapons and tools are drawn resting in a hanging hand, pointing up along the arm. When the arm
+  // is raised or reaching (a strike, a block, a cheer), CSS turns them about the hand so they carry
+  // on past the fist the way a held weapon does, instead of hanging upside down.
+  const WIELD = new Set(["mace", "sword", "spear", "dagger", "hammer", "staff", "plough", "whip"]);
   function itemSvg(kind, trim) {
     switch (kind) {
-      case "bow": return '<path d="M61 90 Q82 126 61 162" fill="none" stroke="#5a3418" stroke-width="3" stroke-linecap="round"/><path d="M61 90 L61 162" stroke="#efe2c0" stroke-width="0.8"/>';
-      case "mace": return '<path d="M58 128 L58 92" stroke="#5a3418" stroke-width="3"/><circle cx="58" cy="86" r="8.5" fill="' + trim + '"' + OUT + '/><path d="M51 86h14M58 79v14" stroke="#24120a" stroke-width="0.8"/>';
-      case "sword": return '<path d="M58 126 L58 88" stroke="#d9d4c6" stroke-width="2.4"/><path d="M53 124h10" stroke="#5a3418" stroke-width="2.4"/>';
-      case "spear": return '<path d="M58 160 L58 70" stroke="#5a3418" stroke-width="2"/><path d="M58 60 L62 72 L54 72 Z" fill="#d9d4c6"' + OUT + "/>";
+      // A recurved bow held at its grip: the belly passes through the hand, the string runs behind the arm.
+      case "bow": return '<path d="M50 86 Q72 126 50 166" fill="none" stroke="#5a3418" stroke-width="3.2" stroke-linecap="round"/>' +
+        '<path d="M50 86 q-3.5 -2.5 -2 -6.5 M50 166 q-3.5 2.5 -2 6.5" fill="none" stroke="#5a3418" stroke-width="2.2" stroke-linecap="round"/>' +
+        '<path d="M50 86 L50 166" stroke="#efe2c0" stroke-width="0.8"/><path d="M59.8 120 L61.6 132" stroke="' + trim + '" stroke-width="3.4"/>';
+      // The gada: a long haft with a wrapped grip and a pommel, a gold collar, and a heavy ribbed head
+      // with a spike, tilted forward out of the figure so its shape reads at any size.
+      case "mace": return '<g transform="rotate(20 58 126)">' +
+        '<rect x="56.3" y="74" width="3.4" height="62" rx="1.2" fill="#6b4422"' + OUT + '/>' +
+        '<path d="M56.3 119h3.4M56.3 123h3.4M56.3 127h3.4M56.3 131h3.4" stroke="' + trim + '" stroke-width="1.3"/>' +
+        '<circle cx="58" cy="137.5" r="2.8" fill="' + GOLD + '"' + OUT + '/>' +
+        '<path d="M58 44 L56.4 38.5 L58 33 L59.6 38.5 Z" fill="' + GOLD + '"' + OUT + '/>' +
+        '<path d="M58 43 C66.5 43 70 51.5 69.5 59 C69 67.5 63.5 73 58 73 C52.5 73 47 67.5 46.5 59 C46 51.5 49.5 43 58 43 Z" fill="' + GOLD + '"' + OUT + '/>' +
+        '<path d="M58 43 Q50.5 58 58 73 M58 43 Q65.5 58 58 73 M52 46 Q46.5 58 52 71 M64 46 Q69.5 58 64 71" fill="none" stroke="#7a5418" stroke-width="0.9"/>' +
+        '<path d="M47 59 Q58 63 69 59" fill="none" stroke="' + trim + '" stroke-width="1.8"/>' + holes("M58 43 C66.5 43 70 51.5 69.5 59 C69 67.5 63.5 73 58 73 C52.5 73 47 67.5 46.5 59 C46 51.5 49.5 43 58 43 Z") +
+        '<rect x="54.2" y="72" width="7.6" height="4.4" rx="1" fill="' + GOLD + '"' + OUT + '/></g>';
+      // A khadga: broad blade swelling towards a curved point, a cross-guard, a grip and a pommel.
+      case "sword": return '<g transform="rotate(16 58 126)">' +
+        '<path d="M56.2 119 L55.4 84 Q56 74 62.5 68 Q61.6 78 61 86 L59.8 119 Z" fill="#dcd7c8"' + OUT + '/><path d="M58 117 L57.8 86 Q58.6 78 61 73" fill="none" stroke="#9a9484" stroke-width="0.7"/>' +
+        '<path d="M51.5 119.5 L64.5 119.5 L63 122.5 L53 122.5 Z" fill="' + GOLD + '"' + OUT + '/><rect x="56.4" y="122.5" width="3.2" height="9" fill="#5a3418"' + OUT + '/><circle cx="58" cy="133.5" r="2.4" fill="' + GOLD + '"' + OUT + '/></g>';
+      // A spear: a long shaft, a leaf-shaped head on a collar, and a red tassel below it.
+      case "spear": return '<path d="M58 176 L58 64" stroke="#5a3418" stroke-width="2.4" stroke-linecap="round"/>' +
+        '<path d="M58 40 Q63.5 52 60.4 63 L55.6 63 Q52.5 52 58 40 Z" fill="#dcd7c8"' + OUT + '/><path d="M58 44 L58 62" stroke="#9a9484" stroke-width="0.7"/>' +
+        '<rect x="55.8" y="62.5" width="4.4" height="3.4" fill="' + GOLD + '"' + OUT + '/><path d="M56.5 66 q-3 5 -1.5 10 M58 66 q-0.5 6 0.5 11 M59.5 66 q2.5 5 1.5 9.5" fill="none" stroke="#b2432a" stroke-width="1.3" stroke-linecap="round"/>';
       case "plough": return '<path d="M58 165 L58 74" stroke="#6b4422" stroke-width="3"/><path d="M58 74 Q70 66 74 54 L66 60 Z" fill="#cfc7b2"' + OUT + "/>";
       case "staff": return '<path d="M60 200 L60 100" stroke="#6b4422" stroke-width="2.6" stroke-linecap="round"/>';
       case "whip": return '<path d="M58 126 L66 98" stroke="#5a3418" stroke-width="2"/><path d="M66 98 Q80 90 76 112 Q72 124 84 120" fill="none" stroke="#3d2412" stroke-width="1"/>';
       case "scroll": return '<rect x="52" y="122" width="14" height="7" rx="3" fill="#efe2c0"' + OUT + "/>";
       case "bowl": return '<path d="M50 124 Q58 134 66 124 Z" fill="#9a6a3a"' + OUT + '/><path d="M54 122c1-3 3-3 4 0M59 121c1-3 3-3 4 0" stroke="#4f7d3a" stroke-width="1" fill="none"/>';
-      case "dagger": return '<path d="M58 126 L68 112" stroke="#d9d4c6" stroke-width="2"/><path d="M56 122l5 5" stroke="#5a3418" stroke-width="2"/>';
+      // A short dagger, its blade forward out of the fist.
+      case "dagger": return '<g transform="rotate(38 58 126)"><path d="M56.6 120 L57.2 102 L58 98 L58.8 102 L59.4 120 Z" fill="#dcd7c8"' + OUT + '/><path d="M53.5 120 L62.5 120 L61.5 122.5 L54.5 122.5 Z" fill="' + GOLD + '"' + OUT + '/><rect x="56.6" y="122.5" width="2.8" height="7" fill="#5a3418"' + OUT + '/></g>';
       case "lute": return '<path d="M50 136 Q44 126 52 120 L72 100" stroke="#6b4422" stroke-width="2.6" fill="none"/><circle cx="50" cy="132" r="6" fill="#b9873f"' + OUT + "/>";
       case "hammer": return '<path d="M58 128 L58 100" stroke="#5a3418" stroke-width="2.4"/><rect x="51" y="94" width="14" height="7" fill="#6e6a62"' + OUT + "/>";
       case "dice": return '<rect x="55" y="120" width="5" height="12" rx="1" fill="#efe2c0"' + OUT + '/><rect x="61" y="121" width="5" height="12" rx="1" fill="#efe2c0"' + OUT + "/>";
@@ -161,7 +185,9 @@
     const fore = '<path d="M53.5 98 L62.5 98 L61 122 L55 122 Z" fill="' + skin + '"' + OUT + '/><circle cx="58" cy="125.5" r="4.6" fill="' + skin + '"' + OUT + '/><path d="M54.5 116h7" stroke="' + trim + '" stroke-width="1.6"/>' +
       (she ? '<path d="M54.6 113h7.2M54.8 110.5h7" stroke="' + trim + '" stroke-width="1.1"/>' : "");
     const neck = '<path d="M55.5 58 L64.5 58 L63.5 71 L56.5 71 Z" fill="' + skin + '"' + OUT + "/>";
-    const rod = '<path class="rod" d="M58 128 L58 236" stroke="#1d0f08" stroke-width="0.9" opacity="0.7"/>';
+    // No rods on the hands: drawn in the forearm's frame, a hand rod swung out ahead of every raised
+    // or reaching arm like a stick. The body's main rod is enough to say "puppet".
+    const rod = "";
     const armlet = '<path d="M52.8 80h11" stroke="' + trim + '" stroke-width="2.4"/>';
     // In chains while imprisoned; afterwards, the broken iron still on one wrist.
     const manacle = spec.chained ? '<rect x="54" y="117" width="8" height="4" fill="#5d5d5d"' + OUT + "/>" : "";
@@ -214,7 +240,7 @@
       (o.label ? ' role="img" aria-label="' + U.esc(o.label) + '"' : ' aria-hidden="true"') + ">" +
       '<g class="pp-all">' +
       // The puppeteer's main rod, faintly, from the body down out of sight.
-      '<path class="rod main-rod" d="M60 112 L60 240" stroke="#1d0f08" stroke-width="1.1" opacity="0.45"/>' +
+      (pose === "dead" ? "" : '<path class="rod main-rod" d="M60 112 L60 240" stroke="#1d0f08" stroke-width="1.1" opacity="0.45"/>') +
       '<g class="pp-body">' +
         // Back limbs, a shade darker, behind the body.
         '<g class="j legB" ' + back + ">" + thigh() + '<g class="j shinB">' + shin + "</g></g>" +
@@ -225,7 +251,7 @@
         '<path d="' + skirt + '" fill="url(#pp-weave)"/><path d="' + hem + '" fill="none" stroke="' + trim + '" stroke-width="1.5"/>' + belt +
         '<g class="j head"><g transform="translate(62 64) scale(' + headScale + ') translate(-62 -64)">' + head + "</g></g>" +
         '<g class="j legF">' + thigh() + '<g class="j shinF">' + shin + "</g></g>" +
-        '<g class="j armF">' + upper + armlet + '<g class="j foreF">' + fore + manacle + cuff + itemSvg(spec.item, trim) + rod + "</g></g>" +
+        '<g class="j armF">' + upper + armlet + '<g class="j foreF">' + fore + manacle + cuff + (spec.item ? '<g class="it' + (WIELD.has(spec.item) ? " it-w" : "") + '">' + itemSvg(spec.item, trim) + "</g>" : "") + rod + "</g></g>" +
         (spec.sling ? '<path d="M50 76 Q58 112 68 76" fill="none" stroke="#efe2c0" stroke-width="3" opacity="0.9"/>' : "") +
       "</g></g></svg>";
     return svg;

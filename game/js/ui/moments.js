@@ -85,13 +85,16 @@
     const still = reduced();
     const bg = info.art ? U.bgUrl(info.art) : U.bgUrl(info.place || (K.SCENES[S.scene] && typeof K.SCENES[S.scene].art === "string" ? K.SCENES[S.scene].art : "scene_vow"));
     const big = window.innerWidth >= 900 && window.innerHeight >= 700 ? 260 : 210; // the figures stand taller on a big screen
-    const me = K.puppetSpec ? U.puppet(K.puppetSpec(S), { h: big, pose: info.astra ? "stand" : info.with ? "walk" : "stand", cls: "mo-me" }) : "";
-    const friend = info.with && U.puppetFor ? U.puppet(U.puppetFor(info.with, S), { h: big, pose: "walk", flip: true, cls: "mo-friend" }) : "";
+    // A painting of the moment already shows the people in it (two boys in the river), so the
+    // puppets stand only over a framed portrait. The astra keeps its figure: the weapon rises into its hand.
+    const figs = !info.art || info.astra;
+    const me = figs && K.puppetSpec ? U.puppet(K.puppetSpec(S), { h: big, pose: info.astra ? "stand" : info.with ? "walk" : "stand", cls: "mo-me" }) : "";
+    const friend = figs && info.with && U.puppetFor ? U.puppet(U.puppetFor(info.with, S), { h: big, pose: "walk", flip: true, cls: "mo-friend" }) : "";
     const frame = !info.art && info.portrait ? '<i class="mo-frame" style="--img:url(\'' + U.artUrl(info.portrait) + '\')" aria-hidden="true"></i>' : "";
     const emblem = info.astra ? '<span class="mo-emblem astra">' + ASTRA_SVG + "</span>" : info.emblem ? '<span class="mo-emblem" style="--img:url(\'' + U.artUrl(info.emblem) + '\')"></span>' : "";
     const el = U.el('<div class="moment k-' + m.kind + (still ? " still" : "") + (info.grey ? " grey" : "") + (info.art ? " painted" : " framed") + '" role="dialog" aria-modal="true" aria-label="' + U.esc(K.text(info.title)) + '">' +
       '<div class="mo-art" style="--img:url(\'' + bg + '\')"></div>' + (info.astra ? '<div class="mo-dark"></div><div class="mo-mantra"><i></i></div>' : "") + frame +
-      '<div class="mo-figs">' + (info.with || info.astra ? '<span class="mo-l">' + me + "</span>" : "") + (friend ? '<span class="mo-r">' + friend + "</span>" : "") + (info.astra ? emblem : "") + "</div>" + (info.astra ? "" : emblem) +
+      '<div class="mo-figs">' + (me && (info.with || info.astra) ? '<span class="mo-l">' + me + "</span>" : "") + (friend ? '<span class="mo-r">' + friend + "</span>" : "") + (info.astra ? emblem : "") + "</div>" + (info.astra ? "" : emblem) +
       '<div class="mo-text"><span class="mo-orn" aria-hidden="true"></span><b class="mo-title">' + tx(info.title) + "</b>" + (info.line ? '<p class="mo-line">' + tx(info.line) + "</p>" : "") +
       (info.watch ? '<p class="mo-sub">' + tx(info.watch) + "</p>" : "") + (info.price ? '<p class="mo-sub down">' + tx(info.price) + "</p>" : "") +
       (info.astra && info.sub && info.line !== info.sub ? '<p class="mo-sub">' + U.t(info.sub) + "</p>" : "") + "</div>" +

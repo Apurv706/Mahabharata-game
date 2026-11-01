@@ -170,6 +170,8 @@
     const bd = U.$("backdrop");
     if (!bd || key === bdKey) return;
     bdKey = key;
+    // A living effect over the last story painting (embers, smoke) leaves with it.
+    if (U.stageFx && U.stageFx.storyFor && U.stageFx.storyFor() && U.stageFx.storyFor() !== key) U.stageFx.stop();
     const layers = bd.querySelectorAll(".bdl");
     const next = layers[bdFlip = 1 - bdFlip], prev = layers[1 - bdFlip];
     const wide = key && U.hasWide(key);
