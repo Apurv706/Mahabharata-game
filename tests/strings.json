@@ -23668,5 +23668,105 @@
   "id": 4735,
   "en": "The last thing between you was a quarrel, and a gate closing before dawn.",
   "ctx": "play:ep_sibling_field"
+ },
+ {
+  "id": 4736,
+  "en": "On the thirteenth morning the drums start before dawn, and by noon the carts are bringing the wounded in faster than anyone can count.",
+  "ctx": "play:a6_wheel"
+ },
+ {
+  "id": 4737,
+  "en": "On the thirteenth morning Drona sets the Chakravyuha, a wheel of warriors turning ring within ring, and you are one of its rings. The Pandava chariots are already coming.",
+  "ctx": "play:a6_wheel"
+ },
+ {
+  "id": 4738,
+  "en": "On the thirteenth morning Drona sets the Chakravyuha, a wheel of warriors turning ring within ring. Abhimanyu rides at its face, looking for the way in, and your company waits on you.",
+  "ctx": "play:a6_wheel"
+ },
+ {
+  "id": 4739,
+  "en": "The huge brahmin",
+  "ctx": "play:a3_swayamvara"
+ },
+ {
+  "id": 4740,
+  "en": "{who} ties it back on, and says nothing, and that is the whole of the conversation, and it is enough.",
+  "ctx": "play:ep_keepsakes"
+ },
+ {
+  "id": 4741,
+  "en": "On the last night, when Ashwatthama asked who would ride into the sleeping camp with him, {they} said no.",
+  "ctx": "play:end_life"
+ },
+ {
+  "id": 4742,
+  "en": "You live, barely. The scar will remind you for the rest of your life.",
+  "ctx": "play:a6_raid"
+ },
+ {
+  "id": 4743,
+  "en": "After the wheel, Drona calls the council: Karna, Duryodhana, Shakuni, Kripa, Ashwatthama, and the officers whose divisions still stand. Yours stands. There is a mat for you at the edge of the lamplight.",
+  "ctx": "play:cmd_promotion_2"
+ },
+ {
+  "id": 4744,
+  "en": "Drona is dead. Karna will command tomorrow. Ashwatthama wants the Narayana weapon loosed on the whole Pandava army tonight, and half the tent agrees with him.",
+  "ctx": "play:cmd_council_2"
+ },
+ {
+  "id": 4745,
+  "en": "The council turns, as councils do, to the officer who has said nothing yet.",
+  "ctx": "play:cmd_council_2"
+ },
+ {
+  "id": 4746,
+  "en": "Counsel against the weapon: it will take the war with it",
+  "ctx": "play:cmd_council_2"
+ },
+ {
+  "id": 4747,
+  "en": "The truce you argued for at the council holds for an hour at dusk: soldiers of both sides go down to the river for water and the dead, and nobody draws.",
+  "ctx": "play:ep_truce"
+ },
+ {
+  "id": 4748,
+  "en": "Karna will meet Arjuna tomorrow. Everyone in the tent knows it. Shakuni wants the king's own guard thrown at the Pandava flank to make it certain; Kripa wants the army kept whole.",
+  "ctx": "play:cmd_council_3"
+ },
+ {
+  "id": 4749,
+  "en": "The commander asks the council for one word each.",
+  "ctx": "play:cmd_council_3"
+ },
+ {
+  "id": 4750,
+  "en": "Warn against any night attack on the sleeping camp",
+  "ctx": "play:cmd_council_3"
+ },
+ {
+  "id": 4751,
+  "en": "{They} held the line against {who} until the day let go of it.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4752,
+  "en": "It was {their} word at the council that gave both armies a truce at dusk to gather their dead.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4753,
+  "en": "Charu's hammer hangs over a forge that went cold the day Charu died.",
+  "ctx": "play:end_death"
+ },
+ {
+  "id": 4754,
+  "en": "Balarama nods slowly. \"Then at least be the one who comes back,\" he says, and walks on toward the river.",
+  "ctx": "play:ep_mentor_peace"
+ },
+ {
+  "id": 4755,
+  "en": "Let the old women of the camp tie the raksha sutra on your wrist",
+  "ctx": "play:w_eve"
  }
 ]

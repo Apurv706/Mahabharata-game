@@ -9,7 +9,7 @@
     if (vasuNear(S)) a.push("vasu");
     if (S.spouse === "revat" && !S.dead.includes("revat")) a.push("revat");
     if (S.friend === "charu" && !S.dead.includes("charu") && S.side !== "neutral") a.push("charu");
-    if ((S.flags.includes("beat_ugra") || S.flags.includes("lost_to_ugra")) && !S.dead.includes("ugra")) a.push("ugra");
+    if ((S.flags.includes("beat_ugra") || S.flags.includes("lost_to_ugra")) && !S.flags.includes("shamed_ugra") && !S.dead.includes("ugra")) a.push("ugra"); // shaming him outweighs a fair bout
     return a;
   };
   const foeSide = (S) => (S.side === "kaurava" ? "Pandava" : "Kaurava");
@@ -135,8 +135,8 @@
       witness: ["For nine days Bhishma, the grandsire, commands the Kaurava army, and no one can stand against him. He has promised not to kill the Pandava brothers themselves. He kills nearly everyone else."],
       body: (S) => [
         S.side === "pandava" ? "On the first day you watch Prince Uttara of Matsya fall." : S.side === "kaurava" ? "On your side, the old man fights like a storm. It is hard not to feel safe behind him." : "The first wounded reach the tents before noon. By evening there is nowhere left to lay them.",
-        S.side !== "neutral" && S.flags.includes("beat_ugra") ? { memory: "In the line beside you stands a big man with a miller's shoulders. Ugra. \"You put me on my back once,\" he says. \"I have waited thirty years to stand next to you instead.\"" } : null,
-        S.side !== "neutral" && S.flags.includes("lost_to_ugra") ? { memory: "In the line beside you stands a big man with a miller's shoulders. Ugra. \"You were the only one who ever stood up to me,\" he says. \"You lost. You still stood up. I am with you.\"" } : null,
+        S.side !== "neutral" && S.flags.includes("beat_ugra") && !S.flags.includes("shamed_ugra") ? { memory: "In the line beside you stands a big man with a miller's shoulders. Ugra. \"You put me on my back once,\" he says. \"I have waited thirty years to stand next to you instead.\"" } : null,
+        S.side !== "neutral" && S.flags.includes("lost_to_ugra") && !S.flags.includes("shamed_ugra") ? { memory: "In the line beside you stands a big man with a miller's shoulders. Ugra. \"You were the only one who ever stood up to me,\" he says. \"You lost. You still stood up. I am with you.\"" } : null,
         S.side !== "neutral" && S.flags.includes("shamed_ugra") ? { memory: "Across the field, under the enemy's banners, there is a big man with a miller's shoulders. Ugra never forgave the crowd for laughing, or you for making them." } : null,
         // A risk that went wrong long ago comes back: someone else is wearing your heirloom.
         S.heirloomLost && S.heirloomLost.at === "bandits" ? { memory: "Among the levies brought in from the villages, you see a thin man with a farmer's hands, wearing your {heirloom!}. He sees you see it, and looks away." } : null,
