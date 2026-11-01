@@ -120,7 +120,7 @@
     self: { name: "No one. You taught yourself", short: "no one" }
   };
   K.PATHS = {
-    archer: { name: "Archer", skill: "archery", stat: "aim", abilities: ["aimed", "volley", "pin"], desc: "The master bowman: ranged damage, and the surest road to an astra." },
+    archer: { name: "Archer", skill: "archery", stat: "aim", abilities: ["aimed", "volley", "pin"], desc: "The master bowman: ranged damage, and the weapon of Arjuna, Karna and Drona." },
     mace: { name: "Mace fighter", skill: "mace", stat: "might", abilities: ["crush", "roar", "quake"], desc: "Raw strength. You stand in front and take the blows meant for others." },
     charioteer: { name: "Charioteer", skill: "chariot", stat: "grace", abilities: ["swerve", "ridedown", "rally"], desc: "The driver who sees the whole field. Speed, evasion and nerve." },
     strategist: { name: "Strategist", skill: "statecraft", stat: "command", abilities: ["command", "expose", "formation"], desc: "Advisor and commander. You make others stronger and find the gap in any line." },

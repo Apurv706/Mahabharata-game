@@ -4757,6 +4757,7 @@
     "Charu's hammer hangs over a forge that went cold the day Charu died.": "चारु का हथौड़ा उस भट्ठी के ऊपर टँगा है जो चारु के मरने के दिन ठंडी पड़ गई।",
     "Balarama nods slowly. \"Then at least be the one who comes back,\" he says, and walks on toward the river.": "बलराम धीरे से सिर हिलाते हैं। \"तो कम से कम वह बनना जो लौट आए,\" वे कहते हैं, और नदी की ओर चल देते हैं।",
     "Let the old women of the camp tie the raksha sutra on your wrist": "छावनी की बूढ़ी स्त्रियों को अपनी कलाई पर रक्षा सूत्र बाँधने दो",
+    "The master bowman: ranged damage, and the weapon of Arjuna, Karna and Drona.": "बाणों का महारथी: दूर से वार, और अर्जुन, कर्ण और द्रोण का शस्त्र।",
     "They sing of {name}, born in {origin}, {path!}.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {path}।",
     "They sing of {name}, born in {origin}, who taught {them}self by night.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {g:जिसने|जिसने|जिन्होंने} रातों में ख़ुद को सिखाया।",
     "They sing of {name}, born in {origin}, student of {teacher}.": "भाट {name} की गाथा गाते हैं: {origin} में {g:जन्मा|जन्मी|जन्मे}, {teacher} {g:का शिष्य|की शिष्या|के शिष्य}।",
