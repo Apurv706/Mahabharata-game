@@ -298,6 +298,14 @@
           const half = ART_HALF[t.icon] || 30, want = win * sw, marked = want - 2 < 14;
           const vis = marked ? Math.max(22, Math.min(half * 1.35, 30)) : Math.min(want - 2, half * 3), sc = vis / half;
           const zone = Math.min(want, half * 3 + 2);
+          // A swinging target hangs above your head, never across your raised bow: on a tall phone the
+          // rope is shortened to the room above you (measured once per size of the range).
+          if (P.roomFor !== W + "x" + H) {
+            P.roomFor = W + "x" + H;
+            const me = host.querySelector(".cast .actor.me svg");
+            P.room = me ? me.getBoundingClientRect().top - range.getBoundingClientRect().top - me.getBoundingClientRect().height * 0.22 : Infinity; // the raised bow reaches above the head
+          }
+          if (!runs && P.room > 0 && isFinite(P.room)) P.L = Math.max(80, Math.min(P.L, P.room - vis - 18));
           P.win = zone / sw; P.zone = zone; P.vis = vis + 2; P.marked = marked;
           P.mark.style.display = marked ? "" : "none";
           if (marked) P.mark.setAttribute("r", Math.max(3, zone - 2).toFixed(1));

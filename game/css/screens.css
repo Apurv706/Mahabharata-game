@@ -1500,6 +1500,8 @@ body.pr-slow .arena .incoming.go { transition-duration: calc(var(--dur) / var(--
 .pp.pose-turn .legF { animation: pp-legF 0.7s ease-in-out infinite alternate; } .pp.pose-turn .legB { animation: pp-legB 0.7s ease-in-out infinite alternate; }
 /* Light and distance: an enemy far from you is a little larger and softer in the lamplight, and sharpens as he steps in. */
 #arena .actor.enemy.far .pp { filter: blur(.45px) brightness(.92); opacity: .86; transform: scale(1.06); transform-origin: 50% 100%; transition: filter .35s, opacity .35s, transform .35s; }
+/* A flipped enemy (they all face you) keeps facing you when far: the scale must carry the mirror too. */
+#arena .actor.enemy.far .pp.flip { transform: scale(-1.06, 1.06); }
 #arena .actor.enemy .pp { transition: filter .25s, opacity .25s, transform .25s; }
 /* Age: elders stoop a little more, and their hair and beard have gone grey. */
 .pose-stand.st-elder .pp-body { transform: rotate(7deg) translateY(1px); }

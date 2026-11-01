@@ -198,6 +198,9 @@ const PAGE = {
       const figs = [...document.querySelectorAll("#arena .actor")].map((e) => e.getBoundingClientRect());
       if (figs.some((b) => b.right > W + 24 || b.left < -24)) out.push("a figure stands off the edge of the screen");
       if (figs.some((b) => b.height < 60)) out.push("figures too small to see");
+      // Every standing enemy faces you: its figure is mirrored (a negative horizontal scale), whatever else it does.
+      const away = [...document.querySelectorAll("#arena .actor.enemy:not(.down) .pp")].filter((e) => { const m = getComputedStyle(e).transform; const a = m && m !== "none" ? parseFloat(m.replace(/^matrix\(/, "").split(",")[0]) : 1; return !(a < 0); });
+      if (away.length) out.push(away.length + " enemy figure(s) facing away from you");
       // On an upright screen the painting's ground meets the fighters' feet (dom.js U.groundFit).
       const L = document.querySelector("#backdrop .bdl.on"), pic = L && L.querySelector(".pic"), key = L && L.dataset.key;
       const gr = key && K.UI.upright() && K.UI.tallOf(key) ? K.UI.groundOf(key) : null, feet = K.UI.feetY();
