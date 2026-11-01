@@ -70,6 +70,15 @@ Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct);
     - **Hindi tools** can no longer scramble or drop translations.
     - **Tests:** a new engine test (`tests/lives.js`) and a GitHub "Engine checks" run on every push.
 
+## Built 1 Nov
+33. **A leader's mark.**
+    - **Who:** with a command rank and someone fighting beside you, tapping an enemy marks it. Those beside you, your company included, turn on it until it falls. It costs no turn.
+    - **Command bonus:** Command adds to their blows against the marked enemy, +1 at 4 and +2 at 7.
+    - **On screen:** a gold pennant flies over the marked figure, its card says "Marked: your company is on it", and the fight log reads "Your company turns on …". Without a rank the heading still reads "tap to target".
+34. **Fixed from the first tester screenshots:**
+    - Distant enemies faced away from you; they face you again, and the screen-fit test now checks every enemy faces you.
+    - On tall phones the archery target hung across the archer's raised bow. It now always swings above the archer's head.
+
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**
 - **Batches and patch:** batches 3–6f, and the 6-file patch (sun banners on the war field, sunset and camp gate).

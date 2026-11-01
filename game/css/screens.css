@@ -1581,3 +1581,12 @@ svg .pr-hint { outline: none; filter: drop-shadow(0 0 6px #ffd680) drop-shadow(0
 }
 /* The dive: the diver in the lake is you, so no second figure stands on the lake bed below. */
 .trial.trial-breath > .cast { display: none; }
+
+/* A leader's mark: a pennant over the marked enemy, and a line on its card. */
+#arena .actor.marked { position: relative; }
+#arena .actor > .mark-flag { position: absolute; left: 50%; top: -6px; width: 26px; height: 32px; transform: translateX(-50%); z-index: 3; filter: drop-shadow(0 2px 3px rgba(0,0,0,.6)); pointer-events: none; }
+.unit.enemy.marked { box-shadow: inset 0 0 0 2px #d9822b; }
+.unit .markline { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #f0b26a; }
+.unit .markline .mark-flag { width: 14px; height: 17px; flex: none; }
+@media (prefers-reduced-motion: no-preference) { #arena .actor > .mark-flag { animation: mark-in .35s ease-out; } }
+@keyframes mark-in { from { opacity: 0; transform: translate(-50%, -8px); } to { opacity: 1; transform: translate(-50%, 0); } }

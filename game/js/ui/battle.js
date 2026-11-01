@@ -163,17 +163,30 @@
     return '<span class="intent' + (danger ? " danger" : "") + '">' + U.esc(txt) + "</span>";
   }
 
+  // The pennant over the enemy a leader has marked, and on its card.
+  const MARK_SVG = '<svg class="mark-flag" viewBox="0 0 20 24" aria-hidden="true"><path d="M4 2v21" stroke="#e2b866" stroke-width="2" stroke-linecap="round"/><path d="M5 3h12l-3.5 4.5L17 12H5z" fill="#d9822b" stroke="#e2b866" stroke-width="1.2" stroke-linejoin="round"/></svg>';
+  function syncMark(B) {
+    const m = C.marked ? C.marked() : null;
+    document.querySelectorAll("#arena .actor.enemy").forEach((el) => {
+      const on = el.dataset.uid === m;
+      el.classList.toggle("marked", on);
+      let f = el.querySelector(":scope > .mark-flag");
+      if (on && !f) el.insertAdjacentHTML("afterbegin", MARK_SVG);
+      if (!on && f) f.remove();
+    });
+  }
   function unitCard(u, B) {
     const pct = Math.round((u.hp / u.maxHp) * 100);
     const st = Object.keys(u.status).map((s) => "<span>" + U.tr(K.STATUS_TEXT[s] || s) + "</span>").join("");
     const enemy = u.side === "enemy";
-    const sel = enemy && target === u.uid ? " sel" : "";
+    const sel = (enemy && target === u.uid ? " sel" : "") + (enemy && C.marked && C.marked() === u.uid ? " marked" : "");
     const label = u.side === "player" ? K.tr("You") : K.text(u.src || u.name);
     return '<button type="button" class="unit ' + u.side + sel + (u.hp <= 0 ? " down" : "") + '" data-uid="' + u.uid + '"' + (!enemy || u.hp <= 0 || B.over ? " disabled" : "") + ">" +
       '<span class="nm">' + (u.person && U.portraitKey(u.person) ? U.thumb(U.portraitKey(u.person), "face") : "") + "<em>" + U.esc(label) + "</em><span>" + u.hp + " / " + u.maxHp + "</span></span>" +
       '<span class="hpbar"><i style="width:' + pct + '%"></i></span>' +
       (st ? '<span class="st">' + st + "</span>" : "") +
       (enemy ? intentLine(u) : "") +
+      (enemy && C.marked && C.marked() === u.uid ? '<span class="markline">' + MARK_SVG + U.esc(K.tr(B.units.some((x) => x.side === "ally" && x.plural && x.hp > 0) ? "Marked: your company is on it" : "Marked: those beside you are on it")) + "</span>" : "") +
       (u.note ? '<span class="note">' + U.t(u.note) + "</span>" : "") + "</button>";
   }
 
@@ -329,7 +342,7 @@
     }
     const body = U.$("battle-body");
     body.innerHTML = '<div class="sides"><div class="side"><span class="lbl">' + U.tr("Your side") + "</span>" + friends.map((u) => unitCard(u, B)).join("") +
-      '</div><div class="side"><span class="lbl">' + U.tr("Against you · tap to target") + "</span>" + enemies.map((u) => unitCard(u, B)).join("") + "</div></div>" +
+      '</div><div class="side"><span class="lbl">' + U.tr(C.canMark && C.canMark() ? "Against you · tap to mark" : "Against you · tap to target") + "</span>" + enemies.map((u) => unitCard(u, B)).join("") + "</div></div>" +
       '<div id="battle-actions"></div><ol class="blog" id="blog" aria-live="polite">' + B.log.slice(-8).map((l) => "<li" + (l.ev ? ' class="ev"' : "") + ">" + U.esc(C.line(l)) + "</li>").join("") + "</ol>";
     // Blows are heard as well as seen.
     if (K.Sound && B.log.length !== lastLogLen) {
@@ -356,7 +369,9 @@
     lastHp = Object.fromEntries(B.units.map((u) => [u.uid, u.hp]));
     lastLogLen = B.log.length;
     lastActs = B.acts.length;
-    body.querySelectorAll(".unit.enemy").forEach((el) => el.addEventListener("click", () => { target = el.dataset.uid; U.renderBattle(B); }));
+    // Picking out an enemy: your own target, and for a leader with people beside them, the company's mark.
+    body.querySelectorAll(".unit.enemy").forEach((el) => el.addEventListener("click", () => { target = el.dataset.uid; if (C.mark) C.mark(target); U.renderBattle(B); }));
+    syncMark(B);
     const log = U.$("blog");
     log.scrollTop = log.scrollHeight;
     const box = U.$("battle-actions");

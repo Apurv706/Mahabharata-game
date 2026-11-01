@@ -241,4 +241,21 @@ S = fresh({ act: 6, age: 44, side: "kaurava" });
 ok(S.flags.includes("refused_ashwatthama") && !S.flags.includes("refused_raid"), "refusing the night raid is its own flag, not refusing Matsya");
 S = fresh({ act: 5, age: 43, friend: "charu" }); S.vows.push({ id: "spare_unarmed", broken: false, age: 20 }); S.dead.push("charu");
 ok(!K.test(K.SCENES.v_captive.when, S), "a dead friend does not ask you to silence a spy");
+// 34. A leader's mark: allies turn on the enemy you pick out; Command makes them hit it harder
+S = fresh({ act: 6, age: 44, side: "pandava" });
+{ const B = K.Combat.start("e_guard", () => {}); ok(!K.Combat.canMark(), "without a command rank there is no mark"); K.Combat.end && K.Combat.end(); }
+S = fresh({ act: 6, age: 44, side: "pandava" }); S.flags.push("role_command"); S.attrs.command = 6;
+{
+  const B = K.Combat.start("e_guard", () => {});
+  const foes = B.units.filter((u) => u.side === "enemy");
+  const pick = foes[foes.length - 1];
+  ok(K.Combat.canMark() && K.Combat.mark(pick.uid) && K.Combat.marked() === pick.uid, "a company leader marks the enemy they pick out");
+  ok(B.markBonus === 2, "command 7 or more (6, +1 for age) adds 2 to their blows against the mark (" + B.markBonus + ")");
+  for (let i = 0; i < 4 && !B.over && pick.hp > 0; i++) K.Combat.act("guard");
+  // Blows that land on every enemy at once (a volley) are left out: only aimed blows choose a target.
+  const area = new Set(Object.values(K.ABILITIES).filter((a) => a.target === "enemies" && a.verb).map((a) => a.verb));
+  const hits = B.log.filter((l) => l.u && l.u.a && l.u.a.side === "ally" && l.u.t && l.u.t.side === "enemy" && !area.has(l.key) && !/^Arrows rain/.test(l.key));
+  ok(hits.length > 0 && hits.every((l) => l.u.t.uid === pick.uid || pick.hp === 0), "those beside you strike only the marked enemy while it stands (" + hits.length + " blows)");
+  K.Combat.end && K.Combat.end();
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

@@ -5,5 +5,10 @@
  "On the thirteenth morning Drona sets the Chakravyuha, a wheel of warriors turning ring within ring, and you are one of its rings. The Pandava chariots are already coming.": "तेरहवीं सुबह द्रोण चक्रव्यूह रचते हैं: योद्धाओं का एक चक्र, घेरे के भीतर घेरा, घूमता हुआ, और तुम उसका एक घेरा हो। पांडवों के रथ आ भी चुके हैं।",
  "On the thirteenth morning the drums start before dawn, and by noon the carts are bringing the wounded in faster than anyone can count.": "तेरहवीं सुबह भोर से पहले ही नगाड़े बजने लगते हैं, और दोपहर तक गाड़ियाँ घायलों को इतनी तेज़ी से ला रही हैं कि कोई गिन नहीं पाता।",
  "Charu's hammer hangs over a forge that went cold the day Charu died.": "चारु का हथौड़ा उस भट्ठी के ऊपर टँगा है जो चारु के मरने के दिन ठंडी पड़ गई।",
- "The huge brahmin": "विशालकाय ब्राह्मण"
+ "The huge brahmin": "विशालकाय ब्राह्मण",
+ "Your company turns on {t}.": "तुम्हारी टुकड़ी {tpar} टूट पड़ती है।",
+ "You call out {t}, and those beside you turn on them.": "तुम {tki} ओर इशारा {g:करते हो|करती हो|करते हो}, और तुम्हारे साथ लड़ने वाले उस पर टूट पड़ते हैं।",
+ "Marked: your company is on it": "निशाने पर: तुम्हारी टुकड़ी इसी पर है",
+ "Marked: those beside you are on it": "निशाने पर: तुम्हारे साथी इसी पर हैं",
+ "Against you · tap to mark": "तुम्हारे विरुद्ध · निशाना तय करने को छुओ"
 }

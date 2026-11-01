@@ -112,6 +112,8 @@
       let dmg = (u.atk + K.roll(4)) * mult;
       // A vow of vengeance: +1 against the one you swore against.
       if (u.side === "player" && t.person && K.hasVow("vengeance") && Object.entries(K.VENGEANCE || {}).some(([f, who]) => K.S.flags.includes(f) && who.includes(t.person))) dmg += mult;
+      // A leader's mark: those beside you strike the marked enemy harder, the more so the better you command.
+      if (u.side === "ally" && B.mark && t.uid === B.mark) dmg += (B.markBonus || 0) * mult;
       if (def === "block") { dmg *= 0.45; B.lastDef = "block"; }
       if (def === "miss") { dmg *= o.heavy ? 1.15 : 1; B.lastDef = "miss"; }
       if (u.status.inspired) dmg *= 1.3;
@@ -198,6 +200,9 @@
       const taunt = foes.find((f) => f.status.taunt);
       if (taunt) return taunt;
       if (u.side === "enemy") { const p = foes.find((f) => f.side === "player"); return p && K.rng() < 0.65 ? p : K.pick(foes); }
+      // Those beside you go for the enemy you marked (a leader's order), while it stands; else the weakest.
+      const marked = B.mark && foes.find((f) => f.uid === B.mark);
+      if (marked) return marked;
       return foes.slice().sort((a, b) => a.hp - b.hp)[0];
     };
     switch (ab.target) {
@@ -403,6 +408,25 @@
     enemyTurn(n.u, def);
     if (!over() && !B.queue.length) { B.queue = null; roundEnd(); }
     K.emit("combat", B);
+  };
+
+  // ---------- A leader's mark ----------
+  // With a command rank (content/command.js) and someone fighting beside you, the enemy you pick out is
+  // marked: they all turn on it until it falls (no turn spent). Command adds to their blows against it:
+  // +1 at 4, +2 at 7.
+  C.canMark = () => !!(B && !B.over && K.rankOf && K.rankOf(K.S) && B.units.some((u) => u.side === "ally" && u.hp > 0));
+  C.marked = () => (B && B.mark && B.units.some((u) => u.uid === B.mark && u.hp > 0) ? B.mark : null);
+  C.mark = function (uid) {
+    if (!C.canMark()) return false;
+    const t = B.units.find((u) => u.uid === uid && u.side === "enemy" && u.hp > 0);
+    if (!t || B.mark === uid) return false;
+    B.mark = uid;
+    const cmd = K.attr("command");
+    B.markBonus = cmd >= 7 ? 2 : cmd >= 4 ? 1 : 0;
+    const co = B.units.find((u) => u.side === "ally" && u.plural && u.hp > 0);
+    api.tell(co ? "Your company turns on {t}." : "You call out {t}, and those beside you turn on them.", { t });
+    K.emit("combat", B);
+    return true;
   };
 
   C.act = function (id, uid) {
