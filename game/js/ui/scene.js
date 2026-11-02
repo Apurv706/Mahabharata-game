@@ -95,7 +95,7 @@
     });
     // Beside a second chance: "Practise first, then try again" (ui/practice.js).
     if (U.practiceOffer) U.practiceOffer(sc, rows, box);
-    U.$("keyhint").textContent = rows.length > 1 ? K.tr("Press 1 to {n} to choose.", { n: rows.length }) : "";
+    U.$("keyhint").textContent = rows.length > 2 ? K.tr("Press 1 to {n} to choose.", { n: rows.length }) : rows.length === 2 ? K.tr("Press 1 or 2 to choose.") : "";
     U.renderLedger();
     U.scrollTop();
     // Set the scene first, then offer the choices.

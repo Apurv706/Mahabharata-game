@@ -138,11 +138,13 @@
     {
       id: "a0_dream", act: 1, age: 44, prologue: true, away: true, actTitle: "A dream of Kurukshetra", place: "Kurukshetra, the thirteenth day",
       art: "war_day14", caption: "Kurukshetra, the thirteenth day", title: "The field",
+      // Who is fighting, and over what, so a newcomer knows where the story is going; which side you
+      // are on is left open, because your life decides it.
+      witness: ["Kurukshetra, on the thirteenth day of the great war. Eighteen armies have come to settle who rules Hastinapura: the five Pandava brothers against their hundred Kaurava cousins. Almost everyone you will ever know is on this field."],
       body: [
         { aside: "A dream. None of this has happened yet." },
-        "Dust, and conch shells, and a sound like the sea that is ten thousand chariots turning at once. You are grown. There is a sword in your hand, and you know without being told that this is Kurukshetra.",
-        "To your left a banner with a monkey on it is pressing forward. Somewhere behind you someone is shouting your name, over and over.",
-        "A warrior in a dented helmet comes at you through the dust. You cannot see the face. You know it anyway."
+        "You are grown, with a sword in your hand, and you cannot tell whose banner you are fighting under. In the dream, you never can.",
+        "Somewhere behind you someone is shouting your name. A warrior in a dented helmet comes at you through the dust. You cannot see the face. You know it anyway."
       ],
       choices: [{ id: "fight", t: "Raise your sword", combat: "e_dream", hint: "A dream of the war" }],
       next: "a1_home"
@@ -393,8 +395,8 @@
     rounds: 3, roundsText: "Your blades meet, and the whole field goes white.", winLine: "The dream breaks.", loseLine: "The dream breaks.",
     intro: "Two foot soldiers come in at your sides. The warrior in the dented helmet waits behind them, watching how you move.",
     enemies: [K.foe("The warrior in the dented helmet", 4, { hp: 150, person: null }), K.foe("The soldier on your left", 1), K.foe("The soldier on your right", 1)],
-    win: { fx: { flag: "dreamt_the_field" }, text: "The dust swallows the noise. Far away, somebody is calling a child's name: yours. The field is thirty-eight years away. You are six, and you are waking." },
-    lose: { fx: { flag: "dreamt_the_field" }, text: "The blow comes, and the field goes white. Far away, somebody is calling a child's name: yours. The field is thirty-eight years away. You are six, and you are waking." }
+    win: { fx: { flag: "dreamt_the_field" }, text: "The dust swallows the noise. Far away, somebody is calling a child's name: yours. The field is thirty-eight years away. Whose banner you stand under, and whose face is under that helmet, your life has yet to decide. You are six, and you are waking." },
+    lose: { fx: { flag: "dreamt_the_field" }, text: "The blow comes, and the field goes white. Far away, somebody is calling a child's name: yours. The field is thirty-eight years away. Whose banner you stand under, and whose face is under that helmet, your life has yet to decide. You are six, and you are waking." }
   });
 
   K.encounter({

@@ -1606,3 +1606,9 @@ svg .pr-hint { outline: none; filter: drop-shadow(0 0 6px #ffd680) drop-shadow(0
 .wake.in p { opacity: 1; transform: none; }
 .wake .mo-tap { position: absolute; right: 22px; bottom: max(18px, var(--sab, 0px)); color: #7a6450; font-size: 14px; }
 @media (prefers-reduced-motion: reduce) { .wake, .wake p { transition: none; } }
+
+/* Your target: named on its card, and a ring of light at the figure's feet, so it is always clear who your moves will hit. */
+.unit .tgt-chip { justify-self: start; padding: 1px 8px; border-radius: 999px; background: var(--accent); color: #1a110a; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; }
+#arena .actor.enemy.targeted::after { content: ""; position: absolute; left: 50%; bottom: 9%; width: 78%; height: 14px; transform: translateX(-50%); border-radius: 50%; border: 2px solid rgba(233, 194, 122, 0.95); box-shadow: 0 0 10px rgba(233, 194, 122, 0.7); pointer-events: none; z-index: 0; }
+@media (prefers-reduced-motion: no-preference) { #arena .actor.enemy.targeted::after { animation: tgt-pulse 1.6s ease-in-out infinite; } }
+@keyframes tgt-pulse { 50% { opacity: 0.55; } }

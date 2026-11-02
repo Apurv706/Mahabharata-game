@@ -132,6 +132,16 @@ Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct);
     - **The false-name test at Virata's court is a lie:**
       - A vow never to lie is warned of on the choice and broken by it.
       - Vow-holders can instead answer with only true things and let the steward draw the wrong conclusion (a statecraft test).
+43. **Polish from the same tester:**
+    - **Your target is always shown:** a "Your target" label on the enemy's card, and a ring of light at that figure's feet.
+    - **The prologue explains itself:**
+      - An "As it is written" box says what Kurukshetra is: eighteen armies, the five Pandavas against their hundred Kaurava cousins, nearly everyone you will know.
+      - In the dream you cannot tell whose banner you fight under.
+      - The waking card says your life will decide whose side you stand on and whose face is under that helmet.
+    - **Ugra is reintroduced** as "the miller's son from the spring fair" at the tournament, in his letter, on the first day of the war and on the seventeenth day.
+    - **Small fixes:**
+      - "set the first test she were ever set" now reads "was".
+      - A two-choice screen says "Press 1 or 2 to choose."
 
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**

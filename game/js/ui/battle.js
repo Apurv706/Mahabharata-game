@@ -168,6 +168,8 @@
   function syncMark(B) {
     const m = C.marked ? C.marked() : null;
     document.querySelectorAll("#arena .actor.enemy").forEach((el) => {
+      // Who your moves will hit: a ring of light at that figure's feet.
+      el.classList.toggle("targeted", !B.over && el.dataset.uid === target);
       const on = el.dataset.uid === m;
       el.classList.toggle("marked", on);
       let f = el.querySelector(":scope > .mark-flag");
@@ -184,6 +186,7 @@
     return '<button type="button" class="unit ' + u.side + sel + (u.hp <= 0 ? " down" : "") + '" data-uid="' + u.uid + '"' + (!enemy || u.hp <= 0 || B.over ? " disabled" : "") + ">" +
       '<span class="nm">' + (u.person && U.portraitKey(u.person) ? U.thumb(U.portraitKey(u.person), "face") : "") + "<em>" + U.esc(label) + "</em><span>" + u.hp + " / " + u.maxHp + "</span></span>" +
       '<span class="hpbar"><i style="width:' + pct + '%"></i></span>' +
+      (enemy && target === u.uid && u.hp > 0 && !B.over ? '<span class="tgt-chip">' + U.tr("Your target") + "</span>" : "") +
       (st ? '<span class="st">' + st + "</span>" : "") +
       (enemy ? intentLine(u) : "") +
       (enemy && C.marked && C.marked() === u.uid ? '<span class="markline">' + MARK_SVG + U.esc(K.tr(B.units.some((x) => x.side === "ally" && x.plural && x.hp > 0) ? "Marked: your company is on it" : "Marked: those beside you are on it")) + "</span>" : "") +

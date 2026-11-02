@@ -167,7 +167,7 @@
       art: art("scene_tournament_crowd"), place: "Tournament grounds, Hastinapura", caption: "The morning before the princes' tournament",
       title: "The miller's son, again",
       body: (S) => [
-        "The morning before the tournament, the grounds are full of levies from the villages come to carry water and hold horses. One of them is a head taller than the rest and has a miller's shoulders.",
+        "The morning before the tournament, the grounds are full of levies from the villages come to carry water and hold horses. One of them is a head taller than the rest and has a miller's shoulders. It is Ugra, the miller's son who ruled the wrestling ring at the spring fair.",
         S.flags.includes("beat_ugra") ? { speaker: "Ugra", line: "You. The one from the fair. I have been practising." } : S.flags.includes("lost_to_ugra") ? { speaker: "Ugra", line: "You. The one who came back for a second throw. I told everyone in my village about you." } : { speaker: "Ugra", line: "You. You ran from my ring. Do you still run?" }
       ],
       choices: [
@@ -243,7 +243,7 @@
       id: "ep_ugra_rise", act: 5, age: 44, away: true, when: (S) => ugraMet(S) && !S.dead.includes("ugra"), skipTo: "a5_side", next: "a5_side",
       art: art("scene_ugra_letter"), place: "Before the war", caption: "A letter in a miller's hand",
       title: "Ugra's letter",
-      body: ["A letter comes, written in a large careful hand that learned late. Ugra, the miller's son, is a captain of levies now. He does not say whose. He says the pay is good, and that he thinks of the fair more than a grown man should, and that if the war comes he hopes to be on the same side as you, and that if he is not, he will not look for you in the press."],
+      body: ["A letter comes, written in a large careful hand that learned late. Ugra, the miller's son who held the ring at the spring fair, is a captain of levies now. He does not say whose. He says the pay is good, and that he thinks of the fair more than a grown man should, and that if the war comes he hopes to be on the same side as you, and that if he is not, he will not look for you in the press."],
       choices: [
         { id: "write", t: "Write back", fx: { bond: { ugra: 1 }, flag: "wrote_to_ugra" }, text: "You write back about the fair. You do not mention the war. He will have understood." },
         { id: "burn", t: "Burn it. There is a war coming", fx: { flag: "burned_ugra_letter" }, text: "You burn it, and remember every word anyway." }
@@ -412,7 +412,7 @@
       id: "ep_ugra_last", act: 6, age: 44, away: true, war: true, when: (S) => ugraAcross(S), skipTo: "a6_day18", next: "a6_day18",
       art: art("scene_ugra_field"), place: "Kurukshetra · the seventeenth day", caption: "The miller's son, with a captain's spear",
       title: "The miller's son, the last time",
-      body: ["On the seventeenth day a captain of levies comes through the smoke with his spear up and stops dead. It is Ugra. He has been looking for you after all."],
+      body: ["On the seventeenth day a captain of levies comes through the smoke with his spear up and stops dead. It is Ugra, the miller's son from the spring fair. He has been looking for you after all."],
       choices: [
         { id: "fight", t: "Fight him, as you did at the fair", combat: "e_ep_ugra" },
         { id: "mercy", t: "Lower your weapon and tell him to go home to his mill", check: { attr: "command", skill: "statecraft", dc: 8,
@@ -595,7 +595,7 @@
     if (has("truce_spoke")) t.push("At the truce at dusk {they} waded the river to speak to someone on the other side.");
     if (has("rebuilt_quarter")) t.push("After the war {they} rebuilt the roofs of the burned quarter.");
     if (has("forgave_at_river")) t.push("At the river {they} sent a lamp for {their} dead, and one for whoever killed them.");
-    if (has("taught_student")) t.push("{They} took a student of {their} own, and set the first test {they} were ever set.");
+    if (has("taught_student")) t.push("{They} took a student of {their} own, and set the first test {they} {were} ever set.");
     if (has("walked_with_elders")) t.push("{They} walked the holy places with the old king and queen and Kunti.");
     if (has("corrected_bard")) t.push("When a bard sang it wrong, {they} corrected him, and the right version is the one that travelled.");
   });
