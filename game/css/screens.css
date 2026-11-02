@@ -1256,7 +1256,7 @@ body.intest .leaf.fighting.immersive > .pagehead { display: flex !important; gri
 .leaf.fighting.immersive > .arena { grid-row: 2; grid-column: 1; height: auto; margin: 0; background: none; overflow: visible; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 2% 2vh; }
 .leaf.fighting.immersive > .arena::before { display: none; }
 /* The figures are as tall as the screen allows, and never so tall that two to a side run off its edges. */
-.leaf.fighting.immersive > .arena { --ah: clamp(140px, min(31vh, 56vw), 310px); }
+.leaf.fighting.immersive > .arena { --ah: clamp(140px, min(31vh, 53vw), 310px); }
 .leaf.fighting.immersive > .arena .actor svg { height: var(--ah); filter: drop-shadow(0 0 10px rgba(255, 196, 110, 0.45)) drop-shadow(0 6px 6px rgba(0, 0, 0, 0.6)); }
 .leaf.fighting.immersive > .arena .actor.ally svg { height: calc(var(--ah) * 0.82); }
 /* A soft shadow on the ground under each fighter. */
