@@ -38,7 +38,8 @@
     id = K.val(id, S);
     // The scenes that come first are asked for again after an event slot resolves: a slot that draws
     // nothing hands on its `then` scene, which may have its own (the vow of the word before the Rajasuya).
-    const before = (x) => (K.BEFORE[x] || []).find((p) => K.SCENES[p] && !S.seen.includes(p) && K.test(K.SCENES[p].when, S)) || x;
+    // S.missed: scenes passed by while away from where they happen (a ride home in the war).
+    const before = (x) => (K.BEFORE[x] || []).find((p) => K.SCENES[p] && !S.seen.includes(p) && !(Array.isArray(S.missed) && S.missed.includes(p)) && K.test(K.SCENES[p].when, S)) || x;
     id = before(id);
     for (let g = 0; K.SLOTS[id] && g < 5; g++) id = before(slotScene(id, S));
     let sc = K.SCENES[id];

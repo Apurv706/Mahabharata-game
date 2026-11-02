@@ -352,4 +352,69 @@ S = fresh({ act: 2, age: 18, path: "archer" }); S.attrs.aim = 8;
   ok(S.flags.includes("shakti_tried_stop") && S.memories.some((m) => m.who === "bhima"), "the attempt is remembered, by Bhima");
   K.go("wc_shakti_p_fall"); ok(S.moments.some((m) => m.kind === "shakti" && m.from === "pandava"), "the spear still flies, seen from the Pandava side");
 }
+// 41. War storylines (PRD 18.13): Bhurishravas on day 14 and the kings' fall on day 15 (content/war_kings.js)
+require(G + "content/war_kings.js");
+{
+  const sc = (id) => K.SCENES[id], ch = (id, cid) => K.val(sc(id).choices, K.S).find((c) => c.id === cid);
+  const war = (o, flags) => { const s = fresh(Object.assign({ act: 6, age: 44 }, o)); s.flags.push(...(flags || ["role_front"])); return s; };
+  S = war({ side: "pandava", origin: "mathura" });
+  ok(K.test(sc("kb_drag").when, S), "a Yadava fighter on the Pandava side meets Bhurishravas");
+  S = war({ side: "pandava", origin: "anga", court: "anga" });
+  ok(!K.test(sc("kb_drag").when, S), "a Pandava fighter with no tie to Satyaki, the Yadavas or a company does not");
+  S = war({ side: "kaurava", origin: "anga", court: "hastinapura" });
+  ok(K.test(sc("kb_drag").when, S), "a Kuru court fighter on the Kaurava side is in Bhurishravas's division");
+  S = war({ side: "kaurava", origin: "mathura", court: "hastinapura" }, ["role_healer"]);
+  ok(!K.test(sc("kb_drag").when, S), "healers stay in the tents");
+  // The hold: Bhurishravas is held off Satyaki, never killed, and the rounds held are counted.
+  S = war({ side: "pandava", origin: "mathura", path: "archer" }); S.attrs.aim = 6; S.attrs.might = 5;
+  {
+    const C = K.Combat, B = C.start("e_kb_hold", () => {});
+    const bh = B.units.find((u) => u.person === "bhurishravas");
+    for (let i = 0; i < 12 && !B.over; i++) C.act(i % 3 === 2 ? "guard" : "strike", bh.uid);
+    ok(B.over && bh.hp >= Math.round(bh.maxHp * 0.1) - 1, "Bhurishravas cannot be brought down in the hold (" + bh.hp + " of " + bh.maxHp + ", " + B.over + ")");
+    K.kbHoldCount(B);
+    ok(S.kbHeld >= 0 && S.kbHeld <= 6 && (B.over !== "win" || S.kbHeld === 6), "the rounds held are counted (" + S.kbHeld + ", " + B.over + ")");
+    const r2 = K.combatOutcome("e_kb_hold", B.over, "a6_day14");
+    ok(r2.next === "kb_sits" && /takes off his arm/.test(r2.text), "however long you held, Arjuna's arrow takes the arm, and Bhurishravas sits down");
+    C.end && C.end();
+  }
+  // Holding his arm for Satyaki breaks the vow never to strike the unarmed, with its full price.
+  S = war({ side: "pandava", origin: "mathura", teacher: "drona" }); S.vows.push({ id: "spare_unarmed", broken: false, age: 20 }); S.bonds.arjuna = 6;
+  K.apply({ boon: "astra", astraFrom: "teacher" });
+  K.choose(sc("kb_sits"), ch("kb_sits", "arms"));
+  ok(S.vows[0].broken && S.bonds.arjuna === 3 && S.bonds.satyaki === 6 && !S.boons.includes("astra"), "holding Bhurishravas's arm breaks the vow (Arjuna -3, Drona's weapon taken back) and Satyaki +3");
+  S = war({ side: "pandava", origin: "mathura" }); const c5 = S.duty.conscience;
+  K.choose(sc("kb_sits"), ch("kb_sits", "stop"));
+  ok(S.duty.conscience === c5 + 2 && S.bonds.satyaki === 0 && S.memories.some((m) => m.who === "yudhishthira") && S.flags.includes("kb_tried_stop"), "trying to stop Satyaki: conscience +2, Satyaki -3, Yudhishthira remembers, pass or fail");
+  ok(K.val(sc("kb_sits").choices, war({ side: "kaurava", court: "hastinapura" })).every((c) => ["carry", "leave"].includes(c.id)), "on the Kaurava side you come too late, and can only carry him back");
+  // The kings: your court first, then the land you were born in.
+  S = war({ side: "pandava", origin: "panchala", court: "indraprastha" });
+  ok(K.test(sc("kf_reach").when, S) && K.val(sc("kf_reach").title, S) === "Drupada's parasol", "a Panchala-born Pandava reaches for Drupada");
+  S = war({ side: "pandava", origin: "panchala", court: "matsya" });
+  ok(K.val(sc("kf_reach").title, S) === "Virata's parasol", "in Virata's service, Virata is your king");
+  ok(!K.test(sc("kf_reach").when, war({ side: "kaurava", origin: "panchala" })), "not on the Kaurava side");
+  S = war({ side: "pandava", origin: "matsya" });
+  K.choose(sc("kf_fall"), sc("kf_fall").choices[0], "lose");
+  ok(S.flags.includes("kf_carried_king") && S.injuries.includes("arm"), "failing the carry costs a wound, not the body");
+  // Riding with Dhrishtadyumna breaks a student's debt to Drona for good, and Drona takes his weapon back.
+  ok(Array.isArray(K.val(sc("a6_day15").after, war({ side: "pandava", origin: "anga" }))), "for everyone else it closes the day as before");
+  S = war({ side: "pandava", origin: "panchala", teacher: "drona" }); S.duty.teacher = 7; S.seen.push("kf_fall");
+  K.apply({ boon: "astra", astraFrom: "teacher" });
+  ok(K.val(sc("a6_day15").after, S) === null, "the half-truth's closing line waits for Dhrishtadyumna's sword");
+  K.choose(sc("kf_drona"), ch("kf_drona", "ride"));
+  ok(S.duty.teacher === 0 && S.flags.includes("kf_broke_debt") && !S.boons.includes("astra") && S.astra.broken, "riding with Dhrishtadyumna: teacher's debt to 0, Drona's weapon taken back");
+  // A Kaurava student who steps between, out of depth: death; in story mode, a scar.
+  for (const story of [false, true]) {
+    S = war({ side: "kaurava", teacher: "drona", storyMode: story }); S.attrs.might = 1; S.skills.mace = 0;
+    const step = ch("kf_drona", "step"), rng = K.rng; K.rng = () => 0;
+    ok(K.inPeril(step, S), "stepping between, out of your depth, is perilous");
+    K.choose(sc("kf_drona"), step); K.rng = rng;
+    ok(story ? S.alive && S.injuries.includes("scar") : !S.alive && /Dhrishtadyumna's sword/.test(S.deathText), story ? "story mode: a scar instead" : "out of your depth: Dhrishtadyumna's sword does not stop");
+  }
+  // Taking word home: the rest of the night in the camp is passed by, and the road picks up on day 16.
+  S = war({ side: "pandava", origin: "panchala" }, ["role_front", "role_division", "role_council"]); S.seen.push("kf_fall", "kf_drona", "kf_word");
+  ok(K.resolveScene("a6_day16").id === "cmd_council_2", "staying, the night council comes before the sixteenth day");
+  K.choose(sc("kf_word"), ch("kf_word", "home"));
+  ok(S.flags.includes("kf_took_word") && S.missed.includes("cmd_council_2") && K.resolveScene("a6_day16").id === "a6_day16", "riding home, the night is missed and the war's road goes on at day 16");
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);
