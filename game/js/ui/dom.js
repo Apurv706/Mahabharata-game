@@ -240,7 +240,11 @@
     if (fightingNow()) instant = true; // in a fight the painting never glides: the floor must not slide under the fighters
     const L = layer(); if (!L) return;
     const pic = L.querySelector(".pic"), size = sizes[L.dataset.url];
-    const W = window.innerWidth, H = window.innerHeight;
+    // While a scene is being written the painting holds its size: a phone's browser bars that come
+    // and go as the page scrolls line by line do not resize it. It moves once, when the page is done.
+    if (!U.settled && U.lockH == null) U.lockH = window.innerHeight;
+    if (U.settled) U.lockH = null;
+    const W = window.innerWidth, H = U.lockH != null && !fightingNow() ? U.lockH : window.innerHeight;
     const head = document.querySelector("header.top");
     const hb = head ? head.getBoundingClientRect().bottom : 0;
     let mode = "cover", rt = 0, rb = H;
@@ -357,7 +361,7 @@
   };
   U.viewing = () => viewing;
   window.addEventListener("resize", () => U.fitBackdrop(true));
-  window.addEventListener("orientationchange", () => setTimeout(() => U.fitBackdrop(true), 250));
+  window.addEventListener("orientationchange", () => { U.lockH = null; setTimeout(() => { U.lockH = null; U.fitBackdrop(true); }, 250); });
   U.initBackdrop = function () {
     const leaf = U.$("leaf");
     if (window.ResizeObserver && leaf) new ResizeObserver(() => U.fitBackdrop()).observe(leaf);

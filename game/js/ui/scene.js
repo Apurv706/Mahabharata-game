@@ -534,6 +534,8 @@
     const leaf = U.$("leaf");
     leaf.classList.remove("testing");
     if (U.stageFx) U.stageFx.stop();
+    // The painting stays where it is while what came of your choice is written; it moves once, at the end.
+    U.finalTop = U.leafTop();
     U.setBackdrop(artFor(sc), { still: !!(sc.clipAfter || sc.still) });
     storyFx(sc);
     // A clip that shows what happens after the choice (the fire) plays now.
@@ -589,7 +591,7 @@
     else if ((D["duty.conscience"] || 0) <= -2) setTimeout(() => U.puppetReact("shame"), 400);
     else if (won === null && ((D["duty.teacher"] || 0) > 0 || Object.keys(D).some((k) => k.startsWith("bond.") && D[k] >= 2))) setTimeout(() => U.puppetReact("fold"), 400);
     else if (won !== null) setTimeout(() => U.puppetReact(won ? "win" : "lose"), 400);
-    U.stage(parts, () => { U.toEnd(story, true); U.keys([go]); cont.focus({ preventScroll: true }); });
+    U.stage(parts, () => { U.toEnd(story, true); U.keys([go]); cont.focus({ preventScroll: true }); U.finalTop = null; setTimeout(() => U.fitBackdrop(), U.motion() ? 300 : 0); });
     // A milestone just reached (a friend for life, a divine weapon, a vow...) gets its moment now,
     // over the page; the result is waiting underneath.
     if (U.playMoments) U.playMoments();

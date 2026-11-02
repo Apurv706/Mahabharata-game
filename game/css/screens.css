@@ -1037,6 +1037,19 @@ body.inscene .leaf.split.testing > .pagehead .ppbadge { display: none; }
 .beat-title .ppbadge svg { height: clamp(150px, 26vh, 240px); filter: drop-shadow(0 0 12px rgba(255, 196, 110, 0.5)); }
 @media (max-height: 520px) { .beat-title .ppbadge svg { height: 96px; } }
 
+/* ---------- The story page reads a size smaller ----------
+   The scene's own text and its choices. Act cards, the opening dream and full-screen moments keep
+   their sizes (they are not in .story). */
+.leaf .story { font-size: 15.5px; }
+.leaf .story .speech { font-size: 21px; }
+.leaf .story .memory, .leaf .story .aside, .leaf .story .curse { font-size: 14.5px; }
+.leaf .story .witness .lbl, .leaf .story .lbl { font-size: 18px; }
+.leaf .choices .choice .t { font-size: 16.5px; }
+.leaf .choices .choice .fx { font-size: 13.5px; }
+html[lang="hi"] .leaf .story .speech { font-size: 19px; }
+body.big-text .leaf .story { font-size: 17.5px; }
+body.big-text .leaf .choices .choice .t { font-size: 18px; }
+
 /* ---------- The page grows as the story is written ----------
    Lines, the choices and the key hint that are not shown yet take no room, so there is never an
    empty band waiting for them; each one rises in as it comes. */
