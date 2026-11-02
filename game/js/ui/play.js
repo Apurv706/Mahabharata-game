@@ -149,7 +149,10 @@
 
   // ---------- Race: change lanes to miss what is in the road ----------
   // trial.rival (a name: race against them) or trial.hull (3: hits you can take); trial.vehicle
-  // ("chariot" | "boat"); trial.obstacles: kinds drawn in code ("rock", "wreck", "wave", "fire").
+  // ("chariot" | "boat" | "foot"); trial.obstacles: kinds drawn in code ("rock", "wreck", "wave", "fire").
+  // A chariot race against a rival has a whip (twice the speed for a moment, then it recharges) and
+  // contact: the rival drifts between lanes, the wheels clash if you steer into them while level,
+  // and now and then the rival cuts across you after a warning.
   const OBST = {
     rock: '<svg viewBox="0 0 60 40"><path d="M4 38 Q2 22 14 14 Q24 4 38 8 Q54 12 56 28 Q58 38 50 38 Z" fill="#6f6355" stroke="#2b2219" stroke-width="2"/><path d="M18 20 Q26 14 34 18" stroke="#9c8f7e" stroke-width="2" fill="none"/></svg>',
     wreck: '<svg viewBox="0 0 60 40"><circle cx="20" cy="24" r="14" fill="none" stroke="#3a2416" stroke-width="4"/><path d="M20 10 V38 M6 24 H34 M10 14 L30 34 M30 14 L10 34" stroke="#3a2416" stroke-width="2.5"/><path d="M34 30 L58 22" stroke="#5a3418" stroke-width="5"/></svg>',
@@ -173,47 +176,318 @@
     if (kind === "boat") return '<svg viewBox="0 0 60 110" class="veh" aria-hidden="true"><path d="M30 2 Q52 30 50 80 Q48 104 30 108 Q12 104 10 80 Q8 30 30 2Z" fill="#7a4a24" stroke="#2b1609" stroke-width="2.5"/><path d="M30 14 Q44 36 42 80 Q40 96 30 98 Q20 96 18 80 Q16 36 30 14Z" fill="#a8703f"/><path d="M8 58 L-6 66 M52 58 L66 66" stroke="#2b1609" stroke-width="3"/><circle cx="30" cy="66" r="8" fill="' + skin + '" stroke="#2b1609" stroke-width="2"/><circle cx="30" cy="62" r="4" fill="#1d120b"/></svg>';
     return '<svg viewBox="0 0 70 120" class="veh" aria-hidden="true"><g fill="#c9a679" stroke="#2b1609" stroke-width="2"><ellipse cx="22" cy="26" rx="8" ry="18"/><ellipse cx="48" cy="26" rx="8" ry="18"/><ellipse cx="22" cy="7" rx="5" ry="7"/><ellipse cx="48" cy="7" rx="5" ry="7"/></g><path d="M35 40 V62 M22 42 L35 62 M48 42 L35 62" stroke="#2b1609" stroke-width="2.5"/><rect x="4" y="74" width="8" height="30" rx="3" fill="#2b1609"/><rect x="58" y="74" width="8" height="30" rx="3" fill="#2b1609"/><rect x="12" y="62" width="46" height="46" rx="8" fill="' + car + '" stroke="#2b1609" stroke-width="2.5"/><circle cx="35" cy="88" r="10" fill="' + skin + '" stroke="#2b1609" stroke-width="2"/><circle cx="35" cy="83" r="5" fill="#1d120b"/></svg>';
   }
+  // A leather chariot from above (quality review 23), in its own units (80 × 150), facing up the
+  // course: two horses on a yoke, the pole back to a railed car in the driver's colours, the driver
+  // at the reins, wheels whose spoke ends run past, a pennant at the back. Everything that moves has
+  // a class the race's clock drives (see chariotParts and drawChariot).
+  const OUT = 'stroke="#24120a" stroke-width="1.3" stroke-linejoin="round"';
+  function horse(cx, coat, mane) {
+    return '<g class="horse" transform="translate(' + cx + ' 0)">' +
+      // legs, under the body: front pair and hind pair, moved by the gallop
+      '<path class="lf1" d="M-7 22 l-4 6" stroke="' + coat + '" stroke-width="3.4" stroke-linecap="round"/><path class="lf2" d="M7 22 l4 6" stroke="' + coat + '" stroke-width="3.4" stroke-linecap="round"/>' +
+      '<path class="lh1" d="M-7 46 l-4 6" stroke="' + coat + '" stroke-width="3.6" stroke-linecap="round"/><path class="lh2" d="M7 46 l4 6" stroke="' + coat + '" stroke-width="3.6" stroke-linecap="round"/>' +
+      '<path class="tail" d="M0 54 Q-3 62 0 70 Q3 62 0 54 Z" fill="' + mane + '" ' + OUT + "/>" +
+      '<path d="M0 14 C9 14 10 24 9.5 34 C9 46 7 56 0 57 C-7 56 -9 46 -9.5 34 C-10 24 -9 14 0 14 Z" fill="' + coat + '" ' + OUT + "/>" +
+      '<path d="M0 14 C9 14 10 24 9.5 34 C9 46 7 56 0 57 C-7 56 -9 46 -9.5 34 C-10 24 -9 14 0 14 Z" fill="url(#rc-dots)"/>' +
+      '<path d="M-4 3 Q0 -6 4 3 L4 16 Q0 18 -4 16 Z" fill="' + coat + '" ' + OUT + "/>" + // neck and head
+      '<path d="M-3.4 -1 l-1.6 -4 l2.6 2.4 M3.4 -1 l1.6 -4 l-2.6 2.4" fill="' + coat + '" ' + OUT + "/>" + // ears
+      '<path d="M0 1 Q-2.6 8 0 16 Q2.6 8 0 1 Z" fill="' + mane + '"/>' +
+      '<path d="M-9.4 26 Q0 22 9.4 26" fill="none" stroke="#d9a53a" stroke-width="2.6"/><path d="M-9.4 26 Q0 22 9.4 26" fill="none" stroke="#24120a" stroke-width=".6" stroke-dasharray="1 2.2"/>' + // breast band
+      '<path d="M-8 38 Q0 41 8 38" fill="none" stroke="#b2432a" stroke-width="2.4"/>' + // saddle cloth band
+      "</g>";
+  }
+  // palette: [skin, cloth, trim] as a puppet's; horses: [coat, mane]; crown: a gold crown on the driver.
+  function chariotSvg(palette, horses, crown) {
+    const [skin, cloth, trim] = palette, [coat, mane] = horses;
+    return '<svg viewBox="0 0 80 150" aria-hidden="true"><defs><pattern id="rc-dots" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r=".7" fill="#fff3d0" opacity=".55"/></pattern></defs>' +
+      '<g class="front">' + horse(24, coat, mane) + horse(56, coat, mane) +
+        '<path d="M12 31 Q40 25 68 31" fill="none" stroke="#5a3418" stroke-width="3.2" stroke-linecap="round"/><path d="M14 30.4 Q40 24.6 66 30.4" fill="none" stroke="#d9a53a" stroke-width="1.2" stroke-dasharray="2 2"/>' + // the yoke
+      "</g>" +
+      '<path class="pole" d="M40 29 L40 80" stroke="#5a3418" stroke-width="3" stroke-linecap="round"/>' +
+      '<g class="body">' +
+        // wheels, seen edge on: dark tyres with spoke ends that run past as they turn
+        '<rect x="3" y="80" width="9" height="40" rx="4.5" fill="#3a2412" ' + OUT + '/><path class="spokes" data-x="3" stroke="#c9a66b" stroke-width="1.4"/>' +
+        '<rect x="68" y="80" width="9" height="40" rx="4.5" fill="#3a2412" ' + OUT + '/><path class="spokes" data-x="68" stroke="#c9a66b" stroke-width="1.4"/>' +
+        '<path d="M12 100 H68" stroke="#3a2412" stroke-width="3"/>' + // axle
+        '<path d="M16 82 Q40 72 64 82 L64 114 Q40 120 16 114 Z" fill="#8a5a2c" ' + OUT + "/>" + // the car's floor and rail
+        '<path d="M20 86 Q40 78 60 86 L60 111 Q40 116 20 111 Z" fill="' + cloth + '" ' + OUT + '/><path d="M20 86 Q40 78 60 86 L60 111 Q40 116 20 111 Z" fill="url(#rc-dots)"/>' +
+        '<path d="M20 86 Q40 78 60 86" fill="none" stroke="' + trim + '" stroke-width="2"/><path d="M22 108 Q40 113 58 108" fill="none" stroke="' + trim + '" stroke-width="1.6"/>' +
+        // the driver from above: shoulders, arms forward to the reins, head with its knot; the whip arm
+        '<path d="M27 98 Q40 90 53 98 Q40 104 27 98 Z" fill="' + skin + '" ' + OUT + "/>" +
+        '<path d="M29 97 L34 86" stroke="' + skin + '" stroke-width="3.6" stroke-linecap="round"/><path class="armR" d="M51 97 L46 86" stroke="' + skin + '" stroke-width="3.6" stroke-linecap="round"/>' +
+        '<g class="lash" opacity="0"><path d="M51 97 L60 84" stroke="' + skin + '" stroke-width="3.6" stroke-linecap="round"/><path class="cord" d="M60 84 Q72 60 58 30" fill="none" stroke="#3d2412" stroke-width="1.2" stroke-linecap="round"/></g>' +
+        '<circle cx="40" cy="96" r="6.2" fill="#1d1410" ' + OUT + '/><circle cx="40" cy="94.5" r="2.8" fill="#1d1410" stroke="' + trim + '" stroke-width="1"/>' +
+        (crown ? '<path d="M37 92 l1.4 -4 l1.6 3 l1.6 -3 l1.4 4 Z" fill="#d9a53a" ' + OUT + "/>" : "") +
+        // the pennant on its staff at the back
+        '<path d="M60 116 L60 132" stroke="#5a3418" stroke-width="1.8"/><path class="pennant" d="M60 132 Q66 136 72 133 Q68 138 74 142 Q66 141 60 138 Z" fill="' + trim + '" ' + OUT + "/>" +
+      "</g>" +
+      // the reins, drawn last so they ride over everything, from the hands to the horses' heads
+      '<path class="rein1" d="M34 86 Q30 60 24 8" fill="none" stroke="#efe2c0" stroke-width=".9"/><path class="rein2" d="M46 86 Q50 60 56 8" fill="none" stroke="#efe2c0" stroke-width=".9"/>' +
+      "</svg>";
+  }
+  // Handles for the moving parts, and the springs that move them: x across the course (in the
+  // upright course's percent), the turn (from the sideways speed), rearing and a sideways jolt.
+  function chariotParts(el, x) {
+    const s = el.querySelector("svg"), q = (c) => s.querySelector("." + c);
+    return { front: q("front"), body: q("body"), pole: q("pole"), r1: q("rein1"), r2: q("rein2"), pennant: q("pennant"), lash: q("lash"), cord: q("cord"), armR: q("armR"),
+      legs: [...s.querySelectorAll(".horse")].map((h) => ({ lf1: h.querySelector(".lf1"), lf2: h.querySelector(".lf2"), lh1: h.querySelector(".lh1"), lh2: h.querySelector(".lh2"), tail: h.querySelector(".tail") })),
+      spokes: [...s.querySelectorAll(".spokes")], crack: 0, x, vx: 0, turn: 0, turnV: 0, rear: 0, rearV: 0, jolt: 0, joltV: 0, ph: K.rng() * 6 };
+  }
+  function chariotSprings(p, target, dt) {
+    const k = 140, c = 2 * 0.78 * Math.sqrt(k);
+    p.vx += (-k * (p.x - target) - c * p.vx) * dt; p.x += p.vx * dt;
+    const want = clamp(p.vx / 60, -1.2, 1.2);
+    p.turnV += (-260 * (p.turn - want) - 2 * 0.6 * Math.sqrt(260) * p.turnV) * dt; p.turn += p.turnV * dt;
+    p.rearV += (-300 * p.rear - 2 * 0.35 * Math.sqrt(300) * p.rearV) * dt; p.rear += p.rearV * dt;
+    p.joltV += (-320 * p.jolt - 2 * 0.3 * Math.sqrt(320) * p.joltV) * dt; p.jolt += p.joltV * dt;
+  }
+  function drawChariot(p, dt, speed, time) {
+    p.ph += dt * speed * 3.4;
+    const g = p.ph;
+    // The horses gallop, their tails stream (and swing out of a turn).
+    p.legs.forEach((L, i) => {
+      const o = i * 0.9, a = Math.sin(g + o) * 5, b = Math.sin(g + o + Math.PI) * 5;
+      L.lf1.setAttribute("d", "M-7 22 l-4 " + (6 + a).toFixed(2)); L.lf2.setAttribute("d", "M7 22 l4 " + (6 + b).toFixed(2));
+      L.lh1.setAttribute("d", "M-7 46 l-4 " + (6 + b).toFixed(2)); L.lh2.setAttribute("d", "M7 46 l4 " + (6 + a).toFixed(2));
+      const tw = Math.sin(time * 9 + i) * 4 - p.turn * 1.5;
+      L.tail.setAttribute("d", "M0 54 Q" + (-3 + tw * 0.5).toFixed(2) + " 62 " + tw.toFixed(2) + " 72 Q" + (3 + tw * 0.5).toFixed(2) + " 62 0 54 Z");
+    });
+    // Spoke ends running past along each tyre.
+    const off = (p.ph * 6) % 8;
+    for (const sp of p.spokes) {
+      const x = +sp.dataset.x; let d = "";
+      for (let y = 82 + off; y < 119; y += 8) d += "M" + (x + 1.5) + " " + y.toFixed(1) + " h6 ";
+      sp.setAttribute("d", d);
+    }
+    // The whip: the right hand leaves the reins, the lash curls out over the horses and cracks.
+    if (p.crack > 0) {
+      p.crack -= dt; const k = 1 - Math.max(0, p.crack) / 0.32, curl = Math.sin(k * Math.PI);
+      p.lash.setAttribute("opacity", 1); p.armR.setAttribute("opacity", 0);
+      p.cord.setAttribute("d", "M60 84 Q" + (74 - curl * 10).toFixed(1) + " " + (62 - k * 14).toFixed(1) + " " + (58 - curl * 16).toFixed(1) + " " + (34 - k * 22).toFixed(1));
+    } else { p.lash.setAttribute("opacity", 0); p.armR.setAttribute("opacity", 1); }
+    const fl = Math.sin(time * 14) * 2.2 - p.turn * 0.6;
+    p.pennant.setAttribute("d", "M60 132 Q" + (66 + fl * 0.3).toFixed(2) + " " + (136 + fl).toFixed(2) + " " + (72 + fl * 0.4).toFixed(2) + " " + (133 + fl * 0.6).toFixed(2) + " Q68 138 " + (74 + fl * 0.3).toFixed(2) + " " + (142 + fl * 0.5).toFixed(2) + " Q66 141 60 138 Z");
+    // The horses lead into the turn; the car swings after them about the hitch on the pole.
+    const lead = p.turn, lag = p.turn * 0.45 + p.jolt;
+    p.front.setAttribute("transform", "translate(0 " + (-p.rear).toFixed(2) + ") rotate(" + (lead * 11).toFixed(2) + " 40 34)");
+    p.pole.setAttribute("transform", "rotate(" + (lead * 6).toFixed(2) + " 40 80)");
+    p.body.setAttribute("transform", "rotate(" + (lag * 9).toFixed(2) + " 40 80)");
+    const hx = Math.sin(lead * 11 * Math.PI / 180) * 66;
+    p.r1.setAttribute("d", "M34 86 Q30 60 " + (24 + hx * 0.4).toFixed(1) + " " + (8 - p.rear).toFixed(1)); p.r2.setAttribute("d", "M46 86 Q50 60 " + (56 + hx * 0.4).toFixed(1) + " " + (8 - p.rear).toFixed(1));
+  }
+
+  // The race's rules, apart from how it is drawn: the race on screen and the balance check
+  // (tests/race_balance.js) both run on these. Distances are in percent of the course.
+  const RACE = {
+    LEN: 100,
+    HIT_SLOW: 1.1,                 // a hit: half speed for this long (s)
+    WHIP: 1.5, WHIP_COOL: 6,       // the whip: twice the speed for 1.5 s, then 6 s to recharge
+    LEVEL: 2.6, TOUCH: 1.8,        // how close counts as level (the rival may cut across), and as touching
+    WARN: 0.7, CUT_GAP: 4.5,       // a cut across you: its warning, and the least time between tries (s)
+    CUT_RATE: 0.7,                 // how often a cut comes when one could (per second)
+    RAM: 0.45,                     // contact this soon after a cut is a ram (s)
+    CLASH_SLOW: 0.8, RAIL_SLOW: 1.1, CLASH_GAP: 1, BOUNCE: 0.14,
+    WANDER: 2.5, WANDER_MORE: 3,   // the rival changes lane every 2.5 to 5.5 s
+    // The rival's speed before the stats. With the whip (twice the speed for a fifth of the time) a
+    // chariot rival must be faster for the race to stay as hard as it was: see tests/race_balance.js.
+    RIVAL: 3.25, RIVAL_CONTACT: 3.5
+  };
+  U.RACE = RACE;
+  U.raceSetup = function (t, power) {
+    const chariot = !t.vehicle || t.vehicle === "chariot", rival = !!t.rival, contact = chariot && rival;
+    const r0 = t.rivalSpeed || (contact ? RACE.RIVAL_CONTACT : RACE.RIVAL);
+    return {
+      base: t.speed || 3.3, gap: clamp(1.25 - power * 0.04, 0.8, 1.25), // seconds between obstacles
+      rivalV: rival ? clamp(r0 - power * 0.03, r0 - 0.5, r0 + 0.15) : 0,
+      rival, lives: t.hull || 3, kinds: t.obstacles || ["rock", "wreck"], chariot, whip: contact, contact
+    };
+  };
+  // step(dt) moves the race on and returns what happened: spawn, hit, gone, warn, cut, wander,
+  // bounce, clash (how: "clash", "ram" or "rails") and end (outcome, line).
+  U.raceRules = function (o, rng) {
+    const C = RACE, pick = (a) => a[Math.floor(rng() * a.length)];
+    const R = { lane: 1, dist: 0, rival: 0, slow: 0, hits: 0, spawnIn: 1.2, t: 0, obs: [], boost: 0, cool: 0, over: false,
+      rLane: 0, rSlow: 0, rWander: 3, cut: 0, cutTo: 0, cutFrom: 0, cutT: -9, cutCool: 3, clashCool: 0, prevLane: 1, bounceIn: 0, bounceTo: 1 };
+    R.speed = () => (R.over ? 0 : o.base * (R.slow > 0 ? 0.5 : 1) * (R.boost > 0 ? 2 : 1));
+    R.move = (d) => { if (R.over) return false; R.prevLane = R.lane; R.lane = clamp(R.lane + d, 0, 2); return true; };
+    R.whip = () => { if (!o.whip || R.over || R.boost > 0 || R.cool > 0) return false; R.boost = C.WHIP; R.cool = C.WHIP + C.WHIP_COOL; return true; };
+    R.step = (dt) => {
+      const ev = [], at = (type, x) => ev.push(Object.assign({ type }, x));
+      if (R.over) return ev;
+      R.t += dt;
+      const v = R.speed();
+      if (R.boost > 0) R.boost -= dt;
+      if (R.cool > 0) R.cool -= dt;
+      if (R.slow > 0) R.slow -= dt;
+      if (R.rSlow > 0) R.rSlow -= dt;
+      R.dist += v * dt;
+      if (o.rival) R.rival += o.rivalV * (R.rSlow > 0 ? 0.5 : 1) * dt * (0.94 + 0.12 * Math.sin(R.t * 0.7));
+      if (o.contact) {
+        // The rival drifts between lanes, and now and then cuts across you when you are level.
+        const diff = R.rival - R.dist, level = Math.abs(diff) < C.LEVEL;
+        if (R.cutCool > 0) R.cutCool -= dt;
+        if (R.clashCool > 0) R.clashCool -= dt;
+        if (R.bounceIn > 0) { R.bounceIn -= dt; if (R.bounceIn <= 0) { R.prevLane = R.lane; R.lane = R.bounceTo; at("bounce"); } }
+        if (R.cut > 0) {
+          R.cut -= dt;
+          if (R.cut <= 0) { R.cutFrom = R.rLane; R.rLane = R.cutTo; R.cutT = R.t; at("cut"); }
+        } else if (level && Math.abs(R.rLane - R.lane) === 1 && R.cutCool <= 0 && rng() < dt * C.CUT_RATE) {
+          R.cut = C.WARN; R.cutTo = R.lane; R.cutCool = C.CUT_GAP; at("warn", { side: Math.sign(R.lane - R.rLane) });
+        } else if ((R.rWander -= dt) <= 0) {
+          R.rWander = C.WANDER + rng() * C.WANDER_MORE;
+          const opts = [R.rLane - 1, R.rLane + 1].filter((l) => l >= 0 && l <= 2 && !(level && l === R.lane));
+          if (opts.length) { R.rLane = pick(opts); at("wander"); }
+        }
+        // Contact: the same lane, level with each other. Both lose ground; you bounce back, or if he
+        // has just cut across you, you are shoved a lane aside, or into the rails at the edge.
+        if (R.clashCool <= 0 && R.rLane === R.lane && Math.abs(diff) < C.TOUCH) {
+          let how = "clash";
+          if (R.t - R.cutT < C.RAM) {
+            const to = R.lane + (Math.sign(R.lane - R.cutFrom) || 1);
+            if (to >= 0 && to <= 2) { R.prevLane = R.lane; R.lane = to; how = "ram"; } else { R.slow = Math.max(R.slow, C.RAIL_SLOW); how = "rails"; }
+          } else { R.bounceTo = R.prevLane !== R.lane ? R.prevLane : R.lane < 2 ? R.lane + 1 : R.lane - 1; R.bounceIn = C.BOUNCE; }
+          R.slow = Math.max(R.slow, C.CLASH_SLOW); R.rSlow = C.CLASH_SLOW; R.boost = 0; R.clashCool = C.CLASH_GAP; R.cut = 0;
+          at("clash", { how });
+        }
+      }
+      // What is in the road comes toward you, twice as fast under the whip; never all three lanes at once.
+      R.spawnIn -= R.boost > 0 ? dt * 2 : dt;
+      if (R.spawnIn <= 0 && R.dist < C.LEN - 6) {
+        R.spawnIn = o.gap * (0.75 + rng() * 0.6);
+        const taken = R.obs.filter((ob) => ob.x > 80).map((ob) => ob.lane), free = [0, 1, 2].filter((l) => !taken.includes(l));
+        if (free.length > 1 || !taken.length) { const ob = { lane: pick(free.length ? free : [0, 1, 2]), kind: pick(o.kinds), x: 104 }; R.obs.push(ob); at("spawn", { o: ob }); }
+      }
+      for (let i = R.obs.length - 1; i >= 0; i--) {
+        const ob = R.obs[i];
+        ob.x -= v * dt * 13;
+        if (!ob.hit && ob.lane === R.lane && ob.x < 26 && ob.x > 8) { ob.hit = true; R.hits++; R.slow = C.HIT_SLOW; R.boost = 0; at("hit", { o: ob }); }
+        if (ob.x < -12) { R.obs.splice(i, 1); at("gone", { o: ob }); }
+      }
+      const end = (outcome, line) => { R.over = true; R.outcome = outcome; at("end", { outcome, line }); };
+      if (!o.rival && R.hits >= o.lives) end("lose", ["You took {h} hits.", { h: R.hits }]);
+      else if (R.dist >= C.LEN) {
+        if (!o.rival) end(R.hits <= o.lives - 2 ? "win" : "close", ["Through, with {h} hits.", { h: R.hits }]);
+        else end(R.rival < C.LEN ? "win" : "close", ["You finished {gap} lengths {where}.", { gap: Math.abs(Math.round(R.dist - R.rival)), where: R.rival < C.LEN ? "ahead" : "behind" }]);
+      } else if (o.rival && R.rival >= C.LEN && R.dist < C.LEN - 6) end("lose", ["{who} finished first.", { who: o.who }]);
+      return ev;
+    };
+    return R;
+  };
+
   U.games.race = function (box, done, c) {
-    return U.trialFrame(box, done, c, "race", ({ host, power, t, finish, cue }) => {
-      const kinds = t.obstacles || ["rock", "wreck"], hullMode = !t.rival, LEN = 100;
-      const base = t.speed || 3.3, gap = clamp(1.25 - power * 0.04, 0.8, 1.25); // seconds between obstacles
-      const rivalV = t.rival ? clamp((t.rivalSpeed || 3.25) - power * 0.03, 2.75, 3.4) : 0;
-      let lane = 1, dist = 0, rival = 0, slow = 0, hits = 0, last = 0, spawnIn = 1.2, over = false, scroll = 0;
-      const lives = t.hull || 3;
-      const obs = [];
+    return U.trialFrame(box, done, c, "race", ({ host, power, t, finish, cue, onAct }) => {
+      const o = Object.assign(U.raceSetup(t, power), { who: t.rival }), R = U.raceRules(o, K.rng), hullMode = !o.rival, base = o.base;
+      const chariot = o.chariot, still = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+      let last = 0, scroll = 0;
       const stage = K.val(t.stage);
       host.innerHTML = '<p class="score" aria-live="polite"></p>' +
-        '<div class="track"><div class="bgstrip">' + (stage ? [0, 1, 2, 3].map((i) => '<i style="background-image:url(\'' + U.artUrl(stage) + '\')"' + (i % 2 ? ' class="flip"' : "") + "></i>").join("") : "") + '</div><div class="lanes"><i></i><i></i><i></i></div><div class="obs"></div><div class="me lane1">' + vehicleSvg(t.vehicle, K.puppetSpec(K.S)) + "</div></div>" +
+        '<div class="track"><div class="bgstrip">' + (stage ? [0, 1, 2, 3].map((i) => '<i style="background-image:url(\'' + U.artUrl(stage) + '\')"' + (i % 2 ? ' class="flip"' : "") + "></i>").join("") : "") + '</div><div class="lanes"><i></i><i></i><i></i></div><div class="obs"></div>' +
+        '<div class="me' + (chariot ? " chariot" : " lane1") + '">' + (chariot ? "" : vehicleSvg(t.vehicle, K.puppetSpec(K.S))) + "</div>" + (o.whip ? '<span class="speedx" hidden>×2</span>' : "") + "</div>" +
         '<div class="progress"><span class="pm" style="left:0"></span>' + (t.rival ? '<span class="pr" style="left:0" title="' + U.esc(K.tr(t.rival)) + '"></span>' : "") + "</div>" +
-        '<p class="game-note" aria-live="polite">' + U.trSpan(t.help || "Change lanes to miss what is in the road: up and down, or the buttons.") + '</p><div class="btnrow race-btns"></div>';
+        '<p class="game-note" aria-live="polite">' + U.trSpan(t.help || (o.whip ? "Change lanes to miss what is in the road: up and down, or the buttons. Space cracks the whip." : "Change lanes to miss what is in the road: up and down, or the buttons.")) + '</p><div class="btnrow race-btns"></div>';
       const track = host.querySelector(".track"), me = host.querySelector(".me"), obsBox = host.querySelector(".obs"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
-      const pm = host.querySelector(".pm"), pr = host.querySelector(".pr");
-      // The painting scrolls past, each copy mirrored against the last so the joins never show.
-      const strip = host.querySelector(".bgstrip"), aspect = U.stageInfo(stage).side ? 2560 / 720 : 16 / 9;
-      let tileW = 0;
-      const sizeStrip = () => { tileW = track.clientHeight * aspect; strip.querySelectorAll("i").forEach((el) => { el.style.width = tileW + "px"; }); };
-      sizeStrip();
+      const pm = host.querySelector(".pm"), pr = host.querySelector(".pr"), speedTag = host.querySelector(".speedx");
+      // A line under the course; a passing one (a hit, his warning, a clash) goes again after a moment.
+      let sayT = 0;
+      const say = (key, p, ms) => { U.trLabel(note, key, p); clearTimeout(sayT); if (ms) sayT = setTimeout(() => { if (!R.over && note.dataset.tr === key) { note.textContent = ""; delete note.dataset.tr; delete note.dataset.trp; } }, ms); };
       // On an upright screen, inside the painting: the course runs up the tall painting, which
       // scrolls down past you; you steer left and right between three lanes, seen from above.
       const tallKey = U.tallOf && U.tallOf(stage);
       const vertical = !!(host.closest(".trial.immersive") && U.upright() && tallKey);
-      let rivalEl = null;
+      let rivalEl = null, ME = null, RV = null;
       if (vertical) {
         track.classList.add("vertical");
         track.style.backgroundImage = "url('" + U.artUrl(tallKey) + "')";
-        me.innerHTML = vehicleTop(t.vehicle);
-        if (t.rival) { rivalEl = U.el('<div class="rivalcar lane' + (lane === 0 ? 2 : 0) + '">' + vehicleTop(t.vehicle, true) + "</div>"); track.appendChild(rivalEl); }
+        if (!chariot) me.innerHTML = vehicleTop(t.vehicle);
+        if (t.rival && !chariot) { rivalEl = U.el('<div class="rivalcar lane0">' + vehicleTop(t.vehicle, true) + "</div>"); track.appendChild(rivalEl); }
       }
-      // The puppet leans into the turn, then rights itself.
+      // The chariots: yours in your own colours with dun horses; the rival's in theirs, Karna's in gold
+      // with white horses. On the course seen from the side they are turned to face along it.
+      const LANEX = [32, 50, 68]; // lane centres across the course, in the upright course's percent
+      if (chariot) {
+        const mine = K.puppetSpec(K.S), spec = (K.PUPPETS && t.cast && K.PUPPETS[t.cast[0]]) || null;
+        const karna = /karna/i.test(String(K.val(t.rival) || "")) || (t.cast || [])[0] === "karna";
+        const pal = o.contact ? (karna ? K.PUPPETS.karna.palette : (spec && spec.palette) || ["#b9733f", "#3f6b3a", "#d9c27a"]) : null;
+        // If your colours are close to your rival's, your car takes your trim colour and his stays his.
+        let myPal = (mine && mine.palette) || ["#c98a52", "#2d5aa0", "#e2b55a"];
+        const rgb = (h) => [1, 3, 5].map((i) => parseInt(String(h).slice(i, i + 2), 16) || 0);
+        if (pal && Math.hypot(...rgb(myPal[1]).map((v, i) => v - rgb(pal[1])[i])) < 90) myPal = [myPal[0], myPal[2], myPal[1]];
+        me.innerHTML = '<span class="rc">' + chariotSvg(myPal, ["#c9a679", "#3a2412"], false) + "</span>";
+        ME = chariotParts(me, LANEX[R.lane]);
+        if (o.contact) {
+          rivalEl = U.el('<div class="rivalcar chariot"><span class="warnmark" aria-hidden="true">!</span><span class="rc">' + chariotSvg(pal, karna ? ["#e9dcc0", "#8a6a3a"] : ["#8e5a34", "#2a1a0c"], karna || !!(spec && spec.headgear === "kirita")) + "</span></div>");
+          track.appendChild(rivalEl);
+          RV = chariotParts(rivalEl, LANEX[R.rLane]);
+        }
+      }
+      // The painting scrolls past, each copy mirrored against the last so the joins never show.
+      const strip = host.querySelector(".bgstrip"), aspect = U.stageInfo(stage).side ? 2560 / 720 : 16 / 9;
+      let tileW = 0, geo = null;
+      const size = () => {
+        tileW = track.clientHeight * aspect; strip.querySelectorAll("i").forEach((el) => { el.style.width = tileW + "px"; });
+        track.style.setProperty("--H", track.clientHeight + "px");
+        geo = { w: track.clientWidth, meLeft: me.offsetLeft, len: me.offsetWidth, rlen: rivalEl ? rivalEl.offsetWidth : 0 };
+      };
+      size();
+      window.addEventListener("resize", size);
+      // Across the course: the upright course's percent of its width; on the course seen from the side,
+      // the same lanes as a percent of its height.
+      const across = (x) => (vertical ? x : 50 + (x - 50) * (100 / 3) / 18);
+      // A point on a chariot in its own frame (u across, -1 left to 1 right; v along, 0 front to 1
+      // back), in pixels on the track.
+      const onCar = (el, u, v) => vertical
+        ? { x: el.offsetLeft + el.offsetWidth * (0.5 + u / 2), y: el.offsetTop + el.offsetHeight * v }
+        : { x: el.offsetLeft + el.offsetWidth * (1 - v), y: el.offsetTop + el.offsetHeight * (0.5 + u / 2) };
+      // Dust thrown back from the wheels, and sparks where wheels clash.
+      const dust = (at, n, spread) => {
+        if (still || !track.animate) return;
+        for (let i = 0; i < n; i++) {
+          const d = document.createElement("i"); d.className = "rdust"; d.style.left = at.x + "px"; d.style.top = at.y + "px";
+          track.insertBefore(d, obsBox);
+          const s = 1 + K.rng() * spread, side = (K.rng() - 0.5) * 30 * spread, back = 40 + K.rng() * 50;
+          const dx = vertical ? side : -back, dy = vertical ? back : side;
+          d.animate([{ transform: "translate(0,0) scale(.6)", opacity: 0.9 }, { transform: "translate(" + dx + "px," + dy + "px) scale(" + (2 + s) + ")", opacity: 0 }], { duration: 650 + K.rng() * 350, easing: "ease-out" }).onfinish = () => d.remove();
+        }
+      };
+      const sparks = (at, n) => {
+        if (still || !track.animate) return;
+        for (let i = 0; i < n; i++) {
+          const s = document.createElement("i"); s.className = "rspark"; s.style.left = at.x + "px"; s.style.top = at.y + "px"; track.appendChild(s);
+          const a = K.rng() * 6.28, d = 20 + K.rng() * 45;
+          s.animate([{ transform: "translate(0,0)", opacity: 1 }, { transform: "translate(" + Math.cos(a) * d + "px," + (Math.sin(a) * d - 10) + "px)", opacity: 0 }], { duration: 380 + K.rng() * 260, easing: "ease-out" }).onfinish = () => s.remove();
+        }
+      };
+      const bump = () => { track.classList.remove("bump"); void track.offsetWidth; track.classList.add("bump"); };
+      // Steering. A chariot's horses lead into the turn on springs; the boat and the walker lean
+      // into it, then right themselves.
       let leanT = 0;
-      const move = (d) => { if (over) return; lane = clamp(lane + d, 0, 2); me.className = "me lane" + lane + (d < 0 ? " lean-u" : " lean-d"); clearTimeout(leanT); leanT = setTimeout(() => { me.className = "me lane" + lane; }, 320); cue("act"); };
+      const move = (d) => {
+        if (!R.move(d)) return;
+        if (!chariot) { me.className = "me lane" + R.lane + (d < 0 ? " lean-u" : " lean-d"); clearTimeout(leanT); leanT = setTimeout(() => { me.className = "me lane" + R.lane; }, 320); }
+        cue("act");
+      };
+      // The whip: you crack it over the horses, they stretch into a full gallop and the dust thickens.
+      const whip = () => {
+        if (!R.whip()) return;
+        cue("act"); sfx("quill");
+        if (!still) { ME.crack = 0.32; ME.rearV += 26; dust(onCar(me, 0, 0.8), 6, 2); }
+      };
       const row = host.querySelector(".btnrow");
       row.appendChild(U.pressButton(vertical ? "Left" : t.upVerb || "Up", () => move(-1)));
+      let whipBtn = null;
+      if (o.whip) {
+        whipBtn = U.pressButton("Whip ×2", whip);
+        whipBtn.classList.add("whip", "ready");
+        whipBtn.insertAdjacentHTML("beforeend", '<kbd aria-hidden="true">' + U.trSpan("Space") + "</kbd>");
+        row.appendChild(whipBtn);
+        onAct(whip);
+      }
       row.appendChild(U.pressButton(vertical ? "Right" : t.downVerb || "Down", () => move(1)));
+      const whipKeys = o.whip && vertical ? { ArrowUp: whip, w: whip, W: whip } : {};
       const off = vertical
-        ? keyset({ ArrowLeft: () => move(-1), ArrowRight: () => move(1), a: () => move(-1), d: () => move(1), A: () => move(-1), D: () => move(1) })
+        ? keyset(Object.assign({ ArrowLeft: () => move(-1), ArrowRight: () => move(1), a: () => move(-1), d: () => move(1), A: () => move(-1), D: () => move(1) }, whipKeys))
         : keyset({ ArrowUp: () => move(-1), ArrowDown: () => move(1), w: () => move(-1), s: () => move(1), W: () => move(-1), S: () => move(1) });
-      if (vertical) note.textContent = K.tr(t.helpSide || "Steer left and right to miss what is in the road.");
+      if (vertical) say(t.helpSide || "Steer left and right to miss what is in the road.");
       // Swipe (up and down, or left and right on the upright course), or tap the side to move to.
       let y0 = null, x0 = null;
       track.addEventListener("pointerdown", (e) => { y0 = e.clientY; x0 = e.clientX; });
@@ -224,51 +498,69 @@
         else if (Math.abs(e.clientY - y0) > 18) move(e.clientY < y0 ? -1 : 1); else move(e.clientY < r.top + r.height / 2 ? -1 : 1);
         y0 = x0 = null;
       });
-      const tally = () => { score.textContent = hullMode ? K.tr(t.tally || "Distance: {d}% · Hits: {h} of {l}", { d: Math.floor(dist), h: hits, l: lives }) : K.tr(t.tally || "You: {d}% · {who}: {r}%", { d: Math.floor(dist), r: Math.floor(rival), who: K.tr(t.rival) }); };
+      const tally = () => { score.textContent = hullMode ? K.tr(t.tally || "Distance: {d}% · Hits: {h} of {l}", { d: Math.floor(R.dist), h: R.hits, l: o.lives }) : K.tr(t.tally || "You: {d}% · {who}: {r}%", { d: Math.floor(R.dist), r: Math.floor(R.rival), who: K.tr(t.rival) }); };
+      const els = new Map();
+      let dustT = 0;
       const stop = U.loop((s) => {
         const dt = Math.min(0.05, s - last); last = s;
-        if (over) return;
-        const v = base * (slow > 0 ? 0.5 : 1);
-        if (slow > 0) slow -= dt;
-        dist += v * dt; rival += rivalV * dt * (0.94 + 0.12 * Math.sin(s * 0.7));
+        if (R.over) return;
+        const v = R.speed();
+        for (const e of R.step(dt)) {
+          if (e.type === "spawn") { const el = U.el('<div class="ob lane' + e.o.lane + '">' + OBST[e.o.kind] + "</div>"); obsBox.appendChild(el); els.set(e.o, el); }
+          else if (e.type === "gone") { const el = els.get(e.o); if (el) el.remove(); els.delete(e.o); }
+          else if (e.type === "hit") {
+            const el = els.get(e.o); if (el) el.classList.add("hit");
+            bump(); sfx("hit"); cue("bad"); say(t.bump || "You hit it, and lose ground.", null, 1600);
+            // The horses rear, the car jolts sideways and dust bursts out.
+            if (ME && !still) { ME.rearV += 70; ME.joltV += (K.rng() < 0.5 ? -1 : 1) * 9; dust(onCar(me, 0, 0.5), 12, 3); }
+          } else if (e.type === "warn") {
+            // He warns you first: a pulsing "!" over his car; he cracks his whip and his horses toss their heads.
+            rivalEl.classList.add("warn"); sfx("drum"); say("{who} swings toward you!", { who: K.tr(t.rival) }, 1200);
+            if (!still) { RV.crack = 0.32; RV.rearV += 22; RV.turnV += e.side * 3; }
+          } else if (e.type === "cut") rivalEl.classList.remove("warn");
+          else if (e.type === "clash") {
+            rivalEl.classList.remove("warn"); bump(); sfx("clang"); cue("bad");
+            say(e.how === "ram" ? "{who} rams you aside!" : e.how === "rails" ? "{who} drives you into the rails!" : "Wheels clash! You both lose ground.", { who: K.tr(t.rival) }, 1600);
+            if (!still) {
+              const a = onCar(me, 0, 0.65), b = onCar(rivalEl, 0, 0.65), side = ME.x < RV.x ? -1 : 1;
+              sparks({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, 18);
+              ME.joltV += side * 10; RV.joltV -= side * 10; ME.rearV += 30; RV.rearV += 30;
+            }
+          } else if (e.type === "end") { tally(); return finish(e.outcome, e.line); }
+        }
         scroll += v * dt * 60;
         if (vertical) track.style.backgroundPositionY = (scroll * 1.6).toFixed(1) + "px";
         else if (tileW) strip.style.transform = "translateX(" + (-(scroll % (tileW * 2))).toFixed(1) + "px)";
-        if (rivalEl) rivalEl.style.top = clamp(70 - (rival - dist) * 6, -30, 130) + "%";
-        // What is in the road comes toward you; never all three lanes at once.
-        spawnIn -= dt;
-        if (spawnIn <= 0 && dist < LEN - 6) {
-          spawnIn = gap * (0.75 + K.rng() * 0.6);
-          const taken = obs.filter((o) => o.x > 80).map((o) => o.lane);
-          const free = [0, 1, 2].filter((l) => !taken.includes(l));
-          if (free.length > 1 || !taken.length) {
-            const l = K.pick(free.length ? free : [0, 1, 2]), k = K.pick(kinds);
-            const el = U.el('<div class="ob lane' + l + '">' + OBST[k] + "</div>");
-            obsBox.appendChild(el); obs.push({ lane: l, x: 104, el });
+        for (const ob of R.obs) { const el = els.get(ob); if (el) { if (vertical) el.style.top = (96 - ob.x) + "%"; else el.style.left = ob.x + "%"; } }
+        // The chariots: lane springs, the gallop, the dust; with reduced motion they simply change lane.
+        const diff = R.rival - R.dist;
+        if (chariot) {
+          if (still) { ME.x = LANEX[R.lane]; if (RV) RV.x = LANEX[R.rLane]; } else { chariotSprings(ME, LANEX[R.lane], dt); if (RV) chariotSprings(RV, LANEX[R.rLane], dt); }
+          if (vertical) me.style.left = ME.x + "%"; else me.style.top = across(ME.x) + "%";
+          const sp = still ? 0 : (v / base) * 3;
+          drawChariot(ME, still ? 0 : dt, sp, s);
+          if (RV) {
+            if (vertical) { rivalEl.style.left = RV.x + "%"; rivalEl.style.top = clamp(70 - diff * 6, -30, 130) + "%"; }
+            else { rivalEl.style.top = across(RV.x) + "%"; rivalEl.style.left = clamp(geo.meLeft + (geo.len - geo.rlen) / 2 + diff * 0.47 * geo.len, -2 * geo.len, geo.w + geo.len).toFixed(1) + "px"; }
+            drawChariot(RV, still ? 0 : dt, still ? 0 : (o.rivalV * (R.rSlow > 0 ? 0.5 : 1) / base) * 3, s);
           }
-        }
-        for (let i = obs.length - 1; i >= 0; i--) {
-          const o = obs[i];
-          o.x -= v * dt * 13;
-          if (vertical) o.el.style.top = (96 - o.x) + "%"; else o.el.style.left = o.x + "%";
-          if (!o.hit && o.lane === lane && o.x < 26 && o.x > 8) {
-            o.hit = true; hits++; slow = 1.1; o.el.classList.add("hit");
-            track.classList.remove("bump"); void track.offsetWidth; track.classList.add("bump");
-            sfx("hit"); cue("bad"); note.textContent = K.tr(t.bump || "You hit it, and lose ground.");
+          dustT -= dt;
+          if (dustT <= 0 && !still) {
+            const on = R.boost > 0; dustT = on ? 0.035 : 0.07;
+            dust(onCar(me, -0.68, 1), on ? 2 : 1, on ? 2.2 : 1.5); dust(onCar(me, 0.68, 1), on ? 2 : 1, on ? 2.2 : 1.5);
           }
-          if (o.x < -12) { o.el.remove(); obs.splice(i, 1); }
-        }
-        pm.style.left = clamp(dist, 0, 100) + "%"; if (pr) pr.style.left = clamp(rival, 0, 100) + "%";
+          // The whip button fills as it recharges and drains while the whip lasts; ×2 shows meanwhile.
+          if (whipBtn) {
+            whipBtn.style.setProperty("--c", (R.boost > 0 ? R.boost / RACE.WHIP : R.cool > 0 ? 1 - R.cool / RACE.WHIP_COOL : 1).toFixed(3));
+            whipBtn.classList.toggle("ready", R.cool <= 0); whipBtn.classList.toggle("on", R.boost > 0);
+            whipBtn.setAttribute("aria-disabled", String(R.cool > 0));
+            speedTag.hidden = !(R.boost > 0);
+          }
+        } else if (rivalEl) rivalEl.style.top = clamp(70 - diff * 6, -30, 130) + "%";
+        pm.style.left = clamp(R.dist, 0, 100) + "%"; if (pr) pr.style.left = clamp(R.rival, 0, 100) + "%";
         tally();
-        const out = (o, line) => { over = true; finish(o, line); };
-        if (hullMode && hits >= lives) return out("lose", ["You took {h} hits.", { h: hits }]);
-        if (dist >= LEN) {
-          if (hullMode) return out(hits <= lives - 2 ? "win" : "close", ["Through, with {h} hits.", { h: hits }]);
-          return out(rival < LEN ? "win" : "close", ["You finished {gap} lengths {where}.", { gap: Math.abs(Math.round(dist - rival)), where: rival < LEN ? "ahead" : "behind" }]);
-        }
-        if (!hullMode && rival >= LEN && dist < LEN - 6) return out("lose", ["{who} finished first.", { who: t.rival }]);
       }, host);
-      return () => { stop(); off(); };
+      return () => { stop(); off(); clearTimeout(sayT); window.removeEventListener("resize", size); };
     });
   };
 
