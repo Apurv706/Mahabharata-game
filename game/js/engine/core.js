@@ -67,6 +67,9 @@
     return Math.max(0, v);
   };
   K.activeVows = (S = K.S) => S.vows.filter((v) => !v.broken);
+  // The vows that count toward the limit of three: a vow sworn for one war only (K.VOWS[id].overLimit,
+  // the Samshaptakas' oath) stands beyond it.
+  K.vowsHeld = (S = K.S) => K.activeVows(S).filter((v) => !(K.VOWS[v.id] || {}).overLimit).length;
   K.hasVow = (id, S = K.S) => S.vows.some((v) => v.id === id && !v.broken);
   // How long a vow has been kept: its gift grows (flow.js VOW_MERITS) after fifteen years.
   K.vowYears = (id, S = K.S) => { const v = S.vows.find((x) => x.id === id && !x.broken); return v ? S.age - (v.age || S.age) : 0; };
@@ -149,7 +152,7 @@
     noFlag: (v, S) => [].concat(v).every((f) => !S.flags.includes(f)),
     vow: (v, S) => K.hasVow(v, S),
     noVow: (v, S) => !K.hasVow(v, S),
-    vowSlot: (v, S) => (K.activeVows(S).length < K.MAX_VOWS) === v,
+    vowSlot: (v, S) => (K.vowsHeld(S) < K.MAX_VOWS) === v,
     boon: (v, S) => S.boons.includes(v),
     cursed: (v, S) => S.curses.some((c) => !c.fired) === v,
     injured: (v, S) => (S.injuries.length > 0) === v,
@@ -229,7 +232,7 @@
     keepsake: (id, S, d) => { S.keepsakes = S.keepsakes || []; if (!S.keepsakes.includes(id)) { S.keepsakes.push(id); if (d) d.keepsake = id; } },
     vowTake: (id, S, d) => {
       // A vow can be sworn again once the earlier one was released (fulfilled), never while it stands or after it was broken.
-      if (K.activeVows(S).length >= K.MAX_VOWS || S.vows.some((v) => v.id === id && !v.released)) return;
+      if ((K.vowsHeld(S) >= K.MAX_VOWS && !(K.VOWS[id] || {}).overLimit) || S.vows.some((v) => v.id === id && !v.released)) return;
       S.vows.push({ id, broken: false, age: S.age }); d.vowTaken = id;
       FX.journal({ src: "You swore a vow: {vow!}.", p: { vow: K.VOWS[id].name } }, S);
     },

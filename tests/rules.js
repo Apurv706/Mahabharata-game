@@ -609,7 +609,55 @@ require(G + "content/war_lake.js");
   ok(K.val(sc("wl_lake_found").choices).every((c) => !c.next || c.next === "a6_duryodhana") && sc("wl_lake_found").next === "a6_duryodhana" && ch("wl_lake", "leave").next === "a6_duryodhana",
     "canon: whatever you do, he is found and the duel is fought");
 }
-// 46. War storylines (PRD 18.13 #1): Yuyutsu's call, the only way to change sides
+// 46. The Samshaptakas' oath (PRD 18.13, content/war_oath.js): a fourth vow for one war, its gift, its price, its ending
+require(G + "content/war_oath.js");
+{
+  const war = { act: 6, age: 44, side: "kaurava", path: "warrior" };
+  S = fresh(war); ["never_lie", "never_retreat", "spare_unarmed"].forEach((id) => K.apply({ vowTake: id }));
+  ok(K.resolveScene("a6_wheel").id === "oath_fire", "after the eleventh day a Kaurava warrior comes to the Samshaptakas' fire");
+  const swear = K.SCENES.oath_fire.choices.find((c) => c.id === "swear");
+  ok(K.preview(swear, S).some(([, t]) => /fourth vow/.test(t)) && K.preview(swear, S).some(([cls]) => cls === "vow"), "the oath shows as a vow, and as a fourth one");
+  K.choose(K.SCENES.oath_fire, swear);
+  ok(S.vows.length === 4 && K.hasVow("samshaptaka", S) && K.vowsHeld(S) === 3 && S.tapas === 3, "the oath is sworn above the limit of three (tapas +3), and stands outside the count");
+  K.apply({ vowTake: "celibacy" });
+  ok(!K.hasVow("celibacy", S), "any other vow is still refused past three");
+  const p0 = (() => { const keep = S.vows; S.vows = keep.filter((v) => v.id !== "samshaptaka"); const B = K.Combat.start("oath_arjuna_12", () => {}); const r = { atk: B.units[0].atk, def: B.units[0].def }; K.Combat.end(); S.vows = keep; return r; })();
+  const B1 = K.Combat.start("oath_arjuna_12", () => {});
+  ok(B1.units[0].atk === p0.atk + 2 && B1.units[0].def === p0.def + 1, "while the oath holds: +2 attack, +1 defence");
+  ok(B1.enc.lethal && B1.enc.hold === 7 && B1.units.some((u) => u.person === "arjuna" && u.hero) && K.Combat.fleeBreaks().includes("samshaptaka"), "Arjuna's chariot is a deadly hold, and pulling out of it breaks the oath");
+  K.Combat.end();
+  S.seen.push("oath_fire");
+  ok(K.resolveScene("a6_wheel").id === "oath_south", "the sworn face Arjuna's chariot on the twelfth day");
+  ok(K.resolveScene("a6_day16").id === "oath_again", "and again on the sixteenth");
+  S.flags.push("role_division", "council_flank", "council_flank_chariot");
+  ok(!K.test(K.SCENES.hold_arjuna_offer.when, S), "the division's hold against Arjuna is not offered twice to the sworn");
+  S.alive = false;
+  let e = K.composeEnding(S);
+  ok(e.title === "The oath to the death" && e.art === "end_oath", "falling with the oath on you is its own ending");
+  ok(K.ENDINGS.some((x) => x.title === "The oath to the death" && x.art === "end_oath"), "it is in the endings list");
+  S = fresh(war); K.apply({ vowTake: "samshaptaka" }); S.bonds.duryodhana = 7; S.bonds.karna = 6; S.bonds.drona = 5;
+  K.choose(K.SCENES.oath_south, K.SCENES.oath_south.choices.find((c) => c.id === "withdraw"));
+  ok(!K.hasVow("samshaptaka", S) && S.flags.includes("broke_samshaptaka") && S.bonds.duryodhana === 4 && S.bonds.karna === 3 && S.bonds.drona === 2, "withdrawing breaks the oath: every watcher's bond -3");
+  S.alive = false; e = K.composeEnding(S);
+  ok(e.title !== "The oath to the death" && e.telling.some((x) => /oath-breaker/.test(Array.isArray(x) ? x[0] : x)), "an oath-breaker does not get its ending, and the telling names them");
+  S = fresh(Object.assign({ storyMode: true }, war)); K.apply({ vowTake: "samshaptaka" });
+  K.combatOutcome("oath_arjuna_12", "lose", "a6_wheel");
+  ok(S.alive && K.hasVow("samshaptaka", S) && S.flags.includes("oath_carried_off") && S.injuries.length, "story mode: carried off with a wound, the oath kept");
+  S = fresh({ act: 6, age: 44, side: "pandava" }); S.flags.push("role_command");
+  ok(K.resolveScene("a6_wheel").id === "oath_crescent", "on the Pandava side, the crescent array on the twelfth day");
+  const arr = K.SCENES.oath_crescent.choices.find((c) => c.id === "array");
+  ok(arr.trial.array === "crescent" && K.test(arr.req, S), "a company leader sets companies on the crescent");
+  const rr = K.choose(K.SCENES.oath_crescent, arr, "lose");
+  ok(rr.next === "oath_king" && !rr.after && K.ENCOUNTERS.oath_king_hold.hold && K.ENCOUNTERS.oath_king_hold.enemies.some((u) => u.person === "drona"), "if the crescent breaks, a holding fight at the king's chariot follows");
+}
+// 47. The oath and canon: Arjuna is only ever held, never brought down; the oath is kept to the war's end, when Susharma falls to him
+{
+  ok(["oath_arjuna_12", "oath_arjuna_16"].every((id) => K.ENCOUNTERS[id].hold && K.ENCOUNTERS[id].enemies.some((u) => u.person === "arjuna" && u.hero)), "Arjuna's chariot is a fight to hold, never to win by killing him");
+  S = fresh({ act: 6, age: 44, side: "kaurava", path: "warrior" }); K.apply({ vowTake: "samshaptaka" }); S.seen.push("a6_day18");
+  K.oathEnds(K.SCENES.a6_duryodhana, S);
+  ok(!K.hasVow("samshaptaka", S) && S.vows.some((v) => v.id === "samshaptaka" && v.released) && S.journal.some((j) => /Susharma/.test(JSON.stringify(j))), "after the eighteenth day the oath is released, kept, and Susharma falls as written");
+}
+// 80. War storylines (PRD 18.13 #1): Yuyutsu's call, the only way to change sides
 ["content/episodes", "content/war_crossing"].forEach((f) => require(G + f + ".js"));
 K.UI = K.UI || { esc: (x) => x }; require(G + "ui/map.js");
 {
@@ -658,7 +706,7 @@ K.UI = K.UI || { esc: (x) => x }; require(G + "ui/map.js");
   ok(!map.length, "the war's scenes put the marker in the Pandava camp (" + (map.join(", ") || "all") + ")");
   ok(!canonDead(S).some((w) => !["bhishma", "drona", "karna", "abhimanyu", "duryodhana", "dushasana", "jayadratha", "shakuni", "shalya", "iravan", "ghatotkacha", "bhurishravas", "drupada", "virata"].includes(w)), "crossing kills no canon figure the epic does not (" + canonDead(S) + ")");
 }
-// 47. Calling someone across, from the Pandava side
+// 81. Calling someone across, from the Pandava side
 S = fresh({ act: 6, age: 44, side: "pandava", sibling: "devi", friend: "duryodhana" }); S.bonds.devi = 6; S.bonds.duryodhana = 7; S.flags.push("sibling_other_side_set");
 S.attrs.wisdom = 8; S.skills.statecraft = 6;
 K.go("a6_day1");
@@ -676,7 +724,7 @@ K.go("a6_day1");
 S = fresh({ act: 6, age: 44, side: "pandava", sibling: "dev" }); S.bonds.dev = 6; S.flags.push("sibling_other_side_set"); S.attrs.wisdom = 0; S.skills.statecraft = 0;
 K.go("a6_day1"); K.choose(K.SCENES.cross_call, K.choiceList(K.SCENES.cross_call).find((x) => x.c.id === "call").c);
 ok(!S.calledAcross && S.flags.includes("sibling_other_side_set") && S.memories.some((m) => m.who === "dev" && /not forgotten that you asked/.test(m.src)), "a sibling who will not come remembers that you asked");
-// 48. The one who crossed: a death between the lines is its own ending; the telling names it
+// 82. The one who crossed: a death between the lines is its own ending; the telling names it
 S = fresh({ act: 6, age: 44, side: "kaurava" }); S.flags.push("lost_to_ugra");
 K.go("a6_day1"); K.choose(K.SCENES.cross_call, K.choiceList(K.SCENES.cross_call).find((x) => x.c.id === "cross").c); K.go("a6_day1");
 K.combatOutcome("cross_e_duel", "lose", "a6_day1");
@@ -685,7 +733,7 @@ K.combatOutcome("cross_e_duel", "lose", "a6_day1");
   ok(e.telling.some((l) => /the one who crossed/.test(String(l))) && /between the lines/.test(S.deathText), "the bards call you the one who crossed"); }
 S = fresh({ act: 6, age: 44, side: "pandava" }); K.apply({ die: true, deathText: "x" });
 ok(K.composeEnding(S).title !== "The one who crossed", "a death without crossing keeps its own ending");
-// 49. The canon lock: nothing in the crossing kills or saves a canon figure
+// 83. The canon lock: nothing in the crossing kills or saves a canon figure
 {
   const dies = [];
   for (const foe of ["ugra", "kanaka"]) { const T = fresh({ act: 6, age: 44, side: "pandava", crossFoe: foe }); const w = K.ENCOUNTERS.cross_e_duel.win.fx(T); if (w.die) dies.push(w.die); }

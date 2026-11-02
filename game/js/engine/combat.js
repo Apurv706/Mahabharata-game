@@ -57,6 +57,7 @@
     const hp = 30 + might * 5 + grace * 3 + (S.age >= 18 ? 20 : 0) + (S.skills.mace || 0) * 3;
     let atk = 3 + K.attr(P.stat || "might") + (S.skills[P.skill] || 0);
     if (K.hasVow("never_retreat")) atk += 1 + (S.flags.includes("held_firm") ? 1 : 0); // one more once you have held firm in a deadly fight
+    if (K.hasVow("samshaptaka")) atk += 2; // the Samshaptakas' oath, while it holds (content/war_oath.js)
     const rec = K.record(S);
     atk += Math.min(2, Math.floor(rec.won / 3)); // every three fights won, a little more sure of your hand
     if (rec.last === "lost") atk -= 1;            // the last fight still in your mind
@@ -65,7 +66,7 @@
     for (const a of S.astras || []) if (K.ABILITIES[a.id]) abilities.push(a.id); // the named divine weapons (§18.7)
     abilities.push("herbs");
     // Bhishma's blessing, for a vow of celibacy kept to the war.
-    const def = 1 + Math.floor(grace / 2) + (S.flags.includes("bhishma_blessing") && K.hasVow("celibacy", S) ? 1 : 0);
+    const def = 1 + Math.floor(grace / 2) + (S.flags.includes("bhishma_blessing") && K.hasVow("celibacy", S) ? 1 : 0) + (K.hasVow("samshaptaka", S) ? 1 : 0);
     return { uid: "p", name: S.name || "You", side: "player", hp, maxHp: hp, atk, def, abilities, cds: {}, status: {}, armed: true };
   }
   // Enemies come in a little stronger than their tier says, and more so in a fight marked hard; story

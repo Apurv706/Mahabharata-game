@@ -22,7 +22,7 @@
           text: "You carry wood for three days. Nobody asks which side the dead fought for. The smoke goes up the same." },
         { id: "mourn", t: "Sit with your own dead and let no one move you", fx: { duty: { family: 1 }, attr: { wisdom: 1 } },
           text: "You sit by them until the women come with water and white cloth. When you finally stand, something in you stays sitting there." },
-        { id: "hunt", t: "Swear vengeance on Ashwatthama", req: (S) => S.side !== "kaurava" && K.activeVows(S).length < K.MAX_VOWS && !S.vows.some((v) => v.id === "vengeance" && !v.released), // the same test vowTake uses
+        { id: "hunt", t: "Swear vengeance on Ashwatthama", req: (S) => S.side !== "kaurava" && K.vowsHeld(S) < K.MAX_VOWS && !S.vows.some((v) => v.id === "vengeance" && !v.released), // the same test vowTake uses
           fx: { vowTake: "vengeance", flag: "vengeance_ashwatthama" }, hint: "He has been cursed to wander the earth. You could follow" }
       ],
       next: "a7_bhishma"
@@ -189,6 +189,7 @@
     { title: "Broken survivor", art: "end_broken", hint: "Survive, having lost most of those you loved." },
     { title: "The wanderer", art: "end_river", hint: "Survive, and walk away from everything." },
     { title: "Glorious death", art: "end_death", hint: "Fall in battle with every vow kept." },
+    { title: "The oath to the death", art: "end_oath", hint: "Swear the Samshaptakas' oath, and fall with it still on you." },
     { title: "Fallen at Kurukshetra", art: "end_death", hint: "Fall in battle." },
     { title: "Into the wheel", art: "end_wheel", hint: "Follow Abhimanyu to the end." },
     { title: "Against the boy in the wheel", art: "end_wheel", hint: "On the Kaurava side, stand in Abhimanyu's way." },
@@ -215,6 +216,9 @@
       if (at && at.art) { art = at.art; caption = at.caption || caption; }
       if (S.flags.includes("peril_death") && (at ? at.act : S.act) < 6) title = "A life cut short";
       if (S.flags.includes("died_in_fire")) { title = "The burnt house"; art = "end_fire"; caption = "The house at Varnavata, at dawn"; }
+      // The Samshaptakas' oath (war_oath.js): a fall with the oath still on you is its own ending, in place
+      // of a glorious death (every vow kept) or a plain one; the deaths with their own endings keep them.
+      if (K.hasVow("samshaptaka", S) && (title === "Glorious death" || title === "Fallen at Kurukshetra")) { title = "The oath to the death"; art = "end_oath"; caption = intact ? "A grass garland in the chariot ruts, every vow kept" : "A grass garland in the chariot ruts"; }
     } else {
       const c = S.endChoice;
       if (c === "elder") { title = "The wise elder"; art = "end_elder"; caption = "The palace school, in old age"; }
