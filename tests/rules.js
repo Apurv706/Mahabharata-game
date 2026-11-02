@@ -295,4 +295,61 @@ S = fresh({ act: 2, age: 18, path: "archer" }); S.attrs.aim = 8;
   ok(!C.foesPending() && B2.queue === null && C.act("strike") === true, "a queue of fallen foes is closed, and it is your turn");
   C.end && C.end();
 }
+// 38. Your child on the field (war_child.js): the thread on the eve, and a fate decided by what he lived through
+["content/episodes", "content/war_child"].forEach((f) => require(G + f + ".js"));
+{
+  const kid = (side, o) => { const S = fresh(Object.assign({ act: 6, age: 44, side, child: "vasu" }, o)); S.flags.push("vasu_away"); return S; };
+  S = kid("pandava"); K.go("a6_day1");
+  ok(K.S.scene === "wc_child_eve", "a child sent to another company comes to the eve scene first (" + K.S.scene + ")");
+  K.choose(K.SCENES.wc_child_eve, K.SCENES.wc_child_eve.choices.find((c) => c.id === "satyaki"));
+  ok(S.flags.includes("child_cmd_satyaki") && S.moments.some((m) => m.kind === "child_eve" && m.who === "vasu"), "choosing his commander ties the thread, with its moment");
+  S.flags.push("child_line_held");
+  ok(!K.childInRaidCamp(S) && !K.vasuLostInRaid(S), "unhurt under Satyaki, he is away from the camp on the night of the raid");
+  S.flags.push("child_fell");
+  ok(K.childHurt(S) && K.childInRaidCamp(S) && K.vasuLostInRaid(S), "hurt and not got out, he lies in the camp, and dies there unless the raid is stopped");
+  S.flags.push("woke_camp"); ok(!K.vasuLostInRaid(S), "waking the camp saves him");
+  S = kid("pandava"); S.flags.push("child_cmd_virata", "child_line_held");
+  ok(K.childInRaidCamp(S) && K.vasuLostInRaid(S), "under Virata he sleeps in the camp whatever his day was");
+  ok(typeof K.SCENES.a6_raid.choices.find((c) => c.id === "wake").hint === "function" && K.val(K.SCENES.a6_raid.choices.find((c) => c.id === "wake").hint, S) === "The only way to reach Vasu", "waking the camp is named as the only way to reach him");
+  S = kid("kaurava"); S.flags.push("child_cmd_ashwatthama", "child_line_broken"); K.go("a6_duryodhana");
+  ok(K.S.scene === "wc_child_dusk" && S.dead.includes("vasu") && /last day/.test(K.childDeath(S)), "Kaurava side: hurt on his day, he falls on the last day, and the fates say where");
+  S = kid("kaurava"); S.flags.push("child_cmd_ashwatthama", "child_line_held"); K.go("a6_duryodhana");
+  ok(!S.dead.includes("vasu") && S.flags.includes("child_survived_war"), "Kaurava side: held beside you, he lives");
+}
+// 39. On his day he goes down; dragging him out, or a friend called in, saves him
+{
+  const S0 = fresh({ act: 6, age: 44, side: "pandava", child: "vasu", friend: "bhima" }); S0.bonds.bhima = 8; S0.flags.push("vasu_away", "child_cmd_virata");
+  let B = K.Combat.start("wc_e_child_line", () => {});
+  let v = B.units.find((u) => u.person === "vasu");
+  ok(!!v, "Vasu fights beside you on his day");
+  v.hp = 0; const h = K.ENCOUNTERS.wc_e_child_line.callHelp(S0);
+  ok(h.unit && h.unit.person === "bhima" && /stands over him/.test(K.text(h.text)), "with Vasu down, the friend you call goes to him");
+  h.run(B); ok(v.hp > 0 && B.shielded, "and stands over him until he can get up");
+  B.over = "win"; K.childFightEnd(B); K.Combat.end();
+  ok(S0.flags.includes("child_saved") && !K.childHurt(Object.assign(S0, { flags: S0.flags.concat("child_line_broken") })), "a shielded child counts as saved, even when the line breaks");
+  const S1 = fresh({ act: 6, age: 44, side: "kaurava", child: "vasu" }); S1.flags.push("vasu_away", "child_cmd_bhurishravas");
+  B = K.Combat.start("wc_e_child_line", () => {}); v = B.units.find((u) => u.person === "vasu"); v.hp = 0; B.over = "win"; K.childFightEnd(B); K.Combat.end();
+  ok(S1.flags.includes("child_fell") && K.childHurt(S1), "left where he fell, he is hurt");
+}
+// 40. The Shakti spent: what you say to Karna on the fourteenth night is what he answers on the seventeenth
+{
+  const call = K.SCENES.wc_shakti_call, pick = (id) => call.choices.find((c) => c.id === id);
+  S = fresh({ act: 6, age: 44, side: "kaurava", friend: "karna", origin: "anga" }); S.bonds.duryodhana = 5;
+  ok(K.test(K.SCENES.wc_shakti_k.when, S) && K.resolveScene("a6_day15").id === "wc_shakti_k", "beside Karna, the night of day 14 comes before the dawn");
+  const gh = K.ENCOUNTERS.wc_e_ghost.callHelp(S);
+  ok(gh.unit && gh.unit.person === "karna" && K.ENCOUNTERS.wc_e_ghost.hold, "against Ghatotkacha's night form you can only hold, and the call brings Karna");
+  K.choose(call, pick("use"));
+  ok(S.bonds.duryodhana === 7 && S.moments.some((m) => m.kind === "shakti" && m.from === "kaurava"), "urging him to use it: Duryodhana +2, and the spear's moment");
+  ok(K.val(K.SCENES.a6_day17.body, S).some((b) => b && b.speaker === "Karna" && /Do not carry that/.test(b.line)), "on day 17 his last words forgive you");
+  S = fresh({ act: 6, age: 44, side: "kaurava", friend: "karna" }); K.choose(call, pick("keep"));
+  ok(/You were right/.test(K.karnaLastWords(S)), "urging him to keep it: his last words say you were right");
+  S = fresh({ act: 6, age: 44, side: "kaurava", friend: "karna" }); S.flags.push("calmed_the_horse"); K.choose(call, pick("silent"));
+  ok(/horse in the stable yard/.test(K.karnaLastWords(S)), "silent: his last words are about the horse, from childhood");
+  S = fresh({ act: 6, age: 44, side: "kaurava" }); ok(!K.val(K.SCENES.a6_day17.body, S).some((b) => b && b.speaker === "Karna"), "no last words for those who were not there");
+  S = fresh({ act: 6, age: 44, side: "pandava", friend: "bhima" });
+  ok(K.resolveScene("a6_day15").id === "wc_shakti_p", "beside Bhima's son, the Pandava side tries to reach Karna's chariot");
+  K.combatOutcome("wc_e_reach", "win", "wc_shakti_p_fall");
+  ok(S.flags.includes("shakti_tried_stop") && S.memories.some((m) => m.who === "bhima"), "the attempt is remembered, by Bhima");
+  K.go("wc_shakti_p_fall"); ok(S.moments.some((m) => m.kind === "shakti" && m.from === "pandava"), "the spear still flies, seen from the Pandava side");
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

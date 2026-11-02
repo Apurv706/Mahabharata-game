@@ -45,7 +45,7 @@
   // Portraits of the people you know (art/p_*.webp). Vasu grows up: the child portrait until 40.
   const PORTRAITS = ["karna", "arjuna", "bhima", "drona", "kripa", "duryodhana", "abhimanyu", "mauni", "charu", "madhavi", "revat", "yudhishthira", "vidura", "bhishma", "dhrishtadyumna", "ashwatthama", "satyaki", "iravan", "ghatotkacha", "bhurishravas", "virata", "drupada"];
   U.portraitKey = function (id) {
-    if (id === "vasu") return K.S && K.S.age >= 40 ? "p_vasu_16" : "p_vasu_6";
+    if (id === "vasu") return K.S && K.S.age >= 40 ? ((K.S.flags || []).some((f) => f === "vasu_away" || f === "vasu_with_you") ? "p_child_son" : "p_vasu_16") : "p_vasu_6"; // armed, once he goes to war
     if (id === "ugra") return K.S && K.S.age >= 25 ? "p_ugra_adult" : "p_ugra_young";
     return PORTRAITS.includes(id) ? "p_" + id : null;
   };
