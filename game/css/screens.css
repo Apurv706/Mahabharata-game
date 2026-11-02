@@ -653,6 +653,34 @@ body.inscene .jmap .bmap { max-height: min(520px, max(180px, calc(var(--vh) - 34
 .progress .pm, .progress .pr { position: absolute; top: -4px; width: 22px; height: 22px; margin-left: -11px; border-radius: 50%; border: 2px solid #1a0f0b; }
 .progress .pm { background: var(--accent); z-index: 1; } .progress .pr { background: #d8a536; opacity: .85; }
 .race-btns .trial-press { min-width: 140px; }
+/* The leather chariots, yours and a rival's (quality review 23): drawn from above facing up the
+   course; on the course seen from the side they are turned to face along it. The race's clock moves
+   them, so they have no transitions. */
+.track .chariot.me, .track .chariot.rivalcar { position: absolute; z-index: 2; width: calc(var(--cw) * 1.72); height: var(--cw); margin-top: calc(var(--cw) / -2); transition: none; filter: drop-shadow(0 6px 6px rgba(0, 0, 0, .55)); }
+.track .chariot.me { --cw: clamp(36px, calc(var(--H, 480px) * .19), 76px); left: 9%; }
+.track .chariot.rivalcar { --cw: clamp(32px, calc(var(--H, 480px) * .172), 69px); }
+.trial.immersive.trial-race .game-note:empty { visibility: hidden; }
+.track .chariot .rc { position: absolute; left: 50%; top: 50%; width: var(--cw); height: calc(var(--cw) * 1.72); margin: calc(var(--cw) * -.86) 0 0 calc(var(--cw) / -2); transform: rotate(90deg); }
+.track .chariot svg { display: block; width: 100%; height: 100%; overflow: visible; transform: scale(1.32); transform-origin: 50% 78%; }
+/* His warning before he cuts across you: a pulsing "!" over his car. */
+.track .rivalcar .warnmark { position: absolute; left: 50%; top: -30px; z-index: 5; transform: translateX(-50%); width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font: 800 18px/1 var(--text); color: var(--accent-ink); background: #ffd27a; box-shadow: 0 0 0 3px rgba(42, 18, 15, .7), 0 0 14px rgba(255, 210, 122, .9); opacity: 0; transition: opacity .1s; } /* taste-skill-ignore: the warning glows */
+.track .rivalcar.warn .warnmark { opacity: 1; animation: warnpulse .35s ease-in-out infinite alternate; }
+@keyframes warnpulse { to { transform: translateX(-50%) scale(1.2); } }
+/* Dust from the wheels; sparks where wheels clash. */
+.track .rdust { position: absolute; z-index: 1; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: radial-gradient(rgba(214, 178, 120, .75), rgba(214, 178, 120, 0)); pointer-events: none; }
+.track .rspark { position: absolute; z-index: 4; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: #fff1c2; box-shadow: 0 0 6px 2px rgba(255, 196, 110, .85); pointer-events: none; }
+/* The whip: ×2 in the corner while it lasts; its button drains as it runs out and fills as it recharges. */
+.track .speedx { position: absolute; right: 10px; top: 10px; z-index: 6; font: 700 13px/1 var(--text); letter-spacing: .08em; padding: 5px 9px; border-radius: 999px; background: #ffd27a; color: var(--accent-ink); }
+.track .speedx[hidden] { display: none; }
+.race-btns .whip { position: relative; overflow: hidden; isolation: isolate; background: var(--raised); color: var(--ink); border: 1px solid var(--gold-line); white-space: nowrap; }
+.race-btns .whip:hover { background: var(--hover); }
+.race-btns .whip::before { content: ""; position: absolute; inset: 0; z-index: -1; transform-origin: 0 50%; transform: scaleX(var(--c, 1)); background: var(--data); }
+.race-btns .whip { text-shadow: 0 1px 2px rgba(0, 0, 0, .55); }
+.race-btns .whip.ready, .race-btns .whip.on { color: var(--accent-ink); text-shadow: none; }
+.race-btns .whip.on::before { background: #ffd27a; }
+.race-btns .whip[aria-disabled="true"] { cursor: default; }
+.race-btns .whip kbd { display: none; }
+@media (hover: hover) and (pointer: fine) { .race-btns .whip kbd { display: inline-block; margin-left: 8px; padding: 3px 6px; border: 1px solid currentColor; border-radius: 4px; font: 600 12px/1 var(--text); vertical-align: middle; opacity: .75; } }
 @media (max-width: 560px) { .track { height: 186px; } .track .me { width: 96px; height: 60px; } .track .lane0 { top: calc(16.66% - 30px); } .track .lane1 { top: calc(50% - 30px); } .track .lane2 { top: calc(83.33% - 30px); } }
 
 /* Herd */
@@ -1242,6 +1270,12 @@ body.intest .leaf .text { background: none !important; }
 .trial.immersive .track.vertical .ob { width: 64px; height: 44px; margin-left: -32px; }
 .trial.immersive .track.vertical .lane0 { left: 32%; } .trial.immersive .track.vertical .lane1 { left: 50%; } .trial.immersive .track.vertical .lane2 { left: 68%; }
 .trial.immersive .track.vertical .veh { width: 100%; height: 100%; filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.55)); }
+.trial.immersive .track.vertical .chariot { margin-top: 0; transition: none; }
+.trial.immersive .track.vertical .chariot.me { --cw: 64px; width: 64px; height: 110px; }
+.trial.immersive .track.vertical .chariot.rivalcar { --cw: 58px; width: 58px; height: 100px; }
+.trial.immersive .track.vertical .chariot .rc { transform: none; }
+.trial.immersive .track.vertical .rivalcar .warnmark { top: -34%; }
+.trial.immersive .track.vertical .speedx { top: calc(max(8px, var(--sat)) + 6px); right: max(12px, var(--sar)); }
 .trial.immersive.trial-race .trial-body > :not(.track) { position: relative; z-index: 1; }
 .trial.immersive.trial-race .progress { width: min(80%, 420px); align-self: center; }
 .trial.immersive.trial-race .btnrow { margin-top: auto; }
