@@ -5,7 +5,8 @@
 
   function header(sc) {
     const S = K.S;
-    U.where("<b>" + U.t(K.val(sc.actTitle) || K.ACT_TITLES[S.act] || "") + "</b><span>" + U.tr("Age {n}", { n: S.age }) + " · " + U.t(K.val(sc.place) || "") + "</span>");
+    // The prologue is a dream of the war, years ahead: no age, so the childhood that follows reads as now.
+    U.where("<b>" + U.t(K.val(sc.actTitle) || K.ACT_TITLES[S.act] || "") + "</b><span>" + (sc.prologue ? U.tr("Years from now") : U.tr("Age {n}", { n: S.age })) + " · " + U.t(K.val(sc.place) || "") + "</span>");
   }
   function artFor(sc) {
     const a = K.val(sc.art);
@@ -13,7 +14,16 @@
     if (a === "origin") return K.S.origin === "suta" && !K.S.flags.includes("moved_capital") ? "home_anga" : "home_" + K.S.origin;
     return a;
   }
+  // The quill writes only the lines that matter: what the epic has written, what someone says, a
+  // memory or a curse, and what came of your choice. The rest of the page simply appears.
+  U.quillWorthy = function (el, result) {
+    if (el.classList.contains("said")) return true;
+    if (el.tagName !== "P" || el.classList.contains("aside")) return false;
+    if (el.classList.contains("memory") || el.classList.contains("curse")) return true;
+    return !!el.closest(".witness") || (!!result && !!el.closest(".result"));
+  };
   function tagFor(sc) {
+    if (sc.prologue) return ["war", K.tr("A dream")];
     // Fate: what the epic has already written, and the part of your life that is still unwritten.
     if (sc.canon && sc.war) return ["canon war", K.tr("Written · the war")];
     if (sc.canon) return ["canon", K.tr("Written")];
@@ -61,11 +71,12 @@
     U.beatStop();
     if (beatSeen !== sc.id && U.beatsOn()) {
       beatSeen = sc.id;
-      const newAct = actSeen !== S.act;
-      actSeen = S.act;
+      // The prologue (a dream of the war) has no act card; Act I's card comes when the childhood begins.
+      const newAct = !sc.prologue && actSeen !== S.act;
+      if (!sc.prologue) actSeen = S.act;
       return U.sceneBeats(sc, { act: newAct, full: newAct || bigScene(sc), tag, tagText }, () => U.renderScene(sc));
     }
-    beatSeen = sc.id; actSeen = S.act;
+    beatSeen = sc.id; if (!sc.prologue) actSeen = S.act;
     const witness = K.val(sc.witness);
     const leaf = U.$("leaf");
     leaf.className = "leaf split";
@@ -108,7 +119,7 @@
     if (h1) h1.dataset.hold = 650;
     [...box.children].forEach((b) => { b.dataset.hold = 110; });
     // The scene-setting lines are written out by the quill.
-    story.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
+    story.forEach((el) => { if (U.quillWorthy(el)) el.classList.add("write"); });
     U.keys([]);
     // The page comes up over the whole painting and grows as the story is written (lines and
     // choices not shown yet take no room). The painting holds still behind it; once everything is
@@ -137,6 +148,23 @@
       if (typeof sc.next === "string" && K.SCENES[sc.next]) { try { const a = artFor(K.SCENES[sc.next]); if (typeof a === "string") keys.push(a); } catch (e) { /* later state */ } }
       U.preloadArt(keys);
     }, 1500);
+  };
+
+  // ---------- Waking from the dream ----------
+  // The prologue's fight ends in white: one line, then the child wakes. About five seconds, or a tap.
+  U.wake = function (text, done) {
+    if (K.headless || /jsdom/i.test(navigator.userAgent || "")) return done();
+    U.beatStop();
+    const el = U.el('<div class="wake" role="presentation"><p>' + U.t(text || "") + '</p><span class="mo-tap">' + U.tr("Tap to go on") + "</span></div>");
+    document.body.appendChild(el);
+    if (U.stageFx) U.stageFx.stop();
+    let gone = false;
+    const end = () => { if (gone) return; gone = true; clearTimeout(timer); window.removeEventListener("keydown", key, true); el.classList.add("out"); setTimeout(() => { el.remove(); done(); }, 600); };
+    const key = (e) => { if ([" ", "Enter", "Escape", "ArrowRight"].includes(e.key)) { e.preventDefault(); e.stopPropagation(); end(); } };
+    el.addEventListener("click", end);
+    window.addEventListener("keydown", key, true);
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("in")));
+    const timer = setTimeout(end, 6500);
   };
 
   // ---------- Beats: act cards and scene titles ----------
@@ -187,7 +215,7 @@
     document.body.appendChild(el);
     const title = o.title || K.val(sc.title) || K.val(sc.caption) || "";
     const place = K.val(sc.place);
-    const where = U.tr(S.alive === false ? "Fell at {n}" : "Age {n}", { n: S.age }) + (place ? " · " + U.t(place) : "");
+    const where = (sc.prologue ? U.tr("Years from now") : U.tr(S.alive === false ? "Fell at {n}" : "Age {n}", { n: S.age })) + (place ? " · " + U.t(place) : "");
     // A living painting plays full-screen under the cards, then for a few seconds on its own.
     const live = U.liveReady();
     if (live) U.livePlay();
@@ -331,6 +359,9 @@
       U.startBattle(res.combat, (outcome) => {
         const o = K.combatOutcome(res.combat, outcome, res.next);
         if (!K.S.alive) return K.go("end_death");
+        // A dream fight (the prologue) does not go back to its page: the field goes white, you wake,
+        // and the childhood begins.
+        if ((K.ENCOUNTERS[res.combat] || {}).dream) return U.wake(o.text, () => K.go(o.next));
         U.renderScene(sc);
         showAfter(sc, c, { text: o.text, after: res.after, check: null, pre: res.text, lampOut: res.lampOut, lostFight: outcome === "lose" ? res.combat : null }, o.next);
       });
@@ -430,7 +461,7 @@
     parts.push(cont);
     // After a lost fight that was not deadly: the way to the practice ground (ui/practice.js).
     { const pb = res.lostFight && U.practiceAfterFight ? U.practiceAfterFight(res.lostFight) : null; if (pb) { box.appendChild(pb); parts.push(pb); } }
-    parts.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
+    parts.forEach((el) => { if (U.quillWorthy(el, true)) el.classList.add("write"); });
     story.dataset.follow = "1";
     U.toEnd(story, true);
     const won = res.check ? res.check.pass : res.outcome ? res.outcome === "win" : null;

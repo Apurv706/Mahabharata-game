@@ -116,11 +116,42 @@
     stakes: retry ? ["Ugra lets Charu go, in front of everyone.", "Ugra wins twice, and you will not get into that ring again. It counts as two failures, and it will weigh on every wrestling test to come."]
       : ["Ugra lets Charu go, in front of everyone.", "Ugra keeps his grip on Charu. You can get up and ask for another bout."] });
 
+  // The game of tag by the lotus pond (age 8): on Bhima's side you creep up on Duryodhana; on
+  // Duryodhana's, Bhima is hunting you. Daylight, so the cone is where the watcher is looking.
+  const TAG = {
+    bhima: { attr: "grace", skill: "stealth", verb: "Creep", watch: "duryodhana", daylight: true, stage: "stage_lotus_garden", trips: 1, spots: 2, secs: 40,
+      help: "Hold to creep along the hedge. Stop when Duryodhana looks your way.",
+      tally: "Seen: {s} of {m} · {t} seconds", spotted: "Duryodhana turns, and you freeze behind the hedge. His brothers point.", made: "You tag him!",
+      rules: "Bhima wants Duryodhana tagged. Creep up on him along the hedge by the pond while he watches the others. Seen twice, and you are out.",
+      stakes: ["You tag Duryodhana in front of everyone, and Bhima throws him in the pond.", "Duryodhana tags you out, and his brothers cheer."] },
+    duryo: { attr: "grace", skill: "stealth", verb: "Run", watch: "bhima", daylight: true, stage: "stage_lotus_garden", trips: 1, spots: 2, secs: 40,
+      help: "Hold to slip from bush to bush. Stop when Bhima looks your way.",
+      tally: "Seen: {s} of {m} · {t} seconds", spotted: "Bhima sees you and comes crashing through the lotuses. You dive back under the bushes.", made: "You touch the far wall!",
+      rules: "Bhima is hunting your side and throwing everyone he catches into the pond. Get across the garden to the far wall. Seen twice, and you are in the water.",
+      stakes: ["You are the only one on your side Bhima never catches.", "Bhima catches you and throws you into the pond."] }
+  };
+
   K.scenes([
+    // ---------- The prologue: a dream of the war ----------
+    // Before the childhood, two minutes at Kurukshetra: you, grown, in the dust of the thirteenth day,
+    // and one fight that breaks off mid-blow. Then you wake, six years old. Not on your record.
+    {
+      id: "a0_dream", act: 1, age: 44, prologue: true, away: true, actTitle: "A dream of Kurukshetra", place: "Kurukshetra, the thirteenth day",
+      art: "war_day14", caption: "Kurukshetra, the thirteenth day", title: "The field",
+      body: [
+        { aside: "A dream. None of this has happened yet." },
+        "Dust, and conch shells, and a sound like the sea that is ten thousand chariots turning at once. You are grown. There is a sword in your hand, and you know without being told that this is Kurukshetra.",
+        "To your left a banner with a monkey on it is pressing forward. Somewhere behind you someone is shouting your name, over and over.",
+        "A warrior in a dented helmet comes at you through the dust. You cannot see the face. You know it anyway."
+      ],
+      choices: [{ id: "fight", t: "Raise your sword", combat: "e_dream", hint: "A dream of the war" }],
+      next: "a1_home"
+    },
     {
       id: "a1_home", act: 1, age: 6, art: "origin", place: (S) => K.childPlace(S),
       title: "Your earliest memory",
-      body: (S) => [homeLine[S.origin],
+      body: (S) => [S.flags.includes("dreamt_the_field") ? { memory: "You wake with dust in your mouth that is not there. You are six years old, and the war is a story the old men tell." } : null,
+        homeLine[S.origin],
         S.karma ? { memory: ["At night you dream you are someone else: {past}, born in {land}, grown and grey, with a whole life behind them. In the dream it always ends the same way: {end!}.", { past: S.karma.name, land: K.ORIGINS[S.karma.origin]?.name || "", end: S.karma.title }] } : null,
         "You are six years old. How do you spend your days?"],
       choices: [
@@ -156,7 +187,7 @@
     // within reach of the palace. Hastinapura families are already there; the charioteer family comes
     // up the Ganga from Champa with Adhiratha's household.
     {
-      id: "a1_journey", when: (S) => S.origin !== "hastinapura", skipTo: "a1_princes",
+      id: "a1_journey", when: (S) => S.origin !== "hastinapura", skipTo: "a1_lane",
       act: 1, age: 7, art: "scene_journey", place: "The road to Hastinapura", caption: "Hastinapura, at the end of the road", to: "hastinapura", travelAfter: true,
       travel: (S) => (S.origin === "suta" ? "Adhiratha's household is called to the Kuru court, and your family goes with it." : "Your family is moving to Hastinapura."),
       enter: { flag: "moved_capital" },
@@ -176,6 +207,28 @@
         { id: "earth", t: "Keep a handful of earth from home, tied in a cloth", fx: { duty: { family: 1 }, flag: "kept_home_earth", journal: { src: "You carried a handful of earth from {origin} to Hastinapura." } },
           text: "You keep it under your sleeping mat. Years later, you still have it." }
       ],
+      next: "a1_lane"
+    },
+    // ---------- Ugra and Charu, the first time ----------
+    // At seven, the bully and the friend arrive together: Ugra tips your washing into the river, and a
+    // child you have never spoken to goes in after it. The fair at thirteen and the friend you choose at
+    // ten pay this off.
+    {
+      id: "a1_lane", act: 1, age: 7, art: (S) => K.childArt(S), place: (S) => K.childPlace(S), caption: "The river steps",
+      title: "The washing",
+      body: [
+        "Your mother sends you down to the river steps with a basket of washing. It is the first time she has let you go alone.",
+        "Ugra, the miller's son, is nine and already as broad as a door. He takes the basket out of your hands, looks inside, and tips the whole thing into the river.",
+        "Before you can move, a small, loud child you have never spoken to jumps straight in after it, clothes and all."
+      ],
+      choices: [
+        { id: "fight", t: "Go for Ugra", fx: { flag: ["met_charu", "knows_ugra", "fought_ugra_young"], setBond: { charu: 3 }, attr: { might: 1 }, memory: ["charu", "You went for Ugra at the river steps when you were seven, and Charu hit him with your wet washing."] },
+          text: "You hit him exactly once before he sits on you. The child from the river climbs out and hits him with your wet washing, hard. Ugra lets you both go, laughing, and looks at your faces for a long time, as if he is learning them." },
+        { id: "help", t: "Jump in and help the stranger", fx: { flag: ["met_charu", "knows_ugra"], setBond: { charu: 4 }, attr: { grace: 1 }, memory: ["charu", "You went into the river after your washing together when you were seven."] },
+          text: "Between you, you get it all back but one cloth. The stranger is Charu, the blacksmith's child from the end of your lane, and says the cloth was ugly anyway. You walk home dripping. Behind you, Ugra is still laughing." },
+        { id: "words", t: "Tell Ugra your father will hear of this", fx: { flag: ["met_charu", "knows_ugra", "warned_ugra_young"], setBond: { charu: 2 }, attr: { wisdom: 1 } },
+          text: "\"Tell him,\" Ugra says, and laughs. But he does not touch you again that day. The child in the river brings your washing up the steps, cloth by cloth, and gives you a look you cannot read." }
+      ],
       next: "a1_princes"
     },
     {
@@ -188,10 +241,16 @@
       ],
       body: ["You are eight. The palace has opened its gardens for a festival, and half the city has come in. The princes are choosing sides for a game of tag by the lotus pond."],
       choices: [
-        { id: "bhima", t: "Play on Bhima's side", fx: { bond: { bhima: 2, duryodhana: -1 }, flag: "played_bhima" },
-          text: "Bhima's side wins, of course. At the end he swings you up onto his shoulders, and from up there you see Duryodhana standing alone by the pond, dripping wet, not laughing." },
-        { id: "duryo", t: "Join Duryodhana and his brothers", fx: { bond: { duryodhana: 2, bhima: -1 }, flag: "played_duryodhana" },
-          text: "Bhima tags every one of you before the sun has moved, and throws two of the brothers into the pond. The others go home sulking. Duryodhana stays to fish your sandal out of the water. \"Next time,\" he says. \"Next time we win.\"" },
+        { id: "bhima", t: "Play on Bhima's side", game: "sneak", hint: "A game of tag", trial: TAG.bhima,
+          win: { fx: { bond: { bhima: 2, duryodhana: -1 }, flag: ["played_bhima", "tagged_duryodhana"], memory: ["duryodhana", "You tagged him by the lotus pond when you were eight, and Bhima threw him in."] },
+            text: "You touch Duryodhana's shoulder before he hears you. Bhima roars with delight, throws him in the pond and swings you up onto his shoulders. From up there you see Duryodhana climb out alone, dripping, and look straight at you." },
+          lose: { fx: { bond: { bhima: 1 }, flag: "played_bhima" },
+            text: "Duryodhana spins round and tags you, and his brothers cheer as if they had won a war. Bhima's side wins anyway, of course. Bhima tells you that you were very nearly sneaky." } },
+        { id: "duryo", t: "Join Duryodhana and his brothers", game: "sneak", hint: "A game of tag", trial: TAG.duryo,
+          win: { fx: { bond: { duryodhana: 3, bhima: -1 }, flag: ["played_duryodhana", "escaped_bhima"], memory: ["duryodhana", "You were the only one Bhima could not catch, the day of the lotus pond."] },
+            text: "Bhima throws every one of your side into the pond except you. You reach the far wall and touch it, and Duryodhana, dripping, laughs out loud for the first time all day. \"One of us,\" he says. \"One of us he could not catch.\"" },
+          lose: { fx: { bond: { duryodhana: 2, bhima: -1 }, flag: ["played_duryodhana", "ducked_by_bhima"] },
+            text: "Bhima catches you by the ankle, throws you in with the others and holds you under until you gasp. He means it as play. Duryodhana stays to fish your sandal out of the water. \"Next time,\" he says. \"Next time we win.\"" } },
         { id: "arjuna", t: "Slip away and watch Arjuna practise with a borrowed bow", fx: { bond: { arjuna: 1 }, skill: { archery: 1 }, flag: "watched_arjuna" },
           text: "Behind the stables Arjuna shoots at a knot in a tree, again and again, long after the others have gone in. He lets you try once. You miss. He shows you how to breathe out before you let go." },
         { id: "karna", t: "Help the charioteers' boy Karna rub down the horses", req: { origin: ["suta", "anga"] }, locked: "", fx: { bond: { karna: 2 }, skill: { chariot: 1 }, flag: "met_karna_young" },
@@ -204,18 +263,21 @@
       title: "A sage on the road",
       body: ["On the way home, an old sage sits by the road. His hair is matted, his body grey with ash, his water pot empty. He holds it out to you without a word."],
       choices: [
-        { id: "give", t: "Give him water and the best of your food", fx: { rep: { sages: 2 }, duty: { conscience: 1 }, flag: "kind_to_sage" }, text: "He drinks, blesses you, and walks on. You feel watched over for days." },
-        { id: "mock", t: "Make fun of his ash and his matted hair", fx: { curse: "sage", rep: { sages: -2 }, journal: "You mocked a sage on the road. He said you would remember it when you most needed your strength." },
-          text: "He looks at you for a long moment. \"You will remember this,\" he says quietly, \"when you most need your strength.\" You are cursed, and you do not know when it will strike." },
-        { id: "pass", t: "Walk past. Your mother told you not to talk to strangers", fx: {} }
+        { id: "give", t: "Give him water and the best of your food", fx: { rep: { sages: 2 }, duty: { conscience: 1 }, flag: "kind_to_sage" },
+          text: "He drinks, and puts his hand on your head. \"Eighteen days,\" he says, as if you should understand. \"Keep your feet for eighteen days.\" He walks on. You feel watched over for days." },
+        { id: "mock", t: "Make fun of his ash and his matted hair", fx: { curse: "sage", rep: { sages: -2 }, journal: "You mocked a sage on the road. He said you would remember it on the field where eighteen armies die." },
+          text: "He looks at you for a long moment. \"You will remember this,\" he says quietly, \"on the field where eighteen armies die, when you most need your strength.\" You are cursed, and you do not know what field he means." },
+        { id: "pass", t: "Walk past. Your mother told you not to talk to strangers", fx: {},
+          text: "Behind you he says something to the empty road. It sounds like \"eighteen\". When you look back, he is gone." }
       ],
       next: "a1_friend"
     },
     {
       id: "a1_friend", act: 1, age: 10, art: (S) => K.childArt(S), place: (S) => K.childPlace(S),
       title: "A friend for life",
-      body: [
-        "Charu, the blacksmith's child from your lane, has followed you everywhere for a year. Charu is loud, loyal and afraid of nothing except the dark.",
+      body: (S) => [
+        S.flags.includes("met_charu") ? "Charu, who jumped into the river after your washing when you were seven, has followed you everywhere since. Charu is loud, loyal and afraid of nothing except the dark."
+          : "Charu, the blacksmith's child from your lane, has followed you everywhere for a year. Charu is loud, loyal and afraid of nothing except the dark.",
         "Children choose their friends as if it were nothing. It is the most important choice of your childhood."
       ],
       choices: [
@@ -292,7 +354,9 @@
       id: "a1_wrestle", act: 1, age: 13, art: "scene_fair", place: "The wrestling ground at the spring fair",
       title: "Ugra at the fair",
       body: (S) => [
-        "Ugra, the miller's son, is two years older and twice your size. Every fair he takes the smaller children's sweets and dares anyone to stop him.",
+        S.flags.includes("knows_ugra") ? "Ugra, who tipped your washing into the river when you were seven, is fifteen now and bigger than ever. Every fair he takes the smaller children's sweets and dares anyone to stop him."
+          : "Ugra, the miller's son, is two years older and twice your size. Every fair he takes the smaller children's sweets and dares anyone to stop him.",
+        S.flags.includes("fought_ugra_young") ? { memory: "He sees you, and grins. He has not forgotten the river steps either." } : null,
         S.friend === "charu" ? "Today he has Charu's arm twisted behind Charu's back." : "Today he has a little girl's bangles in his fist, and she is crying."
       ],
       choices: [
@@ -321,6 +385,17 @@
       next: "a2_teacher"
     }
   ]);
+
+  // The prologue's fight: you as the warrior you will be, three rounds, then the dream breaks.
+  K.encounter({
+    id: "e_dream", title: "The thirteenth day", art: "war_day14", stage: "fight_war_field", caption: "Kurukshetra, the thirteenth day", lethal: false, callHelp: null,
+    dream: { hp: 95, atk: 9, def: 3, abilities: ["strike", "guard", "crush", "quake", "feint"] },
+    rounds: 3, roundsText: "Your blades meet, and the whole field goes white.", winLine: "The dream breaks.", loseLine: "The dream breaks.",
+    intro: "Two foot soldiers come in at your sides. The warrior in the dented helmet waits behind them, watching how you move.",
+    enemies: [K.foe("The warrior in the dented helmet", 4, { hp: 150, person: null }), K.foe("The soldier on your left", 1), K.foe("The soldier on your right", 1)],
+    win: { fx: { flag: "dreamt_the_field" }, text: "The dust swallows the noise. Far away, somebody is calling a child's name: yours. The field is thirty-eight years away. You are six, and you are waking." },
+    lose: { fx: { flag: "dreamt_the_field" }, text: "The blow comes, and the field goes white. Far away, somebody is calling a child's name: yours. The field is thirty-eight years away. You are six, and you are waking." }
+  });
 
   K.encounter({
     id: "e_ugra", title: "Ugra at the fair", art: "scene_fair", caption: "The wrestling ring", lethal: false,

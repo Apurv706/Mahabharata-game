@@ -84,7 +84,7 @@
     e_ugra: "fight_fair_ring", e_spar: "stage_training_ground", e_panchala: "fight_drupada_yard", e_border: "fight_border_road",
     e_kings: "fight_swayamvara", e_jayadratha: "fight_forest_road", e_bandits: "fight_forest_road", e_gandharva: "fight_royal_camp",
     e_sudatta: "fight_grazing", e_cattle: "fight_grazing", e_cattle_k: "fight_grazing",
-    e_day1: "fight_war_field", e_wheel: "fight_war_field", e_day16: "fight_war_field", e_day18: "fight_war_field",
+    e_dream: "fight_war_field", e_day1: "fight_war_field", e_wheel: "fight_war_field", e_day16: "fight_war_field", e_day18: "fight_war_field",
     e_guard: "fight_war_chariot", e_hunt: "fight_war_chariot", e_road: "fight_war_sunset", e_jaya: "fight_war_sunset", e_gate: "fight_war_sunset",
     e_night: "stage_battlefield_night", e_last_stand: "fight_chakravyuha_inner", e_ring: "fight_chakravyuha_inner", e_dushasana: "fight_war_camp", e_ep_carts: "fight_supply_carts", e_raid: "fight_camp_gate_night", e_ash: "fight_camp_gate_night"
   };
@@ -380,7 +380,7 @@
     if (B.over) {
       stopQte(); drums.stop();
       if (B.over === "flee") { const P = C.player(); if (P) pose(P.uid, "turn"); } // you turn your back on the fight
-      const msg = { win: K.val(enc.winLine) || "The fight is won.", lose: enc.lethal && !K.S.storyMode ? "You have fallen." : "You are beaten.", flee: "You leave the fight behind.", spare: "You let them live." }[B.over];
+      const msg = { win: K.val(enc.winLine) || "The fight is won.", lose: K.val(enc.loseLine) || (enc.lethal && !K.S.storyMode ? "You have fallen." : "You are beaten."), flee: "You leave the fight behind.", spare: "You let them live." }[B.over];
       if (K.Sound && !B._sounded) { B._sounded = true; if (B.over === "lose" && enc.lethal && !K.S.storyMode) K.Sound.play("fall"); }
       box.appendChild(U.el('<div class="result"><p><b>' + U.t(msg) + "</b></p></div>"));
       const done = () => { if (!onEndCb) return; /* once */ const cb = onEndCb; const out = C.end().over; onEndCb = null; const L = U.$("leaf"); if (L) L.dataset.battle = ""; document.body.classList.remove("intest"); cb(out); };

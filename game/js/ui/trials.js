@@ -550,7 +550,7 @@
       let gp = 0.9, gdir = -1, gpause = 0, turning = false, glock = 0, spot = 0.9;
       const gspeed = clamp(0.1 + (0.26 - light) * 0.25, 0.1, 0.13), REACH = 0.07;
       const painted = !!host.closest(".trial.immersive");
-      host.innerHTML = '<p class="score" aria-live="polite"></p><div class="sneakway' + (painted ? " painted" : "") + '">' +
+      host.innerHTML = '<p class="score" aria-live="polite"></p><div class="sneakway' + (painted ? " painted" : "") + (t.daylight ? " daylight" : "") + '">' +
         '<svg class="beam" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sneak-beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd890" stop-opacity="0.85"/><stop offset="1" stop-color="#ffaa50" stop-opacity="0.32"/></linearGradient></defs><polygon fill="url(#sneak-beam)"/><ellipse class="pool" rx="1" ry="4"/></svg>' +
         '<div class="goal"></div><div class="guard">' + (painted ? U.puppet(U.puppetFor(t.watch || "guard"), { h: 150, pose: "walk", flip: true }) : "") + '<i class="flame"></i></div><div class="me"></div></div><div class="sus"><i></i></div>' +
         '<p class="game-note" aria-live="polite">' + U.tr(t.help || "Hold to move. Stop before the light reaches you.") + '</p><div class="btnrow"></div>';

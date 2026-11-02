@@ -434,6 +434,9 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 .sneakway.painted .guard::before { display: none; }
 .sneakway .guard .flame { position: absolute; left: 10px; bottom: 34px; width: 14px; height: 14px; margin: -7px; border-radius: 50%; background: radial-gradient(circle, #fff3c4, #ffb347 45%, rgba(255, 140, 50, 0) 72%); box-shadow: 0 0 18px 6px rgba(255, 170, 80, 0.55); animation: flick 0.35s ease-in-out infinite alternate; } /* taste-skill-ignore: a torch flame */
 .sneakway .guard.left .flame { left: -10px; }
+/* Daylight (a game of tag): no torch; the cone is only where the watcher is looking. */
+.sneakway.daylight .guard .flame { opacity: 0; box-shadow: none; animation: none; }
+.sneakway.daylight .beam { opacity: 0.45; mix-blend-mode: screen; }
 .sneakway .guard.tell .flame { bottom: 52px; }
 @keyframes flick { from { transform: scale(0.9); opacity: 0.9; } to { transform: scale(1.12); opacity: 1; } }
 .sneakway .goal { position: absolute; right: 0; top: 0; bottom: 0; width: 6%; background: linear-gradient(90deg, transparent, rgba(127, 207, 166, .35)); }
@@ -1594,3 +1597,12 @@ svg .pr-hint { outline: none; filter: drop-shadow(0 0 6px #ffd680) drop-shadow(0
 .unit .markline .mark-flag { width: 14px; height: 17px; flex: none; }
 @media (prefers-reduced-motion: no-preference) { #arena .actor > .mark-flag { animation: mark-in .35s ease-out; } }
 @keyframes mark-in { from { opacity: 0; transform: translate(-50%, -8px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+/* Waking from the prologue's dream: the field goes white, one line, then the childhood. */
+.wake { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: max(24px, var(--sat, 0px)) 28px max(24px, var(--sab, 0px)); background: #f6efe0; color: #2a1a10; opacity: 0; transition: opacity 0.9s ease; cursor: pointer; }
+.wake.in { opacity: 1; }
+.wake.out { opacity: 0; transition-duration: 0.6s; }
+.wake p { max-width: 30ch; margin: 0; font-family: var(--display); font-style: italic; font-size: clamp(22px, 5.4vw, 34px); line-height: 1.4; text-align: center; opacity: 0; transform: translateY(6px); transition: opacity 1.2s ease 0.7s, transform 1.2s ease 0.7s; }
+.wake.in p { opacity: 1; transform: none; }
+.wake .mo-tap { position: absolute; right: 22px; bottom: max(18px, var(--sab, 0px)); color: #7a6450; font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { .wake, .wake p { transition: none; } }

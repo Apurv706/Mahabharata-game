@@ -262,7 +262,8 @@
     const plate = leaf.querySelector(".pagehead,.plate"); if (plate) plate.dataset.hold = 1400;
     const h1 = null;
     const lines = [...leaf.querySelectorAll(".telling p")];
-    lines.forEach((l) => l.classList.add("write"));
+    // The quill writes how the bards begin, and how they end; the rest of the telling appears.
+    lines.forEach((l, i) => { if (i === 0 || i === lines.length - 1) l.classList.add("write"); });
     const fates = leaf.querySelector(".fates");
     U.keys([]);
     U.stage([plate, ...lines, fates, ...(fates ? fates.children : []), leaf.querySelector(".text .btnrow")], () => U.keys([again]));

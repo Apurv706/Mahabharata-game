@@ -96,6 +96,29 @@ Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct);
       - A recurved bow held at its grip.
       - A dagger.
       - Raised or swinging, a weapon carries on past the fist instead of hanging upside down.
+36. **Archer path:** the description no longer promises "the surest road to an astra". It now reads "the weapon of Arjuna, Karna and Drona"; divine weapons stay open to every path.
+
+## Built 2 Nov: a faster start
+37. **A prologue at Kurukshetra.**
+    - **Where it comes:** a new life opens on the thirteenth day of the war, before the childhood. It is marked as a dream ("None of this has happened yet"; the header reads "Years from now").
+    - **The fight:** you are grown, with a sword. You fight two soldiers and a warrior in a dented helmet whose face you cannot see, for three rounds.
+    - **The cut:** "The dream breaks." The screen goes white: "The field is thirty-eight years away. You are six, and you are waking." Then the Act I card. Your earliest memory opens with "You wake with dust in your mouth that is not there."
+    - **Kept apart from the life:** not on your record, not on the map, no act card of its own.
+38. **Stakes before age 8:**
+    - **The game of tag by the lotus pond** is now a stealth test played on the lotus garden.
+      - On Bhima's side you creep up on Duryodhana: tag him and Bhima throws him in the pond (he remembers).
+      - On Duryodhana's side Bhima hunts you: escape and Duryodhana calls you "one of us"; get caught and you are held under.
+      - Both outcomes keep the way to that prince as a friend at 10.
+    - **The sage on the road names the war:**
+      - Fed, he says "Keep your feet for eighteen days".
+      - Mocked, he curses you "on the field where eighteen armies die" (his curse does fall in the war's fights).
+      - Passed by, he says "eighteen" to the empty road.
+39. **Ugra and Charu at seven.**
+    - **The new scene, "The washing":** Ugra tips your washing into the river, and a child you have never spoken to jumps in after it. You choose: go for Ugra, jump in and help, or threaten him with your father.
+    - **Later payoffs:** at 10 Charu is the one who jumped into the river; at 13 Ugra is the boy who tipped your washing, and if you fought him he grins: "He has not forgotten the river steps either."
+40. **The quill writes only the important lines:**
+    - **Written by the quill:** the epic's own lines ("As it is written"), what people say, memories and curses, what came of your choice, and the first and last lines of an ending.
+    - **Everything else** simply appears.
 
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**

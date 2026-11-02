@@ -339,9 +339,9 @@
     const enc = K.ENCOUNTERS[encId];
     const br = enc[outcome] || {};
     const delta = K.apply(br.fx);
-    const rec = K.record();
-    if (outcome === "win" || outcome === "spare") { rec.won++; rec.last = "won"; }
-    else if (outcome === "lose") { rec.lost++; rec.last = "lost"; }
+    const rec = enc.dream ? {} : K.record(); // a dream fight is not on your record
+    if (outcome === "win" || outcome === "spare") { rec.won = (rec.won || 0) + 1; rec.last = "won"; }
+    else if (outcome === "lose") { rec.lost = (rec.lost || 0) + 1; rec.last = "lost"; }
     else rec.last = "fled";
     // A vow never to strike the unarmed: a foe you spared may one day pull you out of a deadly fight.
     if (outcome === "spare" && K.hasVow("spare_unarmed", S)) S.spared = (S.spared || 0) + 1;

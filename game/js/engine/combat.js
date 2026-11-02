@@ -154,7 +154,10 @@
   C.start = function (encId, onEnd) {
     const S = K.S, enc = K.ENCOUNTERS[encId];
     if (!enc) throw new Error("Missing encounter: " + encId);
-    B = Object.assign({ enc, units: [makePlayer(S)], round: 1, log: [], acts: [], over: null, used: {}, onEnd, bid: Date.now() + ":" + encId }, api);
+    // A dream fight (the prologue): you fight as the grown warrior you will be, not the child you are.
+    const me = makePlayer(S);
+    if (enc.dream) { Object.assign(me, enc.dream); me.maxHp = me.hp; me.abilities = (enc.dream.abilities || me.abilities).slice(); }
+    B = Object.assign({ enc, units: [me], round: 1, log: [], acts: [], over: null, used: {}, onEnd, bid: Date.now() + ":" + encId }, api);
     (K.val(enc.allies) || []).forEach((a, i) => { const d = typeof a === "string" ? K.UNITS[a] && K.UNITS[a](S) : a; if (d) B.units.push(makeUnit(d, "ally", i, enc)); });
     K.val(enc.enemies).forEach((e, i) => B.units.push(makeUnit(e, "enemy", i, enc)));
     // Some fights let you shout for a friend (once), and show the divine weapon even to those who
@@ -167,7 +170,7 @@
     // The screen asks for step mode (each blow aimed at you met in time); with timed moments off the
     // blows are met by chance, on kinder odds; under the tests, on the plain odds.
     B.stepMode = !!C.stepNext; B.lenient = !C.stepNext && !K.headless;
-    const rec = K.record(S);
+    const rec = enc.dream ? {} : K.record(S);
     if (rec.last === "lost") api.say("You remember how your last fight ended. Your hands are not quite steady.");
     else if (rec.last === "won" && rec.won >= 3) api.say("You have won fights before, and your body remembers how.");
     if (enc.intro) api.say(K.val(enc.intro));

@@ -2,7 +2,7 @@
    Plain data. Prose is a working draft after the public-domain Ganguli translation (PRD §4.4). */
 (function (K) {
   "use strict";
-  K.FIRST_SCENE = "a1_home";
+  K.FIRST_SCENE = "a0_dream"; // the prologue at Kurukshetra, then the childhood (content/act1.js)
   K.ACT_TITLES = { 1: "Act I · Childhood", 2: "Act II · Training", 3: "Act III · Young adult", 4: "Act IV · The fracture", 5: "Act V · The exile years", 6: "Act VI · The war", 7: "Act VII · Aftermath" };
   // One line under each act's name on its opening card.
   K.ACT_LINES = {
