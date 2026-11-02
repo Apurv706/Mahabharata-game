@@ -428,7 +428,7 @@
   function defend(B, u, th, done) {
     const g = K.attr("grace");
     const T = 1.1 * th.speed, END = T * 1.32;
-    const W = { perfect: 0.05 + g * 0.003, move: 0.13 + g * 0.008, block: 0.14 + g * 0.008 };
+    const W = { perfect: 0.065 + g * 0.004, move: 0.17 + g * 0.009, block: 0.2 + g * 0.01 }; // in seconds either side of the mark: a touch wider (2 Nov), a phone tap lands late
     const who = K.text(u.src || u.name), shape = shapeFor(th.id), S2 = SHAPES[shape];
     const what = th.id === "arrows" && S2.arrow ? S2.arrow : S2.line;
     const el = U.el('<div class="qte" role="group" aria-label="' + U.esc(K.tr("Meet the blow")) + '"><p class="qte-who"><b>' + U.esc(who) + "</b> · " + U.esc(K.tr(what)) + "</p>" +
@@ -456,7 +456,7 @@
     };
     const now = () => (U.clock() - t0) / 1000; // game time: stands still while the game is paused
     const act = (move) => {
-      if (over) return;
+      if (over || !t0) return; // the blow has not begun: a press now is neither early nor late
       const d = now() - T, a = Math.abs(d);
       if (move === "block") { if (a <= W.perfect) finish("counter", null, move); else if (a <= W.block) finish("block", null, move); else finish("miss", d < 0 ? "early" : "late", move); return; }
       if (move !== S2.need) return finish("miss", "wrong", move);
