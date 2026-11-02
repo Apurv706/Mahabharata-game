@@ -128,7 +128,7 @@
       lose: { fx: {}, text: "Your arrows rattle through the leaves. Drona moves on to the next student without a word." },
       retryLose: { penalty: 1, fx: { bond: { drona: -2 }, duty: { teacher: -1 }, flag: "missed_bird_twice" }, text: "You miss again. Drona turns away before your last arrow lands. He will not watch you shoot again." } },
     kripa: { t: "Pick up the wooden sword", img: "teacher_kripa", req: { teacher: "kripa" }, game: "push", hint: "A sword drill",
-      trial: { attr: "grace", skill: "mace", foe: "Kripa", verb: "Parry", stage: "stage_training_ground", cast: ["kripa"], tally: "Parries: {g} of 3 · Hits taken: {b} of 3", good: "Parried!", soon: "Too soon. He feints, and you bite.", late: "Too late. The wood cracks on your ribs.",
+      trial: { attr: "grace", skill: "mace", foe: "Kripa", verb: "Parry", face: "drill", stage: "stage_training_ground", cast: ["kripa"], tally: "Parries: {g} of 3 · Hits taken: {b} of 3", good: "Parried!", soon: "Too soon. He feints, and you bite.", late: "Too late. The wood cracks on your ribs.",
         rules: "Kripa attacks with a wooden sword, faster each time. Parry as the ring meets the mark. Three clean parries pass; three hits and you are done.",
         stakes: ["Kripa trusts you with real steel.", "Kripa sends you to the back row. Tomorrow you may try again."] },
       retryStakes: ["Kripa trusts you with real steel.", "Kripa gives up on you, and you must find another teacher. It counts as two failures, and it will weigh on every weapon test to come."],
@@ -190,7 +190,7 @@
       lose: { fx: {}, text: "The bow springs back and stings your arm from wrist to elbow." },
       retryLose: { penalty: 1, fx: { flag: "war_bow_twice" }, text: "The string slips again. The bow goes back on its wall, and you go back to deciding what you are for." } },
     mace: { t: "Break the practice post", req: { path: "mace", not: { teacher: "kripa" } }, game: "push", hint: "A test of strength",
-      trial: Object.assign({}, POST, { verb: "Strike", period: 0.95, tally: "Clean blows: {g} of 3 · Glancing: {b} of 3", good: "The post cracks!", soon: "Too soon. The blow glances off.", late: "Too late. You hit it off balance.",
+      trial: Object.assign({}, POST, { verb: "Strike", face: "post", period: 0.95, tally: "Clean blows: {g} of 3 · Glancing: {b} of 3", good: "The post cracks!", soon: "Too soon. The blow glances off.", late: "Too late. You hit it off balance.",
         rules: "A post of seasoned teak stands in the yard. Strike as the ring meets the mark: three clean blows split it. Three glancing ones and your arms give out.",
         stakes: ["The post splits, and the younger students stare.", "The post stands. You may try again tomorrow."] }),
       retryStakes: ["The post splits, and the younger students stare.", "The post stands again, and you must choose another path. It counts as two failures, and it will weigh on every mace test to come."],
@@ -419,7 +419,7 @@
   };
   const LOCAL = {
     border: { t: "Hold the village gate", req: (S) => ["panchala", "gandhara"].includes(K.homeKey(S)), game: "push", hint: "A test of strength",
-      trial: { attr: "might", skill: "mace", foe: "The raiders", stage: "stage_border_village", cast: ["soldier", "soldier"], verb: "Brace", period: 0.95, tally: "Rushes held: {g} of 3 · Gate given: {b} of 3", good: "The rush breaks on the gate!", soon: "Too soon. You brace on nothing.", late: "Too late. The gate gives.",
+      trial: { attr: "might", skill: "mace", foe: "The raiders", stage: "stage_border_village", cast: ["soldier", "soldier"], face: "gate", verb: "Brace", period: 0.95, tally: "Rushes held: {g} of 3 · Gate given: {b} of 3", good: "The rush breaks on the gate!", soon: "Too soon. You brace on nothing.", late: "Too late. The gate gives.",
         rules: "Raiders come out of the dusk at the village by the border, the week the Kauravas ride on Matsya, as if the whole land had been given leave. Brace the gate as each rush meets it. Hold three.",
         stakes: ["The raiders ride off, and the village feasts you.", "The gate gives a little. They are forming up again."] },
       retryStakes: ["The raiders ride off, and the village feasts you.", "The raiders break the gate and take the granary. It counts as two failures, and it will weigh on every test of command to come."],

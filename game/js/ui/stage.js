@@ -66,20 +66,45 @@
   const GEAR = { aim: "bow", draw: "bow", push: null, steady: null, sneak: null, breath: null, escape: null, fuse: null, notice: null, retort: null, board: null, rings: null, formation: null, array: null, race: "whip", herd: null };
   // Someone to push against when a test names no one.
   const FOE_FOR = { push: ["soldier"] };
+  // The faces of the timing test (trial.face, trials.js): what you hold, who stands across from you
+  // and what they hold, and the thing in the scene that takes the blows. Without a face, a push test
+  // is a shoving match, hand to hand.
+  const FACES = {
+    drill: { me: "woodsword", foe: "woodsword" },               // Kripa's sword drill: wood on wood
+    post: { me: "mace", cast: [], prop: "post" },               // the practice post stands alone
+    gate: { me: null, prop: "gate", raiders: [null, "sword"] }  // the village gate: raiders charge it
+  };
+  U.PUSH_FACES = FACES;
+  // Props cut from leather like the puppets. A teak post bound with rope, with three cracks to open
+  // and two halves to fall apart; a plank gate between its posts, the leaf hinged on the left.
+  const PROPS = {
+    post: '<svg class="propsvg" viewBox="0 0 60 200" aria-hidden="true"><g class="pl"><path d="M14 200 L16 18 Q30 8 30 8 L30 200 Z" fill="#8a5a2c" stroke="#24120a" stroke-width="2"/></g><g class="pr"><path d="M30 8 Q44 10 44 18 L46 200 L30 200 Z" fill="#7a4e24" stroke="#24120a" stroke-width="2"/></g>' +
+      '<g class="ropes"><path d="M15 60 H45 M15 66 H45 M15 140 H46 M15 146 H46" stroke="#d9b26a" stroke-width="3"/><path d="M15 60 H45 M15 140 H46" stroke="#24120a" stroke-width=".8" stroke-dasharray="2 2"/></g>' +
+      '<g class="cracks" fill="none" stroke="#1a0c05" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path class="c1" d="M30 90 L27 102 L32 112 L28 124" opacity="0"/><path class="c2" d="M30 40 L33 52 L28 64 L31 78 L29 90" opacity="0"/><path class="c3" d="M28 124 L31 150 L29 176 L30 200" opacity="0"/></g>' +
+      '<path d="M20 30 v20 M40 40 v30 M22 160 v24" stroke="#5a3418" stroke-width="1" opacity=".6"/></svg>',
+    gate: '<svg class="propsvg" viewBox="0 0 120 180" aria-hidden="true"><path d="M8 180 V10 M112 180 V10" stroke="#5a3418" stroke-width="10" stroke-linecap="round"/><path d="M4 12 H116" stroke="#5a3418" stroke-width="7" stroke-linecap="round"/>' +
+      '<g class="leaf"><rect x="16" y="26" width="88" height="148" rx="3" fill="#8a5a2c" stroke="#24120a" stroke-width="2"/><path d="M38 26 V174 M60 26 V174 M82 26 V174" stroke="#5a3418" stroke-width="1.6"/><path d="M16 60 H104 M16 140 H104" stroke="#3a2412" stroke-width="7"/><path d="M18 62 L102 138" stroke="#3a2412" stroke-width="6"/><circle cx="24" cy="60" r="2" fill="#d9a53a"/><circle cx="96" cy="60" r="2" fill="#d9a53a"/><circle cx="24" cy="140" r="2" fill="#d9a53a"/><circle cx="96" cy="140" r="2" fill="#d9a53a"/></g></svg>'
+  };
   U.castBand = function (t, kind) {
     if (!t || !t.stage || !K.puppetSpec) return "";
     const info = U.stageInfo(t.stage);
+    const face = kind === "push" && FACES[t.face] ? t.face : null, fc = face ? FACES[face] : null;
     const spec = Object.assign({}, K.puppetSpec(K.S));
     if (t.item !== undefined) spec.item = t.item;
+    else if (fc) spec.item = fc.me;
     else if (kind && kind in GEAR) spec.item = kind === "aim" && t.verb === "Throw" ? null : GEAR[kind]; // a stone or a rope is thrown with empty hands
     const me = U.puppet(spec, { h: 150, label: K.tr("You"), cls: "actor-me" });
-    let cast = K.val(t.cast) || [];
-    if (!cast.length && FOE_FOR[kind]) cast = FOE_FOR[kind];
+    let cast = fc && fc.cast ? fc.cast : K.val(t.cast) || [];
+    if (!cast.length && FOE_FOR[kind] && !(fc && fc.prop)) cast = FOE_FOR[kind];
     // Elders (a teacher, a sage) are marked: some tests stand them apart, further back.
-    const others = cast.slice(0, 3).map((id, i) => { const sp = Object.assign({}, U.puppetFor(id) || {}); if (kind === "push") sp.item = null; // a shoving match is hand to hand
-      return '<span class="actor foe f' + i + (sp.stage === "elder" ? " elder" : "") + '" data-id="' + id + '">' + U.puppet(sp, { h: 150, flip: true }) + "</span>"; }).join("");
-    return '<div class="cast' + (info.top ? " top" : "") + (info.side ? " side" : "") + '" style="--stage:url(\'' + U.artUrl(U.stripOf(t.stage)) + '\')" aria-hidden="true">' +
-      '<span class="actor me">' + me + "</span>" + others + "</div>";
+    const others = cast.slice(0, 3).map((id, i) => { const sp = Object.assign({}, U.puppetFor(id) || {});
+      if (face === "drill") sp.item = fc.foe;
+      else if (face === "gate") sp.item = fc.raiders[i] || sp.item;
+      else if (kind === "push") sp.item = null; // a shoving match is hand to hand
+      return '<span class="actor foe f' + i + (sp.stage === "elder" ? " elder" : "") + (face === "gate" ? " raider" : "") + '" data-id="' + id + '">' + U.puppet(sp, { h: 150, flip: true }) + "</span>"; }).join("");
+    const prop = fc && fc.prop ? '<span class="actor prop ' + fc.prop + '">' + PROPS[fc.prop] + "</span>" : "";
+    return '<div class="cast' + (info.top ? " top" : "") + (info.side ? " side" : "") + (face ? " face face-" + face : "") + '" style="--stage:url(\'' + U.artUrl(U.stripOf(t.stage)) + '\')" aria-hidden="true">' +
+      '<span class="actor me">' + me + "</span>" + prop + others + "</div>";
   };
   // Set a pose for a while, then return to the stance for this test.
   const timers = new WeakMap();

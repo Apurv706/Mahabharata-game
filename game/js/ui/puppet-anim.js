@@ -77,7 +77,9 @@
     raf = 0;
     const dt = Math.min(0.033, last ? (now - last) / 1000 : 0.016); last = now;
     if (frozen > 0) frozen -= dt * 1000;
-    else for (const r of live) { if (!r.svg.isConnected) { live.delete(r); continue; } r.step(dt, now / 1000); }
+    // A slow frame (30 Hz, or a stall) is stepped in short slices: a stiff joint (a strike) would
+    // otherwise overshoot further each step and fling the figure about.
+    else { const n = Math.ceil(dt / 0.009); for (const r of live) { if (!r.svg.isConnected) { live.delete(r); continue; } for (let i = 1; i <= n; i++) r.step(dt / n, now / 1000 - (n - i) * dt / n); } }
     if (live.size) raf = requestAnimationFrame(frame); else last = 0;
   }
   const wake = () => { if (!raf && live.size && typeof requestAnimationFrame === "function") raf = requestAnimationFrame(frame); };

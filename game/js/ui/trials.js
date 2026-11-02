@@ -413,6 +413,156 @@
 
   // ---------- Push: a ring closes on your opponent; push as it meets him ----------
   // Three good pushes win; three bad ones lose.
+  // The one timing test wears three faces (trial.face; the figures and props are drawn by
+  // U.castBand): Kripa's sword drill, the practice post, the village gate. Each acts out what it is
+  // with live figures (puppet-anim.js); the ring, its timing and the scoring are the same for all.
+  // Without a face it is a shoving match, and the figures take the plain poses as before.
+  function pushFace(face, wrap) {
+    const cast = wrap && wrap.querySelector(".cast.face-" + face);
+    if (!cast) return null;
+    const PF = { // the faces' own poses, beside the rig's (the drill guard, the shoulder on the gate)
+      onGuard: { rot: -4, armF: -64, foreF: -58, armB: -20, foreB: -40, legF: -16, legB: 16, shinB: 8, item: 180 },
+      parry: { rot: -9, ty: 3, head: 4, armF: -118, foreF: -64, armB: -30, foreB: -40, legF: -22, shinF: 10, legB: 22, shinB: 10, item: 180 },
+      reach: { rot: 7, tx: 4, armF: -98, foreF: -40, armB: -20, foreB: -30, legF: -24, legB: 20, shinB: 6, item: 180 },
+      ouch: { rot: 12, ty: 3, head: 22, armF: 30, foreF: -60, armB: -40, foreB: -80, legF: -6, legB: 14, shinB: 12, item: 140 },
+      maceUp: { rot: -14, tx: -6, head: -8, armF: -190, foreF: -10, armB: -170, foreB: -20, legF: -20, legB: 20, shinB: 10, item: 180 },
+      maceDown: { rot: 18, tx: 8, head: 10, armF: -70, foreF: -6, armB: -60, foreB: -10, legF: -32, shinF: 14, legB: 26, shinB: 6, item: 180 },
+      shoulder: { rot: 20, ty: 4, head: -6, armF: -78, foreF: -26, armB: -60, foreB: -40, legF: -30, shinF: 22, legB: 30, shinB: 8 },
+      shoved: { rot: -10, head: -14, armF: -40, foreF: -60, armB: -20, foreB: -50, legF: -6, legB: 22, shinB: 14 },
+      charge: { rot: 18, head: -4, armF: -60, foreF: -30, armB: -20, foreB: -40, legF: -36, shinF: 30, legB: 30, shinB: 20, item: 180 },
+      reel: { rot: -16, head: -20, armF: -150, foreF: -20, armB: -120, foreB: -10, legF: 10, legB: -10, shinB: 20, item: 180 }
+    };
+    const P = U.RIG_POSES || {};
+    for (const k in PF) if (!P[k]) P[k] = PF[k];
+    const JK = ["rot", "tx", "ty", "head", "armF", "foreF", "armB", "foreB", "legF", "shinF", "legB", "shinB", "item", "draw", "tilt"];
+    const mix = (a, b, f) => { const o = {}; for (const k of JK) o[k] = (a[k] || 0) + ((b[k] || 0) - (a[k] || 0)) * f; return o; };
+    const aim = (r, p, k, z) => { if (!r) return; for (const key of JK) r.t[key] = p[key] || 0; if (k) r.k = k; if (z != null) r.z = z; r.kick({}); };
+    const moving = !!(U.motion && U.motion() && U.rig);
+    const meEl = cast.querySelector(".actor.me"), foeEls = [...cast.querySelectorAll(".actor.foe")], prop = cast.querySelector(".actor.prop");
+    const rig = (el, base) => (moving && el ? U.rig(el.querySelector("svg.pp"), el, base) : null);
+    const me = rig(meEl, face === "gate" ? "shoulder" : "onGuard");
+    const foes = foeEls.map((el) => rig(el, "ready"));
+    const foe = foes[0];
+    // The study's figures stand 275 px tall; distances there are scaled to the figures here.
+    const u = () => Math.max(0.3, (meEl.querySelector("svg").getBoundingClientRect().height || 150) / 275);
+    const at = (el, fx, fy) => { const r = el.getBoundingClientRect(), c = cast.getBoundingClientRect(); return { x: r.left - c.left + r.width * fx, y: r.top - c.top + r.height * fy }; };
+    const chips = (p, n, colour, up) => U.flingBits(cast, "chip", p, n, 10, colour, up);
+    const jolt = () => { if (!moving) return; wrap.classList.remove("jolt"); void wrap.offsetWidth; wrap.classList.add("jolt"); };
+    const flash = (el) => { el.classList.add("flash"); setTimeout(() => el.classList.remove("flash"), 110); };
+    const freeze = (ms) => { if (moving) U.rigFreeze(ms); };
+    const wait = U.wait;
+    const S = { score: 0, shove: 0, shoveV: 0, shake: 0, shakeV: 0, split: 0, splitting: false, open: 0, openV: 0, given: 0, busy: false, ended: false };
+    const to = (r, p, k, z) => { if (!S.ended) aim(r, p, k, z); }; // once it is over, the end poses hold
+    const dx = (r, v) => { if (r && !S.ended) r.t.dx = v; };
+
+    // Ground given and taken, the post shaking and splitting, the gate giving: springs, every frame
+    // until the test leaves the screen.
+    let last = 0;
+    const tick = (nowMs) => {
+      if (!cast.isConnected) return;
+      const dt = Math.min(0.033, last ? (nowMs - last) / 1000 : 0.016); last = nowMs;
+      const k = u();
+      if (face === "drill") {
+        const target = S.score * 24 * k;
+        if (moving) { S.shoveV += (-90 * (S.shove - target) - 2 * 0.55 * Math.sqrt(90) * S.shoveV) * dt; S.shove += S.shoveV * dt; } else S.shove = target;
+        cast.style.setProperty("--shove", S.shove.toFixed(1) + "px");
+      }
+      if (face === "post" && prop) {
+        const svg = prop.querySelector("svg");
+        if (moving) { S.shakeV += (-900 * S.shake - 2 * 0.12 * 30 * S.shakeV) * dt; S.shake += S.shakeV * dt; } else S.shake = 0;
+        svg.style.transform = "rotate(" + (S.shake * 0.25).toFixed(2) + "deg)"; // a clean blow rocks it about 2 degrees
+        if (S.splitting && S.split < 1) {
+          S.split = moving ? Math.min(1, S.split + dt * 2.6) : 1;
+          const e = S.split * S.split; // the halves fall away slowly, then all at once
+          svg.querySelector(".pl").setAttribute("transform", "rotate(" + (-14 * e).toFixed(2) + " 16 200)");
+          svg.querySelector(".pr").setAttribute("transform", "rotate(" + (16 * e).toFixed(2) + " 46 200)");
+          svg.querySelector(".ropes").setAttribute("opacity", (1 - S.split).toFixed(2)); // the ropes snap
+          svg.querySelector(".cracks").setAttribute("opacity", (1 - S.split).toFixed(2));
+        }
+      }
+      if (face === "gate" && prop) {
+        const target = clamp(S.given * 0.08, 0, 0.3);
+        if (moving) { S.openV += (-400 * (S.open - target) - 2 * 0.25 * 20 * S.openV) * dt; S.open += S.openV * dt; } else S.open = target;
+        const o = Math.max(0, S.open);
+        prop.querySelector(".leaf").setAttribute("transform", "translate(16 0) scale(" + (1 - o * 0.55).toFixed(3) + " 1) translate(-16 0)");
+        meEl.style.setProperty("--shove", (-o * 137 * k).toFixed(1) + "px"); // the gate gives and you are pushed back
+      }
+      requestAnimationFrame(tick);
+    };
+    if (typeof requestAnimationFrame === "function") requestAnimationFrame(tick);
+
+    return {
+      // The tell, as the ring closes (p: 0 at the start, 0.85 on the mark): the blow gathers and is at
+      // its height on the mark. Kripa draws back his sword; you raise the mace; the raiders gather.
+      tell(p) {
+        if (S.busy || !moving) return;
+        const f = clamp((p - 0.35) / 0.5, 0, 1), e = f * f * (3 - 2 * f), k = u();
+        if (face === "drill") to(foe, mix(P.ready, P.windup, e), 700, 0.62);
+        if (face === "post") to(me, mix(P.onGuard, P.maceUp, e), 700, 0.62);
+        if (face === "gate") foes.forEach((r, i) => { dx(r, -(i ? 80 : 60) * e * k); to(r, mix(P.ready, P.charge, e * (i ? 0.9 : 1)), 700, 0.6); });
+      },
+      // A press (or the ring running out), acted out. how: "ok", "soon" or "late".
+      async hit(ok, how, good, bad) {
+        S.score = good - bad; if (!ok) S.given = bad;
+        S.busy = true;
+        const k = u();
+        if (face === "drill") {
+          if (how === "ok") { // blade on blade: chips fly and he is knocked back a step
+            to(me, P.parry, 1600, 0.5); to(foe, P.strike, 1900, 0.5); dx(foe, -30 * k); await wait(60);
+            freeze(60); const p = at(meEl.querySelector(".foreF") || meEl, 0.5, 0); chips({ x: p.x + 14 * k, y: p.y - 10 * k }, 10, "#c9a66b", true);
+            if (foe) foe.kick({ rot: -200, armF: -300, dx: 160 * k }); if (me) me.kick({ dx: -60 * k });
+            await wait(260);
+          } else if (how === "soon") { // you guard too early: he pulls the cut and taps you under it
+            to(me, P.parry, 1600, 0.5); await wait(90);
+            to(foe, mix(P.ready, P.windup, 0.3), 800, 0.6); await wait(140);
+            to(foe, P.reach, 1800, 0.5); dx(foe, -40 * k); await wait(70);
+            freeze(45); flash(meEl);
+            to(me, P.ouch, 900, 0.45); if (me) me.kick({ dx: -120 * k }); await wait(260);
+          } else { // too late: the wood lands
+            to(foe, P.strike, 1900, 0.5); dx(foe, -40 * k); await wait(60);
+            freeze(60); flash(meEl); jolt();
+            to(me, P.ouch, 900, 0.4); if (me) me.kick({ dx: -200 * k, rot: 200 });
+            await wait(300);
+          }
+          dx(foe, 0); to(foe, P.ready, 480, 0.5); to(me, P.onGuard, 480, 0.55);
+        } else if (face === "post") {
+          to(me, P.maceDown, 2000, 0.5); dx(me, 20 * k); await wait(70);
+          freeze(60);
+          const hp = prop ? at(prop, 0.4, 0.45) : { x: 0, y: 0 };
+          if (ok) { // a clean blow cracks the post and shakes it; the third splits it
+            chips(hp, 12, "#c9a66b", true); jolt(); S.shakeV += 260;
+            const c = prop && prop.querySelector(".c" + good); if (c) c.setAttribute("opacity", 1);
+            if (good >= 3) S.splitting = true;
+          } else { chips(hp, 4, "#8a5a2c", false); S.shakeV += 90; if (me) me.kick({ rot: -260, armF: 300, dx: -160 * k }); } // it glances off
+          await wait(220); dx(me, 0); to(me, P.maceUp, 600, 0.55); await wait(260); to(me, P.onGuard, 480, 0.55);
+        } else if (face === "gate") {
+          foes.forEach((r, i) => { to(r, P.charge, 900, 0.5); dx(r, -(i ? 150 : 110) * k); });
+          if (ok || how === "soon") to(me, P.shoulder, 1400, 0.5);
+          await wait(110);
+          freeze(60); jolt();
+          if (prop) chips(at(prop, 0.7, 0.45), ok ? 10 : 6, "#8a5a2c", true);
+          if (ok) { // held: they bounce off the planks
+            S.openV -= 1.5; if (me) me.kick({ dx: -40 * k });
+            foes.forEach((r, i) => { to(r, P.reel, 900, 0.4); dx(r, -(i ? 70 : 40) * k); });
+          } else { // given: the gate bangs open and you are shoved back
+            S.openV += 6; to(me, P.shoved, 900, 0.4); if (me) me.kick({ dx: -260 * k }); flash(meEl);
+          }
+          await wait(320);
+          foes.forEach((r) => { dx(r, 0); to(r, P.ready, 420, 0.55); }); to(me, P.shoulder, 480, 0.55);
+        }
+        S.busy = false;
+      },
+      // The end: you cheer or sag; Kripa lowers his sword or stays ready; the raiders fall back or crow.
+      end(win) {
+        S.busy = true; S.ended = true;
+        aim(me, win ? P.cheer : P.slump, 520, 0.45); if (me) me.t.dx = 0;
+        if (face === "drill") { aim(foe, win ? P.stand : P.ready, 480, 0.5); if (foe) foe.t.dx = 0; }
+        if (face === "gate") foes.forEach((r) => { aim(r, win ? P.slump : P.cheer, 480, 0.5); if (r) r.t.dx = win ? 40 * u() : 0; });
+      },
+      live: !!me
+    };
+  }
+
   U.games.push = function (box, done, c) {
     return frame(box, done, c, "push", ({ host, power, t, finish, onAct, cue }) => {
       const tol = clamp(0.035 + power * 0.007, 0.03, 0.08); // how close to the mark counts, as a share of the ring's travel
@@ -420,26 +570,29 @@
       const foe = K.tr(t.foe || "your opponent");
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="pushpit"><div class="balance"><i></i></div><div class="ringbox"><div class="mark"></div><div class="ring"></div><span class="who">' + U.esc(foe) + '</span></div></div><p class="game-note" aria-live="polite"></p><div class="btnrow"></div>';
       const ring = host.querySelector(".ring"), bal = host.querySelector(".balance i"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
-      // On the painting, the pushes move the two wrestlers across the ground.
+      // On the painting, the pushes move the two wrestlers across the ground; a test with a face
+      // acts itself out instead (pushFace).
       const wrapEl = host.closest(".trial");
-      const show = () => { U.trLabel(score, t.tally || "Good pushes: {g} of 3 · Slips: {b} of 3", { g: good, b: bad }); bal.style.left = (50 + (good - bad) * 15) + "%"; if (wrapEl) wrapEl.style.setProperty("--shove", (good - bad) * 7 + "vw"); };
+      const fx = t.face ? pushFace(t.face, wrapEl) : null;
+      const show = () => { U.trLabel(score, t.tally || "Good pushes: {g} of 3 · Slips: {b} of 3", { g: good, b: bad }); bal.style.left = (50 + (good - bad) * 15) + "%"; if (wrapEl && !fx) wrapEl.style.setProperty("--shove", (good - bad) * 7 + "vw"); };
       show();
       const MARK = 0.3; // the ring meets the mark at 30% of its starting size
       const push = () => {
         if (wait) return;
         const p = clamp((now - start) / period, 0, 1), size = 1 - p * (1 - MARK) / 0.85;
         const ok = Math.abs(size - MARK) <= tol;
-        resolve(ok, ok ? t.good || "He gives ground!" : size > MARK ? t.soon || "Too soon. He braces." : t.late || "Too late. He shoves back.");
+        resolve(ok, ok ? t.good || "He gives ground!" : size > MARK ? t.soon || "Too soon. He braces." : t.late || "Too late. He shoves back.", ok ? "ok" : size > MARK ? "soon" : "late");
       };
-      function resolve(ok, msg) {
+      function resolve(ok, msg, how) {
         wait = true;
         ok ? good++ : bad++;
-        cue("act"); setTimeout(() => cue(ok ? "good" : "bad"), 200);
+        if (fx && fx.live) fx.hit(ok, how, good, bad);
+        else { if (fx) fx.hit(ok, how, good, bad); cue("act"); setTimeout(() => cue(ok ? "good" : "bad"), 200); }
         note.textContent = K.tr(msg);
         host.querySelector(".pushpit").classList.remove("good", "bad"); void host.offsetWidth; host.querySelector(".pushpit").classList.add(ok ? "good" : "bad");
         if (K.Sound) K.Sound.play(ok ? "hit" : "quill");
         show();
-        if (good >= 3 || bad >= 3) return setTimeout(() => finish(good >= 3 ? "win" : "lose", ["Good pushes {g}, slips {b}.", { g: good, b: bad }]), 450);
+        if (good >= 3 || bad >= 3) return setTimeout(() => { if (fx) fx.end(good >= 3); finish(good >= 3 ? "win" : "lose", ["Good pushes {g}, slips {b}.", { g: good, b: bad }]); }, 450);
         setTimeout(() => { wait = false; cycle++; period = Math.max(0.62, period * 0.9); start = now; note.textContent = ""; }, 650);
       }
       host.querySelector(".btnrow").appendChild(pressButton(t.verb || "Push", push));
@@ -448,9 +601,10 @@
         now = s;
         if (wait) return;
         const p = (now - start) / period;
-        if (p > 1) return resolve(false, t.late || "Too late. He shoves back.");
+        if (p > 1) return resolve(false, t.late || "Too late. He shoves back.", "late");
         const size = Math.max(0.12, 1 - p * (1 - MARK) / 0.85);
         ring.style.transform = "translate(-50%, -50%) scale(" + size + ")";
+        if (fx) fx.tell(p);
       }, host);
     });
   };
