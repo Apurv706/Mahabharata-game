@@ -32,7 +32,7 @@
     // Never to retreat: your friend is down, and the only way out is back.
     {
       id: "v_hold", when: (S) => K.hasVow("never_retreat", S) && !!S.friend && !S.dead.includes(S.friend), skipTo: "a5_charu", next: "a5_charu", away: true,
-      act: 5, age: 40, art: "scene_raid", place: "A camp in the forest", caption: "Raiders at the river crossing",
+      act: 5, age: 42, art: "scene_raid", place: "A camp in the forest", caption: "Raiders at the river crossing",
       title: "Fall back",
       body: ["Raiders come over the river at dusk, more of them than anyone counted. {friend} takes a spear in the thigh and goes down beside you.",
         ["\"Fall back to the trees,\" {friend} gasps. \"Carry me. We can hold them at the trees.\" Falling back is the one thing you swore you would never do.", null]],

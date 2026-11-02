@@ -59,11 +59,15 @@
     // that come before it and its event slot were settled when it was first reached, and are not asked again.
     K.visit = (K.visit || 0) + 1; // each arrival at a scene is a new visit (the page allows one choice per visit)
     const sc = resuming && id === S.scene && S.seen.includes(id) && K.SCENES[id] ? K.SCENES[id] : K.resolveScene(id);
+    const prevScene = S.scene;
     S.scene = sc.id;
     if (sc.act && sc.act > S.act) drift(S, sc.act);
     if (sc.act) S.act = sc.act;
-    // Going back to an earlier question after a closed way does not make you younger.
-    if (sc.age != null) S.age = S.loopThen && S.loopThen.scene === sc.id ? Math.max(S.age, K.val(sc.age)) : K.val(sc.age);
+    // You never grow younger: not going back to an earlier question after a closed way, not in a scene
+    // whose written age is earlier than the one before it, not on Continue. The one exception is waking
+    // from the prologue's dream of the war (a grown warrior, then six years old).
+    const before = K.SCENES[prevScene];
+    if (sc.age != null && !(resuming && prevScene === sc.id)) S.age = before && before.prologue && !sc.prologue ? K.val(sc.age) : Math.max(S.age || 0, K.val(sc.age));
     let delta = {};
     if (!S.seen.includes(sc.id)) {
       S.seen.push(sc.id);

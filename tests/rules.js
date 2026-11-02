@@ -258,4 +258,41 @@ S = fresh({ act: 6, age: 44, side: "pandava" }); S.flags.push("role_command"); S
   ok(hits.length > 0 && hits.every((l) => l.u.t.uid === pick.uid || pick.hp === 0), "those beside you strike only the marked enemy while it stands (" + hits.length + " blows)");
   K.Combat.end && K.Combat.end();
 }
+// 35. You never grow younger (except waking from the prologue); Continue keeps your age
+S = fresh({ act: 5, age: 41 }); S.scene = "w_mountain"; S.seen.push("w_mountain");
+{ const sc = K.SCENES.ep_storm; const keep = sc.when; sc.when = null; K.go("ep_storm"); sc.when = keep; }
+ok(K.S.age === 41, "a scene written younger than the one before it does not make you younger (" + K.S.age + ")");
+S = fresh({ act: 1, age: 44 }); S.scene = "a0_dream"; K.go("a1_home");
+ok(K.S.age === 6, "waking from the prologue's dream, you are six (" + K.S.age + ")");
+S = fresh({ act: 2, age: 16 }); S.scene = "a2_teacher"; S.seen.push("a2_teacher"); K.go("a2_teacher", true);
+ok(K.S.age === 16, "Continue on a scene keeps the age you had there (" + K.S.age + ")");
+ok(K.SCENES.w_mountain.age <= 36 && K.SCENES.v_hold.age >= 42 && K.SCENES.ep_mentor_vidura.age >= 29, "the mountain, the river vow and Vidura's scene carry ages in story order");
+// 36. The false-name test is a lie; those sworn never to lie have a truthful way through
+{ const ch = K.SCENES.ep_false_name.choices; const nerve = ch.find((c) => c.id === "nerve"), truth = ch.find((c) => c.id === "truth");
+  ok(nerve && (nerve.tags || []).includes("lie"), "answering the steward with a false name is tagged as a lie");
+  S = fresh({ act: 5, age: 43 }); K.apply({ vowTake: "never_lie" });
+  ok(K.vowBreaksFor(nerve.tags, S).length === 1, "a vow never to lie is warned of on the false-name test");
+  ok(truth && K.test(truth.req, S) && !(truth.tags || []).includes("lie"), "a vow-holder can answer with only true things instead");
+  S = fresh({ act: 5, age: 43 });
+  ok(!K.test(truth.req, S), "without the vow, the truthful answer is not offered"); }
+// 37. Step-mode fights never wait on nothing: stunned foes lose their turn, fallen foes are passed over
+S = fresh({ act: 2, age: 18, path: "archer" }); S.attrs.aim = 8;
+{
+  const C = K.Combat; const B = C.start("e_bandits", () => {}); B.stepMode = true;
+  let stuck = 0;
+  for (let r = 0; r < 30 && !B.over; r++) {
+    B.units.filter((u) => u.side === "enemy" && u.hp > 0).forEach((u) => { u.status.stun = 1; });
+    const acted = C.act("strike", B.units.find((u) => u.side === "enemy" && u.hp > 0).uid);
+    if (!acted) { stuck++; break; }
+    for (let g = 0; g < 10 && C.foesPending(); g++) C.resolve(null);
+  }
+  ok(!stuck, "with every foe stunned, your move is always taken and the foes' turns always finish");
+  C.end && C.end();
+  const B2 = C.start("e_bandits", () => {}); B2.stepMode = true;
+  C.act("guard"); // foes are now queued
+  B2.units.filter((u) => u.side === "enemy").forEach((u) => { u.hp = u.side === "enemy" && u !== B2.units.find((x) => x.side === "enemy") ? 0 : u.hp; });
+  B2.queue = B2.units.filter((u) => u.side === "enemy" && u.hp === 0).map((u) => u.uid);
+  ok(!C.foesPending() && B2.queue === null && C.act("strike") === true, "a queue of fallen foes is closed, and it is your turn");
+  C.end && C.end();
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

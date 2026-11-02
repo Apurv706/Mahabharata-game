@@ -116,12 +116,22 @@ Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct);
 39. **Ugra and Charu at seven.**
     - **The new scene, "The washing":** Ugra tips your washing into the river, and a child you have never spoken to jumps in after it. You choose: go for Ugra, jump in and help, or threaten him with your father.
     - **Later payoffs:** at 10 Charu is the one who jumped into the river; at 13 Ugra is the boy who tipped your washing, and if you fought him he grins: "He has not forgotten the river steps either."
-40. **The quill writes only the important lines:**
-    - **Written by the quill:** the epic's own lines ("As it is written"), what people say, memories and curses, what came of your choice, and the first and last lines of an ending.
-    - **Everything else** simply appears.
+40. **The quill:** tried writing only the important lines (2 Nov), and put back the same day. It writes every line again.
 41. **Fixed from the first tester's pass:**
     - **Switching to Hindi or English mid-test** left the test's title, score line, button and help in the old language. They now follow the switch in place, and the test goes on.
     - **Single-action screens** (Begin before a test, Continue after a fight, Live another life) only answered the number 1. They now answer Enter too.
+42. **Fixed from the tester's later passes:**
+    - **Fights that seemed frozen:**
+      - If your moves are on screen while enemies are still due to act, their turns now carry on.
+      - A stunned enemy's lost turn restarts if a redraw interrupts it.
+      - A tap on a move is never silently ignored: the fight redraws to show whose turn it really is.
+      - A round whose last foes have fallen closes itself.
+    - **Age never goes backward.**
+      - The light on the mountain (now 36), the river vow scene (42) and Vidura's scene (29) carry ages in story order.
+      - The engine never makes you younger, and Continue keeps your age. The one exception is waking from the prologue's dream.
+    - **The false-name test at Virata's court is a lie:**
+      - A vow never to lie is warned of on the choice and broken by it.
+      - Vow-holders can instead answer with only true things and let the steward draw the wrong conclusion (a statecraft test).
 
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**

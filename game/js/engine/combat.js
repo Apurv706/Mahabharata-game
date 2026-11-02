@@ -404,6 +404,15 @@
     }
     return null;
   };
+  // Enemies still due to move? (Fallen ones are passed over.) A queue that has run out without its
+  // round being closed is closed now, so it is always your turn again when no one is left to move.
+  C.foesPending = function () {
+    if (!B || B.over || !B.queue) return false;
+    if (C.nextFoe()) return true;
+    B.queue = null;
+    if (!over()) roundEnd();
+    return false;
+  };
   C.resolve = function (def) {
     const n = C.nextFoe();
     if (!n) return;
@@ -432,14 +441,17 @@
     return true;
   };
 
+  // Returns false when it is not your turn (the enemies are still moving) or the move is not ready, so
+  // the screen can draw what is really happening instead of doing nothing.
   C.act = function (id, uid) {
-    if (!B || B.over || (B.queue && B.queue.length)) return;
+    if (!B || B.over || C.foesPending()) return false;
     const row = C.available().find((a) => a.id === id);
-    if (!row || row.why) return;
+    if (!row || row.why) return false;
     B.habit.push({ id, uid });
     use(C.player(), id, uid);
     if (!over()) others();
     K.emit("combat", B);
+    return true;
   };
   // A friend who falls can be dragged out of the press. It costs your turn.
   C.fallen = () => (B && !B.over ? B.units.filter((u) => u.side === "ally" && u.person && u.hp <= 0 && !B.pulled[u.uid]) : []);

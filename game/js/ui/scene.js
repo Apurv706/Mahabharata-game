@@ -14,14 +14,6 @@
     if (a === "origin") return K.S.origin === "suta" && !K.S.flags.includes("moved_capital") ? "home_anga" : "home_" + K.S.origin;
     return a;
   }
-  // The quill writes only the lines that matter: what the epic has written, what someone says, a
-  // memory or a curse, and what came of your choice. The rest of the page simply appears.
-  U.quillWorthy = function (el, result) {
-    if (el.classList.contains("said")) return true;
-    if (el.tagName !== "P" || el.classList.contains("aside")) return false;
-    if (el.classList.contains("memory") || el.classList.contains("curse")) return true;
-    return !!el.closest(".witness") || (!!result && !!el.closest(".result"));
-  };
   function tagFor(sc) {
     if (sc.prologue) return ["war", K.tr("A dream")];
     // Fate: what the epic has already written, and the part of your life that is still unwritten.
@@ -119,7 +111,7 @@
     if (h1) h1.dataset.hold = 650;
     [...box.children].forEach((b) => { b.dataset.hold = 110; });
     // The scene-setting lines are written out by the quill.
-    story.forEach((el) => { if (U.quillWorthy(el)) el.classList.add("write"); });
+    story.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
     U.keys([]);
     // The page comes up over the whole painting and grows as the story is written (lines and
     // choices not shown yet take no room). The painting holds still behind it; once everything is
@@ -461,7 +453,7 @@
     parts.push(cont);
     // After a lost fight that was not deadly: the way to the practice ground (ui/practice.js).
     { const pb = res.lostFight && U.practiceAfterFight ? U.practiceAfterFight(res.lostFight) : null; if (pb) { box.appendChild(pb); parts.push(pb); } }
-    parts.forEach((el) => { if (U.quillWorthy(el, true)) el.classList.add("write"); });
+    parts.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
     story.dataset.follow = "1";
     U.toEnd(story, true);
     const won = res.check ? res.check.pass : res.outcome ? res.outcome === "win" : null;

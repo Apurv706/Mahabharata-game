@@ -21,7 +21,7 @@
   let astraPick = false;  // the divine-weapon chooser is open         // the defence moment in progress
 
   U.startBattle = function (encId, onEnd) {
-    target = null; lastHp = {}; lastLogLen = 0; lastActs = 0; foeKey = null; stopQte();
+    target = null; lastHp = {}; lastLogLen = 0; lastActs = 0; foeKey = null; autoKey = null; stopQte();
     onEndCb = onEnd;
     // The great war opens each fight with the call to arms; other fights with a drum call.
     if (K.Sound && K.ENCOUNTERS[encId]) K.Sound.play(K.ENCOUNTERS[encId].lethal && K.S.act === 6 ? "callToArms" : "drumCall");
@@ -192,22 +192,28 @@
 
   // ---------- Meeting a blow ----------
   function stopQte() { if (qte) { qte.stop(); qte = null; } }
+  let autoKey = null; // the enemy turn that is playing out by itself, with its timer running
   function runFoes(B, box) {
     const n = C.nextFoe();
-    if (!n) return;
+    if (!n) return false;
     const key = B.bid + ":" + B.round + ":" + n.u.uid + ":" + B.queue.length;
-    if (foeKey === key) { if (qte) qte.mount(box); return; }
+    const who = K.text(n.u.src || n.u.name);
+    // A turn not aimed at you (a stunned foe losing his turn, a blow at someone else) plays out by
+    // itself. A redraw in the middle (a tap on an enemy, a language switch) shows it again, and starts
+    // its timer again if that was lost, so the fight never waits on nothing.
+    const auto = () => {
+      box.appendChild(U.el('<p class="foe-turn">' + U.esc(K.tr("{who} moves.", { who })) + "</p>"));
+      if (autoKey === key) return;
+      autoKey = key;
+      setTimeout(() => { if (autoKey === key) autoKey = null; if (C.state() === B && foeKey === key && !B.over) C.resolve(null); }, U.motion() ? 650 : 200);
+    };
+    if (foeKey === key) { if (qte) qte.mount(box); else if (!n.threat) auto(); return true; }
     foeKey = key;
     stopQte();
-    const who = K.text(n.u.src || n.u.name);
-    if (!n.threat) {
-      // Not aimed at you: it plays out by itself.
-      box.appendChild(U.el('<p class="foe-turn">' + U.esc(K.tr("{who} moves.", { who })) + "</p>"));
-      setTimeout(() => { if (C.state() === B && foeKey === key) C.resolve(null); }, U.motion() ? 650 : 200);
-      return;
-    }
+    if (!n.threat) { auto(); return true; }
     qte = defend(B, n.u, n.threat, (result) => { qte = null; C.resolve(result); });
     qte.mount(box);
+    return true;
   }
   // The shape of a blow, read from the enemy's move, and what gets you out of its way: jump a low
   // arrow or sweep, duck a high swing or arrow, sidestep a thrust or a charge. Block meets anything,
@@ -308,6 +314,7 @@
   // ---------- The screen ----------
   U.renderBattle = function (B) {
     if (!B) return;
+    if (C.state() === B) C.foesPending(); // a round whose last foes have fallen is closed before anything is drawn
     U.redraw = () => { const L = U.$("leaf"); if (L) L.dataset.battle = ""; U.renderBattle(C.state() || B); };
     U.setNav(true);
     const enc = B.enc;
@@ -392,7 +399,7 @@
       return;
     }
     // The enemies' turn, one at a time.
-    if (B.queue && B.queue.length) { runFoes(B, box); U.renderLedger(); return; }
+    if (B.queue && B.queue.length && runFoes(B, box)) { U.renderLedger(); return; }
 
     const acts = U.el('<div class="actions"></div>');
     const all = C.available(), idle = all.filter((a) => a.idle);
@@ -429,7 +436,7 @@
       const b = U.button("act" + (special ? " special" : ""), "<b>" + (i + 1) + ". " + U.esc(a.name + extra) + "</b><small>" + U.esc(a.why || a.desc) + "</small>");
       b.disabled = !!a.why;
       b.dataset.move = a.id;
-      const run = a.id === "astra-pick" ? () => { const ready = astras.filter((x) => !x.why); if (ready.length === 1) C.act(ready[0].id, ready[0].target === "enemy" ? target : null); else { astraPick = true; U.renderBattle(B); } } : () => C.act(a.id, a.target === "enemy" ? target : null);
+      const run = a.id === "astra-pick" ? () => { const ready = astras.filter((x) => !x.why); if (ready.length === 1) C.act(ready[0].id, ready[0].target === "enemy" ? target : null); else { astraPick = true; U.renderBattle(B); } } : () => { if (!C.act(a.id, a.target === "enemy" ? target : null)) U.renderBattle(C.state() || B); };
       b.addEventListener("click", run);
       keys.push(a.why ? null : run);
       acts.appendChild(b);

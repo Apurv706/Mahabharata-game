@@ -212,7 +212,7 @@
       text: "When you can see again you are kneeling in the snow and something is yours that was not yours before. You will not lie about what happened here. You could not if you tried." },
     lose: { fx: { attr: { wisdom: 1 } }, text: "You come down the mountain and do not speak for three days. Something was there. It did not stay." } };
   K.scene(Object.assign({ act: 5, away: true, when: (S) => S.act === 5 && S.exile === "forest" && S.rep.sages >= 4 && !S.flags.includes("mountain_tried"), enter: { flag: "mountain_tried" }, next: "a5_yaksha", skipTo: "a5_yaksha" }, {
-    id: "w_mountain", age: 41, place: "High in the mountains", art: art("stage_shiva_mountain"), caption: "A light where no lamp is", title: "The light on the mountain",
+    id: "w_mountain", age: 36, place: "High in the mountains", art: art("stage_shiva_mountain"), caption: "A light where no lamp is", title: "The light on the mountain",
     body: ["Arjuna came back from the north with weapons from the gods, and will not say much about it. A sage of the camp tells you that there is a place on the mountain where a light stands at dusk, with no lamp in it, and those who stand in it are sometimes given something, and sometimes only frightened."],
     choices: [K.testChoice("w_mountain", "stand", MOUNTAIN), { id: "no", t: "Some things are not for you. Stay below", fx: { attr: { wisdom: 1 } } }] }));
   // A win branch with a `resolve`: the choice engine only reads fx, so fold it in here.

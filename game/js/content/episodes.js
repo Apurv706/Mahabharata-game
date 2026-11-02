@@ -91,7 +91,8 @@
     { line: "\"The queen's maid says you speak like someone raised in a palace.\"", replies: ["\"The queen's maid is kind. My mother beat good speech into me with a ladle.\"", "\"I was raised in a palace.\"", "\"The queen's maid should mind her own business.\""] },
     { line: "\"Tell me the name of the village you came from, and your father's name, quickly.\"", replies: ["\"Kundapur, on the river, my lord, and my father was Haridas who kept the ferry.\"", "\"I would rather not say.\"", "\"My father was a charioteer of Hastinapura.\""] }
   ];
-  const NERVE = { id: "nerve", t: "Answer the steward's questions without a flicker", game: "retort", hint: "A test of nerve",
+  // Lying about who you are is a lie: a vow never to lie is warned of on the choice, and broken by it.
+  const NERVE = { id: "nerve", t: "Answer the steward's questions without a flicker", game: "retort", hint: "A test of nerve", tags: ["lie"],
     trial: { attr: "wisdom", skill: "statecraft", rounds: FALSE_NAME, stage: "stage_virata_court",
       rules: "Virata's steward has started asking questions about the new people in the household. Answer each one before the lamp burns down, and never say anything true. Two of three.",
       stakes: ["The steward loses interest, and your name stays yours.", "The steward keeps looking at you, and sends to Hastinapura to ask."] },
@@ -180,7 +181,7 @@
     },
     // ---------- Threads: a wrong ask from your teacher ----------
     {
-      id: "ep_mentor_vidura", act: 3, age: 28, away: true, when: (S) => S.teacher === "vidura" && !!S.friend && S.friend !== "charu", skipTo: "a3_rajasuya", next: "a3_rajasuya",
+      id: "ep_mentor_vidura", act: 3, age: 29, away: true, when: (S) => S.teacher === "vidura" && !!S.friend && S.friend !== "charu", skipTo: "a3_rajasuya", next: "a3_rajasuya",
       art: art("scene_mentor_vidura"), place: "Vidura's house", caption: "A lamp, a table, a question",
       title: "What Vidura asks",
       body: ["Vidura sends for you after dark, which he never does.",
@@ -289,7 +290,14 @@
       art: art("stage_virata_hall"), place: "King Virata's court, Matsya", caption: "The steward asks questions",
       title: "Your false name",
       body: ["In Virata's household you are someone else: a groom, a cook's helper, a hanger-on of the new dancing teacher. The steward has begun to count the new faces, and to ask."],
-      choices: [NERVE, { id: "leave", t: "Leave the household before he asks you anything", fx: { rep: { common: -1 }, flag: "left_virata" }, text: "You take work in the town instead, and hear the rest of the year as rumour." }]
+      choices: [NERVE,
+        // Those who have sworn never to lie can answer with nothing but the truth, and let the steward
+        // draw his own wrong conclusions. Their word, once an act, carries it without a test.
+        { id: "truth", t: "Answer only with true things, and let him draw the wrong conclusions", req: { vow: "never_lie" }, locked: "", hint: "Keeps your vow",
+          check: { attr: "wisdom", skill: "statecraft", dc: 8,
+            pass: { fx: { skill: { statecraft: 1 }, flag: ["kept_false_name", "truth_to_steward"], duty: { conscience: 1 } }, text: "\"Where did you learn to hold a bow?\" \"From a hard teacher, my lord.\" Every word is true. The steward hears a groom with a past, nods, and goes to bother the cooks." },
+            fail: { fx: { rep: { kuru: -1 }, flag: "name_suspected" }, text: "Every word you say is true, and the steward hears every one of them. He says nothing more, which is worse. A rider leaves for Hastinapura that evening." } } },
+        { id: "leave", t: "Leave the household before he asks you anything", fx: { rep: { common: -1 }, flag: "left_virata" }, text: "You take work in the town instead, and hear the rest of the year as rumour." }]
     },
     {
       id: "ep_kichaka", act: 5, age: 43, away: true, when: (S) => S.seen.includes("a5_matsya") && S.exile === "forest" && !S.flags.includes("left_virata"), skipTo: "a5_herd", next: "a5_herd",
