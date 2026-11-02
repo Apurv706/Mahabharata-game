@@ -397,10 +397,10 @@ require(G + "content/war_kings.js");
   K.choose(sc("kf_fall"), sc("kf_fall").choices[0], "lose");
   ok(S.flags.includes("kf_carried_king") && S.injuries.includes("arm"), "failing the carry costs a wound, not the body");
   // Riding with Dhrishtadyumna breaks a student's debt to Drona for good, and Drona takes his weapon back.
+  ok(Array.isArray(K.val(sc("a6_day15").after, war({ side: "pandava", origin: "anga" }))), "for everyone else it closes the day as before");
   S = war({ side: "pandava", origin: "panchala", teacher: "drona" }); S.duty.teacher = 7; S.seen.push("kf_fall");
   K.apply({ boon: "astra", astraFrom: "teacher" });
   ok(K.val(sc("a6_day15").after, S) === null, "the half-truth's closing line waits for Dhrishtadyumna's sword");
-  ok(Array.isArray(K.val(sc("a6_day15").after, war({ side: "pandava", origin: "anga" }))), "for everyone else it closes the day as before");
   K.choose(sc("kf_drona"), ch("kf_drona", "ride"));
   ok(S.duty.teacher === 0 && S.flags.includes("kf_broke_debt") && !S.boons.includes("astra") && S.astra.broken, "riding with Dhrishtadyumna: teacher's debt to 0, Drona's weapon taken back");
   // A Kaurava student who steps between, out of depth: death; in story mode, a scar.

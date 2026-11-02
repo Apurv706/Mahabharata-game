@@ -245,7 +245,7 @@
     holdText: "The Yadava shields part. You are through.",
     intro: "The Yadavas lock their shields across your road. Beyond them, in the dust, Bhurishravas still has Satyaki down.",
     enemies: [K.foe("Satyaki's Yadava guard", 5, { plural: true, abilities: ["strike", "guard", "heavy"], hp: 300, atk: 6 }), K.foe("Yadava archers", 4, { plural: true, abilities: ["strike", "arrows"], hp: 180, atk: 5 })],
-    win: { next: "kb_sits", text: "You come through the last of the guard in time to see " + ARM },
+    win: { next: "kb_sits", text: "You come through the last of the guard as " + ARM },
     lose: { next: "kb_sits", fx: { injury: "scar" }, text: "They throw you back twice. When you get through at last, bleeding, " + ARM }
   });
   K.encounter({
@@ -253,13 +253,13 @@
     allies: (S) => K.warAllies(S), callHelp: K.warHelp, spare: false, flee: null,
     holdText: "The chariots in front of you give way.",
     intro: "Drona's chariots wheel between you and the two white parasols. Every one of them has the same order: keep the kings alone.",
-    enemies: [K.foe("Drona's chariot-warriors", 5, { plural: true, abilities: ["strike", "arrows"], hp: 260, atk: 6 }), K.foe("Kaurava spearman", 4, { abilities: ["strike", "heavy"] })],
+    enemies: [K.foe("Chariot-warriors of the Kuru host", 5, { plural: true, abilities: ["strike", "arrows"], hp: 260, atk: 6 }), K.foe("Kaurava spearman", 4, { abilities: ["strike", "heavy"] })],
     beats: [{ round: 3, text: "Ahead, Drona's arrows are falling around the white parasols like rain on a pond.", run: (B) => B.living("player").forEach((u) => B.status(u, "inspired", 1)) }],
     win: { next: "kf_fall", text: "The last chariot in your way slews aside, and the ground ahead is open." },
     lose: { next: "kf_fall", fx: { injury: "scar" }, text: "They throw you back twice. You come through the third time with blood in your eyes, and late." }
   });
   // The holding fights stand on the war field's painting, tall on upright screens (ui/battle.js).
-  Object.assign(K.COMMAND_FIGHT_BG = K.COMMAND_FIGHT_BG || {}, { e_kb_hold: "fight_war_field", e_kb_guard: "fight_war_field", e_kf_reach: "fight_war_chariot" });
+  Object.assign(K.COMMAND_FIGHT_BG = K.COMMAND_FIGHT_BG || {}, { e_kb_hold: "fight_war_field", e_kb_guard: "fight_war_field", e_kf_reach: "fight_between_lines" });
 
   // How long Bhurishravas was held off Satyaki: counted when the fight ends, before its outcome.
   K.kbHoldCount = (B) => {
