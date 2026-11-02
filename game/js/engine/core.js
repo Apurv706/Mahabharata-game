@@ -368,7 +368,7 @@
   const TWICE = ["missed_lamp_twice", "thrown_by_bhima_twice", "backed_down_twice", "horse_beat_you_twice"];
   function snap(S) {
     return { friend: S.friend, teacher: S.teacher, spouse: S.spouse, astra: S.boons.includes("astra"), vows: S.vows.length,
-      company: S.flags.includes("role_command"), hermit: S.flags.includes("betrayed_hermit"), astras: (S.astras || []).length };
+      company: S.flags.includes("role_command"), hermit: S.flags.includes("betrayed_hermit"), astras: (S.astras || []).length, crossed: S.flags.includes("crossed_lines") };
   }
   function moment(S, d, m) {
     m = Object.assign({ age: S.age, act: S.act }, m);
@@ -389,6 +389,7 @@
     if (S.vows.length > b.vows) moment(S, d, { kind: "vow", id: S.vows[S.vows.length - 1].id });
     if ((S.astras || []).length > b.astras) { const a = S.astras[S.astras.length - 1]; moment(S, d, { kind: "astra", from: a.from, which: a.id }); }
     if (!b.company && S.flags.includes("role_command")) moment(S, d, { kind: "company" });
+    if (!b.crossed && S.flags.includes("crossed_lines")) moment(S, d, { kind: "crossed" }); // the field crossed at Yuyutsu's call (war_crossing.js)
     // A friendship below 3 ends: the friend leaves the bonds panel, and will not answer a call for help.
     const f = S.friend;
     if (f && !S.dead.includes(f) && S.spouse !== f && (S.bonds[f] ?? 3) < 3) { // a marriage holds, whatever the bond

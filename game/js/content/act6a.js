@@ -9,9 +9,16 @@
     if (vasuNear(S)) a.push("vasu");
     if (S.spouse === "revat" && !S.dead.includes("revat")) a.push("revat");
     if (S.friend === "charu" && !S.dead.includes("charu") && S.side !== "neutral") a.push("charu");
-    if ((S.flags.includes("beat_ugra") || S.flags.includes("lost_to_ugra")) && !S.flags.includes("shamed_ugra") && !S.dead.includes("ugra")) a.push("ugra"); // shaming him outweighs a fair bout
+    if (K.ugraAlly(S)) a.push("ugra"); // shaming him outweighs a fair bout
+    if (S.calledAcross && !S.dead.includes(S.calledAcross) && K.UNITS[S.calledAcross]) a.push(S.calledAcross); // called across the field on the first morning (war_crossing.js)
     return a;
   };
+  // Ugra stands beside those who beat him or lost to him fairly, and across the field from those who
+  // shamed him; crossing the lines on the first morning (war_crossing.js) turns that round.
+  const crossedLines = (S) => S.flags.includes("crossed_lines");
+  K.ugraAlly = (S) => (S.flags.includes("beat_ugra") || S.flags.includes("lost_to_ugra")) && !S.flags.includes("shamed_ugra") && !S.dead.includes("ugra") && !crossedLines(S);
+  K.ugraAcross = (S) => !S.dead.includes("ugra") && (S.side === "pandava" || S.side === "kaurava") &&
+    (S.flags.includes("shamed_ugra") ? !crossedLines(S) : (S.flags.includes("beat_ugra") || S.flags.includes("lost_to_ugra")) && crossedLines(S));
   const foeSide = (S) => (S.side === "kaurava" ? "Pandava" : "Kaurava");
   // On the eve of the war, a company is not handed out: the army's commander (Bhishma for the
   // Kauravas, Dhrishtadyumna for the Pandavas) sees you set one in the day's array first.
@@ -135,9 +142,9 @@
       witness: ["For nine days Bhishma, the grandsire, commands the Kaurava army, and no one can stand against him. He has promised not to kill the Pandava brothers themselves. He kills nearly everyone else."],
       body: (S) => [
         S.side === "pandava" ? "On the first day you watch Prince Uttara of Matsya fall." : S.side === "kaurava" ? "On your side, the old man fights like a storm. It is hard not to feel safe behind him." : "The first wounded reach the tents before noon. By evening there is nowhere left to lay them.",
-        S.side !== "neutral" && S.flags.includes("beat_ugra") && !S.flags.includes("shamed_ugra") ? { memory: "In the line beside you stands a big man with a miller's shoulders. Ugra, the miller's son from the spring fair. \"You put me on my back once,\" he says. \"I have waited thirty years to stand next to you instead.\"" } : null,
-        S.side !== "neutral" && S.flags.includes("lost_to_ugra") && !S.flags.includes("shamed_ugra") ? { memory: "In the line beside you stands a big man with a miller's shoulders. Ugra, the miller's son from the spring fair. \"You were the only one who ever stood up to me,\" he says. \"You lost. You still stood up. I am with you.\"" } : null,
-        S.side !== "neutral" && S.flags.includes("shamed_ugra") ? { memory: "Across the field, under the enemy's banners, there is a big man with a miller's shoulders. Ugra, the miller's son from the spring fair, never forgave the crowd for laughing, or you for making them." } : null,
+        S.side !== "neutral" && S.flags.includes("beat_ugra") && K.ugraAlly(S) ? { memory: "In the line beside you stands a big man with a miller's shoulders. Ugra, the miller's son from the spring fair. \"You put me on my back once,\" he says. \"I have waited thirty years to stand next to you instead.\"" } : null,
+        S.side !== "neutral" && S.flags.includes("lost_to_ugra") && K.ugraAlly(S) ? { memory: "In the line beside you stands a big man with a miller's shoulders. Ugra, the miller's son from the spring fair. \"You were the only one who ever stood up to me,\" he says. \"You lost. You still stood up. I am with you.\"" } : null,
+        S.side !== "neutral" && S.flags.includes("shamed_ugra") && K.ugraAcross(S) ? { memory: "Across the field, under the enemy's banners, there is a big man with a miller's shoulders. Ugra, the miller's son from the spring fair, never forgave the crowd for laughing, or you for making them." } : null,
         // A risk that went wrong long ago comes back: someone else is wearing your heirloom.
         S.heirloomLost && S.heirloomLost.at === "bandits" ? { memory: "Among the levies brought in from the villages, you see a thin man with a farmer's hands, wearing your {heirloom!}. He sees you see it, and looks away." } : null,
         S.heirloomLost && S.heirloomLost.at === "outriders" ? { memory: "A Kaurava captain rides along the line with your {heirloom!} hanging from his belt. He has worn it for twenty-six years. He has no idea whose it was." } : null,
@@ -247,6 +254,8 @@
   // to stand your enemies off (never against his brothers). A friendship that has ended reaches no one.
   const FRIEND_SIDE = { karna: "kaurava", duryodhana: "kaurava", arjuna: "pandava", bhima: "pandava" };
   K.warHelp = (S) => {
+    // One who crossed the lines on the first morning is not trusted until a deadly fight is won (war_crossing.js).
+    if (S.flags.includes("crossed_untrusted")) return { text: "You shout for help. The men of your new side hear you, look at each other, and do not come. They do not know you yet." };
     const f = S.friend;
     if (f && !S.dead.includes(f) && K.UNITS[f] && FRIEND_SIDE[f] === S.side)
       return { unit: K.UNITS[f](S), stay: 2, text: ["{who} hears you over the din, and comes.", { who: K.PEOPLE[f].name }] };
@@ -290,7 +299,7 @@
       run: (B) => each(B, "player", (u) => B.status(u, "evade", 1)) }
   };
 
-  war("e_day1", (S) => "The line holds against the " + foeSide(S) + "s", (S) => [S.flags.includes("shamed_ugra") ? K.foe("Ugra, the miller's son", 3, { abilities: ["strike", "heavy"] }) : K.foe(foeSide(S) + " spearman", 3), K.foe(foeSide(S) + " chariot-warrior", 4, { abilities: ["strike", "arrows"] })], { art: "war_bhishma",
+  war("e_day1", (S) => "The line holds against the " + foeSide(S) + "s", (S) => [K.ugraAcross(S) ? K.foe("Ugra, the miller's son", 3, { abilities: ["strike", "heavy"] }) : K.foe(foeSide(S) + " spearman", 3), K.foe(foeSide(S) + " chariot-warrior", 4, { abilities: ["strike", "arrows"] })], { art: "war_bhishma",
     caption: "Days one to nine", events: (S) => [S.side === "kaurava" ? "bhishma_k" : "bhishma_p"],
     win: { fx: { duty: { court: 1 }, rep: { common: 1 }, journal: "You survived the first nine days of the war." }, text: "When the conches sound at sunset, you are still standing." },
     lose: { deathText: "You fell in the first days of the war, when Bhishma was still unstoppable." },

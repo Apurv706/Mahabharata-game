@@ -132,6 +132,11 @@ problems.slice(0, 20).forEach((p) => console.log("  - " + p));
 console.log("Endings:");
 Object.entries(ends).sort((a, b) => b[1] - a[1]).forEach(([k, v]) => console.log("  " + k.padEnd(28) + String(v).padStart(4) + "  " + Math.round((v / N) * 100) + "%"));
 console.log("Sides in the war: " + JSON.stringify(sides));
+// Ending spread (PRD §19): a wide spread means the choices matter. No one ending may take most lives.
+const topEnding = Math.max(0, ...Object.values(ends)), narrow = N >= 20 && (topEnding > N * 0.5 || Object.keys(ends).length < 5);
+console.log("Ending spread:    " + Object.keys(ends).length + " endings, the most common " + Math.round((topEnding / N) * 100) + "%" + (narrow ? " (too narrow)" : ""));
+{ const fl2 = (f) => results.filter((r) => (r.flags || []).includes(f)).length; // war storylines (PRD 18.13): Yuyutsu's call
+  console.log("Yuyutsu's call: met " + results.filter((r) => (r.seen || []).includes("cross_call")).length + ", crossed " + fl2("crossed_lines") + ", called across " + fl2("called_across") + " (came " + fl2("called_across_came") + "), duel won " + fl2("won_crossing_duel") + ", spared " + fl2("spared_crossing_duel") + ", lost " + fl2("lost_crossing_duel")); }
 const fstat = {};
 results.forEach((r) => (r.fights || []).forEach(([id, o]) => { fstat[id] = fstat[id] || { win: 0, lose: 0, flee: 0, spare: 0 }; fstat[id][o]++; }));
 console.log("Battles (win / lose / flee / spare):");
@@ -178,4 +183,4 @@ console.log("Perils: died " + fl("peril_death") + " (" + deaths.filter((r) => (r
 if (warn.size) { console.log("Warnings:"); [...warn].slice(0, 10).forEach((x) => console.log("  " + x.slice(0, 300))); }
 crashes.slice(0, 3).forEach((c) => console.log("\nCRASH at " + c.scene + "\n" + c.crash.split("\n").slice(0, 6).join("\n") + "\npath: " + c.path.slice(-5).join(" > ")));
 stuck.slice(0, 3).forEach((c) => console.log("\nSTUCK at " + c.scene + " " + (c.reason || "") + "\n" + (c.html || "") + "\npath: " + c.path.slice(-5).join(" > ")));
-process.exit(crashes.length || stuck.length || problems.length ? 1 : 0);
+process.exit(crashes.length || stuck.length || problems.length || narrow ? 1 : 0);

@@ -627,6 +627,13 @@
         g.gain.setValueAtTime(0.0001, t0 + at); g.gain.exponentialRampToValueAtTime(0.05, t0 + at + 1.8); g.gain.setValueAtTime(0.05, t0 + 5.6); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 7.5);
         [o, o2].forEach((x) => { x.start(t0 + at); x.stop(t0 + 7.6); });
       });
+    } else if (kind === "crossed") {
+      // The field crossed (war_crossing.js): a far conch, then the flute in Marwa, dusk's raga, climbing
+      // over slow single strokes like footsteps, and stopping short of home.
+      FX.conch();
+      const M = SCALES.marwa;
+      phrase(t0 + 1.4, [0, 1, 2, 3, 4, 5, 4, 6].map((k, i) => ({ f: f(M, k), d: i === 7 ? 2.4 : [0.8, 0.5, 0.6, 0.8, 0.6, 0.9, 0.5][i], accent: i === 0 })), 0.85);
+      [0, 1, 2, 3, 4, 5, 6].forEach((i) => BOLS[i % 2 ? "tin" : "dha"](t0 + 1.4 + i * 0.75, 0.55));
     } else if (kind === "farewell") {
       phrase(t0 + 0.2, [7, 5, 4, 3, 2, 0].map((k, i) => ({ f: f(Y, k) * 0.5, d: i === 5 ? 2.6 : 0.8 })), 0.7);
     } else {
