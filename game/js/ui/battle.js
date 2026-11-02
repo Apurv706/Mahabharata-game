@@ -582,7 +582,8 @@
     if (B.over) {
       stopQte(); drums.stop();
       // A dream fight does not end on a result: the field goes white, and you wake (scene.js U.wakeScene).
-      if (enc.dream) {
+      // (Without motion, or under the test harness, it ends like any fight, on its line and Continue.)
+      if (enc.dream && U.motion()) {
         if (B._whiting) return;
         B._whiting = true;
         const veil = U.el('<div class="dream-white" aria-hidden="true"></div>');
