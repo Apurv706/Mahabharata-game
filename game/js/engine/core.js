@@ -220,6 +220,9 @@
     journal: (t, S) => {
       if (typeof t === "function") t = t(S);
       const e = typeof t === "object" && t ? t : { src: t };
+      // The same line twice in one life is a repeat (a path chosen again, a scene played again): write it once.
+      const text = K.fmt(K.fill(e.src, e.p), S);
+      if (S.journal.some((j) => j.text === text)) return;
       S.journal.push({ age: S.age, act: S.act, src: e.src, p: e.p || null, text: K.fmt(K.fill(e.src, e.p), S) });
     },
     set: (o, S) => { Object.assign(S, o); },

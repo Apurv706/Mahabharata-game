@@ -5086,6 +5086,7 @@
     "Marked: your company is on it": "निशाने पर: तुम्हारी टुकड़ी इसी पर है",
     "Marked: those beside you are on it": "निशाने पर: तुम्हारे साथी इसी पर हैं",
     "Against you · tap to mark": "तुम्हारे विरुद्ध · निशाना तय करने को छुओ",
+    "Round {n}, best of {m} · Right: {r}": "दौर {n} · बेस्ट ऑफ़ {m} · सही: {r}",
     "You carried someone out of the house of lac.": "तुम लाक्षागृह से किसी को उठाकर बाहर लाए।",
     "The tunnel mouth is cold and black and smells of earth. You put the one you carried down at the bottom of the shaft, and only then feel your hands shaking.": "सुरंग का मुँह ठंडा और काला है और उसमें मिट्टी की गंध है। तुम जिसे उठाए थे उसे गड्ढे के तल में रखते हो, और तभी तुम्हें अपने हाथ काँपते महसूस होते हैं।",
     "The fire caught you in the house at Varnavata. Someone dragged you out, burnt.": "वारणावत के घर में आग ने तुम्हें पकड़ लिया। कोई तुम्हें जली हालत में घसीटकर बाहर लाया।",
