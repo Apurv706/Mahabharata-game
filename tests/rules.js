@@ -709,4 +709,144 @@ require(G + "content/war_bhishma.js");
     "Bhishma is only held on the ninth day; no choice kills or spares anyone");
   ok(K.SCENES.bh_fall.choices.every((c) => !c.req) && K.SCENES.a6_bhishma.canon, "whatever you do as he falls, he falls");
 }
+// 80. War storylines (PRD 18.13 #1): Yuyutsu's call, the only way to change sides
+["content/episodes", "content/war_crossing"].forEach((f) => require(G + f + ".js"));
+K.UI = K.UI || { esc: (x) => x }; require(G + "ui/map.js");
+{
+  const KAURAVA_ONLY = ["a6_d13_bow"], canonDead = (S) => S.dead.filter((w) => K.PEOPLE[w] && K.PEOPLE[w].canon);
+  S = fresh({ act: 6, age: 44, side: "kaurava", friend: "duryodhana", court: "hastinapura", sibling: "dev", at: "camp_kaurava", storyMode: true });
+  Object.assign(S.bonds, { duryodhana: 8, drona: 6, bhishma: 5, arjuna: 4, dev: 6, ugra: 5 });
+  S.flags.push("role_command", "beat_ugra", "sibling_same_side"); S.vows.push({ id: "never_retreat", broken: false, age: 30 });
+  K.go("a6_day1");
+  ok(S.scene === "cross_call", "a fighter meets Yuyutsu's call before the first day (" + S.scene + ")");
+  const sc = K.SCENES.cross_call, cross = K.choiceList(sc).map((x) => x.c).find((c) => c.id === "cross");
+  const pv = K.preview(cross).map((x) => x[1]).join(" | ");
+  ok(/Breaks vow: Never to retreat/.test(pv) && /Ends your friendship with Duryodhana/.test(pv), "the crossing says first that it is a retreat and ends a friend for life there: " + pv);
+  K.choose(sc, cross);
+  ok(S.side === "pandava" && S.flags.includes("crossed_lines") && S.friend === null && S.moments.some((m) => m.kind === "farewell" && m.who === "duryodhana") && S.moments.some((m) => m.kind === "crossed"), "crossing: the side changes, the friend for life there says farewell, and the crossing has its moment");
+  ok(S.bonds.drona === 3 && S.bonds.bhishma === 2 && S.bonds.arjuna === 4 && S.bonds.dev === 3 && S.bonds.ugra === 2, "every bond on the side left falls by 3, and only those");
+  ok(K.vowBreaksFor(["retreat"], S).length === 0 && S.vows[0].broken, "crossing broke the vow never to retreat");
+  ok(!K.rankOf(S) && !K.warAllies(S).includes("company") && !K.warAllies(S).includes("ugra"), "a commander loses the company, and Ugra no longer stands beside you");
+  ok(K.ugraAcross(S) && S.flags.includes("sibling_other_side_set"), "Ugra and the sibling who stood beside you are across the field now");
+  ok(/do not know you/.test(String(K.warHelp(S).text)), "on the new side the first call for help reaches no one");
+  K.go("a6_day1");
+  ok(S.scene === "cross_watched" && S.flags.includes("suspected_spy"), "the first evening: the new side suspects a spy, and sets a guard (" + S.scene + ")");
+  const moved = K.travel(K.SCENES.cross_watched, S);
+  ok(moved && moved[0] === "camp_kaurava" && moved[1] === "camp_pandava" && S.at === "camp_pandava", "the map marker moves from the Kaurava camp to the Pandava camp (" + moved + ")");
+  K.choose(K.SCENES.cross_watched, K.SCENES.cross_watched.choices[0]); K.go("a6_day1");
+  ok(S.scene === "cross_duel", "the second morning: the old side sends someone (" + S.scene + ")");
+  ok(K.val(K.ENCOUNTERS.cross_e_duel.enemies).some((u) => u.person === "ugra") && K.ENCOUNTERS.cross_e_duel.lethal && /no one moves/.test(K.ENCOUNTERS.cross_e_duel.callHelp(S).text), "Ugra comes for you in a deadly duel with no call for help");
+  K.combatOutcome("cross_e_duel", "win", "a6_day1");
+  ok(S.dead.includes("ugra") && S.flags.includes("crossed_trusted") && S.flags.includes("proven_duel") && !S.flags.includes("suspected_spy") && K.rankOf(S) === "role_command" && S.flags.includes("company_given_back") && !/do not know you/.test(String(K.warHelp(S).text)), "winning the duel brings trust: the call for help, and rank opens again (a company)");
+  // The rest of the war, as one who crossed: no content for the old side, the Pandava camp on the map.
+  let at = "a6_day1", old = [], map = [], steps = 0;
+  K.go(at);
+  while (S.act === 6 && steps++ < 120) {
+    const here = K.SCENES[S.scene];
+    if (KAURAVA_ONLY.includes(here.id)) old.push(here.id);
+    const list = K.choiceList(here).filter((x) => x.ok);
+    // A choice for the old side: one its req allows only to a Kaurava.
+    const as = (side) => Object.assign({}, S, { side });
+    list.forEach((x) => { const r = x.c.req; if (r && K.test(r, as("kaurava")) && !K.test(r, as("pandava"))) old.push(here.id + ":" + x.c.id); });
+    const place = String(K.val(here.place, S) || ""), loc = K.locOf(place, S);
+    if (/Kurukshetra/.test(place) && loc !== "camp_pandava") map.push(here.id + " " + loc);
+    if (!list.length) break;
+    const c = list[0].c, r = c.game ? K.choose(here, c, "win") : K.choose(here, c);
+    let next = r.next;
+    if (r.combat) next = K.combatOutcome(r.combat, "win", r.next).next;
+    K.go(next);
+  }
+  ok(S.act === 7 && !old.length, "one who crossed never meets the old side's content again (" + (old.join(", ") || "none") + ", reached act " + S.act + ")");
+  ok(!map.length, "the war's scenes put the marker in the Pandava camp (" + (map.join(", ") || "all") + ")");
+  ok(!canonDead(S).some((w) => !["bhishma", "drona", "karna", "abhimanyu", "duryodhana", "dushasana", "jayadratha", "shakuni", "shalya", "iravan", "ghatotkacha", "bhurishravas", "drupada", "virata"].includes(w)), "crossing kills no canon figure the epic does not (" + canonDead(S) + ")");
+}
+// 80b. Those in the healers' tents watch the call; a child sent to a Kaurava division stays there
+S = fresh({ act: 6, age: 44, side: "neutral" }); K.go("a6_day1");
+ok(S.scene === "cross_call" && K.choiceList(K.SCENES.cross_call).map((x) => x.c.id).join() === "tents", "the healers' tents see Yuyutsu cross too, and only watch");
+S = fresh({ act: 6, age: 44, side: "kaurava", child: "vasu" }); S.bonds.vasu = 7; S.flags.push("vasu_away", "child_cmd_ashwatthama", "role_chariot");
+K.go("a6_day1"); K.choose(K.SCENES.cross_call, K.choiceList(K.SCENES.cross_call).find((x) => x.c.id === "cross").c);
+ok(S.flags.includes("vasu_left_behind") && !S.flags.includes("vasu_away") && !S.flags.some((f) => f.startsWith("child_cmd_") || f === "role_chariot") && S.bonds.vasu === 4 && !K.test(K.SCENES.wc_child_line.when, S),
+  "crossing: Vasu stays in his Kaurava division (bond -3, no Pandava-side scenes of his line), and the chariot is gone");
+// 80c. Suspected of spying until proven: the duel (killing, not sparing), the truth before Yudhishthira, or the spy caught; else for the war
+const crossNow = (o, flags) => { S = fresh(Object.assign({ act: 6, age: 44, side: "kaurava" }, o)); S.flags.push(...(flags || [])); K.go("a6_day1"); K.choose(K.SCENES.cross_call, K.choiceList(K.SCENES.cross_call).find((x) => x.c.id === "cross").c); };
+const sceneNext = () => { K.go("a6_day1"); return S.scene; };
+crossNow({ storyMode: true }, ["role_command"]);
+ok(!K.rankOf(S) && S.flags.includes("role_front") && S.flags.includes("company_left"), "crossing: the company is lost, and you fight as a spearman");
+r = K.combatOutcome("cross_e_duel", "lose", "a6_day1");
+ok(S.alive && S.injuries.includes("scar") && !K.rankOf(S) && S.flags.includes("suspected_spy") && /dust between the lines/.test(r.text), "story mode: dragged back with a scar; still suspected, no rank");
+K.combatOutcome("e_day1", "win", "a6_bhishma");
+ok(S.flags.includes("crossed_untrusted") && /do not know you/.test(String(K.warHelp(S).text)), "a deadly fight won is not proof: the call for help stays closed");
+S.seen.push("cross_watched", "cross_duel");
+ok(sceneNext() === "cross_truth", "the third night: before Yudhishthira (" + S.scene + ")");
+{ const tell = K.SCENES.cross_truth.choices.find((c) => c.id === "tell"); S.bonds.duryodhana = 5; const c0 = S.duty.conscience;
+  ok(tell.game === "retort" && tell.trial.rounds.length === 3, "the truth is a retort test of three questions");
+  K.choose(K.SCENES.cross_truth, tell, "win");
+  ok(S.flags.includes("proven_truth") && !S.flags.includes("suspected_spy") && K.rankOf(S) === "role_command" && S.bonds.duryodhana === 4 && S.duty.conscience === c0 - 1 && !/do not know you/.test(String(K.warHelp(S).text)),
+    "the truth believed: suspicion clears, the call for help and the company come back; the old side's bonds -1, conscience -1"); }
+ok(sceneNext() === "a6_day1", "the proven skip the fourth night (" + S.scene + ")");
+crossNow({}); K.combatOutcome("cross_e_duel", "spare", "a6_day1"); S.seen.push("cross_watched", "cross_duel");
+ok(S.flags.includes("suspected_spy") && sceneNext() === "cross_explain", "sparing him feeds the suspicion: Dhrishtadyumna wants a reason (" + S.scene + ")");
+S.attrs.wisdom = 9; S.skills.statecraft = 9;
+r = K.choose(K.SCENES.cross_explain, K.SCENES.cross_explain.choices(S).find((c) => c.id === "explain"));
+ok(r.check.pass && S.flags.includes("proven_spared") && !S.flags.includes("suspected_spy"), "a reason that holds clears it");
+crossNow({}); K.combatOutcome("cross_e_duel", "spare", "a6_day1"); S.seen.push("cross_watched", "cross_duel");
+K.choose(K.SCENES.cross_explain, K.SCENES.cross_explain.choices(S).find((c) => c.id === "silent"));
+K.choose(K.SCENES.cross_truth, K.SCENES.cross_truth.choices.find((c) => c.id === "refuse")); S.seen.push("cross_explain", "cross_truth");
+ok(sceneNext() === "cross_spy", "the fourth night: a spy in the camp, and you are blamed (" + S.scene + ")");
+{ const rem = K.SCENES.cross_spy.choices.find((c) => c.id === "remember");
+  ok(rem.game === "notice" && rem.trial.things.length >= rem.trial.count + 6, "catching him is a notice test, with enough faces to ask about");
+  const keep = JSON.parse(JSON.stringify(S));
+  K.choose(K.SCENES.cross_spy, rem, "win");
+  ok(S.flags.includes("proven_spy") && !S.flags.includes("suspected_spy"), "remember him well and he is caught: proven");
+  K.S = S = keep; K.choose(K.SCENES.cross_spy, rem, "lose");
+  ok(S.flags.includes("suspected_war") && S.flags.includes("suspected_spy") && /do not know you/.test(String(K.warHelp(S).text)) && sceneNext() === "a6_day1", "not proven by the fourth night: suspected for the war, and no call for help");
+  ok(/two paces behind you all day/.test(JSON.stringify(K.val(K.SCENES.a6_day1.body, S))) && /stopped pretending/.test(JSON.stringify(K.val(K.SCENES.a6_day16.body, S))), "the worst posting, and a shadow in later scenes");
+  S.alive = false; ok(K.composeEnding(S).telling.some((l) => /never trusted/.test(JSON.stringify(l))), "and the telling says the Pandavas never trusted you"); }
+S = fresh({ act: 6, age: 44, side: "kaurava" }); S.flags.push("role_healer");
+K.go("a6_day1"); K.choose(K.SCENES.cross_call, K.choiceList(K.SCENES.cross_call).find((x) => x.c.id === "cross").c);
+ok(S.flags.includes("role_healer") && !S.flags.includes("role_front"), "a healer who crosses keeps to the tents");
+// 81. Calling someone across, from the Pandava side
+S = fresh({ act: 6, age: 44, side: "pandava", sibling: "devi", friend: "duryodhana" }); S.bonds.devi = 6; S.bonds.duryodhana = 7; S.flags.push("sibling_other_side_set");
+S.attrs.wisdom = 8; S.skills.statecraft = 6;
+K.go("a6_day1");
+{
+  const sc = K.SCENES[S.scene], ids = K.choiceList(sc).filter((x) => x.ok).map((x) => x.c.id);
+  ok(sc.id === "cross_call" && ids.includes("call") && ids.includes("call_friend") && !ids.includes("cross"), "the Pandava side can call a sibling or a friend across, and cannot cross (" + ids + ")");
+  K.choose(sc, K.choiceList(sc).find((x) => x.c.id === "call_friend").c);
+  ok(S.friend === "duryodhana" && S.memories.some((m) => m.who === "duryodhana") && S.side === "pandava", "Duryodhana will not come (canon), and remembers that you asked");
+  S.seen = S.seen.filter((x) => x !== "cross_call"); K.go("a6_day1");
+  K.choose(K.SCENES.cross_call, K.choiceList(K.SCENES.cross_call).find((x) => x.c.id === "call").c);
+  ok(S.calledAcross === "devi" && !S.flags.includes("sibling_other_side_set") && K.warAllies(S).includes("devi") && S.bonds.devi === 8, "a sibling who comes fights beside you for the war, and the bond rises");
+  K.go("a6_day1");
+  ok(S.scene === "cross_called" && K.val(K.ENCOUNTERS.cross_e_called.allies).includes("devi"), "the second morning, you fight beside her against the riders sent after her (" + S.scene + ")");
+}
+S = fresh({ act: 6, age: 44, side: "pandava", sibling: "dev" }); S.bonds.dev = 6; S.flags.push("sibling_other_side_set"); S.attrs.wisdom = 0; S.skills.statecraft = 0;
+K.go("a6_day1"); K.choose(K.SCENES.cross_call, K.choiceList(K.SCENES.cross_call).find((x) => x.c.id === "call").c);
+ok(!S.calledAcross && S.flags.includes("sibling_other_side_set") && S.memories.some((m) => m.who === "dev" && /not forgotten that you asked/.test(m.src)), "a sibling who will not come remembers that you asked");
+// 82. The one who crossed: a death between the lines is its own ending; the telling names it
+S = fresh({ act: 6, age: 44, side: "kaurava" }); S.flags.push("lost_to_ugra");
+K.go("a6_day1"); K.choose(K.SCENES.cross_call, K.choiceList(K.SCENES.cross_call).find((x) => x.c.id === "cross").c); K.go("a6_day1");
+K.combatOutcome("cross_e_duel", "lose", "a6_day1");
+{ const e = K.composeEnding(S);
+  ok(!S.alive && e.title === "The one who crossed" && e.art === "end_crossed" && K.ENDINGS.some((x) => x.title === e.title && x.art === "end_crossed"), "falling in the duel between the lines is the ending \"The one who crossed\"");
+  ok(e.telling.some((l) => /the one who crossed/.test(String(l))) && /between the lines/.test(S.deathText), "the bards call you the one who crossed"); }
+S = fresh({ act: 6, age: 44, side: "pandava" }); K.apply({ die: true, deathText: "x" });
+ok(K.composeEnding(S).title !== "The one who crossed", "a death without crossing keeps its own ending");
+// 83. The canon lock: nothing in the crossing kills or saves a canon figure
+{
+  const dies = [];
+  for (const foe of ["ugra", "kanaka"]) { const T = fresh({ act: 6, age: 44, side: "pandava", crossFoe: foe }); const w = K.ENCOUNTERS.cross_e_duel.win.fx(T); if (w.die) dies.push(w.die); }
+  ok(dies.length === 2 && dies.every((w) => !(K.PEOPLE[w] && K.PEOPLE[w].canon)), "the duel's dead are never canon figures (" + dies + ")");
+  const T = fresh({ act: 6, age: 44, side: "kaurava", friend: "karna" }); T.bonds.karna = 9;
+  const fx = K.SCENES.cross_call.choices(T).find((c) => c.id === "cross").fx;
+  ok(!fx.die && !JSON.stringify(fx).includes("unflag\":[\"dead"), "crossing takes no life and gives none back");
+}
+// 84. Where it matters most, the war says you crossed; the telling names the child left behind
+S = fresh({ act: 6, age: 44, side: "kaurava", child: "vasu", friend: "duryodhana" }); S.bonds.duryodhana = 10; S.bonds.vasu = 6; S.flags.push("vasu_away", "child_cmd_bhurishravas");
+K.go("a6_day1"); K.choose(K.SCENES.cross_call, K.choiceList(K.SCENES.cross_call).find((x) => x.c.id === "cross").c);
+{ const said = (id) => JSON.stringify(K.val(K.SCENES[id].body, S));
+  ok(/common spearman/.test(said("a6_day1")) && /walked out of his army/.test(said("a6_bhishma")) && /walk out of it/.test(said("a6_duryodhana")) && /Eighteen days ago/.test(said("a6_day18")), "day 1, Bhishma's bed, Duryodhana's last night and day 18 each say you crossed");
+  S.alive = false; S.flags.push("won_crossing_duel"); S.crossFoe = "kanaka"; S.duty.conscience = 8;
+  const t = K.composeEnding(S).telling.map((l) => JSON.stringify(l)).join(" ");
+  ok(/say it gently/.test(t) && /son Vasu stayed in the Kaurava ranks/.test(t) && /killed {who}/.test(t), "the telling: the one who crossed (gently, for a good conscience), the duel, and Vasu left behind"); }
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

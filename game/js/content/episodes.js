@@ -34,7 +34,8 @@
   const ugraMet = (S) => ["beat_ugra", "lost_to_ugra", "shamed_ugra"].some((f) => S.flags.includes(f));
   // Ugra is across the field only from those who shamed him at the fair; those who beat him or lost to
   // him fairly have him in the line beside them (act6a.js K.warAllies, day one).
-  const ugraAcross = (S) => S.flags.includes("shamed_ugra") && !S.dead.includes("ugra") && S.side && S.side !== "neutral";
+  // (and across from anyone who crossed the lines away from him on the first morning: war_crossing.js).
+  const ugraAcross = (S) => K.ugraAcross(S);
   const warring = (S) => S.side === "pandava" || S.side === "kaurava";
 
   Object.assign(K.PEOPLE, { dev: { name: "Dev", canon: false }, devi: { name: "Devi", canon: false } });

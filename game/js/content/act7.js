@@ -170,7 +170,7 @@
     if (S.flags.includes("debt_paid_late")) f.push("Sudatta's grandson told everyone that you paid what your grandfather owed.");
     if (S.flags.includes("debt_forgiven")) f.push("Sudatta's grandson tore up your family's note himself, and never spoke of it.");
     if (S.flags.includes("debt_torn_twice")) f.push("Sudatta's family still keeps the pieces of your grandfather's note.");
-    if ((S.flags.includes("beat_ugra") || S.flags.includes("lost_to_ugra")) && S.side && S.side !== "neutral") f.push(S.alive ? "Ugra, the miller's son, went home and told the story of the fair to anyone who would listen." : "Ugra, the miller's son, carried you off the field.");
+    if ((S.flags.includes("beat_ugra") || S.flags.includes("lost_to_ugra")) && S.side && S.side !== "neutral" && !S.dead.includes("ugra") && !S.flags.includes("crossed_lines")) f.push(S.alive ? "Ugra, the miller's son, went home and told the story of the fair to anyone who would listen." : "Ugra, the miller's son, carried you off the field.");
     if (S.friend === "karna" || S.bonds.karna >= 7) f.push("Karna's sons all died in the war. His name lived on.");
     if (S.friend === "duryodhana") f.push("Duryodhana, your oldest friend, went to heaven, the stories say, for dying as a warrior.");
     if (S.teacher && S.teacher !== "self") f.push(S.duty.teacher >= 7 ? "Your debt to {teacher} was paid in full." : S.duty.teacher <= 2 ? "Your debt to {teacher} was never paid." : "Your debt to {teacher} was partly paid, as most are.");
@@ -195,7 +195,9 @@
     { title: "Against the boy in the wheel", art: "end_wheel", hint: "On the Kaurava side, stand in Abhimanyu's way." },
     { title: "A life cut short", art: "end_cut_short", hint: "Cross someone who does not forgive, before the war, and fail." },
     { title: "Beside Karna", art: "war_day17", hint: "Stand beside Karna on his last day." },
-    { title: "The burnt house", art: "end_fire", hint: "Be inside the house of lac when it burns, and not get out." }
+    { title: "The burnt house", art: "end_fire", hint: "Be inside the house of lac when it burns, and not get out." },
+    // War storylines (PRD 18.13 #1, war_crossing.js).
+    { title: "The one who crossed", art: "end_crossed", hint: "Cross the field at Yuyutsu's call, and fall." }
   ];
 
   K.composeEnding = function (S) {
@@ -226,6 +228,11 @@
       else if (c === "home") { title = lost >= 2 ? "Broken survivor" : "The homecoming"; art = lost >= 2 ? "end_broken" : "home_" + S.origin; caption = lost >= 2 ? "An empty house at evening" : K.ORIGINS[S.origin].name; }
       else if (lost >= 1 || weakBonds >= 4) { title = "Broken survivor"; art = "end_broken"; caption = "An empty house at evening"; }
       else { title = "The wanderer"; art = "end_river"; caption = "By the river, after everything"; }
+    }
+    // War storylines (PRD 18.13 #1, war_crossing.js): one who crossed the field at Yuyutsu's call and fell
+    // between the lines on the second morning, to the man the old side sent.
+    if (!S.alive && S.flags.includes("lost_crossing_duel")) {
+      title = "The one who crossed"; art = "end_crossed"; caption = "The ground between the lines";
     }
     const coda = {
       "The wise elder": "You sat at Yudhishthira's right hand for thirty-six years, and you told him the truth when no one else would.",

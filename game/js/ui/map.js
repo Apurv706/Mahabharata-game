@@ -18,6 +18,10 @@
     dvaita: ["Dvaita forest", 76.0, 30.35, -40, -28, "end", 1],
     ashram: ["Ashram on the Ganga", 78.25, 30.0, 40, -40, "start", 1],
     kurukshetra: ["Kurukshetra", 76.84, 29.97, 0, -34],
+    // The two camps at Kurukshetra: where a fighter stands in the war, by side (one who crosses the
+    // field on the first morning moves from one to the other: content/war_crossing.js).
+    camp_pandava: ["Pandava camp", 76.6, 29.97, -16, 24, "end", 1],
+    camp_kaurava: ["Kaurava camp", 77.08, 29.97, 16, 24, "start", 1],
     pramanakoti: ["Pramanakoti", 78.15, 29.45, 46, -6, "start", 1],
     kamyaka: ["Kamyaka forest", 76.3, 29.7, -46, 0, "end", 1],
     hastinapura: ["Hastinapura", 78.01, 29.16, 40, -28, "start"],
@@ -56,7 +60,7 @@
   K.locOf = function (place, S = K.S) {
     if (!place) return null;
     if (place === "Home") return !K.ORIGINS[S.origin] ? null : S.flags.includes("moved_capital") ? "hastinapura" : S.origin === "suta" ? "anga" : K.locOf(K.ORIGINS[S.origin].name, S);
-    for (const [re, loc] of MATCH) if (re.test(place)) return loc;
+    for (const [re, loc] of MATCH) if (re.test(place)) return loc === "kurukshetra" && S.act >= 6 && (S.side === "pandava" || S.side === "kaurava") ? "camp_" + S.side : loc;
     return null;
   };
 
@@ -138,7 +142,7 @@
     lotus: '<path d="M0 6 Q-4 -1 0 -9 Q4 -1 0 6 Z M0 6 Q-9 3 -9 -4 Q-3 -2 0 6 Z M0 6 Q9 3 9 -4 Q3 -2 0 6 Z"/>',
     flame: '<path d="M0 -10 Q7 -2 5 4 Q3 9 0 9 Q-3 9 -5 4 Q-7 -2 0 -10 Z"/><path class="e-in" d="M0 -2 Q3 2 2 5 Q1 7 0 7 Q-1 7 -2 5 Q-3 2 0 -2 Z"/>'
   };
-  const EMB = { matsya: "fish", anga: "elephant", gandhara: "horse", mathura: "conch", dwaraka: "conch", nishada: "bow", kurukshetra: "spears", kamyaka: "tree", dvaita: "tree", ashram: "lotus", varnavata: "flame" };
+  const EMB = { matsya: "fish", anga: "elephant", gandhara: "horse", mathura: "conch", dwaraka: "conch", nishada: "bow", kurukshetra: "spears", camp_pandava: "spears", camp_kaurava: "spears", kamyaka: "tree", dvaita: "tree", ashram: "lotus", varnavata: "flame" };
   K.EMBLEM_OF = EMB;
   // An emblem in front of a label: placed by an estimate of the label's width, since SVG text
   // cannot be measured before it is drawn.
