@@ -159,16 +159,34 @@
     '<linearGradient id="si-wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2416"/><stop offset="0.7" stop-color="#4a2f1c"/><stop offset="0.72" stop-color="#5b3a22"/><stop offset="1" stop-color="#3b2414"/></linearGradient></defs>' +
     '<path fill="url(#si-wg)" d="M0 0H100V100H0Z"/>' +
     '<path d="M0 72 H100" stroke="#6b4527" stroke-width="1" vector-effect="non-scaling-stroke"/></svg><div class="si-glow"></div>';
+  // Your house on the homeland's painting: a doorway with a lamp lit inside, for you to walk into.
+  const DOOR = '<svg class="si-door" viewBox="0 0 150 210" aria-hidden="true"><defs><radialGradient id="si-dg" cx="50%" cy="70%" r="60%"><stop offset="0" stop-color="#ffcf8a"/><stop offset="0.5" stop-color="#c8742c"/><stop offset="1" stop-color="#3a1c0c"/></radialGradient></defs>' +
+    '<path d="M0 70 Q75 4 150 70 L150 210 L0 210 Z" fill="#8a6440" stroke="#24120a" stroke-width="2"/><path d="M-6 72 Q75 -6 156 72 L148 64 Q75 6 2 64 Z" fill="#c9a25a" stroke="#24120a" stroke-width="1.5"/>' +
+    '<path d="M44 210 V118 Q75 86 106 118 V210 Z" fill="url(#si-dg)" stroke="#24120a" stroke-width="2"/><path d="M38 210 V116 Q75 78 112 116 V210" fill="none" stroke="#5a3418" stroke-width="5"/></svg>';
   U.sleepIntro = function (done) {
     if (K.headless || /jsdom/i.test(navigator.userAgent || "")) return done();
     U.beatStop();
     const S = K.S;
     const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const home = S.origin === "suta" ? "home_anga" : "home_" + S.origin;
     const kid = Object.assign({}, K.puppetSpec(S), { stage: "child", item: null, dead: false });
-    const lines = ["Evening at home. Supper, and the last of the light.", "Then bed. The lamp burns low.", ["And you dream.", null]];
+    const O = K.ORIGINS[S.origin] || {};
+    const lines = [null, "Supper with the family.", "Then bed. The lamp burns low.", ["And you dream.", null]];
+    // The family at supper, kneeling in two pairs that face each other: grandmother and you, mother
+    // and father. Their figures are cut from your homeland's colours, as yours is.
+    const base = K.puppetSpec(S), skin = (base.palette || [])[0], trim = (base.palette || [])[2];
+    const kin = (pronoun, stage, cloth) => Object.assign({}, base, { pronoun, stage, item: null, heir: null, temper: null, scar: false, glow: false, eye: false, sling: false, limp: false, dead: false, palette: [skin, cloth, trim] });
+    const fig = (spec, flip, cls) => '<span class="fm ' + cls + '">' + U.puppet(spec, { h: 150, pose: "sit", flip, cls: cls === "kid" ? "si-kid" : "" }) + "</span>";
+    const family = '<div class="si-eat si-family">' + fig(kin("she", "elder", "#b9a27c"), false, "gm") + fig(kid, false, "kid") + fig(kin("she", "adult", "#8a2f3a"), true, "mo") + fig(kin("he", "adult", (base.palette || [])[1] || "#6f3a24"), true, "fa") +
+      '<div class="si-mat">' + PLATE + PLATE + PLATE + PLATE + "</div></div>";
+    // Your homeland's painting, full screen, and you walking home across it; then inside: supper,
+    // bed, the lamp going out, and the dream bubble opening onto the war.
     const el = U.el('<div class="sleepin" role="presentation">' +
+      '<div class="si-region" style="--img:url(\'' + U.bgUrl(home) + '\')">' + DOOR + '<span class="si-walker">' + U.puppet(kid, { h: 170, pose: "walk" }) + "</span>" +
+      // Your homeland, introduced as it is on the character screen: its name, where it lies, what it is.
+      '<div class="si-intro"><span class="si-where">' + U.t(O.region || "") + "</span><b>" + U.t(O.name || "") + "</b><p>" + U.t(O.detail || "") + "</p></div></div>" +
       WALL + '<div class="si-night"></div>' +
-      '<div class="si-room"><div class="si-eat">' + U.puppet(kid, { h: 190, pose: "kneel", cls: "si-kid" }) + PLATE + "</div>" +
+      '<div class="si-room">' + family +
       '<div class="si-sleep">' + BED + '<span class="si-sleeper">' + U.puppet(kid, { h: 120, pose: "dead" }) + "</span></div>" +
       '<span class="si-lamp"><img src="art/diya.png" alt=""><img class="flame" src="art/diya_flame.png" alt=""></span>' +
       '<span class="si-dots"><i></i><i></i><i></i></span></div>' +
@@ -185,12 +203,20 @@
     const key = (e) => { if ([" ", "Enter", "Escape", "ArrowRight"].includes(e.key)) { e.preventDefault(); e.stopPropagation(); end(); } };
     el.addEventListener("click", end);
     window.addEventListener("keydown", key, true);
-    requestAnimationFrame(() => requestAnimationFrame(() => { el.classList.add("in"); say(0); }));
-    at(2800, () => { el.classList.add("night"); say(1); });
-    at(4800, () => el.classList.add("dark"));
-    at(5600, () => { el.classList.add("dream"); say(2); });
-    at(6600, () => el.classList.add("open"));
-    at(8400, end);
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("in")));
+    // You walk home along the bank to your own door, and go in.
+    at(1600, () => {
+      const door = el.querySelector(".si-door"), walker = el.querySelector(".si-walker");
+      if (door && walker) { const d = door.getBoundingClientRect(), w = walker.getBoundingClientRect(); walker.style.left = Math.round(d.left + d.width / 2 - w.width / 2) + "px"; }
+      el.classList.add("walking");
+    });
+    at(4900, () => el.classList.add("entered"));
+    at(5600, () => { el.classList.add("inside"); say(1); });
+    at(8200, () => { el.classList.add("night"); say(2); });
+    at(10000, () => el.classList.add("dark"));
+    at(10600, () => { el.classList.add("dream"); say(3); });
+    at(11600, () => el.classList.add("open"));
+    at(13200, end);
   };
 
   // ---------- Waking from the dream ----------

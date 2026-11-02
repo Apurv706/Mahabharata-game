@@ -150,12 +150,14 @@ Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct);
       - "for the rest of your life" from 10 to 4.
     - **Aphorism closers replaced** with concrete ones: "Some doors, once shut, stay shut" became "No one asks you to stay"; "…and it is enough" became "you sit together until the fire is out".
     - **Hindi** updated to match.
-45. **Into the dream:**
-    - **A short lead-in before the prologue** (about eight seconds, or a tap):
-      1. The six-year-old eats supper on a leaf plate in a plain room at home (no painting behind).
-      2. Then sleeps on a rope bed by a clay lamp. The lamp burns low and goes out.
-      3. Dream bubbles rise from the sleeper, and the war at Kurukshetra opens out of the last one.
-      Captions in English and Hindi.
+45. **Into the dream: the opening sequence** (about thirteen seconds, or a tap):
+    1. Your homeland's painting fills the screen and is introduced, as on the character screen: where it lies, its name, and what it is.
+    2. You, six years old, walk home along the bank and in at your lit doorway.
+    3. Supper with the family: grandmother, mother, father and you, sitting on a mat with leaf plates.
+    4. Bed on a rope charpai, the clay lamp burning low and going out.
+    5. Dream bubbles rise from the sleeper, and the war opens out of the last one.
+    - Captions are in English and Hindi. There is a new "sit" pose for the meal.
+    - `Art_Brief_Opening.md` asks for two empty rooms (supper and night) to replace the plain wall. Each homeland's house at dusk is optional.
     - **Your age stays six in the dream.** Only the figure is grown, with a sword; the Character panel no longer says 44.
     - **The story sheet reaches the bottom of iPhone screens again:** newer Safari floats its address bar over the page, which left a band of painting under the sheet.
 

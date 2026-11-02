@@ -24288,5 +24288,20 @@
   "id": 4859,
   "en": "And you dream.",
   "ctx": "early"
+ },
+ {
+  "id": 4860,
+  "en": "Evening in {place}.",
+  "ctx": "early"
+ },
+ {
+  "id": 4861,
+  "en": "Home for supper.",
+  "ctx": "early"
+ },
+ {
+  "id": 4862,
+  "en": "Supper with the family.",
+  "ctx": "early"
  }
 ]
