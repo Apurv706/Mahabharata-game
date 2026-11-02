@@ -463,7 +463,7 @@
       function round() {
         const r = rounds[i];
         const order = r.replies.map((x, j) => j).sort(() => K.rng() - 0.5);
-        host.innerHTML = '<p class="score">' + U.tr("Round {n} of {m} · Right: {r}", { n: i + 1, m: rounds.length, r: right }) + '</p><blockquote class="taunt">' + U.t(r.line) + '</blockquote><div class="timer"><i></i></div><div class="btnrow replies"></div>';
+        host.innerHTML = '<p class="score">' + U.tr("Round {n}, best of {m} · Right: {r}", { n: i + 1, m: rounds.length, r: right }) + '</p><blockquote class="taunt">' + U.t(r.line) + '</blockquote><div class="timer"><i></i></div><div class="btnrow replies"></div>';
         const row = host.querySelector(".replies"), bar = host.querySelector(".timer i");
         const keys = [];
         order.forEach((j) => { const f = () => answer(j === 0); row.appendChild(U.button("cta secondary", U.t(r.replies[j]), f)); keys.push(f); });
