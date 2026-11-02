@@ -650,4 +650,11 @@ require(G + "content/war_oath.js");
   const rr = K.choose(K.SCENES.oath_crescent, arr, "lose");
   ok(rr.next === "oath_king" && !rr.after && K.ENCOUNTERS.oath_king_hold.hold && K.ENCOUNTERS.oath_king_hold.enemies.some((u) => u.person === "drona"), "if the crescent breaks, a holding fight at the king's chariot follows");
 }
+// 47. The oath and canon: Arjuna is only ever held, never brought down; the oath is kept to the war's end, when Susharma falls to him
+{
+  ok(["oath_arjuna_12", "oath_arjuna_16"].every((id) => K.ENCOUNTERS[id].hold && K.ENCOUNTERS[id].enemies.some((u) => u.person === "arjuna" && u.hero)), "Arjuna's chariot is a fight to hold, never to win by killing him");
+  S = fresh({ act: 6, age: 44, side: "kaurava", path: "warrior" }); K.apply({ vowTake: "samshaptaka" }); S.seen.push("a6_day18");
+  K.oathEnds(K.SCENES.a6_duryodhana, S);
+  ok(!K.hasVow("samshaptaka", S) && S.vows.some((v) => v.id === "samshaptaka" && v.released) && S.journal.some((j) => /Susharma/.test(JSON.stringify(j))), "after the eighteenth day the oath is released, kept, and Susharma falls as written");
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

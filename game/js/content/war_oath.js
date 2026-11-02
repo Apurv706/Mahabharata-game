@@ -39,22 +39,22 @@
   // Arjuna's chariot: the holding fight of command.js (its beats and painting), deadly under the oath,
   // and harder: he is hunting the sworn men, not passing by (a careful player holds about three times
   // in four on the twelfth day, two in three on the sixteenth). He is held, never brought down (enc.hold).
-  const arjunaHold = (id, day, hold, atk, extra) => K.encounter(Object.assign({}, K.ENCOUNTERS.hold_arjuna, {
+  const arjunaHold = (id, day /* the death line */, hold, atk, extra) => K.encounter(Object.assign({}, K.ENCOUNTERS.hold_arjuna, {
     id, hold, lethal: true, injury: "scar",
     enemies: [K.foe("Arjuna", 10, { abilities: ["strike", "arrows", "aimed"], hero: true, person: "arjuna", hp: 900, atk }), K.foe("Pandava chariot-warrior", 5, { abilities: ["strike", "arrows"] })],
     flee: { tags: WITHDRAW, fx: { flag: "oath_withdrew" }, text: "You pull out of the arrows. The sworn men around you see it. Nobody says anything. Nobody has to." },
     lose: { fx: (S) => (S.storyMode ? { flag: "oath_carried_off", journal: "Arjuna's arrows brought you down, and your men carried you off the field. You never stepped back, and the oath held." } : null),
       text: (S) => (S.alive ? "An arrow takes you under the collarbone, and your men carry you off the field. You never stepped back. The oath holds." : null),
-      deathText: "{They} swore the Samshaptakas' oath on the eleventh night, and fell in front of Arjuna's chariot on the " + day + " day, as {they} had sworn." }
+      deathText: day }
   }, extra));
-  arjunaHold("oath_arjuna_12", "twelfth", 7, 11, {
+  arjunaHold("oath_arjuna_12", "{They} swore the Samshaptakas' oath on the eleventh night, and fell in front of Arjuna's chariot on the twelfth day, as {they} had sworn.", 7, 11, {
     title: "The sworn men's challenge", caption: "Seven rounds under the arrows",
     intro: "Arjuna's chariot comes down on the sworn men like a hawk on a field of quail. No one has stood in front of it and stayed. You swore you would.",
     holdText: "A rider reaches Arjuna's chariot from the north: the king is in danger. Krishna turns the white horses away. You are still standing.",
     win: { fx: { flag: "oath_held_12", rep: { kuru: 1 }, journal: "On the twelfth day you stood in front of Arjuna's chariot, as you had sworn, until it turned away." },
       text: "He goes north at a gallop, and the sworn men cheer as if they had won. You know better. He will be back." }
   });
-  arjunaHold("oath_arjuna_16", "sixteenth", 7, 12, {
+  arjunaHold("oath_arjuna_16", "{They} swore the Samshaptakas' oath on the eleventh night, and fell in front of Arjuna's chariot on the sixteenth day, as {they} had sworn.", 7, 12, {
     title: "The white horses, again", caption: "Seven rounds",
     intro: "There are fewer of you this time, and he comes straight for the banners he remembers.",
     holdText: "Ashwatthama's conch sounds to the north, and Arjuna turns to answer it. You are still standing.",
@@ -152,11 +152,12 @@
   if (offer) { const w = offer.when; offer.when = (S) => !sworn(S) && K.test(w, S); }
 
   // The oath ends with the war: released (kept) once the eighteenth day is over, for those still alive.
-  K.on("scene", (sc) => {
-    const S = K.S;
+  K.oathEnds = (sc, S = K.S) => {
     if (!S || !S.alive || !sworn(S) || !((S.seen.includes("a6_day18") && sc.id !== "a6_day18") || (sc.act || 0) >= 7)) return;
-    K.apply({ vowRelease: "samshaptaka", journal: "The war ended with your oath still on you, unbroken." });
-  });
+    K.apply({ vowRelease: "samshaptaka", journal: "On the eighteenth day Arjuna killed Susharma and the last of the Trigartas. The war ended with your oath still on you, unbroken." });
+  };
+  K.on("scene", (sc) => K.oathEnds(sc));
+
 
   // Where the scenes come: the oath on the eleventh night and the twelfth day's fighting, before the
   // night of the twelfth (ep_carts) and the wheel; the second challenge on the sixteenth day.
