@@ -417,4 +417,61 @@ require(G + "content/war_kings.js");
   K.choose(sc("kf_word"), ch("kf_word", "home"));
   ok(S.flags.includes("kf_took_word") && S.missed.includes("cmd_council_2") && K.resolveScene("a6_day16").id === "a6_day16", "riding home, the night is missed and the war's road goes on at day 16");
 }
+// 42. War storyline (PRD 18.13): the great duel on day 17 (content/war_duel.js)
+require(G + "content/war_duel.js");
+{
+  const sc = (id) => K.SCENES[id];
+  const war = (o, flags) => { const s = fresh(Object.assign({ act: 6, age: 44 }, o)); s.flags.push(...(flags || ["role_front"])); return s; };
+  ok(K.BEFORE.a6_day17.includes("kd_son") && K.BEFORE.a6_day17.includes("kd_guard"), "both sides of the duel come before the wheel scene");
+  ok(K.test(sc("kd_son").when, war({ side: "kaurava" })) && !K.test(sc("kd_son").when, war({ side: "kaurava" }, ["role_healer"])), "Kaurava fighters ride beside Vrishasena; healers stay in the tents");
+  // Holding him: rounds counted; four or more and Karna's bond rises and his last words name it.
+  S = war({ side: "kaurava", path: "archer" }); S.attrs.aim = 6; S.attrs.might = 5; S.bonds.karna = 4;
+  {
+    const C = K.Combat, B = C.start("kd_e_son", () => {});
+    ok(B.units.some((u) => u.person === "vrishasena" && u.side === "ally"), "Vrishasena fights beside you");
+    const ar = B.units.find((u) => u.person === "arjuna");
+    for (let i = 0; i < 14 && !B.over; i++) C.act(i % 3 === 2 ? "guard" : "strike", ar.uid);
+    ok(B.over && ar.hp >= Math.round(ar.maxHp * 0.1) - 1, "Arjuna is held off, never brought down (" + B.over + ")");
+    K.kdHoldCount(B);
+    ok(S.kdHeld >= 0 && S.kdHeld <= 6 && (B.over !== "win" || S.kdHeld === 6), "the rounds held are counted (" + S.kdHeld + ")");
+    C.end && C.end();
+  }
+  S = war({ side: "kaurava" }); S.bonds.karna = 4; S.kdHeld = 6;
+  const r1 = K.combatOutcome("kd_e_son", "win", "a6_day17");
+  ok(S.bonds.karna === 6 && S.flags.includes("kd_stood") && /Vrishasena's throat/.test(r1.text), "held to the end: Karna +2, and Vrishasena still falls");
+  ok(/my son's wheel/.test(K.karnaLastWords(S)) && K.val(sc("a6_day17").body, S).some((b) => b && b.speaker === "Karna"), "his last words name it");
+  S.flags.push("shakti_urged_keep");
+  ok(/my son.s wheel/.test(K.karnaLastWords(S)[0]) && /keep the spear/.test(K.karnaLastWords(S)[1]) && K.val(sc("a6_day17").body, S).filter((b) => b && b.speaker === "Karna").length === 2, "joined to what you told him on the fourteenth night, one set of last words");
+  S = war({ side: "kaurava" }); S.bonds.karna = 4; S.kdHeld = 2; S.flags.push("shakti_urged_keep");
+  const r2 = K.combatOutcome("kd_e_son", "flee", "a6_day17");
+  ok(S.bonds.karna === 2 && S.flags.includes("kd_withdrew") && /Vrishasena's throat/.test(r2.text), "withdrew early: Karna -2, and Vrishasena still falls");
+  ok(K.karnaLastWords(S) === null && !K.val(sc("a6_day17").body, S).some((b) => b && b.speaker === "Karna"), "he does not look at you again: no last words, warm or otherwise");
+  S = war({ side: "kaurava" }); S.kdHeld = 5; K.combatOutcome("kd_e_son", "lose", "a6_day17");
+  ok(S.flags.includes("kd_stood"), "four rounds or more counts, even if you went down after");
+  { const pull = sc("a6_day17").choices.find((c) => c.id === "pull").req, s2 = war({ side: "kaurava" }); const before = K.test(pull, s2); s2.seen.push("kd_son"); ok(!before && K.test(pull, s2), "the way back from his side is for those who were there"); }
+  // Vrishasena and Karna die on day 17 in every life: every road through these scenes goes on to the
+  // wheel, every outcome of the son's fight ends with him falling, and the wheel's close is untouched.
+  for (const id of ["kd_son", "kd_guard"]) ok(sc(id).next === "a6_day17" && sc(id).skipTo === "a6_day17", id + " goes on to the wheel scene");
+  for (const o of ["win", "lose", "flee"]) {
+    for (const n of [0, 6]) { S = war({ side: "kaurava" }); S.kdHeld = n; const r = K.combatOutcome("kd_e_son", o, "a6_day17"); ok(r.next === "a6_day17" && /Vrishasena's throat/.test(r.text), "Vrishasena falls (" + o + ", held " + n + ")"); }
+    S = war({ side: "pandava" }); const r = K.combatOutcome("kd_e_wheel", o, "a6_day17"); ok(r.next === "a6_day17", "the wheel-guard goes on to the wheel (" + o + ")");
+  }
+  for (const side of ["pandava", "kaurava", "neutral"]) {
+    S = war({ side }); const after = K.val(sc("a6_day17").after, S), wit = K.val(sc("a6_day17").witness, S);
+    ok(after.some((b) => typeof b === "string" && /Arjuna's arrow takes Karna's life/.test(b)) && wit.some((b) => /Vrishasena/.test(b)), "day 17, " + side + ": Vrishasena falls and Arjuna's arrow takes Karna");
+  }
+  // The wheel-guard: never under the vow never to strike Karna.
+  S = war({ side: "pandava" });
+  ok(K.test(sc("kd_guard").when, S), "a Pandava fighter rides at Arjuna's wheel");
+  S.vows.push({ id: "spare_karna", broken: false, age: 20 });
+  ok(!K.test(sc("kd_guard").when, S), "never under the vow never to strike Karna");
+  S = war({ side: "pandava" }); S.seen.push("hold_karna_offer");
+  ok(!K.test(sc("kd_guard").when, S), "nor a division that already stood against Karna's chariot that day");
+  // Held: the princes remember you on the night of the raid. Broken: a wound, and a shaken company.
+  S = war({ side: "pandava" }); K.combatOutcome("kd_e_wheel", "win", "a6_day17");
+  ok(K.val(sc("a6_raid").body, S).some((b) => b && /Yudhamanyu/.test(b.memory || "")) && K.val(sc("a6_raid").after, S).some((b) => b && /called your name/.test(b.memory || "")), "held: the Panchala princes remember you on the night of the raid");
+  S = war({ side: "pandava" }); K.combatOutcome("kd_e_wheel", "lose", "a6_day17");
+  ok(S.flags.includes("kd_guard_broken") && S.flags.includes("company_shaken") && S.injuries.length === 1, "broken: a wound, and the company shaken in its next fight");
+  ok(!K.val(sc("a6_raid").after, S).some((b) => b && /called your name/.test(b.memory || "")), "and the princes do not call your name");
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

@@ -293,7 +293,7 @@
     const body = d17.body;
     d17.body = (S) => {
       const out = [].concat(K.val(body, S) || []), w = S.side === "kaurava" && K.karnaLastWords(S);
-      if (w) out.push("This morning, on his way to Arjuna, Karna leaned out of his chariot and said one thing to you. It was the last.", { speaker: "Karna", line: w });
+      if (w) out.push("This morning, on his way to Arjuna, Karna leaned out of his chariot and said one thing to you. It was the last.", ...[].concat(w).map((line) => ({ speaker: "Karna", line })));
       return out;
     };
   }
