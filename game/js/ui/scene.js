@@ -192,14 +192,18 @@
       '<span class="si-dots"><i></i><i></i><i></i></span></div>' +
       '<div class="si-bubble" style="--img:url(\'' + U.bgUrl("war_day14") + '\')"></div>' +
       '<p class="si-cap"></p><span class="mo-tap">' + U.tr("Tap to go on") + "</span></div>");
+    el.classList.add("now"); // it covers the screen at once; only its own picture fades in
     document.body.appendChild(el);
+    // Nothing of the screen before (the character page) may show under or after it.
+    { const leaf = U.$("leaf"); if (leaf) { leaf.className = "leaf"; leaf.innerHTML = ""; } U.setBackdrop(null); }
     if (U.stageFx) U.stageFx.stop();
     const cap = el.querySelector(".si-cap");
     const say = (i) => { cap.classList.remove("in"); void cap.offsetWidth; cap.textContent = K.text(lines[i]); cap.classList.add("in"); };
     const timers = [];
     let gone = false;
     const at = (ms, f) => timers.push(setTimeout(() => { if (!gone) f(); }, still ? ms * 0.5 : ms));
-    const end = () => { if (gone) return; gone = true; timers.forEach(clearTimeout); window.removeEventListener("keydown", key, true); el.classList.add("out"); setTimeout(() => { el.remove(); done(); }, 500); };
+    // What comes next is drawn underneath first; then this fades off it, so nothing else shows between.
+    const end = () => { if (gone) return; gone = true; timers.forEach(clearTimeout); window.removeEventListener("keydown", key, true); done(); el.classList.add("out"); setTimeout(() => el.remove(), 600); };
     const key = (e) => { if ([" ", "Enter", "Escape", "ArrowRight"].includes(e.key)) { e.preventDefault(); e.stopPropagation(); end(); } };
     el.addEventListener("click", end);
     window.addEventListener("keydown", key, true);
@@ -254,7 +258,7 @@
       { ms: 6400, run: () => { el.classList.add("dad-in"); talk(".wk-dad", true); tell("Your father", "\"The sages have said it for years: the Kuru cousins will go to war, and the whole land with them. Perhaps you saw it. Then grow strong, and be ready when it comes.\""); setTimeout(() => talk(".wk-dad", false), 4200); } }
     ];
     let i = -1, timer = null, gone = false;
-    const end = () => { if (gone) return; gone = true; clearTimeout(timer); window.removeEventListener("keydown", key, true); el.classList.add("out"); setTimeout(() => { el.remove(); done(); }, 600); };
+    const end = () => { if (gone) return; gone = true; clearTimeout(timer); window.removeEventListener("keydown", key, true); done(); el.classList.add("out"); setTimeout(() => el.remove(), 700); };
     const next = () => { if (gone) return; clearTimeout(timer); i++; if (i >= beats.length) return end(); beats[i].run(); timer = setTimeout(next, beats[i].ms); };
     const key = (e) => { if ([" ", "Enter", "Escape", "ArrowRight"].includes(e.key)) { e.preventDefault(); e.stopPropagation(); next(); } };
     el.addEventListener("click", next);

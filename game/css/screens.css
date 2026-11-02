@@ -1623,7 +1623,7 @@ svg .pr-hint { outline: none; filter: drop-shadow(0 0 6px #ffd680) drop-shadow(0
 .sleepin.night .si-night { background: rgba(10, 6, 4, 0.35); }
 .sleepin.dark .si-night { background: rgba(5, 4, 10, 0.9); }
 /* First your homeland, full screen, with you walking home across it; then the room fades in. */
-.sleepin .si-region { position: absolute; inset: 0; z-index: 2; background: var(--img) center / cover no-repeat; transition: opacity 0.9s ease; }
+.sleepin .si-region { position: absolute; inset: 0; z-index: 2; background: #120b07 var(--img) center / cover no-repeat; transition: opacity 0.9s ease; }
 .sleepin .si-region::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(20, 12, 30, 0.1), rgba(30, 14, 6, 0.35)); }
 .sleepin .si-walker { position: absolute; z-index: 1; bottom: max(2vh, var(--sab)); left: -18%; transition: left 3.4s linear; }
 .sleepin .si-intro { position: absolute; z-index: 2; left: 0; right: 0; top: 0; padding: max(9vh, calc(var(--sat) + 56px)) 28px 70px; text-align: center; color: #f2e8d5; background: linear-gradient(to bottom, rgba(18, 10, 6, 0.82), rgba(18, 10, 6, 0.55) 70%, rgba(18, 10, 6, 0)); opacity: 0; transform: translateY(8px); transition: opacity 0.9s ease 0.3s, transform 0.9s ease 0.3s; }
@@ -1718,4 +1718,6 @@ svg .pr-hint { outline: none; filter: drop-shadow(0 0 6px #ffd680) drop-shadow(0
 /* A dream fight ends in white, straight into the waking scene. */
 .dream-white { position: fixed; inset: 0; z-index: 95; background: #f6efe0; opacity: 0; transition: opacity 1.1s ease; pointer-events: none; }
 .dream-white.on { opacity: 1; }
-.sleepin.now { transition: none; }
+.sleepin.now { transition: none; opacity: 1; }
+.sleepin.now.out { transition: opacity 0.5s ease; opacity: 0; }
+.sleepin.out { pointer-events: none; }
