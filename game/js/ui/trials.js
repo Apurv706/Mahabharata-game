@@ -102,7 +102,7 @@
       if (deep) {
         wrap.classList.add("done");
         const word = outcome === "win" ? "You win" : outcome === "close" ? "So close" : "You lose";
-        wrap.appendChild(U.el('<div class="t-result ' + outcome + '"><b>' + U.tr(word) + "</b></div>"));
+        wrap.appendChild(U.el('<div class="t-result ' + outcome + '"><b>' + U.trSpan(word) + "</b></div>"));
         if (K.Sound) K.Sound.play(outcome === "win" ? "gong" : "drum");
       }
       U.castStance(wrap, outcome === "win" ? "cheer" : "slump", outcome === "win" ? "slump" : "cheer");
@@ -133,12 +133,17 @@
       finish(r < p ? "win" : r < p + 0.15 && (kind === "aim" || kind === "steady" || kind === "escape") ? "close" : "lose", null);
     }
     intro();
-    return { draw: () => { if (phase === "intro") intro(); } };
+    // A language switch mid-test: the title, and once it is playing, every label it keeps (buttons,
+    // score line, help) are translated again in place; the test itself goes on untouched.
+    return { draw: () => {
+      const name = wrap.querySelector(".t-name"); if (name) name.innerHTML = U.t(K.val(c.t));
+      if (phase === "intro") intro(); else U.relabel(wrap);
+    } };
   }
 
   // A press button big enough for a thumb; it also answers the action key.
   function pressButton(label, down, up) {
-    const b = U.button("cta trial-press", U.tr(label), null);
+    const b = U.button("cta trial-press", U.trSpan(label), null);
     b.addEventListener("pointerdown", (e) => { e.preventDefault(); down(); });
     if (up) { b.addEventListener("pointerup", up); b.addEventListener("pointerleave", up); b.addEventListener("pointercancel", up); }
     else b.addEventListener("click", (e) => { if (e.detail === 0) down(); }); // keyboard click on the focused button
@@ -161,7 +166,7 @@
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="range' + (t.dark ? " dark" : t.field ? " field" : "") + '"><div class="zone" style="width:' + win * 90 + '%"></div><div class="line"></div>' +
         '<div class="target"><i class="t-' + (t.icon || "lamp") + '"></i></div><div class="arrow"></div></div><p class="game-note" aria-live="polite"></p><div class="btnrow"></div>';
       const range = host.querySelector(".range"), tgt = host.querySelector(".target"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
-      const marks = () => { score.textContent = K.tr("Shot {n} of {m}", { n: Math.min(shot + 1, shots), m: shots }) + " · " + K.tr("Hits: {h}", { h: hits }); };
+      const marks = () => { U.trLabel(score, [["Shot {n} of {m}", { n: Math.min(shot + 1, shots), m: shots }], ["Hits: {h}", { h: hits }]]); };
       marks();
       // On the painting (immersive): the target hangs by a rope from the branch above and swings;
       // a faint dotted line runs up from your bow to where the arrow will fly; the arrow flies up
@@ -348,7 +353,7 @@
       const ring = host.querySelector(".ring"), bal = host.querySelector(".balance i"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
       // On the painting, the pushes move the two wrestlers across the ground.
       const wrapEl = host.closest(".trial");
-      const show = () => { score.textContent = K.tr(t.tally || "Good pushes: {g} of 3 · Slips: {b} of 3", { g: good, b: bad }); bal.style.left = (50 + (good - bad) * 15) + "%"; if (wrapEl) wrapEl.style.setProperty("--shove", (good - bad) * 7 + "vw"); };
+      const show = () => { U.trLabel(score, t.tally || "Good pushes: {g} of 3 · Slips: {b} of 3", { g: good, b: bad }); bal.style.left = (50 + (good - bad) * 15) + "%"; if (wrapEl) wrapEl.style.setProperty("--shove", (good - bad) * 7 + "vw"); };
       show();
       const MARK = 0.3; // the ring meets the mark at 30% of its starting size
       const push = () => {
@@ -401,7 +406,7 @@
     return frame(box, done, c, "steady", ({ host, power, t, finish, onAct, cue }) => {
       const band = clamp(0.11 + power * 0.015, 0.1, 0.2), LIMIT = t.secs || 15;
       let pos = 0.5, vel = 0, holding = false, mood = 0.5, moodV = 0, calm = 0, last = 0;
-      host.innerHTML = '<p class="score" aria-live="polite"></p><div class="steady"><div class="mood" style="width:' + band * 100 + '%"></div><div class="hand"></div></div><div class="calm"><i></i></div><p class="game-note">' + U.tr(t.help || "Hold to move your hand right; let go and it drifts back. Keep it over the glow.") + '</p><div class="btnrow"></div>';
+      host.innerHTML = '<p class="score" aria-live="polite"></p><div class="steady"><div class="mood" style="width:' + band * 100 + '%"></div><div class="hand"></div></div><div class="calm"><i></i></div><p class="game-note">' + U.trSpan(t.help || "Hold to move your hand right; let go and it drifts back. Keep it over the glow.") + '</p><div class="btnrow"></div>';
       const moodEl = host.querySelector(".mood"), hand = host.querySelector(".hand"), bar = host.querySelector(".calm i"), score = host.querySelector(".score");
       // A frightened horse (trial.horse): a leather puppet horse instead of the glow. Its head is
       // where your hand must be; it tosses its head and rears when frightened, lowers it as it calms.
@@ -442,7 +447,7 @@
         hand.style.left = pos * 100 + "%";
         moodEl.classList.toggle("on", inside);
         bar.style.width = calm * 100 + "%";
-        score.textContent = K.tr(t.tally || "Calm: {c}% · {s} seconds left", { c: Math.round(calm * 100), s: Math.max(0, Math.ceil(LIMIT - s)) });
+        U.trLabel(score, t.tally || "Calm: {c}% · {s} seconds left", { c: Math.round(calm * 100), s: Math.max(0, Math.ceil(LIMIT - s)) });
         if (calm >= 1) finish("win", t.wonLine || "The horse stands still, trembling, and lets you lay a hand on its neck.");
         else if (s >= LIMIT) finish(calm >= 0.7 ? "close" : "lose", calm >= 0.7 ? t.nearLine || "Nearly. The horse is quieter, but not yet still." : t.lostLine || "The horse pulls free and bolts across the yard.");
       }, host);
@@ -491,9 +496,9 @@
       const shots = t.shots || 3, need = t.need || 2, width = clamp(0.05 + power * 0.008, 0.05, 0.11) * (t.small ? 0.75 : 1);
       let shot = 0, wins = 0, ten = 0, holding = false, busy = false, lo = 0.72, drift = 0, wob = 0, last = 0;
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="drawpit"><svg viewBox="0 0 300 220" class="bow" aria-hidden="true"><path class="limb" d=""/><path class="string" d=""/></svg>' +
-        '<div class="meter"><div class="band"></div><div class="fill"></div></div></div><p class="game-note" aria-live="polite">' + U.tr(t.help || "Hold to draw. Let go while the bar is in the bright band.") + '</p><div class="btnrow"></div>';
+        '<div class="meter"><div class="band"></div><div class="fill"></div></div></div><p class="game-note" aria-live="polite">' + U.trSpan(t.help || "Hold to draw. Let go while the bar is in the bright band.") + '</p><div class="btnrow"></div>';
       const limb = host.querySelector(".limb"), str = host.querySelector(".string"), band = host.querySelector(".band"), fill = host.querySelector(".fill"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
-      const marks = () => { score.textContent = K.tr(t.tally || "Try {n} of {m} · Strung: {w}", { n: Math.min(shot + 1, shots), m: shots, w: wins }); };
+      const marks = () => { U.trLabel(score, t.tally || "Try {n} of {m} · Strung: {w}", { n: Math.min(shot + 1, shots), m: shots, w: wins }); };
       marks();
       const settle = (ok, msg) => {
         busy = true; holding = false;
@@ -553,7 +558,7 @@
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="sneakway' + (painted ? " painted" : "") + (t.daylight ? " daylight" : "") + '">' +
         '<svg class="beam" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sneak-beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd890" stop-opacity="0.85"/><stop offset="1" stop-color="#ffaa50" stop-opacity="0.32"/></linearGradient></defs><polygon fill="url(#sneak-beam)"/><ellipse class="pool" rx="1" ry="4"/></svg>' +
         '<div class="goal"></div><div class="guard">' + (painted ? U.puppet(U.puppetFor(t.watch || "guard"), { h: 150, pose: "walk", flip: true }) : "") + '<i class="flame"></i></div><div class="me"></div></div><div class="sus"><i></i></div>' +
-        '<p class="game-note" aria-live="polite">' + U.tr(t.help || "Hold to move. Stop before the light reaches you.") + '</p><div class="btnrow"></div>';
+        '<p class="game-note" aria-live="polite">' + U.trSpan(t.help || "Hold to move. Stop before the light reaches you.") + '</p><div class="btnrow"></div>';
       const way = host.querySelector(".sneakway"), me = host.querySelector(".me"), susBar = host.querySelector(".sus i"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
       const guard = host.querySelector(".guard"), flame = guard.querySelector(".flame"), poly = host.querySelector(".beam polygon"), pool = host.querySelector(".beam .pool");
       // On the painting your own puppet creeps along the ground through the shadows.
@@ -604,7 +609,7 @@
         me.style.left = pos * 100 + "%"; me.classList.toggle("lit", lit);
         if (fig) { const want = freeze > 0 ? "fall" : holding ? "walk" : "sneak"; if (want !== posed) { posed = want; setPose(fig, want); } }
         susBar.style.width = sus * 100 + "%";
-        score.textContent = K.tr(t.tally || "Loads: {d} of {n} · Seen: {s} of {m} · {t} seconds", { d: trips, n: need, s: seen, m: lives, t: Math.max(0, Math.ceil(LIMIT - s)) });
+        U.trLabel(score, t.tally || "Loads: {d} of {n} · Seen: {s} of {m} · {t} seconds", { d: trips, n: need, s: seen, m: lives, t: Math.max(0, Math.ceil(LIMIT - s)) });
         if (trips >= need) finish("win", ["{d} loads carried, seen {s} times.", { d: trips, s: seen }]);
         else if (seen >= lives || s >= LIMIT) finish("lose", ["{d} loads carried, seen {s} times.", { d: trips, s: seen }]);
       }, host);

@@ -119,6 +119,9 @@ Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct);
 40. **The quill writes only the important lines:**
     - **Written by the quill:** the epic's own lines ("As it is written"), what people say, memories and curses, what came of your choice, and the first and last lines of an ending.
     - **Everything else** simply appears.
+41. **Fixed from the first tester's pass:**
+    - **Switching to Hindi or English mid-test** left the test's title, score line, button and help in the old language. They now follow the switch in place, and the test goes on.
+    - **Single-action screens** (Begin before a test, Continue after a fight, Live another life) only answered the number 1. They now answer Enter too.
 
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**

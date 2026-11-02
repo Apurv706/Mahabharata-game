@@ -105,7 +105,7 @@
       const end = notes[notes.length - 1].at + 1.2;
       let hits = 0, misses = 0, strays = 0, now = 0, ticked = -1;
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="beatlane"><div class="mark"></div><div class="notes"></div><div class="flash"></div></div>' +
-        '<p class="game-note" aria-live="polite">' + U.tr(t.help || "Strike as each beat reaches the ring.") + '</p><div class="btnrow"></div>';
+        '<p class="game-note" aria-live="polite">' + U.trSpan(t.help || "Strike as each beat reaches the ring.") + '</p><div class="btnrow"></div>';
       const lane = host.querySelector(".beatlane"), wrapN = host.querySelector(".notes"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
       notes.forEach((n) => { n.el = U.el('<i class="beat' + (n.at % beat > 0.01 && Math.abs((n.at % beat) - beat) > 0.01 ? " off" : "") + '"></i>'); wrapN.appendChild(n.el); });
       const tally = () => { score.textContent = K.tr(t.tally || "On the beat: {h} · Missed: {m} · {left} to go", { h: hits, m: misses, left: notes.filter((n) => !n.done).length }); };
@@ -185,7 +185,7 @@
       host.innerHTML = '<p class="score" aria-live="polite"></p>' +
         '<div class="track"><div class="bgstrip">' + (stage ? [0, 1, 2, 3].map((i) => '<i style="background-image:url(\'' + U.artUrl(stage) + '\')"' + (i % 2 ? ' class="flip"' : "") + "></i>").join("") : "") + '</div><div class="lanes"><i></i><i></i><i></i></div><div class="obs"></div><div class="me lane1">' + vehicleSvg(t.vehicle, K.puppetSpec(K.S)) + "</div></div>" +
         '<div class="progress"><span class="pm" style="left:0"></span>' + (t.rival ? '<span class="pr" style="left:0" title="' + U.esc(K.tr(t.rival)) + '"></span>' : "") + "</div>" +
-        '<p class="game-note" aria-live="polite">' + U.tr(t.help || "Change lanes to miss what is in the road: up and down, or the buttons.") + '</p><div class="btnrow race-btns"></div>';
+        '<p class="game-note" aria-live="polite">' + U.trSpan(t.help || "Change lanes to miss what is in the road: up and down, or the buttons.") + '</p><div class="btnrow race-btns"></div>';
       const track = host.querySelector(".track"), me = host.querySelector(".me"), obsBox = host.querySelector(".obs"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
       const pm = host.querySelector(".pm"), pr = host.querySelector(".pr");
       // The painting scrolls past, each copy mirrored against the last so the joins never show.
@@ -293,7 +293,7 @@
       const stage = K.val(t.stage);
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="herdfield" style="' + (stage ? "--stage:url('" + U.artUrl(stage) + "')" : "") + '"><canvas width="640" height="400" aria-label="' + U.esc(K.tr(t.fieldLabel || "The field")) + '" role="img"></canvas></div>' +
         '<div class="dpad"><button type="button" class="cta secondary" data-d="up" aria-label="' + U.esc(K.tr("Up")) + '">↑</button><button type="button" class="cta secondary" data-d="left" aria-label="' + U.esc(K.tr("Left")) + '">←</button><button type="button" class="cta secondary" data-d="down" aria-label="' + U.esc(K.tr("Down")) + '">↓</button><button type="button" class="cta secondary" data-d="right" aria-label="' + U.esc(K.tr("Right")) + '">→</button></div>' +
-        '<p class="game-note" aria-live="polite">' + U.tr(t.help || "Steer with the arrow keys, the buttons or a swipe. Reach everyone you can, then bring them out through the gap on the right.") + '</p>';
+        '<p class="game-note" aria-live="polite">' + U.trSpan(t.help || "Steer with the arrow keys, the buttons or a swipe. Reach everyone you can, then bring them out through the gap on the right.") + '</p>';
       const cv = host.querySelector("canvas"), ctx = cv.getContext && cv.getContext("2d"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
       const D = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
       // On an upright screen, inside the painting, the field stands on end: the way out is at the
@@ -407,7 +407,7 @@
       else { const g = Math.floor(K.rng() * N); gaps = [g, g, mod(g + 2), mod(g - 2)]; }
       const theme = t.theme || "wheel";
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="ringfield ' + theme + '"><svg viewBox="-150 -150 300 300" role="img" aria-label="' + U.esc(K.tr(theme === "maze" ? "The rings of the forest" : "The rings of the wheel")) + '"></svg></div>' +
-        '<p class="game-note" aria-live="polite">' + U.tr(t.help || (mode === "open" ? "Line up every opening with the outer one. Turning a ring drags the ring inside it the other way." : "The wheel keeps turning toward a straight way in. Keep at least one ring out of line.")) + "</p>" +
+        '<p class="game-note" aria-live="polite">' + U.trSpan(t.help || (mode === "open" ? "Line up every opening with the outer one. Turning a ring drags the ring inside it the other way." : "The wheel keeps turning toward a straight way in. Keep at least one ring out of line.")) + "</p>" +
         '<div class="btnrow ring-btns"></div>';
       const svg = host.querySelector("svg"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
       const arc = (r, a0, a1) => { const p = (a) => [Math.cos(a) * r, Math.sin(a) * r].map((v) => v.toFixed(1)).join(","); return "M" + p(a0) + " A" + r + "," + r + " 0 0 1 " + p(a1); };

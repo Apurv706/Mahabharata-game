@@ -6,6 +6,26 @@
   U.esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   U.t = (s) => U.esc(K.text(s));            // story text: translate, fill the life's tokens, escape
   U.tr = (s, p) => U.esc(K.tr(s, p));        // interface text: translate (and fill params), escape
+  // Text that must follow a language switch while it is on screen (a test's button, score line and
+  // help, set once and not redrawn): it keeps its English key, and U.relabel translates it again.
+  // A key may be a list of [key, params] pairs, shown joined by " · ".
+  const trOf = (key, p) => (Array.isArray(key) ? key.map(([k, q]) => K.tr(k, q)).join(" · ") : K.tr(key, p));
+  U.trSpan = (key, p) => '<span data-tr="' + U.esc(Array.isArray(key) ? JSON.stringify(key) : key) + '"' + (Array.isArray(key) ? ' data-trl="1"' : "") + (p ? " data-trp='" + U.esc(JSON.stringify(p)) + "'" : "") + ">" + U.esc(trOf(key, p)) + "</span>";
+  U.trLabel = (el, key, p) => {
+    if (!el) return;
+    el.textContent = trOf(key, p);
+    el.dataset.tr = Array.isArray(key) ? JSON.stringify(key) : key;
+    if (Array.isArray(key)) el.dataset.trl = "1"; else delete el.dataset.trl;
+    if (p) el.dataset.trp = JSON.stringify(p); else delete el.dataset.trp;
+  };
+  U.relabel = (root) => {
+    (root || document).querySelectorAll("[data-tr]").forEach((el) => {
+      try {
+        const key = el.dataset.trl ? JSON.parse(el.dataset.tr) : el.dataset.tr;
+        el.textContent = trOf(key, el.dataset.trp ? JSON.parse(el.dataset.trp) : null);
+      } catch (e) { /* leave it as it is */ }
+    });
+  };
   U.el = function (html) { const t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstElementChild; };
   U.button = function (cls, html, onClick, id) {
     const b = document.createElement("button");
@@ -536,7 +556,13 @@
     if (document.getElementById("beat") || document.querySelector(".moment")) return;
     if (stageRun && (e.key === " " || e.key === "Enter" || /^[1-9]$/.test(e.key))) { e.preventDefault(); U.stageFinish(true); return; }
     const n = parseInt(e.key, 10);
-    if (n >= 1 && n <= 9 && keyActions[n - 1]) { e.preventDefault(); keyActions[n - 1](); }
+    if (n >= 1 && n <= 9 && keyActions[n - 1]) { e.preventDefault(); keyActions[n - 1](); return; }
+    // A screen with one thing to do (Begin a test, Continue, Live another life) also answers Enter
+    // (not Space, which scrolls a long page). A focused button handles Enter itself, so it is left to do so.
+    if (e.key === "Enter" && !(e.target.closest && e.target.closest("button, a, [role=button]"))) {
+      const live = keyActions.filter(Boolean);
+      if (live.length === 1 && keyActions.length === 1) { e.preventDefault(); live[0](); }
+    }
   });
 
   U.scrollTop = function () {

@@ -18,7 +18,7 @@
       let dive = 0, got = 0, depth = 0, vel = 0, x = 0.5, holding = false, air = BREATH, phase = "down", busy = false, last = 0;
       let vx = 0.62, vdir = 1, vdepth = clamp(0.78 + power * 0.01, 0.78, 0.9);
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="lake"><div class="depth"></div><div class="vessel">' + VESSEL + '</div><div class="diver">' + U.puppet(K.puppetSpec(K.S), { h: 130, pose: "fold" }) + '</div><div class="bubbles"></div></div>' +
-        '<div class="breath"><span>' + U.tr("Breath") + '</span><i></i></div><p class="game-note" aria-live="polite">' + U.tr(t.help || "Hold to dive, let go to rise. Reach the glow, then surface before your breath is gone.") + '</p><div class="btnrow"></div>';
+        '<div class="breath"><span>' + U.tr("Breath") + '</span><i></i></div><p class="game-note" aria-live="polite">' + U.trSpan(t.help || "Hold to dive, let go to rise. Reach the glow, then surface before your breath is gone.") + '</p><div class="btnrow"></div>';
       const lake = host.querySelector(".lake"), diver = host.querySelector(".diver"), vessel = host.querySelector(".vessel"), bar = host.querySelector(".breath i"), score = host.querySelector(".score"), note = host.querySelector(".game-note"), depthEl = host.querySelector(".depth");
       const marks = () => { score.textContent = K.tr("Dive {n} of {m}", { n: Math.min(dive + 1, dives), m: dives }) + " · " + K.tr("Brought up: {h}", { h: got }); };
       marks();
