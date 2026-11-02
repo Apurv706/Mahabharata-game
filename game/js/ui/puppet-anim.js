@@ -55,6 +55,20 @@
   };
   const KEYS = ["rot", "tx", "ty", "head", "armF", "foreF", "armB", "foreB", "legF", "shinF", "legB", "shinB", "item", "draw", "tilt", "dx"];
   const JOINTS = ["head", "armF", "foreF", "armB", "foreB", "legF", "shinF", "legB", "shinB"];
+  // How each kind of figure stands at rest (spec.stance in puppet.js, as data-stance on the figure):
+  // the same shapes as the .sx-* rules in screens.css. A live figure whose base pose is "stand"
+  // stands in its own stance instead.
+  Object.assign(POSES, {
+    stoop: { ty: 4, rot: 12, head: -14, armF: -30, foreF: -62, armB: 10, foreB: -30, legF: -12, shinF: 10, legB: 10, shinB: 10, item: 180 },
+    square: { rot: -2, armF: -4, foreF: -22, armB: -44, foreB: -50, legF: -12, legB: 12 },
+    archer: { rot: -2, armF: -14, foreF: -10, armB: -8, foreB: -24, legF: -10, legB: 10 },
+    raised: { rot: -4, armF: -150, foreF: -20, armB: -40, foreB: -56, legF: -16, shinF: 4, legB: 16, shinB: 8, item: 180 },
+    proud: { rot: -4, head: -6, armF: -62, foreF: -48, armB: -10, foreB: -30, legF: -14, legB: 14 },
+    hero: { rot: -3, head: -4, armF: -16, foreF: -14, armB: -10, foreB: -28, legF: -14, legB: 14 },
+    haughty: { rot: -7, head: -12, armF: -58, foreF: -46, armB: -60, foreB: -120, legF: -18, legB: 16 },
+    broad: { rot: -2, head: -4, armF: -6, foreF: -4, armB: -36, foreB: -40, legF: -22, legB: 22, shinB: 4, item: 180 },
+    sage: { rot: 3, head: 4, armF: -14, foreF: -12, armB: -8, foreB: -30, legF: -8, legB: 8 }
+  });
   const reduced = () => !U.motion || !U.motion();
 
   const live = new Set();
@@ -150,6 +164,8 @@
       svg.setAttribute("class", svg.getAttribute("class").replace(/pose-live\b/, "pose-" + ({ ready: "brace", bowready: "brace" }[base] || base || "stand")));
       return null;
     }
+    const own = svg.getAttribute("data-stance"); // with reduced motion the CSS stand pose shows the stance
+    if ((!base || base === "stand") && own && POSES[own]) base = own;
     if (!/\bpose-live\b/.test(svg.getAttribute("class"))) svg.setAttribute("class", svg.getAttribute("class").replace(/\bpose-\S+/, "pose-live"));
     return new Rig(svg, el, base);
   };

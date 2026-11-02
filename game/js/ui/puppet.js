@@ -50,26 +50,31 @@
   };
 
   // Other people: a few fixed traits; their age follows the player's for the princes.
+  // The great ones of the epic wear tall crowns in their own stones, each with one mark of his own,
+  // and stand a little larger than ordinary people once grown (size); a stance is how they stand.
   K.PUPPETS = {
-    arjuna: { pronoun: "he", palette: ["#c27a44", "#f2ead2", "#3b6fb0"], headgear: "kirita", item: "bow", peer: true },
-    bhima: { pronoun: "he", palette: ["#a8622f", "#6f3a24", "#e2b55a"], headgear: "mukuta", item: "mace", big: true, peer: true },
-    karna: { pronoun: "he", palette: ["#c9813f", "#d8a536", "#f3d27a"], headgear: "kirita", item: "bow", armour: true, peer: true },
-    duryodhana: { pronoun: "he", palette: ["#b8703b", "#7a1f2a", "#e2b55a"], headgear: "kirita", item: "mace", peer: true },
+    arjuna: { pronoun: "he", palette: ["#c27a44", "#f2ead2", "#3b6fb0"], headgear: "crown", crown: { gem: "#3b6fb0", tall: 1.05, trim: "#3b6fb0" }, item: "bow", gear: ["gandiva", "quivers"], stance: "hero", size: 1.12, peer: true },
+    bhima: { pronoun: "he", palette: ["#a8622f", "#6f3a24", "#e2b55a"], headgear: "crown", crown: { gem: "#b2432a", broad: true, trim: "#6f3a24" }, item: "mace", studs: ["#d9a53a"], stance: "broad", big: true, size: 1.25, peer: true },
+    karna: { pronoun: "he", palette: ["#c9813f", "#d8a536", "#f3d27a"], headgear: "crown", crown: { gem: "#b2432a", tall: 1, trim: "#b2432a" }, item: "bow", armour: true, gear: ["earrings"], stance: "hero", size: 1.12, peer: true },
+    duryodhana: { pronoun: "he", palette: ["#b8703b", "#7a1f2a", "#e2b55a"], headgear: "crown", crown: { gem: ["#2f7d55", "#b2432a", "#2d5aa0", "#b2432a"], tall: 1.15, trim: "#7a1f2a" }, item: "mace", studs: ["#b2432a", "#2d5aa0", "#2f7d55", "#2d5aa0", "#b2432a"], stance: "haughty", size: 1.15, peer: true },
     dushasana: { pronoun: "he", palette: ["#b0683a", "#5e2430", "#c9a24e"], headgear: "mukuta", peer: true },
-    drona: { pronoun: "he", headgear: "jata", palette: ["#c9905a", "#efe6cf", "#c9a24e"], beard: true, stage: "elder", item: "bow" },
+    // Drona, a brahmin, keeps his matted knot: a grey forked beard and a water-pot at his hip.
+    drona: { pronoun: "he", headgear: "jata", palette: ["#c9905a", "#efe6cf", "#c9a24e"], beard: "forked", stage: "elder", item: "bow", gear: ["waterpot"], stance: "sage", size: 1.12 },
     kripa: { pronoun: "he", headgear: "jata", palette: ["#c48a55", "#e7dcc0", "#b49054"], beard: true, stage: "elder", item: "sword" },
     balarama: { pronoun: "he", palette: ["#e9d9b8", "#2c4c86", "#e2b55a"], headgear: "kirita", item: "plough", big: true, stage: "adult" },
     mauni: { pronoun: "he", headgear: "jata", palette: ["#b88352", "#c7a46c", "#8a6a3a"], beard: true, stage: "elder", item: "staff" },
     vidura: { pronoun: "he", headgear: "jata", palette: ["#c08a56", "#f0e8d6", "#9b8a6a"], beard: true, stage: "elder", item: "scroll" },
     // The sutradhara, who holds the strings of the story and opens each act.
     sutradhara: { pronoun: "he", headgear: "band", palette: ["#c8925e", "#e9dcc0", "#b2432a"], beard: true, stage: "elder", item: "scroll" },
-    bhishma: { pronoun: "he", headgear: "jata", palette: ["#cfa274", "#f4efe2", "#d6c08a"], beard: true, stage: "elder" },
+    bhishma: { pronoun: "he", headgear: "crown", crown: { gem: "#d9a53a", tall: 0.85, white: true, trim: "#d9a53a" }, palette: ["#cfa274", "#f4efe2", "#d6c08a"], beard: "long", stage: "elder", item: "bow", stance: "sage", size: 1.22 },
     dhrishtadyumna: { pronoun: "he", headgear: "mukuta", palette: ["#c27a44", "#b2432a", "#e2b55a"], item: "sword", stage: "adult" },
     shakuni: { pronoun: "he", palette: ["#b78a5c", "#4b5a73", "#c9b07a"], headgear: "band", beard: true, stage: "elder", item: "dice" },
     charu: { pronoun: "they", palette: ["#a8683c", "#6b4a32", "#c9a066"], item: "hammer", peer: true },
     ugra: { pronoun: "he", palette: ["#9c5c32", "#5a4630", "#a8875a"], big: true, stage: "adult" },
-    guard: { pronoun: "he", palette: ["#9e6a40", "#5d3b2a", "#9f8250"], headgear: "jata", item: "spear", stage: "adult" },
-    soldier: { pronoun: "he", palette: ["#9e6a40", "#6e3026", "#b39255"], headgear: "band", item: "spear", stage: "adult" },
+    // Ordinary fighters wear helmets or turbans, never crowns: a palace guard in a tall turban and
+    // sash, his spear upright; a soldier in a leather helmet and cuirass behind a round hide shield.
+    guard: { pronoun: "he", palette: ["#9e6a40", "#5d3b2a", "#9f8250"], headgear: "turban", hat: "#c9a24e", hatTrim: "#6e3026", gear: ["sash"], item: "spear", stance: "square", stage: "adult" },
+    soldier: { pronoun: "he", palette: ["#9e6a40", "#6e3026", "#b39255"], headgear: "helmet", gear: ["shield", "cuirass"], item: "spear", stance: "square", stage: "adult" },
     cousin: { pronoun: "she", palette: ["#b9743f", "#b2432a", "#e2b55a"], stage: "child" },
     healer: { pronoun: "she", palette: ["#b47a4a", "#e9dfc6", "#9a8a6a"], item: "bowl", stage: "adult" },
     boy: { pronoun: "he", palette: ["#b0703f", "#8a5a3a", "#c9a066"], stage: "youth" },
@@ -97,13 +102,15 @@
   // Weapons and tools are drawn resting in a hanging hand, pointing up along the arm. When the arm
   // is raised or reaching (a strike, a block, a cheer), CSS turns them about the hand so they carry
   // on past the fist the way a held weapon does, instead of hanging upside down.
-  const WIELD = new Set(["mace", "sword", "spear", "dagger", "hammer", "staff", "plough", "whip"]);
-  function itemSvg(kind, trim) {
+  const WIELD = new Set(["mace", "sword", "spear", "dagger", "hammer", "staff", "plough", "whip", "club"]);
+  // o.tips: the Gandiva's gold tips; o.studs: stones (or gold studs) set in a mace's head.
+  function itemSvg(kind, trim, o = {}) {
     switch (kind) {
       // A recurved bow held at its grip: the belly passes through the hand, the string runs behind the arm.
       case "bow": return '<path d="M50 86 Q72 126 50 166" fill="none" stroke="#5a3418" stroke-width="3.2" stroke-linecap="round"/>' +
         '<path d="M50 86 q-3.5 -2.5 -2 -6.5 M50 166 q-3.5 2.5 -2 6.5" fill="none" stroke="#5a3418" stroke-width="2.2" stroke-linecap="round"/>' +
-        '<path d="M50 86 L50 166" stroke="#efe2c0" stroke-width="0.8"/><path d="M59.8 120 L61.6 132" stroke="' + trim + '" stroke-width="3.4"/>';
+        '<path d="M50 86 L50 166" stroke="#efe2c0" stroke-width="0.8"/><path d="M59.8 120 L61.6 132" stroke="' + trim + '" stroke-width="3.4"/>' +
+        (o.tips ? '<circle cx="50" cy="84" r="2.6" fill="' + GOLD + '"' + OUT + '/><circle cx="50" cy="168" r="2.6" fill="' + GOLD + '"' + OUT + '/><path d="M50 86 Q72 126 50 166" fill="none" stroke="' + GOLD + '" stroke-width="1.1" stroke-dasharray="3 6"/>' : "");
       // The gada: a long haft with a wrapped grip and a pommel, a gold collar, and a heavy ribbed head
       // with a spike, tilted forward out of the figure so its shape reads at any size.
       case "mace": return '<g transform="rotate(20 58 126)">' +
@@ -114,7 +121,8 @@
         '<path d="M58 43 C66.5 43 70 51.5 69.5 59 C69 67.5 63.5 73 58 73 C52.5 73 47 67.5 46.5 59 C46 51.5 49.5 43 58 43 Z" fill="' + GOLD + '"' + OUT + '/>' +
         '<path d="M58 43 Q50.5 58 58 73 M58 43 Q65.5 58 58 73 M52 46 Q46.5 58 52 71 M64 46 Q69.5 58 64 71" fill="none" stroke="#7a5418" stroke-width="0.9"/>' +
         '<path d="M47 59 Q58 63 69 59" fill="none" stroke="' + trim + '" stroke-width="1.8"/>' + holes("M58 43 C66.5 43 70 51.5 69.5 59 C69 67.5 63.5 73 58 73 C52.5 73 47 67.5 46.5 59 C46 51.5 49.5 43 58 43 Z") +
-        '<rect x="54.2" y="72" width="7.6" height="4.4" rx="1" fill="' + GOLD + '"' + OUT + '/></g>';
+        '<rect x="54.2" y="72" width="7.6" height="4.4" rx="1" fill="' + GOLD + '"' + OUT + '/>' +
+        (o.studs ? [52, 58, 64, 55, 61].map((x, i) => '<circle cx="' + x + '" cy="' + [52, 50, 52, 64, 64][i] + '" r="2" fill="' + o.studs[i % o.studs.length] + '" stroke="#24120a" stroke-width=".7"/>').join("") : "") + "</g>";
       // A khadga: broad blade swelling towards a curved point, a cross-guard, a grip and a pommel.
       case "sword": return '<g transform="rotate(16 58 126)">' +
         '<path d="M56.2 119 L55.4 84 Q56 74 62.5 68 Q61.6 78 61 86 L59.8 119 Z" fill="#dcd7c8"' + OUT + '/><path d="M58 117 L57.8 86 Q58.6 78 61 73" fill="none" stroke="#9a9484" stroke-width="0.7"/>' +
@@ -123,6 +131,8 @@
       case "spear": return '<path d="M58 176 L58 64" stroke="#5a3418" stroke-width="2.4" stroke-linecap="round"/>' +
         '<path d="M58 40 Q63.5 52 60.4 63 L55.6 63 Q52.5 52 58 40 Z" fill="#dcd7c8"' + OUT + '/><path d="M58 44 L58 62" stroke="#9a9484" stroke-width="0.7"/>' +
         '<rect x="55.8" y="62.5" width="4.4" height="3.4" fill="' + GOLD + '"' + OUT + '/><path d="M56.5 66 q-3 5 -1.5 10 M58 66 q-0.5 6 0.5 11 M59.5 66 q2.5 5 1.5 9.5" fill="none" stroke="#b2432a" stroke-width="1.3" stroke-linecap="round"/>';
+      // A bandit's knotted club, thick at the head.
+      case "club": return '<path d="M56.6 128 L55.4 96 Q53 84 56 74 Q61 66 66 72 Q68 82 62 96 L60 128 Z" fill="#6b4422"' + OUT + '/><circle cx="58" cy="82" r="1.6" fill="#3a2412"/><circle cx="62" cy="88" r="1.4" fill="#3a2412"/><circle cx="57" cy="94" r="1.2" fill="#3a2412"/>';
       case "plough": return '<path d="M58 165 L58 74" stroke="#6b4422" stroke-width="3"/><path d="M58 74 Q70 66 74 54 L66 60 Z" fill="#cfc7b2"' + OUT + "/>";
       case "staff": return '<path d="M60 200 L60 100" stroke="#6b4422" stroke-width="2.6" stroke-linecap="round"/>';
       case "whip": return '<path d="M58 126 L66 98" stroke="#5a3418" stroke-width="2"/><path d="M66 98 Q80 90 76 112 Q72 124 84 120" fill="none" stroke="#3d2412" stroke-width="1"/>';
@@ -140,7 +150,30 @@
   const HAIR = (c) => '<path d="M50 52 Q49 39 62 37.5 Q72 37.5 75.5 44 Q64 40.5 53 53 Z" fill="' + c + '"' + OUT + "/>";
   const KNOT = (c) => '<circle cx="57" cy="34.5" r="5.8" fill="' + c + '"' + OUT + "/>";
   const GOLD = "#d9a53a";
-  function headgearSvg(kind, trim, cloth, hair, elder) {
+  // A crown for the great ones of the epic: twice the height of a kirita, with a fan of gold behind
+  // the head as on the great leather puppets, and set with the hero's own stones. o.tall scales its
+  // height, o.broad makes it broad and spiked instead, o.white is white and gold.
+  function crownSvg(o) {
+    const tall = o.tall || 1, top = 46 - 40 * tall, y1 = 46 - 22 * tall, y2 = 46 - 32 * tall, gem = o.gem || "#b2432a";
+    const body = o.broad ? "M50 46 L50 34 Q51 24 62 22 Q73 24 74 34 L74 46 Z"
+      : "M50.5 46 L52 37 L54.5 37 L55.5 " + y1 + " L58 " + y1 + " L59 " + y2 + " L60.6 " + y2 + " Q62 " + (top - 2) + " 63.4 " + y2 + " L65 " + y2 + " L66 " + y1 + " L68.5 " + y1 + " L69.5 37 L72 37 L73.5 46 Z";
+    const metal = o.white ? "#efe6cf" : GOLD;
+    const fanD = "M52 46 Q36 46 33 30 Q40 34 46 32 Q38 22 41 10 Q48 22 54 30 Q50 20 54 12 Q57 24 57 34 Z";
+    const gems = (o.broad ? [[56, 38], [62, 34], [68, 38]] : [[62, 40], [62, 46 - 27 * tall], [56.5, 41], [67.5, 41]]).map(([x, y], i) => '<circle cx="' + x + '" cy="' + y + '" r="' + (i ? 1.5 : 2.4) + '" fill="' + (Array.isArray(gem) ? gem[i % gem.length] : gem) + '" stroke="#24120a" stroke-width=".7"/>').join("");
+    return '<path d="' + fanD + '" fill="' + metal + '"' + OUT + "/>" + holes(fanD) +
+      (o.broad ? '<path d="M50 34 L48 27 L53 30 L56 22 L59 27 L62 18 L65 27 L68 22 L71 30 L76 27 L74 34" fill="' + metal + '"' + OUT + "/>" : "") +
+      '<path d="' + body + '" fill="' + metal + '"' + OUT + "/>" + holes(body) +
+      '<path d="M50.6 43 Q62 39 73.4 43" fill="none" stroke="' + (o.trim || "#b2432a") + '" stroke-width="2"/>' + gems +
+      (o.broad ? "" : '<circle cx="62" cy="' + (top - 3) + '" r="2.8" fill="' + metal + '"' + OUT + "/>") +
+      '<path d="M50.5 45 Q62 38.5 74.5 44 L74 47 Q62 41.5 51 48 Z" fill="' + metal + '"' + OUT + "/>";
+  }
+  // A leather helmet with a spike and a neck flap, for soldiers; a horsehair crest on it for horsemen and champions.
+  const HELMET = "M48 51 Q46 31 63 30 Q79 31 77 47 L73 47 Q63 41 53 53 Z";
+  const helmetSvg = (t) => '<path d="' + HELMET + '" fill="#7a5a3a"' + OUT + "/>" + holes(HELMET) +
+    '<path d="M50 41 Q63 32 77 44" fill="none" stroke="' + t + '" stroke-width="2.2"/><path d="M63 30 L63 22 M60 23 h6" stroke="#24120a" stroke-width="1.6" stroke-linecap="round"/><path d="M48 48 L43 64 L52 61 Z" fill="#6b4a2c"' + OUT + "/>";
+  const TURBAN = "M49 48 Q48 30 63 28 Q78 30 77 45 Q63 38 49 48 Z";
+  function headgearSvg(kind, trim, cloth, hair, elder, spec = {}) {
+    const hat = spec.hat || cloth, ht = spec.hatTrim || trim;
     const band = (c) => '<path d="M50.5 45 Q62 38.5 74.5 44 L74 47 Q62 41.5 51 48 Z" fill="' + c + '"' + OUT + "/>";
     const fillet = band(trim), goldFillet = band(GOLD);
     switch (kind) {
@@ -159,9 +192,37 @@
       case "peacock": return KNOT(hair) + '<path d="M57 32 Q56 20 62 13" stroke="#3f6b3a" stroke-width="1.2" fill="none"/><ellipse cx="62.5" cy="12" rx="3.6" ry="4.6" fill="#2f7d55"' + OUT + '/><ellipse cx="62.6" cy="12.4" rx="1.8" ry="2.4" fill="#2d5aa0"/><circle cx="62.7" cy="12.6" r="0.9" fill="#d9c27a"/>' + fillet;
       // Feathers stuck in the knot, for the forest people.
       case "feather": return KNOT(hair) + '<path d="M55 32 Q48 20 55 10 Q59 22 57 32 Z" fill="#3f6b3a"' + OUT + '/><path d="M59 32 Q62 21 68 16 Q66 26 61 33 Z" fill="#b2432a"' + OUT + "/>" + fillet;
+      case "crown": return crownSvg(spec.crown || {});
+      // A bandit's head scarf, its ends trailing behind.
+      case "scarf": return '<path d="M50 47 Q52 36 63 35 Q74 36 76 44 L75 48 Q63 42 51 50 Z" fill="' + hat + '"' + OUT + '/><path d="M51 49 L39 58 L43 51 L36 55 L46 46 Z" fill="' + hat + '"' + OUT + '/><circle cx="51" cy="47" r="2.6" fill="' + hat + '"' + OUT + "/>";
+      // A palace guard's tall wrapped turban.
+      case "turban": return '<path d="' + TURBAN + '" fill="' + hat + '"' + OUT + "/>" + holes(TURBAN) + '<path d="M50 43 Q62 32 76 40 M50 37 Q62 28 74 34" fill="none" stroke="' + ht + '" stroke-width="1.4"/><path d="M63 28 Q66 22 70 24 Q66 26 65 29 Z" fill="' + ht + '"' + OUT + "/>";
+      case "helmet": return helmetSvg(ht);
+      case "crest": return helmetSvg(ht) + '<path d="M62 25 Q50 10 36 18 Q46 18 50 28 Q42 24 38 30 Q52 26 60 31 Z" fill="' + hat + '"' + OUT + "/>";
+      // An archer's close cap with one white feather.
+      case "capfeather": return '<path d="M50 47 Q50 34 63 33 Q76 34 76 45 Q63 39 50 47 Z" fill="' + hat + '"' + OUT + '/><path d="M51 44 Q63 37 75 43" fill="none" stroke="' + ht + '" stroke-width="1.6"/><path d="M54 36 Q46 20 52 8 Q58 22 57 35 Z" fill="#e9dcc0"' + OUT + '/><path d="M54 33 L53 14" stroke="#24120a" stroke-width=".7"/>';
       default: return "";
     }
   }
+
+  // Marks of the great ones. Age in the beard, hung on the jaw so it moves with speech: Bhishma's long
+  // and white to the waist, Drona's grey and forked to the chest, each with a drooping moustache.
+  const BEARD = {
+    long: '<path d="M54 57 Q51 72 55 86 Q59 100 64 110 Q67 99 71 88 Q77 73 74.5 58 Q64 66 54 57 Z" fill="#f6f2e6"' + OUT + '/><path d="M58 66 Q59 84 63 102 M63 66 Q64 84 65.5 104 M68 66 Q69 80 68 96 M72 63 Q73 74 71 86" fill="none" stroke="#b9b0a0" stroke-width=".8"/><path d="M68 59.5 Q74 57 79 60 Q80 66 77 70 Q76 63 70 62 Z" fill="#f6f2e6"' + OUT + "/>",
+    forked: '<path d="M55 58 Q53 68 57 78 Q61 86 63 92 Q65 86 66 82 Q68 87 71 89 Q71 80 72 74 Q75 66 73 58 Q64 65 55 58 Z" fill="#b3ab9c"' + OUT + '/><path d="M59 66 Q60 76 62 86 M64 66 Q65 74 66 81 M69 64 Q70 72 70 82" fill="none" stroke="#7d7568" stroke-width=".8"/><path d="M68 59.5 Q74 57.4 78.6 60 Q79 64 77 67 Q75.6 62.6 70 62 Z" fill="#b3ab9c"' + OUT + "/>"
+  };
+  // Karna's great gold earrings, born with him; the jewel glowing in Ashwatthama's brow.
+  const EARRING = '<circle cx="56.5" cy="60" r="5.4" fill="' + GOLD + '"' + OUT + '/><circle cx="56.5" cy="60" r="2.4" fill="#b2432a"' + OUT + '/><path d="M51.5 60 h10" stroke="#fff3c4" stroke-width=".6"/>';
+  const BROWGEM = '<circle cx="72.6" cy="44" r="2.3" fill="#9fe8ff" stroke="#24120a" stroke-width=".8"/><circle cx="72.6" cy="44" r="5" fill="#9fe8ff" opacity=".35"/>';
+  // Drona's water-pot (kamandalu) at his hip.
+  const KAMANDALU = '<path d="M64 112 Q60 122 64 128 Q70 132 76 128 Q80 122 76 112 Z" fill="#8a5a2c"' + OUT + '/><path d="M68 112 Q70 104 74 106 L72 112" fill="none" stroke="#24120a" stroke-width="1.2"/><path d="M76 116 Q82 112 84 114" fill="none" stroke="#5a3418" stroke-width="1.8"/>';
+  // Arjuna's twin quivers: the second, behind the first.
+  const QUIVER2 = '<path d="M50 74 L42 76 L40 106 L46 106 Z" fill="#6b4422"' + OUT + '/><path d="M44 75 L40 64 M46.5 75 L44 64 M48.5 75 L48 64" stroke="#efe2c0" stroke-width="1.2"/><path d="M40 64 l-1.6 -3 l3 1 M44 64 l-1 -3 l2.6 1.6 M48 64 l0 -3 l2 2" fill="#b2432a" stroke="none"/>';
+  // A champion's gold scale armour, with a shoulder piece.
+  const SCALE = '<path d="M48 72 Q60 64 72 72 L71 106 Q60 112 49 106 Z" fill="' + GOLD + '"' + OUT + '/><g fill="none" stroke="#7a5418" stroke-width=".9"><path d="M50 78 q3 3 6 0 q3 3 6 0 q3 3 6 0"/><path d="M50 85 q3 3 6 0 q3 3 6 0 q3 3 6 0"/><path d="M50 92 q3 3 6 0 q3 3 6 0 q3 3 6 0"/><path d="M50 99 q3 3 6 0 q3 3 6 0 q3 3 6 0"/></g><path d="M44 72 Q48 64 56 68 L54 78 Q47 78 44 72 Z" fill="' + GOLD + '"' + OUT + "/>";
+  // A round hide shield with a gold boss, on the back forearm.
+  const shieldSvg = (r, t) => '<circle cx="58" cy="112" r="' + r + '" fill="#8a5a2c"' + OUT + '/><circle cx="58" cy="112" r="' + (r - 3.5) + '" fill="none" stroke="' + t + '" stroke-width="2"/><circle cx="58" cy="112" r="4" fill="' + GOLD + '"' + OUT + "/>" +
+    holes("M" + (58 - r) + " 112 a" + r + " " + r + " 0 1 0 " + 2 * r + " 0 a" + r + " " + r + " 0 1 0 " + -2 * r + " 0");
 
   U.puppet = function (spec, o = {}) {
     if (!spec) return "";
@@ -169,12 +230,18 @@
     const [skin, cloth, trim] = spec.palette || PALETTE.none;
     const she = spec.pronoun === "she", they = spec.pronoun === "they";
     const stage = spec.stage || "adult";
-    const scale = o.fit ? (stage === "child" ? 0.86 : 1) : { child: 0.66, youth: 0.86, adult: 1, elder: 0.96 }[stage] * (spec.big ? 1.1 : 1);
+    const grown = stage === "adult" || stage === "elder";
+    // Strength shows in the size: a bandit is small, a champion large, the great ones larger still once grown.
+    const scale = o.fit ? (stage === "child" ? 0.86 : 1) : { child: 0.66, youth: 0.86, adult: 1, elder: 0.96 }[stage] * (grown && spec.size ? spec.size : spec.big ? 1.1 : 1);
+    const gear = (g) => !!spec.gear && spec.gear.includes(g);
     const headScale = stage === "child" ? 1.38 : 1.14;
     // Only a known temperament id becomes a class (a stored figure or a pasted save code could hold anything).
     const bear = spec.temper && /^[a-z_]+$/.test(spec.temper) ? " t-" + spec.temper : "";
     const pose = o.pose || (spec.dead ? "dead" : "stand");
-    const clsx = ["pp", "pose-" + pose, "st-" + stage, bear, spec.glow ? "glow" : "", spec.limp ? "limp" : "", spec.sling ? "sling" : "", spec.chained ? "chained" : "", spec.dead ? "dead" : "", o.flip ? "flip" : "", o.cls || ""].filter(Boolean).join(" ");
+    // How someone stands when at rest (a bandit's stoop, a guard square behind his spear): a class for
+    // the CSS pose, and data-stance for a live figure (puppet-anim.js). Only a known kind of word.
+    const stance = spec.stance && /^[a-z]+$/.test(spec.stance) ? spec.stance : "";
+    const clsx = ["pp", "pose-" + pose, "st-" + stage, bear, stance ? "sx sx-" + stance : "", spec.glow ? "glow" : "", spec.limp ? "limp" : "", spec.sling ? "sling" : "", spec.chained ? "chained" : "", spec.dead ? "dead" : "", o.flip ? "flip" : "", o.cls || ""].filter(Boolean).join(" ");
     const h = o.h || 120;
     // Clothing: a dhoti to the knee, a long sari, or a shawl over a dhoti; armour for Karna.
     const skirt = she ? "M48 106 L72 106 L85 190 L37 190 Z" : "M48.5 108 L71.5 108 L80 153 L40 153 Z";
@@ -197,7 +264,6 @@
     // The face in profile: brow, long nose, the large almond eye of a puppet; a tilak on the brow,
     // large round earrings, a curled moustache on grown men, a bun with flowers and a nose ring on women.
     const hair = stage === "elder" ? "#d4ccbc" : "#1d1410";
-    const grown = stage === "adult" || stage === "elder";
     const face = "M62 40 C70 40 75 45 75.5 50 L80 54 L75.5 56 C75 61 71 64 64 64 C55 64 50 58 50 51 C50 45 55 40 62 40 Z";
     const head =
       (she ? '<path d="M48 55 Q42 74 45 94" stroke="' + hair + '" stroke-width="3.4" fill="none" stroke-linecap="round"/>' : "") +
@@ -211,10 +277,20 @@
       (!she && grown && !spec.beard ? '<path d="M71 58.2 Q74.5 56.6 77.4 58.4 Q78.6 60.4 76.6 60.6 Q76.8 59.2 74.6 59.2 Q72.8 59.4 71 58.2 Z" fill="' + hair + '"/>' : "") +
       // The lower jaw is a separate piece on a hinge (the beard rides on it), so the puppet can speak.
       '<g class="jaw"><path d="M56 59 Q63 67 73 60 L73.5 62 Q63 71 55.5 61 Z" fill="' + skin + '"' + OUT + "/>" +
-      (spec.beard ? '<path d="M58 60 Q63 76 71 63 Q72.5 60 72 58 Q66 64 58 60 Z" fill="' + hair + '"' + OUT + "/>" : "") + "</g>" +
+      (spec.beard ? '<path d="M58 60 Q63 76 71 63 Q72.5 60 72 58 Q66 64 58 60 Z" fill="' + hair + '"' + OUT + "/>" : "") + (BEARD[spec.beard] || "") + "</g>" +
       (she ? '<circle cx="78.6" cy="57.2" r="1.7" fill="none" stroke="' + trim + '" stroke-width="0.9"/>' : "") +
       (stage !== "child" ? '<circle cx="56.5" cy="58.5" r="2.9" fill="' + trim + '"' + OUT + '/><circle cx="56.5" cy="58.5" r="1.1" fill="' + cloth + '"/>' : "") +
-      headgearSvg(she ? (spec.headgear === "kirita" || spec.headgear === "mukuta" ? spec.headgear : null) : spec.headgear || (they ? "band" : "jata"), trim, cloth, hair, stage === "elder");
+      headgearSvg(she ? (spec.headgear === "kirita" || spec.headgear === "mukuta" ? spec.headgear : null) : spec.headgear || (they ? "band" : "jata"), trim, cloth, hair, stage === "elder", spec) +
+      (gear("earrings") ? EARRING : "") + (gear("browgem") ? BROWGEM : "");
+    // Behind everything: Arjuna's second quiver, once he carries the Gandiva.
+    const behind = gear("quivers") && grown ? QUIVER2 : "";
+    // On the back arm: a round hide shield, or a horseman's small one.
+    const backHand = gear("shield") ? shieldSvg(19, trim) : gear("buckler") ? shieldSvg(13, trim) : "";
+    // Over the body: a leather cuirass, gold scale armour, a guard's sash, a torn hem, a water-pot at the hip.
+    const bodyGear = (gear("torn") ? '<path d="M40 151 L43 160 L46 152 L49 163 L53 152 L56 158 L60 151 L63 162 L67 152 L71 159 L74 151 L78 157 L80 151 Z" fill="' + cloth + '"' + OUT + '/><path d="M48 112 L72 112" stroke="#3a2412" stroke-width="2.4"/>' : "") +
+      (gear("sash") ? '<path d="M50 72 L70 106" stroke="' + (spec.hat || trim) + '" stroke-width="3"/>' : "") +
+      (gear("cuirass") ? '<path d="M50 74 Q60 68 70 74 L69 104 Q60 108 51 104 Z" fill="#7a5a3a"' + OUT + '/><path d="M52 84h16M52 94h16" stroke="' + trim + '" stroke-width="1.2"/>' : "") +
+      (gear("scale") ? SCALE : "") + (gear("waterpot") ? KAMANDALU : "");
     const backItem = (spec.heir === "bow" && spec.item !== "bow" ? '<path d="M46 74 Q34 98 46 122" fill="none" stroke="#5a3418" stroke-width="2.4"/><path d="M46 74 L46 122" stroke="#efe2c0" stroke-width="0.6"/>' : "") +
       // An archer's quiver over the shoulder; a healer's satchel at the hip.
       (spec.item === "bow" ? '<path d="M44 76 L52 74 L50 104 L44 105 Z" fill="#7a4a24"' + OUT + '/><path d="M46 76 L45 66 M48.5 75.5 L48 65 M51 75 L51 64" stroke="#efe2c0" stroke-width="1.2"/><path d="M45 66l1.6-3 1.4 3M47.5 65l1.6-3 1.4 3M50 64l1.6-3 1.4 3" fill="#b2432a" stroke="none"/>' : "") +
@@ -239,21 +315,22 @@
       // A fallen figure lies along the ground, so it gets a long, low view.
       (pose === "dead" ? '<svg class="' + clsx + '" viewBox="-112 128 200 76" width="' + Math.round(h * 0.5 * 200 / 76) + '" height="' + Math.round(h * 0.5) + '"' :
       '<svg class="' + clsx + '" viewBox="' + [60 - 60 / scale, 200 - 200 / scale, 120 / scale, 210 / scale].map((v) => +v.toFixed(2)).join(" ") + '" width="' + Math.round(h * 120 / 210) + '" height="' + h + '"') +
-      (o.label ? ' role="img" aria-label="' + U.esc(o.label) + '"' : ' aria-hidden="true"') + ">" +
+      (stance ? ' data-stance="' + stance + '"' : "") + (o.label ? ' role="img" aria-label="' + U.esc(o.label) + '"' : ' aria-hidden="true"') + ">" +
       '<g class="pp-all">' +
       // The puppeteer's main rod, faintly, from the body down out of sight.
       (pose === "dead" ? "" : '<path class="rod main-rod" d="M60 112 L60 240" stroke="#1d0f08" stroke-width="1.1" opacity="0.45"/>') +
-      '<g class="pp-body">' +
+      '<g class="pp-body">' + behind +
         // Back limbs, a shade darker, behind the body.
         '<g class="j legB" ' + back + ">" + thigh() + '<g class="j shinB">' + shin + "</g></g>" +
-        '<g class="j armB" ' + back + ">" + upper + '<g class="j foreB">' + fore + manacle + rod + (spec.item === "bow" ? "" : "") + "</g></g>" +
+        '<g class="j armB" ' + back + ">" + upper + '<g class="j foreB">' + fore + manacle + rod + backHand + "</g></g>" +
         backItem +
         neck + '<path d="' + torso + '" fill="' + skin + '"' + OUT + "/>" + holes(torso) + chest +
         '<path d="' + skirt + '" fill="' + cloth + '"' + OUT + "/>" + holes(skirt) +
-        '<path d="' + skirt + '" fill="url(#pp-weave)"/><path d="' + hem + '" fill="none" stroke="' + trim + '" stroke-width="1.5"/>' + belt +
+        '<path d="' + skirt + '" fill="url(#pp-weave)"/>' + bodyGear + '<path d="' + hem + '" fill="none" stroke="' + trim + '" stroke-width="1.5"/>' + belt +
         '<g class="j head"><g transform="translate(62 64) scale(' + headScale + ') translate(-62 -64)">' + head + "</g></g>" +
         '<g class="j legF">' + thigh() + '<g class="j shinF">' + shin + "</g></g>" +
-        '<g class="j armF">' + upper + armlet + '<g class="j foreF">' + fore + manacle + cuff + (spec.item ? '<g class="it' + (WIELD.has(spec.item) ? " it-w" : "") + '">' + itemSvg(spec.item, trim) + "</g>" : "") + rod + "</g></g>" +
+        '<g class="j armF">' + upper + armlet + '<g class="j foreF">' + fore + manacle + cuff + (spec.item ? '<g class="it' + (WIELD.has(spec.item) ? " it-w" : "") + '">' + itemSvg(spec.item, trim, { tips: gear("gandiva") && grown, studs: spec.studs }) + "</g>" : "") + rod +
+          (gear("bracer") ? '<path d="M54 108 L62 108 L61.5 118 L54.6 118 Z" fill="#5a3418"' + OUT + "/>" : "") + "</g></g>" +
         (spec.sling ? '<path d="M50 76 Q58 112 68 76" fill="none" stroke="#efe2c0" stroke-width="3" opacity="0.9"/>' : "") +
       "</g></g></svg>";
     return svg;

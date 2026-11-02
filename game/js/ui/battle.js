@@ -51,25 +51,33 @@
   U.stopDrums = () => drums.stop();
 
   // ---------- Who each unit is, as a puppet ----------
+  // Each kind of enemy has its own outline, and strength shows in the shape: a stooped bandit with a
+  // club, a guard in a turban, a soldier behind a shield, an archer's feathered cap, a crested horseman,
+  // and a champion in gold scale armour, the biggest of the unnamed. Crowns are kept for the named.
   const NAMED = [[/Ugra/, "ugra"], [/Dushasana's/, "guard"], [/Dushasana/, "dushasana"], [/Karna/, "karna"], [/Bhima/, "bhima"], [/Brihannala/, "arjuna"], [/Ketan|boy/i, "boy"], [/Drona/, "drona"]];
   const SPECIAL = {
-    Ashwatthama: { pronoun: "he", palette: ["#c9905a", "#3a2a3a", "#c9a24e"], headgear: "mukuta", item: "bow", stage: "adult", big: true },
+    Ashwatthama: { pronoun: "he", palette: ["#c9905a", "#3a2a3a", "#c9a24e"], headgear: "crown", crown: { gem: "#8a5aa0", tall: 0.95, trim: "#3a2a3a" }, gear: ["browgem"], item: "bow", stance: "hero", stage: "adult", big: true, size: 1.18 },
     Gandharva: { pronoun: "he", palette: ["#9fb07a", "#2f5a3a", "#d9c27a"], headgear: "feather", item: "spear", stage: "adult" },
-    archer: { pronoun: "he", palette: ["#9e6a40", "#5d3b2a", "#9f8250"], headgear: "band", item: "bow", stage: "adult" },
-    rider: { pronoun: "he", palette: ["#a8703f", "#6e3026", "#c9a24e"], headgear: "jata", item: "sword", stage: "adult" },
+    champion: { pronoun: "he", palette: ["#b8703b", "#7a1f2a", "#e2b55a"], headgear: "crest", hat: "#e2b55a", hatTrim: "#d9a53a", gear: ["scale"], item: "mace", stance: "proud", stage: "adult", size: 1.1 },
+    archer: { pronoun: "he", palette: ["#9e6a40", "#5d3b2a", "#9f8250"], headgear: "capfeather", hat: "#5d3b2a", gear: ["bracer"], item: "bow", stance: "archer", stage: "adult" },
+    rider: { pronoun: "he", palette: ["#a8703f", "#6e3026", "#c9a24e"], headgear: "crest", hat: "#a3302a", gear: ["buckler", "cuirass"], item: "sword", stance: "raised", stage: "adult", size: 1.04 },
+    bandit: { pronoun: "he", palette: ["#9c6a42", "#6b5a3a", "#a8875a"], headgear: "scarf", hat: "#7a4a2a", gear: ["torn"], item: "club", stance: "stoop", stage: "adult", size: 0.9 },
     common: { pronoun: "he", palette: ["#9c6a42", "#6b5a3a", "#a8875a"], item: "staff", stage: "adult" }
   };
   function specFor(u) {
     if (u.side === "player") return K.puppetSpec(K.S);
     if (u.person && K.PUPPETS[u.person]) return U.puppetFor(u.person);
     const n = String(u.src || u.name);
+    if (/charioteer/i.test(n)) return SPECIAL.rider; // Karna's charioteer is not Karna
     for (const [re, id] of NAMED) if (re.test(n)) return U.puppetFor(id);
     if (/Ashwatthama/.test(n)) return SPECIAL.Ashwatthama;
     if (/Gandharva/.test(n)) return SPECIAL.Gandharva;
+    if (/champion|dented helmet/i.test(n)) return SPECIAL.champion;
     if (/archer|chariot/i.test(n)) return SPECIAL.archer;
     if (/horseman|rider|veteran/i.test(n)) return SPECIAL.rider;
-    if (/cowherd|club|villager|raider|bandit/i.test(n)) return SPECIAL.common;
-    if (/guard|spear|bodyguard|captain|torch/i.test(n)) return U.puppetFor("guard");
+    if (/club|raider|bandit/i.test(n)) return SPECIAL.bandit;
+    if (/cowherd|villager/i.test(n)) return SPECIAL.common;
+    if (/guard|bodyguard|captain|sentry/i.test(n)) return U.puppetFor("guard");
     return U.puppetFor("soldier");
   }
   // How a figure moves for each technique.
