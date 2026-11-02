@@ -629,6 +629,11 @@
       });
     } else if (kind === "farewell") {
       phrase(t0 + 0.2, [7, 5, 4, 3, 2, 0].map((k, i) => ({ f: f(Y, k) * 0.5, d: i === 5 ? 2.6 : 0.8 })), 0.7);
+    } else if (kind === "oath") {
+      // The Samshaptakas' oath: a far conch, three slow strokes of the drum, the flute in Darbari sinking to a low held Sa.
+      FX.conch();
+      [0.9, 1.6, 2.3].forEach((d, i) => BOLS.dha(t0 + d, i === 2 ? 1 : 0.75));
+      phrase(t0 + 2.7, [4, 3, 2, 3, 1, 0].map((k, i) => ({ f: f(SCALES.darbari, k) * 0.5, d: i === 5 ? 2.2 : [0.5, 0.4, 0.6, 0.5, 0.7][i], accent: i === 0 })), 0.85);
     } else {
       FX.gong();
       phrase(t0 + 0.8, [0, 1, 2, 3, 2, 3, 4].map((k, i) => ({ f: f(D, k), d: i === 6 ? 2.2 : [0.6, 0.5, 0.7, 0.9, 0.5, 0.6][i], accent: i === 0 })), 0.9);

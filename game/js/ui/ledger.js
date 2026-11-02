@@ -68,7 +68,7 @@
     L.innerHTML =
       "<h2>" + U.tr("Obligations") + '</h2><p class="sub">' + U.tr("Choices pull these against each other. There is no good or evil bar.") + "</p>" + duties +
       "<h2>" + U.tr("Bonds") + "</h2>" + bonds +
-      "<h2>" + U.tr("Vows ({n} / {max})", { n: K.activeVows().length, max: K.MAX_VOWS }) + "</h2>" + vows +
+      "<h2>" + U.tr("Vows ({n} / {max})", { n: K.vowsHeld(), max: K.MAX_VOWS }) + "</h2>" + vows +
       (chips.length ? "<h2>" + U.tr("Boons, curses and wounds") + '</h2><div class="chips">' + chips.join("") + "</div>" + astraNote : "") +
       (weapons ? "<h2>" + U.tr("Divine weapons") + "</h2>" + weapons : "") +
       (charges.length ? '<ul class="secrets">' + charges.map((x) => "<li>" + x + "</li>").join("") + "</ul>" : "") +

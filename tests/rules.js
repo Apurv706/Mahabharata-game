@@ -295,4 +295,45 @@ S = fresh({ act: 2, age: 18, path: "archer" }); S.attrs.aim = 8;
   ok(!C.foesPending() && B2.queue === null && C.act("strike") === true, "a queue of fallen foes is closed, and it is your turn");
   C.end && C.end();
 }
+// 38. The Samshaptakas' oath (PRD 18.13, content/war_oath.js): a fourth vow for one war, its gift, its price, its ending
+require(G + "content/war_oath.js");
+{
+  const war = { act: 6, age: 44, side: "kaurava", path: "warrior" };
+  S = fresh(war); ["never_lie", "never_retreat", "spare_unarmed"].forEach((id) => K.apply({ vowTake: id }));
+  ok(K.resolveScene("a6_wheel").id === "oath_fire", "after the eleventh day a Kaurava warrior comes to the Samshaptakas' fire");
+  const swear = K.SCENES.oath_fire.choices.find((c) => c.id === "swear");
+  ok(K.preview(swear, S).some(([, t]) => /fourth vow/.test(t)) && K.preview(swear, S).some(([cls]) => cls === "vow"), "the oath shows as a vow, and as a fourth one");
+  K.choose(K.SCENES.oath_fire, swear);
+  ok(S.vows.length === 4 && K.hasVow("samshaptaka", S) && K.vowsHeld(S) === 3 && S.tapas === 3, "the oath is sworn above the limit of three (tapas +3), and stands outside the count");
+  K.apply({ vowTake: "celibacy" });
+  ok(!K.hasVow("celibacy", S), "any other vow is still refused past three");
+  const p0 = (() => { const keep = S.vows; S.vows = keep.filter((v) => v.id !== "samshaptaka"); const B = K.Combat.start("oath_arjuna_12", () => {}); const r = { atk: B.units[0].atk, def: B.units[0].def }; K.Combat.end(); S.vows = keep; return r; })();
+  const B1 = K.Combat.start("oath_arjuna_12", () => {});
+  ok(B1.units[0].atk === p0.atk + 2 && B1.units[0].def === p0.def + 1, "while the oath holds: +2 attack, +1 defence");
+  ok(B1.enc.lethal && B1.enc.hold === 7 && B1.units.some((u) => u.person === "arjuna" && u.hero) && K.Combat.fleeBreaks().includes("samshaptaka"), "Arjuna's chariot is a deadly hold, and pulling out of it breaks the oath");
+  K.Combat.end();
+  S.seen.push("oath_fire");
+  ok(K.resolveScene("a6_wheel").id === "oath_south", "the sworn face Arjuna's chariot on the twelfth day");
+  ok(K.resolveScene("a6_day16").id === "oath_again", "and again on the sixteenth");
+  S.flags.push("role_division", "council_flank", "council_flank_chariot");
+  ok(!K.test(K.SCENES.hold_arjuna_offer.when, S), "the division's hold against Arjuna is not offered twice to the sworn");
+  S.alive = false;
+  let e = K.composeEnding(S);
+  ok(e.title === "The oath to the death" && e.art === "end_oath", "falling with the oath on you is its own ending");
+  ok(K.ENDINGS.some((x) => x.title === "The oath to the death" && x.art === "end_oath"), "it is in the endings list");
+  S = fresh(war); K.apply({ vowTake: "samshaptaka" }); S.bonds.duryodhana = 7; S.bonds.karna = 6; S.bonds.drona = 5;
+  K.choose(K.SCENES.oath_south, K.SCENES.oath_south.choices.find((c) => c.id === "withdraw"));
+  ok(!K.hasVow("samshaptaka", S) && S.flags.includes("broke_samshaptaka") && S.bonds.duryodhana === 4 && S.bonds.karna === 3 && S.bonds.drona === 2, "withdrawing breaks the oath: every watcher's bond -3");
+  S.alive = false; e = K.composeEnding(S);
+  ok(e.title !== "The oath to the death" && e.telling.some((x) => /oath-breaker/.test(Array.isArray(x) ? x[0] : x)), "an oath-breaker does not get its ending, and the telling names them");
+  S = fresh(Object.assign({ storyMode: true }, war)); K.apply({ vowTake: "samshaptaka" });
+  K.combatOutcome("oath_arjuna_12", "lose", "a6_wheel");
+  ok(S.alive && K.hasVow("samshaptaka", S) && S.flags.includes("oath_carried_off") && S.injuries.length, "story mode: carried off with a wound, the oath kept");
+  S = fresh({ act: 6, age: 44, side: "pandava" }); S.flags.push("role_command");
+  ok(K.resolveScene("a6_wheel").id === "oath_crescent", "on the Pandava side, the crescent array on the twelfth day");
+  const arr = K.SCENES.oath_crescent.choices.find((c) => c.id === "array");
+  ok(arr.trial.array === "crescent" && K.test(arr.req, S), "a company leader sets companies on the crescent");
+  const rr = K.choose(K.SCENES.oath_crescent, arr, "lose");
+  ok(rr.next === "oath_king" && !rr.after && K.ENCOUNTERS.oath_king_hold.hold && K.ENCOUNTERS.oath_king_hold.enemies.some((u) => u.person === "drona"), "if the crescent breaks, a holding fight at the king's chariot follows");
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

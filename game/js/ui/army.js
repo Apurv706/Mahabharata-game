@@ -20,7 +20,8 @@
     crane: ["The crane", [[-62, -20], [0, -56], [62, -20]], [0, 40]],
     wheel: ["The wheel", [[-56, -40], [56, -40], [0, 22]], [0, 68]],
     crocodile: ["The crocodile", [[0, -70], [0, -22], [0, 26]], [-70, 20]],
-    needle: ["The needle", [[0, -76], [-40, -26], [40, -26]], [0, 44]]
+    needle: ["The needle", [[0, -76], [-40, -26], [40, -26]], [0, 44]],
+    crescent: ["The crescent", [[-64, -48], [0, -14], [64, -48]], [0, 40]] // horns forward (the Pandavas on the twelfth day, content/war_oath.js)
   };
   const SECTOR = ["Left", "Centre", "Right"];
   // The companies you can set: your own, then whoever fights beside you, then the king's levies.
@@ -33,7 +34,7 @@
 
   U.games.array = function (box, done, c) {
     return U.trialFrame(box, done, c, "array", ({ host, power, t, finish, cue }) => {
-      const key = t.array && VYUHA[t.array] ? t.array : K.pick(Object.keys(VYUHA)), [aname, marks, reserveAt] = VYUHA[key];
+      const key = t.array && VYUHA[t.array] ? t.array : K.pick(Object.keys(VYUHA).filter((k) => k !== "crescent")), [aname, marks, reserveAt] = VYUHA[key]; // the crescent only when named
       const rounds = t.rounds || 5;
       const companies = (K.val(t.companies) || ["company", "soldiers", "ally"]).slice(0, 3);
       const filled = marks.map(() => null);

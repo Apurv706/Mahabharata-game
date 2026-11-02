@@ -189,6 +189,7 @@
     { title: "Broken survivor", art: "end_broken", hint: "Survive, having lost most of those you loved." },
     { title: "The wanderer", art: "end_river", hint: "Survive, and walk away from everything." },
     { title: "Glorious death", art: "end_death", hint: "Fall in battle with every vow kept." },
+    { title: "The oath to the death", art: "end_oath", hint: "Swear the Samshaptakas' oath, and fall with it still on you." },
     { title: "Fallen at Kurukshetra", art: "end_death", hint: "Fall in battle." },
     { title: "Into the wheel", art: "end_wheel", hint: "Follow Abhimanyu to the end." },
     { title: "Against the boy in the wheel", art: "end_wheel", hint: "On the Kaurava side, stand in Abhimanyu's way." },
@@ -213,6 +214,9 @@
       if (at && at.art) { art = at.art; caption = at.caption || caption; }
       if (S.flags.includes("peril_death") && (at ? at.act : S.act) < 6) title = "A life cut short";
       if (S.flags.includes("died_in_fire")) { title = "The burnt house"; art = "end_fire"; caption = "The house at Varnavata, at dawn"; }
+      // The Samshaptakas' oath (war_oath.js): a fall with the oath still on you is its own ending, in place
+      // of a glorious death (every vow kept) or a plain one; the deaths with their own endings keep them.
+      if (K.hasVow("samshaptaka", S) && (title === "Glorious death" || title === "Fallen at Kurukshetra")) { title = "The oath to the death"; art = "end_oath"; caption = "A grass garland in the chariot ruts"; }
     } else {
       const c = S.endChoice;
       if (c === "elder") { title = "The wise elder"; art = "end_elder"; caption = "The palace school, in old age"; }

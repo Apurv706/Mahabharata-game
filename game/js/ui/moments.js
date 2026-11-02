@@ -44,8 +44,8 @@
       case "vow": {
         const V = K.VOWS[m.id] || {};
         const w = K.watcherNames(m.id, S);
-        return { theme: "milestone", title: ["A vow: {vow}", { vow: V.name }], line: V.keep || V.gift, watch: w ? ["Watched by {who}", { who: w }, true] : null, price: V.price ? ["Broken: {price}", { price: V.price }] : null,
-          art: null, place: "scene_vow", emblem: "vow_" + m.id };
+        return { theme: V.theme || "milestone", title: ["A vow: {vow}", { vow: V.name }], line: V.keep || V.gift, watch: w ? ["Watched by {who}", { who: w }, true] : null, price: V.price ? ["Broken: {price}", { price: V.price }] : null,
+          art: null, place: V.place || "scene_vow", emblem: "vow_" + m.id }; // a vow may bring its own painting and theme (the Samshaptakas' oath)
       }
       case "company": return { theme: "milestone", title: "A company of your own", line: "They are yours to command, and yours to bring home.", art: "scene_command_banner", place: null, emblem: null };
       default: return null;

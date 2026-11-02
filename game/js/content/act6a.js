@@ -174,7 +174,7 @@
     {
       id: "a6_capture", act: 6, age: 44, canon: true, war: true, art: "war_capture", place: "Kurukshetra · days 11 and 12", caption: "Drona takes command",
       title: "Take the king alive",
-      witness: ["Drona takes command of the Kaurava army. Duryodhana wants one thing from him: capture Yudhishthira alive, so the war can be won with another game of dice. For two days Arjuna stays close to his brother, and the plan fails."],
+      witness: ["Drona takes command of the Kaurava army. Duryodhana wants one thing from him: capture Yudhishthira alive, so the war can be won with another game of dice. On the eleventh day Arjuna stays close to his brother, and the plan fails. On the twelfth, the Trigarta brothers, sworn to the death, draw him away to the south, and Drona comes at the king himself. Still Yudhishthira is not taken."],
       body: (S) => [S.side === "pandava" ? "Your company is posted beside the king's chariot." : S.side === "kaurava" ? "Your company is sent to break through to the king's chariot." : "Both days, the fighting is thickest around one chariot. The wounded come from there."],
       choices: [
         { id: "guard", t: "Guard Yudhishthira's chariot", req: { side: "pandava" }, combat: "e_guard" },
