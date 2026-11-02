@@ -9,7 +9,8 @@
    rig.set(pose, stiffness, damping, snap)  aim every joint at a pose from POSES
    rig.home()                               back to its own resting pose
    rig.kick({ joint: velocity })            a push on some joints (an impact)
-   rig.fallDown()                           the joints go slack and it topples about its feet
+   rig.fallDown(floor)                      the joints go slack and it topples about its feet (to the
+                                            ground, or held at floor degrees: Bhishma on the arrows)
    U.rigFreeze(ms)                          hold every live figure still for a moment (hit-stop)
    U.rigs.clear()                           forget every figure (a new screen)
 
@@ -115,7 +116,7 @@
   Rig.prototype.home = function (k) { return this.set(this.baseName, k || 520, 0.42); };
   Rig.prototype.base = function (name) { if (POSES[name]) this.baseName = name; return this; };
   Rig.prototype.kick = function (o) { for (const k in o) this.v[k] += o[k]; wake(); return this; };
-  Rig.prototype.fallDown = function () { this.set("slack"); this.falling = true; this.fallV = 140; wake(); return this; };
+  Rig.prototype.fallDown = function (floor) { this.set("slack"); this.falling = true; this.fallV = 140; this.floor = floor || -86; wake(); return this; };
   Rig.prototype.stop = function () { live.delete(this); };
   Rig.prototype.step = function (dt, time) {
     const c = 2 * this.z * Math.sqrt(this.k);
@@ -137,7 +138,8 @@
     if (this.pinned) { this.x.legF = -18; this.x.shinF = 6; } // the pinned foot stays where the arrow holds it
     if (this.falling) { // toppling about the feet, faster as it goes, a small bounce on the ground
       this.fallV += 2800 * Math.sin((Math.abs(this.fall) + 9) * Math.PI / 180) * dt; this.fall -= this.fallV * dt;
-      if (this.fall < -86) { this.fall = -86; this.fallV = -this.fallV * 0.22; if (Math.abs(this.fallV) < 8) this.fallV = 0; }
+      const fl = this.floor || -86;
+      if (this.fall < fl) { this.fall = fl; this.fallV = -this.fallV * 0.22; if (Math.abs(this.fallV) < 8) this.fallV = 0; }
     }
     this.apply();
   };

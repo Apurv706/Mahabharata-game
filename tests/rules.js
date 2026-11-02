@@ -657,4 +657,56 @@ require(G + "content/war_oath.js");
   K.oathEnds(K.SCENES.a6_duryodhana, S);
   ok(!K.hasVow("samshaptaka", S) && S.vows.some((v) => v.id === "samshaptaka" && v.released) && S.journal.some((j) => /Susharma/.test(JSON.stringify(j))), "after the eighteenth day the oath is released, kept, and Susharma falls as written");
 }
+// 60. Arjuna and Bhishma, shown twice (PRD 18.13, content/war_bhishma.js): where the scenes come, and who reaches them
+require(G + "content/war_bhishma.js");
+{
+  const L = K.BEFORE.a6_bhishma, war = (o) => fresh(Object.assign({ act: 6, age: 44, path: "warrior" }, o));
+  ok(L.indexOf("bh_day9") > L.indexOf("wl_iravan") && L.indexOf("bh_day9") < L.indexOf("cmd_promotion_1") && L.indexOf("bh_fall") === L.indexOf("ep_shikhandi") + 1,
+    "day 9 comes after Iravan and before the ninth night; the fall straight after Shikhandi's charge");
+  S = war({ side: "pandava" });
+  ok(K.resolveScene("a6_bhishma").id === "bh_day9" && K.SCENES.bh_day9.next === "bh_wheel", "a Pandava fights in the line under Bhishma on the ninth day, then sees the wheel");
+  ok(K.SCENES.bh_day9.choices.every((c) => c.combat === "bh_line9") && K.ENCOUNTERS.bh_line9.hold && !K.ENCOUNTERS.bh_line9.lethal, "both choices lead to the holding fight (not deadly)");
+  S.seen.push("bh_day9", "bh_wheel");
+  ok(K.resolveScene("a6_bhishma").id === "ep_shikhandi", "then Shikhandi's charge on the tenth morning");
+  S.seen.push("ep_shikhandi");
+  ok(K.resolveScene("a6_bhishma").id === "bh_fall", "then the fall");
+  S = war({ side: "kaurava" });
+  ok(K.resolveScene("a6_bhishma").id === "bh_guard9", "a Kaurava is in Bhishma's guard on the ninth day");
+  S.seen.push("bh_guard9");
+  ok(K.resolveScene("a6_bhishma").id === "bh_fall", "and sees him fall on the tenth");
+  S = war({ side: "neutral" });
+  ok(K.resolveScene("a6_bhishma").id === "a6_bhishma", "the neutral do not see either");
+  S = war({ side: "pandava" }); S.flags.push("captive");
+  ok(!["bh_day9", "bh_fall"].includes(K.resolveScene("a6_bhishma").id), "nor does a prisoner");
+}
+// 61. The wheel and the barrage: staged moments; the tent for those close to the brothers; small consequences
+{
+  const war = (o) => fresh(Object.assign({ act: 6, age: 44, path: "warrior" }, o));
+  S = war({ side: "pandava" }); K.apply(K.SCENES.bh_wheel.enter);
+  ok(S.moments.some((m) => m.kind === "bh_wheel") && K.MOMENT_KINDS.bh_wheel().play && K.MOMENT_KINDS.bh_wheel().art === "fight_war_field", "the wheel is a moment, staged in code over the field painting");
+  S = war({ side: "kaurava" }); K.apply(K.SCENES.bh_fall.enter);
+  ok(S.moments.some((m) => m.kind === "bh_fall") && K.MOMENT_KINDS.bh_fall().play && K.MOMENT_KINDS.bh_fall().ms <= 10000, "the barrage is a moment of under ten seconds");
+  const tent = K.SCENES.bh_wheel.choices.find((c) => c.id === "tent");
+  S = war({ side: "pandava" }); S.bonds.arjuna = 2; S.bonds.yudhishthira = 2;
+  ok(!K.test(tent.req, S), "the tent: not for those who are not close to the brothers");
+  S.bonds.yudhishthira = 6; const b0 = S.bonds.bhishma ?? 3;
+  ok(K.test(tent.req, S), "the tent: for those close to Yudhishthira (or Arjuna)");
+  K.choose(K.SCENES.bh_wheel, tent);
+  ok(S.flags.includes("bh_heard_shikhandi") && S.bonds.bhishma === b0 + 1 && K.val(K.SCENES.ep_shikhandi.body, S).some((x) => x && x.memory), "he names Shikhandi, and the tenth morning remembers it");
+  S = war({ side: "kaurava" }); const k0 = S.bonds.bhishma ?? 3;
+  const r = K.choose(K.SCENES.bh_guard9, K.SCENES.bh_guard9.choices.find((c) => c.id === "step"));
+  ok(S.flags.includes("bh_stepped_in") && S.bonds.bhishma === k0 + 1 && r.next !== "end_death", "stepping in front of the old man: he moves you aside");
+  S = war({ side: "pandava" }); const g0 = S.bonds.bhishma ?? 3;
+  K.choose(K.SCENES.bh_fall, K.SCENES.bh_fall.choices.find((c) => c.id === "go"));
+  ok(S.flags.includes("bh_went_to_him") && S.bonds.bhishma === g0 + 1 && S.memories.some((m) => m.who === "bhishma"), "going to him as he falls: his bond +1, and a memory");
+  ok(!K.val(K.SCENES.a6_bhishma.witness, Object.assign({}, S, { seen: S.seen.concat("bh_fall") })).some((x) => /Arjuna's arrows bring/.test(x)), "the bed of arrows does not tell the fall again to those who saw it");
+}
+// 62. Canon: Krishna never strikes Bhishma, and Bhishma falls on the tenth day in every life
+{
+  const ids = ["bh_day9", "bh_wheel", "bh_guard9", "bh_fall"], S0 = fresh({ act: 6, age: 44, side: "pandava", path: "warrior" });
+  ok(ids.every((id) => [K.SCENES[id].next].concat(K.val(K.SCENES[id].choices, S0).map((c) => c.next)).every((n) => !n || n === "a6_bhishma" || n === "bh_wheel")), "every road through these scenes leads to the bed of arrows");
+  ok(!K.ENCOUNTERS.bh_line9.enemies.some((u) => u.person === "krishna") && K.ENCOUNTERS.bh_line9.enemies.some((u) => u.person === "bhishma" && u.hero) && !JSON.stringify(ids.map((id) => K.SCENES[id].choices.map((c) => c.fx || {}))).includes("\"die\""),
+    "Bhishma is only held on the ninth day; no choice kills or spares anyone");
+  ok(K.SCENES.bh_fall.choices.every((c) => !c.req) && K.SCENES.a6_bhishma.canon, "whatever you do as he falls, he falls");
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

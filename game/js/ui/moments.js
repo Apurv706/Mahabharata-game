@@ -112,7 +112,7 @@
     let shown = false;
     const reveal = () => { if (shown || running !== run) return; shown = true; requestAnimationFrame(() => requestAnimationFrame(() => { el.classList.add("in"); plan(); })); };
     const plan = () => {
-      beats.push(setTimeout(close, still ? 6000 : info.astra ? 8200 : 7200));
+      beats.push(setTimeout(close, still ? 6000 : info.ms || (info.astra ? 8200 : 7200))); // info.ms: a staged scene's own length (war_bhishma.js)
       if (info.play) at(info.playAt || 600, () => info.play(el)); // an effect drawn in code over the painting
       if (info.with) at(1900, () => {
         el.classList.add("met");
