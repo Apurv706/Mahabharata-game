@@ -256,6 +256,8 @@
   K.warHelp = (S) => {
     // One who crossed the lines on the first morning is not trusted until a deadly fight is won (war_crossing.js).
     if (S.flags.includes("crossed_untrusted")) return { text: "You shout for help. The men of your new side hear you, look at each other, and do not come. They do not know you yet." };
+    const naga = K.nagaHelp && K.nagaHelp(S); // once in the war, for one who carried Iravan to the river (content/war_lake.js)
+    if (naga) return naga;
     const f = S.friend;
     if (f && !S.dead.includes(f) && K.UNITS[f] && FRIEND_SIDE[f] === S.side)
       return { unit: K.UNITS[f](S), stay: 2, text: ["{who} hears you over the din, and comes.", { who: K.PEOPLE[f].name }] };

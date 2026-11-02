@@ -43,9 +43,9 @@
   };
 
   // Portraits of the people you know (art/p_*.webp). Vasu grows up: the child portrait until 40.
-  const PORTRAITS = ["karna", "arjuna", "bhima", "drona", "kripa", "duryodhana", "abhimanyu", "mauni", "charu", "madhavi", "revat", "yudhishthira", "vidura", "bhishma", "dhrishtadyumna", "ashwatthama", "satyaki", "iravan", "ghatotkacha", "bhurishravas", "virata", "drupada"];
+  const PORTRAITS = ["karna", "arjuna", "bhima", "drona", "kripa", "duryodhana", "abhimanyu", "mauni", "charu", "madhavi", "revat", "yudhishthira", "vidura", "bhishma", "dhrishtadyumna", "ashwatthama", "satyaki", "iravan", "ghatotkacha", "bhurishravas", "virata", "drupada", "vrishasena"];
   U.portraitKey = function (id) {
-    if (id === "vasu") return K.S && K.S.age >= 40 ? "p_vasu_16" : "p_vasu_6";
+    if (id === "vasu") return K.S && K.S.age >= 40 ? ((K.S.flags || []).some((f) => f === "vasu_away" || f === "vasu_with_you") ? "p_child_son" : "p_vasu_16") : "p_vasu_6"; // armed, once he goes to war
     if (id === "ugra") return K.S && K.S.age >= 25 ? "p_ugra_adult" : "p_ugra_young";
     return PORTRAITS.includes(id) ? "p_" + id : null;
   };
@@ -82,7 +82,7 @@
   // version is used when there is one; the older 3:1 paintings are dimmed and softened behind the
   // page. Each painting can carry a focal point, so a phone (which shows only the middle of a wide
   // picture) crops around its subject.
-  const WIDE = new Set(["custom_anga", "custom_gandhara", "custom_hastinapura", "custom_mathura", "custom_matsya", "custom_nishada", "custom_panchala", "custom_suta", "end_broken", "end_death", "end_elder", "end_forest", "end_river", "end_survivor", "end_teller", "end_vengeance", "end_wheel", "ev_bandits", "ev_bard", "ev_deer", "ev_flood", "ev_horses", "ev_lamps", "ev_letter", "ev_riddle", "ev_snake", "ev_teacher", "home_anga", "home_gandhara", "home_hastinapura", "home_mathura", "home_matsya", "home_nishada", "home_panchala", "home_suta", "roots_anga", "roots_gandhara", "roots_hastinapura", "roots_mathura", "roots_matsya", "scene_day13", "scene_dice_hall", "scene_dice_throws", "scene_exile", "scene_fair", "scene_indraprastha", "scene_lac", "scene_poison", "scene_princes", "scene_swayamvara", "scene_teacher", "scene_teaching", "scene_tournament", "scene_virata", "scene_women_field", "war_day17", "war_day18", "war_eve", "scene_sage", "scene_secret", "scene_smith", "scene_vasu", "scene_vow", "scene_years_remain", "war_bhishma", "war_capture", "war_day14", "war_day15", "war_day16", "scene_duryodhana", "scene_ekalavya", "scene_envoy", "scene_jayadratha", "scene_journey", "scene_lake", "scene_note", "scene_pasha", "scene_path", "scene_raid", "scene_rajasuya", "scene_temple_offering", "scene_sage_year", "scene_brahmastra", "scene_raksha_sutra", "scene_soma", "scene_tournament_crowd", "scene_ugra_letter", "scene_ugra_field", "scene_secret_told", "scene_mentor_vidura", "scene_mentor_kripa", "scene_mentor_peace", "scene_lake_charu", "scene_shikhandi", "scene_letter_camp", "scene_sibling_field", "scene_river_rite", "scene_own_student", "scene_bard", "scene_line_broken", "scene_yuyutsu_crossing", "scene_iravan_river", "scene_samshaptaka_oath", "scene_bhurishravas", "scene_kings_fall", "end_crossed", "end_oath"]);
+  const WIDE = new Set(["custom_anga", "custom_gandhara", "custom_hastinapura", "custom_mathura", "custom_matsya", "custom_nishada", "custom_panchala", "custom_suta", "end_broken", "end_death", "end_elder", "end_forest", "end_river", "end_survivor", "end_teller", "end_vengeance", "end_wheel", "ev_bandits", "ev_bard", "ev_deer", "ev_flood", "ev_horses", "ev_lamps", "ev_letter", "ev_riddle", "ev_snake", "ev_teacher", "home_anga", "home_gandhara", "home_hastinapura", "home_mathura", "home_matsya", "home_nishada", "home_panchala", "home_suta", "roots_anga", "roots_gandhara", "roots_hastinapura", "roots_mathura", "roots_matsya", "scene_day13", "scene_dice_hall", "scene_dice_throws", "scene_exile", "scene_fair", "scene_indraprastha", "scene_lac", "scene_poison", "scene_princes", "scene_swayamvara", "scene_teacher", "scene_teaching", "scene_tournament", "scene_virata", "scene_women_field", "war_day17", "war_day18", "war_eve", "scene_sage", "scene_secret", "scene_smith", "scene_vasu", "scene_vow", "scene_years_remain", "war_bhishma", "war_capture", "war_day14", "war_day15", "war_day16", "scene_duryodhana", "scene_ekalavya", "scene_envoy", "scene_jayadratha", "scene_journey", "scene_lake", "scene_note", "scene_pasha", "scene_path", "scene_raid", "scene_rajasuya", "scene_temple_offering", "scene_sage_year", "scene_brahmastra", "scene_raksha_sutra", "scene_soma", "scene_tournament_crowd", "scene_ugra_letter", "scene_ugra_field", "scene_secret_told", "scene_mentor_vidura", "scene_mentor_kripa", "scene_mentor_peace", "scene_lake_charu", "scene_shikhandi", "scene_letter_camp", "scene_sibling_field", "scene_river_rite", "scene_own_student", "scene_bard", "scene_line_broken", "scene_yuyutsu_crossing", "scene_iravan_river", "scene_samshaptaka_oath", "scene_bhurishravas", "scene_kings_fall", "end_crossed", "end_oath", "scene_duel_ground"]);
   const FOCAL = { scene_teacher: "62% 45%", scene_dice_throws: "28% 35%", home_anga: "30% 50%", scene_princes: "34% 55%", scene_poison: "45% 45%" };
   U.hasWide = (key) => WIDE.has(key) || /^stage_/.test(key || "");
   // Tall (9:16) versions of the test stages, painted for upright screens (art/<key>_tall.webp).
@@ -240,7 +240,11 @@
     if (fightingNow()) instant = true; // in a fight the painting never glides: the floor must not slide under the fighters
     const L = layer(); if (!L) return;
     const pic = L.querySelector(".pic"), size = sizes[L.dataset.url];
-    const W = window.innerWidth, H = window.innerHeight;
+    // While a scene is being written the painting holds its size: a phone's browser bars that come
+    // and go as the page scrolls line by line do not resize it. It moves once, when the page is done.
+    if (!U.settled && U.lockH == null) U.lockH = window.innerHeight;
+    if (U.settled) U.lockH = null;
+    const W = window.innerWidth, H = U.lockH != null && !fightingNow() ? U.lockH : window.innerHeight;
     const head = document.querySelector("header.top");
     const hb = head ? head.getBoundingClientRect().bottom : 0;
     let mode = "cover", rt = 0, rb = H;
@@ -357,7 +361,7 @@
   };
   U.viewing = () => viewing;
   window.addEventListener("resize", () => U.fitBackdrop(true));
-  window.addEventListener("orientationchange", () => setTimeout(() => U.fitBackdrop(true), 250));
+  window.addEventListener("orientationchange", () => { U.lockH = null; setTimeout(() => { U.lockH = null; U.fitBackdrop(true); }, 250); });
   U.initBackdrop = function () {
     const leaf = U.$("leaf");
     if (window.ResizeObserver && leaf) new ResizeObserver(() => U.fitBackdrop()).observe(leaf);

@@ -327,6 +327,8 @@
       else for (const w of [].concat(who)) if (!S.dead.includes(w)) S.dead.push(w);
     },
     deathText: (t, S) => { S.deathText = t; },
+    // A moment of a kind the engine does not notice by itself (ui/moments.js K.MOMENT_KINDS): { kind, who, from }.
+    moment: (m, S, d) => moment(S, d, typeof m === "string" ? { kind: m } : Object.assign({}, m)),
     age: (n, S) => { S.age = n; }
   };
   K.apply = function (fx, S = K.S) {

@@ -52,6 +52,9 @@
     stage_tournament_arena: { fx: "dust" },
     stage_drona_gate: { fx: "leaves" },
     stage_city_ruins: { fx: "embers" },
+    // War storylines (content/war_lake.js): the reeds at dusk (16:9), the field to the river (a long strip).
+    stage_lake_reeds: { fx: "mist" },
+    stage_field_to_river: { fx: "embers", side: true },
     scene_fair: { fx: "dust" },
     fight_fair_ring: { fx: "dust" },
     scene_teaching: { fx: "mist" }
