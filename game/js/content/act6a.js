@@ -247,6 +247,8 @@
   // to stand your enemies off (never against his brothers). A friendship that has ended reaches no one.
   const FRIEND_SIDE = { karna: "kaurava", duryodhana: "kaurava", arjuna: "pandava", bhima: "pandava" };
   K.warHelp = (S) => {
+    const naga = K.nagaHelp && K.nagaHelp(S); // once in the war, for one who carried Iravan to the river (content/war_lake.js)
+    if (naga) return naga;
     const f = S.friend;
     if (f && !S.dead.includes(f) && K.UNITS[f] && FRIEND_SIDE[f] === S.side)
       return { unit: K.UNITS[f](S), stay: 2, text: ["{who} hears you over the din, and comes.", { who: K.PEOPLE[f].name }] };

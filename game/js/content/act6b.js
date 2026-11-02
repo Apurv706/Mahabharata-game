@@ -112,9 +112,10 @@
     },
     {
       id: "a6_duryodhana", when: { any: [{ friend: "duryodhana" }, { bond: ["duryodhana", 7] }] }, skipTo: "a6_raid",
-      act: 6, age: 44, war: true, place: "The lakeside at dusk", to: "kurukshetra", art: "scene_duryodhana", plate: ["#5c3361", "#2a1c1f"], caption: "A broken king by the water",
+      act: 6, age: 44, war: true, place: "The lakeside, that night", to: "kurukshetra", art: "scene_duryodhana", plate: ["#5c3361", "#2a1c1f"], caption: "A broken king by the water",
       title: "Duryodhana at the lake",
-      body: ["Duryodhana lies where Bhima left him, his thigh shattered. He is waiting to die. He sees you, and for a moment he looks like the boy at the lotus pond."],
+      body: (S) => ["Duryodhana lies where Bhima left him, his thigh shattered. He is waiting to die. He sees you, and for a moment he looks like the boy at the lotus pond.",
+        K.lakeLines ? K.lakeLines.dying(S) : null], // what you did at the lake before the duel (content/war_lake.js)
       choices: [
         { id: "comfort", t: "Sit with him, and talk about when you were young", fx: { bond: { duryodhana: 2 }, memory: ["duryodhana", "You sat with him at the end."], journal: "You sat with Duryodhana by the lake as he lay dying." } },
         { id: "truth", t: "Tell him what he did to all of you", fx: { duty: { conscience: 2 }, bond: { duryodhana: -2 } }, text: "\"I lived as a king,\" he says. \"I am dying as one. Which of them can say that?\"" },
@@ -129,6 +130,7 @@
       witness: ["The war is over. The Pandava camp sleeps for the first time in eighteen days. Ashwatthama, mad with grief for his father, comes through the gate in the dark with a sword."],
       body: (S) => [
         S.side === "kaurava" ? "Ashwatthama finds you before he goes. He wants one more sword." : "You wake to screaming.",
+        K.lakeLines ? K.lakeLines.raid(S) : null, // the reeds at the lake, a few hours ago (content/war_lake.js)
         S.boons.includes("foresight") && S.side !== "kaurava" ? { memory: "Your foresight woke you a moment before the first scream." } : null,
         S.side !== "kaurava" && (vasuAt(S, "vasu_in_camp") || vasuAt(S, "vasu_with_you")) ? { memory: "Vasu is sleeping three tents away." } : null
       ],

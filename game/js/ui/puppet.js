@@ -67,6 +67,8 @@
     // The sutradhara, who holds the strings of the story and opens each act.
     sutradhara: { pronoun: "he", headgear: "band", palette: ["#c8925e", "#e9dcc0", "#b2432a"], beard: true, stage: "elder", item: "scroll" },
     bhishma: { pronoun: "he", headgear: "crown", crown: { gem: "#d9a53a", tall: 0.85, white: true, trim: "#d9a53a" }, palette: ["#cfa274", "#f4efe2", "#d6c08a"], beard: "long", stage: "elder", item: "bow", stance: "sage", size: 1.22 },
+    // Satyaki, the Yadava champion: broad and tall in scale armour, a Vrishni blue crown, sword in hand.
+    satyaki: { pronoun: "he", palette: ["#9a5a30", "#2c4c86", "#e2b55a"], headgear: "crown", crown: { gem: "#2c4c86", broad: true, trim: "#e2b55a" }, item: "sword", gear: ["scale", "bracer"], studs: ["#d9a53a"], stance: "broad", big: true, size: 1.24, stage: "adult" },
     dhrishtadyumna: { pronoun: "he", headgear: "mukuta", palette: ["#c27a44", "#b2432a", "#e2b55a"], item: "sword", stage: "adult" },
     shakuni: { pronoun: "he", palette: ["#b78a5c", "#4b5a73", "#c9b07a"], headgear: "band", beard: true, stage: "elder", item: "dice" },
     charu: { pronoun: "they", palette: ["#a8683c", "#6b4a32", "#c9a066"], item: "hammer", peer: true },
