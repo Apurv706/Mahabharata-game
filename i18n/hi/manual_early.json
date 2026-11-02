@@ -99,5 +99,8 @@
  "You say nothing. You think about it often, afterwards.": "तुम कुछ नहीं {g:कहते|कहतीं}। बाद में तुम अक्सर इसके बारे में {g:सोचते|सोचती} हो।",
  "You live, barely. The scar never fades.": "तुम बच जाते हो, बस किसी तरह। निशान कभी नहीं मिटता।",
  "You find the camp at dusk. You are given water and a place by the fire, and a polite good night. No one asks you to stay.": "साँझ को तुम डेरा ढूँढ लेते हो। तुम्हें पानी मिलता है, आग के पास जगह, और एक शिष्ट शुभरात्रि। कोई तुम्हें रुकने को नहीं कहता।",
- "{who} ties it back on and says nothing, and you sit together until the fire is out.": "{who} उसे फिर बाँध लेता है और कुछ नहीं कहता, और आग बुझने तक तुम दोनों साथ बैठे रहते हो।"
+ "{who} ties it back on and says nothing, and you sit together until the fire is out.": "{who} उसे फिर बाँध लेता है और कुछ नहीं कहता, और आग बुझने तक तुम दोनों साथ बैठे रहते हो।",
+ "Evening at home. Supper, and the last of the light.": "घर पर साँझ। रात का खाना, और ढलती रोशनी।",
+ "Then bed. The lamp burns low.": "फिर बिस्तर। दीया धीमा जलता है।",
+ "And you dream.": "और तुम सपना {g:देखते|देखती} हो।"
 }

@@ -150,6 +150,13 @@ Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct);
       - "for the rest of your life" from 10 to 4.
     - **Aphorism closers replaced** with concrete ones: "Some doors, once shut, stay shut" became "No one asks you to stay"; "…and it is enough" became "you sit together until the fire is out".
     - **Hindi** updated to match.
+45. **Into the dream:**
+    - **A short lead-in before the prologue** (about eight seconds, or a tap):
+      1. The six-year-old eats supper on a leaf plate at home, the evening town seen through an arched doorway.
+      2. Then sleeps on a rope bed by a clay lamp. The lamp burns low and goes out.
+      3. Dream bubbles rise from the sleeper, and the war at Kurukshetra opens out of the last one.
+      Captions in English and Hindi.
+    - **The story sheet reaches the bottom of iPhone screens again:** newer Safari floats its address bar over the page, which left a band of painting under the sheet.
 
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**

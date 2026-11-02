@@ -330,6 +330,12 @@ body.inscene .ledger { position: fixed; z-index: 40; top: calc(max(8px, var(--sa
   body.inscene .leaf { width: calc(100% + max(16px, var(--sal)) + max(16px, var(--sar))); margin: 0 calc(-1 * max(16px, var(--sar))) 0 calc(-1 * max(16px, var(--sal))); border-radius: 18px 18px 0 0; border-bottom: 0; animation: sheet 0.5s cubic-bezier(.2, .7, .2, 1) both; }
   body.inscene .leaf.split { max-height: min(100%, calc(var(--vh) * 0.86)); }
   @keyframes sheet { from { transform: translateY(100%); } }
+  /* Newer iPhone Safari floats its address bar over the page: the screen goes on below the height the
+     app is given (100dvh). The story sheet is carried on to the true bottom edge with a strip of its
+     own colour, so no band of painting shows beneath it. */
+  @supports (height: 100lvh) {
+    body.inscene:has(#leaf.split:not(.testing):not(.fighting):not(.journeying))::after { content: ""; position: fixed; left: 0; right: 0; bottom: 0; z-index: 0; height: max(0px, calc(100lvh - 100dvh)); background: rgba(var(--surface-rgb), 0.94); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); pointer-events: none; }
+  }
   body.inscene .ledger { top: auto; bottom: 0; right: 0; left: 0; width: 100%; max-height: calc(var(--vh) * 0.8); border-radius: 18px 18px 0 0; padding-bottom: max(16px, var(--sab)); }
 }
 /* Phones on their side: the painting on the left, the page on the right, side by side. */
