@@ -166,6 +166,14 @@ Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct);
     - `Art_Brief_Opening.md` asks for two empty rooms (supper and night) to replace the plain wall. Each homeland's house at dusk is optional.
     - **Your age stays six in the dream.** Only the figure is grown, with a sword; the Character panel no longer says 44.
     - **The story sheet reaches the bottom of iPhone screens again:** newer Safari floats its address bar over the page, which left a band of painting under the sheet.
+    - **Later the same day:** supper has a second line on what time with the family is like ("Grandmother's old stories, your father's bad jokes, and always a little more rice for you."); on waking, the mother kneels by the bed with her hand out and sets the lamp down behind her, and the floating sweat drops are gone.
+    - **From the tester's third life:** a journal line is written only once per life (the spy path's appeared twice); word tests say "best of 3", since two right or two wrong settle them early. The automated playthroughs no longer stop at the opening fight.
+
+## Built 2 Nov: the quality review (branch `quality-review`, on the private play page for review; not on the public site until approved)
+Following `Quality_Review_2026-11-02.md` and its "Decided 2 November" section. The backlit-leather look (items 1–3) was rejected there and is not built.
+46. **Staging (items 8–12):** far enemies are solid (no blur or see-through); a soft shadow under every figure in fights and tests; fight figures larger; in tests the figures stand above the line of help; each test gives the right gear (a bow to shoot; empty hands to wrestle, hold steady or creep); a push test with no one named gets an opponent.
+47. **Puppets with weight (items 13–15):** a new `js/ui/puppet-anim.js` drives each joint from a spring, timed by the clock so it moves the same on any screen. Limbs overshoot and settle; a blow has a wind-up, a short freeze on contact, knockback and flakes of leather; the dead fall limp from the feet. With reduced motion the old poses are used.
+48. **Fight moves (items 17–19):** the bow is held upright with a string that draws to the face; an archer's Strike is a quick shot; Aimed shot is drawn and held with a trembling arm; Volley arcs three arrows; Pinning shot leaves the arrow in the ground at the foe's foot while he strains; Guard throws sparks and shows the halved number; Healing herbs kneels in green light. Friends come in from the edge of the stage, speaking. The enemy's next blow waits until your move has played out. On phones the moves are a strip of three across, names only (the description is the card's tooltip).
 
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**
