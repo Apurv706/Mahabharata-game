@@ -5052,6 +5052,7 @@
     "The reserve goes to a quiet sector, and the push lands unanswered.": "सुरक्षित दल एक शांत हिस्से में चला जाता है, और धक्का बिना जवाब के लगता है।",
     "The line broke.": "पंक्ति टूट गई।",
     "The line held to the end at {l}%.": "पंक्ति अंत तक {l}% पर टिकी रही।",
+    "Grandmother's old stories, your father's bad jokes, and always a little more rice for you.": "दादी की पुरानी कहानियाँ, पिता के फीके चुटकुले, और तुम्हारे लिए हमेशा थोड़ा और भात।",
     "your sibling": "तुम्हारा भाई-बहन",
     "Folded small, read many times.": "छोटा-सा तह किया हुआ, बार-बार पढ़ा हुआ।",
     "A thread of dark cord with a copper disc.": "गहरे रंग का एक धागा, उस पर ताँबे की एक टिकिया।",

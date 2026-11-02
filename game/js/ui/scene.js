@@ -198,7 +198,9 @@
     { const leaf = U.$("leaf"); if (leaf) { leaf.className = "leaf"; leaf.innerHTML = ""; } U.setBackdrop(null); }
     if (U.stageFx) U.stageFx.stop();
     const cap = el.querySelector(".si-cap");
-    const say = (i) => { cap.classList.remove("in"); void cap.offsetWidth; cap.textContent = K.text(lines[i]); cap.classList.add("in"); };
+    // Supper gets a second line, smaller: what time with the family is like.
+    const sub = { 1: "Grandmother's old stories, your father's bad jokes, and always a little more rice for you." };
+    const say = (i) => { cap.classList.remove("in"); void cap.offsetWidth; cap.innerHTML = U.esc(K.text(lines[i])) + (sub[i] ? "<small>" + U.esc(K.tr(sub[i])) + "</small>" : ""); cap.classList.add("in"); };
     const timers = [];
     let gone = false;
     const at = (ms, f) => timers.push(setTimeout(() => { if (!gone) f(); }, still ? ms * 0.5 : ms));
@@ -216,11 +218,11 @@
     });
     at(4900, () => el.classList.add("entered"));
     at(5600, () => { el.classList.add("inside"); say(1); });
-    at(8200, () => { el.classList.add("night"); say(2); });
-    at(10000, () => el.classList.add("dark"));
-    at(10600, () => { el.classList.add("dream"); say(3); });
-    at(11600, () => el.classList.add("open"));
-    at(13200, end);
+    at(9200, () => { el.classList.add("night"); say(2); });
+    at(11000, () => el.classList.add("dark"));
+    at(11600, () => { el.classList.add("dream"); say(3); });
+    at(12600, () => el.classList.add("open"));
+    at(14200, end);
   };
 
   // ---------- Waking from the dream, at home ----------
