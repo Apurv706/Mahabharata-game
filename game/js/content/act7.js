@@ -229,9 +229,9 @@
       else if (lost >= 1 || weakBonds >= 4) { title = "Broken survivor"; art = "end_broken"; caption = "An empty house at evening"; }
       else { title = "The wanderer"; art = "end_river"; caption = "By the river, after everything"; }
     }
-    // War storylines (PRD 18.13 #1, war_crossing.js): one who crossed the field at Yuyutsu's call and fell,
-    // between the lines on the second morning or later in the war with no death of its own.
-    if (!S.alive && S.flags.includes("crossed_lines") && (S.flags.includes("lost_crossing_duel") || title === "Fallen at Kurukshetra" || title === "Glorious death")) {
+    // War storylines (PRD 18.13 #1, war_crossing.js): one who crossed the field at Yuyutsu's call and fell
+    // between the lines on the second morning, to the man the old side sent.
+    if (!S.alive && S.flags.includes("lost_crossing_duel")) {
       title = "The one who crossed"; art = "end_crossed"; caption = "The ground between the lines";
     }
     const coda = {
