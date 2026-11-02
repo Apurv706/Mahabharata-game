@@ -123,11 +123,7 @@
   };
   U.castStance = function (host, mine, theirs) {
     if (!host) return;
-<<<<<<< HEAD
-    const set = (sel, pose) => host.querySelectorAll(sel).forEach((el) => { if (/\bpose-live\b/.test(el.getAttribute("class"))) return; el.dataset.base = pose; el.setAttribute("class", el.getAttribute("class").replace(/pose-\S+/, "pose-" + pose)); });
-=======
-    const set = (sel, pose) => host.querySelectorAll(sel).forEach((el) => { el.dataset.base = calmFor(el, pose); el.setAttribute("class", el.getAttribute("class").replace(/pose-\S+/, "pose-" + el.dataset.base)); });
->>>>>>> main
+    const set = (sel, pose) => host.querySelectorAll(sel).forEach((el) => { if (/\bpose-live\b/.test(el.getAttribute("class"))) return; el.dataset.base = calmFor(el, pose); el.setAttribute("class", el.getAttribute("class").replace(/pose-\S+/, "pose-" + el.dataset.base)); });
     if (mine) set(".cast .actor.me .pp", mine);
     if (theirs) set(".cast .actor.foe .pp", theirs);
   };
