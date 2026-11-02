@@ -73,19 +73,21 @@
   };
   // Set a pose for a while, then return to the stance for this test.
   const timers = new WeakMap();
+  // A teacher or an elder does not cheer at your mistakes: they watch, thinking.
+  const calmFor = (el, pose) => (pose === "cheer" && el.closest(".actor.elder") ? "think" : pose);
   U.castPose = function (host, who, pose, ms) {
     if (!host) return;
     const els = who === "me" ? host.querySelectorAll(".cast .actor.me .pp") : who === "all" ? host.querySelectorAll(".cast .pp") : host.querySelectorAll(".cast .actor.foe .pp");
     els.forEach((el) => {
       if (!el.dataset.base) el.dataset.base = (el.getAttribute("class").match(/pose-(\S+)/) || [])[1] || "stand";
-      el.setAttribute("class", el.getAttribute("class").replace(/pose-\S+/, "pose-" + pose));
+      el.setAttribute("class", el.getAttribute("class").replace(/pose-\S+/, "pose-" + calmFor(el, pose)));
       clearTimeout(timers.get(el));
       if (ms) timers.set(el, setTimeout(() => { if (el.isConnected) el.setAttribute("class", el.getAttribute("class").replace(/pose-\S+/, "pose-" + el.dataset.base)); }, ms));
     });
   };
   U.castStance = function (host, mine, theirs) {
     if (!host) return;
-    const set = (sel, pose) => host.querySelectorAll(sel).forEach((el) => { el.dataset.base = pose; el.setAttribute("class", el.getAttribute("class").replace(/pose-\S+/, "pose-" + pose)); });
+    const set = (sel, pose) => host.querySelectorAll(sel).forEach((el) => { el.dataset.base = calmFor(el, pose); el.setAttribute("class", el.getAttribute("class").replace(/pose-\S+/, "pose-" + el.dataset.base)); });
     if (mine) set(".cast .actor.me .pp", mine);
     if (theirs) set(".cast .actor.foe .pp", theirs);
   };

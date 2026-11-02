@@ -236,7 +236,7 @@
   function defend(B, u, th, done) {
     const g = K.attr("grace");
     const T = 1.1 * th.speed, END = T * 1.32;
-    const W = { perfect: 0.05 + g * 0.003, move: 0.13 + g * 0.008, block: 0.14 + g * 0.008 };
+    const W = { perfect: 0.065 + g * 0.004, move: 0.17 + g * 0.009, block: 0.2 + g * 0.01 }; // in seconds either side of the mark: a touch wider (2 Nov), a phone tap lands late
     const who = K.text(u.src || u.name), shape = shapeFor(th.id), S2 = SHAPES[shape];
     const what = th.id === "arrows" && S2.arrow ? S2.arrow : S2.line;
     const el = U.el('<div class="qte" role="group" aria-label="' + U.esc(K.tr("Meet the blow")) + '"><p class="qte-who"><b>' + U.esc(who) + "</b> · " + U.esc(K.tr(what)) + "</p>" +
