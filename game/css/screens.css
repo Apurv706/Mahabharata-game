@@ -765,6 +765,7 @@ body.inscene .jmap .bmap { max-height: min(520px, max(180px, calc(var(--vh) - 34
 .arena .actor { position: relative; display: block; }
 .arena .actor svg { height: 160px; width: auto; overflow: visible; filter: drop-shadow(0 0 6px rgba(255, 200, 120, .35)) drop-shadow(0 4px 3px rgba(0, 0, 0, .55)); }
 .arena .actor.ally svg { height: 136px; opacity: .92; }
+.arena .actor.ally.champ svg { height: 160px; opacity: 1; }
 .arena .actor.enemy + .actor.enemy svg { height: 146px; }
 .arena .actor.down svg { opacity: .55; filter: grayscale(.6) drop-shadow(0 4px 3px rgba(0, 0, 0, .55)); }
 .arena .actor.lunge-r { animation: lunge-r .52s cubic-bezier(.3, .7, .3, 1); }
@@ -1331,6 +1332,7 @@ body.intest .leaf.fighting.immersive > .pagehead { display: flex !important; gri
 .leaf.fighting.immersive > .arena { --ah: clamp(140px, min(31vh, 53vw), 310px); }
 .leaf.fighting.immersive > .arena .actor svg { height: var(--ah); filter: drop-shadow(0 0 10px rgba(255, 196, 110, 0.45)) drop-shadow(0 6px 6px rgba(0, 0, 0, 0.6)); }
 .leaf.fighting.immersive > .arena .actor.ally svg { height: calc(var(--ah) * 0.82); }
+.leaf.fighting.immersive > .arena .actor.ally.champ svg { height: var(--ah); opacity: 1; }
 /* A soft shadow on the ground under each fighter. */
 .leaf.fighting.immersive > .arena .actor::before { content: ""; position: absolute; left: 12%; right: 12%; bottom: -6px; height: 14px; border-radius: 50%; background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0) 70%); pointer-events: none; }
 .leaf.fighting.immersive > .arena .actor.enemy + .actor.enemy svg { height: calc(var(--ah) * 0.89); }
