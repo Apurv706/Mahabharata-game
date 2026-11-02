@@ -35,12 +35,14 @@
   K.puppetSpec = function (S = K.S) {
     if (!S) return null;
     const inj = S.injuries || [];
+    // In the prologue's dream of the war you see yourself grown, with a sword; your age stays six.
+    const dreaming = !!(K.SCENES && S.scene && K.SCENES[S.scene] && K.SCENES[S.scene].prologue);
     return {
-      stage: K.puppetStage(S.age || 6), pronoun: S.pronoun || "they", palette: PALETTE[S.origin] || PALETTE.none,
+      stage: dreaming ? "adult" : K.puppetStage(S.age || 6), pronoun: S.pronoun || "they", palette: PALETTE[S.origin] || PALETTE.none,
       headgear: HEADGEAR[S.origin] || null, temper: K.TEMPERAMENTS && K.TEMPERAMENTS[S.temperament] ? S.temperament : null,
       heir: S.heirloom && !(S.flags || []).includes("heirloom_lost") ? S.heirloom : null,
       cracked: (S.flags || []).includes("amulet_broken"),
-      item: S.path ? ITEM[S.path] : (S.age || 0) >= 18 ? "sword" : null, // grown without a path yet: the prologue's dream of the war
+      item: S.path ? ITEM[S.path] : dreaming ? "sword" : null,
       eye: inj.includes("eye"), sling: inj.includes("arm"), limp: inj.includes("leg"), scar: inj.includes("scar"),
       glow: (S.boons || []).includes("astra") || (S.astras || []).length > 0, // a faint light about one who carries a divine weapon
       chained: (S.flags || []).includes("imprisoned"), cuffed: (S.flags || []).includes("was_imprisoned") && !(S.flags || []).includes("imprisoned"), dead: S.alive === false

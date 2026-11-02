@@ -147,29 +147,27 @@
   // ---------- Falling asleep into the dream ----------
   // Before the prologue: the six-year-old at home in the evening, eating; then asleep on a rope bed as
   // the lamp burns down; then a dream bubble rises from the sleeper and opens onto the war. About eight
-  // seconds, or a tap. Drawn over the home painting: the child, a leaf plate, a charpai, the clay lamp.
+  // seconds, or a tap. A plain room: the child, a leaf plate, a charpai, the clay lamp.
   let sleepFor = null;
   const PLATE = '<svg class="si-plate" viewBox="0 0 120 40" aria-hidden="true"><ellipse cx="60" cy="26" rx="56" ry="12" fill="#3f7a3a" stroke="#24120a" stroke-width="1.5"/><path d="M8 26 Q60 18 112 26" stroke="#2c5a2a" stroke-width="1.2" fill="none"/>' +
     '<ellipse cx="54" cy="22" rx="18" ry="7" fill="#f1ead8" stroke="#8a7a5a" stroke-width="0.8"/><circle cx="80" cy="22" r="7" fill="#c9862f" stroke="#6b3a14" stroke-width="0.8"/><circle cx="32" cy="24" r="5" fill="#8a3a1c"/></svg>';
   const BED = '<svg class="si-bed" viewBox="0 0 240 70" aria-hidden="true"><g stroke="#24120a" stroke-width="1.6"><rect x="12" y="20" width="216" height="12" rx="3" fill="#7a4a24"/><path d="M22 32 V62 M218 32 V62 M120 32 V58" stroke="#5a3418" stroke-width="7" stroke-linecap="round"/></g>' +
     '<path d="M24 22 L60 30 M60 22 L96 30 M96 22 L132 30 M132 22 L168 30 M168 22 L204 30 M24 30 L60 22 M60 30 L96 22 M96 30 L132 22 M132 30 L168 22 M168 30 L204 22" stroke="#d9c79a" stroke-width="1.1" opacity="0.8"/>' +
     '<path d="M18 20 Q14 10 30 10 L64 10 Q72 12 70 20 Z" fill="#e8dcc0" stroke="#24120a" stroke-width="1.2"/></svg>';
-  // Inside the house: a mud-plastered wall and floor, the evening town seen through an arched doorway.
+  // Inside the house: a mud-plastered wall and floor, and nothing else; the figures carry the scene.
   const WALL = '<svg class="si-wall" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs>' +
     '<linearGradient id="si-wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2416"/><stop offset="0.7" stop-color="#4a2f1c"/><stop offset="0.72" stop-color="#5b3a22"/><stop offset="1" stop-color="#3b2414"/></linearGradient></defs>' +
-    '<path fill="url(#si-wg)" fill-rule="evenodd" d="M0 0H100V100H0Z M26 70 V42 Q26 24 50 24 Q74 24 74 42 V70 Z"/>' +
-    '<path d="M26 70 V42 Q26 24 50 24 Q74 24 74 42 V70" fill="none" stroke="#7a5230" stroke-width="1.6" vector-effect="non-scaling-stroke"/>' +
+    '<path fill="url(#si-wg)" d="M0 0H100V100H0Z"/>' +
     '<path d="M0 72 H100" stroke="#6b4527" stroke-width="1" vector-effect="non-scaling-stroke"/></svg><div class="si-glow"></div>';
   U.sleepIntro = function (done) {
     if (K.headless || /jsdom/i.test(navigator.userAgent || "")) return done();
     U.beatStop();
     const S = K.S;
     const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const home = S.origin === "suta" ? "home_anga" : "home_" + S.origin;
     const kid = Object.assign({}, K.puppetSpec(S), { stage: "child", item: null, dead: false });
     const lines = ["Evening at home. Supper, and the last of the light.", "Then bed. The lamp burns low.", ["And you dream.", null]];
     const el = U.el('<div class="sleepin" role="presentation">' +
-      '<div class="si-bg" style="--img:url(\'' + U.bgUrl(home) + '\')"></div><div class="si-night"></div>' + WALL +
+      WALL + '<div class="si-night"></div>' +
       '<div class="si-room"><div class="si-eat">' + U.puppet(kid, { h: 190, pose: "kneel", cls: "si-kid" }) + PLATE + "</div>" +
       '<div class="si-sleep">' + BED + '<span class="si-sleeper">' + U.puppet(kid, { h: 120, pose: "dead" }) + "</span></div>" +
       '<span class="si-lamp"><img src="art/diya.png" alt=""><img class="flame" src="art/diya_flame.png" alt=""></span>' +

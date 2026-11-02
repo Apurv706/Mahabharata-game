@@ -133,10 +133,11 @@
 
   K.scenes([
     // ---------- The prologue: a dream of the war ----------
-    // Before the childhood, two minutes at Kurukshetra: you, grown, in the dust of the thirteenth day,
+    // Before the childhood, two minutes at Kurukshetra: you, grown, in the dust of the thirteenth day
+    // (your age stays six: it is a six-year-old's dream; only the figure is grown, ui/puppet.js),
     // and one fight that breaks off mid-blow. Then you wake, six years old. Not on your record.
     {
-      id: "a0_dream", act: 1, age: 44, prologue: true, away: true, sleepIntro: true, actTitle: "A dream of Kurukshetra", place: "Kurukshetra, the thirteenth day",
+      id: "a0_dream", act: 1, age: 6, prologue: true, away: true, sleepIntro: true, actTitle: "A dream of Kurukshetra", place: "Kurukshetra, the thirteenth day",
       art: "war_day14", caption: "Kurukshetra, the thirteenth day", title: "The field",
       // Who is fighting, and over what, so a newcomer knows where the story is going; which side you
       // are on is left open, because your life decides it.

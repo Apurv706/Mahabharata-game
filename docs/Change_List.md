@@ -152,10 +152,11 @@ Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct);
     - **Hindi** updated to match.
 45. **Into the dream:**
     - **A short lead-in before the prologue** (about eight seconds, or a tap):
-      1. The six-year-old eats supper on a leaf plate at home, the evening town seen through an arched doorway.
+      1. The six-year-old eats supper on a leaf plate in a plain room at home (no painting behind).
       2. Then sleeps on a rope bed by a clay lamp. The lamp burns low and goes out.
       3. Dream bubbles rise from the sleeper, and the war at Kurukshetra opens out of the last one.
       Captions in English and Hindi.
+    - **Your age stays six in the dream.** Only the figure is grown, with a sword; the Character panel no longer says 44.
     - **The story sheet reaches the bottom of iPhone screens again:** newer Safari floats its address bar over the page, which left a band of painting under the sheet.
 
 ## Art
