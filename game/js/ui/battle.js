@@ -60,7 +60,7 @@
   // Each kind of enemy has its own outline, and strength shows in the shape: a stooped bandit with a
   // club, a guard in a turban, a soldier behind a shield, an archer's feathered cap, a crested horseman,
   // and a champion in gold scale armour, the biggest of the unnamed. Crowns are kept for the named.
-  const NAMED = [[/Ugra/, "ugra"], [/Dushasana's/, "guard"], [/Dushasana/, "dushasana"], [/Karna/, "karna"], [/Bhima/, "bhima"], [/Brihannala/, "arjuna"], [/Ketan|boy/i, "boy"], [/Drona/, "drona"]];
+  const NAMED = [[/Ugra/, "ugra"], [/Dushasana's/, "guard"], [/Dushasana/, "dushasana"], [/Karna/, "karna"], [/Bhima/, "bhima"], [/Brihannala/, "arjuna"], [/Ketan|boy/i, "boy"], [/Drona/, "drona"], [/^Satyaki$/, "satyaki"]];
   const SPECIAL = {
     Ashwatthama: { pronoun: "he", palette: ["#c9905a", "#3a2a3a", "#c9a24e"], headgear: "crown", crown: { gem: "#8a5aa0", tall: 0.95, trim: "#3a2a3a" }, gear: ["browgem"], item: "bow", stance: "hero", stage: "adult", big: true, size: 1.18 },
     Gandharva: { pronoun: "he", palette: ["#9fb07a", "#2f5a3a", "#d9c27a"], headgear: "feather", item: "spear", stage: "adult" },
@@ -106,7 +106,8 @@
   U.FIGHT_BG = FIGHT_BG;
   function arenaHtml(B) {
     const stage = K.val(B.enc.stage) || K.val(B.enc.art);
-    const actor = (u) => '<span class="actor ' + u.side + (u.hp <= 0 ? " down" : "") + (u.side === "enemy" && u.hp > 0 ? " far" : "") + '" data-uid="' + u.uid + '">' +
+    // A champion at your side (Satyaki) stands at full height, not shrunk like the other allies.
+    const actor = (u) => '<span class="actor ' + u.side + (u.side === "ally" && (specFor(u).size || 0) >= 1.2 ? " champ" : "") + (u.hp <= 0 ? " down" : "") + (u.side === "enemy" && u.hp > 0 ? " far" : "") + '" data-uid="' + u.uid + '">' +
       U.puppet(specFor(u), { h: 150, flip: u.side === "enemy", pose: u.hp <= 0 ? "dead" : liveFigures() ? "live" : u.side === "player" ? "brace" : "stand", label: u.side === "player" ? K.tr("You") : null }) + '<span class="pops"></span></span>';
     const friends = B.units.filter((u) => u.side !== "enemy"), foes = B.units.filter((u) => u.side === "enemy");
     return '<div class="arena" id="arena" style="--stage:url(\'' + U.artUrl(stage) + '\')" aria-hidden="true"><div class="team left">' + friends.map(actor).join("") +
