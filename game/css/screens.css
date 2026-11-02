@@ -1097,7 +1097,8 @@ body.intest .leaf .text { background: none !important; }
 @keyframes aim-pop { from { r: 6; opacity: 1; } to { r: 26; opacity: 0; } }
 .aimsvg .tgt-mark { fill: rgba(255, 214, 128, 0.35); stroke: #ffd680; stroke-width: 2; filter: drop-shadow(0 0 4px rgba(255, 214, 128, 0.9)); }
 .aimsvg .shaft { stroke: #efe0bc; stroke-width: 3; }
-.aimsvg .fletch { fill: #b2432a; }
+.aimsvg .cane, .aimsvg .held { filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5)); }
+.aimsvg .bits path { stroke-width: 2; stroke-linecap: round; } /* straw shed by a hit */
 .range.painted.hit .aimpt { stroke: var(--positive); } .range.painted.miss .aimpt { stroke: var(--negative); }
 /* Archery: you stand in the lower left third, facing the target up and to the right; the teacher
    watches from the left edge, smaller and further back; another student from the right, smaller.
@@ -1120,6 +1121,9 @@ body.intest .leaf .text { background: none !important; }
 .trial-aim .actor.me .pp.pose-loose .armB { transform: rotate(calc(-70deg - var(--aim, 30deg) * 0.6)); }
 .trial-aim .actor.me .pp.pose-aim .head, .trial-aim .actor.me .pp.pose-loose .head { transform: rotate(calc(var(--aim, 30deg) * -0.35)); }
 .trial-aim .actor.me .pp.pose-aim .pp-body, .trial-aim .actor.me .pp.pose-loose .pp-body { transform: rotate(calc(var(--aim, 30deg) * -0.08)); }
+/* Without motion (no live rig) the bow still stands square to the shot, not flat along the arm. */
+.trial-aim .actor.me .pp.pose-aim .it:not(.it-w), .trial-aim .actor.me .pp.pose-loose .it:not(.it-w) { transform-box: view-box; transform-origin: 60.5px 126px; transform: rotate(calc(90deg + var(--aim, 30deg) * 0.08)); }
+.trial-draw .actor.me .pp.pose-aim .it:not(.it-w), .trial-draw .actor.me .pp.pose-loose .it:not(.it-w) { transform-box: view-box; transform-origin: 60.5px 126px; transform: rotate(91deg); }
 /* Wrestling on the painting: the two close in the middle; the ring closes on the sand at their feet;
    good pushes drive the other back. */
 .trial.immersive.trial-push > .cast { justify-content: center; gap: 0; }

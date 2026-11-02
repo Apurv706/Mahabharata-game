@@ -71,7 +71,7 @@
     const info = U.stageInfo(t.stage);
     const spec = Object.assign({}, K.puppetSpec(K.S));
     if (t.item !== undefined) spec.item = t.item;
-    else if (kind && kind in GEAR) spec.item = GEAR[kind];
+    else if (kind && kind in GEAR) spec.item = kind === "aim" && t.verb === "Throw" ? null : GEAR[kind]; // a stone or a rope is thrown with empty hands
     const me = U.puppet(spec, { h: 150, label: K.tr("You"), cls: "actor-me" });
     let cast = K.val(t.cast) || [];
     if (!cast.length && FOE_FOR[kind]) cast = FOE_FOR[kind];
@@ -87,6 +87,7 @@
     if (!host) return;
     const els = who === "me" ? host.querySelectorAll(".cast .actor.me .pp") : who === "all" ? host.querySelectorAll(".cast .pp") : host.querySelectorAll(".cast .actor.foe .pp");
     els.forEach((el) => {
+      if (/\bpose-live\b/.test(el.getAttribute("class"))) return; // a live figure is moved by its rig (puppet-anim.js)
       if (!el.dataset.base) el.dataset.base = (el.getAttribute("class").match(/pose-(\S+)/) || [])[1] || "stand";
       el.setAttribute("class", el.getAttribute("class").replace(/pose-\S+/, "pose-" + pose));
       clearTimeout(timers.get(el));
@@ -95,7 +96,7 @@
   };
   U.castStance = function (host, mine, theirs) {
     if (!host) return;
-    const set = (sel, pose) => host.querySelectorAll(sel).forEach((el) => { el.dataset.base = pose; el.setAttribute("class", el.getAttribute("class").replace(/pose-\S+/, "pose-" + pose)); });
+    const set = (sel, pose) => host.querySelectorAll(sel).forEach((el) => { if (/\bpose-live\b/.test(el.getAttribute("class"))) return; el.dataset.base = pose; el.setAttribute("class", el.getAttribute("class").replace(/pose-\S+/, "pose-" + pose)); });
     if (mine) set(".cast .actor.me .pp", mine);
     if (theirs) set(".cast .actor.foe .pp", theirs);
   };

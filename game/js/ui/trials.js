@@ -156,10 +156,37 @@
   // Shared with the other kinds of test (ui/play.js, ui/boards.js).
   U.trialFrame = frame; U.pressButton = pressButton; U.loop = loop;
 
+  // ---------- Archers with weight (js/ui/puppet-anim.js) ----------
+  // On the painting your figure is a live rig: the bow upright in the fist, the string drawn back to
+  // the face with an arrow on it, snapping back on release. A teacher watching stands calm and nods.
+  // With reduced motion U.rig gives null and the figures keep their CSS poses, as before.
+  const CALM = { armF: -20, foreF: -40, armB: -10, foreB: -20 };
+  const LOOSE = { rot: 1, armF: -84, foreF: -6, armB: -60, foreB: -10, legF: -14, legB: 14, shinB: 6 };
+  const hold = (r, p, k, z) => { for (const key in r.t) if (key !== "dx") r.t[key] = p[key] || 0; if (k) r.k = k; if (z != null) r.z = z; };
+  const nod = (rigs) => rigs.forEach((r) => r.kick({ head: 160 }));
+  function liveCast(host) {
+    const wrapEl = host.closest(".trial.immersive"), a = wrapEl && wrapEl.querySelector(".cast .actor.me");
+    if (!a) return { me: null, elders: [] };
+    const elders = [...wrapEl.querySelectorAll(".cast .actor.foe.elder")].map((e) => U.rig(e.querySelector("svg"), e, "stand")).filter(Boolean);
+    elders.forEach((r) => hold(r, CALM, 300, 0.6));
+    return { me: U.rig(a.querySelector("svg"), a, "aim"), elders };
+  }
+  // The verdict: you cheer or slump (a live figure is not posed by the frame), and the teacher nods at a win.
+  const ending = (live, finish) => (out, sum) => {
+    if (live.me) { live.me.set(out === "win" ? "cheer" : "slump", 360, 0.45); if (out === "win") live.me.kick({ ty: -160 }); }
+    if (out === "win") nod(live.elders);
+    finish(out, sum);
+  };
+  // A cane arrow pointing along +x, its head at 0 and its feathers len behind.
+  const CANE = (len) => '<path d="M0 0 L' + (-len).toFixed(1) + ' 0" stroke="#24120a" stroke-width="4.4" stroke-linecap="round"/><path d="M0 0 L' + (-len).toFixed(1) + ' 0" stroke="#e6c98c" stroke-width="2.6" stroke-linecap="round"/><path d="M' + (-len).toFixed(1) + ' 0 l-8 -5 l3 5 l-3 5 Z M' + (-len + 6).toFixed(1) + ' 0 l-8 -5 l3 5 l-3 5 Z" fill="#c8402c" stroke="#24120a" stroke-width=".8"/><path d="M0 -3.4 L8 0 L0 3.4 Z" fill="#dcd7c8" stroke="#24120a" stroke-width=".8"/>';
+  // What a struck target sheds: sparks from a lamp or a bell, chips of a wooden bird, bits of leaf or
+  // fruit; the straw target sheds straw (drawn below); an animal nothing.
+  const SHED = { lamp: ["spark", null, true], bell: ["spark"], bird: ["chip"], leaf: ["flake", "#6f8f3a"], fruit: ["flake", "#f0a030"] };
+
   // ---------- Aim: a target swings; release when it crosses your line ----------
   // trial.shots (3), trial.need (2): hits needed to win; one fewer is "close".
   U.games.aim = function (box, done, c) {
-    return frame(box, done, c, "aim", ({ host, power, t, finish, onAct, cue }) => {
+    return frame(box, done, c, "aim", ({ host, power, t, finish: fin, onAct, cue }) => {
       const shots = t.shots || 3, need = t.need || 2;
       const win = clamp(0.085 + power * 0.012 + (t.easy || 0), 0.08, t.practice ? 0.3 : 0.2) * (t.small ? 0.75 : 1); // half-width of the hit zone, as a share of the swing
       let shot = 0, hits = 0, speed = t.speed || 1.6, phase = 0, x = 0, busy = false;
@@ -175,9 +202,9 @@
       let P = null;
       if (painted) {
         range.classList.add("painted");
-        range.insertAdjacentHTML("beforeend", '<svg class="aimsvg" aria-hidden="true"><line class="rope"/><line class="path"/><circle class="aimpt" r="5"/><g class="tgt"><g class="tgt-art">' + AIM_ART(t.icon) + '</g><circle class="tgt-mark" r="4"/></g><g class="stuck"></g><g class="flying"><line class="shaft"/><path class="fletch"/></g></svg>');
+        range.insertAdjacentHTML("beforeend", '<svg class="aimsvg" aria-hidden="true"><line class="rope"/><line class="path"/><circle class="aimpt" r="5"/><g class="tgt"><g class="tgt-art">' + AIM_ART(t.icon) + '</g><g class="held"></g><circle class="tgt-mark" r="4"/></g><g class="stuck"></g><g class="flying"><line class="shaft"/><g class="cane"></g></g><g class="bits"></g></svg>');
         const q = (sel) => range.querySelector(sel);
-        P = { rope: q(".rope"), path: q(".path"), pt: q(".aimpt"), tgt: q(".tgt"), art: q(".tgt-art"), mark: q(".tgt-mark"), stuck: q(".stuck"), fly: q(".flying"), shaft: q(".shaft"), fletch: q(".fletch"), W: 0, H: 0, L: 0, tx: 0, ty: 0, th: 0.6, cx: 0, sw: 0, win };
+        P = { rope: q(".rope"), path: q(".path"), pt: q(".aimpt"), tgt: q(".tgt"), art: q(".tgt-art"), mark: q(".tgt-mark"), stuck: q(".stuck"), held: q(".held"), fly: q(".flying"), shaft: q(".shaft"), cane: q(".cane"), bits: q(".bits"), W: 0, H: 0, L: 0, tx: 0, ty: 0, th: 0.6, cx: 0, sw: 0, win };
       }
       // You stand in the lower left, facing right; the target hangs up and to the right of you. The
       // aim runs from your bow hand to the target, and your bow arm turns about the shoulder to follow.
@@ -191,6 +218,32 @@
         return { x: r.left - rr.left + (58 - vb.x) * k, y: r.top - rr.top + (73 - vb.y) * k, k };
       };
       const handAt = (sh, th) => ({ x: sh.x + ARM * sh.k * Math.cos(th), y: sh.y - ARM * sh.k * Math.sin(th) });
+      // Your figure, live: the bow square to the line of the shot at full draw, an arrow on the string;
+      // a stone is held cocked behind the head. a: the aim, in degrees above level.
+      const live = painted ? liveCast(host) : { me: null, elders: [] }, rig = live.me, throwing = t.verb === "Throw", end = ending(live, fin);
+      const aimPose = (a) => throwing ? { rot: -a * 0.08, head: -a * 0.35, armF: -90 - a, foreF: 0, armB: 140, foreB: 40, legF: -14, legB: 14, shinB: 6 }
+        : { rot: -a * 0.08, head: -a * 0.35, armF: -90 - a, foreF: 0, armB: -92 - a, foreB: 150, legF: -14, legB: 14, shinB: 6, draw: 1, tilt: -a };
+      const QUIVER = throwing ? { rot: 4, head: 10, armF: -60, foreF: -10, armB: 20, foreB: -50, legF: -14, legB: 14, shinB: 6 } // a hand to the pouch of stones
+        : { rot: -2, head: 8, armF: -60, foreF: -10, armB: -168, foreB: -30, legF: -14, legB: 14, shinB: 6 }; // a hand over the shoulder to the quiver
+      // A hit stays in the target where it struck, at the angle it came in, and swings with it; the
+      // target jolts and sheds a little of what it is made of, and the teacher nods.
+      const stick = (x, y, dirA, k) => {
+        const a = (P.da || 0) * Math.PI / 180, dx = x - P.tx, dy = y - P.ty; // into the target's own frame (it is drawn turned by -da)
+        const lx = dx * Math.cos(a) - dy * Math.sin(a), ly = dx * Math.sin(a) + dy * Math.cos(a);
+        P.held.insertAdjacentHTML("beforeend", '<g data-d="' + (P.dir || 1) + '"><g transform="translate(' + lx.toFixed(1) + " " + ly.toFixed(1) + ") rotate(" + (dirA * 180 / Math.PI + (P.da || 0)).toFixed(1) + ')">' + CANE(28 * k) + "</g></g>");
+        P.jolt = U.motion() ? 14 * (Math.cos(dirA) >= 0 ? 1 : -1) : 0; P.j0 = null; P.heldDir = null;
+        nod(live.elders);
+        if (!U.motion() || RUNNERS.has(t.icon)) return;
+        const sh = SHED[t.icon];
+        if (sh) return U.flingBits(range, sh[0], { x, y }, 8, 14, sh[1], sh[2]);
+        for (let i = 0; i < 10; i++) { // straw
+          const b = document.createElementNS("http://www.w3.org/2000/svg", "path"), an = Math.random() * 6.28, l = 6 + Math.random() * 8;
+          b.setAttribute("d", "M0 0 L" + (Math.cos(an) * l).toFixed(1) + " " + (Math.sin(an) * l).toFixed(1)); b.setAttribute("stroke", i % 2 ? "#d9b26a" : "#a87a3a");
+          P.bits.appendChild(b);
+          const ex = x + (Math.random() - 0.3) * 70, ey = y + 20 + Math.random() * 60;
+          b.animate([{ transform: "translate(" + x + "px," + y + "px) rotate(0deg)", opacity: 1 }, { transform: "translate(" + ex + "px," + ey + "px) rotate(" + (Math.random() * 400 - 200) + "deg)", opacity: 0 }], { duration: 700 + Math.random() * 400, easing: "cubic-bezier(.2,.6,.4,1)" }).onfinish = () => b.remove();
+        }
+      };
       // The shot flies in a low arc from your hand to the target's height, crossing it exactly where
       // the hit is judged (aimOff, as a share of the swing): a hit sticks there, in the target; a miss
       // goes on past it, along the same line, out of the picture. (The target holds still meanwhile.)
@@ -204,16 +257,15 @@
         const t0 = performance.now(), dur = U.motion() ? 300 : 1, on = U.motion() ? 260 : 0, v = dist / Math.max(1, dur);
         P.fly.style.opacity = "1";
         // A thrown stone is a stone, not an arrow; a hit knocks the fruit down.
-        const stone = t.verb === "Throw";
+        const stone = t.verb === "Throw", ks = sh ? sh.k : 1;
         P.fly.classList.toggle("stone", stone);
+        P.cane.innerHTML = "";
         let dir = [xB - h0.x, yB - h0.y], end = null;
         const draw = (p, f) => {
-          if (stone) { P.shaft.setAttribute("x1", p.x); P.shaft.setAttribute("y1", p.y); P.shaft.setAttribute("x2", p.x + 0.01); P.shaft.setAttribute("y2", p.y); P.fletch.setAttribute("d", ""); return; }
-          // The arrow shrinks as it flies away from you.
-          const len = 46 - 24 * Math.min(1, f), tx = p.x - dir[0] * len, ty = p.y - dir[1] * len;
-          P.shaft.setAttribute("x1", p.x); P.shaft.setAttribute("y1", p.y); P.shaft.setAttribute("x2", tx); P.shaft.setAttribute("y2", ty);
-          const nx = -dir[1] * 5, ny = dir[0] * 5;
-          P.fletch.setAttribute("d", "M" + (tx + nx) + " " + (ty + ny) + "L" + (tx + dir[0] * 8) + " " + (ty + dir[1] * 8) + "L" + (tx - nx) + " " + (ty - ny) + "z");
+          if (stone) { P.shaft.setAttribute("x1", p.x); P.shaft.setAttribute("y1", p.y); P.shaft.setAttribute("x2", p.x + 0.01); P.shaft.setAttribute("y2", p.y); return; }
+          // A cane arrow you can follow; it shrinks as it flies away from you.
+          P.cane.innerHTML = CANE(44 * ks * (1 - 0.35 * Math.min(1, f)));
+          P.cane.setAttribute("transform", "translate(" + p.x.toFixed(1) + " " + p.y.toFixed(1) + ") rotate(" + (Math.atan2(dir[1], dir[0]) * 180 / Math.PI).toFixed(1) + ")");
         };
         const step = () => {
           const ms = performance.now() - t0, f = Math.min(1, ms / dur);
@@ -233,9 +285,7 @@
             }
             if (hit) {
               P.fly.style.opacity = "0";
-              // Stuck where it struck, at the angle it came in.
-              const rot = Math.atan2(dir[0], -dir[1]) * 180 / Math.PI;
-              P.stuck.innerHTML = '<g transform="translate(' + xB.toFixed(1) + " " + yB.toFixed(1) + ") rotate(" + rot.toFixed(1) + ')"><line x1="0" y1="2" x2="0" y2="30" stroke="#efe0bc" stroke-width="3"/><path d="M-5 30l5 -8l5 8z" fill="#b2432a"/></g>';
+              stick(xB, yB, Math.atan2(dir[1], dir[0]), ks);
               return;
             }
           }
@@ -261,6 +311,11 @@
         const hit = Math.abs(off) <= wz;
         if (hit) hits++;
         shoot(hit, wob + err);
+        // The string snaps back and the bow arm kicks; a thrown stone: the arm whips through.
+        if (rig) {
+          if (throwing) { hold(rig, { rot: 10, head: -6, armF: -40, foreF: -20, armB: -90 - P.th * 57.3, foreB: -10, legF: -24, shinF: 10, legB: 20, shinB: 6 }, 520, 0.5); rig.kick({ armB: -400, rot: 30 }); }
+          else { rig.t.draw = 0; rig.kick({ rot: -40, armB: -260, armF: 60, head: -40 }); }
+        }
         if (!hit && Math.abs(x + (P ? P.xo || 0 : 0) - wob) <= wz) note.dataset.gust = "1"; else delete note.dataset.gust;
         cue("act"); setTimeout(() => cue(hit ? "good" : "bad"), 260);
         range.classList.remove("hit", "miss"); void range.offsetWidth; range.classList.add(hit ? "hit" : "miss");
@@ -272,8 +327,10 @@
         const left = shots - shot;
         if (hits >= need || hits + left < need - 1 || left === 0) {
           const out = hits >= need ? "win" : need > 1 && hits === need - 1 ? "close" : "lose";
-          return setTimeout(() => finish(out, ["You hit {h} of {n}.", { h: hits, n: shot }]), 500);
+          return setTimeout(() => end(out, ["You hit {h} of {n}.", { h: hits, n: shot }]), 500);
         }
+        // To the quiver, and the next arrow onto the string, within the pause before the next shot.
+        if (rig) { setTimeout(() => hold(rig, QUIVER, 700, 0.55), 120); setTimeout(() => hold(rig, aimPose(P.th * 180 / Math.PI), 420, 0.62), 380); }
         setTimeout(() => { busy = false; speed *= 1.15; note.textContent = ""; range.classList.remove("hit", "miss"); if (P) { P.stuck.innerHTML = ""; P.drop = 0; P.tgt.style.opacity = ""; } }, 700);
       };
       host.querySelector(".btnrow").appendChild(pressButton(t.verb || "Release", release));
@@ -316,13 +373,23 @@
           if (marked) P.mark.setAttribute("r", Math.max(3, zone - 2).toFixed(1));
           const ty = runs ? P.L : Math.sqrt(Math.max(P.L * P.L - dx * dx, P.L * P.L * 0.25)), ang = runs ? 0 : Math.atan2(dx, ty) * 180 / Math.PI;
           P.tx = tx; P.ty = ty; P.ang = runs ? 0 : ang;
+          // A hit jolts the target on its rope (a runner flinches), settling within a second or so. Only
+          // the drawing turns: where the shot is judged does not move.
+          if (P.jolt && P.j0 == null) P.j0 = s;
+          const jt = P.jolt ? s - P.j0 : 0, jx = P.jolt ? P.jolt * Math.exp(-jt * 3.2) * Math.sin(jt * 15) * (runs ? 0.4 : 1) : 0;
+          if (jt > 3) P.jolt = 0;
+          P.da = ang + jx;
           // The point aimed at (the flame of a lamp), on the swinging target, in screen space.
           { const [ux, uy] = AIM_AT[t.icon] || [0, 0], a = -ang * Math.PI / 180, lx = ux * sc, ly = uy * sc;
             P.ax = tx + lx * Math.cos(a) - ly * Math.sin(a); P.ay = ty + lx * Math.sin(a) + ly * Math.cos(a); P.xo = (P.ax - tx) / sw;
             P.mark.setAttribute("cx", lx.toFixed(1)); P.mark.setAttribute("cy", ly.toFixed(1)); }
-          if (runs) { P.rope.style.display = "none"; P.dir = Math.cos(phase * 2.2) >= 0 ? 1 : -1; }
+          if (runs) {
+            P.rope.style.display = "none"; P.dir = Math.cos(phase * 2.2) >= 0 ? 1 : -1;
+            // Arrows in a runner turn round with it.
+            if (P.heldDir !== P.dir) { P.heldDir = P.dir; for (const g of P.held.children) g.setAttribute("transform", "scale(" + P.dir * +g.dataset.d + " 1)"); }
+          }
           else { P.rope.setAttribute("x1", cx); P.rope.setAttribute("y1", -10); P.rope.setAttribute("x2", tx); P.rope.setAttribute("y2", ty - 30); }
-          P.tgt.setAttribute("transform", "translate(" + tx.toFixed(1) + " " + (ty + (P.drop || 0)).toFixed(1) + ") rotate(" + (-ang).toFixed(1) + ")");
+          P.tgt.setAttribute("transform", "translate(" + tx.toFixed(1) + " " + (ty + (P.drop || 0)).toFixed(1) + ") rotate(" + (-P.da).toFixed(1) + ")");
           P.art.setAttribute("transform", "scale(" + ((runs ? P.dir : 1) * sc).toFixed(3) + " " + sc.toFixed(3) + ")");
           const ax = cx + wob * sw, ay = P.L;
           const sh = shoulder();
@@ -331,6 +398,8 @@
             const th = clamp(Math.atan2(sh.y - ay, ax - sh.x), 0.12, 1.35);
             P.th = th;
             meSvg.style.setProperty("--aim", (th * 180 / Math.PI).toFixed(1) + "deg");
+            // A live figure holds the aim, its arms trembling a little with the waver.
+            if (rig && !busy) { const pz = aimPose(th * 180 / Math.PI); pz.armF += wob * 90; pz.armB += wob * 60; hold(rig, pz, 420, 0.62); }
             const hd = handAt(sh, th);
             P.path.setAttribute("x1", hd.x); P.path.setAttribute("y1", hd.y);
           } else { P.path.setAttribute("x1", cx); P.path.setAttribute("y1", H); }
@@ -492,7 +561,7 @@
   // ---------- Draw: hold to bend the bow, let go inside the band ----------
   // trial.shots (3), trial.need (2). Hold too long and the string slips.
   U.games.draw = function (box, done, c) {
-    return frame(box, done, c, "draw", ({ host, power, t, finish, onAct, cue }) => {
+    return frame(box, done, c, "draw", ({ host, power, t, finish: fin, onAct, cue }) => {
       const shots = t.shots || 3, need = t.need || 2, width = clamp(0.05 + power * 0.008, 0.05, 0.11) * (t.small ? 0.75 : 1);
       let shot = 0, wins = 0, ten = 0, holding = false, busy = false, lo = 0.72, drift = 0, wob = 0, last = 0;
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="drawpit"><svg viewBox="0 0 300 220" class="bow" aria-hidden="true"><path class="limb" d=""/><path class="string" d=""/></svg>' +
@@ -500,8 +569,13 @@
       const limb = host.querySelector(".limb"), str = host.querySelector(".string"), band = host.querySelector(".band"), fill = host.querySelector(".fill"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
       const marks = () => { U.trLabel(score, t.tally || "Try {n} of {m} · Strung: {w}", { n: Math.min(shot + 1, shots), m: shots, w: wins }); };
       marks();
+      // Your figure on the painting draws as you hold: the string and the hand come back to the face
+      // together, and on letting go the string snaps back (js/ui/puppet-anim.js).
+      const live = liveCast(host), rig = live.me, finish = ending(live, fin);
+      const drawPose = (v) => ({ rot: -3, head: -2, armF: -84, foreF: -6, armB: -86, foreB: 150 * v, legF: -14, legB: 14, shinB: 6, draw: v });
       const settle = (ok, msg) => {
         busy = true; holding = false;
+        if (rig) { hold(rig, LOOSE, 480, 0.5); rig.kick({ rot: -30, armB: -220, armF: 50, head: -30 }); if (ok) nod(live.elders); }
         if (ok) wins++;
         cue("act"); setTimeout(() => cue(ok ? "good" : "bad"), 240);
         shot++;
@@ -531,6 +605,7 @@
           if (ten >= 1.05) settle(false, t.over || "Too far. The string slips.");
         }
         const v = clamp(ten + wob, 0, 1);
+        if (rig && !busy) hold(rig, drawPose(v), 520, 0.7);
         band.style.left = lo * 100 + "%"; band.style.width = width * 100 + "%";
         fill.style.width = v * 100 + "%";
         fill.classList.toggle("in", v >= lo && v <= lo + width);
