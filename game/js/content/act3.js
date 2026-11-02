@@ -37,7 +37,7 @@
       id: "a3_debt", when: { flag: "debt_owed" }, skipTo: "a3_lac",
       act: 3, age: 21, art: (S) => K.childArt(S), place: (S) => K.childPlace(S),
       title: "The debt comes due",
-      body: ["Sudatta the moneylender arrives at your door with a palm-leaf note your grandfather signed. With interest, it is more than your family owns. He is polite about it, which is worse."],
+      body: ["Sudatta the moneylender arrives at your door with a palm-leaf note your grandfather signed. With interest, it is more than your family owns. He is polite about it."],
       choices: [
         { id: "serve", t: "Work it off on his trading caravans for a year", fx: { skill: { statecraft: 1 }, duty: { family: 1 }, unflag: "debt_owed", flag: "debt_paid", journal: "You worked a year on Sudatta's caravans to clear your family's debt." } },
         { id: "friend", t: "Ask {friend} for help", req: { has: "friend" },

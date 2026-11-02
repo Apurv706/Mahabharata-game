@@ -35,7 +35,7 @@
     retryStakes: ["A company of your own, under your banner.", "The company goes to someone else, and you take your place in the front line."],
     win: { fx: { flag: "role_command", attr: { command: 1 }, journal: "On the eve of the war you set your company in the commander's array, and he gave it to you." },
       text: (S) => (S.side === "kaurava" ? "Bhishma watches the last unit find its mark and nods once. \"Take them,\" he says. \"Bring back as many as you can.\"" : "Dhrishtadyumna watches the last unit find its mark. \"Good,\" he says. \"They are yours. Keep them alive.\"") },
-    lose: { fx: {}, text: "The commander watches your company stumble into place and says nothing, which is worse than anything he could say." },
+    lose: { fx: {}, text: "The commander watches your company stumble into place, says nothing, and turns his horse away." },
     retryLose: { penalty: 1, fx: { flag: ["role_front", "command_refused"], journal: "On the eve of the war the commander gave your company to someone else. You fought in the front line." },
       text: "The company goes to another officer. You take a spear and a place in the front line, with everyone else." } };
 
@@ -109,7 +109,7 @@
         { id: "refuse", t: "Refuse, out loud", fx: { duty: { conscience: 3, court: -3 }, rep: { kuru: -2 }, flag: "refused_bow_order", journal: "On the thirteenth day you refused Drona's order to cut Abhimanyu's bow from behind." },
           text: "\"Not from behind,\" you say. Drona does not even look at you. Someone else does it." },
         { id: "miss", t: "Draw, and miss on purpose", fx: { duty: { conscience: 1 }, flag: "missed_on_purpose", journal: "On the thirteenth day you were ordered to shoot Abhimanyu's horses, and missed on purpose." },
-          text: "Your arrow goes wide. No one notices but you. It changes nothing, and you will think about it for the rest of your life." }
+          text: "Your arrow goes wide. No one notices but you. It changes nothing. You still think about it when you are old." }
       ],
       after: ["Abhimanyu fights until his bow is broken, then with his sword, then with a chariot wheel. Many warriors surround him at once, and he falls. That night Arjuna swears to kill Jayadratha before the next sunset, or walk into fire."],
       next: "a6_day14"

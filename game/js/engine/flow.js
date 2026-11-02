@@ -313,7 +313,7 @@
       if (peril.kind === "death") {
         addDelta(delta, K.apply({ die: true, deathText: peril.deathText, flag: ["peril_death"].concat(peril.flag || []) }));
         if (!S.alive) S.deathAt = { art: peril.art || null, caption: peril.caption || null, act: S.act }; // the ending shows where it happened
-        res.text = S.alive ? peril.spareText || "You live, barely. The scar will remind you for the rest of your life." : peril.text;
+        res.text = S.alive ? peril.spareText || "You live, barely. The scar never fades." : peril.text;
       } else {
         // A cell: x_captive offers a way out (a test of stealth) or the long wait; then the story
         // goes on from where it would have gone (or from peril.then, when the next scene could not

@@ -142,6 +142,14 @@ Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct);
     - **Small fixes:**
       - "set the first test she were ever set" now reads "was".
       - A two-choice screen says "Press 1 or 2 to choose."
+44. **English text checked against the humanizer patterns.**
+    - **Already clean:** no dashes, no "not X but Y" staging, no inflated words.
+    - **Repeated beats cut back:**
+      - "…, which is worse" from 10 endings to 3.
+      - "looks at you for a long time/moment" from 10 to 3.
+      - "for the rest of your life" from 10 to 4.
+    - **Aphorism closers replaced** with concrete ones: "Some doors, once shut, stay shut" became "No one asks you to stay"; "…and it is enough" became "you sit together until the fire is out".
+    - **Hindi** updated to match.
 
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**

@@ -97,7 +97,7 @@
       rules: "Virata's steward has started asking questions about the new people in the household. Answer each one before the lamp burns down, and never say anything true. Two of three.",
       stakes: ["The steward loses interest, and your name stays yours.", "The steward keeps looking at you, and sends to Hastinapura to ask."] },
     win: { fx: { skill: { statecraft: 1 }, flag: "kept_false_name" }, text: "The steward grunts and goes to bother the cooks. Nobody asks again." },
-    lose: { fx: { rep: { kuru: -1 }, flag: "name_suspected" }, text: "The steward says nothing more, which is worse. A rider leaves for Hastinapura that evening." } };
+    lose: { fx: { rep: { kuru: -1 }, flag: "name_suspected" }, text: "The steward says nothing more and writes something down. A rider leaves for Hastinapura that evening." } };
 
   const DANCE_HALL = { id: "hall", t: "Cross the dancing hall in the dark and get her out before he comes", game: "sneak", hint: "A test of stealth",
     trial: { attr: "grace", skill: "stealth", stage: "stage_kichaka_hall_night", trips: 2, spots: 2, watch: "guard", verb: "Move",
@@ -296,7 +296,7 @@
         { id: "truth", t: "Answer only with true things, and let him draw the wrong conclusions", req: { vow: "never_lie" }, locked: "", hint: "Keeps your vow",
           check: { attr: "wisdom", skill: "statecraft", dc: 8,
             pass: { fx: { skill: { statecraft: 1 }, flag: ["kept_false_name", "truth_to_steward"], duty: { conscience: 1 } }, text: "\"Where did you learn to hold a bow?\" \"From a hard teacher, my lord.\" Every word is true. The steward hears a groom with a past, nods, and goes to bother the cooks." },
-            fail: { fx: { rep: { kuru: -1 }, flag: "name_suspected" }, text: "Every word you say is true, and the steward hears every one of them. He says nothing more, which is worse. A rider leaves for Hastinapura that evening." } } },
+            fail: { fx: { rep: { kuru: -1 }, flag: "name_suspected" }, text: "Every word you say is true, and the steward hears every one of them. He says nothing more and writes something down. A rider leaves for Hastinapura that evening." } } },
         { id: "leave", t: "Leave the household before he asks you anything", fx: { rep: { common: -1 }, flag: "left_virata" }, text: "You take work in the town instead, and hear the rest of the year as rumour." }]
     },
     {
@@ -361,7 +361,7 @@
       choices: [
         Object.assign({}, RIVER, { fx: { flag: ["orders_delivered", "carried_false_orders"], duty: { court: 2, conscience: -2 }, journal: "On the night of the thirteenth day you carried false orders across the river, and in the morning the enemy's line was in the wrong place." } }),
         { id: "burn", t: "Burn the packet, and tell the captain the river was watched", fx: { flag: ["orders_burned", "refused_false_orders"], duty: { conscience: 2, court: -1 }, memory: ["all", "You would not carry a lie across the river, even in a war."] },
-          text: "You burn it in the lamp and tell the captain the river was watched. He looks at you for a long moment and does not call you a liar. In the morning the line goes in honestly, and knows it." }
+          text: "You burn it in the lamp and tell the captain the river was watched. He studies your face and does not call you a liar. In the morning the line goes in honestly, and knows it." }
       ]
     },
     {
@@ -474,7 +474,7 @@
       choices: (S) => [
         hasKeep(S, "letter") ? { id: "letter", t: "Read the letter from across the lines one last time, and put it in the fire", fx: { duty: { conscience: 1 }, flag: "burned_letter_after" }, text: "You know it by heart. The fire takes the paper. The words stay where they were." } : null,
         hasKeep(S, "amulet") && S.sibling && S.dead.includes(S.sibling) ? { id: "amulet_pyre", t: "Take the amulet to the river and send it after your sibling", fx: { duty: { family: 2 }, flag: "amulet_to_river" }, text: "The copper disc sinks at once. You stand there until your feet are numb." } : null,
-        hasKeep(S, "amulet") && S.sibling && !S.dead.includes(S.sibling) ? { id: "amulet_back", t: "Give the amulet back, and say what it meant", fx: (S2) => ({ bond: { [S2.sibling]: 2 }, flag: "amulet_returned" }), text: (S2) => ["{who} ties it back on, and says nothing, and that is the whole of the conversation, and it is enough.", sibP(S2)] } : null,
+        hasKeep(S, "amulet") && S.sibling && !S.dead.includes(S.sibling) ? { id: "amulet_back", t: "Give the amulet back, and say what it meant", fx: (S2) => ({ bond: { [S2.sibling]: 2 }, flag: "amulet_returned" }), text: (S2) => ["{who} ties it back on and says nothing, and you sit together until the fire is out.", sibP(S2)] } : null,
         hasKeep(S, "hammer") ? { id: "hammer", t: "Hang Kesava's hammer over your own door", fx: { duty: { family: 1 }, bond: { charu: 1 }, flag: "hung_hammer" }, text: "It hangs there for the rest of your life, and your children's." } : null,
         hasKeep(S, "arrow") ? { id: "arrow", t: "Break the arrow from the supply camp and bury the pieces", fx: { duty: { conscience: 1 } }, text: "It was never a trophy. You bury it where nobody will dig." } : null,
         { id: "keep", t: "Wrap them up again. They are yours", fx: {} }

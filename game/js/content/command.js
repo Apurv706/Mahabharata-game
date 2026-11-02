@@ -168,7 +168,7 @@
       choices: [
         { id: "mercy", t: (S) => (S.side === "kaurava" ? "Counsel against the weapon: it will take the war with it" : "Counsel that Karna be fought, not trapped"), fx: { flag: "council_mercy", duty: { conscience: 2 }, rep: { sages: 1 } }, text: "You say it. Some of them hate you for it. One or two will remember it when they are old." },
         { id: "war", t: "Counsel whatever ends the war soonest", fx: { duty: { court: 2, conscience: -1 } }, text: "You say it. The commander nods. It is what he wanted to hear." },
-        { id: "silent", t: "Say nothing. It is not your council", fx: { duty: { conscience: -1 } }, text: "You say nothing. You think about it for the rest of your life." }
+        { id: "silent", t: "Say nothing. It is not your council", fx: { duty: { conscience: -1 } }, text: "You say nothing. You think about it often, afterwards." }
       ]
     },
     {

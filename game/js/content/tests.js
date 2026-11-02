@@ -388,7 +388,7 @@
     retryStakes: ["The voice lets you drink, and you remember every answer for life.", "You cannot think for thirst. You drink, and fall like the others. It counts as two failures, and it will weigh on every test of lore to come; if your lore and wisdom are low, you may not get up again."],
     peril: { kind: "death", art: "scene_lake", caption: "A still lake in the heat", text: "You cannot think for thirst. You drink. The water is cold, and then there is nothing.",
       deathText: "{They} drank from the lake in the forest without answering the voice, as the Pandavas did, and no one came to bring {them} back." },
-    win: { fx: { attr: { wisdom: 1 }, flag: "answered_yaksha", journal: "At the lake you answered the voice in the water. What is faster than the wind? The mind." }, text: "\"Drink,\" says the voice. The water is cold and sweet. You remember every word of it for the rest of your life." },
+    win: { fx: { attr: { wisdom: 1 }, flag: "answered_yaksha", journal: "At the lake you answered the voice in the water. What is faster than the wind? The mind." }, text: "\"Drink,\" says the voice. The water is cold and sweet. When you are old you can still say every word of it." },
     lose: { fx: {}, text: "Your answer comes out wrong, and the voice falls silent. The water is right there. You wait." },
     retryLose: { penalty: 1, fx: { attr: { might: -1 }, flag: "yaksha_twice" }, text: "You cannot think for thirst. You drink. Darkness, and then you are lying on the bank in the evening, alive, with a heaviness in your limbs that never quite leaves." } };
   const MOKSHA = { t: "Sit down at Vikarna's board", game: "moksha", hint: "A board game, a minute or two",

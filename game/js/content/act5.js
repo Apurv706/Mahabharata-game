@@ -123,7 +123,7 @@
           text: "\"I know who he is,\" Karna says quietly. \"I gave my word to give what is asked.\" He cuts the armour from his own body, and the brahmin gives him a spear in return that can kill anyone, once." },
         { id: "watch", t: "Watch in silence", fx: {} },
         { id: "astra", t: "Ask {teacher} to teach you the weapon you were promised", req: { teacher: ["drona", "kripa"], duty: ["teacher", 5] }, locked: "Your teacher must think you have earned it.", fx: { boon: "astra", astraFrom: "teacher", duty: { teacher: 1 }, journal: "{teacher} taught you to call a divine weapon." },
-          text: "{teacher} looks at you for a long time, then teaches you the mantra in a whisper. \"Never against someone who cannot fight back,\" he says." }
+          text: "{teacher} weighs you up in silence, then teaches you the mantra in a whisper. \"Never against someone who cannot fight back,\" he says." }
       ],
       next: "a5_charu"
     },
@@ -207,7 +207,7 @@
         { id: "raid", t: "Ride with Duryodhana against Matsya", req: (S) => K.raidGroup(S) === "kuru", combat: "e_cattle_k" },
         { id: "refuse", t: "Refuse to ride against a kingdom that has done you no wrong", req: (S) => K.raidGroup(S) === "kuru", hint: "Duryodhana does not forgive a refusal",
           fx: { rep: { kuru: -2 }, bond: { duryodhana: -2 }, duty: { court: -2, conscience: 2 }, flag: ["refused_raid", "imprisoned"], memory: ["duryodhana", "You refused to ride with him against Matsya."], journal: "You refused to ride against Matsya. Duryodhana had you thrown in the prison yard." },
-          text: "The hall goes quiet. Duryodhana looks at you for a long time, and then he smiles, which is worse. \"Then you can wait for us here,\" he says. His guards are already moving." },
+          text: "The hall goes quiet. Duryodhana looks at you, then smiles. \"Then you can wait for us here,\" he says. His guards are already moving." },
         { id: "secret", t: "Recognise Brihannala, and keep the secret", req: (S) => K.raidGroup(S) === "matsya",
           check: { attr: "wisdom", skill: "stealth", dc: 8,
             pass: { fx: { bond: { arjuna: 2 }, flag: "kept_arjuna_secret", journal: "You recognised Arjuna in Matsya and kept his secret." }, text: "You know that walk, even in bangles. When your eyes meet, Arjuna puts a finger to his lips. You say nothing to anyone." },

@@ -228,7 +228,7 @@
       { id: "take", t: "Take it", fx: (S) => ({ tapas: -(S.tapas || 0), curse: "brahmastra", flag: "took_brahmastra", duty: { conscience: -3 }, journal: "On the last night of the war you took the mantra of the Brahmastra. You never spoke it. It spoke in you." }),
         hint: "All your tapas, a curse, and a darker telling", text: "You learn it in an hour, and it is the easiest thing you have ever learned, and you are never again entirely alone in your own head." },
       { id: "refuse", t: "Refuse it", fx: { tapas: 2, flag: "refused_brahmastra", duty: { conscience: 2 }, rep: { sages: 1 }, journal: "On the last night of the war you were offered the Brahmastra, and refused it." },
-        text: "You push the scroll back into his hands. He looks at you for a long moment, and then, for the first time all night, he weeps." }
+        text: "You push the scroll back into his hands. He stares at you, and then, for the first time all night, he weeps." }
     ]
   });
 

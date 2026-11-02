@@ -21,7 +21,7 @@
       rules: low ? "Drona points to a wooden bird on the highest branch, far across the field. Three arrows, and every one must hit. He does not expect you to." : "Drona points to a wooden bird on the highest branch, far across the field. Three arrows. Hit it twice, and he will think about it.",
       stakes: ["Drona takes you, grudgingly, and the whole court hears of it.", "Drona turns away. You will have to choose another teacher."] },
     win: { fx: Object.assign({}, DRONA_TAKES, { journal: "You passed Drona's test at the gate, though your family was not of the court, and he took you as a student." }),
-      text: "The last arrow takes the bird off its branch. Drona looks at you for a long moment. \"Tomorrow, before dawn,\" he says. The princes stare." },
+      text: "The last arrow takes the bird off its branch. Drona nods once. \"Tomorrow, before dawn,\" he says. The princes stare." },
     lose: { fx: { flag: "drona_refused" }, text: "Your arrows fall short and wide. Drona has already turned away. \"Find another teacher,\" he says, not unkindly.", next: "a2_teacher" } });
 
   K.scenes([

@@ -77,7 +77,7 @@
       crossWhy: "You backed down twice in front of Duryodhana's brothers.",
       win: { fx: { set: { friend: "duryodhana" }, bond: { duryodhana: 3 }, setBond: { charu: 4 }, flag: "stood_your_ground", memory: ["duryodhana", "You stood your ground in front of his brothers when you were ten."], journal: "Duryodhana became your closest friend. You stood your ground to earn it." },
         text: "Duryodhana laughs and throws an arm around your shoulders. \"This one is mine,\" he tells his brothers. Nobody argues." },
-      lose: { fx: { flag: "second_duryo" }, text: "The brothers laugh. Duryodhana does not laugh. He looks at you, waiting, which is worse." },
+      lose: { fx: { flag: "second_duryo" }, text: "The brothers laugh. Duryodhana does not laugh. He looks at you and waits." },
       retryLose: { penalty: 1, fx: { set: { friend: "charu" }, setBond: { charu: 7 }, bond: { duryodhana: -2 }, rep: { kuru: -1 }, flag: "backed_down_twice", memory: ["duryodhana", "You backed down in front of his brothers twice."] },
         text: "Again the words will not come. Dushasana tells the story at every feast for a year, and the court laughs with him." },
       line: "Dushasana is already walking back toward you, grinning. Duryodhana raises a hand. \"Let them try again,\" he says. \"Once.\""
@@ -381,7 +381,7 @@
         { id: "again", t: "Get up and ask for another bout", game: "rhythm", hint: "Your second chance", trial: ugraTrial(true), win: UGRA_WIN,
           back: { scene: "a1_wrestle", why: "Ugra threw you twice. You will not get into that ring again." },
           lose: { penalty: 1, fx: { rep: { common: -1 }, flag: ["lost_to_ugra", "ugra_twice"], memory: ["charu", "You got up and fought Ugra twice for Charu. You lost twice. Charu never forgot either part."] },
-            text: "He throws you again, harder. The crowd stops laughing, which is worse. Ugra lets Charu go anyway, bored, and Charu helps you home." } },
+            text: "He throws you again, harder. The crowd goes quiet. Ugra lets Charu go anyway, bored, and Charu helps you home." } },
         { id: "down", t: "Stay down", fx: { flag: "lost_to_ugra" }, text: "You stay down. Ugra lets Charu go anyway, bored. On the way home neither of you says anything." }
       ],
       next: "a2_teacher"

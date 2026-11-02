@@ -61,7 +61,7 @@
           text: "The boy runs. You break camp before dawn and move everyone to the far side of the hills. {friend} does not speak to you for three days." },
         { id: "keep", t: "Keep him bound, and carry him with you until it no longer matters", check: { attr: "grace", skill: "stealth", dc: 7,
           pass: { fx: { duty: { conscience: 1 } }, text: "For a month he walks bound in the middle of the column, and when you let him go at last there is nothing left to tell. He thanks you, which you did not expect." },
-          fail: { fx: (S) => ({ bond: { [S.friend]: -1 } }), text: "On the fourth night he slips his rope and is gone. You break camp in the dark. {friend} looks at you and says nothing, which says enough." } },
+          fail: { fx: (S) => ({ bond: { [S.friend]: -1 } }), text: "On the fourth night he slips his rope and is gone. You break camp in the dark. {friend} looks at you and does not speak to you for the rest of the march." } },
           hint: "A test of stealth" }
       ]
     },
@@ -109,7 +109,7 @@
         { id: "go", t: (S) => ["Ride over and find {who}", { who: K.PEOPLE[S.mendWho].name }], check: { attr: "wisdom", dc: 8, bonus: (S) => (S.penanceDone ? 1 : 0),
           pass: { fx: (S) => { const w = S.mendWho; return { reconcile: w, flag: "mend_tried_" + w, memory: [w, "You rode half a day to find me before the war. I had been hoping you would."] }; },
             text: "You find the camp at dusk. Neither of you says sorry. Neither of you has to. By the time the fire burns down you are laughing about something stupid from when you were ten." },
-          fail: { fx: (S) => ({ flag: "mend_tried_" + S.mendWho }), text: "You find the camp at dusk. You are given water and a place by the fire, and a polite good night. Some doors, once shut, stay shut." } },
+          fail: { fx: (S) => ({ flag: "mend_tried_" + S.mendWho }), text: "You find the camp at dusk. You are given water and a place by the fire, and a polite good night. No one asks you to stay." } },
           hint: "Doing penance first would help" },
         { id: "no", t: "Let it be", fx: (S) => ({ flag: "mend_tried_" + S.mendWho }), text: "You ride on toward the war. You think about it more than you expected to." }
       ]

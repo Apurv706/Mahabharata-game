@@ -38,7 +38,7 @@
         { id: "vow", t: "Ask how to live with a broken vow", req: (S) => S.vows.some((v) => v.broken && !v.released), fx: { duty: { conscience: 2 } }, text: "\"Keep the next promise,\" he says. \"That is all any of us can do.\"" },
         { id: "listen", t: "Ask nothing. Just listen", fx: { skill: { lore: 1 } } },
         { id: "dream", t: "Ask him about the other life you dream of", req: { flag: "reborn" }, fx: { attr: { wisdom: 1 }, duty: { conscience: 1 }, unflag: "karmic_debt" },
-          text: "\"Amba came back to me as Shikhandi, to finish what she began,\" he says. \"Perhaps you came back to finish something too.\" He looks at you for a long time. \"Did you?\"" }
+          text: "\"Amba came back to me as Shikhandi, to finish what she began,\" he says. \"Perhaps you came back to finish something too.\" He waits. \"Did you?\"" }
       ],
       after: ["When the sun turns north, Bhishma dies. Yudhishthira is crowned king of Hastinapura, and reigns over an empty kingdom."],
       next: "a7_question"

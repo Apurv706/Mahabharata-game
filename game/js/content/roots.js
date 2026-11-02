@@ -82,7 +82,7 @@
       title: "The king's procession", art: "custom_hastinapura",
       body: "Once a year blind King Dhritarashtra is carried through the city on an elephant draped in gold, with Queen Gandhari, her eyes bound, beside him. The whole city comes out.",
       choices: [
-        { id: "front", t: "Push through to the front to see the elephants", fx: { attr: { might: 1 }, flag: "saw_procession" }, text: "An elephant looks right at you as it passes. You will remember its eye for the rest of your life." },
+        { id: "front", t: "Push through to the front to see the elephants", fx: { attr: { might: 1 }, flag: "saw_procession" }, text: "An elephant looks right at you as it passes. Years later you can still see its eye." },
         { id: "kitchens", t: "Slip away into the palace kitchens while everyone is watching", fx: { skill: { stealth: 1 } }, text: "Nobody stops you. You come home with sweets in both fists and the knowledge that a palace has many back doors." },
         { id: "names", t: "Stay with your family and learn the name of every lord who rides past", fx: { skill: { statecraft: 1 }, rep: { kuru: 1 } }, text: "By the end of the day you know thirty lords by their banners. Three of them, it turns out, owe your family money." }
       ]
