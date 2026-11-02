@@ -44,14 +44,16 @@
   K.UNITS.naga = () => ({ name: "Ulupi's naga", hp: 130, atk: 11, def: 3, abilities: ["strike", "heavy"], person: "naga" });
   // Read first by K.warHelp (act6a.js) and by the reeds fights below: once in the war, for one who
   // carried Iravan to the river. The flag is set only when the naga actually comes (run).
-  K.nagaHelp = (S = K.S) => (has(S, "naga_regard") && !has(S, "naga_answered") ? {
+  // Only in a deadly fight (a holding fight or a sparring bout is not what the promise was for).
+  const deadly = () => { const B = K.Combat && K.Combat.state && K.Combat.state(); return !B || !B.enc || !!B.enc.lethal; };
+  K.nagaHelp = (S = K.S) => (has(S, "naga_regard") && !has(S, "naga_answered") && deadly() ? {
     unit: K.UNITS.naga(S), stay: 3,
     text: "The wet ground at your feet stirs, and one of Ulupi's nagas rises out of it, as was promised at the river.",
     run: () => K.apply({ flag: "naga_answered", journal: "Once in the war you shouted for help, and one of Ulupi's nagas came, as was promised at the river." })
   } : null);
 
   // ---------- Iravan (day 8) ----------
-  const nagaTie = (S) => (S.astras || []).some((a) => a.id === "nagapasha"); // the naga healed on the riverbank (astras.js w_naga)
+  const nagaTie = (S) => (S.astras || []).some((a) => a.id === "nagapasha" && !a.broken); // the naga healed on the riverbank (astras.js w_naga)
   const IRAVAN = { name: "Iravan", hp: 150, atk: 12, def: 3, abilities: ["strike", "heavy", "arrows"], person: "iravan" };
   const NAGAS = { name: "Naga warriors", plural: true, hp: 70, atk: 7, def: 2, abilities: ["strike", "guard"] };
   K.encounter({
@@ -127,11 +129,16 @@
 
   // Warning him, for a Pandava: seen by a hunter or not. Out of your depth and seen, Bhima's men hold
   // you until the duel is over (a cell: tests.js x_captive, then the scene after the duel).
-  const WARNED = { bond: { duryodhana: 3 }, flag: ["lake_warned", "saw_duel"], memory: ["duryodhana", "You told me to run. I would not, and you stayed to see it."], journal: "On the last day you knelt at the lake and told Duryodhana to run. He would not." };
+  const WARNED = { bond: { duryodhana: 3 }, flag: "lake_warned", memory: ["duryodhana", "You told me to run. I would not, and you stayed to see it."], journal: "On the last day you knelt at the lake and told Duryodhana to run. He would not." };
   const TOLD = { rep: { pandava: 2 }, flag: "lake_told", memory: ["duryodhana", "You stood on the bank with them when they called me out of the water."], journal: "On the last day you found where Duryodhana lay hidden in the lake, and told the Pandavas." };
   const TELL = { t: "Go to the Pandavas and tell them where he is", locked: "The hunters were there before you.",
     text: "Yudhishthira hears you out and sends for his brothers. The hunters come in with the same news while the chariots are being yoked, and are paid anyway." };
   const WARN_TEXT = "The still water shivers, and his voice comes up through it, slow and thick. \"I have run as far as I am going to,\" he says. \"When they come, I will come up and fight. Stand on the bank and watch. I want one friend to see it.\"";
+  // Seen: Pandava reputation -3 either way; out of your depth (the odds under even), Bhima's men also
+  // hold you until the duel is over (the peril above), and you do not see it.
+  const WARN_CHECK = { attr: "grace", skill: "stealth", dc: 8,
+    pass: { fx: { flag: "saw_duel" }, text: WARN_TEXT } };
+  WARN_CHECK.fail = { fx: (S) => ({ rep: { pandava: -3 }, flag: K.checkOdds(WARN_CHECK, S) < 0.5 ? "lake_warn_seen" : ["lake_warn_seen", "saw_duel"] }), text: () => WARN_SEEN };
   const WARN_SEEN = "His voice comes up through the still water, slow and thick: he has run as far as he is going to, and when they come he will come up and fight. Getting up from the water, you see a hunter in the reeds, watching you. Before the moon is down the Pandava camp knows what you did.";
 
   K.scenes([
@@ -146,7 +153,7 @@
       ],
       choices: [
         { id: "ride", t: "Ride beside Iravan against Shakuni's horse", img: "p_iravan", combat: "e_iravan", next: "wl_iravan_body", fx: { flag: "iravan_fought", bond: { iravan: 2 } }, hint: HOLD },
-        { id: "line", t: "Keep your own place in the line", fx: {}, text: "Iravan raises a hand and rides on. All morning you hear his war cry far down the field." }
+        { id: "line", t: "Keep your own place in the line", fx: {}, next: "wl_iravan_body", text: "Iravan raises a hand and rides on. All morning you hear his war cry far down the field." }
       ]
     },
     {
@@ -211,20 +218,18 @@
         Object.assign({ id: "tell", req: (S) => S.side !== "kaurava" && has(S, "lake_first"), showIf: (S) => S.side !== "kaurava", fx: TOLD }, TELL),
         Object.assign({ id: "tell_k", req: (S) => S.side === "kaurava" && has(S, "lake_first"), showIf: { side: "kaurava" }, fx: Object.assign({ duty: { court: -3 } }, TOLD) }, TELL),
         { id: "silent", t: "Say nothing to anyone", fx: { flag: "lake_silent" }, text: "You keep his secret. The hunters do not." },
-        { id: "warn", t: "Kneel at the water and tell him to run", req: { side: "kaurava" }, fx: WARNED, text: WARN_TEXT },
+        { id: "warn", t: "Kneel at the water and tell him to run", req: { side: "kaurava" }, fx: Object.assign({}, WARNED, { flag: ["lake_warned", "saw_duel"] }), text: WARN_TEXT },
         { id: "warn_p", t: "Kneel at the water and tell him to run", req: (S) => S.side === "pandava" && dFriend(S), fx: WARNED, hint: "If a hunter sees you, the Pandavas will know",
           peril: { kind: "prison", by: "Bhima's men", place: "A pen behind the Pandava lines", then: "a6_duryodhana", waitThen: "a6_duryodhana",
             text: "Getting up from the water, you see a hunter in the reeds. Before you are out of them, Bhima's men have your arms behind your back.",
             journal: "You were seen warning Duryodhana at the lake, and Bhima's men held you until the duel was over." },
-          check: { attr: "grace", skill: "stealth", dc: 8,
-            pass: { text: WARN_TEXT },
-            fail: { fx: { rep: { pandava: -3 }, flag: "lake_warn_seen" }, text: WARN_SEEN } } }
+          check: WARN_CHECK }
       ],
       after: (S) => [
         "The hunters bring the Pandavas to the lake. Yudhishthira stands on the bank and taunts Duryodhana until he rises out of the water with his mace, and Bhima steps forward to meet him.",
         // His last words: said here, unless you will sit with him after the duel (act6b.js a6_duryodhana says it there).
         has(S, "lake_told") && !K.test(K.SCENES.a6_duryodhana.when, S) ? { memory: "He comes up out of the water and sees you on the bank among them. Dying, he says your name with theirs." } : null,
-        has(S, "lake_warned") ? { memory: "Before the first blow he looks along the bank, and finds you there, as he asked." } : null
+        has(S, "lake_warned") && has(S, "saw_duel") ? { memory: "Before the first blow he looks along the bank, and finds you there, as he asked." } : null
       ]
     }
   ]);
@@ -233,7 +238,8 @@
   // Ashwatthama comes to you on the night of the raid.
   K.lakeLines = {
     dying: (S) => (has(S, "lake_told") ? { memory: "He saw you on the bank with them. \"I will tell the gods your name,\" he says." }
-      : has(S, "lake_warned") ? { memory: "You told him to run, and he would not. He is glad you saw it." } : null),
+      : has(S, "lake_warned") && has(S, "saw_duel") ? { memory: "You told him to run, and he would not. He is glad you saw it." }
+      : has(S, "lake_warned") ? { memory: "You told him to run, and he would not. Someone has told him Bhima's men held you through the duel, and he laughs." } : null),
     raid: (S) => (S.side === "kaurava"
       ? (has(S, "lake_told") ? { memory: "He knows who brought the Pandavas to the lake. He asks you anyway. There is no one else." }
         : has(S, "lake_ash_trust") ? { memory: "He has not forgotten the reeds. \"Four of us held the water,\" he says. \"Be one of the four again.\"" }
@@ -247,6 +253,9 @@
 
   // Where they come: Iravan on the eighth day, before the ninth night and the tenth day (so first in
   // the list); the lake after the last battle, before Duryodhana lies dying.
+  // Canon (4): Iravan has fallen by the tenth day in every life, whether or not you were near him.
+  const bh = K.SCENES.a6_bhishma;
+  if (bh) bh.enter = Object.assign({}, bh.enter, { die: [].concat((bh.enter && bh.enter.die) || [], "iravan") });
   K.BEFORE.a6_bhishma = ["wl_iravan"].concat(K.BEFORE.a6_bhishma || []);
   K.BEFORE.a6_duryodhana = (K.BEFORE.a6_duryodhana || []).concat(["wl_lake"]);
 

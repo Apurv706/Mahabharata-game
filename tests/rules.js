@@ -521,4 +521,92 @@ require(G + "content/war_duel.js");
   ok(K.test(sc("kb_debate").when, S) && K.val(sc("kb_debate").body, S).some((b) => b && /shouted it with the rest/.test(b.memory || "")), "the night debate quotes the cry back at you");
   ok(!K.test(sc("kb_debate").when, war({ side: "pandava" })), "and is not for those who did neither");
 }
+// 44. War storyline (PRD 18.13): Iravan on day 8 (content/war_lake.js)
+require(G + "content/war_lake.js");
+{
+  const sc = (id) => K.SCENES[id], ch = (id, cid) => K.val(sc(id).choices, K.S).find((c) => c.id === cid);
+  const war = (o, flags) => { const s = fresh(Object.assign({ act: 6, age: 44 }, o)); s.flags.push(...(flags || ["role_front"])); return s; };
+  const naga = (s) => { s.astras = [{ id: "nagapasha", from: "naga", age: 35 }]; return s; };
+  ok(K.BEFORE.a6_bhishma[0] === "wl_iravan", "Iravan comes before the tenth day");
+  ok(K.test(sc("wl_iravan").when, naga(war({ side: "pandava" }))) && !K.test(sc("wl_iravan").when, naga(war({ side: "kaurava" }))) && !K.test(sc("wl_iravan").when, war({ side: "pandava" })),
+    "only Pandava players with a naga tie (the serpent-noose from the healed naga) meet Iravan");
+  S = naga(war({ side: "pandava" })); S.astras[0].broken = true;
+  ok(!K.test(sc("wl_iravan").when, S), "a broken naga condition is no tie");
+  // Canon: he dies on day 8 in every life, met or not; riding with him or not, the news comes.
+  S = war({ side: "pandava" }); K.apply(sc("a6_bhishma").enter);
+  ok(S.dead.includes("iravan"), "Iravan is dead by the tenth day in a life that never met him");
+  ok(ch("wl_iravan", "ride").next === "wl_iravan_body" && ch("wl_iravan", "line").next === "wl_iravan_body" && sc("wl_iravan_body").enter.die === "iravan", "both roads hear that he has fallen");
+  const E = K.ENCOUNTERS.e_iravan;
+  ok(E.hold === 6 && !E.lethal && K.val(E.allies).some((u) => u.person === "iravan"), "the fight beside Iravan: held for six rounds, not deadly, Iravan an ally");
+  // The carrying: done, the nagas remember; failed, nothing is lost but their regard.
+  S = naga(war({ side: "pandava" })); S.bonds.arjuna = 5;
+  let r = K.choose(sc("wl_iravan_body"), ch("wl_iravan_body", "carry"), "win");
+  ok(S.flags.includes("naga_regard") && r.next === "wl_iravan_river" && S.memories.some((m) => m.who === "ulupi"), "carried to the river: the nagas remember, Ulupi's people take him");
+  S = naga(war({ side: "pandava" })); S.bonds.arjuna = 5; const before = JSON.stringify([S.bonds, S.rep, S.attrs, S.injuries]);
+  r = K.choose(sc("wl_iravan_body"), ch("wl_iravan_body", "carry"), "lose");
+  ok(!S.flags.includes("naga_regard") && S.alive && JSON.stringify([S.bonds, S.rep, S.attrs, S.injuries]) === before && r.next === "a6_bhishma", "failed: nothing lost but the nagas' regard");
+  // The naga answers one call for help, in a deadly war fight, through K.warHelp.
+  S = war({ side: "pandava", friend: "bhima" }); S.flags.push("naga_regard");
+  {
+    const C = K.Combat, B = C.start("hold_duryodhana", () => {});
+    ok(!(K.warHelp(S).unit || {}).person || K.warHelp(S).unit.person !== "naga", "not in a holding fight that cannot kill you");
+    C.end && C.end();
+  }
+  {
+    const C = K.Combat, B = C.start("e_day18", () => {});
+    ok(C.act("call"), "call for help in the last battle");
+    ok(B.units.some((u) => u.person === "naga" && u.side !== "enemy") && S.flags.includes("naga_answered"), "a naga of Ulupi's comes, and the promise is spent");
+    C.end && C.end();
+  }
+  ok((K.warHelp(S).unit || {}).person === "bhima", "the next call reaches your friend again, not the naga");
+  S.flags.push("iravan_fought"); const t = []; K.TELL_HOOKS.forEach((h) => h(S, t, (f) => S.flags.includes(f)));
+  ok(t.some((l) => /carried Iravan/.test(l)) && t.some((l) => /a naga came/.test(l)), "the telling remembers the river and the naga");
+}
+// 45. War storyline (PRD 18.13): the lake on day 18 (content/war_lake.js)
+{
+  const sc = (id) => K.SCENES[id], ch = (id, cid) => K.val(sc(id).choices, K.S).find((c) => c.id === cid);
+  const war = (o, flags) => { const s = fresh(Object.assign({ act: 6, age: 44 }, o)); s.flags.push(...(flags || ["role_front"])); return s; };
+  ok(K.BEFORE.a6_duryodhana.includes("wl_lake"), "the lake comes before Duryodhana lies dying");
+  const lw = sc("wl_lake").when;
+  S = war({ side: "kaurava" }); S.bonds.duryodhana = 5;
+  ok(K.test(lw, war({ side: "pandava", path: "spy" })) && K.test(lw, S) && !K.test(lw, war({ side: "pandava", path: "archer" })) && !K.test(lw, war({ side: "neutral", path: "spy" })),
+    "spies, scouts and Duryodhana's friends on either side search the lake; others do not");
+  S = war({ side: "pandava", path: "spy" }); r = K.choose(sc("wl_lake"), ch("wl_lake", "search"), "lose");
+  ok(S.flags.includes("lake_late") && r.next === "wl_lake_reeds", "lost search: the hunters are first");
+  ok(!K.choiceList(sc("wl_lake_found")).find((x) => x.c.id === "tell").ok, "and there is nothing to tell the Pandavas they do not already know");
+  // Who stands where in the reeds.
+  const ids = (s) => K.val(sc("wl_lake_reeds").choices, s).map((c) => c.id).join(",");
+  S = war({ side: "kaurava", path: "spy" }); ok(ids(S) === "stand,hide", "Kaurava: stand with the three, or hide");
+  S = war({ side: "pandava", path: "spy" }); ok(ids(S) === "scout,hide", "Pandava: go in with the scouts, or hide");
+  S = war({ side: "pandava", path: "spy" }); S.bonds.duryodhana = 6; ok(ids(S) === "stand,scout,hide", "Pandava friend of Duryodhana: may stand with the three");
+  ok(K.ENCOUNTERS.e_lake_three.hold && K.val(K.ENCOUNTERS.e_lake_three.enemies).every((u) => u.hero), "the three cannot be killed: a holding fight against champions");
+  // Out of your depth, losing the reeds fight is a death (story mode: a scar).
+  S = war({ side: "kaurava", path: "spy" }); S.attrs.grace = 1; S.skills.stealth = 0;
+  ok(K.lakeDeep(S) && ch("wl_lake_reeds", "stand").combat === "e_lake_hold_deep", "out of your depth: the deadly reeds fight");
+  K.combatOutcome("e_lake_hold_deep", "lose", "wl_lake_found");
+  ok(!S.alive && /Dvaipayana/.test(S.deathText), "losing it is a death at Dvaipayana");
+  S = war({ side: "kaurava", path: "spy", storyMode: true }); S.attrs.grace = 1; S.skills.stealth = 0;
+  K.combatOutcome("e_lake_hold_deep", "lose", "wl_lake_found");
+  ok(S.alive && S.injuries.includes("scar"), "story mode: a scar");
+  S = war({ side: "kaurava", path: "spy" }); K.combatOutcome("e_lake_hold", "win", "wl_lake_found");
+  ok(K.lakeLines.raid(S) && /Four of us/.test(K.lakeLines.raid(S).memory), "held beside Ashwatthama: he says so on the night of the raid");
+  // The choice: tell, keep silent, warn. Every road goes on to the duel.
+  S = war({ side: "pandava", path: "spy" }); S.flags.push("lake_first"); S.rep.pandava = 3;
+  r = K.choose(sc("wl_lake_found"), ch("wl_lake_found", "tell"));
+  ok(S.rep.pandava === 5 && S.flags.includes("lake_told") && r.next === "a6_duryodhana", "told: Pandava reputation +2, on to the duel");
+  S.bonds.duryodhana = 7; ok(/gods your name/.test(K.lakeLines.dying(S).memory), "and Duryodhana names you as he dies");
+  S = war({ side: "kaurava", path: "spy" }); S.bonds.duryodhana = 4;
+  r = K.choose(sc("wl_lake_found"), ch("wl_lake_found", "warn"));
+  ok(S.bonds.duryodhana === 7 && S.flags.includes("saw_duel") && r.next === "a6_duryodhana" && /fight/.test(r.text), "warned: he will not run, bond +3, and you stand witness");
+  S = war({ side: "pandava", path: "spy" }); S.bonds.duryodhana = 6; S.attrs.grace = 6; S.skills.stealth = 2;
+  r = K.choose(sc("wl_lake_found"), ch("wl_lake_found", "warn_p"));
+  ok(r.check.pass && S.flags.includes("saw_duel") && !S.flags.includes("captive"), "a Pandava who warns him unseen stands witness too");
+  S = war({ side: "pandava", path: "farmer" }); S.bonds.duryodhana = 6; S.attrs.grace = 0; S.skills.stealth = 0; S.rep.pandava = 5;
+  r = K.choose(sc("wl_lake_found"), ch("wl_lake_found", "warn_p"));
+  ok(!r.check.pass && S.rep.pandava === 2 && S.flags.includes("captive") && r.next === "x_captive" && S.captive.then === "a6_duryodhana" && !S.flags.includes("saw_duel"),
+    "seen warning him, out of your depth: Pandava reputation -3, Bhima's men hold you through the duel");
+  ok(!/glad you saw/.test(K.lakeLines.dying(S).memory), "and he knows you did not see it");
+  ok(K.val(sc("wl_lake_found").choices).every((c) => !c.next || c.next === "a6_duryodhana") && sc("wl_lake_found").next === "a6_duryodhana" && ch("wl_lake", "leave").next === "a6_duryodhana",
+    "canon: whatever you do, he is found and the duel is fought");
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);
