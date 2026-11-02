@@ -61,12 +61,22 @@
 
   // ---------- The cast ----------
   // trial.stage: the painting; trial.cast: puppet ids (K.PUPPETS) for the others in the scene.
-  U.castBand = function (t) {
+  // What you hold in each kind of test: a bow to shoot, bare hands to push, hold steady or creep.
+  // Kinds not listed keep the weapon of your path. (t.item, when a test sets one, wins.)
+  const GEAR = { aim: "bow", draw: "bow", push: null, steady: null, sneak: null, breath: null, escape: null, fuse: null, notice: null, retort: null, board: null, rings: null, formation: null, array: null, race: "whip", herd: null };
+  // Someone to push against when a test names no one.
+  const FOE_FOR = { push: ["soldier"] };
+  U.castBand = function (t, kind) {
     if (!t || !t.stage || !K.puppetSpec) return "";
     const info = U.stageInfo(t.stage);
-    const me = U.puppet(K.puppetSpec(K.S), { h: 150, label: K.tr("You"), cls: "actor-me" });
+    const spec = Object.assign({}, K.puppetSpec(K.S));
+    if (t.item !== undefined) spec.item = t.item;
+    else if (kind && kind in GEAR) spec.item = GEAR[kind];
+    const me = U.puppet(spec, { h: 150, label: K.tr("You"), cls: "actor-me" });
+    let cast = K.val(t.cast) || [];
+    if (!cast.length && FOE_FOR[kind]) cast = FOE_FOR[kind];
     // Elders (a teacher, a sage) are marked: some tests stand them apart, further back.
-    const others = (K.val(t.cast) || []).slice(0, 3).map((id, i) => { const sp = U.puppetFor(id) || {};
+    const others = cast.slice(0, 3).map((id, i) => { const sp = Object.assign({}, U.puppetFor(id) || {}); if (kind === "push") sp.item = null; // a shoving match is hand to hand
       return '<span class="actor foe f' + i + (sp.stage === "elder" ? " elder" : "") + '" data-id="' + id + '">' + U.puppet(sp, { h: 150, flip: true }) + "</span>"; }).join("");
     return '<div class="cast' + (info.top ? " top" : "") + (info.side ? " side" : "") + '" style="--stage:url(\'' + U.artUrl(U.stripOf(t.stage)) + '\')" aria-hidden="true">' +
       '<span class="actor me">' + me + "</span>" + others + "</div>";

@@ -60,7 +60,7 @@
     // story fall away; the figures stand big on the painting's ground, the score sits at the top
     // and the controls at the foot. (Being built test by test: IMMERSIVE lists those done.)
     const deep = !!(U.inScene && t.stage && IMMERSIVE.has(kind) && !K.headless);
-    const wrap = U.el('<div class="trial trial-' + kind + (deep ? " immersive" : "") + '">' + U.castBand(t) +
+    const wrap = U.el('<div class="trial trial-' + kind + (deep ? " immersive" : "") + '">' + U.castBand(t, kind) +
       (deep ? '<header class="t-head"><span class="t-name">' + U.t(K.val(c.t)) + "</span></header>" : "") + '<div class="trial-body"></div></div>');
     box.appendChild(wrap);
     if (deep) document.body.classList.add("intest");
@@ -562,7 +562,7 @@
       const way = host.querySelector(".sneakway"), me = host.querySelector(".me"), susBar = host.querySelector(".sus i"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
       const guard = host.querySelector(".guard"), flame = guard.querySelector(".flame"), poly = host.querySelector(".beam polygon"), pool = host.querySelector(".beam .pool");
       // On the painting your own puppet creeps along the ground through the shadows.
-      if (painted) me.innerHTML = U.puppet(K.puppetSpec(K.S), { h: 150, pose: "sneak" });
+      if (painted) me.innerHTML = U.puppet(Object.assign({}, K.puppetSpec(K.S), { item: null }), { h: 150, pose: "sneak" }); // empty-handed, to make no sound
       const fig = painted ? me.querySelector(".pp") : null, gfig = painted ? guard.querySelector(".pp") : null;
       const setPose = (el, p) => { if (el) el.setAttribute("class", el.getAttribute("class").replace(/pose-\S+/, "pose-" + p)); };
       let posed = "", gposed = "", gface = 0;
@@ -606,7 +606,7 @@
           pool.setAttribute("cx", (spot * 100).toFixed(1)); pool.setAttribute("cy", "98"); pool.setAttribute("rx", (light * 50).toFixed(1));
         }
         way.classList.toggle("caught", glock > 0);
-        me.style.left = pos * 100 + "%"; me.classList.toggle("lit", lit);
+        me.style.left = painted ? "calc(" + pos * 100 + "% + " + Math.round((1 - pos) * 40) + "px)" : pos * 100 + "%"; // the painted figure starts fully on screen me.classList.toggle("lit", lit);
         if (fig) { const want = freeze > 0 ? "fall" : holding ? "walk" : "sneak"; if (want !== posed) { posed = want; setPose(fig, want); } }
         susBar.style.width = sus * 100 + "%";
         U.trLabel(score, t.tally || "Loads: {d} of {n} · Seen: {s} of {m} · {t} seconds", { d: trips, n: need, s: seen, m: lives, t: Math.max(0, Math.ceil(LIMIT - s)) });

@@ -1039,6 +1039,11 @@ body.intest .backdrop::after { background: linear-gradient(to bottom, rgba(16, 6
 .trial.immersive > .cast::before { display: none; }
 .trial.immersive > .cast .actor svg { height: clamp(150px, 30vh, 300px); filter: drop-shadow(0 0 10px rgba(255, 196, 110, 0.5)) drop-shadow(0 6px 6px rgba(0, 0, 0, 0.6)); }
 .trial.immersive > .cast .actor.foe.f1 svg, .trial.immersive > .cast .actor.foe.f2 svg { height: clamp(130px, 26vh, 260px); }
+/* A shadow on the ground under each figure, so they stand on the painting instead of floating over it. */
+.trial.immersive > .cast .actor::before { content: ""; position: absolute; left: 10%; right: 10%; bottom: -7px; height: 16px; border-radius: 50%; background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0) 70%); pointer-events: none; z-index: -1; }
+/* While a test plays, the figures stand above the line of help, not behind it. */
+.trial.immersive.playing > .cast { padding-bottom: max(128px, calc(var(--sab) + 120px)); }
+.trial.immersive.trial-aim.playing > .cast { --ab: max(128px, calc(var(--sab) + 120px)); }
 /* The test itself, over the painting. */
 .trial.immersive > .trial-body { position: relative; z-index: 2; min-height: 0; display: flex; flex-direction: column; gap: 10px; width: min(760px, 100%); margin: 0 auto; }
 .trial.immersive > .trial-body > * { flex: none; }
@@ -1098,12 +1103,12 @@ body.intest .leaf .text { background: none !important; }
 .trial.immersive.trial-aim > .cast { --ab: max(76px, calc(var(--sab) + 70px)); --aw: clamp(150px, 30vh, 300px); }
 .trial.immersive.trial-aim > .cast .actor { position: absolute; bottom: var(--ab); }
 .trial.immersive.trial-aim > .cast .actor.me { left: 24%; z-index: 2; }
-.trial.immersive.trial-aim > .cast .actor.foe { right: 3%; bottom: calc(var(--ab) + 2.5vh); z-index: 1; opacity: 0.94; }
+.trial.immersive.trial-aim > .cast .actor.foe { right: 3%; bottom: calc(var(--ab) + 2.5vh); z-index: 1; }
 .trial.immersive.trial-aim > .cast .actor.foe svg { height: calc(var(--aw) * 0.74); }
 .trial.immersive.trial-aim > .cast .actor.foe.f1 { right: 16%; bottom: calc(var(--ab) + 4vh); }
 .trial.immersive.trial-aim > .cast .actor.foe.f1 svg { height: calc(var(--aw) * 0.64); }
-.trial.immersive.trial-aim > .cast .actor.foe.elder { right: auto; left: 1.5%; bottom: calc(var(--ab) + 5vh); opacity: 0.86; }
-.trial.immersive.trial-aim > .cast .actor.foe.elder svg { height: calc(var(--aw) * 0.62); filter: drop-shadow(0 0 6px rgba(255, 196, 110, 0.3)) blur(0.4px); }
+.trial.immersive.trial-aim > .cast .actor.foe.elder { right: auto; left: 1.5%; bottom: calc(var(--ab) + 5vh); }
+.trial.immersive.trial-aim > .cast .actor.foe.elder svg { height: calc(var(--aw) * 0.62); filter: drop-shadow(0 0 6px rgba(255, 196, 110, 0.3)) drop-shadow(0 5px 5px rgba(0, 0, 0, 0.55)); }
 .trial.immersive.trial-aim > .cast .actor.foe.elder .pp.flip { transform: none; } /* the teacher faces the archer and the target */
 .trial-aim .actor.me .pp .armF, .trial-aim .actor.me .pp .armB, .trial-aim .actor.me .pp .head { transition-duration: 0.14s; }
 /* The bow arm follows the aim (--aim: the angle above level, set as the target moves). */
@@ -1120,7 +1125,7 @@ body.intest .leaf .text { background: none !important; }
 .trial.immersive.trial-push > .cast .actor.foe { margin-left: -4vw; }
 .trial.immersive .pushpit { flex: 1 1 0; position: relative; display: block; }
 .trial.immersive .pushpit > .balance { display: none; }
-.trial.immersive .pushpit .ringbox { position: absolute; left: 0; right: 0; bottom: -9vh; height: min(46vh, 380px); max-height: none; min-height: 0; background: none; box-shadow: none !important; overflow: visible; transform: scaleY(0.38); transform-origin: 50% 100%; }
+.trial.immersive .pushpit .ringbox { position: absolute; left: 0; right: 0; bottom: max(-2vh, -16px); height: min(46vh, 380px); max-height: none; min-height: 0; background: none; box-shadow: none !important; overflow: visible; transform: scaleY(0.38); transform-origin: 50% 100%; }
 .trial.immersive .pushpit .ringbox .who { display: none; }
 .trial.immersive .pushpit .ringbox .mark { width: 120px; height: 120px; background: rgba(255, 210, 120, 0.22); border: 4px solid rgba(255, 210, 120, 0.85); box-shadow: 0 0 20px rgba(255, 190, 90, 0.6); } /* taste-skill-ignore: the mark glows on the sand */
 .trial.immersive .pushpit .ringbox .ring { width: 400px; height: 400px; border: 6px solid rgba(247, 234, 211, 0.9); }
@@ -1230,7 +1235,7 @@ body.intest .leaf.fighting.immersive > .pagehead { display: flex !important; gri
 .leaf.fighting.immersive > .arena { grid-row: 2; grid-column: 1; height: auto; margin: 0; background: none; overflow: visible; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 2% 2vh; }
 .leaf.fighting.immersive > .arena::before { display: none; }
 /* The figures are as tall as the screen allows, and never so tall that two to a side run off its edges. */
-.leaf.fighting.immersive > .arena { --ah: clamp(130px, min(27vh, 50vw), 280px); }
+.leaf.fighting.immersive > .arena { --ah: clamp(140px, min(31vh, 56vw), 310px); }
 .leaf.fighting.immersive > .arena .actor svg { height: var(--ah); filter: drop-shadow(0 0 10px rgba(255, 196, 110, 0.45)) drop-shadow(0 6px 6px rgba(0, 0, 0, 0.6)); }
 .leaf.fighting.immersive > .arena .actor.ally svg { height: calc(var(--ah) * 0.82); }
 /* A soft shadow on the ground under each fighter. */
@@ -1253,7 +1258,7 @@ body.intest .leaf.fighting.immersive > .pagehead { display: flex !important; gri
 @media (min-width: 900px) and (min-aspect-ratio: 5/4) {
   body.intest .leaf.fighting.immersive { grid-template-columns: minmax(0, 1fr) clamp(360px, 34vw, 500px); grid-template-rows: auto minmax(0, 1fr); }
   body.intest .leaf.fighting.immersive > .pagehead { grid-column: 1; grid-row: 1; }
-  .leaf.fighting.immersive > .arena { grid-column: 1; grid-row: 2; padding: 0 5% 7vh; --ah: clamp(170px, min(46vh, 22vw), 380px); }
+  .leaf.fighting.immersive > .arena { grid-column: 1; grid-row: 2; padding: 0 5% 7vh; --ah: clamp(180px, min(52vh, 24vw), 430px); }
   body.intest .leaf.fighting.immersive > #battle-body { grid-column: 2; grid-row: 1 / span 2; width: auto; max-height: none; align-self: stretch; overflow-y: auto; justify-content: center;
     margin: calc(-1 * max(8px, var(--sat))) calc(-1 * max(12px, var(--sar))) 0 0; padding: max(18px, var(--sat)) max(18px, var(--sar)) max(18px, var(--sab)) 28px;
     background: linear-gradient(to right, rgba(16, 6, 4, 0), rgba(16, 6, 4, 0.72) 16%, rgba(16, 6, 4, 0.82)) !important; } /* taste-skill-ignore: a shaded band over the painting */
@@ -1508,8 +1513,8 @@ body.pr-slow .arena .incoming.go { transition-duration: calc(var(--dur) / var(--
 /* The turn: the figure flips to face the other way; the rods stay where the puppeteer holds them. */
 .pp.pose-turn .pp-body { transform: scaleX(-1); transform-origin: 60px 120px; transition: transform .35s ease-in; }
 .pp.pose-turn .legF { animation: pp-legF 0.7s ease-in-out infinite alternate; } .pp.pose-turn .legB { animation: pp-legB 0.7s ease-in-out infinite alternate; }
-/* Light and distance: an enemy far from you is a little larger and softer in the lamplight, and sharpens as he steps in. */
-#arena .actor.enemy.far .pp { filter: blur(.45px) brightness(.92); opacity: .86; transform: scale(1.06); transform-origin: 50% 100%; transition: filter .35s, opacity .35s, transform .35s; }
+/* Light and distance: an enemy far from you is a little larger and a shade darker; leather on the screen stays solid. */
+#arena .actor.enemy.far .pp { filter: brightness(.95); transform: scale(1.06); transform-origin: 50% 100%; transition: filter .35s, opacity .35s, transform .35s; }
 /* A flipped enemy (they all face you) keeps facing you when far: the scale must carry the mirror too. */
 #arena .actor.enemy.far .pp.flip { transform: scale(-1.06, 1.06); }
 #arena .actor.enemy .pp { transition: filter .25s, opacity .25s, transform .25s; }
