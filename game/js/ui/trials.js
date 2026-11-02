@@ -554,18 +554,59 @@
       // light stays on you.
       let gp = 0.9, gdir = -1, gpause = 0, turning = false, glock = 0, spot = 0.9;
       const gspeed = clamp(0.1 + (0.26 - light) * 0.25, 0.1, 0.13), REACH = 0.07;
-      const painted = !!host.closest(".trial.immersive");
-      host.innerHTML = '<p class="score" aria-live="polite"></p><div class="sneakway' + (painted ? " painted" : "") + (t.daylight ? " daylight" : "") + '">' +
+      const painted = !!host.closest(".trial.immersive"), day = !!t.daylight;
+      // A test scored in loads (the plain tally) has you carry each one across in a basket on your head.
+      const loads = !t.tally || /load/i.test(t.tally);
+      host.innerHTML = '<p class="score" aria-live="polite"></p><div class="sneakway' + (painted ? " painted" : "") + (day ? " daylight" : "") + '">' +
         '<svg class="beam" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sneak-beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd890" stop-opacity="0.85"/><stop offset="1" stop-color="#ffaa50" stop-opacity="0.32"/></linearGradient></defs><polygon fill="url(#sneak-beam)"/><ellipse class="pool" rx="1" ry="4"/></svg>' +
-        '<div class="goal"></div><div class="guard">' + (painted ? U.puppet(U.puppetFor(t.watch || "guard"), { h: 150, pose: "walk", flip: true }) : "") + '<i class="flame"></i></div><div class="me"></div></div><div class="sus"><i></i></div>' +
+        '<div class="goal"></div><div class="guard">' + (painted ? U.puppet(Object.assign({}, U.puppetFor(t.watch || "guard"), { item: null }), { h: 150, pose: "live", flip: true }) : "") + '<i class="flame"></i></div><div class="me"></div></div><div class="sus"><i></i></div>' +
         '<p class="game-note" aria-live="polite">' + U.trSpan(t.help || "Hold to move. Stop before the light reaches you.") + '</p><div class="btnrow"></div>';
       const way = host.querySelector(".sneakway"), me = host.querySelector(".me"), susBar = host.querySelector(".sus i"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
-      const guard = host.querySelector(".guard"), flame = guard.querySelector(".flame"), poly = host.querySelector(".beam polygon"), pool = host.querySelector(".beam .pool");
-      // On the painting your own puppet creeps along the ground through the shadows.
-      if (painted) me.innerHTML = U.puppet(Object.assign({}, K.puppetSpec(K.S), { item: null }), { h: 150, pose: "sneak" }); // empty-handed, to make no sound
+      const guard = host.querySelector(".guard"), poly = host.querySelector(".beam polygon"), pool = host.querySelector(".beam .pool");
+      let flame = guard.querySelector(".flame");
+      // On the painting your own puppet creeps along the ground through the shadows, empty-handed to
+      // make no sound, with the load in a basket on the head. The guard holds his torch up in front
+      // of him and its light comes from the flame (by day the watcher only looks).
+      if (painted) me.innerHTML = U.puppet(Object.assign({}, K.puppetSpec(K.S), { item: null }), { h: 150, pose: "live" });
       const fig = painted ? me.querySelector(".pp") : null, gfig = painted ? guard.querySelector(".pp") : null;
+      let basket = null, torch = null;
+      if (fig && loads) {
+        fig.querySelector(".j.head").insertAdjacentHTML("beforeend", '<g class="basket"><path d="M46 30 Q60 22 76 30 L73 39 Q60 44 49 39 Z" fill="#a8783a" stroke="#24120a" stroke-width="1.1"/><path d="M48 33 Q60 37 74 33 M49 36.5 Q60 40.5 73 36.5" fill="none" stroke="#6b4a24" stroke-width="1"/><path d="M50 30 Q56 24 60 27 Q66 22 72 29" fill="#c9a24e" stroke="#24120a" stroke-width=".8"/></g>');
+        basket = fig.querySelector(".basket");
+      }
+      if (gfig && !day) {
+        gfig.querySelector(".foreF").insertAdjacentHTML("beforeend", '<g class="torch"><path d="M58 120 L58 150" stroke="#5a3418" stroke-width="3.2" stroke-linecap="round"/><path d="M55 148 h6 v5 h-6 Z" fill="#3a2412" stroke="#24120a" stroke-width=".7"/><g class="fl"><ellipse cx="58" cy="158" rx="4.6" ry="7" fill="#ffb347"/><ellipse cx="58" cy="157" rx="2.4" ry="4.4" fill="#fff1c4"/></g></g>');
+        torch = gfig.querySelector(".torch .fl"); flame = torch;
+      }
+      const mrig = U.rig(fig, me, "sneak"), grig = U.rig(gfig, guard, "stand");
+      // Aim a live figure at a pose given joint by joint; it springs there (snap: at once).
+      const steer = (rig, p, k, z, snap) => {
+        for (const key in rig.t) if (key !== "dx") rig.t[key] = p[key] || 0;
+        rig.k = k; rig.z = z;
+        if (snap) { for (const key in rig.x) { rig.x[key] = rig.t[key]; rig.v[key] = 0; } rig.apply(); }
+      };
+      // You: a crouched creep with high knees and the arms out for balance (f runs with the steps);
+      // frozen low, looking up at the guard; running back upright with long strides.
+      const hold = basket ? [-172, -14] : [-64, -24]; // the back hand steadies the basket, or is out for balance
+      const creep = (f) => { const sn = Math.sin(f), cs = Math.cos(f);
+        return { ty: 13 + Math.abs(sn) * 2, rot: 19, head: -8, legF: -40 + 24 * sn, shinF: 50 + 28 * Math.max(0, Math.sin(f + 1.2)), legB: 24 - 24 * sn, shinB: 44 + 28 * Math.max(0, -Math.sin(f + 1.2)),
+          armF: -46 + 10 * cs, foreF: -34, armB: hold[0], foreB: hold[1] }; };
+      const still = { ty: 18, rot: 12, head: -16, legF: -56, shinF: 76, legB: 20, shinB: 66, armF: -52, foreF: -40, armB: hold[0], foreB: hold[1] };
+      const start = Object.assign({}, still, { head: -24, rot: 4, ty: 6 });
+      const run = (f) => { const sn = Math.sin(f);
+        return { rot: 14, ty: Math.abs(sn) * 3, head: -4, legF: -10 + 40 * sn, shinF: 20 + 50 * Math.max(0, -sn), legB: -10 - 40 * sn, shinB: 20 + 50 * Math.max(0, sn), armF: 40 * sn - 30, foreF: -60, armB: -40 * sn - 30, foreB: -60 }; };
+      // The guard: a stride with the torch held up in front; stopping to look over the yard; the
+      // tell (he lifts the torch high and leans back: about to turn); striding at you, torch thrust out.
+      // By day the watcher swings his arms as he walks and shades his eyes to look.
+      const gwalk = (f) => { const sn = Math.sin(f);
+        return { ty: -Math.abs(sn) * 1.4, legF: 22 * sn, shinF: 16 * Math.max(0, -sn), legB: -22 * sn, shinB: 16 * Math.max(0, sn), armF: day ? 16 * sn : -118, foreF: day ? -18 : -32, armB: -14 * sn, foreB: -18, head: 2 }; };
+      const gstand = day ? { armF: -140, foreF: -96, armB: -4, foreB: -14, head: 4 } : { armF: -104, foreF: -30, armB: -4, foreB: -14, head: 10 };
+      const gtell = { rot: -6, armF: -166, foreF: -8, armB: -20, foreB: -40, head: -16 };
+      const gchase = (f) => Object.assign(gwalk(f * 1.6), { rot: 9, armF: -96, foreF: -4, head: 6 });
+      if (mrig) steer(mrig, still, 600, 0.6, true);
+      if (grig) steer(grig, gwalk(0), 600, 0.6, true);
       const setPose = (el, p) => { if (el) el.setAttribute("class", el.getAttribute("class").replace(/pose-\S+/, "pose-" + p)); };
-      let posed = "", gposed = "", gface = 0;
+      let posed = "", gposed = "", gface = 0, shown = 0, runBack = 0, mf = 0, gf = 0;
       const down = () => { holding = true; cue("hold"); }, up = () => { holding = false; cue("rest"); };
       host.querySelector(".btnrow").appendChild(pressButton(t.verb || "Move", down, up));
       onAct(down, up);
@@ -574,9 +615,9 @@
         let gpose = "walk";
         if (glock > 0) {
           glock -= dt;
-          gp += clamp(pos - gp, -1, 1) * dt * 0.7; gdir = pos >= gp ? 1 : -1; spot = pos; gpose = "push";
+          gp += clamp(pos - gp, -1, 1) * dt * 0.7; gdir = pos >= gp ? 1 : -1; spot = pos; gpose = "chase";
         } else if (gpause > 0) {
-          gpause -= dt; gpose = turning ? "cheer" : "stand";
+          gpause -= dt; gpose = turning ? "tell" : "look";
           if (gpause <= 0 && turning) { gdir = -gdir; turning = false; }
         } else {
           gp += gdir * gspeed * dt;
@@ -589,15 +630,39 @@
         else {
           if (holding) pos = Math.min(1, pos + dt * 0.11);
           sus = clamp(sus + (lit ? (holding ? dt * 2.4 : dt * 0.22) : -dt * 0.35), 0, 1);
-          if (sus >= 1) { seen++; sus = 0; glock = 1.1; freeze = 1.1; note.textContent = K.tr(t.spotted || "A shout. You drop the basket and run back into the dark."); if (K.Sound) K.Sound.play("hit"); cue("bad");
+          if (sus >= 1) { seen++; sus = 0; glock = 1.1; freeze = 1.1; runBack = 1.1; note.textContent = K.tr(t.spotted || "A shout. You drop the basket and run back into the dark."); if (K.Sound) K.Sound.play("hit"); cue("bad");
+            if (basket) basket.style.display = "none"; // you start, and the basket drops
+            if (mrig) mrig.kick({ ty: -260, head: -300, rot: -200 });
             setTimeout(() => { pos = Math.max(0, pos - 0.35); }, 650); }
-          if (pos >= 1) { trips++; cue("good"); pos = 0; note.textContent = K.tr(t.made || "Out, and back for another load."); if (K.Sound) K.Sound.play("choose"); }
+          if (pos >= 1) { trips++; cue("good"); pos = 0; shown = 0; note.textContent = K.tr(t.made || "Out, and back for another load."); if (K.Sound) K.Sound.play("choose"); }
         }
-        // Draw: the guard, his torch, the cone of light from it to the ground.
+        if (basket && freeze <= 0 && basket.style.display) basket.style.display = ""; // another load, once you are back in the dark
+        // You: creeping while you hold, frozen low when you let go (trembling in the light); when seen,
+        // a start, then you turn and run back into the dark to where you land.
+        shown = mrig ? shown + (pos - shown) * Math.min(1, dt * (runBack > 0 ? 5 : 14)) : pos;
+        if (runBack > 0) runBack -= dt;
+        if (mrig) {
+          if (runBack > 0 && freeze < 0.45) { mf += dt * 14; steer(mrig, run(mf), 900, 0.6); fig.classList.add("flip"); }
+          else if (freeze > 0.45) steer(mrig, start, 500, 0.5);
+          else { fig.classList.remove("flip"); if (holding) { mf += dt * 5.2; steer(mrig, creep(mf), 700, 0.62); } else steer(mrig, still, 420, 0.6); }
+          mrig.tremble = lit && !holding ? 2.6 : 0;
+        } else if (fig) {
+          const want = freeze > 0 ? "stand" : "sneak";
+          if (want !== posed) { posed = want; setPose(fig, want); fig.classList.toggle("flip", freeze > 0); }
+        }
+        // The guard faces the way he walks; the torch flickers, and flares as he lifts it.
         guard.style.left = gp * 100 + "%";
         guard.classList.toggle("left", gdir < 0); guard.classList.toggle("tell", gpause > 0 && turning); guard.classList.toggle("locked", glock > 0);
         if (gfig && gface !== gdir) { gface = gdir; gfig.classList.toggle("flip", gdir < 0); }
-        if (gpose !== gposed) { gposed = gpose; setPose(gfig, gpose); }
+        if (grig) {
+          gf += dt * (gpose === "chase" ? 9 : 5.5);
+          steer(grig, gpose === "walk" ? gwalk(gf) : gpose === "chase" ? gchase(gf) : gpose === "tell" ? gtell : gstand, gpose === "tell" ? 260 : 600, 0.6);
+          if (torch) { const fl = (1 + Math.sin(s * 23) * 0.08 + Math.sin(s * 37) * 0.06) * (gpose === "tell" ? 1.35 : 1); torch.setAttribute("transform", "translate(58 158) scale(" + fl.toFixed(3) + ") translate(-58 -158)"); }
+        } else if (gpose !== gposed) {
+          gposed = gpose; // without motion: the plain poses, the torch held out in front
+          setPose(gfig, { walk: day ? "walk" : "hold", look: day ? "stand" : "hold", tell: "cheer", chase: "push" }[gpose]);
+        }
+        // The cone of light, from the flame to the ground.
         const wr = way.getBoundingClientRect(), fr = flame.getBoundingClientRect();
         if (wr.width && wr.height) {
           const fx = ((fr.left + fr.width / 2 - wr.left) / wr.width) * 100, fy = ((fr.top + fr.height / 2 - wr.top) / wr.height) * 100;
@@ -606,8 +671,8 @@
           pool.setAttribute("cx", (spot * 100).toFixed(1)); pool.setAttribute("cy", "98"); pool.setAttribute("rx", (light * 50).toFixed(1));
         }
         way.classList.toggle("caught", glock > 0);
-        me.style.left = painted ? "calc(" + pos * 100 + "% + " + Math.round((1 - pos) * 40) + "px)" : pos * 100 + "%"; // the painted figure starts fully on screen me.classList.toggle("lit", lit);
-        if (fig) { const want = freeze > 0 ? "fall" : holding ? "walk" : "sneak"; if (want !== posed) { posed = want; setPose(fig, want); } }
+        me.style.left = painted ? "calc(" + shown * 100 + "% + " + Math.round((1 - shown) * 40) + "px)" : pos * 100 + "%"; // the painted figure starts fully on screen
+        me.classList.toggle("lit", lit);
         susBar.style.width = sus * 100 + "%";
         U.trLabel(score, t.tally || "Loads: {d} of {n} · Seen: {s} of {m} · {t} seconds", { d: trips, n: need, s: seen, m: lives, t: Math.max(0, Math.ceil(LIMIT - s)) });
         if (trips >= need) finish("win", ["{d} loads carried, seen {s} times.", { d: trips, s: seen }]);

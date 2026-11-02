@@ -431,7 +431,9 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 /* The guard on the far side, with his torch. Without the painting he is a dark shape on the back wall. */
 .sneakway .guard { position: absolute; bottom: 46%; width: 0; height: 0; z-index: 1; transition: left 0.05s linear; }
 .sneakway .guard::before { content: ""; position: absolute; left: -9px; bottom: 0; width: 18px; height: 44px; border-radius: 9px 9px 3px 3px; background: #0a0806; box-shadow: 0 0 0 2px rgba(255, 196, 110, .25); }
-.sneakway.painted .guard::before { display: none; }
+/* On the painting the guard is a puppet; under him, his shadow on the ground. His torch carries its own flame. */
+.sneakway.painted .guard::before { left: calc(clamp(80px, 14vh, 130px) * -0.17); bottom: -3px; width: calc(clamp(80px, 14vh, 130px) * 0.34); height: 8px; border-radius: 50%; background: radial-gradient(closest-side, rgba(4, 2, 6, 0.75), rgba(4, 2, 6, 0)); box-shadow: none; z-index: -1; }
+.sneakway.painted:not(.daylight) .guard .flame { display: none; }
 .sneakway .guard .flame { position: absolute; left: 10px; bottom: 34px; width: 14px; height: 14px; margin: -7px; border-radius: 50%; background: radial-gradient(circle, #fff3c4, #ffb347 45%, rgba(255, 140, 50, 0) 72%); box-shadow: 0 0 18px 6px rgba(255, 170, 80, 0.55); animation: flick 0.35s ease-in-out infinite alternate; } /* taste-skill-ignore: a torch flame */
 .sneakway .guard.left .flame { left: -10px; }
 /* Daylight (a game of tag): no torch; the cone is only where the watcher is looking. */
@@ -1167,10 +1169,12 @@ body.intest .leaf .text { background: none !important; }
 .trial.immersive .sneakway .guard .flame { left: clamp(14px, 2.6vh, 24px); bottom: clamp(48px, 8.6vh, 80px); width: 18px; height: 18px; margin: -9px; }
 .trial.immersive .sneakway .guard.left .flame { left: calc(-1 * clamp(14px, 2.6vh, 24px)); }
 .trial.immersive .sneakway .guard.tell .flame { bottom: clamp(66px, 11.5vh, 106px); }
-.trial.immersive .sneakway .goal { width: 18%; background: radial-gradient(ellipse at 100% 70%, rgba(150, 220, 170, 0.45), transparent 70%); }
+/* The way out: a soft green glow on the ground at the right, fading out inside its own box (no strip or hard edge on the painting). */
+.trial.immersive .sneakway .goal { top: auto; bottom: -3%; height: 30%; width: 24%; background: radial-gradient(closest-side, rgba(150, 220, 170, 0.4), rgba(150, 220, 170, 0)); }
 .trial.immersive .sneakway .me { bottom: 0; width: auto; height: auto; margin-left: -40px; background: none; box-shadow: none; border-radius: 0; }
 .trial.immersive .sneakway .me .pp { height: clamp(110px, 20vh, 170px); width: auto; filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.6)); }
 .trial.immersive .sneakway .me.lit .pp { filter: drop-shadow(0 0 12px rgba(255, 210, 120, 0.95)); }
+.trial.immersive .sneakway .me::before { content: ""; position: absolute; left: 14%; right: 14%; bottom: -4px; height: 12px; border-radius: 50%; background: radial-gradient(closest-side, rgba(4, 2, 6, 0.75), rgba(4, 2, 6, 0)); z-index: -1; pointer-events: none; }
 
 /* Noticing: the things lie in the scene as small cards; the question is asked from it. */
 .trial.immersive .table { margin: auto 0; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
