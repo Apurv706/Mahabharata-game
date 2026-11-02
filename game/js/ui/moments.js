@@ -48,7 +48,7 @@
           art: null, place: "scene_vow", emblem: "vow_" + m.id };
       }
       case "company": return { theme: "milestone", title: "A company of your own", line: "They are yours to command, and yours to bring home.", art: "scene_command_banner", place: null, emblem: null };
-      default: return null;
+      default: return K.MOMENT_KINDS && K.MOMENT_KINDS[m.kind] ? K.MOMENT_KINDS[m.kind](m, S) : null; // kinds the content adds (war_child.js)
     }
   };
   // The title alone, for cards and the Book of Lives.
@@ -113,6 +113,7 @@
     const reveal = () => { if (shown || running !== run) return; shown = true; requestAnimationFrame(() => requestAnimationFrame(() => { el.classList.add("in"); plan(); })); };
     const plan = () => {
       beats.push(setTimeout(close, still ? 6000 : info.astra ? 8200 : 7200));
+      if (info.play) at(info.playAt || 600, () => info.play(el)); // an effect drawn in code over the painting
       if (info.with) at(1900, () => {
         el.classList.add("met");
         el.querySelectorAll(".mo-figs svg").forEach((s) => s.setAttribute("class", s.getAttribute("class").replace(/\bpose-\S+/, "pose-clasp")));

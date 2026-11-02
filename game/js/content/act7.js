@@ -159,7 +159,7 @@
   function fates(S) {
     const f = [];
     if (S.child === "vasu") {
-      if (S.dead.includes("vasu")) f.push("Vasu died in the night raid. You built his pyre with your own hands.");
+      if (S.dead.includes("vasu")) f.push((K.childDeath && K.childDeath(S)) || "Vasu died in the night raid. You built his pyre with your own hands.");
       else if (!S.alive) f.push("Vasu carried your story home, and told it to his own children.");
       else f.push(S.flags.includes("vasu_gentle") ? "Vasu grew into the kind man you hoped for, and never picked up a sword again." : S.flags.includes("vasu_craft") ? "Vasu went back to the craft you taught him, and did well." : "Vasu served in Parikshit's guard and rose high.");
     }

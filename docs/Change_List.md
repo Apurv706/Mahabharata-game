@@ -181,6 +181,15 @@ Following `Quality_Review_2026-11-02.md` and its "Decided 2 November" section. T
 53. **Leather chariots, the whip and contact (item 23):** two horses with manes and harness, a railed car in your colours with the driver at the reins, turning wheels, a pennant, galloping legs and dust; Karna in gold with white horses. A Whip button (Space): double speed for 1.5 s, 6 s to recharge, ended by a hit or a clash. Karna drifts between lanes; steering into him clashes the wheels; now and then he cuts across you after a 0.7 s warning. Whip and contact are only in races against a rival. Balance: see `tests/race_balance.js`; Karna is a little faster (3.25 → 3.5) so whip users win about as often as before (93% against 94%); players who never whip now rarely win.
 54. **From the owner's play (2 Nov):** meeting a blow in a fight is fairer (block ±0.2 s, dodge ±0.17 s around the mark, a press while your own move is still playing is ignored); a teacher or elder watching a test thinks, instead of cheering, when you slip.
 
+## Built 2 Nov: war storylines (PRD §18.13; branch `war-storylines`, on the private play pages; not on the public site until approved)
+55. **Your child on the field (#7):** the thread tied on the eve, letters, his day beside you (a call for help can reach him), and a fate decided by what he lived through, including the night raid.
+56. **The Shakti spent (#5):** Kaurava side, hold off Ghatotkacha's night form and call Karna in; Pandava side, try to reach Karna's chariot before he throws. What you said is what Karna answers on day 17.
+57. **Bhurishravas (#4) and your king falls (#6):** holding Bhurishravas off Satyaki, the choice while he sits (the vow against striking the unarmed), carrying your king from the field, Dhrishtadyumna and Drona, taking word home.
+58. **Days 14–15 for every Pandava fighter:** Yudhishthira's order to ride with Satyaki (how the ride goes sets how worn out he is when Bhurishravas reaches him); the cry "Ashwatthama is dead" (a lie, which breaks the vow never to lie); the two days quoted back at you in one night debate. Satyaki is a full, larger figure.
+59. **The great duel (#8, day 17):** Kaurava side, guard Vrishasena (Karna's last words name it, or he never looks at you again); Pandava side, Arjuna's wheel-guard with Yudhamanyu and Uttamaujas under weapon clashes (they remember you on the night of the raid).
+60. **From the owner's play:** the painting holds still while a choice's outcome is written and moves once at the end; story text and choices a size smaller (act cards, the dream and full-screen moments unchanged).
+61. **The private play page in two parts:** Part One (Acts I–IV) and Part Two (Acts V–VII), each under the 512-file limit, with a life carried across by its save code, or a ready-made life to begin at Act V. GitHub stays one game.
+
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**
 - **Batches and patch:** batches 3–6f, and the 6-file patch (sun banners on the war field, sunset and camp gate).

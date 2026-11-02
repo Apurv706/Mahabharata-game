@@ -30,7 +30,7 @@
     const from = center(o.from) || { x: W * 0.25, y: H * 0.45 }, to = center(o.to) || { x: W * 0.75, y: H * 0.45 };
     if (K.Sound) { K.Sound.play("gong"); setTimeout(() => K.Sound.play(o.clash ? "hit" : "choose"), 650); }
     const layer = U.el('<div class="astra-fx" aria-hidden="true"><i class="ax-dark"></i><i class="ax-tint" style="background:' + K2.tint + '"></i><i class="ax-mantra"></i><canvas></canvas></div>');
-    document.body.appendChild(layer);
+    (o.into || document.body).appendChild(layer); // inside a moment, over its painting
     const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) { layer.classList.add("still"); setTimeout(() => layer.remove(), 700); return; }
     const cv = layer.querySelector("canvas"), dpr = Math.min(2, window.devicePixelRatio || 1);
