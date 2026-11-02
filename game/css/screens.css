@@ -1594,6 +1594,17 @@ svg .pr-hint { outline: none; filter: drop-shadow(0 0 6px #ffd680) drop-shadow(0
   #battle-actions .actions:has(> .act:nth-child(7)) .act small { display: none; }
   #battle-actions .actions:has(> .act:nth-child(7)) .act { min-height: 0; padding-top: 8px; padding-bottom: 8px; }
 }
+/* Phones: the moves are a compact strip of three across, names only, so the puppets keep the screen.
+   A move that is not ready still says why, small; the full description is the card's tooltip. */
+@media (max-width: 560px) {
+  .leaf.fighting.immersive #battle-actions .actions { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+  .leaf.fighting.immersive #battle-actions .act { min-height: 44px; padding: 6px 7px; align-content: center; }
+  .leaf.fighting.immersive #battle-actions .act b { font-size: 13.5px; line-height: 1.2; }
+  .leaf.fighting.immersive #battle-actions .act small { display: none; }
+  .leaf.fighting.immersive #battle-actions .act:disabled small { display: block; font-size: 10.5px; }
+  .leaf.fighting.immersive #battle-actions .astra-pick { grid-template-columns: 1fr; }
+  .leaf.fighting.immersive #battle-actions .astra-pick .act small { display: block; }
+}
 /* The dive: the diver in the lake is you, so no second figure stands on the lake bed below. */
 .trial.trial-breath > .cast { display: none; }
 
@@ -1673,6 +1684,7 @@ svg .pr-hint { outline: none; filter: drop-shadow(0 0 6px #ffd680) drop-shadow(0
 .sleepin.open .si-bubble { clip-path: circle(150% at var(--bx) var(--by)); }
 .sleepin .si-cap { position: absolute; z-index: 3; left: 24px; right: 24px; top: max(7vh, calc(var(--sat) + 44px)); margin: 0; text-align: center; color: #f2e8d5; font-family: var(--display); font-style: italic; font-size: clamp(22px, 5vw, 34px); line-height: 1.3; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8); opacity: 0; transform: translateY(6px); transition: opacity 0.8s ease, transform 0.8s ease; }
 .sleepin .si-cap.in { opacity: 1; transform: none; }
+.sleepin .si-cap small { display: block; max-width: 30ch; margin: 10px auto 0; font-size: 0.62em; line-height: 1.4; color: #e6d6b8; }
 .sleepin.open .si-cap { opacity: 0; }
 .sleepin .mo-tap { position: absolute; z-index: 3; left: 20px; bottom: max(18px, var(--sab)); color: rgba(242, 232, 213, 0.75); font-size: 14px; }
 @media (prefers-reduced-motion: reduce) { .sleepin, .sleepin * { transition-duration: 0.01s !important; animation: none !important; } }

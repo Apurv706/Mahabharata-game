@@ -18,10 +18,16 @@
   let foeKey = null;      // the enemy turn being played, so a redraw does not start it twice
   let qte = null;
   let groundWatch = null; // keeps the painting's ground under the fighters (see the fresh draw)
-  let astraPick = false;  // the divine-weapon chooser is open         // the defence moment in progress
+  let astraPick = false;
+  // Live figures (js/ui/puppet-anim.js): each fighter's spring rig, by unit; allies who have made
+  // their entrance; who was guarding at the last draw; and until when the moves are still playing.
+  const rigs = new Map();
+  let seenAllies = new Set(), lastGuard = new Set(), animUntil = 0;
+  U.battleRigs = () => rigs; // for the screenshot checks  // the divine-weapon chooser is open         // the defence moment in progress
 
   U.startBattle = function (encId, onEnd) {
     target = null; lastHp = {}; lastLogLen = 0; lastActs = 0; foeKey = null; autoKey = null; stopQte();
+    rigs.clear(); seenAllies = new Set(); lastGuard = new Set(); animUntil = 0;
     onEndCb = onEnd;
     // The great war opens each fight with the call to arms; other fights with a drum call.
     if (K.Sound && K.ENCOUNTERS[encId]) K.Sound.play(K.ENCOUNTERS[encId].lethal && K.S.act === 6 ? "callToArms" : "drumCall");
@@ -93,7 +99,7 @@
   function arenaHtml(B) {
     const stage = K.val(B.enc.stage) || K.val(B.enc.art);
     const actor = (u) => '<span class="actor ' + u.side + (u.hp <= 0 ? " down" : "") + (u.side === "enemy" && u.hp > 0 ? " far" : "") + '" data-uid="' + u.uid + '">' +
-      U.puppet(specFor(u), { h: 150, flip: u.side === "enemy", pose: u.hp <= 0 ? "dead" : u.side === "player" ? "brace" : "stand", label: u.side === "player" ? K.tr("You") : null }) + '<span class="pops"></span></span>';
+      U.puppet(specFor(u), { h: 150, flip: u.side === "enemy", pose: u.hp <= 0 ? "dead" : liveFigures() ? "live" : u.side === "player" ? "brace" : "stand", label: u.side === "player" ? K.tr("You") : null }) + '<span class="pops"></span></span>';
     const friends = B.units.filter((u) => u.side !== "enemy"), foes = B.units.filter((u) => u.side === "enemy");
     return '<div class="arena" id="arena" style="--stage:url(\'' + U.artUrl(stage) + '\')" aria-hidden="true"><div class="team left">' + friends.map(actor).join("") +
       '</div><div class="team right">' + foes.map(actor).join("") + '</div><div class="arena-flash"></div></div>';
@@ -103,6 +109,8 @@
     const el = actorEl(uid);
     const svg = el && el.querySelector(".pp");
     if (!svg) return;
+    const r = rigs.get(uid);
+    if (r && r.svg === svg) return rigPose(uid, r, el, p, ms);
     svg.setAttribute("class", svg.getAttribute("class").replace(/pose-\S+/, "pose-" + p));
     // An enemy steps into the light to act, and back into the soft distance after.
     if (el.classList.contains("enemy")) el.classList.toggle("far", p === "stand" && !el.classList.contains("down"));
@@ -112,12 +120,188 @@
   function burst(uid, cls, ms) { const el = actorEl(uid); if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); setTimeout(() => el.classList.remove(cls), ms || 500); }
   function pop(uid, text, cls) { const el = actorEl(uid); if (!el) return; const p = U.el('<span class="pop ' + cls + '">' + U.esc(text) + "</span>"); el.querySelector(".pops").appendChild(p); setTimeout(() => p.remove(), 1300); }
 
+  // ---------- Live figures ----------
+  // Fighters move on springs: a wind-up before each blow, a freeze on contact, knockback, a slack fall,
+  // and each move its own action (an aimed shot is drawn and held, a volley arcs, herbs are knelt over).
+  // With reduced motion, or under the test harness, the CSS poses are used as before.
+  function liveFigures() { return !K.headless && U.motion() && typeof U.rig === "function"; }
+  const isBow = (svg) => !!(svg && svg.querySelector('.it:not(.it-w) path[d="M50 86 L50 166"]'));
+  function rigUp(B) {
+    rigs.clear();
+    if (!liveFigures()) return;
+    for (const u of B.units) {
+      const el = actorEl(u.uid), svg = el && el.querySelector(".pp");
+      if (!svg || u.hp <= 0 || !/\bpose-live\b/.test(svg.getAttribute("class"))) continue;
+      const r = U.rig(svg, el, isBow(svg) ? "bowready" : "ready");
+      if (!r) continue;
+      rigs.set(u.uid, r);
+      // A friend who joins the fight comes in from the edge of the stage, saying something.
+      if (u.side === "ally" && !seenAllies.has(u.uid)) {
+        r.x.dx = -Math.max(140, (U.$("arena") || document.body).clientWidth * 0.45); r.apply();
+        svg.classList.add("talk"); setTimeout(() => svg.classList.remove("talk"), 1100);
+        animUntil = Math.max(animUntil, performance.now() + 700);
+      }
+    }
+    B.units.forEach((u) => { if (u.side === "ally") seenAllies.add(u.uid); });
+  }
+  // The CSS pose names the screen uses, as the rig's poses.
+  const RIGPOSE = { strike: "strike", block: "guard", kneel: "kneel", loose: "loose", aim: "draw", hold: "windup", jump: "jump", duck: "duck", side: "side",
+    sneak: "sneak", push: "push", cheer: "cheer", speak: "speak", think: "think", fold: "fold", slump: "slump" };
+  function rigPose(uid, r, el, p, ms) {
+    if (el.classList.contains("enemy")) el.classList.toggle("far", (p === "stand" || p === "brace") && !el.classList.contains("down"));
+    clearTimeout(r._t);
+    if (p === "hit") { r.kick({ rot: -150, tx: -36, head: -180, armF: 140 }); return; }
+    if (p === "fall") { r.fallDown(); return; }
+    if (p === "turn") { // turning your back: the plain CSS turn
+      r.stop(); rigs.delete(uid);
+      r.svg.querySelectorAll("[style]").forEach((n) => n.removeAttribute("style")); el.style.translate = "";
+      r.svg.setAttribute("class", r.svg.getAttribute("class").replace(/pose-\S+/, "pose-turn")); return;
+    }
+    if (p === "stand" || p === "brace") { r.home(); return; }
+    r.set(RIGPOSE[p] || "strike", p === "strike" ? 1900 : 700, 0.5);
+    if (p === "strike") r.t.dx = el.classList.contains("enemy") ? -lunge() : lunge();
+    if (ms) r._t = setTimeout(() => { if (rigs.get(uid) === r && !el.classList.contains("down")) { r.t.dx = 0; r.home(); } }, ms);
+  }
+  const lunge = () => { const a = U.$("arena"); return Math.max(28, Math.min(70, (a ? a.clientHeight : 300) * 0.14)); };
+  // Points on a figure, inside the arena: the drawing hand, the chest, the front foot.
+  function point(uid, where) {
+    const a = U.$("arena"), el = actorEl(uid), svg = el && el.querySelector(".pp");
+    if (!a || !svg) return { x: 0, y: 0 };
+    const s = a.getBoundingClientRect();
+    const part = svg.querySelector(where === "hand" ? ".foreF" : where === "foot" ? ".shinF" : ".pp-body") || svg;
+    const r = part.getBoundingClientRect();
+    if (where === "hand") return { x: r.left - s.left + r.width / 2, y: r.top - s.top + r.height * 0.45 };
+    if (where === "foot") return { x: r.left - s.left + r.width / 2, y: r.top - s.top + r.height * 0.8 };
+    return { x: r.left - s.left + r.width / 2, y: r.top - s.top + r.height * 0.38 };
+  }
+  // A blow lands: both figures hold for a beat, the struck one flashes, is knocked back and sheds a
+  // few flakes of leather; a heavy blow shakes the stage. A blow taken on a guard glances off in sparks.
+  function impact(u, d, heavy, guarded) {
+    const r = rigs.get(u.uid), el = actorEl(u.uid), a = U.$("arena");
+    if (!el) return;
+    const dir = u.side === "enemy" ? 1 : -1;
+    if (guarded) {
+      U.rigFreeze(45); U.flingBits(a, "spark", point(u.uid, "hand"), 10, 20, null, true);
+      if (r) r.kick({ rot: -120 * -dir, dx: dir * 140 });
+      pop(u.uid, String(d), "down small"); return;
+    }
+    U.rigFreeze(heavy ? 65 : 40);
+    el.classList.add("flash"); setTimeout(() => el.classList.remove("flash"), 110);
+    const k = heavy ? 1 : 0.55;
+    if (r) r.kick({ rot: -260 * k, tx: -60 * k, head: -320 * k, armF: 240 * k, foreB: 300 * k, dx: dir * 260 * k });
+    U.flingBits(a, "flake", point(u.uid, "chest"), heavy ? 9 : 5, 30, "#8a3a2a");
+    pop(u.uid, String(d), "down");
+    if (heavy && a) { a.classList.remove("shake"); void a.offsetWidth; a.classList.add("shake"); setTimeout(() => a.classList.remove("shake"), 260); }
+  }
+  const HEAVY = new Set(["aimed", "heavy", "crush", "breaker", "quake", "ridedown", "hamstring"]);
+  const MELEE = new Set(["strike", "heavy", "breaker", "disarm", "crush", "nerve", "hamstring", "ridedown", "quake", "swerve"]);
+  const SHOTS = new Set(["arrows", "aimed", "volley", "pin", "astra"]);
+  // One move, played out on its figure; hit(target) is called at the moment each blow lands.
+  async function playMove(a, u, targets, hit) {
+    const r = rigs.get(u.uid);
+    const el = actorEl(u.uid), ar = U.$("arena");
+    if (!r || !el || !ar) { targets.forEach((t) => setTimeout(() => hit(t), 110)); return 400; }
+    const W = U.wait, side = u.side === "enemy" ? -1 : 1;
+    const first = targets[0];
+    const shot = (r.bow && (a.id === "strike" || SHOTS.has(a.id))) || (SHOTS.has(a.id) && a.id !== "astra");
+    if (a.id === "guard" || a.id === "brace") {
+      r.set("guard", 900, 0.55);
+      const ward = document.createElement("div"); ward.className = "ward"; ar.appendChild(ward);
+      const h = point(u.uid, "chest"), size = ar.clientHeight * 0.3;
+      Object.assign(ward.style, { left: (h.x - size * (side > 0 ? 0.25 : 0.75)) + "px", top: (h.y - size * 0.5) + "px", width: size + "px", height: size + "px", transform: "rotate(" + (side > 0 ? 10 : 190) + "deg)" });
+      ward.animate([{ opacity: 0 }, { opacity: 1 }, { opacity: 1 }, { opacity: 0 }], { duration: 1500 }).onfinish = () => ward.remove();
+      targets.forEach((t) => hit(t));
+      await W(1300); if (rigs.get(u.uid) === r) r.home();
+      return 600;
+    }
+    if (["herbs", "salve", "steady"].includes(a.id)) {
+      r.set("kneel", 420, 0.6); await W(320);
+      el.classList.add("mending"); U.flingBits(ar, "mote", point(u.uid, "hand"), 12, 30, null, true);
+      await W(300); U.flingBits(ar, "mote", point(u.uid, "chest"), 8, 40, null, true);
+      targets.forEach((t) => hit(t));
+      await W(500); el.classList.remove("mending"); if (rigs.get(u.uid) === r) r.home();
+      return 1200;
+    }
+    if (shot && first) {
+      if (a.id === "aimed") { r.set("draw", 260, 0.8); await W(240); r.tremble = 2.2; await W(420); r.tremble = 0; r.set("loose", 1600, 0.45); }
+      else if (a.id === "volley") { r.set("drawUp", 320, 0.75); await W(330); r.set("looseUp", 1600, 0.45); }
+      else if (a.id === "pin") { r.set("drawLow", 300, 0.75); await W(320); r.set("looseLow", 1600, 0.45); }
+      else { r.set("draw", 900, 0.7); await W(150); r.set("loose", 1600, 0.3); }
+      r.kick({ rot: -60 * side, armB: -200 });
+      const hand = point(u.uid, "hand");
+      if (a.id === "volley") {
+        const list = targets.length === 1 ? [first, first, first] : targets.concat(targets).slice(0, Math.max(3, targets.length));
+        const done = new Set();
+        await Promise.all(list.map((t, i) => W(i * 90).then(() => { const p = point(t.uid, "chest"); p.x += (i - 1) * 8; return U.flyArrow(ar, hand, p, ar.clientHeight * 0.32, 520); }).then(() => { if (!done.has(t.uid)) { done.add(t.uid); hit(t); } })));
+      } else if (a.id === "pin") {
+        const foot = point(first.uid, "foot");
+        const arrow = await U.flyArrow(ar, hand, { x: foot.x - 2, y: foot.y + 4 }, -18, 170, true);
+        // Driven into the earth beside the foot: the tip buried, the shaft standing steeply.
+        arrow.style.transform = "translate(" + (foot.x + 6 - arrow.offsetWidth) + "px," + (foot.y + 8 - arrow.offsetHeight / 2) + "px) rotate(" + (side > 0 ? 38 : 142) + "deg)";
+        hit(first);
+        const tr = rigs.get(first.uid);
+        if (tr) { tr.set("strain", 300, 0.4); tr.pinned = 1; setTimeout(() => { tr.pinned = 0.4; tr.home(); }, 1200); setTimeout(() => { tr.pinned = 0; }, 2600); }
+        setTimeout(() => arrow.remove(), 2600);
+      } else {
+        for (const t of targets) { await U.flyArrow(ar, hand, point(t.uid, "chest"), a.id === "aimed" ? 6 : 8, a.id === "aimed" ? 170 : 160); hit(t); }
+      }
+      await W(220); if (rigs.get(u.uid) === r) r.home();
+      return 300;
+    }
+    if (MELEE.has(a.id) || targets.length) {
+      if (r.pose !== "windup") { r.set("windup", 520, 0.7); await W(120); } // anticipation: the tell
+      r.set("strike", 1900, 0.5); r.t.dx = side * lunge(); await W(55);       // the blow
+      targets.forEach((t) => hit(t)); await W(90);
+      r.t.dx = 0; r.set(r.baseName, 520, 0.42);                            // follow-through, and settle
+      return 260;
+    }
+    rigPose(u.uid, r, el, POSE[a.id] || "strike", 650);
+    return 650;
+  }
+  function animateLive(B, acts) {
+    const arena = U.$("arena");
+    const changed = B.units.filter((u) => lastHp[u.uid] != null && lastHp[u.uid] !== u.hp);
+    const hurt = changed.filter((u) => u.hp < lastHp[u.uid]), healed = changed.filter((u) => u.hp > lastHp[u.uid]);
+    const killed = hurt.filter((u) => u.hp <= 0);
+    const finisher = B.over === "win" && killed.some((u) => u.side === "enemy");
+    if (finisher && arena) { arena.classList.add("slowmo"); if (K.Sound) setTimeout(() => K.Sound.play("gong"), 300); }
+    if (K.Sound && killed.some((u) => u.side === "ally" && u.person)) K.Sound.play("friendFalls");
+    const landed = new Set();
+    const land = (t) => {
+      if (landed.has(t.uid)) return; landed.add(t.uid);
+      const d = t.hp - lastSeen[t.uid];
+      if (d > 0) { pop(t.uid, "+" + d, "up"); return; }
+      impact(t, d, HEAVY.has(t._by) || -d >= t.maxHp * 0.18, guardWas.has(t.uid) && !t.status.guard);
+      if (t.hp <= 0) setTimeout(() => { const el = actorEl(t.uid); if (el) el.classList.add("down"); const r = rigs.get(t.uid); if (r) r.fallDown(); else pose(t.uid, "fall"); }, finisher ? 160 : 70);
+    };
+    const lastSeen = Object.assign({}, lastHp), guardWas = new Set(lastGuard);
+    let left = hurt.slice(), longest = 0;
+    acts.forEach((a) => {
+      const u = B.units.find((x) => x.uid === a.uid);
+      if (!u) return;
+      const friendly = u.side !== "enemy";
+      let targets;
+      if (["herbs", "salve", "steady", "rally"].includes(a.id)) targets = healed.filter((t) => t.side !== "enemy");
+      else { targets = left.filter((t) => (t.side === "enemy") === friendly); left = left.filter((t) => !targets.includes(t)); }
+      targets.forEach((t) => { t._by = a.id; });
+      const t0 = performance.now();
+      Promise.resolve(playMove(a, u, targets, land)).then(() => {}).catch(() => {});
+      const est = { aimed: 1100, volley: 1000, pin: 700, herbs: 1200, salve: 1200, steady: 1200, guard: 400, brace: 400 }[a.id] || (rigs.get(u.uid) && rigs.get(u.uid).bow && a.id === "strike" ? 450 : 350);
+      longest = Math.max(longest, est); void t0;
+    });
+    // Whatever was not anybody's move this time (a blow met at the ring, a bleed): it lands now.
+    setTimeout(() => { left.forEach(land); healed.forEach(land); }, 110);
+    animUntil = Math.max(animUntil, performance.now() + longest);
+    B.lastDef = null;
+  }
+
   // Play what happened since the last draw: who moved, who was hit, who fell.
   function animate(B) {
     const acts = B.acts.slice(lastActs);
     // A divine weapon: its own full-screen moment (ui/fx.js), which keeps to reduced motion itself.
     acts.forEach((a) => { if ((a.id === "astra" || (K.ASTRAS && K.ASTRAS[a.id])) && B.astraOut && U.astraFx) { const o = B.astraOut; B.astraOut = null; U.astraFx({ kind: o.kind, clash: o.clash, from: actorEl(a.uid), to: actorEl(o.uid) }); } });
     if (!U.motion()) return;
+    if (rigs.size) { animateLive(B, acts); lastGuard = new Set(B.units.filter((u) => u.status.guard).map((u) => u.uid)); return; }
     const arena = U.$("arena");
     acts.forEach((a) => {
       const u = B.units.find((x) => x.uid === a.uid);
@@ -242,7 +426,7 @@
     const el = U.el('<div class="qte" role="group" aria-label="' + U.esc(K.tr("Meet the blow")) + '"><p class="qte-who"><b>' + U.esc(who) + "</b> · " + U.esc(K.tr(what)) + "</p>" +
       '<div class="qte-ring"><i class="mark"></i><i class="ring"></i></div><p class="qte-note" aria-live="assertive">' + U.esc(K.tr("Read the blow: jump, duck, sidestep or block, as the ring meets the mark. Swipe or use the arrow keys.")) + '</p><div class="btnrow qte-btns"></div></div>');
     const ring = el.querySelector(".ring"), note = el.querySelector(".qte-note");
-    let t0 = 0, raf = 0, over = false, flyer = null;
+    let t0 = 0, raf = 0, over = false, flyer = null, starting = false;
     const LINES = { counter: "A perfect read! You strike back.", block: "Blocked.", dodge: "Clear!", graze: "Late: it grazes you.", early: "Too early.", late: "Too late.", wrong: "The wrong way!" };
     const P = C.player();
     const finish = (result, line, move) => {
@@ -301,7 +485,7 @@
       requestAnimationFrame(() => flyer && flyer.classList.add("go"));
     };
     const tick = () => {
-      if (!el.isConnected && over) return;
+      if ((!el.isConnected && over) || !t0) return;
       const s = now();
       const p = Math.min(1, s / T);
       ring.style.transform = "translate(-50%, -50%) scale(" + Math.max(0.12, 1 - p * 0.7 - Math.max(0, s - T) * 0.6) + ")";
@@ -309,7 +493,14 @@
       raf = requestAnimationFrame(tick);
     };
     return {
-      mount(box) { if (el.parentNode !== box) box.appendChild(el); if (!t0) { try { el.scrollIntoView({ block: "nearest", behavior: U.motion() ? "smooth" : "auto" }); } catch (e) { /* old browsers */ } t0 = U.clock(); launch(); raf = requestAnimationFrame(tick); bs[3].focus({ preventScroll: true }); } },
+      mount(box) {
+        if (el.parentNode !== box) box.appendChild(el);
+        if (t0 || starting) return;
+        try { el.scrollIntoView({ block: "nearest", behavior: U.motion() ? "smooth" : "auto" }); } catch (e) { /* old browsers */ }
+        // The blow comes once the last move has played out (an aimed shot is drawn and held).
+        starting = true;
+        setTimeout(() => { if (over) return; pose(u.uid, th.id === "arrows" ? "aim" : "hold"); t0 = U.clock(); launch(); raf = requestAnimationFrame(tick); bs[3].focus({ preventScroll: true }); }, Math.max(0, Math.min(1200, animUntil - performance.now())));
+      },
       stop() { over = true; cancelAnimationFrame(raf); off(); if (flyer) flyer.remove(); }
     };
   }
@@ -342,6 +533,7 @@
       leaf.innerHTML = U.plate({ art: K.val(enc.art), keepArt: deep, caption: K.val(enc.caption), tag: enc.lethal ? "war" : "yours", tagText: K.tr(enc.lethal ? "Battle · you can die here" : "A fight"), heading: K.val(enc.title), noFigure: true }) +
         arenaHtml(B) + '<div class="text battle" id="battle-body"></div>';
       lastActs = B.acts.length; // nothing to replay on a fresh draw
+      rigUp(B);
       // Put the painting's ground under the fighters' feet, once they are laid out.
       if (deep) requestAnimationFrame(() => U.fitBackdrop(true));
       // And keep it there: whenever the figures' band or the moves' panel changes size (a chooser opens, a
@@ -453,6 +645,7 @@
       const b = U.button("act" + (special ? " special" : ""), "<b>" + (i + 1) + ". " + U.esc(a.name + extra) + "</b><small>" + U.esc(a.why || a.desc) + "</small>");
       b.disabled = !!a.why;
       b.dataset.move = a.id;
+      b.title = a.why || a.desc; // on phones the card shows only the name
       const run = a.id === "astra-pick" ? () => { const ready = astras.filter((x) => !x.why); if (ready.length === 1) C.act(ready[0].id, ready[0].target === "enemy" ? target : null); else { astraPick = true; U.renderBattle(B); } } : () => { if (!C.act(a.id, a.target === "enemy" ? target : null)) U.renderBattle(C.state() || B); };
       b.addEventListener("click", run);
       keys.push(a.why ? null : run);
