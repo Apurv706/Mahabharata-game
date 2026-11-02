@@ -97,7 +97,7 @@
   // Weapons and tools are drawn resting in a hanging hand, pointing up along the arm. When the arm
   // is raised or reaching (a strike, a block, a cheer), CSS turns them about the hand so they carry
   // on past the fist the way a held weapon does, instead of hanging upside down.
-  const WIELD = new Set(["mace", "sword", "spear", "dagger", "hammer", "staff", "plough", "whip"]);
+  const WIELD = new Set(["mace", "sword", "woodsword", "spear", "dagger", "hammer", "staff", "plough", "whip"]);
   function itemSvg(kind, trim) {
     switch (kind) {
       // A recurved bow held at its grip: the belly passes through the hand, the string runs behind the arm.
@@ -119,6 +119,10 @@
       case "sword": return '<g transform="rotate(16 58 126)">' +
         '<path d="M56.2 119 L55.4 84 Q56 74 62.5 68 Q61.6 78 61 86 L59.8 119 Z" fill="#dcd7c8"' + OUT + '/><path d="M58 117 L57.8 86 Q58.6 78 61 73" fill="none" stroke="#9a9484" stroke-width="0.7"/>' +
         '<path d="M51.5 119.5 L64.5 119.5 L63 122.5 L53 122.5 Z" fill="' + GOLD + '"' + OUT + '/><rect x="56.4" y="122.5" width="3.2" height="9" fill="#5a3418"' + OUT + '/><circle cx="58" cy="133.5" r="2.4" fill="' + GOLD + '"' + OUT + '/></g>';
+      // A practice sword of wood: the same broad blade in teak, a plain cross-piece, a cord-wrapped grip.
+      case "woodsword": return '<g transform="rotate(16 58 126)">' +
+        '<path d="M56.2 119 L55.4 84 Q56 74 62.5 68 Q61.6 78 61 86 L59.8 119 Z" fill="#b5834a"' + OUT + '/><path d="M58 117 L57.8 86 Q58.6 78 61 73" fill="none" stroke="#7a5228" stroke-width="0.8"/>' +
+        '<path d="M52 119.5 L64 119.5 L64 122.5 L52 122.5 Z" fill="#8a5a2c"' + OUT + '/><rect x="56.4" y="122.5" width="3.2" height="9" fill="#5a3418"' + OUT + '/><path d="M56.4 125h3.2M56.4 128h3.2" stroke="#d9b26a" stroke-width="0.9"/></g>';
       // A spear: a long shaft, a leaf-shaped head on a collar, and a red tassel below it.
       case "spear": return '<path d="M58 176 L58 64" stroke="#5a3418" stroke-width="2.4" stroke-linecap="round"/>' +
         '<path d="M58 40 Q63.5 52 60.4 63 L55.6 63 Q52.5 52 58 40 Z" fill="#dcd7c8"' + OUT + '/><path d="M58 44 L58 62" stroke="#9a9484" stroke-width="0.7"/>' +
