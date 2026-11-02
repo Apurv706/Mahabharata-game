@@ -238,7 +238,7 @@
     const mom = Object.assign({}, base, plain, { pronoun: "she", stage: "adult", palette: [skin, "#8a2f3a", trim] });
     const dad = Object.assign({}, base, plain, { pronoun: "he", stage: "adult", palette: [skin, pal[1] || "#6f3a24", trim] });
     const el = U.el('<div class="sleepin wakeup" role="presentation">' + WALL + '<div class="si-night"></div>' +
-      '<div class="si-room"><div class="wk-bed">' + BED + '<span class="wk-kid">' + U.puppet(kid, { h: 130, pose: "sit", flip: true }) + '<i class="wk-sweat"><b></b><b></b><b></b></i></span></div>' +
+      '<div class="si-room"><div class="wk-bed">' + BED + '<span class="wk-kid">' + U.puppet(kid, { h: 130, pose: "sit", flip: true }) + '</span></div>' +
       '<span class="wk-mom"><i class="wk-mglow"></i>' + U.puppet(mom, { h: 170, pose: "walk" }) + '<span class="si-lamp wk-lamp"><img src="art/diya.png" alt=""><img class="flame" src="art/diya_flame.png" alt=""></span></span>' +
       '<span class="wk-dad">' + U.puppet(dad, { h: 210, pose: "stand", flip: true }) + "</span></div>" +
       '<div class="wk-white"><p>' + U.t(text || "") + "</p></div>" +
@@ -254,7 +254,7 @@
       { ms: 2800, run: () => {} }, // the white: the dream breaking
       { ms: 3400, run: () => { el.classList.add("woken"); tell(null, "You wake with a cry, soaked in sweat, in your own bed."); } },
       { ms: 2200, run: () => { el.classList.add("mom-in"); say.classList.remove("in"); } },
-      { ms: 4600, run: () => { setPose(".wk-mom", "sit"); el.classList.add("lit"); talk(".wk-mom", true); tell("Your mother", "\"Hush. It was only a dream. You are home, and I am here.\""); setTimeout(() => talk(".wk-mom", false), 2600); } },
+      { ms: 4600, run: () => { setPose(".wk-mom", "kneel"); el.classList.add("lit"); talk(".wk-mom", true); tell("Your mother", "\"Hush. It was only a dream. You are home, and I am here.\""); setTimeout(() => talk(".wk-mom", false), 2600); } },
       { ms: 6400, run: () => { el.classList.add("dad-in"); talk(".wk-dad", true); tell("Your father", "\"The sages have said it for years: the Kuru cousins will go to war, and the whole land with them. Perhaps you saw it. Then grow strong, and be ready when it comes.\""); setTimeout(() => talk(".wk-dad", false), 4200); } }
     ];
     let i = -1, timer = null, gone = false;
