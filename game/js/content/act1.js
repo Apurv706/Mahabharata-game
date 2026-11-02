@@ -153,7 +153,7 @@
     {
       id: "a1_home", act: 1, age: 6, art: "origin", place: (S) => K.childPlace(S),
       title: "Your earliest memory",
-      body: (S) => [S.flags.includes("dreamt_the_field") ? { memory: "You wake with dust in your mouth that is not there. You are six years old, and the war is a story the old men tell." } : null,
+      body: (S) => [S.flags.includes("dreamt_the_field") ? { memory: "You never forget the dream, or what your father said that night: be ready when it comes." } : null,
         homeLine[S.origin],
         S.karma ? { memory: ["At night you dream you are someone else: {past}, born in {land}, grown and grey, with a whole life behind them. In the dream it always ends the same way: {end!}.", { past: S.karma.name, land: K.ORIGINS[S.karma.origin]?.name || "", end: S.karma.title }] } : null,
         "You are six years old. How do you spend your days?"],

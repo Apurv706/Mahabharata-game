@@ -219,6 +219,48 @@
     at(13200, end);
   };
 
+  // ---------- Waking from the dream, at home ----------
+  // The dream breaks to white, then the dark room: you sit up on the rope bed, shaking and wet with
+  // sweat; your mother comes in with a lamp and kneels by you; your father, in the doorway, tells you
+  // the war has been foretold, and that you must grow up ready for it. A tap moves on a beat.
+  U.wakeScene = function (text, done) {
+    if (K.headless || /jsdom/i.test(navigator.userAgent || "")) return done();
+    U.beatStop();
+    if (U.stageFx) U.stageFx.stop();
+    const S = K.S;
+    const base = K.puppetSpec(S), pal = base.palette || [], skin = pal[0], trim = pal[2];
+    const plain = { item: null, heir: null, temper: null, scar: false, glow: false, eye: false, sling: false, limp: false, dead: false };
+    const kid = Object.assign({}, base, plain, { stage: "child", heir: base.heir, temper: base.temper });
+    const mom = Object.assign({}, base, plain, { pronoun: "she", stage: "adult", palette: [skin, "#8a2f3a", trim] });
+    const dad = Object.assign({}, base, plain, { pronoun: "he", stage: "adult", palette: [skin, pal[1] || "#6f3a24", trim] });
+    const el = U.el('<div class="sleepin wakeup" role="presentation">' + WALL + '<div class="si-night"></div>' +
+      '<div class="si-room"><div class="wk-bed">' + BED + '<span class="wk-kid">' + U.puppet(kid, { h: 130, pose: "sit", flip: true }) + '<i class="wk-sweat"><b></b><b></b><b></b></i></span></div>' +
+      '<span class="wk-mom"><i class="wk-mglow"></i>' + U.puppet(mom, { h: 170, pose: "walk" }) + '<span class="si-lamp wk-lamp"><img src="art/diya.png" alt=""><img class="flame" src="art/diya_flame.png" alt=""></span></span>' +
+      '<span class="wk-dad">' + U.puppet(dad, { h: 210, pose: "stand", flip: true }) + "</span></div>" +
+      '<div class="wk-white"><p>' + U.t(text || "") + "</p></div>" +
+      '<div class="wk-say"><span class="wk-who"></span><p></p></div><span class="mo-tap">' + U.tr("Tap to go on") + "</span></div>");
+    document.body.appendChild(el);
+    const who = el.querySelector(".wk-who"), line = el.querySelector(".wk-say p"), say = el.querySelector(".wk-say");
+    const pp = (sel) => el.querySelector(sel + " .pp");
+    const setPose = (sel, p) => { const s2 = pp(sel); if (s2) s2.setAttribute("class", s2.getAttribute("class").replace(/pose-\S+/, "pose-" + p)); };
+    const talk = (sel, on) => { const s2 = pp(sel); if (s2) s2.classList.toggle("talk", on); };
+    const tell = (speaker, words) => { say.classList.remove("in"); void say.offsetWidth; who.textContent = speaker ? K.tr(speaker) : ""; line.textContent = K.text(words); say.classList.add("in"); };
+    const beats = [
+      { ms: 3600, run: () => {} }, // the white: the dream breaking
+      { ms: 3400, run: () => { el.classList.add("woken"); tell(null, "You wake with a cry, soaked in sweat, in your own bed."); } },
+      { ms: 2200, run: () => { el.classList.add("mom-in"); say.classList.remove("in"); } },
+      { ms: 4600, run: () => { setPose(".wk-mom", "sit"); el.classList.add("lit"); talk(".wk-mom", true); tell("Your mother", "\"Hush. It was only a dream. You are home, and I am here.\""); setTimeout(() => talk(".wk-mom", false), 2600); } },
+      { ms: 6400, run: () => { el.classList.add("dad-in"); talk(".wk-dad", true); tell("Your father", "\"The sages have said it for years: the Kuru cousins will go to war, and the whole land with them. Perhaps you saw it. Then grow strong, and be ready when it comes.\""); setTimeout(() => talk(".wk-dad", false), 4200); } }
+    ];
+    let i = -1, timer = null, gone = false;
+    const end = () => { if (gone) return; gone = true; clearTimeout(timer); window.removeEventListener("keydown", key, true); el.classList.add("out"); setTimeout(() => { el.remove(); done(); }, 600); };
+    const next = () => { if (gone) return; clearTimeout(timer); i++; if (i >= beats.length) return end(); beats[i].run(); timer = setTimeout(next, beats[i].ms); };
+    const key = (e) => { if ([" ", "Enter", "Escape", "ArrowRight"].includes(e.key)) { e.preventDefault(); e.stopPropagation(); next(); } };
+    el.addEventListener("click", next);
+    window.addEventListener("keydown", key, true);
+    requestAnimationFrame(() => requestAnimationFrame(() => { el.classList.add("in"); next(); }));
+  };
+
   // ---------- Waking from the dream ----------
   // The prologue's fight ends in white: one line, then the child wakes. About five seconds, or a tap.
   U.wake = function (text, done) {
@@ -430,7 +472,7 @@
         if (!K.S.alive) return K.go("end_death");
         // A dream fight (the prologue) does not go back to its page: the field goes white, you wake,
         // and the childhood begins.
-        if ((K.ENCOUNTERS[res.combat] || {}).dream) return U.wake(o.text, () => K.go(o.next));
+        if ((K.ENCOUNTERS[res.combat] || {}).dream) return U.wakeScene(o.text, () => K.go(o.next));
         U.renderScene(sc);
         showAfter(sc, c, { text: o.text, after: res.after, check: null, pre: res.text, lampOut: res.lampOut, lostFight: outcome === "lose" ? res.combat : null }, o.next);
       });
