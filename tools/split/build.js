@@ -25,7 +25,8 @@ function parts(f) {
   const p = new Set();
   if (acts) { if (acts.some((a) => a <= 4)) p.add(1); if (acts.some((a) => a >= 5)) p.add(2); }
   const re = new RegExp("[\"'/]" + k + "[\"'.]");
-  for (const [n, t] of content) if (re.test(t)) { if (P1.test(n)) p.add(1); else if (P2.test(n)) p.add(2); }
+  // Content used across acts (episodes, events, tests, vows, divine weapons): both, to be safe.
+  for (const [n, t] of content) if (re.test(t)) { if (P1.test(n)) p.add(1); else if (P2.test(n)) p.add(2); else { p.add(1); p.add(2); } }
   if (!p.size) { p.add(1); p.add(2); }
   return [...p];
 }
@@ -35,7 +36,7 @@ for (const n of [1, 2]) {
   const cfg = { n, other: n === 1 ? url2 || "" : url1 || "", lives: n === 2 ? lives : [] };
   const html = read("index.html").replace('<script src="js/main.js"></script>',
     "<script>window.K_PART = " + JSON.stringify(cfg) + ';</script>\n<script src="part.js"></script>\n<script src="js/main.js"></script>');
-  fs.writeFileSync(path.join(dir, "index.html"), html);
+  fs.writeFileSync(path.join(dir, "index.html"), html.replace("<title>Kurukshetra: A Life</title>", "<title>Kurukshetra: Part " + (n === 1 ? "One" : "Two") + "</title>"));
   fs.copyFileSync(path.join(__dirname, "part.js"), path.join(dir, "part.js"));
   let files = all.filter((f) => f !== "index.html" && parts(f).includes(n));
   // Clips are the first to go if a part is over the limit (the painting stays without one).
