@@ -1714,3 +1714,8 @@ svg .pr-hint { outline: none; filter: drop-shadow(0 0 6px #ffd680) drop-shadow(0
 .sleepin.wakeup .wk-who:empty { display: none; }
 .sleepin.wakeup .wk-say p { max-width: 32ch; margin: 0 auto; font-family: var(--display); font-style: italic; font-size: clamp(20px, 4.8vw, 30px); line-height: 1.35; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8); }
 @media (prefers-reduced-motion: reduce) { .sleepin.wakeup .wk-kid .pp, .sleepin.wakeup .wk-sweat b { animation: none !important; } }
+
+/* A dream fight ends in white, straight into the waking scene. */
+.dream-white { position: fixed; inset: 0; z-index: 95; background: #f6efe0; opacity: 0; transition: opacity 1.1s ease; pointer-events: none; }
+.dream-white.on { opacity: 1; }
+.sleepin.now { transition: none; }

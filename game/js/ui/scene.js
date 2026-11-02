@@ -239,6 +239,7 @@
       '<span class="wk-dad">' + U.puppet(dad, { h: 210, pose: "stand", flip: true }) + "</span></div>" +
       '<div class="wk-white"><p>' + U.t(text || "") + "</p></div>" +
       '<div class="wk-say"><span class="wk-who"></span><p></p></div><span class="mo-tap">' + U.tr("Tap to go on") + "</span></div>");
+    el.classList.add("in", "now"); // it opens already white, under the white the fight ended on
     document.body.appendChild(el);
     const who = el.querySelector(".wk-who"), line = el.querySelector(".wk-say p"), say = el.querySelector(".wk-say");
     const pp = (sel) => el.querySelector(sel + " .pp");
@@ -246,7 +247,7 @@
     const talk = (sel, on) => { const s2 = pp(sel); if (s2) s2.classList.toggle("talk", on); };
     const tell = (speaker, words) => { say.classList.remove("in"); void say.offsetWidth; who.textContent = speaker ? K.tr(speaker) : ""; line.textContent = K.text(words); say.classList.add("in"); };
     const beats = [
-      { ms: 3600, run: () => {} }, // the white: the dream breaking
+      { ms: 2800, run: () => {} }, // the white: the dream breaking
       { ms: 3400, run: () => { el.classList.add("woken"); tell(null, "You wake with a cry, soaked in sweat, in your own bed."); } },
       { ms: 2200, run: () => { el.classList.add("mom-in"); say.classList.remove("in"); } },
       { ms: 4600, run: () => { setPose(".wk-mom", "sit"); el.classList.add("lit"); talk(".wk-mom", true); tell("Your mother", "\"Hush. It was only a dream. You are home, and I am here.\""); setTimeout(() => talk(".wk-mom", false), 2600); } },
@@ -258,7 +259,7 @@
     const key = (e) => { if ([" ", "Enter", "Escape", "ArrowRight"].includes(e.key)) { e.preventDefault(); e.stopPropagation(); next(); } };
     el.addEventListener("click", next);
     window.addEventListener("keydown", key, true);
-    requestAnimationFrame(() => requestAnimationFrame(() => { el.classList.add("in"); next(); }));
+    next();
   };
 
   // ---------- Waking from the dream ----------

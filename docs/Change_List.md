@@ -156,11 +156,12 @@ Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct);
     3. Supper with the family: grandmother, mother, father and you, sitting on a mat with leaf plates.
     4. Bed on a rope charpai, the clay lamp burning low and going out.
     5. Dream bubbles rise from the sleeper, and the war opens out of the last one.
-    6. **Waking:** "The dream breaks", and the white card fades into the dark room:
+    6. **Waking:** the dream fight ends straight in white, with no result panel ("The field goes white. Far away, someone is calling your name."), which fades into the dark room:
        - You sit up on the bed, shaking, sweat running.
        - Your mother comes in with a lamp and kneels by you: "Hush. It was only a dream. You are home, and I am here."
        - Your father, in the doorway: "The sages have said it for years: the Kuru cousins will go to war, and the whole land with them. Perhaps you saw it. Then grow strong, and be ready when it comes."
        - Then Act I. A tap moves on a beat.
+    - **The dream page is cut down** to one line of context ("The thirteenth day of the great war at Kurukshetra: the five Pandava brothers against their hundred Kaurava cousins") and one of action.
     - Captions are in English and Hindi. There is a new "sit" pose for the meal.
     - `Art_Brief_Opening.md` asks for two empty rooms (supper and night) to replace the plain wall. Each homeland's house at dusk is optional.
     - **Your age stays six in the dream.** Only the figure is grown, with a sword; the Character panel no longer says 44.

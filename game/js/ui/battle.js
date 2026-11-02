@@ -389,6 +389,20 @@
 
     if (B.over) {
       stopQte(); drums.stop();
+      // A dream fight does not end on a result: the field goes white, and you wake (scene.js U.wakeScene).
+      if (enc.dream) {
+        if (B._whiting) return;
+        B._whiting = true;
+        const veil = U.el('<div class="dream-white" aria-hidden="true"></div>');
+        document.body.appendChild(veil);
+        requestAnimationFrame(() => requestAnimationFrame(() => veil.classList.add("on")));
+        setTimeout(() => {
+          if (!onEndCb) { veil.remove(); return; }
+          const cb = onEndCb; const out = C.end().over; onEndCb = null; const L = U.$("leaf"); if (L) L.dataset.battle = ""; document.body.classList.remove("intest"); cb(out);
+          setTimeout(() => veil.remove(), 400); // the waking scene opens on its own white underneath
+        }, U.motion() ? 1300 : 200);
+        return;
+      }
       if (B.over === "flee") { const P = C.player(); if (P) pose(P.uid, "turn"); } // you turn your back on the fight
       const msg = { win: K.val(enc.winLine) || "The fight is won.", lose: K.val(enc.loseLine) || (enc.lethal && !K.S.storyMode ? "You have fallen." : "You are beaten."), flee: "You leave the fight behind.", spare: "You let them live." }[B.over];
       if (K.Sound && !B._sounded) { B._sounded = true; if (B.over === "lose" && enc.lethal && !K.S.storyMode) K.Sound.play("fall"); }
