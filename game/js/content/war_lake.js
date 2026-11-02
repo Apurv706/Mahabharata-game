@@ -53,7 +53,7 @@
   } : null);
 
   // ---------- Iravan (day 8) ----------
-  const nagaTie = (S) => (S.astras || []).some((a) => a.id === "nagapasha" && !a.broken); // the naga healed on the riverbank (astras.js w_naga)
+  const nagaTie = (S) => (S.astras || []).some((a) => a.id === "nagapasha" && !a.broken) || has(S, "khandava_nagas"); // the naga healed on the riverbank (astras.js w_naga)
   const IRAVAN = { name: "Iravan", hp: 150, atk: 12, def: 3, abilities: ["strike", "heavy", "arrows"], person: "iravan" };
   const NAGAS = { name: "Naga warriors", plural: true, hp: 70, atk: 7, def: 2, abilities: ["strike", "guard"] };
   K.encounter({
@@ -146,9 +146,9 @@
     {
       id: "wl_iravan", act: 6, age: 44, away: true, war: true, when: (S) => S.side === "pandava" && nagaTie(S) && !has(S, "captive"), skipTo: "a6_bhishma", next: "a6_bhishma",
       art: "war_bhishma", place: "Kurukshetra · day 8", caption: "Naga warriors in the Pandava line", title: "Iravan",
-      body: [
+      body: (S) => [
         "On the eighth morning a young warrior rides along the Pandava line with naga warriors at his back, men who came up out of the river country for him. He is Iravan, Arjuna's son by Ulupi, the naga princess.",
-        { memory: "The nagas know your name. Years ago you drew a hunter's arrow out of one of them on a riverbank." },
+        { memory: (S.astras || []).some((a) => a.id === "nagapasha" && !a.broken) ? "The nagas know your name. Years ago you drew a hunter's arrow out of one of them on a riverbank." : "The nagas know your name. When the Khandava forest burned, a naga family came out of the smoke in your line, and Takshaka's people do not forget it." },
         { speaker: "Iravan", line: "Shakuni's horse is coming at my part of the field. My mother's people say you are a friend to them. Ride with us." }
       ],
       choices: [

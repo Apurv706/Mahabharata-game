@@ -5726,6 +5726,7 @@
     "At the lake {they} told Duryodhana to run. He would not, and asked {them} to stand witness.": "झील पर {g:उसने|उसने|उन्होंने} दुर्योधन से भागने को कहा। वह नहीं भागा, और {g:उससे|उससे|उनसे} साक्षी बनकर खड़े रहने को कहा।",
     "{They} found Duryodhana's hiding place in the reeds and told no one. The hunters told for {them}.": "{g:उसने|उसने|उन्होंने} सरकंडों में दुर्योधन के छिपने की जगह ढूँढ ली और किसी को नहीं बताया। शिकारियों ने {g:उसकी|उसकी|उनकी} जगह बता दिया।",
     "The lakeside, that night": "झील का किनारा, उसी रात",
+    "The nagas know your name. When the Khandava forest burned, a naga family came out of the smoke in your line, and Takshaka's people do not forget it.": "नाग आपका नाम जानते हैं। जब खांडव वन जला था, तब एक नाग परिवार धुएँ से निकलकर आपकी पंक्ति में आया था, और तक्षक के लोग यह नहीं भूलते।",
     "An elder's blessing is on you.": "किसी बड़े का आशीर्वाद तुम पर है।",
     "You break the surface with the vessel in your hands, gasping.": "तुम हाँफते हुए, हाथों में पात्र लिए, सतह तोड़कर ऊपर {g:आते|आती|आते} हो।",
     "The dark closes in a stroke from the surface, and the vessel slips from your hands.": "सतह से बस एक हाथ दूर अँधेरा घिर आता है, और पात्र तुम्हारे हाथों से फिसल जाता है।",
