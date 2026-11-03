@@ -159,7 +159,7 @@
   // The clock of a timed test: the seconds left, large, and a bar that drains, at the top of the
   // stage (in the test's header, above the play). The test sets it from its own game time
   // (U.clock), so it stands still while the game is paused. In the last seconds it turns red, and
-  // with motion on its number beats; with reduced motion it only counts down. One clock per test:
+  // with motion on its number beats; with calm motion it only counts down. One clock per test:
   // a test that times several things in turn (a question, then the next) sets the same clock again.
   //   const clock = U.countdown(host); clock.set(secondsLeft, totalSeconds); clock.hide();
   U.countdown = function (host) {
@@ -192,7 +192,7 @@
   // ---------- Archers with weight (js/ui/puppet-anim.js) ----------
   // On the painting your figure is a live rig: the bow upright in the fist, the string drawn back to
   // the face with an arrow on it, snapping back on release. A teacher watching stands calm and nods.
-  // With reduced motion U.rig gives null and the figures keep their CSS poses, as before.
+  // With calm motion U.rig gives null and the figures keep their CSS poses, as before.
   const CALM = { armF: -20, foreF: -40, armB: -10, foreB: -20 };
   const LOOSE = { rot: 1, armF: -84, foreF: -6, armB: -60, foreB: -10, legF: -14, legB: 14, shinB: 6 };
   const hold = (r, p, k, z) => { for (const key in r.t) if (key !== "dx") r.t[key] = p[key] || 0; if (k) r.k = k; if (z != null) r.z = z; };

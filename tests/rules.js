@@ -1115,4 +1115,35 @@ require(G + "content/war_fights.js");
   WK.Combat.end && WK.Combat.end();
   w.close();
 }
+// 103. Motion is always on: the device's reduce-motion setting is not followed. "Calm motion" (menu,
+// off by default) stills things; "Reveal the story line by line" off stops only the line-by-line text.
+{
+  const fs = require("fs"), path = require("path"), { JSDOM, VirtualConsole } = require("jsdom");
+  const GAME = path.join(__dirname, "..", "game"), html = fs.readFileSync(path.join(GAME, "index.html"), "utf8");
+  const dom = new JSDOM(html.replace(/<script src="[^"]+"><\/script>/g, ""), { runScripts: "outside-only", pretendToBeVisual: true, url: "https://localhost/", virtualConsole: new VirtualConsole() });
+  const w = dom.window; w.HTMLElement.prototype.scrollIntoView = () => {};
+  // A device that asks for reduced motion, seen as a real browser (not the jsdom test harness).
+  w.matchMedia = (q) => ({ matches: /reduce/.test(q), media: q, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} });
+  Object.defineProperty(w.navigator, "userAgent", { get: () => "Mozilla/5.0 (iPhone) AppleWebKit/605.1.15 Safari/604.1" });
+  for (const m of html.matchAll(/<script src="([^"]+)"><\/script>/g)) w.eval(fs.readFileSync(path.join(GAME, m[1]), "utf8"));
+  const WK = w.K, UI = WK.UI, calmClass = () => w.document.documentElement.classList.contains("calm");
+  w.localStorage.clear();
+  ok(!UI.calm() && UI.motion() && UI.gradual() && !calmClass(), "with the device asking for reduced motion, the game still moves (calm motion is off by default)");
+  WK.prefs({ gradual: false });
+  ok(UI.motion() && !UI.calm() && !UI.gradual(), "turning off the line-by-line story leaves the puppets, fights and effects moving");
+  WK.prefs({ calm: true });
+  ok(UI.calm() && !UI.motion() && !UI.gradual() && calmClass(), "calm motion on: nothing moves, and the html element carries the class calm");
+  WK.prefs({ calm: false, gradual: true });
+  ok(!calmClass() && UI.motion() && UI.gradual(), "calm motion off again: motion and the story's reveal are back");
+  WK.S = Object.assign(WK.newLife(), { name: "T", origin: "panchala", pronoun: "she", age: 15, act: 2 });
+  UI.openMenu();
+  const box = w.document.getElementById("m-calm");
+  ok(box && !box.checked && box.closest("label").previousElementSibling.querySelector("#m-gradual"), "the menu has a Calm motion switch, off, beside the line-by-line switch");
+  if (box) { box.checked = true; box.dispatchEvent(new w.Event("change")); }
+  ok(WK.prefs().calm === true && calmClass(), "ticking Calm motion applies at once");
+  w.close();
+  const css = ["css/base.css", "css/screens.css"].map((f) => fs.readFileSync(path.join(GAME, f), "utf8")).join("");
+  const js = fs.readdirSync(path.join(GAME, "js"), { recursive: true }).filter((f) => /\.js$/.test(f)).map((f) => fs.readFileSync(path.join(GAME, "js", f), "utf8")).join("");
+  ok(!/prefers-reduced-motion/.test(css + js + html), "nothing in the game follows prefers-reduced-motion");
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

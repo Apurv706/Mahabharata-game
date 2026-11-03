@@ -34,7 +34,7 @@ Ornaments, all in gold line:
 - Labels are sentence case at 14px or more. No tiny uppercase labels, no pill badges above headings.
 - Whether a scene is canon, your life or the war is said in words in the picture's caption.
 - Key numbers on choices are quiet and hidden on touch screens.
-- Every motion uses transform, opacity or clip-path, and has a reduced-motion fallback.
+- Every motion uses transform, opacity or clip-path, and has a calm-motion fallback (the menu switch "Calm motion", which puts the class `calm` on the html element; the game does not follow the device's reduce-motion setting).
 - Story screens reveal in order (`U.stage`): painting, title, each line, then the choices. Never show choices before the scene is set. A tap, Space, Enter or a number key shows everything; the menu can turn it off.
 
 - Timed moments use the lamp, never a numeric countdown. It pauses while a window is open or the tab is hidden.

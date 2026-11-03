@@ -8,7 +8,7 @@
    then a6_bhishma (the bed of arrows, that night). One choice as he falls: go to him, hold the line,
    look away.
    Both are moments (ui/moments.js, K.MOMENT_KINDS): puppets staged in code over the field painting,
-   no painted god. Skipped with a tap; with reduced motion, a still pose and a line; headless, nothing.
+   no painted god. Skipped with a tap; with calm motion, a still pose and a line; headless, nothing.
    Canon (4): Krishna never strikes Bhishma (Arjuna catches him); Bhishma falls on day 10 in every life.
    Flags: bh_called_arjuna, bh_held_tongue, bh_line_held, bh_line_broke, bh_heard_shikhandi,
    bh_stepped_in, bh_stood_back, bh_went_to_him, bh_held_line, bh_looked_away. */
@@ -66,7 +66,7 @@
     ".bh-a.bh-divine{filter:drop-shadow(0 0 3px rgba(255,230,160,.8)) drop-shadow(0 6px 10px rgba(0,0,0,.45));transition:filter 1s ease}" +
     ".bh-glow-on .bh-a.bh-divine{filter:drop-shadow(0 0 4px rgba(255,236,170,.95)) drop-shadow(0 0 12px rgba(255,214,128,.6)) drop-shadow(0 6px 10px rgba(0,0,0,.4))}" +
     ".bh-breath .bh-aura{animation:bh-breath 3.2s ease-in-out infinite}@keyframes bh-breath{50%{filter:brightness(1.18) saturate(1.1)}}" +
-    "@media (prefers-reduced-motion:reduce){.bh-breath .bh-aura{animation:none}.bh-aura,.bh-nimbus{transition:none}}";
+    "html.calm .bh-breath .bh-aura{animation:none}html.calm .bh-aura,html.calm .bh-nimbus{transition:none}";
   // His peacock feather, drawn large enough to read: set in the knot of hair on his head joint, in the
   // puppet's own units, so it turns and leans with his head. It covers the rig's small one.
   const FEATHER = '<g class="bh-feather">' +

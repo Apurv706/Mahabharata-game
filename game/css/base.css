@@ -78,10 +78,8 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 .plate .cap .kind { font-size: 14px; color: var(--muted); }
 .plate .cap .kind.canon { color: var(--data); }
 .plate .cap .kind.war { color: var(--negative); }
-@media (prefers-reduced-motion: no-preference) {
-  .plate.painted { animation: drift 26s ease-in-out infinite alternate; }
-  @keyframes drift { from { background-position: center 36%, 0 0; } to { background-position: center 48%, 0 0; } }
-}
+:where(html:not(.calm)) .plate.painted { animation: drift 26s ease-in-out infinite alternate; }
+@keyframes drift { from { background-position: center 36%, 0 0; } to { background-position: center 48%, 0 0; } }
 
 /* A torana fringe where the painting meets the text, as on a manuscript folio. */
 /* A torana fringe where the painting meets the text, as on a manuscript folio. */
@@ -188,7 +186,9 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 /* Duty meters: a pip that changes pulses. */
 .pips i.flash, .pips i.lost { animation: pip 0.9s ease 2; }
 @keyframes pip { 50% { transform: scaleY(1.9); } }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+html.calm * { transition: none !important; animation: none !important; }
+/* Calm motion: hover nudges stay put (without their transition, a pointer resting on the edge pixel set them flickering). */
+html.calm .choice:hover:not(:disabled), html.calm .choices.grid .choice.tile:hover:not(:disabled), html.calm .origin:hover, html.calm .pick:hover, html.calm .pr-tile:hover:not(:disabled) { transform: none; }
 
 /* Hindi: Devanagari needs more line room for its vowel signs, and Tiro has a single weight, so
    no faux bold; its letters sit larger than Cormorant's, so the biggest display sizes step down. */

@@ -201,7 +201,7 @@
     if (K.headless || /jsdom/i.test(navigator.userAgent || "")) return done();
     U.beatStop();
     const S = K.S;
-    const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const still = U.calm();
     const home = S.origin === "suta" ? "home_anga" : "home_" + S.origin;
     const kid = Object.assign({}, K.puppetSpec(S), { stage: "child", item: null, dead: false });
     const O = K.ORIGINS[S.origin] || {};
@@ -353,7 +353,7 @@
   U.storyFx = (kind, art) => { if (kind && U.stageFx) U.stageFx.start(art, kind, { story: true, at: FX_AT[art] }); };
   U.sceneBeats = function (sc, o, done) {
     const S = K.S;
-    const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const still = U.calm();
     // sc.clip: a clip that opens the scene full-screen before its own painting takes over (the
     // lac house catching fire, before the night of the fire is told).
     const clip = o.art === undefined && sc.clip && U.hasVideo(sc.clip) && U.living() ? sc.clip : null;

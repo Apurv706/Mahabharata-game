@@ -506,6 +506,8 @@
     let p = {};
     try { p = JSON.parse(K.store.get(KEY + ".prefs") || "{}"); } catch (e) { p = {}; }
     if (patch) { Object.assign(p, patch); K.store.set(KEY + ".prefs", JSON.stringify(p)); }
+    // "Calm motion" shows at once: the html class the CSS keys its still rules off (ui/dom.js).
+    if (patch && "calm" in patch && K.UI && K.UI.applyCalm) K.UI.applyCalm();
     return p;
   };
   // Open a saved life on the scene it was saved on.

@@ -161,7 +161,7 @@
   // ---------- Live figures ----------
   // Fighters move on springs: a wind-up before each blow, a freeze on contact, knockback, a slack fall,
   // and each move its own action (an aimed shot is drawn and held, a volley arcs, herbs are knelt over).
-  // With reduced motion, or under the test harness, the CSS poses are used as before.
+  // With calm motion, or under the test harness, the CSS poses are used as before.
   function liveFigures() { return !K.headless && U.motion() && typeof U.rig === "function"; }
   const isBow = (svg) => !!(svg && svg.querySelector('.it:not(.it-w) path[d="M50 86 L50 166"]'));
   function rigUp(B) {
@@ -492,7 +492,7 @@
   // Play what happened since the last draw: who moved, who was hit, who fell.
   function animate(B) {
     const acts = B.acts.slice(lastActs);
-    // A divine weapon: its own full-screen moment (ui/fx.js), which keeps to reduced motion itself.
+    // A divine weapon: its own full-screen moment (ui/fx.js), which keeps to calm motion itself.
     acts.forEach((a) => { if ((a.id === "astra" || (K.ASTRAS && K.ASTRAS[a.id])) && B.astraOut && U.astraFx) { const o = B.astraOut; B.astraOut = null; U.astraFx({ kind: o.kind, clash: o.clash, from: actorEl(a.uid), to: actorEl(o.uid) }); } });
     if (!U.motion()) return;
     if (rigs.size) { animateLive(B, acts); lastGuard = new Set(B.units.filter((u) => u.status.guard).map((u) => u.uid)); return; }
@@ -1056,7 +1056,7 @@
 
   // ---------- The first fight of a life: the screen, part by part ----------
   // Each part of the fight's screen that this fight has, lit in turn with a line beside it, about two
-  // seconds each; a tap goes on, Skip ends it. With reduced motion the light jumps, it does not slide.
+  // seconds each; a tap goes on, Skip ends it. With calm motion the light jumps, it does not slide.
   function tourSteps(B) {
     const q = (s) => { const el = document.querySelector(s); return el && el.offsetParent !== null ? el : null; };
     const steps = [];

@@ -236,7 +236,7 @@
   // ---------- The journey ----------
   // When a choice takes you somewhere new, the map comes up before the next scene: the road from
   // where you were to where you are going, your puppet walking it and leaving footprints (about
-  // two and a half seconds, skippable), "From X to Y" and why, below the map. With reduced motion
+  // two and a half seconds, skippable), "From X to Y" and why, below the map. With calm motion
   // the trail is drawn at once and the figure stands at the end.
   U.journeyPage = function (from, to, why, done) {
     U.keys([]);
