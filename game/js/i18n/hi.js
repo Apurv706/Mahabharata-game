@@ -5174,6 +5174,7 @@
     "Karna matches Arjuna, and is shamed for having no royal name.": "कर्ण अर्जुन की बराबरी करता है, और राजवंश का नाम न होने पर अपमानित होता है।",
     "A young brahmin strings the great bow and hits the mark.": "एक युवा ब्राह्मण महान धनुष पर डोरी चढ़ाकर लक्ष्य भेद देता है।",
     "Yudhishthira loses everything, then Draupadi. She asks if a man who lost himself could stake her.": "युधिष्ठिर सब कुछ हार जाते हैं, फिर द्रौपदी को। वह पूछती है कि जो ख़ुद को हार चुका, क्या वह उसे दाँव पर लगा सकता था।",
+    "{who} fights for the other side.": "{who} दूसरे पक्ष की ओर से लड़ रहे हैं।",
     "Krishna takes up the wheel": "कृष्ण पहिया उठाते हैं",
     "He swore not to fight. He runs at the grandsire with a chariot wheel.": "उन्होंने न लड़ने की शपथ ली थी। वे रथ का पहिया लेकर पितामह की ओर दौड़ते हैं।",
     "The grandsire falls": "पितामह गिरते हैं",

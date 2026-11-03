@@ -548,7 +548,6 @@
   before("a5_herd", ["ep_false_name", "ep_kichaka"]);
   before("a5_karna_secret", ["ep_secret_tell"]);
   before("a5_side", ["ep_mentor_peace", "ep_ugra_rise"]);
-  before("a6_eve", ["ep_sibling_side"]);
   before("a6_bhishma", ["ep_shikhandi"]);
   before("a6_capture", ["ep_letter_1"]);
   before("a6_wheel", ["ep_carts"]); // the night of the twelfth day, before the wheel
@@ -558,6 +557,9 @@
   before("a6_day18", ["ep_sibling_field", "ep_ugra_last"]);
   before("a7_final", ["ep_rebuild", "ep_rite", "ep_student", "ep_pilgrimage", "ep_keepsakes", "ep_bard"]);
 
+  // The sibling on the other side is one line on the eve of the war, not a scene of its own (owner, 2 Nov).
+  { const eve = K.SCENES.a6_eve, body0 = eve.body;
+    eve.body = (S) => { const b = [].concat(K.val(body0, S) || []); if (sibAlive(S) && warring(S)) b.push(["{who} fights for the other side.", sibP(S)]); return b; }; }
   // The sibling's side is drawn when yours is: the other one, unless you talked them round.
   K.on("scene", (sc) => {
     const S = K.S;
