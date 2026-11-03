@@ -18,7 +18,7 @@
     game: "aim", hint: low ? "A shot no one makes" : "One impossible shot",
     trial: { attr: "aim", skill: "archery", icon: "bird", small: true, easy: low ? -0.06 : -0.04, speed: low ? 2.4 : 2.1, shots: 3, need: low ? 3 : 2, verb: "Release",
       stage: "stage_drona_gate", cast: ["drona", "arjuna"],
-      rules: low ? "Drona points to a wooden bird on the highest branch, far across the field. Three arrows, and every one must hit. He does not expect you to." : "Drona points to a wooden bird on the highest branch, far across the field. Three arrows. Hit it twice, and he will think about it.",
+      rules: low ? "Hit the wooden bird on the highest branch. Three arrows; all three must hit." : "Hit the wooden bird on the highest branch. Two hits of three.",
       stakes: ["Drona takes you, grudgingly, and the whole court hears of it.", "Drona turns away. You will have to choose another teacher."] },
     win: { fx: Object.assign({}, DRONA_TAKES, { journal: "You passed Drona's test at the gate, though your family was not of the court, and he took you as a student." }),
       text: "The last arrow takes the bird off its branch. Drona nods once. \"Tomorrow, before dawn,\" he says. The princes stare." },

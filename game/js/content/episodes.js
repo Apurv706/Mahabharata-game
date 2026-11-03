@@ -68,7 +68,7 @@
   const STORM = { id: "storm", t: "Run the children to shelter", game: "race", hint: "A run through the storm",
     trial: { attr: "grace", skill: "stealth", stage: "stage_exile_storm", vehicle: "foot", obstacles: ["rock", "fire"], hull: 3, speed: 3,
       tally: "Distance: {d}% · Falls: {h} of {l}", bump: "A branch takes you off your feet.", help: "Step aside from the branches and the water: up and down, or the buttons.", helpSide: "Step left and right around what the storm throws down.",
-      rules: "The sky goes black at noon and the ravine fills. Run for the rock shelter: round the falling branches and the water coming down the gullies. Three falls and the flood has you.",
+      rules: "Run for the rock shelter round the branches and water. Three falls and the flood has you.",
       stakes: ["You reach the shelter with the camp's children, and the storm passes over you.", "The flood takes your pack, and you limp in after dark."] },
     win: { fx: { flag: "ran_the_storm", rep: { common: 1 }, journal: "In the exile years you ran the camp's children to shelter through a forest storm." }, text: "You are under the rock with the last child when the ravine goes white. Nobody is lost." },
     lose: { fx: { item: { herbs: -1 }, injury: "leg" }, text: "The third branch takes you down and the water takes your pack, herbs and all. You crawl in after dark with a knee that will never be right." } };
@@ -80,7 +80,7 @@
   ];
   const CHARU_LAKE = { id: "answer", t: "Answer for Charu", game: "retort", hint: "A test of wisdom",
     trial: { attr: "wisdom", skill: "lore", rounds: SECOND_RIDDLES, stage: "stage_forest_lake",
-      rules: "\"One of you drank without answering,\" says the voice. \"Answer for both, and both of you may drink.\" Two right answers of three.",
+      rules: "Answer for both of you. Two right answers of three.",
       stakes: ["Charu sits up on the bank, coughing, and asks what you are staring at.", "The voice falls silent. Charu does not move again."] },
     win: { fx: { bond: { charu: 2 }, attr: { wisdom: 1 }, flag: "answered_for_charu", memory: ["charu", "I drank first at the lake. You answered for me."], journal: "At the lake in the forest Charu drank first and fell. You answered the voice for both of you." },
       text: "\"Drink,\" says the voice. Charu sits up on the bank, coughing up lake water, and asks what you are staring at." },
@@ -95,7 +95,7 @@
   // Lying about who you are is a lie: a vow never to lie is warned of on the choice, and broken by it.
   const NERVE = { id: "nerve", t: "Lie without a flicker", game: "retort", hint: "A test of nerve", tags: ["lie"],
     trial: { attr: "wisdom", skill: "statecraft", rounds: FALSE_NAME, stage: "stage_virata_court",
-      rules: "Virata's steward has started asking questions about the new people in the household. Answer each one before the lamp burns down, and never say anything true. Two of three.",
+      rules: "Answer the steward before the lamp burns down, and say nothing true. Two of three.",
       stakes: ["The steward loses interest, and your name stays yours.", "The steward keeps looking at you, and sends to Hastinapura to ask."] },
     win: { fx: { skill: { statecraft: 1 }, flag: "kept_false_name" }, text: "The steward grunts and goes to bother the cooks. Nobody asks again." },
     lose: { fx: { rep: { kuru: -1 }, flag: "name_suspected" }, text: "The steward says nothing more and writes something down. A rider leaves for Hastinapura that evening." } };
@@ -103,7 +103,7 @@
   const DANCE_HALL = { id: "hall", t: "Get her out in the dark", game: "sneak", hint: "A test of stealth",
     trial: { attr: "grace", skill: "stealth", stage: "stage_kichaka_hall_night", trips: 2, spots: 2, watch: "guard", verb: "Move",
       help: "Hold to move along the pillars. Stop when Kichaka's lamp turns your way.", tally: "Crossed: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "Across. Now back, with her.", spotted: "The lamp swings toward you. You press into a pillar.",
-      rules: "Kichaka has told the queen's maid to come to the dancing hall tonight. Bhima is going in her place, and the maid must be somewhere else, seen by no one. Cross the hall to her and back along the pillars while Kichaka's lamp sweeps the floor.",
+      rules: "Cross the hall to Draupadi and back along the pillars while the lamp sweeps the floor.",
       stakes: ["She is in the kitchens, among the women, when the screaming starts.", "Kichaka's lamp finds you, and you have to run before you reach her."] },
     win: { fx: { bond: { draupadi: 2, bhima: 1 }, duty: { conscience: 1 }, flag: "helped_draupadi_hall", journal: "In the hidden year you got Draupadi out of Kichaka's way the night Bhima was waiting for him." },
       text: "She is sitting among the kitchen women with her head covered when the screaming starts in the dancing hall. She does not look up. Her hands are perfectly still." },
@@ -112,7 +112,7 @@
   const CARTS = { id: "carts", t: "Cut the carts loose", game: "sneak", hint: "A test of stealth",
     trial: { attr: "grace", skill: "stealth", stage: "stage_supply_camp_night", trips: 2, spots: 2, watch: "soldier", verb: "Move",
       help: "Hold to move between the carts. Stop when the sentry's torch turns.", tally: "Carts reached: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "The ropes are cut. Back to the dark.", spotted: "The sentry turns. You drop behind a wheel.",
-      rules: "The enemy's grain and fodder carts stand in a camp behind their lines. A sentry walks the far side with a torch. Reach the carts twice: once to cut the horse lines, once to fire the fodder.",
+      rules: "Reach the carts twice past the sentry's torch: once to cut the lines, once to fire the fodder.",
       stakes: ["The fodder burns, and tomorrow the enemy's horses are hungry.", "The sentry raises the alarm, and you fight your way out."] },
     win: { fx: { flag: "burned_carts", keepsake: "arrow", journal: "One night in the war you crept into the enemy's supply camp and burned their fodder." }, text: "The fodder goes up with a sound like wind. You are back in the horse lines before the first shout." },
     lose: { fx: { flag: "carts_alarm" }, next: "ep_carts_fight", text: "The sentry turns too soon, and the camp wakes around you." } };
@@ -120,7 +120,7 @@
   const RIVER = { id: "swim", t: "Swim the river with it", game: "sneak", hint: "A test of stealth",
     trial: { attr: "grace", skill: "stealth", stage: "stage_river_crossing_night", trips: 1, spots: 2, watch: "soldier", verb: "Swim",
       help: "Hold to swim. Stop and go under when the watch-fire's light reaches the water.", tally: "Across: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "The far bank.", spotted: "A sentry shouts. You go under and let the current take you.",
-      rules: "Between the camps the river runs black under the watch-fires. Swim it with the packet dry and come up under the enemy's bank unseen.",
+      rules: "Swim the river and come up under the enemy's bank unseen.",
       stakes: ["You come up under their bank with the packet dry.", "A sentry sees the water move, and the night goes wrong."] },
     win: { fx: {}, text: "You come up under the enemy's bank with the packet dry, and lie in the reeds until your breath is quiet." },
     lose: { fx: { injury: "scar" }, text: "An arrow finds your shoulder in the water. You deliver the packet bleeding, and swim back the long way." } };
@@ -137,12 +137,12 @@
       win: { fx: { flag: "taught_student", attr: { wisdom: 1 }, rep: { common: 1 }, journal: "After the war you took a student of your own, and set the first test you were ever set." }, text: "Your student looks at you the way you once looked at your teacher. You understand, suddenly, several things your teacher never said." },
       lose: { fx: { flag: "taught_student" }, text: "Your student fails the first test, as you did. \"Again tomorrow,\" you hear yourself say, in your teacher's voice." } };
     const trials = {
-      aim: { game: "aim", trial: { attr: "aim", skill: "archery", icon: "lamp", dark: true, shots: 3, need: 2, verb: "Release", stage: "stage_drona_gate", cast: ["boy"], rules: "You hang a lamp from a branch and set it swinging, as Arjuna once did. Show your student how it is done: two hits of three.", stakes: ["Your student sees it can be done.", "Your student sees that even teachers miss."] } },
+      aim: { game: "aim", trial: { attr: "aim", skill: "archery", icon: "lamp", dark: true, shots: 3, need: 2, verb: "Release", stage: "stage_drona_gate", cast: ["boy"], rules: "Shoot the swinging lamp. Two hits of three.", stakes: ["Your student sees it can be done.", "Your student sees that even teachers miss."] } },
       push: { game: "push", trial: { attr: "might", skill: "mace", stage: "stage_training_ground", cast: ["boy"], foe: "your student", rules: "Your student braces against you in the ring. Push as the ring meets the mark, and do not push too hard.", stakes: ["Your student learns what a clean push feels like.", "Your student learns that the teacher can slip too."] } },
       race: { game: "race", trial: { attr: "grace", skill: "chariot", stage: "stage_racetrack", vehicle: "chariot", obstacles: ["rock", "wreck"], hull: 3, speed: 3, rules: "You take your student round the old track with you at the reins, and show how a chariot threads the stakes.", stakes: ["Your student sees how it is done.", "Your student sees a wheel catch, and learns that too."] } },
       steady: { game: "steady", trial: { attr: "wisdom", skill: "healing", stage: "stage_healers_hall", cast: ["healer", "boy"], verb: "Hold", secs: 16, help: "Hold to press; let go to ease off. Keep your hands over the glow until it is set.", tally: "Set: {c}% · {s} seconds", rules: "A boy with a broken arm, and your student watching your hands. Set it while your student counts.", stakes: ["Your student has seen a bone set properly.", "Your student has seen that it is hard."] } },
       sneak: { game: "sneak", trial: { attr: "grace", skill: "stealth", stage: "stage_palace_corridor", trips: 2, spots: 2, watch: "guard", verb: "Move", help: "Hold to move. Stop before the light reaches you.", rules: "You set your student to watch with a lamp, and cross the corridor twice unseen, as you were once made to.", stakes: ["Your student never sees you cross.", "Your student catches you, and is very pleased."] } },
-      retort: { game: "retort", trial: { attr: "wisdom", skill: "lore", rounds: STUDENT_ROUNDS, stage: "stage_vidura_table", cast: ["boy"], rules: "Your student asks the questions every student asks. Answer each before the lamp burns down. Two of three.", stakes: ["Your student writes your answers down.", "Your student finds a better teacher."] } }
+      retort: { game: "retort", trial: { attr: "wisdom", skill: "lore", rounds: STUDENT_ROUNDS, stage: "stage_vidura_table", cast: ["boy"], rules: "Answer your student before the lamp burns down. Two of three.", stakes: ["Your student writes your answers down.", "Your student finds a better teacher."] } }
     };
     return Object.assign(base, trials[kind]);
   }
@@ -172,7 +172,7 @@
         S.flags.includes("beat_ugra") ? { speaker: "Ugra", line: "You. The one from the fair. I have been practising." } : S.flags.includes("lost_to_ugra") ? { speaker: "Ugra", line: "You. The one who came back for a second throw. I told everyone in my village about you." } : { speaker: "Ugra", line: "You. You ran from my ring. Do you still run?" }
       ],
       choices: [
-        { id: "bout", t: "Wrestle him", game: "push", hint: "A wrestling bout", trial: { attr: "might", skill: "mace", stage: "stage_tournament_arena", cast: ["ugra"], foe: "Ugra", rules: "Ugra plants his feet in the dust where the horses are watered. Push as the ring meets the mark. Three good pushes win; three slips lose.", stakes: ["Ugra laughs, and shakes your hand, and the levies cheer.", "Ugra puts you in the horse trough, and the levies cheer louder."] },
+        { id: "bout", t: "Wrestle him", game: "push", hint: "A wrestling bout", trial: { attr: "might", skill: "mace", stage: "stage_tournament_arena", cast: ["ugra"], foe: "Ugra", rules: "Push as the ring meets the mark. Three good pushes win; three slips lose.", stakes: ["Ugra laughs, and shakes your hand, and the levies cheer.", "Ugra puts you in the horse trough, and the levies cheer louder."] },
           win: { fx: { bond: { ugra: 2 }, flag: "ugra_tournament_won", rep: { common: 1 } }, text: "Ugra goes down in the dust, gets up, and laughs so loud the horses shy. \"Again at the next fair,\" he says." },
           lose: { fx: { bond: { ugra: 1 }, flag: "ugra_tournament_lost" }, text: "You come up out of the horse trough to find Ugra holding out a hand. \"Again at the next fair,\" he says." } },
         { id: "talk", t: "Talk to him", fx: { bond: { ugra: 1 }, attr: { wisdom: 1 } },

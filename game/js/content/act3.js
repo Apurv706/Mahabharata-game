@@ -6,7 +6,7 @@
   // The tunnel at Varnavata: Act III's test for those who know of it (the others try the great bow).
   const TUNNEL = { t: "Carry earth from the tunnel", req: { any: [{ teacher: "vidura" }, { path: "spy" }, { friend: ["bhima", "arjuna"] }] }, game: "sneak", hint: "A test of stealth",
     trial: { attr: "grace", skill: "stealth", verb: "Move", stage: "stage_lac_wall", cast: ["guard"], help: "Hold to creep along the wall with the basket. Stop before the torchlight reaches you.",
-      rules: "Purochana's guard walks the house with a torch. Carry two baskets of earth out of the tunnel without being seen. Seen twice, and you must stop for the night.",
+      rules: "Carry two baskets of earth out unseen. Seen twice, and you stop for the night.",
       stakes: ["The tunnel grows by a night's digging, and the Pandavas will owe you.", "You have to stop for the night. The miner will try again tomorrow, with or without you."] },
     retryStakes: ["The tunnel grows by a night's digging, and the Pandavas will owe you.", "A guard sees you, and Purochana starts asking questions. It counts as two failures, and it will weigh on every stealth test to come; if your stealth is low, the guard may not stop at questions."],
     win: { fx: { bond: { yudhishthira: 2, bhima: 1 }, rep: { pandava: 2 }, flag: ["helped_tunnel", "act3_tested"], journal: "You helped dig the tunnel under the house at Varnavata." }, text: "Night after night you carry baskets of earth into the dark. No one sees you." },
@@ -83,7 +83,7 @@
       choices: [
         { id: "cut", t: "Cut the oil lines", game: "fuse", hint: "A test of stealth",
           trial: { attr: "grace", skill: "stealth", stage: "stage_lac_cellar", lines: 3, secs: 32, verb: "Cut",
-            rules: "Purochana's guard walks the cellar with a lamp. Choose a line and hold to cut it while the light is away; caught in the light, let go. Cut two of the three before the guard has seen you twice.",
+            rules: "Hold to cut a line while the light is away; let go in the light. Cut two of three.",
             stakes: ["Every line cut slows the fire tonight, and the Pandavas will owe you.", "The guard sends you up the stairs with the lines whole. The fire will run as fast as Purochana meant it to."] },
           win: { fx: { flag: ["cut_fuses", "bhima_debt"], bond: { yudhishthira: 1, bhima: 1 }, journal: "On the last night at Varnavata you cut Purochana's oil lines in the cellar." }, text: "The oil runs out across the stone and soaks into the earth. Upstairs, someone turns over in their sleep." },
           close: { fx: { flag: ["cut_fuses", "bhima_debt"] }, text: "One line parts before the lamp comes back for good. It will have to be enough." },
@@ -110,7 +110,7 @@
       choices: [
         { id: "run", t: (S) => (INSIDE(S) ? "Get to the tunnel" : "Run in to get people out"), game: "escape",
           trial: { attr: "grace", skill: "stealth", stage: "stage_lac_fire_top", start: (S) => (INSIDE(S) ? (S.flags.includes("tried_nishada") ? "deep" : "hall") : "door"), auto: 0.7,
-            rules: "The fire comes from Purochana's side, room by room, with the smoke ahead of it. Move through the doors to the storeroom, where the tunnel mouth is. Some doors are stuck: hold to force them. Sleepers can be woken and carried, and each one slows you.",
+            rules: "Reach the tunnel in the storeroom before the fire. Hold to force stuck doors.",
             stakes: ["You reach the tunnel, and whoever you carried comes with you.", "The fire catches you in the house. There is no second chance tonight."] },
           win: { fx: (S) => Object.assign({ flag: ["escaped_lac"], duty: { conscience: 1 }, journal: "You got out of the burning house at Varnavata through the tunnel." },
               S.lacCarried ? { flag: ["escaped_lac", "carried_out_lac"], rep: { common: 1 }, duty: { conscience: 2 }, memory: ["all", "You carried someone out of the house of lac."] } : {}),

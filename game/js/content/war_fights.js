@@ -142,7 +142,7 @@
     lose: { fx: {}, text: "He runs the length of your line, and you are a length behind him all the way." } });
   const MACE = (feints) => ({ attr: "might", skill: "mace", face: "drill", item: "mace", foeItem: "mace", foe: "the champion", verb: "Strike", feints, stage: "fight_war_field",
     tally: "Blows landed: {g} of 3 · Breath left: {r}", good: "Your mace gets through!", soon: "Too soon. He steps back from it.", late: "Too late. His mace finds you.",
-    rules: "Strike as the ring meets the mark. When it burns red he is feinting: let it pass. Three good blows and he goes down; three bad ones and you do." });
+    rules: "Strike as the ring meets the mark; let the red ones pass. Three good blows win." });
   side({ id: "fs_sk_mace", kind: "mace", title: "A champion with a mace", art: "war_bhishma", caption: "A mace duel",
     intro: "A champion in scale armour has come out of the enemy line with a mace, calling for someone to meet him.",
     enemies: (S) => [K.foe(pick2(S, "Kaurava mace champion", "Pandava mace champion"), 6, { abilities: ["strike", "heavy"] })],

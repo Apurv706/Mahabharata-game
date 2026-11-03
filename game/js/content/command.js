@@ -26,7 +26,7 @@
   const arrayChoice = (id, day, array) => ({
     id, t: "Set your division", req: { flag: "role_division" }, game: "array",
     trial: { attr: "command", skill: "statecraft", kind: "war", array, rounds: day === 1 ? 4 : 6, stage: STANDIN.stage_array_field, companies: (S) => companies(S),
-      rules: "The commander names the array and points at your part of the line. Put your companies on its marks. Then, round by round, the enemy pushes: hold, strike their flank, give ground, or send the reserve where they strike.",
+      rules: "Put your companies on the marks. Then, each round: hold, strike their flank, give ground, or send the reserve.",
       stakes: ["The line holds, and the day's fighting goes your way.", "The line breaks, and the day's fighting finds you with the enemy already through."] },
     win: { fx: { duty: { court: 1 }, attr: { command: 1 }, flag: "line_held_" + day, journal: "You set your division in the array and held the line to the end of the day." }, text: "When the conches sound at dusk the line is where it was at dawn. The commander says nothing, which from him is praise." },
     close: { fx: { flag: "line_held_" + day }, text: "The line bends and holds, and holds, and at dusk it is still a line." },

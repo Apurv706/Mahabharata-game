@@ -37,7 +37,7 @@
     arjuna: {
       game: "aim", hint: "An archery test",
       trial: { attr: "aim", skill: "archery", dark: true, icon: "lamp", stage: "stage_palace_garden_night", cast: ["arjuna"],
-        rules: "Arjuna has hung a lamp from a branch and set it swinging in the dark. \"I shoot at the flame,\" he says. \"You try.\" Three arrows: release as the flame crosses your line. Two hits win his friendship.",
+        rules: "Release as the swinging flame crosses your line. Two hits of three.",
         stakes: ["Arjuna becomes your closest friend.", "Arjuna remembers you missed, and lets you try once more."] },
       retryStakes: ["Arjuna becomes your closest friend.", "Arjuna gives up on you, and you must choose another friend. It counts as two failures, and it will weigh on every archery test to come."],
       crossWhy: "Arjuna stopped offering after you missed his lamp twice.",
@@ -52,7 +52,7 @@
     bhima: {
       game: "push", hint: "A wrestling test",
       trial: { attr: "might", skill: "mace", foe: "Bhima", stage: "stage_river_shallows", cast: ["bhima"],
-        rules: "Bhima wants to wrestle in the river shallows. A ring closes as he shifts his weight: push just as it meets the mark. Three good pushes and he goes into the water. Three slips and you do.",
+        rules: "Push as the ring meets the mark. Three good pushes win; three slips lose.",
         stakes: ["Bhima becomes your closest friend.", "Bhima laughs about it for a week, and lets you try once more."] },
       retryStakes: ["Bhima becomes your closest friend.", "Bhima stops taking you seriously, and you must choose another friend. It counts as two failures, and it will weigh on every wrestling test to come."],
       crossWhy: "Bhima threw you in the river twice. He calls you \"little fish\" now.",
@@ -66,7 +66,7 @@
     duryo: {
       game: "retort", hint: "A test of nerve",
       trial: { attr: "command", skill: "statecraft", stage: "stage_lotus_garden", cast: ["duryodhana", "dushasana"],
-        rules: "Duryodhana's brothers circle you by the lotus pond to see what you are made of. He is watching. Answer each taunt before the lamp burns down. Two good answers win his respect.",
+        rules: "Answer each taunt before the lamp burns down. Two good answers of three.",
         stakes: ["Duryodhana becomes your closest friend.", "The brothers remember you backed down. Duryodhana lets them try you once more."],
         rounds: [
           { line: "\"Who let this one into the gardens? Did the stables send us a present?\"", replies: ["\"The prince asked me here. Did he ask for you?\"", "\"I am sorry. I will go.\"", "\"Better the stables than your father's kitchen.\""] },
@@ -86,7 +86,7 @@
       game: "steady", hint: "A test of a steady hand",
       trial: { attr: "grace", skill: "chariot", stage: "stage_stable_yard", cast: ["karna"], horse: true,
         help: "Hold to move your hand right; let go and it drifts back. Keep it on the horse's head as it shies.",
-        rules: "A festival drum has maddened one of the chariot horses, and Karna is trying to hold it. \"Help me,\" he says. Keep your hand on the horse's head until it is calm.",
+        rules: "Keep your hand on the maddened horse's head until it is calm.",
         stakes: ["Karna becomes your closest friend.", "Karna has to manage alone this time, and asks you to try once more."] },
       retryStakes: ["Karna becomes your closest friend.", "Karna stops asking, and you must choose another friend. It counts as two failures, and it will weigh on every chariot test to come."],
       crossWhy: "Twice Karna asked for your help with a horse, and twice it beat you.",
@@ -112,7 +112,7 @@
   const ugraTrial = (retry) => ({ attr: "might", skill: "mace", foe: "Ugra", stage: "fight_fair_ring", cast: ["ugra"], bpm: 84, verb: "Throw",
     help: "Strike as each beat reaches the ring: every beat is Ugra shifting his weight.",
     tally: "Holds broken: {h} · Missed: {m} · {left} to go", clean: "He staggers!", okLine: "He gives ground.", soon: "Too soon. He reads you.", late: "Too late. He shoves you back.",
-    rules: "Ugra fights the fair way: falls in the ring. He shifts his weight like a drummer keeping time. Catch him on the beat, again and again, and he goes down.",
+    rules: "Catch Ugra on the beat, again and again, and he goes down.",
     stakes: retry ? ["Ugra lets Charu go, in front of everyone.", "Ugra wins twice, and you will not get into that ring again. It counts as two failures, and it will weigh on every wrestling test to come."]
       : ["Ugra lets Charu go, in front of everyone.", "Ugra keeps his grip on Charu. You can get up and ask for another bout."] });
 
@@ -122,12 +122,12 @@
     bhima: { attr: "grace", skill: "stealth", verb: "Creep", watch: "duryodhana", daylight: true, stage: "stage_lotus_garden", trips: 1, spots: 2, secs: 40,
       help: "Hold to creep along the hedge. Stop when Duryodhana looks your way.",
       tally: "Seen: {s} of {m} · {t} seconds", spotted: "Duryodhana turns, and you freeze behind the hedge. His brothers point.", made: "You tag him!",
-      rules: "Bhima wants Duryodhana tagged. Creep up on him along the hedge by the pond while he watches the others. Seen twice, and you are out.",
+      rules: "Creep up on Duryodhana along the hedge. Seen twice, and you are out.",
       stakes: ["You tag Duryodhana in front of everyone, and Bhima throws him in the pond.", "Duryodhana tags you out, and his brothers cheer."] },
     duryo: { attr: "grace", skill: "stealth", verb: "Run", watch: "bhima", daylight: true, stage: "stage_lotus_garden", trips: 1, spots: 2, secs: 40,
       help: "Hold to slip from bush to bush. Stop when Bhima looks your way.",
       tally: "Seen: {s} of {m} · {t} seconds", spotted: "Bhima sees you and comes crashing through the lotuses. You dive back under the bushes.", made: "You touch the far wall!",
-      rules: "Bhima is hunting your side and throwing everyone he catches into the pond. Get across the garden to the far wall. Seen twice, and you are in the water.",
+      rules: "Get across the garden to the far wall. Seen twice, and you are in the pond.",
       stakes: ["You are the only one on your side Bhima never catches.", "Bhima catches you and throws you into the pond."] }
   };
 

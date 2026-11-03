@@ -199,7 +199,7 @@
         trial: { attr: "might", skill: "mace", stage: "fight_war_field", verb: "Carry", secs: 16,
           help: "Hold to take his weight; let go when you stagger. Keep your feet over the glow until you reach the line.", tally: "Back to the line: {c}% · {s} seconds",
           wonLine: "You lay him down behind your own line.", nearLine: "Ten paces short, an arrow takes you in the shoulder.", lostLine: "An arrow takes you in the shoulder, and you go down under him.",
-          rules: (S) => ["{who} is heavy in his armour, and Drona's archers are still loosing at anything that moves near the parasols. Carry him back to your own line: hold to take his weight, ease off when you stagger.", { who: KP(S).who }],
+          rules: (S) => ["Hold to take {who}'s weight; ease off when you stagger.", { who: KP(S).who }],
           stakes: ["You bring him back to his own people, and nothing touches you.", "An arrow finds you on the way. You still bring him back."] },
         win: { fx: (S) => ({ flag: "kf_carried_king", rep: { common: 1 }, journal: { src: "On the fifteenth day you carried {who} from the field under Drona's arrows.", p: { who: KP(S).who } } }),
           text: "You lay him down behind your own line. His charioteer's boy is there, and covers his face with the edge of his own cloth." },

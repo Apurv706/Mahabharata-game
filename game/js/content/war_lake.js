@@ -74,7 +74,7 @@
   const CARRY = { id: "carry", t: "Carry Iravan to the river", game: "sneak", hint: "A test of stealth",
     trial: { attr: "grace", skill: "stealth", stage: "stage_field_to_river", trips: 1, spots: 2, watch: "soldier", verb: "Carry",
       help: "Hold to carry him forward. Stop when a fire-arrow lights the ground near you.", tally: "Toward the river: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "The river.", spotted: "A fire-arrow lands close. You go flat over him.",
-      rules: "Across the field, between the wrecks, to the river. The archers on the ridge loose at anything that moves. Move while their light is elsewhere, and lie still when it comes near.",
+      rules: "Move while the archers' light is elsewhere; lie still when it comes near.",
       stakes: ["You bring him to his mother's people.", "The arrows pin you down until the nagas come for him themselves."] },
     win: { fx: { flag: "naga_regard", bond: { arjuna: 1 }, memory: ["ulupi", "You carried my son to the river under the Kaurava arrows."], journal: "On the eighth day you carried Iravan's body across the field to the river, where his mother's people took him." },
       next: "wl_iravan_river", text: "You reach the shallows with him in the last of the light." },
@@ -92,7 +92,7 @@
     "A dead horse in the shallows", "A boat pulled up on the bank", "A cold cooking fire", "Three sets of chariot tracks"];
   const SEARCH = { id: "search", t: "Search the reeds first", game: "notice", hint: "A test of what you notice",
     trial: { attr: "wisdom", skill: "stealth", stage: "stage_lake_reeds", count: 7, things: SIGNS, lookLine: "Look along the bank. You have {n} seconds.", ask: "Which of these did you see in the reeds?",
-      rules: "The light is going. Look along the bank once, then say what you saw. Two right answers of three, and you reach the place before the hunters do.",
+      rules: "Look along the bank once, then say what you saw. Two right of three.",
       stakes: ["You find the place before the hunters do.", "The hunters find it first, and run for the Pandava camp."] },
     win: { fx: { flag: "lake_first" }, text: "The signs lead you to the water's edge. No hunter has been here yet." },
     lose: { fx: { flag: "lake_late" }, text: "By the time you find the place, the hunters have been and gone, running for the Pandava camp." } };

@@ -121,7 +121,7 @@
   const FIRE = { t: "Keep the fire through the storms", game: "steady", hint: "A long test of stillness",
     trial: { attr: "wisdom", skill: "lore", stage: art("stage_fire_altar"), secs: 24, verb: "Shield the flame",
       tally: "Flame kept: {c}% · {s} seconds of storm left", wonLine: "The storm passes. The flame is still there, and so are you.", nearLine: "The flame gutters, and comes back, and gutters. Not yet.", lostLine: "The wind takes the flame, and the season with it.",
-      rules: "A fire altar on a bare hill, and the rains coming. Keep your hands around the flame as the gusts push it: hold to shield it, let go when the wind drops. If it goes out, the season is lost.",
+      rules: "Hold to shield the flame from the gusts; let go when the wind drops.",
       stakes: ["On the last night, a voice in the fire gives you the Agneyastra.", "The flame goes out. You come down the hill with nothing but a cough."] },
     win: { fx: { astraGrant: { id: "agneya", from: "fire_altar" }, tapas: 1 }, text: "On the last night a voice speaks out of the coals, and gives you the mantra of fire, and one condition: never against someone who cannot fight back." },
     lose: { fx: { attr: { wisdom: 1 } }, text: "The flame goes out on the fortieth night. You come down the hill thinner, with no weapon and a little more patience." } };
@@ -133,7 +133,7 @@
   // Varuna: a dive for a sage's lost offering, in the deep lake (the breath test, ui/breath.js).
   const DIVE = { t: "Dive for the offering", game: "breath", hint: "A test of breath",
     trial: { attr: "might", skill: "stealth", stage: art("stage_deep_lake"), dives: 3, need: 2, verb: "Dive",
-      rules: "The sage's golden vessel lies on the lake bed, and the current moves it. Hold to dive and let go to rise; reach the glow before your breath runs out, and surface before it is gone. Three dives: bring it up on two.",
+      rules: "Hold to dive, let go to rise. Reach the glow before your breath runs out. Two of three dives.",
       stakes: ["The sage gives you the Varunastra for it.", "The lake keeps the vessel, and nearly keeps you."] },
     win: { fx: { astraGrant: { id: "varuna", from: "lake_sage" }, tapas: 1 }, text: "You come up with the vessel the second time, half-drowned. The sage takes it without a word, then gives you one: the mantra of water, on the condition that you never lie about where it came from." },
     lose: { fx: {}, text: "The current is stronger than you. The vessel stays on the lake bed, and the sage goes on sitting by the water as if you had never come." } };
@@ -146,7 +146,7 @@
   const CLIMB = { t: "Climb to the hermitage", game: "race", hint: "A climb",
     trial: { attr: "grace", skill: "chariot", kind: "war", stage: art("stage_mountain_path"), vehicle: "foot", obstacles: ["rock", "ice"], hull: 3, speed: 2.8,
       tally: "Climbed: {d}% · Falls: {h} of {l}", bump: "Your foot goes through the crust, and the mountain takes a little more of you.", help: "Step aside from the rocks and the ice: up and down, or the buttons.", helpSide: "Step left and right around the rocks and the ice.",
-      rules: "A path up through snow to a hermitage no one has reached in years. Rocks come down it, and the ice gives way. Three falls and you turn back.",
+      rules: "Climb through the falling rocks. Three falls and you turn back.",
       stakes: ["The hermit of the heights gives you the Vayavyastra. Nearly there, a sanjivani root on a ledge.", "You turn back below the snow line, frostbitten."] },
     win: { fx: { astraGrant: { id: "vayavya", from: "hermitage" }, tapas: 1 }, text: "The hermit is very old and very amused that anyone came. He teaches you the mantra of wind over three days, and makes you promise one thing: never to turn your back on a fight you chose." },
     // Short of the hermitage, a ledge where the sanjivani root grows (§18.8: "a dangerous climb").
@@ -165,7 +165,7 @@
   ];
   const RIDDLE = { t: "Answer the Gandharva's riddles", game: "retort", hint: "A test of wits",
     trial: { attr: "wisdom", skill: "lore", stage: art("stage_gandharva_grove"), rounds: RIDDLES,
-      rules: "The Gandharva sits in the branches above the pool and will not let you drink until you have answered him. Three riddles; answer before the lamp burns down. Two right of three.",
+      rules: "Answer the Gandharva's riddles before the lamp burns down. Two right of three.",
       stakes: ["He gives you the mantra of sleep, laughing.", "He lets you drink anyway, and keeps the mantra."] },
     win: { fx: { astraGrant: { id: "sammohana", from: "gandharva" }, tapas: 1 }, text: "He drops out of the tree, delighted. \"No one has answered me in a hundred years. Here: the mantra that puts a host to sleep. Never against one who is asleep already, or unarmed, or I will come and take it back.\"" },
     lose: { fx: {}, text: "\"Drink,\" he says, bored. \"You are no worse than the last hundred.\"" } };
@@ -178,7 +178,7 @@
   const NAGA = { t: "Draw the arrow and dress the wound", game: "steady", hint: "A test of steady hands",
     trial: { attr: "wisdom", skill: "healing", stage: art("stage_naga_bank"), secs: 18, verb: "Hold",
       tally: "The wound closing: {c}% · {s} seconds", wonLine: "The bleeding stops. The naga lets out a long breath that is almost a word.", nearLine: "Nearly. The wound keeps opening.", lostLine: "The naga pulls away from you and slides into the river, trailing blood.",
-      rules: "A man of the naga folk lies on the bank with a hunter's arrow through his shoulder, and he does not trust your hands. Keep your hand steady on the wound as he flinches: hold to press, let go when he pulls away.",
+      rules: "Hold to press the wound; let go when he pulls away.",
       stakes: ["He gives you the serpent-noose for it.", "He goes back into the river without a word."] },
     win: { fx: { astraGrant: { id: "nagapasha", from: "naga" }, tapas: 1, rep: { common: 1 } }, text: "Before he goes back into the water he teaches you the mantra of the serpent-noose, which binds and does not kill, on one condition: never against someone who cannot fight back." },
     lose: { fx: {}, text: "He goes into the river, and the water closes over him, and you do not know whether he lived." } };
@@ -193,7 +193,7 @@
     hint: "A year of your life: tapas +3, and a divine weapon", text: "A year of water carried and silence kept. On the last day the sage gives you the mantra of the wind, and tells you never to turn your back on a fight you chose." });
   const OFFERING = { t: "Steal it back by night", game: "sneak", hint: "A test of stealth",
     trial: { attr: "grace", skill: "stealth", stage: art("scene_temple_offering"),
-      rules: "The temple's golden lamp hangs in the robber chief's own room. His men keep watch with torches. Cross the house twice, in and out, and do not be seen twice.",
+      rules: "Cross the robber's house, in and out. Do not be seen twice.",
       stakes: ["The temple gets its lamp back, and its priest gives you a charmed shield.", "You are caught, and beaten, and let go as a fool."] },
     win: { fx: { boon: "charm_shield", tapas: 2, rep: { common: 1, sages: 1 } }, text: "The lamp is back on its chain by dawn. The old priest gives you a shield that hung in the temple longer than anyone remembers. \"It turns the first blow,\" he says. \"After that you are on your own.\"" },
     lose: { fx: { injury: "scar" }, text: "A torch finds you on the stair. They beat you and throw you out, and keep the lamp." } };
@@ -204,7 +204,7 @@
   const MOUNTAIN = { t: "Stand in the light", game: "steady", hint: "A test of stillness",
     trial: { attr: "wisdom", skill: "lore", stage: art("stage_shiva_mountain"), secs: 20, verb: "Hold still",
       tally: "Stillness: {c}% · {s} seconds", wonLine: "The light goes through you, and the voice says one word, and you do not remember it afterwards.", nearLine: "The light wavers, and so do you.", lostLine: "You step out of the light, shaking, and it is only snow.",
-      rules: "A light on the mountain, with no lamp in it, and a voice with no one speaking. Stand in it and do not move: hold to keep still as the cold and the fear push you. No one has told you what is in there.",
+      rules: "Hold to keep still in the light as the cold and the fear push you.",
       stakes: ["Something is given to you: a weapon, or a kavacha against one death in the war.", "You come down, and never tell anyone what you saw."] },
     win: { resolve: (S) => (S.rep.sages >= 6 ? { charge: { kavacha: 1 }, boon: "kavacha", tapas: 2 } : { astraGrant: { id: "vayavya", from: "mountain" }, tapas: 2 }), fx: { flag: "stood_in_the_light" },
       text: "When you can see again you are kneeling in the snow and something is yours that was not yours before. You will not lie about what happened here. You could not if you tried." },

@@ -197,7 +197,7 @@
       choices: [
         { id: "tell", t: "Tell him the Kaurava plans", game: "retort", hint: "A test of wits",
           trial: { attr: "wisdom", skill: "statecraft", rounds: TRUTH, stage: "stage_battlefield_night", cast: ["yudhishthira"],
-            rules: "Yudhishthira has never told a lie, and he knows one when he hears it. Answer each question true and plain before the lamp burns down. Two of three.",
+            rules: "Answer true and plain before the lamp burns down. Two of three.",
             stakes: ["Yudhishthira believes you.", "Yudhishthira cannot tell, and the guard stays at your tent."] },
           win: { fx: (S) => { const bond = {}; for (const w of KAURAVA) if (S.bonds[w] != null && !S.dead.includes(w)) bond[w] = -1;
               return Object.assign(proved(S, "truth"), { bond, duty: { conscience: -1 }, journal: "Before Yudhishthira you told the truth about the Kaurava array. The next morning men died where you said they would be." }); },
@@ -217,7 +217,7 @@
         { id: "remember", t: "Describe the man", game: "notice", hint: "A test of what you notice",
           trial: { attr: "wisdom", skill: "statecraft", stage: "stage_supply_camp_night", things: SPY_THINGS, count: 5,
             lookLine: "Remember the man by the horse lines. You have {n} seconds.", ask: "Which of these did the man have?",
-            rules: "Dhrishtadyumna gives you until the lamp burns down. Call back what you saw of the man by the horse lines. Two right answers of three.",
+            rules: "Before the lamp burns down, say what you saw of the man. Two right of three.",
             stakes: ["The man is found.", "Nobody is found, and the camp keeps its eyes on you."] },
           win: { fx: (S) => Object.assign(proved(S, "spy"), { journal: "In the Pandava camp you found the spy everyone took you for: a groom who had been Shakuni's man for ten years." }),
             text: "They find him at dawn among the grooms, as you described him, with the copied array folded in the bottom of his bucket. He has been Shakuni's man for ten years. Dhrishtadyumna takes the guard off your tent himself." },

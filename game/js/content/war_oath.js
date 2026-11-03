@@ -121,7 +121,7 @@
       choices: [
         { id: "array", t: "Set your companies", req: (S) => S.flags.includes("role_command") && !S.flags.includes("company_broken"), game: "array", hint: "Hold till Arjuna returns",
           trial: { attr: "command", skill: "statecraft", kind: "war", array: "crescent", rounds: 5, stage: "stage_vyuha_top", companies: (S) => companies(S),
-            rules: "Dhrishtadyumna points at your stretch of the crescent. Put your companies on its marks. Then, round by round, the eagle pushes: hold, strike their flank, give ground, or send the reserve where they strike.",
+            rules: "Put your companies on the marks. Then, each round: hold, strike their flank, give ground, or send the reserve.",
             stakes: ["The crescent holds, and Drona does not reach the king through you.", "The crescent breaks where you stand, and Drona's chariots go through toward the king."] },
           win: { fx: { flag: "crescent_held", duty: { court: 1 }, journal: "On the twelfth day, with Arjuna drawn away south, you held your stretch of the crescent." }, text: "Your stretch of the crescent is where it was at dawn when the eagle draws back." },
           close: { fx: { flag: "crescent_held" }, text: "The crescent bends where you stand, and holds." },
