@@ -1200,8 +1200,9 @@ require(G + "content/war_fights.js");
     for (let i = 0; i < 40; i++) RT.step(R, {});
     ok(p.hp < p0 && bh.hp === bh0, "a blow marked on a friend lands on you when you stand in its path");
     // Foes block you: you cannot walk through one.
-    foe.rt.cool = 99; foe.rt.atk = null; p.rt.x = foe.rt.x - RT.BODY; for (let i = 0; i < 60; i++) RT.step(R, { move: 1 });
-    ok(p.rt.x < foe.rt.x, "a foe blocks your way"); C.settle("win"); C.end(); }
+    foe.rt.cool = 99; foe.rt.atk = null; p.rt.x = foe.rt.x - RT.BODY;
+    for (let i = 0; i < 60; i++) { foe.rt.lane = p.rt.lane; RT.step(R, { move: 1 }); }
+    ok(p.rt.x < foe.rt.x, "a foe in your row blocks your way"); C.settle("win"); C.end(); }
   // An arrow strikes whoever is in its locked lane when it arrives (you, stepping in to cover a friend).
   { K.seed(12); life(); const B = C.start("e_panchala"); const R = RT.begin(B);
     const p = C.player(), ar = B.units.find((u) => /archer/.test(u.src)), cap = B.units.find((u) => u !== ar && u.side === "enemy");
@@ -1238,6 +1239,27 @@ require(G + "content/war_fights.js");
   { K.seed(17); life(); const B = C.start("e_bandits"); const R = RT.begin(B); const e = B.units.find((u) => u.side === "enemy");
     B.status(e, "stun", 1); let t0 = R.t; while (e.status.stun && R.t - t0 < 10) RT.step(R, {});
     ok(Math.abs(R.t - t0 - RT.ROUND) < 0.1, "a stun of one round lasts about 4 s"); C.settle("win"); C.end(); }
+  // Rows: you in front, your side behind; at rest no two bodies in one row overlap by more than about a quarter.
+  { let worst = 9, rows = new Set();
+    for (let i = 0; i < 6; i++) { K.seed(500 + i); life(); const B = C.start(i % 2 ? "e_guard" : "t_rt_pack"); const R = RT.begin(B);
+      while (!R.over) { RT.step(R, RT.bot(R)); if (R.n % 30) continue;
+        const us = B.units.filter((u) => u.hp > 0 && u.rt && !u.rt.atk && (u.side !== "enemy" || u.rt.entered) && u.rt.down <= 0);
+        us.forEach((u) => rows.add(Math.round(u.rt.lane)));
+        for (const a of us) for (const b of us) if (a !== b && a.side === b.side && Math.abs(a.rt.lane - b.rt.lane) < 0.1 && Math.abs(a.rt.lane - Math.round(a.rt.lane)) < 0.05) worst = Math.min(worst, Math.abs(a.rt.x - b.rt.x) / RT.BODY); }
+      C.end(); }
+    ok(rows.size === 3 && worst >= 0.5, "figures stand in three rows; bodies on one side in one row keep apart (closest " + worst.toFixed(2) + " of a body)"); }
+  // You step between rows (a short step); not into a row where a foe stands right beside you; your side makes room.
+  { K.seed(21); life(); const B = C.start("e_guard"); const R = RT.begin(B); const p = C.player();
+    B.units.filter((u) => u.side === "enemy").forEach((u) => { u.rt.x = 0.97; u.rt.cool = 99; u.rt.wave = 1; u.rt.entered = false; });
+    const al = B.units.find((u) => u.side === "ally"); RT.step(R, {});
+    const before = Math.round(al.rt.lane); RT.step(R, { row: 1 });
+    let n = 0; while (Math.abs(p.rt.lane - 1) > 1e-6 && n++ < 60) RT.step(R, {});
+    if (before === 2) { RT.step(R, { row: 1 }); while (Math.abs(p.rt.lane - 2) > 1e-6 && n++ < 60) RT.step(R, {}); n /= 2; }
+    for (let i = 0; i < 90; i++) RT.step(R, {});
+    ok(n <= 18 && Math.round(al.rt.lane) !== before, "you step into the next row in about a quarter of a second, and a friend standing there moves to another row");
+    const f = B.units.find((u) => u.side === "enemy"); f.rt.entered = true; f.rt.x = p.rt.x + 0.03; f.rt.lane = 2; const at = p.rt.lane;
+    RT.step(R, { row: 2 - at }); for (let i = 0; i < 30; i++) { f.rt.x = p.rt.x + 0.03; f.rt.lane = 2; RT.step(R, {}); }
+    ok(p.rt.lane === at, "you cannot step into a row where a foe stands right beside you"); C.settle("win"); C.end(); }
   RT.force = false;
 }
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

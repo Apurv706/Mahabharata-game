@@ -1,6 +1,10 @@
 /* Real-time fights (PRD §18.15), the engine. A deterministic fixed-step simulation (60 steps a
    second, every chance drawn from K.rng) of one fight on a 1-D ground: x runs 0..1 across the field
-   (about nine bodies wide on every screen), with depth lanes for the drawing order only.
+   (9.5 bodies wide on every screen), and three depth rows (u.rt.lane: 0 front .. 2 back, a float while
+   a unit steps between them; owner, 3 November): you hold the front row and your side stands in the
+   rows behind; a foe steps into its target's row to strike and waits in a back row; a beaten foe (one
+   that may be spared) kneels in the back row; blows reach a row across a little shorter; bodies in one
+   row keep apart (no more than about a quarter of a body overlapping); arrows cross rows.
 
    It rides on the turn-based engine (engine/combat.js): K.Combat.start builds the fight (the units,
    your stats, the fight's allies and enemies, curses, intro lines), every blow is K.Combat's own
@@ -23,7 +27,7 @@
   "use strict";
   const C = K.Combat;
   const RT = (K.RT = {});
-  const STEP = 1 / 60, ROUND = 4, BODY = 1 / 9, EDGE = 0.1;
+  const STEP = 1 / 60, ROUND = 4, BODY = 1 / 9.5, EDGE = 0.1;
   RT.STEP = STEP; RT.ROUND = ROUND; RT.BODY = BODY; RT.EDGE = EDGE;
   // The tunables (tests/balance.js measures them; PARAMS env in the tests can override).
   RT.P = {
@@ -103,30 +107,31 @@
     if (foe) u.atk = Math.round(u.atk * RT.P.atkFoe * 10) / 10; // blows come oftener and are dodged more than on the turns
     const pr = u.side === "player" ? { reach: 1.2 * BODY, speed: 0.3, windup: 0.12 } : profile(u);
     const i = R.seen++;
+    const sideIdx = (R.sideSeen[foe ? "e" : "f"] = (R.sideSeen[foe ? "e" : "f"] || 0) + 1) - 1;
     u.rt = Object.assign(pr, {
       x: 0, lane: 0, face: foe ? -1 : 1, state: "idle", t: 0, busy: 0, cool: foe ? r(0.6, 1.6) : r(0.3, 0.9), cd: {}, st: {}, down: 0, stag: 0,
-      atk: null, entered: !foe, hits: [], bodies: u.plural ? 3 : 1, idx: i
+      atk: null, entered: !foe, hits: [], bodies: u.plural ? 3 : 1, idx: i, sideIdx
     });
     for (const [s, v] of Object.entries(u.status)) if (typeof v === "number") u.rt.st[s] = v * ROUND; // set before the fight began (a curse, a shaken company)
     if (u.leave != null) { u.rt.leaveAt = R.t + Math.max(1, u.leave - B.round) * ROUND; delete u.leave; }
   }
   function place(R) {
     const B = R.B, p = C.player();
-    p.rt.x = 0.3; p.rt.lane = 1;
+    p.rt.x = 0.3; p.rt.lane = 0;
     const allies = B.units.filter((u) => u.side === "ally");
-    allies.forEach((a, i) => { a.rt.x = clamp(0.2 - (i % 3) * 0.05 + (i > 2 ? 0.12 : 0), 0.06, 0.4); a.rt.lane = i % 2 ? 2 : 0; });
+    allies.forEach((a, i) => { a.rt.x = clamp(0.2 - (i % 3) * 0.05 + (i > 2 ? 0.12 : 0), 0.06, 0.4); a.rt.lane = backRow(a); });
     const foes = B.units.filter((u) => u.side === "enemy");
     foes.forEach((e, i) => {
       // More than two come in packs: two on the field, the rest waiting off it.
       e.rt.wave = i < 2 ? 0 : 1;
       e.rt.x = e.rt.wave ? 1.12 + (i - 2) * 0.05 : 0.72 + i * 0.12 + (e.rt.archer ? 0.08 : 0);
       e.rt.entered = !e.rt.wave && e.rt.x <= 0.97;
-      e.rt.lane = i % 3;
+      e.rt.lane = backRow(e);
     });
   }
 
   RT.begin = function (B, opts = {}) {
-    const R = { B, t: 0, n: 0, seen: 0, over: null, tries: opts.tries || 0, marks: [], fx: [], slow: 0, round: 1, doT: ROUND,
+    const R = { B, t: 0, n: 0, seen: 0, sideSeen: {}, over: null, tries: opts.tries || 0, marks: [], fx: [], slow: 0, round: 1, doT: ROUND,
       orders: { friend: "balanced", soldiers: "defend" }, breath: RT.P.breathMax, combo: 0, comboT: -9, buffer: false, roll: 0, rollT: -9, rollDir: 1,
       kneel: 0, skillCd: 0, salve: null, unseen: 0, double: false, haste: 0, frozen: 0, assist: !!opts.assist, stats: { blows: 0, hits: 0, rolls: 0, dodged: 0, perfect: 0, maxAtk: 0 },
       skill: null, shots: [], shotN: 0 };
@@ -146,9 +151,36 @@
 
   // ---------- Helpers on the ground ----------
   const dist = (a, b) => Math.abs(a.rt.x - b.rt.x);
+  const rowGap = (a, b) => Math.abs(a.rt.lane - b.rt.lane);
+  const ROWCUT = 0.25 * BODY; // reach lost for each row between
+  const APART = 0.62 * BODY;  // bodies in one row stand at least this far apart (about a quarter overlapping at most)
+  const FACE = 0.75 * BODY;   // you and a foe in your row, face to face
+  function toRow(u, row, dt) { const d = row - u.rt.lane; if (Math.abs(d) > 1e-3) u.rt.lane += sign(d) * Math.min(Math.abs(d), 2.5 * dt); }
+  // Keep a unit clear of the others standing in its row.
+  function keepApart(R, u, x, dt, list) {
+    for (const o of list) {
+      if (o === u || o.hp <= 0 || !o.rt || (o.side === "enemy" && !o.rt.entered) || rowGap(o, u) > 0.5) continue;
+      const g = o.rt.x - x;
+      if (Math.abs(g) >= APART) continue;
+      if (Math.abs(o.rt.x - u.rt.x) >= APART) x = o.rt.x - sign(o.rt.x - u.rt.x) * APART; // walking up to it: stop at its side
+      else { // already too close: ease apart (inward, if pressed against an edge)
+        let dir = Math.abs(g) > 1e-4 ? -sign(g) : u.rt.idx > o.rt.idx ? 1 : -1;
+        if ((x > 0.93 && dir > 0) || (x < 0.07 && dir < 0)) dir = -dir;
+        x += dir * 0.35 * dt;
+      }
+    }
+    return x;
+  }
+  // Foes wait in rows 1 and 2; your side stands in the two rows you are not in.
+  const backRow = (u) => {
+    if (u.side === "enemy") return u.rt.sideIdx % 2 ? 2 : 1;
+    const p = C.player(), mine = p && p.rt ? Math.round(p.rt.lane) : 0, free = [0, 1, 2].filter((r) => r !== mine);
+    return free[u.rt.sideIdx % 2 ? 1 : 0];
+  };
   const onField = (u) => u.rt.x >= 0.04 && u.rt.x <= 0.96;
   function foesNear(R, x, face, reach, from) {
-    return living(R.B, "enemy").filter((e) => e.rt.entered && (face == null ? Math.abs(e.rt.x - x) <= reach : (e.rt.x - x) * face > -BODY * 0.3 && (e.rt.x - x) * face <= reach))
+    const p = C.player(), cut = (e) => reach - ROWCUT * Math.abs(e.rt.lane - p.rt.lane);
+    return living(R.B, "enemy").filter((e) => e.rt.entered && (face == null ? Math.abs(e.rt.x - x) <= cut(e) : (e.rt.x - x) * face > -BODY * 0.3 && (e.rt.x - x) * face <= cut(e)))
       .sort((a, b) => Math.abs(a.rt.x - (from == null ? x : from)) - Math.abs(b.rt.x - (from == null ? x : from)));
   }
   function nearestFoe(R, x) { return living(R.B, "enemy").filter((e) => e.rt.entered).sort((a, b) => Math.abs(a.rt.x - x) - Math.abs(b.rt.x - x))[0] || null; }
@@ -176,6 +208,14 @@
   function playerAct(R, a) {
     const B = R.B, p = C.player();
     if (a.orders) Object.assign(R.orders, a.orders);
+    // A step between the rows (W/S, a swipe): short, and not into a row where a foe stands right beside you.
+    if (a.row && !R.rowTo && R.roll <= 0 && R.kneel <= 0 && !held(p)) {
+      const to = Math.round(p.rt.lane) + sign(a.row);
+      if (to >= 0 && to <= 2) {
+        const block = living(B, "enemy").find((e) => e.rt.entered && Math.abs(e.rt.lane - to) < 0.5 && dist(e, p) < APART);
+        if (block) R.fx.push({ k: "blocked", uid: block.uid }); else { R.rowTo = to; R.fx.push({ k: "row", to }); }
+      }
+    }
     if (a.withdraw && C.canFlee()) { C.flee(); return; }
     if (a.spare) { const t = RT.spareable(R).find((e) => e.uid === a.spare); if (t) { C.spare(t.uid); return; } }
     if (held(p) || R.frozen > 0) return;
@@ -307,6 +347,7 @@
       p.rt.x = clamp(p.rt.x + R.rollDir * (1.7 * BODY / P.roll) * dt, EDGE, 1 - EDGE); // a roll can pass a foe
     } else R.breath = Math.min(P.breathMax, R.breath + P.breathRegen * dt);
     if (R.unseen > 0) R.unseen -= dt;
+    if (R.rowTo != null) { const d = R.rowTo - p.rt.lane; p.rt.lane += sign(d) * Math.min(Math.abs(d), dt / 0.25); if (Math.abs(R.rowTo - p.rt.lane) < 1e-6) { p.rt.lane = R.rowTo; R.rowTo = null; } }
     if (R.skillCd > 0) R.skillCd -= dt;
     if (R.herbCd > 0) R.herbCd -= dt;
     if (R.kneel > 0) {
@@ -332,8 +373,8 @@
       let x = p.rt.x + mv * p.rt.speed * dt;
       // Foes block your way; your own side never does.
       for (const e of living(B, "enemy")) {
-        if (!e.rt.entered || held(e) && e.rt.down <= 0 && false) continue;
-        const gap = 0.6 * BODY;
+        if (!e.rt.entered || rowGap(e, p) > 0.5) continue; // only a foe in your row stands in your way
+        const gap = FACE;
         if (mv > 0 && p.rt.x <= e.rt.x && x > e.rt.x - gap) x = Math.max(p.rt.x, e.rt.x - gap);
         if (mv < 0 && p.rt.x >= e.rt.x && x < e.rt.x + gap) x = Math.min(p.rt.x, e.rt.x + gap);
       }
@@ -396,11 +437,14 @@
     const a = e.rt.atk; if (!a) return null;
     const fill = clamp((R.t - a.t0) / (a.land - a.t0), 0, 1);
     if (a.ranged) return { x0: a.lane - BODY * 0.5, x1: a.lane + BODY * 0.5, fill, lane: true, locked: a.locked, on: a.on, from: e.rt.x };
-    if (a.area) return { x0: e.rt.x - 1.6 * BODY, x1: e.rt.x + 1.6 * BODY, fill, on: a.on, area: true };
+    if (a.area) return { x0: e.rt.x - 1.6 * BODY, x1: e.rt.x + 1.6 * BODY, fill, on: a.on, area: true, row: e.rt.lane };
     const x1 = e.rt.x + e.rt.face * (e.rt.reach + LUNGE); // the blow carries a step forward
-    return { x0: Math.min(e.rt.x, x1), x1: Math.max(e.rt.x, x1), fill, on: a.on };
+    return { x0: Math.min(e.rt.x, x1), x1: Math.max(e.rt.x, x1), fill, on: a.on, row: e.rt.lane };
   };
-  function inside(m, u) { return u.rt.x >= m.x0 - BODY * 0.15 && u.rt.x <= m.x1 + BODY * 0.15; }
+  function inside(m, u) {
+    const pad = BODY * 0.15 - (m.lane || m.row == null ? 0 : ROWCUT * Math.abs(u.rt.lane - m.row)); // a blow reaches a row across a little shorter; an arrow crosses rows
+    return u.rt.x >= m.x0 - pad && u.rt.x <= m.x1 + pad;
+  }
   // An arrow is a projectile: loosed down its locked lane, it strikes whoever is in that lane when it
   // arrives (you, if you stepped into it for a friend). The screen draws it from the bow to that unit.
   const ARROW_SPEED = 1.7;
@@ -491,6 +535,8 @@
       if (u.x <= 0.96) u.entered = true;
       return;
     }
+    // Beaten (in a fight where a foe may be spared): he kneels in the back row and fights no more.
+    if (B.enc.spare && e.hp <= e.maxHp * 0.3) { if (!u.beaten) { u.beaten = true; if (u.atk) cancel(R, e); R.fx.push({ k: "beaten", uid: e.uid }); } toRow(e, 2, dt); u.x = clamp(keepApart(R, e, u.x, dt, living(B, "enemy")), 0.03, 0.97); return; }
     if (u.atk) {
       const a = u.atk, t = B.units.find((x) => x.uid === a.on);
       if (a.ranged && !a.locked) { if (t && t.hp > 0) a.lane = t.rt.x; if (a.land - R.t <= RT.P.lock) a.locked = true; }
@@ -502,9 +548,14 @@
     if (!t || !targetable(R, t) || (u.cool <= 0 && K.rng() < 0.02)) { t = pickTarget(R, e); u.tgt = t ? t.uid : null; }
     if (!t) return;
     const d = t.rt.x - u.x, ad = Math.abs(d);
+    // Rows: one about to strike steps into its target's row; the others wait in a back row.
+    const tr = Math.round(t.rt.lane);
+    const taken = living(B, "enemy").some((o) => o !== e && (o.rt.engaged || o.rt.atk) && Math.abs(o.rt.lane - tr) < 0.6 && dist(o, e) < 1.3 * BODY);
+    u.engaged = u.cool <= 0.8 && RT.attacking(R) < 2 && !u.archer && !taken; // one at a time steps into a row beside its target
+    toRow(e, u.engaged ? tr : backRow(e), dt);
     const want = u.keep && !u.close ? Math.max(u.keep * 0.8, Math.min(u.keep, 0.6)) : u.reach * 0.8;
     const spaced = living(B, "enemy").every((o) => !o.rt.atk || Math.abs(o.rt.atk.land - (R.t + (u.archer ? RT.P.track + RT.P.lock : u.windup))) >= RT.P.spacing);
-    const canAttack = u.cool <= 0 && RT.attacking(R) < 2 && spaced && onField(e) && ad <= (u.ranged && (u.archer || ad > u.reach + LUNGE) ? 0.9 : u.reach + LUNGE * 0.85);
+    const canAttack = u.cool <= 0 && RT.attacking(R) < 2 && spaced && onField(e) && ad <= (u.ranged && (u.archer || ad > u.reach + LUNGE) ? 0.9 : u.reach + LUNGE * 0.85 - ROWCUT * rowGap(e, t));
     if (canAttack) { startAttack(R, e, t); if (u.atk) u.close = false; return; }
     // Without a turn to strike, a foe waits at a distance.
     const waitAt = RT.attacking(R) >= 2 && !u.keep ? Math.max(want, 2.3 * BODY) : want;
@@ -512,16 +563,14 @@
     if (ad > waitAt + 0.01) dx = sign(d) * u.speed * dt;
     else if (ad < waitAt - 0.04) dx = -sign(d) * u.speed * 0.6 * dt;
     let x = u.x + dx;
-    // Foes keep a little apart from each other, so each stands clear on the ground.
-    for (const o of living(B, "enemy")) {
-      if (o === e || !o.rt.entered) continue;
-      const g = o.rt.x - x;
-      if (Math.abs(g) < 0.55 * BODY) x -= sign(g || (e.rt.idx - o.rt.idx)) * 0.12 * dt;
+    // Foes keep apart from each other in a row, so each stands clear on the ground.
+    x = keepApart(R, e, x, dt, living(B, "enemy"));
+    // A foe in your row does not walk through you.
+    if (rowGap(e, p) < 0.5) {
+      const pg = FACE;
+      if (u.x >= p.rt.x && x < p.rt.x + pg) x = Math.max(x, Math.min(u.x, p.rt.x + pg));
+      if (u.x < p.rt.x && x > p.rt.x - pg) x = Math.min(x, Math.max(u.x, p.rt.x - pg));
     }
-    // A foe does not walk through you.
-    const pg = 0.6 * BODY;
-    if (u.x >= p.rt.x && x < p.rt.x + pg) x = Math.max(x, Math.min(u.x, p.rt.x + pg));
-    if (u.x < p.rt.x && x > p.rt.x - pg) x = Math.min(x, Math.max(u.x, p.rt.x - pg));
     u.x = clamp(x, 0.03, 0.97);
     if (ad > 1e-4) u.face = sign(d);
   }
@@ -543,7 +592,7 @@
         u.cool = r(1.4, 2.3) * hast * (order === "allout" ? 0.75 : 1); u.rec = 0.3;
         const ab = K.ABILITIES[id];
         if (ab.target === "ally") { ab.use(B, a, t); R.fx.push({ k: "heal", uid: t && t.uid }); }
-        else if (t && Math.abs(t.rt.x - u.x) <= u.reach * 1.25) { const before = t.hp; ab.use(B, a, ab.target === "enemies" ? [t] : t); hitFx(R, t, before - t.hp); }
+        else if (t && Math.abs(t.rt.x - u.x) <= u.reach * 1.25 + LUNGE - ROWCUT * rowGap(a, t)) { const before = t.hp; ab.use(B, a, ab.target === "enemies" ? [t] : t); hitFx(R, t, before - t.hp); }
       }
       return;
     }
@@ -561,13 +610,16 @@
       if ((order === "guard" || order === "defend") && Math.abs(goal - p.rt.x) > BODY * 1.2) goal = p.rt.x + clamp(goal - p.rt.x, -BODY * 1.2, BODY * 1.2);
     }
     const d = goal - u.x;
-    if (Math.abs(d) > 0.01) u.x = clamp(u.x + sign(d) * Math.min(Math.abs(d), u.speed * 1.05 * dt), 0.03, 0.97);
+    let nx = u.x;
+    if (Math.abs(d) > 0.01) nx = u.x + sign(d) * Math.min(Math.abs(d), u.speed * 1.05 * dt);
+    toRow(a, backRow(a), dt); // your side stands in the rows behind you
+    u.x = clamp(keepApart(R, a, nx, dt, living(B, "ally")), 0.03, 0.97);
     // A healer among your friends tends the hurt.
     const hurt = living(B, "friends").find((f) => !f.still && f.hp / f.maxHp < 0.45 && dist(f, a) < 2 * BODY);
     if (u.cool <= 0 && hurt && a.abilities.includes("salve") && !(u.cd.salve > 0)) { u.atk = { id: "salve", on: hurt.uid, land: R.t + 0.5, t0: R.t }; u.cd.salve = 3 * ROUND; return; }
     for (const k of Object.keys(u.cd)) if (u.cd[k] > 0) u.cd[k] -= dt;
     if (order === "stay" || order === "hold" || !foe || u.cool > 0) return;
-    if (Math.abs(foe.rt.x - u.x) <= u.reach * 1.05) {
+    if (Math.abs(foe.rt.x - u.x) <= u.reach * 1.05 + LUNGE - ROWCUT * rowGap(a, foe)) {
       const ok = (id) => a.abilities.includes(id) && !(u.cd[id] > 0);
       const id = ok("heavy") && K.rng() < 0.3 ? "heavy" : a.abilities.includes("strike") ? "strike" : a.abilities.find((x) => MELEE.has(x)) || "strike";
       if (K.ABILITIES[id].cd) u.cd[id] = K.ABILITIES[id].cd * ROUND;
@@ -626,8 +678,25 @@
     return null;
   }
 
+  // Bodies of one side in one row never stand in each other (a knock-back, a pack walking in): eased apart.
+  function spread(R) {
+    for (const side of ["enemy", "ally"]) {
+      const us = living(R.B, side).filter((u) => u.rt && !u.still && (side !== "enemy" || u.rt.entered));
+      for (let i = 0; i < us.length; i++) for (let j = i + 1; j < us.length; j++) {
+        const a = us[i], b = us[j];
+        if (rowGap(a, b) > 0.5) continue;
+        const g = b.rt.x - a.rt.x;
+        if (Math.abs(g) >= APART * 0.98) continue;
+        const dir = Math.abs(g) > 1e-4 ? sign(g) : (b.rt.x > 0.5 ? -1 : 1); // b goes this way, a the other
+        const push = 0.5 * STEP;
+        const nb = clamp(b.rt.x + dir * push, 0.03, 0.97), lostB = push - Math.abs(nb - b.rt.x);
+        const na = clamp(a.rt.x - dir * (push + lostB), 0.03, 0.97), lostA = push + lostB - Math.abs(na - a.rt.x);
+        a.rt.x = na; b.rt.x = clamp(nb + dir * lostA, 0.03, 0.97); // pressed against an edge, the other one moves the more
+      }
+    }
+  }
   function joined(R) {
-    for (const u of R.B.units) if (!u.rt) { initUnit(R, u); u.rt.x = clamp(C.player().rt.x - 0.6 * BODY, 0.04, 0.96); u.rt.lane = 2; if (u.side === "enemy") { u.rt.x = 1.05; u.rt.entered = false; } R.fx.push({ k: "join", uid: u.uid }); }
+    for (const u of R.B.units) if (!u.rt) { initUnit(R, u); u.rt.x = clamp(C.player().rt.x - 0.6 * BODY, 0.04, 0.96); u.rt.lane = backRow(u); if (u.side === "enemy") { u.rt.x = 1.05; u.rt.entered = false; } R.fx.push({ k: "join", uid: u.uid }); }
   }
   // One step of the fight, with one input.
   RT.step = function (R, act) {
@@ -654,6 +723,7 @@
     for (const a of living(B, "ally")) allyStep(R, a, STEP);
     const foes = living(B, "enemy").sort((x, y) => (x.rt.atk ? 0 : 1) - (y.rt.atk ? 0 : 1) || x.rt.idx - y.rt.idx);
     for (const e of foes) { if (e.rt.atk && R.slow > 0) e.rt.atk.land += STEP - fdt; foeStep(R, e, fdt); }
+    spread(R);
     shotsStep(R);
     clocks(R);
     for (const u of B.units) if (u.rt && u.hp <= 0 && u.rt.fell == null) { u.rt.fell = R.t; u.rt.atk = null; R.fx.push({ k: "fall", uid: u.uid }); }
@@ -738,7 +808,7 @@
       const use = { aimed: ad <= 0.7, quake: foesNear(R, p.rt.x, null, 1.6 * BODY).length >= 1, ridedown: ad <= 2.5 * BODY, command: ad <= 3 * BODY, salve: p.hp < p.maxHp * 0.75, vanish: ad <= 1.6 * BODY, song: allies > 0 || ad <= BODY * 1.5 }[R.skill];
       if (use) { a.skill = true; return a; }
     }
-    if (ad <= p.rt.reach * 0.92) { a.strike = !soon || p.rt.busy > 0; if (!a.strike) a.move = 0; }
+    if (ad <= (p.rt.reach - ROWCUT * rowGap(f, p)) * 0.92) { a.strike = !soon || p.rt.busy > 0; if (!a.strike) a.move = 0; }
     else a.move = sign(d);
     return a;
   };

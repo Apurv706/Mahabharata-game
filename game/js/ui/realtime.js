@@ -67,7 +67,7 @@
         '<div class="rt-toast off" role="status" id="rt-toast"></div>' +
         // Laptops (keyboard and mouse): no move/strike/roll buttons, a slim strip with the skill's recharge, the herbs and key hints.
         '<div class="rt-strip" aria-hidden="true"><span class="sk"><svg class="ring" viewBox="0 0 40 40"><circle class="bg" cx="20" cy="20" r="16"/><circle class="fg" cx="20" cy="20" r="16" stroke-dasharray="100.5" stroke-dashoffset="0"/></svg>' + T(R.skill ? SKILL_NAME[R.skill] : "No skill") + " <kbd>L</kbd></span>" +
-          '<span class="hb-n">' + T("Herbs") + ' <b id="rt-herbn"></b> <kbd>H</kbd></span><span class="hints">' + T("A D move · J strike · K roll · click the ground to walk, a foe to strike") + "</span></div></div>" +
+          '<span class="hb-n">' + T("Herbs") + ' <b id="rt-herbn"></b> <kbd>H</kbd></span><span class="hints">' + T("A D move · W S rows · J strike · K roll · click the ground to walk, a foe to strike") + "</span></div></div>" +
       '<div class="rt-ctl"><div class="rt-pad"><button type="button" class="mv" data-hold="l" aria-label="' + T("Move left") + '">◀' + kb("A") + '</button><button type="button" class="mv" data-hold="r" aria-label="' + T("Move right") + '">▶' + kb("D") + "</button></div>" +
         '<div class="rt-acts">' +
           '<button type="button" class="skill" data-act="skill"' + (R.skill ? "" : " disabled") + '><svg class="ring" viewBox="0 0 40 40" aria-hidden="true"><circle class="bg" cx="20" cy="20" r="18"/><circle class="fg" cx="20" cy="20" r="18" stroke-dasharray="113.1" stroke-dashoffset="0"/></svg><span>' + T(R.skill ? SKILL_NAME[R.skill] : "No skill") + "</span>" + kb("L") + "</button>" +
@@ -81,11 +81,23 @@
     const bg = U.FIGHT_BG && U.FIGHT_BG[enc.id];
     V.art = [U.artUrl(K.val(enc.stage) || K.val(enc.art)), bg ? U.artUrl(bg + "_tall") : null];
     // Mouse: a click on the ground walks there; a click on a foe walks to it and strikes.
+    // Right-click or Shift-click rolls toward the pointer. On a touch screen a swipe up or down steps between rows.
+    V.stage.addEventListener("contextmenu", (e) => e.preventDefault());
     V.stage.addEventListener("pointerdown", (e) => {
-      if (e.pointerType !== "mouse" || e.button !== 0 || e.target.closest("button, .rt-sheet")) return;
-      const r = V.stage.getBoundingClientRect(), x = (e.clientX - r.left) / r.width;
+      if (e.target.closest("button, .rt-sheet")) return;
+      const r = V.stage.getBoundingClientRect(), x = (e.clientX - r.left - V.G.fx0) / V.G.FW;
+      if (e.pointerType !== "mouse") { V.swipe = { x: e.clientX, y: e.clientY, t: performance.now() }; return; }
+      const p = C.player();
+      if (e.button === 2 || e.shiftKey) { V.queue.roll = true; V.queue.rollDir = x >= p.rt.x ? 1 : -1; return; }
+      if (e.button !== 0) return;
       const foe = e.target.closest(".rt-actor.foe");
       V.walk = { x, foe: foe ? foe.dataset.uid : null };
+    });
+    V.stage.addEventListener("pointerup", (e) => {
+      const sw = V.swipe; V.swipe = null;
+      if (!sw || performance.now() - sw.t > 600) return;
+      const dx = e.clientX - sw.x, dy = e.clientY - sw.y;
+      if (Math.abs(dy) > 28 && Math.abs(dy) > Math.abs(dx) * 1.3) V.queue.row = dy < 0 ? 1 : -1; // up: a row back (higher on the ground); down: a row forward
     });
     el.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", (e) => { e.preventDefault(); act(b.dataset.act); }));
     el.querySelectorAll("[data-hold]").forEach((b) => {
@@ -112,8 +124,13 @@
     V.stage.style.backgroundImage = "url(" + (H > W * 1.25 && V.art[1] ? V.art[1] : V.art[0]) + ")";
     // The field is the same in game units everywhere (about nine bodies across); a phone draws the
     // figures smaller instead of showing less of it, with clear ground between them.
-    const fh = Math.min(H * 0.3, W * RT.BODY * (wide ? 1.6 : 2.2));
-    V.G = { W, H, fh, bw: W * RT.BODY, gl: H * (wide ? 0.07 : 0.12), dstep: Math.min(H * 0.035, fh * 0.12) };
+    // As the layout page: the front row's figures about 30% of the stage high; a phone by the width (the
+    // field 9.5 bodies across); on a wide screen the field is a band in the middle, painting either side.
+    // Rows step back up the ground (11% / 10% of the stage each) and 12% smaller each.
+    const FIELD = 1 / RT.BODY;
+    const fh = wide ? Math.min(H * 0.3, W / (FIELD * 0.36)) : Math.min(H * 0.3, W * 0.42);
+    const FW = wide ? Math.min(W, fh * 0.36 * FIELD) : W;
+    V.G = { W, H, fh, FW, fx0: (W - FW) / 2, bw: FW * RT.BODY, dk: 0.12, gl: wide && !touch ? Math.max(H * 0.06, 46) : H * (wide ? 0.06 : 0.05), dstep: H * (wide ? 0.1 : 0.11) };
     V.actors.forEach((a) => size(a));
   }
   function onResize() { if (!V) return; const o = V.G && V.G.W > V.G.H; layout(); if (V.G && (V.G.W > V.G.H) !== o) pause(true); } // turning the phone pauses
@@ -142,14 +159,14 @@
   }
   function size(a) {
     const G = V.G; if (!G) return;
-    const k = 1 - 0.08 * (a.u.rt ? a.u.rt.lane : 0);
+    const k = 1 - G.dk * (a.u.rt ? a.u.rt.lane : 0);
     a.fh = G.fh * k * (a.u.side === "player" ? 1.04 : 1);
     const svgH = a.fh * 210 / 164, svgW = svgH * a.vb[2] / a.vb[3];
     a.el.querySelectorAll("svg.pp").forEach((s) => { s.style.height = svgH.toFixed(1) + "px"; s.style.width = svgW.toFixed(1) + "px"; });
     a.el.style.setProperty("--fh", a.fh.toFixed(1) + "px");
   }
   function pose(a, p, k, z) { if (!a) return; if (a.rig) a.rig.set(p, k || 900, z == null ? 0.5 : z); else a.svg.setAttribute("class", a.svg.getAttribute("class").replace(/\bpose-\S+/, "pose-" + ({ windup: "strike", ready: "brace", bowready: "brace", draw: "aim", duck: "duck", kneel: "kneel", loose: "loose" }[p] || p))); }
-  function home(a, ms) { setTimeout(() => { if (a.rig && a.u.hp > 0 && V) a.rig.home(); else if (!a.rig && a.u.hp > 0) pose(a, a.u.side === "player" ? "brace" : "stand"); }, ms || 0); }
+  function home(a, ms) { setTimeout(() => { if (a.u.rt && a.u.rt.beaten && a.u.hp > 0) pose(a, "kneel", 600, 0.6); else if (a.rig && a.u.hp > 0 && V) a.rig.home(); else if (!a.rig && a.u.hp > 0) pose(a, a.u.side === "player" ? "brace" : "stand"); }, ms || 0); }
   function pop(a, text, cls) {
     const el = U.el('<span class="rt-pop ' + (cls || "") + '">' + U.esc(text) + "</span>");
     el.style.left = a.x + "px"; el.style.bottom = (a.gy + a.fh * 1.06) + "px";
@@ -164,6 +181,7 @@
     if (!V) return;
     if (e.code === "KeyA" || e.code === "ArrowLeft") { V.held.l = true; e.preventDefault(); e.stopPropagation(); return; }
     if (e.code === "KeyD" || e.code === "ArrowRight") { V.held.r = true; e.preventDefault(); e.stopPropagation(); return; }
+    if (e.code === "KeyW" || e.code === "ArrowUp" || e.code === "KeyS" || e.code === "ArrowDown") { e.preventDefault(); e.stopPropagation(); if (!e.repeat && !V.sheet) V.queue.row = e.code === "KeyW" || e.code === "ArrowUp" ? 1 : -1; return; }
     const a = KEY[e.code];
     if (!a) return;
     e.preventDefault(); e.stopPropagation();
@@ -215,7 +233,7 @@
     } else if (kind === "pause") {
       h += "<h2>" + T("Paused") + '</h2><div class="opts one"><button type="button" class="go" data-close>' + T("Resume") + "</button>" +
         (C.canFlee() ? '<button type="button" class="danger" data-w>' + T("Withdraw from the fight") + "</button>" : "") + "</div>" +
-        '<p class="note keylist">' + T("Keys: A / D or arrows move · J strike · K or Space roll · L skill · H herbs · C call for help · U divine weapon · O orders · P or Esc pause · E spare") + "</p>";
+        '<p class="note keylist">' + T("Keys: A / D or ← → move · W / S or ↑ ↓ step between rows · J strike · K or Space roll · L skill · H herbs · C call for help · U divine weapon · O orders · P or Esc pause · E spare") + "</p>";
     } else if (kind === "confirm") {
       const names = C.fleeBreaks().map((v) => K.tr((K.VOWS && K.VOWS[v] && K.VOWS[v].name) || v)).join(", ");
       h += "<h2>" + T("Are you sure?") + '</h2><p class="note">' + T("Withdrawing breaks your vow: {v}.", { v: names }) + '</p><div class="opts one"><button type="button" class="danger" data-w>' + T("Withdraw") + '</button><button type="button" class="go" data-close>' + T("Back to the fight") + "</button></div>";
@@ -302,9 +320,10 @@
     for (const u of B.units) {
       if (!u.rt) continue;
       const a = actorFor(u);
-      a.x = u.rt.x * G.W; a.gy = G.gl + u.rt.lane * G.dstep;
+      if (Math.abs((a.lane == null ? -1 : a.lane) - u.rt.lane) > 0.01) { a.lane = u.rt.lane; size(a); } // smaller up the ground
+      a.x = G.fx0 + u.rt.x * G.FW; a.gy = G.gl + u.rt.lane * G.dstep;
       a.el.style.left = a.x.toFixed(1) + "px"; a.el.style.bottom = a.gy.toFixed(1) + "px";
-      a.el.style.zIndex = String(u.side === "player" ? 30 : 20 - u.rt.lane * 4);
+      a.el.style.zIndex = String(Math.round(30 - u.rt.lane * 8 + (u.side === "player" ? 2 : 0)));
       a.el.classList.toggle("face-l", u.rt.face < 0);
       a.el.classList.toggle("windup", !!u.rt.atk && u.side === "enemy");
       if (u.rt.atk !== a.atk) { // a blow begins (wind up or draw the bow), or lands (strike)
@@ -363,7 +382,7 @@
       // An arrow's lane: a thin dashed line from the bow to just short of its mark (white once locked).
       const lc = (m.x0 + m.x1) / 2, ls = lc + Math.sign(m.from - lc) * RT.BODY * 0.3;
       const lx0 = m.lane ? Math.min(ls, m.from) : m.x0, lx1 = m.lane ? Math.max(ls, m.from) : m.x1;
-      const L = lx0 * G.W, Wd = Math.max(10, (lx1 - lx0) * G.W);
+      const L = G.fx0 + lx0 * G.FW, Wd = Math.max(10, (lx1 - lx0) * G.FW);
       const hh = m.lane ? 3 : Math.max(10, G.fh * 0.1);
       const bottom = m.lane ? (ta ? ta.gy + ta.fh * 0.56 : G.gl + G.fh * 0.5) : (ta ? ta.gy : G.gl) - hh / 2;
       Object.assign(el.style, { left: L + "px", width: Wd + "px", height: hh + "px", bottom: bottom + "px" });
@@ -404,11 +423,13 @@
         const wr = V.world.getBoundingClientRect(), hand = a.svg.querySelector(".foreF") || a.svg, hr = hand.getBoundingClientRect();
         const from = { x: hr.left - wr.left + hr.width / 2, y: hr.top - wr.top + hr.height * 0.45 };
         const tgt = s.on && A(s.on), G = V.G;
-        const to = { x: s.lane * G.W, y: G.H - ((tgt ? tgt.gy : G.gl) + (tgt ? tgt.fh : G.fh) * 0.55) };
+        const to = { x: G.fx0 + s.lane * G.FW, y: G.H - ((tgt ? tgt.gy : G.gl) + (tgt ? tgt.fh : G.fh) * 0.55) };
         const go = () => U.flyArrow && U.flyArrow(V.world, from, to, Math.abs(to.x - from.x) * 0.05, Math.max(90, (s.arrive - s.t0) * 1000), false, Math.max(26, G.fh * 0.36));
         if (a.u.side === "player") { pose(a, "draw", 900, 0.6); setTimeout(() => { pose(a, "loose", 1200, 0.5); home(a, 450); go(); }, Math.max(0, (s.t0 - V.R.t) * 1000)); }
         else { pose(a, "loose", 1200, 0.5); home(a, 450); go(); }
         break; }
+      case "blocked": toast(K.tr("A foe stands in your way")); break;
+      case "beaten": { const a = A(f.uid); if (a) { pose(a, "kneel", 600, 0.6); a.el.classList.add("beaten"); } break; }
       case "join": { toast(K.tr("Help comes.")); const a = A(f.uid); if (a) a.tagUntil = R.t + 2; break; }
       case "call": break;
       case "astra": {
