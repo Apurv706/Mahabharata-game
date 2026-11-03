@@ -64,7 +64,10 @@
           '<button type="button" class="rt-hb withdraw" data-act="withdraw">' + T("Withdraw") + "</button>" +
           '<button type="button" class="rt-hb pause" data-act="pause" aria-label="' + T("Pause") + '" title="' + T("Pause") + '">' + PAUSE + "</button></div>" +
           '<button type="button" class="rt-hb more" data-act="more" aria-haspopup="menu">' + T("Herbs, weapon, help") + " ▾</button></div></div>" +
-        '<div class="rt-toast off" role="status" id="rt-toast"></div></div>' +
+        '<div class="rt-toast off" role="status" id="rt-toast"></div>' +
+        // Laptops (keyboard and mouse): no move/strike/roll buttons, a slim strip with the skill's recharge, the herbs and key hints.
+        '<div class="rt-strip" aria-hidden="true"><span class="sk"><svg class="ring" viewBox="0 0 40 40"><circle class="bg" cx="20" cy="20" r="16"/><circle class="fg" cx="20" cy="20" r="16" stroke-dasharray="100.5" stroke-dashoffset="0"/></svg>' + T(R.skill ? SKILL_NAME[R.skill] : "No skill") + " <kbd>L</kbd></span>" +
+          '<span class="hb-n">' + T("Herbs") + ' <b id="rt-herbn"></b> <kbd>H</kbd></span><span class="hints">' + T("A D move · J strike · K roll · click the ground to walk, a foe to strike") + "</span></div></div>" +
       '<div class="rt-ctl"><div class="rt-pad"><button type="button" class="mv" data-hold="l" aria-label="' + T("Move left") + '">◀' + kb("A") + '</button><button type="button" class="mv" data-hold="r" aria-label="' + T("Move right") + '">▶' + kb("D") + "</button></div>" +
         '<div class="rt-acts">' +
           '<button type="button" class="skill" data-act="skill"' + (R.skill ? "" : " disabled") + '><svg class="ring" viewBox="0 0 40 40" aria-hidden="true"><circle class="bg" cx="20" cy="20" r="18"/><circle class="fg" cx="20" cy="20" r="18" stroke-dasharray="113.1" stroke-dashoffset="0"/></svg><span>' + T(R.skill ? SKILL_NAME[R.skill] : "No skill") + "</span>" + kb("L") + "</button>" +
@@ -77,6 +80,13 @@
     V.el = el; V.stage = el.querySelector("#rt-stage"); V.world = el.querySelector("#rt-world");
     const bg = U.FIGHT_BG && U.FIGHT_BG[enc.id];
     V.art = [U.artUrl(K.val(enc.stage) || K.val(enc.art)), bg ? U.artUrl(bg + "_tall") : null];
+    // Mouse: a click on the ground walks there; a click on a foe walks to it and strikes.
+    V.stage.addEventListener("pointerdown", (e) => {
+      if (e.pointerType !== "mouse" || e.button !== 0 || e.target.closest("button, .rt-sheet")) return;
+      const r = V.stage.getBoundingClientRect(), x = (e.clientX - r.left) / r.width;
+      const foe = e.target.closest(".rt-actor.foe");
+      V.walk = { x, foe: foe ? foe.dataset.uid : null };
+    });
     el.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", (e) => { e.preventDefault(); act(b.dataset.act); }));
     el.querySelectorAll("[data-hold]").forEach((b) => {
       const k = b.dataset.hold;
@@ -93,7 +103,10 @@
     if (!V) return;
     const vw = window.innerWidth, vh = window.innerHeight;
     const wide = vw >= 820 && vw / vh >= 1.15;
+    const touch = !!(window.matchMedia && window.matchMedia("(pointer: coarse)").matches) || navigator.maxTouchPoints > 0;
     V.el.classList.toggle("wide", wide); V.el.classList.toggle("upright", !wide);
+    V.el.classList.toggle("keys", wide && !touch); // a laptop: the stage full width, played by keys and mouse
+    V.el.classList.toggle("touch", touch);
     V.el.style.setProperty("--bh", (wide ? 44 : 44) + "px"); // compact (owner, 3 November): 44 px buttons, Strike 56
     const W = V.stage.clientWidth, H = V.stage.clientHeight;
     V.stage.style.backgroundImage = "url(" + (H > W * 1.25 && V.art[1] ? V.art[1] : V.art[0]) + ")";
@@ -113,7 +126,9 @@
     const foe = u.side === "enemy", spec = specFor(u);
     const el = U.el('<div class="rt-actor ' + (u.side === "player" ? "me" : foe ? "foe" : "ally") + (u.plural ? " band" : "") + '" data-uid="' + u.uid + '"><span class="shadow"></span><div class="fl">' +
       U.puppet(spec, { pose: U.motion() ? "live" : u.side === "player" ? "brace" : "stand", h: 200 }) + (u.plural ? U.puppet(spec, { pose: "stand", h: 200, cls: "extra e1" }) + U.puppet(spec, { pose: "stand", h: 200, cls: "extra e2" }) : "") +
-      "</div>" + (u.side === "player" ? "" : '<span class="mini"><b></b></span>') + "</div>");
+      "</div>" + (u.side === "player" ? "" : '<span class="mini"><b></b></span>') +
+      // A name on the body for a moment (you, friends, named foes), never a permanent label.
+      (u.side === "player" || u.side === "ally" && (u.person || u.called) || foe && (u.person || u.hero) ? '<span class="nametag">' + U.esc(u.side === "player" ? K.tr("You") : K.text(u.src || u.name).split(",")[0]) + "</span>" : "") + "</div>");
     V.world.appendChild(el);
     const svg = el.querySelector("svg.pp");
     const vb = (svg.getAttribute("viewBox") || "0 0 120 200").split(/[\s,]+/).map(Number);
@@ -199,7 +214,8 @@
       h += '<p class="note">' + T("The fight waits while this is open.") + '</p><button type="button" class="go" data-close>' + T("Back to the fight") + "</button>";
     } else if (kind === "pause") {
       h += "<h2>" + T("Paused") + '</h2><div class="opts one"><button type="button" class="go" data-close>' + T("Resume") + "</button>" +
-        (C.canFlee() ? '<button type="button" class="danger" data-w>' + T("Withdraw from the fight") + "</button>" : "") + "</div>";
+        (C.canFlee() ? '<button type="button" class="danger" data-w>' + T("Withdraw from the fight") + "</button>" : "") + "</div>" +
+        '<p class="note keylist">' + T("Keys: A / D or arrows move · J strike · K or Space roll · L skill · H herbs · C call for help · U divine weapon · O orders · P or Esc pause · E spare") + "</p>";
     } else if (kind === "confirm") {
       const names = C.fleeBreaks().map((v) => K.tr((K.VOWS && K.VOWS[v] && K.VOWS[v].name) || v)).join(", ");
       h += "<h2>" + T("Are you sure?") + '</h2><p class="note">' + T("Withdrawing breaks your vow: {v}.", { v: names }) + '</p><div class="opts one"><button type="button" class="danger" data-w>' + T("Withdraw") + '</button><button type="button" class="go" data-close>' + T("Back to the fight") + "</button></div>";
@@ -231,7 +247,17 @@
   // ---------- The loop: fixed steps against real time ----------
   function input() {
     const q = V.queue; V.queue = {};
-    return Object.assign({ move: (V.held.r ? 1 : 0) - (V.held.l ? 1 : 0) }, q);
+    let move = (V.held.r ? 1 : 0) - (V.held.l ? 1 : 0);
+    const w = V.walk, p = C.player();
+    if (move) V.walk = null;
+    else if (w && p) { // walking to a click; at a clicked foe, strike
+      const f = w.foe && V.R.B.units.find((u) => u.uid === w.foe && u.hp > 0);
+      const goal = f ? f.rt.x : w.x, d = goal - p.rt.x;
+      if (f && Math.abs(d) <= p.rt.reach * 0.9) { q.strike = true; V.walk = null; }
+      else if (Math.abs(d) > 0.01 && !(p.rt.x <= RT.EDGE + 1e-6 && d < 0) && !(p.rt.x >= 1 - RT.EDGE - 1e-6 && d > 0)) move = d > 0 ? 1 : -1;
+      else V.walk = null;
+    }
+    return Object.assign({ move }, q);
   }
   function loop(now) {
     if (!V) return;
@@ -289,6 +315,9 @@
       a.el.classList.toggle("unseen", u.side === "player" && (R.unseen > 0 || R.roll > 0));
       a.el.classList.toggle("downed", u.hp > 0 && u.rt.down > 0);
       a.el.classList.toggle("flung", u.rt.flung != null && R.t - u.rt.flung < 0.6);
+      // Name tags: the first 2 s, then 2 s in every 10, and briefly on joining, a heavy hit or being targeted.
+      if (u.rt.atk && u.side === "enemy" && u.rt.atk !== a.tagAtk) { a.tagAtk = u.rt.atk; const t = V.actors.get(u.rt.atk.on); if (t) t.tagUntil = R.t + 1.5; }
+      a.el.classList.toggle("named", R.t % 10 < 2 || (a.tagUntil || 0) > R.t);
       a.el.classList.toggle("spareable", u.side === "enemy" && RT.spareable(R).some((e) => e.uid === u.uid));
       const m = a.el.querySelector(".mini b"); if (m) m.style.width = Math.max(0, u.hp / u.maxHp * 100) + "%";
       if (u.plural) { const n = Math.max(0, Math.ceil(u.rt.bodies * u.hp / u.maxHp)); a.el.dataset.bodies = String(n); }
@@ -310,6 +339,8 @@
     const sk = V.el.querySelector(".rt-acts .skill");
     if (R.skill) { const f = 1 - Math.max(0, R.skillCd) / (RT.RECHARGE[R.skill] || 10); sk.querySelector(".ring .fg").style.strokeDashoffset = (113.1 * (1 - f)).toFixed(1); sk.classList.toggle("ready", R.skillCd <= 0); }
     V.el.querySelector(".rt-acts .roll").classList.toggle("off", R.breath < RT.P.rollMin);
+    { const st = V.el.querySelector(".rt-strip"); st.querySelector("#rt-herbn").textContent = String(K.S.items.herbs || 0);
+      if (R.skill) { const f = 1 - Math.max(0, R.skillCd) / (RT.RECHARGE[R.skill] || 10); st.querySelector(".ring .fg").style.strokeDashoffset = (100.5 * (1 - f)).toFixed(1); st.querySelector(".sk").classList.toggle("ready", R.skillCd <= 0); } }
     V.el.querySelector(".withdraw").hidden = !C.canFlee();
     V.el.querySelector(".rt-edge.l").classList.toggle("on", !!R.pushing && p.rt.face < 0);
     V.el.querySelector(".rt-edge.r").classList.toggle("on", !!R.pushing && p.rt.face > 0);
@@ -357,6 +388,7 @@
         if (f.n) pop(a, String(f.n), a.u.side === "player" ? "me" : a.u.side === "ally" ? "ally" : "");
         if (U.rigFreeze) U.rigFreeze(f.heavy ? 80 : 50);
         if (f.heavy || a.u.side === "player") shake(false);
+        if (f.heavy) a.tagUntil = R.t + 1.2;
         if (K.Sound) K.Sound.play("hit");
         break; }
       case "heal": { const a = A(f.uid); if (a) pop(a, "+", "heal"); break; }
@@ -375,7 +407,7 @@
         if (a.u.side === "player") { pose(a, "draw", 900, 0.6); setTimeout(() => { pose(a, "loose", 1200, 0.5); home(a, 450); go(); }, Math.max(0, (s.t0 - V.R.t) * 1000)); }
         else { pose(a, "loose", 1200, 0.5); home(a, 450); go(); }
         break; }
-      case "join": toast(K.tr("Help comes.")); break;
+      case "join": { toast(K.tr("Help comes.")); const a = A(f.uid); if (a) a.tagUntil = R.t + 2; break; }
       case "call": break;
       case "astra": {
         const o = f.out || {}, to = o.uid && A(o.uid);

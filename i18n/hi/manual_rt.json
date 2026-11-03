@@ -43,5 +43,7 @@
  "Fights": "लड़ाइयाँ",
  "Real-time": "रियल-टाइम",
  "Turn-based": "बारी-बारी",
- "Real-time: you move, strike and roll as the fight happens. Turn-based: every fight in turns, as before.": "रियल-टाइम: लड़ाई के बीच तुम चलते, वार करते और लुढ़कते हो। बारी-बारी: हर लड़ाई पहले की तरह बारी-बारी से।"
+ "Real-time: you move, strike and roll as the fight happens. Turn-based: every fight in turns, as before.": "रियल-टाइम: लड़ाई के बीच तुम चलते, वार करते और लुढ़कते हो। बारी-बारी: हर लड़ाई पहले की तरह बारी-बारी से।",
+ "A D move · J strike · K roll · click the ground to walk, a foe to strike": "A D चलो · J वार · K लुढ़को · चलने के लिए ज़मीन पर, वार के लिए शत्रु पर क्लिक करो",
+ "Keys: A / D or arrows move · J strike · K or Space roll · L skill · H herbs · C call for help · U divine weapon · O orders · P or Esc pause · E spare": "कुंजियाँ: A / D या तीर चलो · J वार · K या Space लुढ़को · L कौशल · H जड़ी · C मदद पुकारो · U दिव्यास्त्र · O आदेश · P या Esc रोको · E छोड़ दो"
 }
