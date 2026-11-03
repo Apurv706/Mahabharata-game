@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   layout:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # webkit needs 24.04 packages (ubuntu-latest moved on, Nov 2026)
     strategy:
       fail-fast: false
       matrix:
