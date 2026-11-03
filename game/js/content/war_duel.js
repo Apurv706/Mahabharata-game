@@ -100,7 +100,7 @@
       id: "kd_son", act: 6, age: 44, war: true, away: true, when: nearSon, skipTo: "a6_day17", next: "a6_day17",
       art: "war_day16", place: "Kurukshetra · day 17", caption: "Karna's son drives out", title: "Vrishasena",
       body: (S) => ["Before noon Arjuna's chariot turns toward Karna's division, and Karna's son Vrishasena drives out to meet it. Karna is held on the far side of the line by Bhima.",
-        S.friend === "karna" || S.origin === "anga" || S.court === "anga" ? { memory: "You have known Vrishasena since he was small enough to ride on Karna's shoulders." } : null,
+        S.friend === "karna" || S.origin === "anga" || S.court === "anga" || S.flags.includes("saw_vrishasena") ? { memory: "You have known Vrishasena since he was small enough to ride on Karna's shoulders." } : null,
         "Your chariot is the nearest to his wheel."],
       choices: [
         { id: "ride", t: "Ride at Vrishasena's wheel, and keep him alive", combat: "kd_e_son", hint: "Every round counts. Karna will see" },

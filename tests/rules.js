@@ -296,7 +296,7 @@ S = fresh({ act: 2, age: 18, path: "archer" }); S.attrs.aim = 8;
   C.end && C.end();
 }
 // 38. Your child on the field (war_child.js): the thread on the eve, and a fate decided by what he lived through
-["content/episodes", "content/war_child"].forEach((f) => require(G + f + ".js"));
+["content/episodes", "content/war_reach", "content/war_child"].forEach((f) => require(G + f + ".js"));
 {
   const kid = (side, o) => { const S = fresh(Object.assign({ act: 6, age: 44, side, child: "vasu" }, o)); S.flags.push("vasu_away"); return S; };
   S = kid("pandava"); K.go("a6_day1");
@@ -527,7 +527,7 @@ require(G + "content/war_lake.js");
   const sc = (id) => K.SCENES[id], ch = (id, cid) => K.val(sc(id).choices, K.S).find((c) => c.id === cid);
   const war = (o, flags) => { const s = fresh(Object.assign({ act: 6, age: 44 }, o)); s.flags.push(...(flags || ["role_front"])); return s; };
   const naga = (s) => { s.astras = [{ id: "nagapasha", from: "naga", age: 35 }]; return s; };
-  ok(K.BEFORE.a6_bhishma[0] === "wl_iravan", "Iravan comes before the tenth day");
+  ok(K.BEFORE.a6_bhishma.slice(0, 2).join() === "wr_word_iravan,wl_iravan", "Iravan (after the word at the fire) comes before the tenth day");
   ok(K.test(sc("wl_iravan").when, naga(war({ side: "pandava" }))) && !K.test(sc("wl_iravan").when, naga(war({ side: "kaurava" }))) && !K.test(sc("wl_iravan").when, war({ side: "pandava" })),
     "only Pandava players with a naga tie (the serpent-noose from the healed naga) meet Iravan");
   S = naga(war({ side: "pandava" })); S.astras[0].broken = true;
@@ -656,5 +656,61 @@ require(G + "content/war_oath.js");
   S = fresh({ act: 6, age: 44, side: "kaurava", path: "warrior" }); K.apply({ vowTake: "samshaptaka" }); S.seen.push("a6_day18");
   K.oathEnds(K.SCENES.a6_duryodhana, S);
   ok(!K.hasVow("samshaptaka", S) && S.vows.some((v) => v.id === "samshaptaka" && v.released) && S.journal.some((j) => /Susharma/.test(JSON.stringify(j))), "after the eighteenth day the oath is released, kept, and Susharma falls as written");
+}
+// 48. Reaching more lives (PRD reach, content/war_reach.js): a weaker tie draws a fighter in, and the opening line says how
+{
+  const sc = (id) => K.SCENES[id], ch = (id, cid) => K.val(sc(id).choices, K.S).find((c) => c.id === cid);
+  const war = (o, flags) => { const s = fresh(Object.assign({ act: 6, age: 44 }, o)); s.flags.push(...(flags || ["role_front"])); return s; };
+  const line = (id) => [].concat(K.val(sc(id).body, K.S)).filter((b) => b && b.memory).map((b) => K.text(b.memory)).join(" ");
+  S = war({ side: "pandava", origin: "hastinapura" });
+  ok(K.tieIravan(S) === null && K.resolveScene("a6_bhishma").id === "wr_word_iravan", "a Pandava fighter with no naga tie hears the word about Iravan's flank the night before");
+  K.choose(sc("wr_word_iravan"), ch("wr_word_iravan", "go"));
+  ok(K.tieIravan(S) === "letter" && K.resolveScene("a6_bhishma").id === "wl_iravan" && /fire last night/.test(line("wl_iravan")), "going on the word: Iravan's day opens, and says why you are there");
+  S = war({ side: "pandava", origin: "hastinapura", friend: "charu" }); S.seen.push("wl_iravan");
+  K.choose(sc("wr_word_iravan"), ch("wr_word_iravan", "go"));
+  ok(K.tieIravan(S) === "friend" && /Charu asked you here/.test(line("wl_iravan")), "a friend at your side asks you along, and is named");
+  S = war({ side: "pandava", origin: "hastinapura" }); K.choose(sc("wr_word_iravan"), ch("wr_word_iravan", "stay"));
+  ok(K.resolveScene("a6_bhishma").id !== "wl_iravan" && K.resolveScene("a6_bhishma").id !== "wr_word_iravan", "staying away: no Iravan, and the word is not asked again");
+  S = war({ side: "pandava" }, ["role_command"]);
+  ok(K.tieIravan(S) === "company" && K.tieKings(S) === "company" && K.tieLake(S) === "company" && K.tieShakti(S) === "company", "a company leader is posted by the morning's orders");
+  ok(K.tieIravan(war({ side: "pandava" }, ["role_healer"])) === null && K.tieKings(war({ side: "pandava" }, ["role_healer"])) === null, "healers are not drawn in by a weaker tie");
+  S = war({ side: "kaurava", origin: "hastinapura", court: "dwaraka" }, ["role_command"]); S.court = null; S.origin = "matsya";
+  ok(K.tieLake(S) === null, "no Kaurava company is left to search the lake");
+  // The map on the fourteenth morning
+  S = war({ side: "kaurava", origin: "matsya" });
+  ok(K.resolveScene("a6_day14").id === "wr_map_14" && K.val(sc("wr_map_14").spots, S).length === 3, "a Kaurava fighter with no tie sees the field with two places and their own line");
+  K.choose(sc("wr_map_14"), ch("wr_map_14", "shakti"));
+  ok(K.tieShakti(S) === "general" && !K.tieBhuri(S) && K.resolveScene("a6_day15").id === "wc_shakti_k" && /chose the ground near Karna's chariot/.test(line("wc_shakti_k")), "choosing Karna's chariot: the Shakti's night opens through its general entrance");
+  S = war({ side: "kaurava" }, ["role_command"]);
+  ok(!K.test(sc("wr_map_14").when, S), "no map for one already posted to both");
+  S = war({ side: "pandava", origin: "hastinapura" }); S.seen.push("wc_shakti_p", "kf_cry");
+  ok(K.resolveScene("a6_day15").id === "wr_map_15", "the Pandavas' fifteenth morning has its own map");
+  K.choose(sc("wr_map_15"), ch("wr_map_15", "kings")); S.seen.push("wr_map_15");
+  ok(K.tieKings(S) === "general" && K.resolveScene("a6_day15").id === "kf_reach" && /not your king/.test(line("kf_reach")) && ch("kf_reach", "reach").t === "Cut through to the kings", "choosing the two kings: their fall, and the text owns that Drupada is not your king");
+  S.seen.push("kf_fall");
+  ok(!K.test(sc("kf_word").when, S), "only someone from home is asked to carry the ring home");
+  S = war({ side: "pandava", origin: "hastinapura" }); S.seen.push("wc_shakti_p", "kf_cry"); K.choose(sc("wr_map_15"), ch("wr_map_15", "drona"));
+  ok(K.nearDrona(S) && !K.tieKings(S), "standing near Dhrishtadyumna brings you to Drona's fall, not the kings'");
+  // Seeds
+  S = war({ side: "pandava", origin: "hastinapura" }, ["strung_great_bow"]);
+  ok(K.tieKings(S) === "own" && K.val(sc("kf_reach").title, S) === "Drupada's parasol", "the one who strung Drupada's bow is tied to him");
+  S = fresh({ act: 3, age: 25 }); const b0 = S.bonds.satyaki || 3; K.go("a3_swayamvara");
+  ok(S.flags.includes("met_satyaki") && S.bonds.satyaki === b0 + 2, "Satyaki meets you at the swayamvara (bond +2)");
+  S.side = "pandava"; S.flags.push("role_front"); S.act = 6;
+  ok(K.reachFriend(S) === "satyaki", "and can ask you along in the war");
+  S = fresh({ act: 4, age: 30, origin: "anga" }); K.go("a4_invite");
+  ok(S.flags.includes("saw_vrishasena"), "near Karna, you see his small son in Anga");
+}
+// 49. Reach and canon: a weaker tie changes where you stand, never who dies or when; Part Two's lives on the eve of the war
+{
+  const sc = (id) => K.SCENES[id];
+  ok(sc("wl_iravan_body").enter.die === "iravan" && sc("wl_iravan").choices.every((c) => c.next === "wl_iravan_body"), "Iravan still falls to Alambusha on the eighth day, whoever rode with him");
+  ok(["wr_map_14", "wr_map_15", "wr_word_iravan", "wr_word_lake"].every((id) => !sc(id).enter && K.val(sc(id).choices, fresh({ act: 6, side: "pandava" })).every((c) => !c.combat && !c.next)), "the map and the word only choose where you stand");
+  const out = require("os").tmpdir() + "/war_lives_test.json";
+  require("child_process").execFileSync(process.execPath, [require("path").join(__dirname, "..", "tools", "split", "gen_war.js"), out], { stdio: "ignore" });
+  const lives = JSON.parse(require("fs").readFileSync(out, "utf8"));
+  global.atob = global.atob || ((x) => Buffer.from(x, "base64").toString("binary"));
+  ok(lives.length === 6 && ["pandava", "kaurava"].every((sd) => lives.filter((l) => l.side === sd).length === 3) && lives.every((l) => { const s = K.importCode(l.code); return s.scene === "a6_eve" && s.side === l.side && s.alive; }),
+    "Part Two's ready-made war lives: three on each side, each saved on the eve of the war");
 }
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

@@ -54,6 +54,8 @@
 
   // ---------- Iravan (day 8) ----------
   const nagaTie = (S) => (S.astras || []).some((a) => a.id === "nagapasha" && !a.broken) || has(S, "khandava_nagas") || has(S, "led_the_cobra"); // the naga healed on the riverbank (astras.js w_naga)
+  // How you are tied to Iravan's day (war_reach.js): "own" (a naga tie), "company", "friend", "letter", or null.
+  K.tieIravan = (S = K.S) => (S.side === "pandava" && !has(S, "captive") ? K.reachTie(S, "iravan", nagaTie(S)) : null);
   const IRAVAN = { name: "Iravan", hp: 150, atk: 12, def: 3, abilities: ["strike", "heavy", "arrows"], person: "iravan" };
   const NAGAS = { name: "Naga warriors", plural: true, hp: 70, atk: 7, def: 2, abilities: ["strike", "guard"] };
   K.encounter({
@@ -80,7 +82,10 @@
 
   // ---------- The lake (day 18) ----------
   const dFriend = (S) => S.friend === "duryodhana" || (S.bonds.duryodhana || 0) >= 5;
-  const lakeWhen = (S) => warring(S) && (S.path === "spy" || (S.skills.stealth || 0) >= 2 || dFriend(S)) && !has(S, "captive");
+  // How you are tied to the lake (war_reach.js): "own" (a spy, a scout or Duryodhana's friend), or a
+  // Pandava company sent to search, a friend, the word at dusk. (No Kaurava company is left by then.)
+  K.tieLake = (S = K.S) => (warring(S) && !has(S, "captive") ? K.reachTie(S, "lake", S.path === "spy" || (S.skills.stealth || 0) >= 2 || dFriend(S), S.side === "pandava") : null);
+  const lakeWhen = (S) => !!K.tieLake(S);
   // The signs in the reeds (the noticing test asks which of these were there).
   const SIGNS = ["Reeds bent toward the water", "A gold armlet in the mud", "Footprints going into the lake", "A torn royal umbrella", "Blood on a reed stem", "Herons that will not land",
     "A hunter's snare", "Wet silk on a stone", "A broken mace strap", "Bubbles where no fish rise", "A crushed lotus", "A sandal with a gold buckle",
@@ -144,12 +149,15 @@
   K.scenes([
     // ---------- Iravan ----------
     {
-      id: "wl_iravan", act: 6, age: 44, away: true, war: true, when: (S) => S.side === "pandava" && nagaTie(S) && !has(S, "captive"), skipTo: "a6_bhishma", next: "a6_bhishma",
+      id: "wl_iravan", act: 6, age: 44, away: true, war: true, when: (S) => !!K.tieIravan(S), skipTo: "a6_bhishma", next: "a6_bhishma",
       art: "war_bhishma", place: "Kurukshetra · day 8", caption: "Naga warriors in the Pandava line", title: "Iravan",
       body: (S) => [
         "On the eighth morning a young warrior rides along the Pandava line with naga warriors at his back, men who came up out of the river country for him. He is Iravan, Arjuna's son by Ulupi, the naga princess.",
+        K.tieIravan(S) !== "own" ? K.tieLine(S, K.tieIravan(S), {
+          company: "Your company's orders came at first light: ride on Iravan's flank, and keep Shakuni's horse off it.",
+          friend: "{who} asked you here last night, and here you are.", letter: "You came because of what was said at the fire last night." }) :
         { memory: (S.astras || []).some((a) => a.id === "nagapasha" && !a.broken) ? "The nagas know your name. Years ago you drew a hunter's arrow out of one of them on a riverbank." : has(S, "khandava_nagas") ? "The nagas know your name. When the Khandava forest burned, a naga family came out of the smoke in your line, and Takshaka's people do not forget it." : "The nagas know your name. When you were a child you gave milk to a cobra in the well-house and led it out to the fields unharmed, and the serpent folk do not forget a kindness." },
-        { speaker: "Iravan", line: "Shakuni's horse is coming at my part of the field. My mother's people say you are a friend to them. Ride with us." }
+        { speaker: "Iravan", line: K.tieIravan(S) === "own" ? "Shakuni's horse is coming at my part of the field. My mother's people say you are a friend to them. Ride with us." : "Shakuni's horse is coming at my part of the field. I need every rider I can get." }
       ],
       choices: [
         { id: "ride", t: "Ride beside Iravan against Shakuni's horse", img: "p_iravan", combat: "e_iravan", next: "wl_iravan_body", fx: { flag: "iravan_fought", bond: { iravan: 2 } }, hint: HOLD },
@@ -183,7 +191,8 @@
       body: (S) => [
         "Shalya fell at noon, and Shakuni soon after. When the fighting stops, Duryodhana is nowhere on the field. He went east alone, on foot, toward the lake called Dvaipayana.",
         S.side === "pandava" ? "Yudhishthira has sent scouts to every lake and thicket, and you are one of them. The hunters who sell the camp its meat are looking too. They have heard there is gold in it."
-          : "Ashwatthama, Kripa and Kritavarma are looking for him, all that is left of eleven armies. So are the hunters who sell the Pandava camp its meat. They have heard there is gold in it."
+          : "Ashwatthama, Kripa and Kritavarma are looking for him, all that is left of eleven armies. So are the hunters who sell the Pandava camp its meat. They have heard there is gold in it.",
+        K.tieLine(S, K.tieLake(S), { company: "Your company is one of those sent out to search the lake country.", friend: "{who} asked you to come, and is somewhere in the reeds behind you.", letter: "You came on the word that went round the camp at dusk." })
       ],
       choices: [SEARCH, { id: "leave", t: "Leave the search to others", fx: {}, next: "a6_duryodhana", text: "You let the others search. By moonrise someone has found him." }]
     },
@@ -256,8 +265,8 @@
   // Canon (4): Iravan has fallen by the tenth day in every life, whether or not you were near him.
   const bh = K.SCENES.a6_bhishma;
   if (bh) bh.enter = Object.assign({}, bh.enter, { die: [].concat((bh.enter && bh.enter.die) || [], "iravan") });
-  K.BEFORE.a6_bhishma = ["wl_iravan"].concat(K.BEFORE.a6_bhishma || []);
-  K.BEFORE.a6_duryodhana = (K.BEFORE.a6_duryodhana || []).concat(["wl_lake"]);
+  K.BEFORE.a6_bhishma = ["wr_word_iravan", "wl_iravan"].concat(K.BEFORE.a6_bhishma || []); // the word the night before (war_reach.js)
+  K.BEFORE.a6_duryodhana = (K.BEFORE.a6_duryodhana || []).concat(["wr_word_lake", "wl_lake"]);
 
   // ---------- What the telling says ----------
   (K.TELL_HOOKS = K.TELL_HOOKS || []).push((S, t, h) => {

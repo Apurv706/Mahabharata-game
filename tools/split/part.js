@@ -22,6 +22,10 @@
     "This part holds Acts V–VII. Start here with your save code from Part One, or with a ready-made life.": "इस भाग में अंक V–VII हैं। भाग एक का अपना सेव कोड लेकर यहाँ से शुरू करें, या पहले से बने किसी जीवन के साथ।",
     "Copy code": "कोड कॉपी करें", "Copied": "कॉपी हो गया", "Return to title": "शीर्षक पर लौटें",
     "{name} · {origin} · {path}": "{name} · {origin} · {path}",
+    "Begin at the war": "युद्ध से शुरू करें",
+    "Ready for the war": "युद्ध के लिए तैयार",
+    "Someone who has lived to the eve of the war. Choose one to begin on the night before the first day, and play the eighteen days.": "कोई जो युद्ध की पूर्व-संध्या तक जी चुका है। पहले दिन से पहले की रात से शुरू करने और अठारह दिन खेलने के लिए एक चुनें।",
+    "With the Pandavas": "पांडवों के साथ", "With the Kauravas": "कौरवों के साथ",
   };
   const tr = (s, p) => { let t = K.lang === "hi" && HI[s] ? HI[s] : s; for (const k in p || {}) t = t.split("{" + k + "}").join(p[k]); return U.esc(t); };
   const otherLink = (label) => P.other ? '<a class="cta" href="' + U.esc(P.other) + '" target="_blank" rel="noopener">' + tr(label) + "</a>" : "";
@@ -68,6 +72,22 @@
       }));
     });
   }
+  // Lives on the eve of the war (tools/split/gen_war.js), a few on each side.
+  function warReady() {
+    const side = (s, label) => {
+      const rows = (P.war || []).map((l, i) => [l, i]).filter(([l]) => l.side === s).map(([l, i]) => {
+        const o = K.ORIGINS[l.origin], pth = K.PATHS && K.PATHS[l.path];
+        return '<button type="button" class="ghost" data-w="' + i + '">' + tr("{name} · {origin} · {path}", { name: l.name, origin: K.tr(o ? o.name : l.origin), path: K.tr(pth ? pth.name : l.path) }) + "</button>";
+      }).join("");
+      return rows ? '<p class="part-side"><b>' + tr(label) + '</b></p><div class="btnrow part-lives">' + rows + "</div>" : "";
+    };
+    U.openModal("Ready for the war", '<p class="note">' + tr("Someone who has lived to the eve of the war. Choose one to begin on the night before the first day, and play the eighteen days.") + "</p>" +
+      side("pandava", "With the Pandavas") + side("kaurava", "With the Kauravas"), () => {
+      document.querySelectorAll(".part-lives [data-w]").forEach((b) => b.addEventListener("click", () => {
+        const s = K.importCode(P.war[+b.dataset.w].code); U.closeModal(); K.resume(s);
+      }));
+    });
+  }
   const title = U.renderTitle;
   U.renderTitle = function () {
     title.apply(this, arguments);
@@ -76,7 +96,8 @@
       const fresh = U.$("btn-new");
       const load = U.button("cta" + (U.$("btn-continue") ? " secondary" : ""), tr("Continue from Part One"), () => U.openLoad(), "btn-part1");
       const ready = U.button("ghost", tr("Begin at Act V"), readyMade, "btn-act5");
-      if (fresh) { row.insertBefore(load, fresh); row.insertBefore(ready, fresh); fresh.remove(); } else { row.prepend(ready); row.prepend(load); }
+      const atWar = (P.war || []).length ? U.button("ghost", tr("Begin at the war"), warReady, "btn-war") : null;
+      if (fresh) { row.insertBefore(load, fresh); row.insertBefore(ready, fresh); if (atWar) row.insertBefore(atWar, fresh); fresh.remove(); } else { if (atWar) row.prepend(atWar); row.prepend(ready); row.prepend(load); }
       // the old "Load a save code" button does the same as Continue from Part One
       [...row.querySelectorAll("button")].filter((b) => !b.id && b.textContent === K.tr("Load a save code")).forEach((b) => b.remove());
     }
@@ -88,6 +109,6 @@
     row.after(note);
   };
   const css = document.createElement("style");
-  css.textContent = "@keyframes partIn{from{opacity:0}to{opacity:.9}}.part-note{animation:partIn .6s 3.4s both;margin:10px 0 0;font-size:.92rem;opacity:.9;max-width:34em}.part-note a{color:inherit}#part-code{width:100%;min-height:96px;font-size:.8rem}.part-lives{flex-direction:column;align-items:stretch}a.cta{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}";
+  css.textContent = "@keyframes partIn{from{opacity:0}to{opacity:.9}}.part-note{animation:partIn .6s 3.4s both;margin:10px 0 0;font-size:.92rem;opacity:.9;max-width:34em}.part-note a{color:inherit}#part-code{width:100%;min-height:96px;font-size:.8rem}.part-lives{flex-direction:column;align-items:stretch}.part-side{margin:12px 0 4px}a.cta{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}";
   document.head.appendChild(css);
 })(window.K);

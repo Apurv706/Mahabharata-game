@@ -1,10 +1,15 @@
 /* Writes the two parts of the game for a host that holds at most 512 files (see part.js).
-   Usage: node tools/split/build.js <out dir> <use.json> <lives.json> [part1 url] [part2 url]
+   Usage: node tools/split/build.js <out dir> <use.json> <lives.json> [part1 url] [part2 url] [--war=<war lives.json>]
    use.json: { artKey: [acts it was shown in] }, recorded from playthroughs; lives.json: ready-made
-   Act V lives [{ name, origin, path, code }]. Writes <out>/part1/, <out>/part2/ (index.html and
+   Act V lives [{ name, origin, path, code }]; war lives: ready-made lives on the eve of the war
+   [{ name, origin, path, side, code }] from tools/split/gen_war.js (default tools/split/war_lives.json,
+   if it is there). Writes <out>/part1/, <out>/part2/ (index.html and
    part.js) and <out>/partN.files.json (published path -> source path) for each. */
 const fs = require("fs"), path = require("path"), cp = require("child_process");
-const [out, useFile, livesFile, url1, url2] = process.argv.slice(2);
+const args = process.argv.slice(2), flag = (k) => (args.find((a) => a.startsWith("--" + k + "=")) || "").split("=").slice(1).join("=");
+const [out, useFile, livesFile, url1, url2] = args.filter((a) => !a.startsWith("--"));
+const warFile = flag("war") || path.join(__dirname, "war_lives.json");
+const war = fs.existsSync(warFile) ? JSON.parse(fs.readFileSync(warFile, "utf8")) : [];
 const ROOT = path.join(__dirname, "..", ".."), G = path.join(ROOT, "game");
 const use = JSON.parse(fs.readFileSync(useFile, "utf8")), lives = JSON.parse(fs.readFileSync(livesFile, "utf8"));
 const all = cp.execSync("git ls-files game", { cwd: ROOT }).toString().trim().split("\n").map((f) => f.slice(5)).filter((f) => fs.existsSync(path.join(G, f)));
@@ -33,7 +38,7 @@ function parts(f) {
 const LIMIT = 512;
 for (const n of [1, 2]) {
   const dir = path.join(out, "part" + n); fs.mkdirSync(dir, { recursive: true });
-  const cfg = { n, other: n === 1 ? url2 || "" : url1 || "", lives: n === 2 ? lives : [] };
+  const cfg = { n, other: n === 1 ? url2 || "" : url1 || "", lives: n === 2 ? lives : [], war: n === 2 ? war : [] };
   const html = read("index.html").replace('<script src="js/main.js"></script>',
     "<script>window.K_PART = " + JSON.stringify(cfg) + ';</script>\n<script src="part.js"></script>\n<script src="js/main.js"></script>');
   fs.writeFileSync(path.join(dir, "index.html"), html.replace("<title>Kurukshetra: A Life</title>", "<title>Kurukshetra: Part " + (n === 1 ? "One" : "Two") + "</title>"));
