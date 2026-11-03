@@ -73,8 +73,16 @@
     beatSeen = sc.id; if (!sc.prologue) actSeen = S.act;
     const witness = K.val(sc.witness);
     const leaf = U.$("leaf");
-    leaf.className = "leaf split";
-    leaf.innerHTML = U.plate({ art: artFor(sc), still: !!(sc.clipAfter || sc.still), grad: sc.plate, caption: K.val(sc.caption), tag, tagText, heading: K.val(sc.title) }) +
+    const comic = U.comicOn && U.comicOn();
+    leaf.className = "leaf split" + (comic ? " comic" : "");
+    document.body.classList.toggle("comicking", !!comic);
+    if (comic) {
+      // The story as a comic strip (ui/comic.js); the painting behind the page steps back.
+      U.setBackdrop(artFor(sc), { still: true });
+      const loop = S.loopThen && S.loopThen.scene === sc.id ? U.tr("You are back at the same choice. One way is closed to you now.") : "";
+      leaf.innerHTML = '<div class="text"><div class="story" id="story" tabindex="0">' + U.comicPage(sc, { art: artFor(sc), tag, tagText, loop }) +
+        '</div><div class="actions"><p class="cm-ask">' + U.tr("What will you do?") + '</p><div class="choices" id="choices"></div><p class="hint" id="keyhint"></p></div></div>';
+    } else leaf.innerHTML = U.plate({ art: artFor(sc), still: !!(sc.clipAfter || sc.still), grad: sc.plate, caption: K.val(sc.caption), tag, tagText, heading: K.val(sc.title) }) +
       '<div class="text"><div class="story" id="story" tabindex="0">' +
       (witness ? '<div class="witness"><div class="lbl">' + U.tr("As it is written") + "</div>" + U.blocks(witness) + "</div>" : "") +
       (S.loopThen && S.loopThen.scene === sc.id ? '<p class="aside loopnote">' + U.tr("You are back at the same choice. One way is closed to you now.") + "</p>" : "") +
@@ -103,7 +111,15 @@
     // Set the scene first, then offer the choices.
     const text = leaf.querySelector(".story");
     const story = [];
-    for (const el of text.children) {
+    if (comic) {
+      // Panel by panel: each panel, then its balloons popping in one after another.
+      // Panel by panel: the panel, its narration, then its balloons popping in one after another.
+      for (const el of text.querySelectorAll(":scope > .cm-cap, :scope > .cm-say, .cm-grid > .cm-panel")) {
+        if (el.classList.contains("cm-panel")) { el.dataset.hold = 380; story.push(el, ...el.querySelectorAll(".cm-band > *, .cm-pic > .cm-bal, .cm-pic > .cm-cap")); }
+        else story.push(el);
+      }
+      U.comicTails(text);
+    } else for (const el of text.children) {
       if (el.classList.contains("witness")) { el.dataset.hold = 250; story.push(el, ...el.children); }
       else story.push(el);
     }
@@ -113,7 +129,7 @@
     if (h1) h1.dataset.hold = 650;
     [...box.children].forEach((b) => { b.dataset.hold = 110; });
     // The scene-setting lines are written out by the quill.
-    story.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
+    if (!comic) story.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
     U.keys([]);
     // The page comes up over the whole painting and grows as the story is written (lines and
     // choices not shown yet take no room). The painting holds still behind it; once everything is
@@ -581,7 +597,7 @@
     parts.push(cont);
     // After a lost fight that was not deadly: the way to the practice ground (ui/practice.js).
     { const pb = res.lostFight && U.practiceAfterFight ? U.practiceAfterFight(res.lostFight) : null; if (pb) { box.appendChild(pb); parts.push(pb); } }
-    parts.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
+    if (!leaf.classList.contains("comic")) parts.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
     story.dataset.follow = "1";
     U.toEnd(story, true);
     const won = res.check ? res.check.pass : res.outcome ? res.outcome === "win" : null;

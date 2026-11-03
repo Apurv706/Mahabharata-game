@@ -403,6 +403,7 @@
   U.inScene = false;
   U.setNav = function (on) {
     document.body.classList.remove("titling"); // the title screen adds it back after this call
+    document.body.classList.remove("comicking"); // a scene drawn as a comic adds it back
     if (U.beatStop) U.beatStop();
     document.body.classList.remove("intest");
     if (U.viewWhole) U.viewWhole(false);
@@ -585,7 +586,16 @@
     if (onMount) onMount(U.$("modal-body"));
     U.$("modal-close").focus();
   };
-  U.closeModal = function () { const s = document.querySelector(".scrim"); if (s) s.remove(); };
+  U.closeModal = function () {
+    const s = document.querySelector(".scrim"); if (s) s.remove();
+    // The story switched between comic and page in the menu: the scene underneath is drawn again,
+    // as a language switch redraws it (never offering a choice already made).
+    if (U.restyleAfterMenu) {
+      U.restyleAfterMenu = false;
+      const lf = U.$("leaf");
+      if (U.redraw && lf && lf.classList.contains("split") && !/\b(testing|fighting|journeying)\b/.test(lf.className)) U.redraw();
+    }
+  };
 
   // ---------- Language ----------
   // Each screen registers how to draw itself again (U.redraw), so a language switch can repaint

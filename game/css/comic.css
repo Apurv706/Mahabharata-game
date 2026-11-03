@@ -1,0 +1,194 @@
+/* The story as a comic (js/ui/comic.js): inked panels cut from the scene's painting on newsprint,
+   yellow caption boxes for the narration, white balloons for speech, a red caption for the epic's
+   own words, and the choices as panels. Lettering in Kalam, which has Latin and Devanagari. */
+:root {
+  --cm-paper: #efe1bf;
+  --cm-paper-2: #e6d4ab;
+  --cm-ink: #1b120b;
+  --cm-cap: #f7d75a;
+  --cm-bal: #fffdf6;
+  --cm-red: #8e2117;
+  --cm-letter: "Kalam", "Mukta", "Comic Sans MS", system-ui, sans-serif;
+}
+
+/* The painting behind the page steps back: the panels carry it now. */
+body.comicking:has(#leaf.comic:not(.testing):not(.fighting):not(.journeying)) #backdrop .pic,
+body.comicking:has(#leaf.comic:not(.testing):not(.fighting):not(.journeying)) #backdrop .bd { filter: blur(18px) brightness(0.35) saturate(0.7); }
+body.comicking:has(#leaf.comic:not(.testing):not(.fighting):not(.journeying)) #backdrop video { display: none; }
+body.comicking:has(#leaf.comic:not(.testing)) .view-full { display: none !important; }
+
+/* ---------- The page ---------- */
+body.inscene .leaf.split.comic:not(.testing) {
+  width: min(760px, 100%); height: auto; max-height: 100%; display: flex; flex-direction: column; overflow: hidden;
+  color: var(--cm-ink); border: 3px solid var(--cm-ink); border-radius: 4px; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6);
+  background:
+    radial-gradient(rgba(120, 80, 30, 0.13) 1px, transparent 1.4px) 0 0 / 7px 7px,
+    linear-gradient(170deg, var(--cm-paper), var(--cm-paper-2));
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+}
+.leaf.split.comic:not(.testing) > .text { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; border-radius: 0; background: none; }
+.leaf.split.comic:not(.testing) .story { flex: 0 1 auto; min-height: 0; padding: 12px 14px 16px; gap: 12px; display: grid; align-content: start; grid-auto-rows: max-content; }
+.leaf.split.comic:not(.testing) .story::-webkit-scrollbar { width: 6px; }
+.leaf.split.comic:not(.testing) .story::-webkit-scrollbar-thumb { background: rgba(27, 18, 11, 0.35); border-radius: 3px; }
+
+/* ---------- Title banner ---------- */
+.leaf.comic .cm-title { position: relative; display: block; margin: 0 0 2px; padding: 8px 86px 9px 14px; background: var(--cm-red); color: #fbeed1;
+  border: 2.5px solid var(--cm-ink); box-shadow: 3px 3px 0 var(--cm-ink); }
+.leaf.comic .cm-title .cm-tline { display: flex; flex-wrap: wrap; gap: 2px 10px; align-items: baseline; }
+.leaf.comic .cm-title .kind { font-size: 11.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #f6cf6a; }
+.leaf.comic .cm-title small { font-size: 13px; color: rgba(251, 238, 209, 0.82); }
+.leaf.comic .cm-title h1 { margin: 2px 0 0; font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.05; color: #fff6df; text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35); }
+.leaf.comic .cm-title .ppbadge { position: absolute; right: 8px; bottom: -6px; margin: 0; }
+.leaf.comic .cm-title .ppbadge svg { height: 86px; width: auto; filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.5)); }
+html[lang="hi"] .leaf.comic .cm-title h1 { line-height: 1.3; font-size: 24px; }
+
+/* ---------- Panels: a grid with thin gutters, as on a printed page ---------- */
+.cm-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 7px; padding: 7px; background: #fffdf8; border: 3px solid var(--cm-ink); border-radius: 14px; }
+.cm-panel { position: relative; margin: 0; display: flex; flex-direction: column; border: 3px solid var(--cm-ink); background: #fffdf8; overflow: hidden; }
+.cm-grid > .cm-panel:first-child { border-top-left-radius: 8px; border-top-right-radius: 8px; }
+.cm-grid > .cm-panel:last-child { border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
+.cm-pic { position: relative; aspect-ratio: var(--asp, 16 / 9); background: var(--img) no-repeat, #3a2a1c; background-color: #3a2a1c; overflow: hidden; }
+.cm-pic .cm-tails, .cm-pic .cm-plugs { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.cm-pic .cm-tails { z-index: 1; }
+.cm-pic .cm-tails path, .cm-pic .cm-tails circle { fill: var(--cm-bal); stroke: var(--cm-ink); stroke-width: 2.2; stroke-linejoin: round; }
+.cm-pic .cm-plugs { z-index: 3; }
+.cm-pic .cm-plugs path { fill: var(--cm-bal); stroke: none; }
+/* Narration along a panel's top edge (and, after the last picture, its foot). */
+.cm-band { display: grid; gap: 0; border-bottom: 3px solid var(--cm-ink); }
+.cm-band.foot { border-bottom: 0; border-top: 3px solid var(--cm-ink); }
+.cm-band > .cm-cap { border: 0; box-shadow: none; border-radius: 0; }
+.cm-band > .cm-cap + .cm-cap, .cm-band > * + * { border-top: 2px solid var(--cm-ink); }
+.cm-band > .cm-say { padding: 8px 10px; background: #fffdf8; }
+
+/* ---------- Lettering ---------- */
+.cm-cap, .cm-bal { font-family: var(--cm-letter); font-size: 16px; line-height: 1.32; color: var(--cm-ink); text-wrap: pretty; }
+html[lang="hi"] .cm-cap, html[lang="hi"] .cm-bal { line-height: 1.5; }
+
+/* Caption boxes: narration, between the panels or on a panel's corner. */
+.cm-cap { margin: 0; padding: 7px 11px 8px; background: var(--cm-cap); border: 2.2px solid var(--cm-ink); box-shadow: 3px 3px 0 var(--cm-ink); }
+.cm-cap p { margin: 0; }
+.cm-cap.on-panel { position: absolute; z-index: 2; max-width: 64%; font-size: 14.5px; padding: 5px 9px 6px; box-shadow: 2px 2px 0 var(--cm-ink); }
+.cm-cap.memory { background: #e7dcf3; font-style: italic; }
+.cm-cap.curse { background: #2a120f; color: #f3b9a8; border-color: #000; }
+.cm-cap.aside { background: #fff3cf; font-size: 14.5px; font-style: italic; }
+.cm-cap.witness { background: var(--cm-red); color: #fbeed1; font-family: var(--display); font-size: 17px; line-height: 1.35; display: grid; gap: 6px; padding: 9px 13px 11px; }
+.cm-cap.witness .lbl { font-family: var(--body); font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #f6cf6a; }
+.cm-cap.witness p { margin: 0; }
+.cm-cap.witness .said .lbl { color: #f6cf6a; }
+html[lang="hi"] .cm-cap.witness { font-size: 16px; line-height: 1.6; }
+
+/* Balloons: speech over the painting, the tail pointing at the speaker. */
+.cm-bal { position: absolute; z-index: 2; max-width: 62%; padding: 10px 18px 11px; background: var(--cm-bal); border: 2.2px solid var(--cm-ink); border-radius: 50% / 46%; text-align: center; font-size: 15px; }
+.cm-bal.think { border-radius: 40px; border-style: dashed; }
+.cm-bal .cm-who { display: block; font-family: var(--body); font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6b3a1c; }
+.at-tl { left: 3%; top: 4%; } .at-tr { right: 3%; top: 4%; } .at-bl { left: 3%; bottom: 5%; } .at-br { right: 3%; bottom: 5%; }
+.at-t { left: 50%; top: 4%; transform: translateX(-50%); } .at-b { left: 50%; bottom: 5%; transform: translateX(-50%); }
+/* A caption on a panel sits flush in its corner, as a letterer boxes it. */
+.cm-cap.on-panel { box-shadow: none; border-width: 0; }
+.cm-cap.on-panel.at-tl, .cm-cap.on-panel.at-tr, .cm-cap.on-panel.at-t { top: 0; border-bottom-width: 2.2px; }
+.cm-cap.on-panel.at-bl, .cm-cap.on-panel.at-br, .cm-cap.on-panel.at-b { bottom: 0; border-top-width: 2.2px; }
+.cm-cap.on-panel.at-tl, .cm-cap.on-panel.at-bl { left: 0; border-right-width: 2.2px; }
+.cm-cap.on-panel.at-tr, .cm-cap.on-panel.at-br { right: 0; border-left-width: 2.2px; }
+.cm-cap.on-panel.at-t, .cm-cap.on-panel.at-b { border-left-width: 2.2px; border-right-width: 2.2px; }
+
+/* A line spoken between panels: the speaker's face, and the balloon pointing at it. */
+.cm-say { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 12px; align-items: center; }
+.cm-say.noface { grid-template-columns: minmax(0, 1fr); }
+.cm-say .cm-face .thumb.face { display: block; width: 52px; height: 52px; border-radius: 50%; border: 2.5px solid var(--cm-ink); box-shadow: 2px 2px 0 var(--cm-ink); background-size: cover; }
+.cm-say .cm-face.fig { display: flex; justify-content: center; }
+.cm-say .cm-face.fig svg { height: 62px; width: auto; }
+.cm-say .cm-bal { position: relative; max-width: none; text-align: left; justify-self: start; border-radius: 26px / 22px; }
+.cm-say:not(.noface) .cm-bal::before, .cm-say:not(.noface) .cm-bal::after { content: ""; position: absolute; top: 50%; border-style: solid; }
+.cm-say:not(.noface) .cm-bal::before { left: -15px; margin-top: -8px; border-width: 8px 15px 8px 0; border-color: transparent var(--cm-ink) transparent transparent; }
+.cm-say:not(.noface) .cm-bal::after { left: -11px; margin-top: -6px; border-width: 6px 12px 6px 0; border-color: transparent var(--cm-bal) transparent transparent; }
+
+/* A balloon too long for its panel at this size, following it with its tail pointing up at it. */
+.cm-say.spilled { margin-top: 2px; }
+.cm-say.spilled .cm-bal.up { justify-self: stretch; text-align: left; }
+.cm-say.spilled .cm-bal.up::before, .cm-say.spilled .cm-bal.up::after { content: ""; position: absolute; left: 34px; border-style: solid; }
+.cm-say.spilled .cm-bal.up::before { top: -15px; border-width: 0 9px 15px 9px; border-color: transparent transparent var(--cm-ink) transparent; }
+.cm-say.spilled .cm-bal.up::after { top: -11px; left: 36px; border-width: 0 7px 12px 7px; border-color: transparent transparent var(--cm-bal) transparent; }
+
+/* ---------- The choices ---------- */
+.leaf.split.comic:not(.testing) .actions { flex: none; padding: 8px 14px max(12px, var(--sab)); border-top: 3px solid var(--cm-ink); background: var(--cm-paper-2); gap: 7px; max-height: calc(var(--vh) * 0.48); }
+.leaf.comic .cm-ask { margin: 0; justify-self: start; padding: 2px 10px; font-family: var(--cm-letter); font-weight: 700; font-size: 14px; background: var(--cm-ink); color: var(--cm-cap); transform: rotate(-1deg); }
+.leaf.comic.testing .cm-ask { display: none; }
+.leaf.split.comic:not(.testing) .choices { gap: 8px; }
+.leaf.split.comic:not(.testing) .choice { background: var(--cm-bal); color: var(--cm-ink); border: 2.2px solid var(--cm-ink); border-radius: 3px; box-shadow: 3px 3px 0 var(--cm-ink); }
+.leaf.split.comic:not(.testing) .choice .t { font-family: var(--cm-letter); font-weight: 700; font-size: 16px; line-height: 1.25; color: var(--cm-ink); }
+.leaf.split.comic:not(.testing) .choice .k { background: var(--cm-cap); color: var(--cm-ink); border: 2px solid var(--cm-ink); }
+.leaf.split.comic:not(.testing) .choice .fx span { color: #3b6e2a; }
+.leaf.split.comic:not(.testing) .choice .fx .down, .leaf.split.comic:not(.testing) .choice .fx span.down { color: #a3261a; }
+.leaf.split.comic:not(.testing) .choice .fx .data, .leaf.split.comic:not(.testing) .choice .fx span.data { color: #6b3a1c; }
+.leaf.split.comic:not(.testing) .choice:hover:not(:disabled), .leaf.split.comic:not(.testing) .choice:focus-visible { background: #fff4c4; transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--cm-ink); outline: none; }
+.leaf.split.comic:not(.testing) .choice:disabled:not(.picked) { opacity: 0.55; }
+.leaf.split.comic:not(.testing) .choice.crossed .t { text-decoration: line-through; }
+.leaf.split.comic:not(.testing) .hint { color: rgba(27, 18, 11, 0.6); }
+.leaf.split.comic:not(.testing) .cta { background: var(--cm-red); color: #fff6df; border: 2.2px solid var(--cm-ink); box-shadow: 3px 3px 0 var(--cm-ink); border-radius: 3px; font-family: var(--cm-letter); font-weight: 700; }
+.leaf.split.comic .actions .lamp { color: var(--cm-ink); }
+
+/* What you chose, and what came of it, as captions on the strip. */
+.leaf.comic .story .choice.picked { background: var(--cm-ink); color: var(--cm-cap); border: 0; box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.35); border-radius: 0; }
+.leaf.comic .story .choice.picked .t { font-family: var(--cm-letter); font-weight: 700; color: var(--cm-cap); }
+.leaf.comic .story .choice.picked .k { display: none; }
+.leaf.comic .story .choice.picked .fx { color: rgba(247, 215, 90, 0.7); }
+.leaf.comic .story .result { margin: 0; padding: 7px 11px 8px; background: var(--cm-cap); border: 2.2px solid var(--cm-ink); box-shadow: 3px 3px 0 var(--cm-ink); font-family: var(--cm-letter); font-size: 16px; line-height: 1.32; color: var(--cm-ink); display: grid; gap: 6px; }
+.leaf.comic .story .result p { margin: 0; }
+.leaf.comic .story .result .roll { font-family: var(--body); font-size: 13px; color: #5a3a1c; }
+.leaf.comic .story > .witness { margin: 0; padding: 9px 13px 11px; background: var(--cm-red); color: #fbeed1; border: 2.2px solid var(--cm-ink); box-shadow: 3px 3px 0 var(--cm-ink); font-family: var(--display); font-size: 17px; }
+.leaf.comic .story > .witness .lbl { color: #f6cf6a; }
+.leaf.comic .story .said .lbl { color: #6b3a1c; }
+
+/* ---------- Appearing, panel by panel ---------- */
+body.inscene .leaf.split.comic .cm-grid .staged:not(.shown) { visibility: hidden; }
+@media (prefers-reduced-motion: no-preference) {
+  .leaf.comic .cm-panel.staged.shown { animation: cm-panel 0.42s cubic-bezier(.2, .8, .2, 1) both; }
+  .leaf.comic .cm-pic .cm-bal.staged.shown, .leaf.comic .cm-say.staged.shown .cm-bal { animation: cm-pop 0.36s cubic-bezier(.3, 1.5, .5, 1) both; }
+  .leaf.comic .cm-panel .cm-cap.staged.shown { animation: cm-slide 0.32s ease-out both; }
+  .leaf.comic .cm-pic .cm-tails, .leaf.comic .cm-pic .cm-plugs { animation: cm-fade 0.3s 0.4s both; }
+}
+@keyframes cm-panel { from { opacity: 0; transform: scale(0.96); } }
+@keyframes cm-pop { from { opacity: 0; transform: scale(0.6); } }
+@keyframes cm-slide { from { opacity: 0; transform: translateY(6px); } }
+@keyframes cm-fade { from { opacity: 0; } }
+/* Centred balloons and captions keep their centring while they pop. */
+.leaf.comic .at-t.staged.shown, .leaf.comic .at-b.staged.shown { animation-name: cm-fade !important; }
+/* A tail is drawn only for a balloon already showing. */
+.leaf.comic .cm-pic:has(.cm-bal.staged:not(.shown)) .cm-tails, .leaf.comic .cm-pic:has(.cm-bal.staged:not(.shown)) .cm-plugs { visibility: hidden; }
+
+/* ---------- Phones ---------- */
+@media (max-width: 560px) {
+  body.inscene .leaf.split.comic:not(.testing) { border-width: 0; border-top: 3px solid var(--cm-ink); border-radius: 0; box-shadow: none; }
+  .leaf.split.comic:not(.testing) .story { padding: 10px 10px 14px; gap: 11px; }
+  .leaf.comic .cm-title h1 { font-size: 23px; }
+  .cm-cap, .cm-bal { font-size: 15px; }
+  .cm-bal { font-size: 14px; padding: 6px 11px 7px; max-width: 66%; }
+  .cm-cap.on-panel { font-size: 13.5px; max-width: 72%; }
+  .leaf.split.comic:not(.testing) .actions { padding: 7px 10px max(10px, var(--sab)); }
+  .leaf.split.comic:not(.testing) .choice .t { font-size: 15px; }
+}
+
+/* ---------- Wide screens: the strip on the left, the choices beside it ---------- */
+@media (min-width: 900px) and (min-height: 560px) {
+  body.inscene .leaf.split.comic:not(.testing) { width: min(1180px, 100%); }
+  .leaf.split.comic:not(.testing) > .text { flex-direction: row; }
+  .leaf.split.comic:not(.testing) .story { flex: 1 1 62%; padding: 16px 18px 22px; gap: 14px; }
+  .leaf.split.comic:not(.testing) .actions { flex: 0 0 min(38%, 400px); max-height: none; border-top: 0; border-left: 3px solid var(--cm-ink); padding: 18px 16px; align-content: center; overflow-y: auto; }
+  .leaf.comic .cm-title h1 { font-size: 30px; }
+  .cm-grid.n2, .cm-grid.n3, .cm-grid.n4 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+  .cm-grid.n3 > .cm-panel:first-child { grid-column: 1 / -1; }
+  .cm-grid > .cm-panel { border-radius: 0 !important; }
+  .cm-cap, .cm-bal { font-size: 17px; }
+  .cm-bal { font-size: 16px; }
+  .cm-cap.on-panel { font-size: 15.5px; }
+}
+/* Phones on their side: as wide screens, smaller. */
+@media (orientation: landscape) and (max-height: 520px) {
+  body.inscene .leaf.split.comic:not(.testing) { width: 100%; }
+  .leaf.split.comic:not(.testing) > .text { flex-direction: row; }
+  .leaf.split.comic:not(.testing) .story { flex: 1 1 60%; }
+  .leaf.split.comic:not(.testing) .actions { flex: 0 0 40%; max-height: none; border-top: 0; border-left: 3px solid var(--cm-ink); align-content: center; overflow-y: auto; }
+}
+
+/* Larger text, from the menu. */
+body.big-text .cm-cap, body.big-text .cm-bal { font-size: 18px; }

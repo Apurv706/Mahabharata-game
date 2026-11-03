@@ -105,6 +105,9 @@
       '<div class="seg-row"><span>' + U.tr("Scene titles") + "<small>" + U.tr("Full: a title card before big moments. Short: the title over the painting, for every scene.") + "</small></span>" +
       '<div class="seg" role="radiogroup" aria-label="' + U.tr("Scene titles") + '">' +
       ["full", "short"].map((v) => '<button type="button" role="radio" data-titles="' + v + '" aria-checked="' + ((prefs.titles || "full") === v) + '">' + U.tr(v === "full" ? "Full" : "Short") + "</button>").join("") + "</div></div>" +
+      '<div class="seg-row"><span>' + U.tr("Story") + "<small>" + U.tr("Comic: each scene drawn as comic panels, with captions and speech balloons. Page: the painting, with the story written beneath it.") + "</small></span>" +
+      '<div class="seg" role="radiogroup" aria-label="' + U.tr("Story") + '">' +
+      ["comic", "page"].map((v) => '<button type="button" role="radio" data-story="' + v + '" aria-checked="' + ((prefs.comic === false ? "page" : "comic") === v) + '">' + U.tr(v === "comic" ? "Comic" : "Page") + "</button>").join("") + "</div></div>" +
       '<label class="toggle"><input type="checkbox" id="m-living"' + (prefs.living !== false ? " checked" : "") + "><span>" + U.tr("Living paintings") + "<small>" + U.tr("Some paintings move for a few seconds. Each uses about 1 MB of data.") + "</small></span></label>" +
       '<label class="toggle"><input type="checkbox" id="m-assist"' + (U.assist() ? " checked" : "") + "><span>" + U.tr("Meet blows for me") + "<small>" + U.tr("In fights, blows aimed at you are met for you, on kinder odds. On by itself in story mode.") + "</small></span></label>" +
       '<label class="toggle"><input type="checkbox" id="m-timed"' + (prefs.timed !== false ? " checked" : "") + "><span>" + U.tr("Timed moments") + "<small>" + U.tr("At a few hard moments a lamp burns down. If it goes out, you hold your tongue.") + "</small></span></label>" +
@@ -127,6 +130,12 @@
         document.querySelectorAll("[data-titles]").forEach((b) => b.addEventListener("click", () => {
           K.prefs({ titles: b.dataset.titles });
           document.querySelectorAll("[data-titles]").forEach((x) => x.setAttribute("aria-checked", String(x === b)));
+        }));
+        document.querySelectorAll("[data-story]").forEach((b) => b.addEventListener("click", () => {
+          K.prefs({ comic: b.dataset.story === "comic" });
+          document.querySelectorAll("[data-story]").forEach((x) => x.setAttribute("aria-checked", String(x === b)));
+          // The scene behind the menu is drawn again in the new way when the menu closes.
+          U.restyleAfterMenu = true;
         }));
         U.$("m-living").addEventListener("change", (e) => {
           K.prefs({ living: e.target.checked });
