@@ -360,9 +360,11 @@
       el.dataset.keep = "1";
       const t = R.B.units.find((u) => u.uid === m.on), ta = t && V.actors.get(t.uid);
       // A lane runs from its mark to the bow; the band that is struck is the end at the mark.
-      const lx0 = m.lane ? Math.min(m.x0, m.from) : m.x0, lx1 = m.lane ? Math.max(m.x1, m.from) : m.x1;
+      // An arrow's lane: a thin dashed line from the bow to just short of its mark (white once locked).
+      const lc = (m.x0 + m.x1) / 2, ls = lc + Math.sign(m.from - lc) * RT.BODY * 0.3;
+      const lx0 = m.lane ? Math.min(ls, m.from) : m.x0, lx1 = m.lane ? Math.max(ls, m.from) : m.x1;
       const L = lx0 * G.W, Wd = Math.max(10, (lx1 - lx0) * G.W);
-      const hh = m.lane ? Math.max(6, G.fh * 0.05) : Math.max(10, G.fh * 0.1);
+      const hh = m.lane ? 3 : Math.max(10, G.fh * 0.1);
       const bottom = m.lane ? (ta ? ta.gy + ta.fh * 0.56 : G.gl + G.fh * 0.5) : (ta ? ta.gy : G.gl) - hh / 2;
       Object.assign(el.style, { left: L + "px", width: Wd + "px", height: hh + "px", bottom: bottom + "px" });
       const fill = el.querySelector(".fill"); fill.style.width = (Wd * m.fill) + "px";

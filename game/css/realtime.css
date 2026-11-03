@@ -181,3 +181,8 @@ html[lang="hi"] .rt-sheet h2 { line-height: 1.35; }
 .rt-actor.named .nametag { opacity: 1; }
 .rt-actor.dead .nametag { display: none; }
 html.calm .rt-actor .nametag { transition: none; }
+/* An arrow's lane is subtle: a thin dashed orange line while it tracks, brighter dashed white in the lock. */
+.rt-mark.lane { border-radius: 0; }
+.rt-mark.lane .rim { border: 0; border-top: 2px dashed rgba(255, 140, 70, 0.55); background: none; box-shadow: none; border-radius: 0; }
+.rt-mark.lane .fill { display: none; }
+.rt-mark.lane.locked .rim { border-top-color: rgba(255, 255, 255, 0.95); box-shadow: none; }
