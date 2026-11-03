@@ -33,8 +33,13 @@
     if (K.Sound && K.ENCOUNTERS[encId]) K.Sound.play(K.ENCOUNTERS[encId].lethal && K.S.act === 6 ? "callToArms" : "drumCall");
     if (K.Sound) K.Sound.mood("battle");
     C.stepNext = U.timed() && !K.headless && !U.assist();
-    C.start(encId, onEnd);
-    drums.start();
+    // A fight of another kind that is played live (a chariot duel, an archery duel, a mace duel, a carry:
+    // ui/fightmodes.js) is played so only with motion on; otherwise, and under the tests, as a plain hold.
+    const enc = K.ENCOUNTERS[encId], kind = enc && K.val(enc.kind);
+    C.liveMode = kind && !K.headless && U.motion() && U.fightMode && U.fightMode.has(kind) ? kind : null;
+    const B = C.start(encId, onEnd);
+    C.liveMode = null;
+    if (!B.mode) drums.start();
   };
 
   // ---------- The drum ----------
@@ -517,13 +522,20 @@
   // ---------- The screen ----------
   U.renderBattle = function (B) {
     if (!B) return;
+    // A fight played live takes the page as a test does; when it is over, the story goes straight on.
+    if (B.mode) {
+      if (B.over) { if (!onEndCb) return; stopQte(); drums.stop(); const cb = onEndCb; const out = C.end().over; onEndCb = null; const L = U.$("leaf"); if (L) L.dataset.battle = ""; document.body.classList.remove("intest"); cb(out); return; }
+      const L = U.$("leaf");
+      if (L.dataset.battle !== B.bid) { L.dataset.battle = B.bid; U.fightMode.play(B); }
+      return;
+    }
     if (C.state() === B) C.foesPending(); // a round whose last foes have fallen is closed before anything is drawn
     U.redraw = () => { const L = U.$("leaf"); if (L) L.dataset.battle = ""; U.renderBattle(C.state() || B); };
     U.setNav(true);
     const enc = B.enc;
     const enemies = B.units.filter((u) => u.side === "enemy");
     if (!target || !enemies.find((e) => e.uid === target && e.hp > 0)) target = (enemies.find((e) => e.hp > 0) || {}).uid || null;
-    U.where("<b>" + U.tr("Battle") + "</b><span>" + U.t(K.val(enc.title)) + " · " + (enc.rounds ? U.tr("round {n} of {m}", { n: Math.min(B.round, enc.rounds), m: enc.rounds }) : U.tr("round {n}", { n: B.round })) + "</span>");
+    U.where("<b>" + U.tr("Battle") + "</b><span>" + U.t(K.val(enc.title)) + " · " + (enc.rounds ? U.tr("round {n} of {m}", { n: Math.min(B.round, enc.rounds), m: enc.rounds }) : U.tr("round {n}", { n: B.round })) + (B.rule && B.rule.status ? " · " + U.esc(B.rule.status(B)) : "") + "</span>");
     const friends = B.units.filter((u) => u.side !== "enemy");
     const leaf = U.$("leaf");
     // The painted stage with the figures is drawn once per fight, so they can move between draws.

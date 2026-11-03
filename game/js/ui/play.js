@@ -158,6 +158,7 @@
     wreck: '<svg viewBox="0 0 60 40"><circle cx="20" cy="24" r="14" fill="none" stroke="#3a2416" stroke-width="4"/><path d="M20 10 V38 M6 24 H34 M10 14 L30 34 M30 14 L10 34" stroke="#3a2416" stroke-width="2.5"/><path d="M34 30 L58 22" stroke="#5a3418" stroke-width="5"/></svg>',
     ice: '<svg viewBox="0 0 60 40"><path d="M6 36 L14 10 L24 30 L32 6 L40 28 L50 12 L56 36 Z" fill="#cfe6f2" stroke="#4a6f84" stroke-width="2"/><path d="M14 10 L18 26 M32 6 L34 20" stroke="#ffffff" stroke-width="1.5"/></svg>',
     wave: '<svg viewBox="0 0 60 40"><path d="M2 38 Q10 14 26 12 Q40 10 44 22 Q36 18 32 26 Q46 26 58 38 Z" fill="#3f6f86" stroke="#173544" stroke-width="2"/><path d="M28 16 Q36 14 40 20" stroke="#e8f2f5" stroke-width="2.5" fill="none"/></svg>',
+    arrow: '<svg viewBox="0 0 60 40"><path d="M6 20 L56 20" stroke="#3a2412" stroke-width="3"/><path d="M4 20 L16 13 L14 20 L16 27 Z" fill="#9aa3a8" stroke="#2b1609" stroke-width="1.5"/><path d="M48 20 L58 12 M48 20 L58 28 M42 20 L52 12 M42 20 L52 28" stroke="#a3302a" stroke-width="2.5"/></svg>',
     fire: '<svg viewBox="0 0 60 40"><path d="M10 38 Q4 24 16 16 Q14 26 22 26 Q18 12 30 2 Q32 16 40 18 Q40 10 46 8 Q56 22 50 38 Z" fill="#e5762a" stroke="#7a2a10" stroke-width="2"/><path d="M22 38 Q20 30 28 26 Q30 32 36 32 Q38 36 36 38 Z" fill="#ffd36b"/></svg>'
   };
   function vehicleSvg(kind, spec) {
@@ -290,7 +291,10 @@
     WANDER: 2.5, WANDER_MORE: 3,   // the rival changes lane every 2.5 to 5.5 s
     // The rival's speed before the stats. With the whip (twice the speed for a fifth of the time) a
     // chariot rival must be faster for the race to stay as hard as it was: see tests/race_balance.js.
-    RIVAL: 3.25, RIVAL_CONTACT: 3.5
+    RIVAL: 3.25, RIVAL_CONTACT: 3.5,
+    // A chariot duel (content/war_fights.js): a bow shot when level with the rival (twice the reach of
+    // level), which slows him and knocks him back; contact you steer into knocks him back too.
+    BOW_COOL: 2.2, BOW_REACH: 2.2, BOW_SLOW: 1.2, BOW_BACK: 3, KNOCK: 4
   };
   U.RACE = RACE;
   U.raceSetup = function (t, power) {
@@ -299,7 +303,8 @@
     return {
       base: t.speed || 3.3, gap: clamp(1.25 - power * 0.04, 0.8, 1.25), // seconds between obstacles
       rivalV: rival ? clamp(r0 - power * 0.03, r0 - 0.5, r0 + 0.15) : 0,
-      rival, lives: t.hull || 3, kinds: t.obstacles || ["rock", "wreck"], chariot, whip: contact, contact
+      rival, lives: t.hull || 3, kinds: t.obstacles || ["rock", "wreck"], chariot, whip: contact, contact,
+      bow: contact && !!t.bow, knock: contact && !!t.knock, turn: t.turn || 3, shield: !!t.shield // a chariot duel's bow and knocks; arrows to catch
     };
   };
   // step(dt) moves the race on and returns what happened: spawn, hit, gone, warn, cut, wander,
@@ -307,9 +312,19 @@
   U.raceRules = function (o, rng) {
     const C = RACE, pick = (a) => a[Math.floor(rng() * a.length)];
     const R = { lane: 1, dist: 0, rival: 0, slow: 0, hits: 0, spawnIn: 1.2, t: 0, obs: [], boost: 0, cool: 0, over: false,
-      rLane: 0, rSlow: 0, rWander: 3, cut: 0, cutTo: 0, cutFrom: 0, cutT: -9, cutCool: 3, clashCool: 0, prevLane: 1, bounceIn: 0, bounceTo: 1 };
+      rLane: 0, rSlow: 0, rWander: 3, cut: 0, cutTo: 0, cutFrom: 0, cutT: -9, cutCool: 3, clashCool: 0, prevLane: 1, bounceIn: 0, bounceTo: 1,
+      turned: 0, bowCool: 0, caught: 0, miss: 0 };
     R.speed = () => (R.over ? 0 : o.base * (R.slow > 0 ? 0.5 : 1) * (R.boost > 0 ? 2 : 1));
     R.move = (d) => { if (R.over) return false; R.prevLane = R.lane; R.lane = clamp(R.lane + d, 0, 2); return true; };
+    // The bow (a chariot duel): "hit" when level with the rival, "far" when not; null while it recharges.
+    R.inReach = () => o.bow && Math.abs(R.rival - R.dist) < C.LEVEL * C.BOW_REACH;
+    R.shoot = () => {
+      if (!o.bow || R.over || R.bowCool > 0) return null;
+      R.bowCool = C.BOW_COOL;
+      if (!R.inReach()) return "far";
+      R.rSlow = C.BOW_SLOW; R.rival -= C.BOW_BACK; R.turned++;
+      return "hit";
+    };
     R.whip = () => { if (!o.whip || R.over || R.boost > 0 || R.cool > 0) return false; R.boost = C.WHIP; R.cool = C.WHIP + C.WHIP_COOL; return true; };
     R.step = (dt) => {
       const ev = [], at = (type, x) => ev.push(Object.assign({ type }, x));
@@ -320,6 +335,7 @@
       if (R.cool > 0) R.cool -= dt;
       if (R.slow > 0) R.slow -= dt;
       if (R.rSlow > 0) R.rSlow -= dt;
+      if (R.bowCool > 0) R.bowCool -= dt;
       R.dist += v * dt;
       if (o.rival) R.rival += o.rivalV * (R.rSlow > 0 ? 0.5 : 1) * dt * (0.94 + 0.12 * Math.sin(R.t * 0.7));
       if (o.contact) {
@@ -347,6 +363,8 @@
             if (to >= 0 && to <= 2) { R.prevLane = R.lane; R.lane = to; how = "ram"; } else { R.slow = Math.max(R.slow, C.RAIL_SLOW); how = "rails"; }
           } else { R.bounceTo = R.prevLane !== R.lane ? R.prevLane : R.lane < 2 ? R.lane + 1 : R.lane - 1; R.bounceIn = C.BOUNCE; }
           R.slow = Math.max(R.slow, C.CLASH_SLOW); R.rSlow = C.CLASH_SLOW; R.boost = 0; R.clashCool = C.CLASH_GAP; R.cut = 0;
+          // In a duel, steering into him is a blow: he is knocked back off the line, and you keep most of your pace.
+          if (o.knock && how === "clash") { R.rival -= C.KNOCK; R.rSlow = C.CLASH_SLOW * 2; R.slow = Math.min(R.slow, 0.3); R.turned++; how = "knock"; }
           at("clash", { how });
         }
       }
@@ -355,16 +373,25 @@
       if (R.spawnIn <= 0 && R.dist < C.LEN - 6) {
         R.spawnIn = o.gap * (0.75 + rng() * 0.6);
         const taken = R.obs.filter((ob) => ob.x > 80).map((ob) => ob.lane), free = [0, 1, 2].filter((l) => !taken.includes(l));
-        if (free.length > 1 || !taken.length) { const ob = { lane: pick(free.length ? free : [0, 1, 2]), kind: pick(o.kinds), x: 104 }; R.obs.push(ob); at("spawn", { o: ob }); }
+        if (o.shield && R.obs.some((ob) => !ob.hit)) R.spawnIn = 0.3; // arrows to catch come one at a time
+        else if (free.length > 1 || !taken.length) { const ob = { lane: pick(free.length ? free : [0, 1, 2]), kind: pick(o.kinds), x: 104 }; R.obs.push(ob); at("spawn", { o: ob }); }
       }
       for (let i = R.obs.length - 1; i >= 0; i--) {
         const ob = R.obs[i];
         ob.x -= v * dt * 13;
-        if (!ob.hit && ob.lane === R.lane && ob.x < 26 && ob.x > 8) { ob.hit = true; R.hits++; R.slow = C.HIT_SLOW; R.boost = 0; at("hit", { o: ob }); }
+        // Arrows to catch (trial.shield): in your lane you take one on your shield; in another, it gets past you.
+        if (o.shield) { if (!ob.hit && ob.x < 26 && ob.x > 8) { ob.hit = true; if (ob.lane === R.lane) { R.caught++; at("catch", { o: ob }); } else { R.miss++; at("miss", { o: ob }); } } }
+        else if (!ob.hit && ob.lane === R.lane && ob.x < 26 && ob.x > 8) { ob.hit = true; R.hits++; R.slow = C.HIT_SLOW; R.boost = 0; at("hit", { o: ob }); }
         if (ob.x < -12) { R.obs.splice(i, 1); at("gone", { o: ob }); }
       }
       const end = (outcome, line) => { R.over = true; R.outcome = outcome; at("end", { outcome, line }); };
-      if (!o.rival && R.hits >= o.lives) end("lose", ["You took {h} hits.", { h: R.hits }]);
+      if (o.shield) {
+        if (R.miss >= o.lives) end("lose", ["{m} arrows got past you.", { m: R.miss }]);
+        else if (R.dist >= C.LEN) end(R.miss <= o.lives - 2 ? "win" : "close", ["You caught {c} arrows; {m} got past.", { c: R.caught, m: R.miss }]);
+        return ev;
+      }
+      if (o.bow && R.turned >= o.turn) end("win", ["You turned {who} away.", { who: o.who }]);
+      else if (!o.rival && R.hits >= o.lives) end("lose", ["You took {h} hits.", { h: R.hits }]);
       else if (R.dist >= C.LEN) {
         if (!o.rival) end(R.hits <= o.lives - 2 ? "win" : "close", ["Through, with {h} hits.", { h: R.hits }]);
         else end(R.rival < C.LEN ? "win" : "close", ["You finished {gap} lengths {where}.", { gap: Math.abs(Math.round(R.dist - R.rival)), where: R.rival < C.LEN ? "ahead" : "behind" }]);
@@ -392,7 +419,7 @@
       const say = (key, p, ms) => { U.trLabel(note, key, p); clearTimeout(sayT); if (ms) sayT = setTimeout(() => { if (!R.over && note.dataset.tr === key) { note.textContent = ""; delete note.dataset.tr; delete note.dataset.trp; } }, ms); };
       // On an upright screen, inside the painting: the course runs up the tall painting, which
       // scrolls down past you; you steer left and right between three lanes, seen from above.
-      const tallKey = U.tallOf && U.tallOf(stage);
+      const tallKey = (t.stageTall && U.tallOf && U.tallOf(t.stageTall)) || (U.tallOf && U.tallOf(stage)); // a war painting is seen side on; upright, the course runs over one seen from above
       const vertical = !!(host.closest(".trial.immersive") && U.upright() && tallKey);
       let rivalEl = null, ME = null, RV = null;
       if (vertical) {
@@ -483,10 +510,21 @@
         onAct(whip);
       }
       row.appendChild(U.pressButton(vertical ? "Right" : t.downVerb || "Down", () => move(1)));
-      const whipKeys = o.whip && vertical ? { ArrowUp: whip, w: whip, W: whip } : {};
+      // The bow (a chariot duel): it answers only when you are level with him, and then needs a moment.
+      let bowBtn = null;
+      const shoot = () => {
+        const r = R.shoot();
+        if (!r) return;
+        cue("act"); sfx("quill");
+        if (r === "far") return say("Out of reach. Draw level with {who} first.", { who: K.tr(t.rival) }, 1400);
+        sfx("hit"); cue("good"); say("Your arrow strikes {who}'s car. He falls back.", { who: K.tr(t.rival) }, 1400);
+        if (!still) { const b = onCar(rivalEl, 0, 0.6); sparks(b, 10); RV.joltV += 12; RV.rearV += 30; }
+      };
+      if (o.bow) { bowBtn = U.pressButton("Shoot", shoot); bowBtn.classList.add("bow"); bowBtn.insertAdjacentHTML("beforeend", '<kbd aria-hidden="true">F</kbd>'); row.appendChild(bowBtn); }
+      const whipKeys = Object.assign(o.whip && vertical ? { ArrowUp: whip, w: whip, W: whip } : {}, o.bow ? { f: shoot, F: shoot } : {});
       const off = vertical
         ? keyset(Object.assign({ ArrowLeft: () => move(-1), ArrowRight: () => move(1), a: () => move(-1), d: () => move(1), A: () => move(-1), D: () => move(1) }, whipKeys))
-        : keyset({ ArrowUp: () => move(-1), ArrowDown: () => move(1), w: () => move(-1), s: () => move(1), W: () => move(-1), S: () => move(1) });
+        : keyset(Object.assign({ ArrowUp: () => move(-1), ArrowDown: () => move(1), w: () => move(-1), s: () => move(1), W: () => move(-1), S: () => move(1) }, o.bow ? { f: shoot, F: shoot } : {}));
       if (vertical) say(t.helpSide || "Steer left and right to miss what is in the road.");
       // Swipe (up and down, or left and right on the upright course), or tap the side to move to.
       let y0 = null, x0 = null;
@@ -498,7 +536,7 @@
         else if (Math.abs(e.clientY - y0) > 18) move(e.clientY < y0 ? -1 : 1); else move(e.clientY < r.top + r.height / 2 ? -1 : 1);
         y0 = x0 = null;
       });
-      const tally = () => { score.textContent = hullMode ? K.tr(t.tally || "Distance: {d}% · Hits: {h} of {l}", { d: Math.floor(R.dist), h: R.hits, l: o.lives }) : K.tr(t.tally || "You: {d}% · {who}: {r}%", { d: Math.floor(R.dist), r: Math.floor(R.rival), who: K.tr(t.rival) }); };
+      const tally = () => { const p = { d: Math.floor(R.dist), h: R.hits, l: o.lives, r: Math.floor(R.rival), who: K.tr(t.rival), c: R.caught, m: R.miss, n: R.turned, k: o.turn }; score.textContent = K.tr(t.tally || (hullMode ? "Distance: {d}% · Hits: {h} of {l}" : "You: {d}% · {who}: {r}%"), p); };
       const els = new Map();
       let dustT = 0;
       const stop = U.loop((s) => {
@@ -506,7 +544,9 @@
         if (R.over) return;
         const v = R.speed();
         for (const e of R.step(dt)) {
-          if (e.type === "spawn") { const el = U.el('<div class="ob lane' + e.o.lane + '">' + OBST[e.o.kind] + "</div>"); obsBox.appendChild(el); els.set(e.o, el); }
+          if (e.type === "spawn") { const el = U.el('<div class="ob lane' + e.o.lane + " ob-" + e.o.kind + '">' + OBST[e.o.kind] + "</div>"); obsBox.appendChild(el); els.set(e.o, el); }
+          else if (e.type === "catch") { const el = els.get(e.o); if (el) el.classList.add("hit"); sfx("clang"); cue("good"); say(t.caught || "You take the arrow on your shield.", null, 1200); if (ME && !still) { ME.joltV += 6; sparks(onCar(me, 0, 0.3), 8); } }
+          else if (e.type === "miss") { bump(); sfx("hit"); cue("bad"); say(t.missed || "An arrow gets past you.", null, 1400); }
           else if (e.type === "gone") { const el = els.get(e.o); if (el) el.remove(); els.delete(e.o); }
           else if (e.type === "hit") {
             const el = els.get(e.o); if (el) el.classList.add("hit");
@@ -520,7 +560,7 @@
           } else if (e.type === "cut") rivalEl.classList.remove("warn");
           else if (e.type === "clash") {
             rivalEl.classList.remove("warn"); bump(); sfx("clang"); cue("bad");
-            say(e.how === "ram" ? "{who} rams you aside!" : e.how === "rails" ? "{who} drives you into the rails!" : "Wheels clash! You both lose ground.", { who: K.tr(t.rival) }, 1600);
+            say(e.how === "knock" ? "You drive into {who} and knock him off the line!" : e.how === "ram" ? "{who} rams you aside!" : e.how === "rails" ? "{who} drives you into the rails!" : "Wheels clash! You both lose ground.", { who: K.tr(t.rival) }, 1600);
             if (!still) {
               const a = onCar(me, 0, 0.65), b = onCar(rivalEl, 0, 0.65), side = ME.x < RV.x ? -1 : 1;
               sparks({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, 18);
@@ -556,9 +596,11 @@
             whipBtn.setAttribute("aria-disabled", String(R.cool > 0));
             speedTag.hidden = !(R.boost > 0);
           }
+          if (bowBtn) { bowBtn.classList.toggle("ready", R.bowCool <= 0 && R.inReach()); bowBtn.setAttribute("aria-disabled", String(R.bowCool > 0)); }
         } else if (rivalEl) rivalEl.style.top = clamp(70 - diff * 6, -30, 130) + "%";
         pm.style.left = clamp(R.dist, 0, 100) + "%"; if (pr) pr.style.left = clamp(R.rival, 0, 100) + "%";
         tally();
+        if (t.report) t.report(R); // a fight played as a race follows it (ui/fightmodes.js)
       }, host);
       return () => { stop(); off(); clearTimeout(sayT); window.removeEventListener("resize", size); };
     });

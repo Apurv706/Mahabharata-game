@@ -40,6 +40,12 @@
   const atSon = (cut) => (B) => { const v = vsUnit(B); if (v && v.hp > 0) v.hp = Math.max(1, v.hp - Math.round(v.maxHp * cut)); };
   K.encounter({
     id: "kd_e_son", title: "At Vrishasena's wheel", art: "scene_duel_ground", caption: "Six rounds under Arjuna's arrows", hold: HOLD, hard: true, lethal: false, curse: true,
+    // Driven as a chariot duel (war_fights.js, ui/fightmodes.js): Arjuna's arrows to catch on your shield
+    // before they reach him, the Pandava chariot-guard to clash with. How far you drive is how long you held.
+    kind: "chariot",
+    play: { attr: "grace", skill: "chariot", stage: "fight_arjuna_chariot", stageTall: "stage_vyuha_top", vehicle: "chariot", rival: "Pandava chariot-guard", shield: true, obstacles: ["arrow"], hull: 4, speed: 3,
+      tally: "Arrows caught: {c} · Past you: {m} of {l} · {d}%", help: "Steer into each arrow's lane and take it on your shield: up and down, or the buttons. Space cracks the whip.",
+      helpSide: "Steer left and right into each arrow's lane.", rules: "Drive beside Vrishasena's chariot. Arjuna's arrows come in from across the field: steer into each one's lane and take it on your shield before it reaches him. The Pandava chariot-guard will try to drive you off. Four arrows past you, and he is open." },
     allies: (S) => K.warAllies(S).concat([VRISHA(S)]), callHelp: K.warHelp, spare: false, flee: { tags: ["retreat"] },
     holdText: "Arjuna stops shooting. He has seen Karna's chariot turning toward him.",
     intro: "Vrishasena stands up in his chariot and shoots at Arjuna as if Arjuna were any man. Arjuna's arrows start coming back, and they are all for him.",
@@ -69,6 +75,12 @@
   const BROKEN = (S) => ({ flag: ["kd_guard_broken", "company_shaken"], injury: "scar", journal: "On the seventeenth day the guard at Arjuna's wheel broke where you stood, and his flank lay open." });
   K.encounter({
     id: "kd_e_wheel", title: "At Arjuna's wheel", art: "scene_duel_ground", caption: "Six rounds at the wheel", hold: HOLD, hard: true, lethal: false, curse: true,
+    // Driven as a chariot duel (war_fights.js, ui/fightmodes.js): keep pace at his wheel, knock the Kaurava
+    // chariots off his flank, shoot when one draws level. The weapons still clash overhead (the beats).
+    kind: "chariot",
+    play: { attr: "grace", skill: "chariot", stage: "fight_war_chariot", stageTall: "stage_vyuha_top", vehicle: "chariot", rival: "Kaurava chariot-warrior", bow: true, knock: true, turn: 3, obstacles: ["wreck", "fire"],
+      tally: "Turned away: {n} of {k} · You: {d}% · {who}: {r}%",
+      rules: "Keep pace at Arjuna's left wheel. The Kaurava chariots come for his flank: steer into them to knock them off the line, and shoot when one draws level. Turn three away, or keep them off his flank to the end." },
     allies: (S) => K.warAllies(S).concat([PRINCES(S)]), callHelp: K.warHelp, spare: false, flee: { tags: ["retreat"] },
     holdText: "The Kaurava chariots fall back. Above you, Karna's wheel has gone into the earth.",
     intro: "The Kaurava chariots come at the flanks, low and fast, to get under Arjuna's bow. Over your head the air is already burning.",

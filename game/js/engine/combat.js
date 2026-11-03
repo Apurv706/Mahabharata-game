@@ -165,6 +165,12 @@
     // were never given one (greyed: "You were never given a divine weapon").
     // Any fight lets you shout for a friend once; fights without a rule of their own use K.friendHelp.
     { const p = B.units[0]; if (enc.callHelp !== null && (enc.callHelp || (K.friendHelp && !enc.bout))) p.abilities.push("call"); if (enc.showAstra && !p.abilities.includes("astra")) p.abilities.push("astra"); }
+    // A fight of another kind (content/war_fights.js, enc.kind): an escort, a break-through or weathering a
+    // storm rides on the turns (B.rule); a chariot duel, an archery duel, a mace duel or a carry is played
+    // live by the screen (B.mode, ui/fightmodes.js) when it asks, and otherwise is fought as a plain hold.
+    { const kind = K.val(enc.kind) || null, FK = kind && K.FIGHT_KINDS ? K.FIGHT_KINDS[kind] : null;
+      B.kind = kind; B.rule = FK && FK.turn ? FK : null; B.mode = FK && FK.live && C.liveMode === kind ? kind : null;
+      if (B.rule && B.rule.start) B.rule.start(B); }
     B.habit = []; // what you have done lately: enemies learn from it
     if (S.boons.includes("healing_hands") && (S.items.herbs || 0) < 2) S.items.herbs = 2;
     B.pulled = {};
@@ -220,7 +226,7 @@
 
   C.available = function () {
     const p = C.player(), S = K.S;
-    return p.abilities.map((id) => {
+    const rows = p.abilities.map((id) => {
       const ab = K.ABILITIES[id];
       let why = null;
       if (p.cds[id]) why = K.tr(p.cds[id] === 1 ? "Ready in 1 turn" : "Ready in {n} turns", { n: p.cds[id] });
@@ -233,6 +239,7 @@
       if (idle) why = K.tr("No ally to command");
       return { id, name: K.tr(ab.name), desc: K.tr(ab.desc), target: ab.target, why, idle, count: ab.item ? S.items[ab.item] || 0 : null };
     });
+    return B.rule && B.rule.moves ? B.rule.moves(rows, B) : rows;
   };
 
   function use(u, id, uid) {
@@ -307,6 +314,7 @@
       api.say("The amulet at your throat cracks. The killing blow turns aside.");
     }
     if (p.hp <= 0) return finish("lose");
+    { const r = B.rule && B.rule.over ? B.rule.over(B) : null; if (r) return finish(r); } // a fight of another kind ends on its own terms
     if (!living("enemy").length) return finish("win");
     if (B.enc.rounds && B.round > B.enc.rounds) { api.say(B.enc.roundsText || "You held long enough."); return finish("win"); }
     // A holding fight is won by standing until the end, not by killing.
@@ -377,6 +385,8 @@
     aiTurn(e);
     B.defNow = null;
   }
+  // The enemies who move this round: in a break-through, only the one in the lane you took.
+  const acting = () => living("enemy").filter((u) => !(B.rule && B.rule.skip && B.rule.skip(B, u)));
   function roundEnd() {
     endRound();
     if (over()) return;
@@ -384,14 +394,14 @@
     while (!B.over && p.status.stun) {
       delete p.status.stun; api.tell("You are stunned and lose your turn.");
       for (const u of living("ally")) { aiTurn(u); if (over()) return; }
-      for (const u of living("enemy")) { enemyTurn(u); if (over()) return; }
+      for (const u of acting()) { enemyTurn(u); if (over()) return; }
       endRound(); if (over()) return;
     }
   }
   function others() {
     for (const a of living("ally")) { if (B.over) return; aiTurn(a); if (over()) return; }
-    if (B.stepMode) { B.queue = living("enemy").map((e) => e.uid); if (!B.queue.length) roundEnd(); return; }
-    for (const e of living("enemy")) { if (B.over) return; enemyTurn(e); if (over()) return; }
+    if (B.stepMode) { B.queue = acting().map((e) => e.uid); if (!B.queue.length) roundEnd(); return; }
+    for (const e of acting()) { if (B.over) return; enemyTurn(e); if (over()) return; }
     roundEnd();
   }
   // Step mode (the screen asks for it): after your move the enemies come one at a time. C.nextFoe()
@@ -480,6 +490,12 @@
     if (!t) return;
     api.tell("You lower your weapon and let {t} go.", { t });
     finish("spare");
+  };
+  // A fight played live by the screen (B.mode) ends here: its outcome, and how many rounds it stood for.
+  C.settle = function (outcome, rounds) {
+    if (!B || B.over) return;
+    if (rounds != null) B.round = rounds + 1;
+    finish(outcome);
   };
   C.end = function () {
     if (!B || !B.over) return null;
