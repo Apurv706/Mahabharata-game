@@ -8,7 +8,11 @@
   const MARK_SVG = {
     fight: SV + '<path d="M7 2.5c5.5 2.6 9 6.3 9 9.5s-3.5 6.9-9 9.5"/><path d="M7 2.5v19" stroke-width="1"/><path d="M3 12h17M17.5 9.5 20 12l-2.5 2.5M3 10.5 4.5 12 3 13.5"/></svg>',
     death: SV + '<path d="M12 3a7 7 0 0 0-7 7c0 2.5 1.2 4.1 3 5v3.5h8V15c1.8-.9 3-2.5 3-5a7 7 0 0 0-7-7z"/><circle cx="9.3" cy="10.5" r="1.6" fill="currentColor"/><circle cx="14.7" cy="10.5" r="1.6" fill="currentColor"/><path d="M10.5 18.5v2M13.5 18.5v2M12 13.2v1.3"/></svg>',
-    cell: SV + '<rect x="4" y="3.5" width="16" height="17" rx="1.5"/><path d="M8.5 3.5v17M12 3.5v17M15.5 3.5v17M4 9h16"/></svg>'
+    cell: SV + '<rect x="4" y="3.5" width="16" height="17" rx="1.5"/><path d="M8.5 3.5v17M12 3.5v17M15.5 3.5v17M4 9h16"/></svg>',
+    // A heart split down the middle: a friendship that would end.
+    friend: SV + '<path d="M12 20.5 4.2 12.7A4.6 4.6 0 0 1 12 6.6a4.6 4.6 0 0 1 7.8 6.1L12 20.5z"/><path d="M12 6.6 10.4 10l2.6 2.2-2 3.2 1 1.6" stroke-width="1.4"/></svg>',
+    // A broken arrow: a divine weapon's condition broken.
+    astra: SV + '<path d="M3 21l7-7M14 10l7-7M16.5 3H21v4.5"/><path d="M10.2 13.8 12 12M12.5 10.5l1.5-.5M3 21l2.5-.5L4 19"/><path d="M11 8.5l1.5 1.5M8.5 11l1.5 1.5" stroke-width="1.2"/></svg>'
   };
 
   function header(sc) {
@@ -103,6 +107,7 @@
       const marks = ok ? K.choiceMarks(c) : [];
       const vowMark = marks.find((m) => m[0] === "vow");
       const signs = marks.filter((m) => !(m[0] === "vow" && img === m[3])).map((m) => m[0] === "vow" ? U.thumb(m[3], "emblem mark", m[1]).replace("<i ", '<i title="' + U.esc(m[2]) + '" ')
+        : m[0] === "breakvow" ? U.thumb(m[3], "emblem mark breakvow", m[1]).replace("<i ", '<i title="' + U.esc(m[1]) + '" ')
         : '<i class="mark ' + m[0] + '" role="img" aria-label="' + U.esc(m[1]) + '" title="' + U.esc(m[1]) + '">' + MARK_SVG[m[0]] + "</i>").join("");
       const cls = "choice" + (grid ? " tile" : "") + (img ? " has-img" : "") + (crossed ? " crossed" : "") + (fx ? " has-fx" : "") + (signs ? " has-marks" : "");
       const b = U.button(cls, '<span class="k">' + (i + 1) + "</span>" + (img ? U.thumb(img, grid ? "emblem" : undefined) : "") + '<span class="t">' + U.t(K.val(c.t)) + "</span>" +

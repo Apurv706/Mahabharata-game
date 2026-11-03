@@ -221,6 +221,19 @@
     }
     if (K.inPeril(c, S)) { const p = K.val(c.peril, S); out.push(p.kind === "death" ? ["death", K.tr("Can cost your life")] : ["cell", K.tr("Can cost your freedom")]); }
     if (K.leadsToFight(c, S)) out.push(["fight", K.tr("Leads to a fight")]);
+    // What a choice would break: one of your vows (its emblem, struck through), a friend for life,
+    // a divine weapon's condition. The full words are the icon's label.
+    for (const id of K.vowBreaksFor(c.tags, S)) {
+      const V = K.VOWS[id], w = K.watcherNames(id, S, true);
+      out.push(["breakvow", [K.tr("Breaks vow: {vow}", { vow: K.tr(V.name) }), w && K.tr("{who} will not forgive it", { who: w })].filter(Boolean).join(" · "), null, "vow_" + id]);
+    }
+    if (S.friend && S.spouse !== S.friend) {
+      const loss = Math.min(0, (fx.bond || {})[S.friend] || 0) - (K.vowBreaksFor(c.tags, S).some((id) => (K.VOWS[id].watchers || []).includes(S.friend)) ? 3 : 0);
+      const karna = S.friend === "karna" && K.vowBreaksFor(c.tags, S).includes("spare_karna");
+      if (karna || (loss < 0 && (S.bonds[S.friend] ?? 3) + loss < 3)) out.push(["friend", K.tr("Ends your friendship with {who}", { who: K.personName(S.friend, S) })]);
+    }
+    const ab = K.astraBreaksFor(c.tags, S);
+    if (ab) out.push(["astra", K.tr(ab.takes ? "Breaks the weapon's condition: {who} will take it back" : "Breaks the weapon's condition: its mantra will fail you", { who: K.tr(ab.who) })]);
     return out;
   };
 

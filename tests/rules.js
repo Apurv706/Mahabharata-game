@@ -1045,4 +1045,11 @@ require(G + "content/war_fights.js");
   ok(a.every((x) => x.ok) && !a.some((x) => x.c.id === "serve"), "the ashram hides serving the sages until they know you");
   ok(K.choiceList({ id: "z", hideLocked: true, choices: [{ id: "a", req: { flag: "nope" }, locked: "No." }] }, S).length === 1, "a scene that hides locks never shows nothing");
 }
+// 99. A choice that would break a vow, a friendship or a weapon's condition carries an icon saying so
+{
+  S = fresh({ act: 6, age: 44, side: "pandava", friend: "arjuna", teacher: "drona" }); S.vows.push({ id: "spare_unarmed", broken: false, age: 20 }); S.bonds.arjuna = 4;
+  const m = K.choiceMarks({ id: "x", t: "x", tags: ["strike_unarmed"], fx: {} }, S).map((x) => x[0]);
+  ok(m.includes("breakvow") && m.includes("friend"), "breaking a vow Arjuna watches shows the struck vow and the broken friendship (" + m.join(",") + ")");
+  ok(!K.choiceMarks({ id: "y", t: "y", fx: {} }, S).length, "a plain choice shows no icon");
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);
