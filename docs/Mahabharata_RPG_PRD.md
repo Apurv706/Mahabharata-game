@@ -3,8 +3,8 @@
 
 | | |
 |---|---|
-| **Status** | Draft v0.6 (browser edition, §16; remaining tasks, §17; proposed storylines, weapons, magic and the puppet, §18; changes from the 29 October playtest, §18.11; moments, the practice ground and vows that matter, §18.12) |
-| **Last updated** | October 30, 2026 |
+| **Status** | Draft v0.7 (browser edition as it is on 3 November, §16; remaining tasks, §17; storylines, weapons, magic and the puppet, all built, §18; changes from the 29 October playtest, §18.11; moments, the practice ground and vows that matter, §18.12; the war storylines, §18.13; the puppet's look, master leather, §18.14; less to read, §18.15) |
+| **Last updated** | November 3, 2026 |
 | **Owner** | [Founder / Creative Director] |
 | **Doc type** | Living PRD; sections marked **[OPEN]** still need decisions |
 
@@ -18,7 +18,7 @@
 
 **Comparable titles:** Crusader Kings III (life simulation, generational legacy), The Witcher 3 (morally weighted choices in a rich mythic world), Black Myth: Wukong (a culturally specific epic made for a global audience), Ghost of Tsushima (respectful cultural authenticity).
 
-**Where it stands (October 29, 2026):** a complete browser edition is playable in English and Hindi on phones and desktops (§16); the remaining work is in §17.
+**Where it stands (November 3, 2026):** a complete browser edition is playable in English and Hindi on phones and desktops (§16), with every storyline proposed in §18 built, including the war storylines (§18.13). The remaining work is in §17.
 
 ---
 
@@ -186,7 +186,7 @@ Key choices pit two or more obligations against each other. Honoring one weakens
 - The player can take vows at key moments: never to retreat, never to lie, celibacy, revenge on someone, never to strike a certain person.
 - **Benefit:** Vows give power: stat boosts, special abilities, NPC respect.
 - **Cost:** Breaking a vow brings a lasting penalty and visible shame. Some vows will be tested by canon events (as Bhishma's and Yudhishthira's were).
-- **Limit:** Up to 3 active vows at a time. **[OPEN]** Whether to allow vows to be released through penance.
+- **Limit:** Up to 3 active vows at a time. The browser edition allows one exception: the Samshaptakas' oath in the war is a fourth vow above the limit, for the war only (§18.13). **[OPEN]** Whether to allow vows to be released through penance. (The browser edition lets one heavy penance a life lift a broken vow's price, §18.12.)
 
 ### 9.3 Boons and curses
 - **Boons** are earned through penance, service to sages, or heroic acts. Examples: a divine weapon, protection, foresight.
@@ -234,6 +234,8 @@ Each day is a chapter with its own canon anchor, battlefield map, objectives and
 | 18 | Shalya | Shalya falls; **Bhima and Duryodhana's mace duel** | The last day; survival is uncertain |
 | Night of 18 | — | Ashwatthama's night raid on the Pandava camp | Survival horror sequence; your family may be in the camp |
 
+In the browser edition the days also carry the war storylines of §18.13 (Yuyutsu's call, Iravan, the Samshaptakas, Bhurishravas, the kings' fall, the Shakti, your child, the great duel, the lake) and Bhishma's two scenes.
+
 **Death rules:**
 - Death in battle is a valid ending, not a "game over." It triggers the epilogue and legacy flow.
 - An optional "Story Mode" lets players survive to the end to see every chapter.
@@ -253,6 +255,8 @@ Each day is a chapter with its own canon anchor, battlefield map, objectives and
 | **Vengeance** | Pursue a vow of revenge past the war's end |
 
 Each ending gets an illustrated epilogue showing what happened to the player's family, friends and rivals.
+
+The browser edition has 16 endings: the six above, The homecoming, The wanderer and Fallen at Kurukshetra, and seven for particular deaths (Into the wheel, Against the boy in the wheel, Beside Karna, A life cut short, The burnt house, The oath to the death, The one who crossed). Each opens full-screen under its name (1 Nov) [35].
 
 ### 11.2 Legacy mode (post-launch / DLC)
 Play as your own child in King Parikshit's era, inheriting your reputation, feuds, unfinished vows and heirloom. This sets up a natural sequel: Parikshit's reign, the Yadavas' self-destruction, and Dwaraka sinking into the sea.
@@ -295,9 +299,9 @@ This is a **launch-critical risk area**. Past games that used Hindu figures (Son
 ## 14. Art, audio and language direction (initial)
 
 - **Visual style:** Painterly realism inspired by Indian miniature traditions (Rajput, Pahari, Mughal court painting) for UI and epilogues; grounded, earthy realism in 3D. **[OPEN]** Stylized vs. photoreal. The browser edition uses warm painterly scene paintings in three shapes: 3:1 for desktops, 16:9 for wide stages, and 9:16 for upright phones.
-- **Characters on screen:** Tholu bommalata leather shadow puppets for the player and every character (§16.3). Animals in tests should follow the same puppet style.
+- **Characters on screen:** Tholu bommalata leather puppets for the player and every character, drawn as a master craftsman would cut them (§18.14): curved, tapered limbs on thread-tied joints, a firm cut edge, rows of punched holes, printed borders and jewellery, in opaque colour. Animals in tests follow the same style.
 - **Architecture:** Draw on early historic Indian architecture, not anachronistic later temple styles. Document choices in the Lore Bible. Recurring slips to check for in generated art: domes, Gothic or later temple spires, castle towers, Greek columns, East Asian roofs, modern bullseye targets, cube dice, European swords, crescent emblems.
-- **Music:** Original score using Hindustani and Carnatic instruments (bansuri, veena, mridangam, shehnai) with an orchestral layer for battles. The browser edition has three pieces (heroic, fusion, battle) and four win themes.
+- **Music:** Original score using Hindustani and Carnatic instruments (bansuri, veena, mridangam, shehnai) with an orchestral layer for battles. The browser edition has three recorded pieces (heroic, fusion, battle) and five win themes; everything else (a short piece for each of 16 places, test beds, the call to arms, moment themes) is synthesised in code (§18.11 S1).
 - **Language:** Full English voice-over at launch; Hindi voice-over as a priority second language. Sanskrit for mantras and ritual; key terms (dharma, astra, vyuha) kept with an in-game glossary. The browser edition is text-only, in English and Hindi.
 
 ---
@@ -354,87 +358,128 @@ The browser edition (§16) already covers far more than this slice and can serve
 
 ---
 
-## 16. The browser edition (built, October 2026)
+## 16. The browser edition (built, October–November 2026)
 
-The game is playable today as a browser game (vanilla JavaScript, no engine), at apurv706.github.io/Mahabharata-game/game/ and as a private Claude artifact. It is the working prototype of the full design: all seven acts, every origin, teacher and path, the duty system, vows, curses, the war's 18 days and the endings, in English and Hindi. This section records how it plays and the decisions taken while building it; §17 lists what is left.
+The game is playable today as a browser game (vanilla JavaScript, no engine), at apurv706.github.io/Mahabharata-game/game/, and on a private Claude play page in two parts (§16.10). It is the working prototype of the full design: all seven acts, every origin, teacher and path, the duty system, vows, curses, divine weapons and magic, the war's 18 days with its storylines (§18.13) and 16 endings, in English and Hindi. This section records how it plays on 3 November and the decisions taken while building it; §17 lists what is left. Numbers in brackets are the Change List's.
 
 ### 16.1 Screens and devices
 - **Phones play upright only.** Turned sideways, a full-screen card asks the player to turn the phone back; the game pauses underneath (tests, the lamp and fight timing run on a pausable clock) and resumes where it was. Tablets and desktops play either way.
 - **One slim top bar** of icons (Character, Journal, Map, Menu, Standing), clear of the notch; smaller type on phones.
-- **The story page fits its content** and grows as the story is written line by line; nothing reserves empty space. The choices are always on screen.
+- **The story box opens at its full size** over the painting and the story is written into it; lines and choices not yet written keep their room, so the box no longer grows line by line (owner, 2 Nov) [71]. The choices are always on screen. Story text and choices are a size smaller than in October; act cards, the dream and full-screen moments are unchanged [60]. No screen holds more than half a phone of text (§18.15) [69].
+- On newer iPhone Safari, whose address bar floats over the page, the story sheet reaches the bottom of the screen [45].
 
-### 16.2 How a scene opens
-1. **Act card** at the start of each act: the act's number and name, one line, a gong; about 3 s or a tap.
-2. **Title card** for big moments (act openings, the epic's own scenes, tests, fights): Unwritten/Written, the title, age and place, the player's puppet; about 1.5 s. Ordinary scenes get a short title over the painting. Menu switch: Scene titles full / short.
+### 16.2 How a life and a scene open
+**A new life** opens with a short sequence, about thirteen seconds or a tap [37, 45]: the homeland's painting, introduced as on the character screen; the child, six, walking home and in at the lit doorway; supper with grandmother, mother and father on a mat with leaf plates; bed on a rope charpai as the clay lamp goes out; dream bubbles rising, and the war opening out of the last one. The dream is the thirteenth day at Kurukshetra ("None of this has happened yet"): grown, with a sword, three rounds against two soldiers and a warrior in a dented helmet whose face you cannot see, under a banner you cannot tell. It ends straight in white, then the dark room: the child wakes shaking, the mother kneels with a lamp, the father speaks of the war the sages foretell. Then the Act I card. The dream is not on the record or the map, the age stays six, and the earliest memory opens with the dust that is not there. Until `scene_home_supper` and `scene_home_night` arrive (`docs/Art_Brief_Opening.md`), the rooms are a plain wall and a drawn doorway.
+
+**A scene:**
+1. **Act card** at the start of each act: the act's number and name, one line, a gong; about 3 s or a tap. The sutradhara puppet opens it.
+2. **Title card** for big moments (act openings, the epic's own scenes, tests, fights, every ending): Unwritten/Written, the title, age and place, the player's puppet; about 1.5 s. Ordinary scenes get a short title over the painting. Menu switch: Scene titles full / short.
 3. **The whole painting**, large and centred (or its living painting, full-screen, for about 4 s).
-4. **The page rises over the painting** and the story is written in; the painting holds still.
+4. **The story box rises over the painting** at its full size and the story is written in; the painting holds still, also while a choice's outcome is written [60, 71].
 5. **The painting moves up once** into the space above the page, shown as large as the space allows (it may trim up to two-fifths of its width around its subject). A button or a tap shows it whole and replays its clip.
 
+The quill writes every line; writing only the important lines was tried on 2 November and put back the same day [40]. Menu switch: Reveal the story line by line.
+
 ### 16.3 The player's puppet
-The player and every character are drawn as **tholu bommalata** leather shadow puppets: top knots with cloth bands, gold stepped crowns for kings and princes, sages' bare knots with rudraksha, tilak, earrings, sacred thread and dhoti; women in saris with bun, braid, nose ring and bangles. The puppet stands large on the story page's top edge, lit from behind, and reacts to what happens.
+The player and every character are drawn as **tholu bommalata** leather puppets: top knots with cloth bands, gold stepped crowns for kings and princes, sages' bare knots with rudraksha, tilak, earrings, sacred thread and dhoti; women in saris with bun, braid, nose ring and bangles. The puppet stands large on the story page's top edge and reacts to what happens (§18.9).
+
+Since the quality review (2 November) [46–53]:
+- **Weight.** Each joint is driven by a spring timed by the clock (`ui/puppet-anim.js`), so it moves the same on any screen: limbs overshoot and settle, a blow has a wind-up, a short freeze on contact, knockback and flakes of leather, and the dead fall limp from the feet. With reduced motion the older fixed poses are used.
+- **Staging.** Figures are solid (no blur or see-through far figures or limbs) [46, 71], with a soft shadow under each, and larger in fights. Each test gives the right gear: a bow to shoot, empty hands to wrestle, hold steady or creep.
+- **Who is who.** Each kind of enemy has its own outline (bandit, palace guard, soldier, archer, horseman, champion). Crowns are only for the named heroes, each with his own mark: Karna's armour and earrings, Arjuna's gold-tipped Gandiva and twin quivers, Bhima the broadest with a studded mace, Duryodhana's jewelled mace, Bhishma in white with a long white beard, Drona's forked grey beard and water-pot, the jewel in Ashwatthama's brow [49].
+- **Weapons** were redrawn on 1 November: a ribbed gada with a spike, a khadga with a cross-guard, a leaf-headed spear with a red tassel, a recurved bow held at its grip, a dagger. The rods on the hands are gone [35].
+- The backlit-leather look was tried and rejected (2 November); colours stay opaque.
+
+The look is being redrawn as master leather (§18.14; being built 3 November).
 
 ### 16.4 Tests
-- 17 kinds of skill test, each a minute or two: archery, wrestling, steady hands, stealth, noticing, mudra and verse drills, rhythm, chariot and boat races, herding, the ring puzzle, retorts, drawing the bow, the dice, Shakuni's hands, and three board games (chaupar, tigers and goats, Moksha Patam). Two failures can close a way and send the player back to an earlier choice (loop-back), at most once per act.
-- **Every test is played on its painting.** The stage painting is the playing field: the top bar and page fall away, the puppets stand big on the painting, the test's name and score sit at the top and the controls at the foot; rules and stakes are a card before, and the verdict (You win / So close / You lose) is written over the scene after. Archery has a straw target swinging on a rope from the branch, and animals (deer, tiger, elephant) drawn as leather puppets running across the ground. Wrestling pushes across the painted ground; steady hands shows the hand over the glow; in stealth the player's puppet creeps through the scene; races run as vertical courses on the tall course paintings, steered left and right; herding is played upright with the way out at the top; the dice and Shakuni's hands are played on the painted cloth. A test written without a stage gets the usual ground for its kind.
-- **Failure has teeth (peril).** Some checks and tests set the player against someone who can have them killed or locked away. Fail one while out of your depth (under an even chance on a check, or below 4 in the test's attribute plus skill on a second attempt) and the failure is death or a cell, not a bruise; a capable player who fails gets the ordinary setback. The choice warns first ("Danger: failing could cost your life / mean a cell"). Story mode turns a death into a scar. A cell offers a stealth escape over the wall or the long wait (in the war, waiting means sitting out the rest of it); the ending remembers either.
-  - Death: listening to Shakuni at Indraprastha; calming the kings at the swayamvara; the Varnavata tunnel (Purochana's guard); drinking at the Yaksha's lake unanswered; breaking into the wheel after Abhimanyu; helping Karna lift his wheel; waking the camp on the night of the raid.
-  - A cell: warning Panchala's villages (Kaurava outriders); calling Shakuni's dice false; stepping between Dushasana and Draupadi; Vidura's message and the steward's family on the night of the exile (Duryodhana's men); carrying the wounded under fire (taken by the enemy).
-  - In automated play (random choices) about 1 life in 12 ends in a peril death, half of them before the war.
-  - A peril death ends on the painting of the place it happened ("A life cut short" before the war; "Into the wheel" and "Beside Karna" in it). Until their own pictures arrive (`scene_cell`, `scene_prisoners_pen`, `end_cut_short`, in `docs/Art_Brief_New_Storylines.pdf`), the cell borrows the palace-wall and war-camp paintings.
-- **Chance in skill tests.** Not every good attempt succeeds: in archery the aim wavers and each arrow drifts (less for a better archer), so a perfectly timed shot hits about 3 in 4 for a beginner and nearly always for a master.
-- Tall (9:16) stage paintings for all 29 test stages are in the game for upright screens.
+- **22 kinds of skill test,** each a minute or two: archery, wrestling, steady hands, stealth, noticing, mudra and verse drills, rhythm, chariot, boat and foot races, herding, the ring puzzle, retorts, drawing the bow, the dice, Shakuni's hands, three board games (chaupar, tigers and goats, Moksha Patam), and since 31 October the cellar fuse and the burning house (§18.2), the commander's formation and the army battle (§18.3), and the breath test (§18.7). The timing test has three faces: Kripa's sword drill, the practice post and the village gate [52]. Word tests are best of 3 [45]. Two failures can close a way and send the player back to an earlier choice (loop-back), at most once per act.
+- **Every test is played on its painting.** The stage painting is the playing field: the top bar and page fall away, the puppets stand big on the painting, the test's name and score sit at the top and the controls at the foot; rules are one line on a card before, and the verdict (You win / So close / You lose) is written over the scene after. Archery has a straw target swinging from the branch, always above the archer's head; hits stay in the target and swing with it; the bow is drawn square to the shot with the arm trembling with the aim's waver [34, 50]. Animals are leather puppets. In stealth the puppet creeps, freezes trembling in the light, and drops its basket and runs when seen; the guard strides with his torch held up and stops and lifts it before he turns [51]. Races run as vertical courses on the tall course paintings; against a rival the chariot has a Whip (Space: double speed for 1.5 s, 6 s to recharge) and wheels that clash on contact, and Karna drifts between lanes and now and then cuts across you after a warning [53]. A teacher or elder watching thinks, rather than cheers, when you slip [54].
+- **Failure has teeth (peril).** Some checks and tests set the player against someone who can have them killed or locked away. Fail one while out of your depth (under an even chance on a check, or below 4 in the test's attribute plus skill on a second attempt) and the failure is death or a cell, not a bruise; a capable player who fails gets the ordinary setback. The choice card shows a skull (can cost your life) or bars (can cost your freedom); the "Danger:" line is gone (§18.15) [69]. Story mode turns a death into a scar. A cell offers a stealth escape over the wall or the long wait (in the war, waiting means sitting out the rest of it); the ending remembers either.
+  - Death: listening to Shakuni at Indraprastha; calming the kings at the swayamvara; the Varnavata tunnel (Purochana's guard); drinking at the Yaksha's lake unanswered; breaking into the wheel after Abhimanyu; helping Karna lift his wheel; waking the camp on the night of the raid; the fight in the reeds at Duryodhana's lake (§18.13).
+  - A cell: warning Panchala's villages (Kaurava outriders); calling Shakuni's dice false; stepping between Dushasana and Draupadi; Vidura's message and the steward's family on the night of the exile (Duryodhana's men); carrying the wounded under fire (taken by the enemy); a Pandava seen warning Duryodhana at the lake.
+  - In automated play (random choices) about 1 life in 12 ended in a peril death, half of them before the war (measured 29 October).
+  - A peril death ends on the painting of the place it happened ("A life cut short" before the war; "Into the wheel" and "Beside Karna" in it), with `scene_cell`, `scene_prisoners_pen` and `end_cut_short` in the game.
+- **Chance in skill tests.** Not every good attempt succeeds: in archery the aim wavers and each arrow drifts (less for a better archer), so a perfectly timed shot hits about 3 in 4 for a beginner and nearly always for a master. What you see is what counts: the target is drawn as wide as its hit zone [25].
+- Tall (9:16) stage paintings for all 50 test stages are in the game for upright screens.
 
 ### 16.5 Fights
-Turn-based fights with shadow puppets on a painted stage, timed block and dodge, adaptive enemies, lasting scars. Even fights are won about 63% of the time, hard fights about 41%. **Fights are full-screen on their painting**, like the tests: the fight's name at the top, the two sides standing big on the painted ground (sized so two to a side always fit the screen), and each side's strength, the last lines of the fight and the player's moves on cards across the foot. Each of the 24 encounters has a setting: 12 tall fight backgrounds and 2 test stages (on upright screens; wider screens use the wide paintings).
+Turn-based fights with puppets on a painted stage, timed block and dodge, adaptive enemies, lasting scars. **Fights are full-screen on their painting**, like the tests: the fight's name at the top, the two sides standing big on the painted ground, each side's strength, the last lines of the fight and the player's moves on cards across the foot; on phones the moves are a strip of three, names only [48].
+- **Meeting a blow** (§18.9): jump, duck, sidestep or block as the blow comes; the window is ±0.2 s for a block and ±0.17 s for a dodge around the mark, and a press while your own move is still playing is ignored [54]. "Meet blows for me" in the menu (on by default in story mode).
+- **Targets:** tap a figure on the field to target it; the target has a "Your target" label and a ring of light at its feet; every enemy faces you [34, 43, 71]. With a command rank and someone beside you, the target is marked: a gold pennant flies over it and your company turns on it, with Command adding +1 at 4 and +2 at 7 [33].
+- **Moves are animated:** an archer's quick shot, the aimed shot held with a trembling arm, a volley of three arrows, the pinning shot left in the ground at the foe's foot, sparks on a guard, healing herbs in green light. The enemy's next blow waits until your move has played out [48].
+- **Friends** called for help come in from the edge of the stage, speaking (§18.1) [26, 48].
+- **Fights of other kinds** in the war's side battles: escort, break through, weather it, chariot duel, archery at range, mace duel, carry the wounded (§18.13) [67]. Hold fights show the round count during the fight [68].
+- 70 encounters; 21 fight backgrounds, each 16:9 for wide screens with a 9:16 version for upright ones, and the test stages.
+- **Balance** (`tests/balance.js`, careful player): the target is about 60–70% won in an even fight and about 40% in a hard one. In October even fights were won about 63% of the time and hard fights about 41%. A short run on 3 November (60 lives) gave about 85% and 56%, above the target; to be looked at again (§17).
 
 ### 16.6 Living paintings
-25 Runway clips (7 key moments, 6 endings, 12 key scenes) play in place of their paintings, silently, once, resting on the last frame; on phones at full width during the scene's opening, on desktops full-screen. Encoded for the web (H.264, with VP9 WebM as a fallback), about 0.2 to 1.4 MB each. Menu switch; off with reduced motion or data saver. Extending clips to fill a tall phone screen (Runway expand) is deferred until credits allow.
+25 Runway clips (7 key moments, 6 endings, 12 key scenes) play in place of their paintings, silently, once, resting on the last frame; on phones at full width during the scene's opening, on desktops full-screen. MP4 (H.264) only, about 0.2 to 1.4 MB each and 20 MB in all; the VP9 WebM copies were dropped on 31 October so that the published game stays within its file limit. Menu switch; off with reduced motion or data saver. The burning house also has fire drawn in code (embers and a flickering glow), which plays where a phone will not play clips, such as iPhone Low Power Mode [35]. No more clips will be made (decided 29 October); all other motion is drawn in code.
 
 ### 16.7 Language
-English and Hindi, 3,405 strings, none missing in automated Hindi playthroughs. The Hindi dictionary loads only when Hindi is chosen. The Hindi is a draft and needs a native reader's review.
+English and Hindi. The string collector (`tests/strings.js`) finds 4,074 strings the player can see (3,405 on 30 October); the Hindi dictionary has 6,211 entries and loads only when Hindi is chosen. In 8 automated Hindi lives on 3 November one string was left in English ("hermit"). Switching language mid-test follows in place [41]. The English text was checked against the humanizer patterns, and the Hindi updated to match [44, 68]. The Hindi is a draft and needs a native reader's review.
 
 ### 16.8 Quality checks
-- **Playthroughs** (tests/playthrough.js): hundreds of automated lives; no crashes, no dead ends; tests per life by act about 1 / 2 / 2 / 1 / 2 / 1 / 0.4.
-- **Screen fit** (tests/layout.js): iPhone SE, 15, 15 Pro Max, Pixel 7, iPad, laptop and desktop, upright and sideways, with stand-in notches; checks the top bar, page fit, choices on screen, every test and fight, the journey, the windows, the act and title cards, the painting's placement, the turn card and pause, the page growing while written; for tests and fights on their painting, that they fill the screen, hide the top bar, and keep every control on screen and clear of the notch and home bar. Runs on every push on GitHub in Chromium, WebKit (Safari) and Firefox.
-- **Balance** (tests/balance.js) for fights.
+- **Playthroughs** (`tests/playthrough.js`): hundreds of automated lives through the page; no crashes, no dead ends; the map follows the story.
+- **Engine lives** (`tests/lives.js`): random lives through the engine alone, a few thousand a minute: saved lives come back unchanged, Continue resumes on the saved scene, no text shows an unfilled {token}, nobody fights on both sides, every life ends [32].
+- **Rules** (`tests/rules.js`): 99 numbered groups of checks on vows, weapons, friendships, moments, ages, the war storylines, fight kinds and choice cards.
+- **The war:** `tests/command.js` plays the war as a commander on both sides; `tests/crossing.js` forces lives across at Yuyutsu's call and checks that nothing of the old side follows them, every way of proving yourself is reached, and the map marker stands in the new camp.
+- **Balance:** `tests/balance.js` for fights; `tests/race_balance.js` for the chariot race with the whip and contact (a whip user beats Karna about 93% of the time, as before; one who never whips now rarely wins) [53].
+- **Strings** (`tests/strings.js`): collects every visible string and checks a language's coverage in played lives.
+- **Screen fit** (`tests/layout.js`): iPhone SE, 15, 15 Pro Max, Pixel 7, iPad, laptop and desktop, upright and sideways, with stand-in notches; checks the top bar, page fit, choices on screen, every test and fight, the journey, the windows, the act and title cards, the painting's placement, the turn card and pause, the page while it is written, the painting holding still while it is written, every enemy facing you; for tests and fights on their painting, that they fill the screen, hide the top bar, and keep every control on screen and clear of the notch and home bar.
+- **On GitHub, on every push to main:** "Engine checks" (`tests/rules.js` and 600 lives of `tests/lives.js`) and "Screen fit" (`tests/layout.js` in Chromium, WebKit (Safari) and Firefox, on Ubuntu 24.04 for WebKit) [32, 71]. The other suites are run by hand.
 
-### 16.9 Build size
+### 16.9 Build size (3 November)
 | Part | On disk | What a player downloads |
 |---|---|---|
-| Code, styles, page | 1.1 MB | about 240 KB compressed |
-| Hindi dictionary | 0.7 MB | about 175 KB compressed, only for Hindi |
-| Paintings (218 WebP + 15 PNG: 3:1, wide 16:9, tall 9:16) | 56 MB | only those shown, the next scene's fetched while you read: about 15 to 25 MB over a whole life |
-| Living paintings (25 clips, MP4 + WebM fallback) | 55 MB (20 MB MP4) | one format, only scenes reached: about 6 to 10 MB per life |
-| Music (3 pieces, 5 win themes) | 4.2 MB | streamed as needed |
-| **Total** | **117 MB** | **first screen about 1 MB; a full life about 25 to 35 MB** |
+| Code, styles, page | 1.7 MB | about 490 KB compressed |
+| Hindi dictionary | 1.3 MB | about 310 KB compressed, only for Hindi |
+| Paintings (448 WebP + 16 PNG: 3:1, wide 16:9, tall 9:16) | 127 MB | only those shown, the next scene's fetched while you read |
+| Living paintings (25 clips, MP4) | 20 MB | only scenes reached |
+| Music (3 pieces, 5 win themes) | 4.3 MB | streamed as needed |
+| **Total** | **149 MB** | |
 
-The paintings' JPG originals (97 MB) are kept outside the game in `assets/art_src/`; `tools/webp-art.py` converts new ones.
+The per-life download (25 to 35 MB on 30 October) has not been measured again since the paintings doubled. The game folder holds 564 files. The paintings' JPG originals (235 MB) are kept outside the game in `assets/art_src/`; `tools/webp-art.py` converts new ones.
 
-## 17. Remaining tasks (October 29, updated)
+### 16.10 The private play page in two parts
+The private play page holds at most 512 files, fewer than the game now has, so it carries the game in two parts (2 November) [61, 66]: **Part One** (Acts I–IV) and **Part Two** (Acts V–VII), each with only the paintings its acts use. A life crosses from one to the other by its save code; Part Two also offers a ready-made life to begin at Act V, and "Begin at the war" from ready-made lives on the eve of the war, three on each side. Built by `tools/split/build.js` (with `part.js` and `gen_war.js`); not loaded by the GitHub build, which stays one game.
 
-### Built since v0.3
-- Every test and every fight played full-screen on its painting (§16.4, §16.5); archery animals as leather puppets.
-- Performance: Hindi loaded only for Hindi; paintings in WebP (97 MB → 54 MB); the next scene's painting and test stage fetched while the player reads.
-- Steam AI disclosure written: `store/AI_DISCLOSURE.md` (store-page text, content-survey text, and what it covers).
-- Screen-fit checks for full-screen tests and fights, in all three browser engines.
+## 17. Remaining tasks (3 November)
 
-### Art and video (needs an artist or credits)
-1. Redo `fight_camp_gate_night` (eclipse-like sun, crescent banners); optional fixes to `fight_drupada_yard` (East Asian roof) and `fight_swayamvara` (Greek-style pillars).
-2. The rest of the art is listed in `docs/Art_Brief_Pictures_Required.pdf` (83 images): a portrait fix (`p_abhimanyu`), 12 16:9 fight backgrounds for wide screens and 16:9 versions of the remaining 3:1 paintings. The Steam library hero is done; a sharper repaint is optional. Five gameplay screenshots are to be captured from the game.
-3. Video: decided 29 October, no more clips. The game keeps its 25 living paintings; all other motion is drawn in code (the puppet, weapon effects, stage effects). A Cantina test of the Hastinapura homeland gave one usable second.
+### Built since v0.6
+- The rest of §18: friends in any fight, the lac house, command, threads and episodes, weapons, magic and tapas (31 Oct) [26–31].
+- The 18 critical code-review issues (1 Nov) [32]; the leader's mark [33]; fixes from tester screenshots and passes [34–36, 41–43].
+- A faster start: the opening sequence and the dream of the war, stakes before age 8, Ugra and Charu at seven (2 Nov) [37–39, 45].
+- The quality review's puppet, staging, fight-move and test work (2 Nov) [46–54]; pose blending, the last item of §18.9.
+- The war storylines (2 Nov, §18.13) [55–59, 62–68].
+- Less to read, choice icons, hidden locks, the weapon grid and the dice hall in five screens (2 Nov, §18.15) [69, 70].
+- From the owner's play: the story box opens whole, solid figures, tap to target, the act never goes back [60, 71].
+- The private play page in two parts (§16.10) [61].
+- Art: everything ordered by 31 October is delivered and in the game, with no stand-ins; the war storylines' 31 paintings and the great duel's two arrived on 2 November.
+
+### Being built
+1. **Master leather** (§18.14), from 3 November, in `ui/puppet.js` and the puppet section of `css/screens.css`. Then every pose, test stage and fight checked again, and frame rate on a mid-range phone in a three-a-side fight.
+
+### Art (needs an artist)
+2. The opening sequence: `scene_home_supper` and `scene_home_night`, wide and tall, to replace the plain wall; each homeland's house at dusk if there is time (`docs/Art_Brief_Opening.md`).
+3. Retouches when convenient (`docs/Art_Brief_Remaining.md`): the torii-like gates in `stage_shiva_mountain`, `stage_naga_bank` and `scene_bard`; prayer flags and chortens on the two mountains. For later paintings, vary the skyline away from the Sanchi stupa and torana.
+4. Five Steam screenshots, captured from the game.
 
 ### Review and release (needs people)
-4. Native Hindi review of all 3,405 strings.
-5. Advisory review: canon portraits, every living painting (faces, hands, canon figures), Draupadi in the dice and exile images, the key art.
-6. Fill in the **[confirm]** lines of the AI disclosure: the image tools the artists used, how much of the story text was edited by hand, and the review status.
-7. Playtests: the timed block/dodge window on phones; whether board games finish within two minutes; whether loop-backs read clearly; whether title cards and the 4-second clip moments feel welcome after an hour; whether archery's chance feels fair; whether full-screen tests and fights read clearly on a small phone.
-8. **[OPEN]** Packaging for Steam (a desktop wrapper around the browser build) and whether the browser edition becomes the shipped game or stays the prototype for the engine build.
+5. Native Hindi review of all 4,074 strings, and of the Hindi logo.
+6. Advisory review: canon portraits, every living painting (faces, hands, canon figures), Draupadi in the dice and exile images, the key art, and Krishna's puppet in the day-9 wheel moment (§18.13).
+7. Fill in the **[confirm]** lines of the AI disclosure (`store/AI_DISCLOSURE.md`): the image tools the artists used, how much of the story text was edited by hand, and the review status. Its counts (about 230 paintings, about 3,300 Hindi strings) are out of date.
+8. Playtests: the timed block and dodge on phones; whether board games finish within two minutes; whether loop-backs read clearly; whether title cards, the opening sequence and the 4-second clip moments feel welcome after an hour; whether archery's chance feels fair; whether full-screen tests and fights read clearly on a small phone; whether the choice icons say enough now that cards carry no effect lines; whether the war storylines reach enough lives; how the fight balance feels after the 2 November changes.
+9. **[OPEN]** Packaging for Steam (a desktop wrapper around the browser build) and whether the browser edition becomes the shipped game or stays the prototype for the engine build.
+
+### Recorded, not built
+10. **Returning to a page replays its writing and music** (user feedback): coming back to a page writes it out again and starts its music again.
 
 ---
 
-## 18. Storylines to add (proposed, 29 October; not built)
+## 18. Storylines added (proposed 29 October; built 29 October to 2 November)
 
-Ideas to deepen a life, all inside the canon lock (§4): the epic's events happen as written, so Karna, Duryodhana and the Pandavas cannot die early at the player's hand, and the lac house still burns. The tension comes from what the player risks inside those fixed events. The pictures each needs are in `docs/Art_Brief_New_Storylines.pdf`.
+Ideas to deepen a life, all inside the canon lock (§4): the epic's events happen as written, so Karna, Duryodhana and the Pandavas cannot die early at the player's hand, and the lac house still burns. The tension comes from what the player risks inside those fixed events. The pictures each needs are in `docs/Art_Brief_New_Storylines.pdf`; all have arrived. Every proposal in §18.1 to §18.9 is built (31 October, Change List 26–31), each described under its "As built" note. §18.13 adds the war storylines (2 November), §18.14 the puppet's new look (decided 3 November) and §18.15 the reading cut (2 November).
 
 ### 18.1 Friends who come to help (build first)
 - In a fight, a friend with a high bond (about 7 or more) can step in at a turning point: "Bhima comes through the gate." Once per fight, as an ally unit with their own way of fighting: Bhima takes the blows, Arjuna strikes from range, Karna is fierce and unpredictable, Charu has no armour.
@@ -539,7 +584,8 @@ At most two quests are offered in a life (`S.astraOffers`). The dive and the cli
   - Soma: 2 tapas at the Rajasuya; +2 to your best attribute for a day, then −1 for a day.
   - Rite to lift a curse: 6 tapas at the forest sages.
 - **The Brahmastra** is offered once, on the last night (before the raid). Taking it costs all tapas, brings a curse and costs conscience −3; it is never a usable weapon. Refusing it gives tapas +2. The Pashupata and Narayanastra do not appear.
-- **Art still wanted** (stand-ins in `STANDIN` in `astras.js`): fire altar, deep lake, mountain path, Gandharva grove, naga bank, Shiva's mountain, temple offering, sage's year, Brahmastra night, raksha sutra, Soma.
+- **Art:** the paintings for the fire altar, deep lake, mountain path, Gandharva grove, naga bank, Shiva's mountain, temple offering, sage's year, Brahmastra night, raksha sutra and Soma arrived on 31 October; `STANDIN` in `astras.js` is now empty. Retouches to `stage_shiva_mountain`, `stage_naga_bank` and `stage_mountain_path` are in §17.
+- **Since 31 October:** an astra's condition broken by a choice shows as a broken-arrow icon on the card, and the "Tapas +n" previews are gone with the other effect lines (§18.15) [69]. The Varunastra dive is played in the water [71].
 
 ### 18.9 The puppet as the heart of the action
 The tholu bommalata puppets (drawn in code; no paintings needed) become fully animated and playable.
@@ -548,25 +594,27 @@ The tholu bommalata puppets (drawn in code; no paintings needed) become fully an
 - **The puppet tells the life:** it ages from child to elder across the acts; it carries the path's gear (bow and quiver, mace, chariot whip, healer's satchel), scars as stitched leather patches, a faint glow for an astra or raksha sutra; it bows, folds its hands, turns away in shame, trembles before a peril. A sutradhara (narrator) puppet introduces each act.
 - **Inside the tests:** move the puppet along the wall in stealth; the bow arm follows the aim; wrestlers lock and strain; the puppet rides the chariot or boat and leans into turns.
 - **As built (30 October), the leftovers:** a hinged lower jaw (the beard rides on it) that moves while a line of speech is written: a speaker who has a puppet now speaks through a small figure of their own beside the line; the turn (`pose-turn`: the figure flips to face away, the rods staying) when you withdraw from a fight; light and distance in the arena (enemies far from you a little larger and softer, sharpening as they step in to act); elders grey and stooped; an archer's quiver and a healer's satchel; and the menu's "Meet blows for me", which resolves the defence moments on the kinder odds (on by itself in story mode) and changes nothing when off. Still to do: pose blending between joints.
+- **Built 2 November (quality review) [47–53]:** pose blending, as springs on every joint (`ui/puppet-anim.js`; §16.3), with wind-ups, hit-freeze, knockback and slack-limbed falls; the bow held upright with a string drawn to the face; the stealth creep and the guard's torch; leather chariots with horses, a driver and the whip; wrestlers and the timing test's three faces. Next: the master-leather redraw (§18.14).
 
 ### 18.10 Order of work
-0. The playtest changes in §18.11, built together with the next art batch.
-1. Friends in fights (no art).
-2. The lac house escape (6 pictures), and three pictures for failure, already built (a cell, a prisoners' pen, a life cut short).
-3. Command, arrays and the holding fights, for both sides (12 pictures).
-4. Threads, episodes and the after-war scenes, a few at a time (21 pictures).
-5. The puppet: active defence (jump, duck, sidestep) first, then joints and pose blending, then gear, ageing and scars (no paintings).
-6. Divine weapons, shields, magic and tapas (31 pictures: 14 emblems, 6 test stages in tall and wide, 5 scenes; in `docs/Art_Brief_Weapons_Magic.pdf`).
+All steps are built (29 October to 2 November), except the master-leather redraw in step 5, which is being built from 3 November.
+0. The playtest changes in §18.11, built together with the next art batch. *Built 29 October.*
+1. Friends in fights (no art). *Built 30–31 October.*
+2. The lac house escape (6 pictures), and three pictures for failure, already built (a cell, a prisoners' pen, a life cut short). *Built 31 October.*
+3. Command, arrays and the holding fights, for both sides (12 pictures). *Built 31 October.*
+4. Threads, episodes and the after-war scenes, a few at a time (21 pictures). *Built 31 October.*
+5. The puppet: active defence (jump, duck, sidestep) first, then joints and pose blending, then redrawing the figure as master leather (§18.14), then gear, ageing and scars (no paintings). *Built 29 October to 2 November; master leather being built 3 November.*
+6. Divine weapons, shields, magic and tapas (31 pictures: 14 emblems, 6 test stages in tall and wide, 5 scenes; in `docs/Art_Brief_Weapons_Magic.pdf`). *Built 31 October.*
 
 ### 18.11 Changes from the 29 October playtest
 Collected from play feedback. **Built 29 October** (all items below, D1 to F5; the owner asked to build them together, without waiting for the art batch). Numbers in brackets are the project's `Change_List.md`. Where the annex art (`docs/Art_Brief_Annex_Playtest.pdf`) has not arrived, the game uses existing paintings: the war field for the last stand, Drona's training ground for the audition, the wheel's top-down field for the formation test, the night battlefield for the chariot run, and the path painting for the armoury.
 
-As built, two details differ from the proposal: the armoury is the existing path choice reworked (seven things laid out, each saying whether it suits you; its test follows at once and a double failure sends you back to choose again), and divine gifts by weapon wait for §18.7, since the game still has one generic astra.
+As built, two details differ from the proposal: the armoury is the existing path choice reworked (seven things laid out, each saying whether it suits you; its test follows at once and a double failure sends you back to choose again), and divine gifts by weapon wait for §18.7, since the game still has one generic astra. (31 October: §18.7 gave five named astras, open to every path; which quest comes depends on might or grace, not the weapon [30, 36].)
 
 **Decided**
 - **D1. Ugra's wrestling bout** [1] plays on the empty fair-ring painting (`fight_fair_ring`), not the fair scene that already shows two wrestlers.
 - **D2. Drona is selective** [2]. Anyone may ask, but a player not of the court first passes a very hard archery audition (Drona's bird at long range, a tiny target, low odds). Pass: he takes you grudgingly, and the court remembers. Fail: choose another teacher (the existing loop-back). Court children go straight to his usual test.
-- **D3. Choosing a weapon: choose, then prove it** [3]. An armoury scene: bow, mace, sword, chariot reins, staff, each with a hint from your attributes ("Your might suits the mace"). Pick one, then its test. Fail twice and that weapon is crossed out (loop-back). The weapon later decides which divine gifts suit you (archers: astras; mace and wrestling: Bala and Atibala; healers: Sanjivani; spies: Antardhana).
+- **D3. Choosing a weapon: choose, then prove it** [3]. An armoury scene: bow, mace, sword, chariot reins, staff, each with a hint from your attributes ("Your might suits the mace"). Pick one, then its test. Fail twice and that weapon is crossed out (loop-back). The weapon later decides which divine gifts suit you (archers: astras; mace and wrestling: Bala and Atibala; healers: Sanjivani; spies: Antardhana). *As built:* seven things (the bow, the mace, the reins, statecraft, healing, secrets, the vina); divine weapons stay open to every path [36]. *Since 2 November* the choice is a grid of weapon pictures you tap, and the cards no longer say which one suits your best attribute (§18.15) [69].
 - **D4. Archery aim and placement** [4]. The player's puppet in the lower-left third facing right; the teacher at the left edge, smaller and further back; another student on the right, smaller; figures never overlap. The aim line starts at the bow hand and points diagonally at the target; the arrow flies along it in a slight arc, shrinking with distance; the bow arm and shoulders turn toward the target and follow moving targets.
 - **C1. Becoming a commander: "Set the formation"** [13]. On the eve of the war, strategist training or Command 4 only lets you *ask* for a company. The army's commander tests you: Dhrishtadyumna for the Pandavas, Bhishma for the Kauravas (Bhishma also refuses Karna a place while he commands). The test (Command + statecraft), on the top-down field painting already in the game (`stage_chakravyuha_top`, no new art): the commander names a formation (crane, eagle, crescent); archers, chariots, spearmen and elephants arrive one at a time and you place each on its mark before the drums stop; then the enemy probes one flank and you send the reserve to the right place. Second chance as usual; fail twice and the company goes to someone else and you fight in the front line, with a journal line (no peril; it is a drill). The role then matters (today the `role_command` flag is never read): commanders lead their company in every war battle (the Command move gets an ally), face the day-13 wheel as their company's leader, and are named in the telling and the ending.
 
@@ -601,11 +649,11 @@ Decided 30 October in a design session, then built. Numbers in brackets are the 
 - *Kinds:* a friend for life ("A friend for life: Karna"; your figure and your friend's step in from the clear side edges and reach for each other's hands); a divine weapon (the screen darkens, the mantra runs as a line of light, an arrow of light rises from the weapon on the ground into your raised hand and the faint glow stays; the giver's condition is shown); your teacher's yes; your marriage; a vow (its gift, watchers and price); a company of your own. A friendship that ends gets a grey farewell with the friend's last words.
 - *Paintings (option B, arrived 30 October):* one per friendship (Arjuna's lamp at night, Bhima at the river, Duryodhana by the lotus pond, Karna and the horse, Charu at the forge), the astra in the forest clearing, the teacher at dawn, the wedding hands over the fire; tall and wide. Vows and the company use option A (the vow's emblem over the vow painting; the strategist's emblem over the war's eve); where a person has no moment painting, their portrait stands in a gold frame over the place.
 - *Themes:* friendship, the flute in Yaman over a tabla rising to a held note; divine weapon, a far conch, temple bells and a drone opening into a chord; milestones, one bronze bell and the flute in Desh; farewell, the flute alone, falling. Reduced motion: the still painting and the title.
-- *Waiting on art:* repaints of Duryodhana's moment (glass lanterns, pagoda roofs, two boys dressed alike), Bhima's wide moment (faces) and Vidura's portrait (a modern pen); the five weapons' own moments come with §18.7.
+- *Waiting on art:* repaints of Duryodhana's moment (glass lanterns, pagoda roofs, two boys dressed alike), Bhima's wide moment (faces) and Vidura's portrait (a modern pen); the five weapons' own moments come with §18.7. *All arrived and installed 31 October* [22]. Since 1 November a painting that already shows the friends has no puppets over it [35].
 
 **The practice ground** [23]. Rehearsal only (option 1): practice changes nothing in the story, the stats or the record. Reached from the menu between scenes, offered beside a second chance after a failed test, and after a lost fight that was not deadly. Every kind of test met in this life or an earlier one can be practised (others locked); sparring under the real fight rules at a chosen strength, never deadly, against training partners only (a straw dummy, a fellow student, the teacher; never the opponent who beat you); a drill for reading blows (jump, duck, sidestep, block), slow then faster. The teacher's figure gives a tip for each kind; three speeds (slow and normal slow the test's clock; real is the test itself); a "Show me" button; the training-ground painting and a calm tabla drill under it. Everything runs on a copy of the life that is put back exactly when it ends. Never inside a deadly fight or a perilous choice; war fights cannot be retried. Test kinds met in earlier lives are remembered from now on, and each life's list is kept in its Book of Lives entry. The two timed shows (signs in order, the thrower's hands) follow the speed setting; for the four board games the same three buttons set how much the teacher helps instead (Point it out / When I ask / No help), the hint being the move a careful player would make.
 
-**Vows that matter** [24]. Each vow has a gift while kept, watchers who share its value, and a price when broken, all shown when you swear it (on the choice and in its moment), in the character sheet, and on any choice that would break it ("Breaks vow: Never to speak a lie · Yudhishthira, Vidura, the sages will not forgive it · your chariot wheel will stick at the worst moment"). Watchers' bonds fall by 3 when a vow is broken. Gifts grow the longer a vow is kept: one more point after holding firm in a deadly fight (never to retreat), after fifteen years kept (honest persuasion, the common people's warnings), and Bhishma's blessing in the war (celibacy). Spiritual merit for celibacy waits for §18.8.
+**Vows that matter** [24]. Each vow has a gift while kept, watchers who share its value, and a price when broken, all shown when you swear it (on the choice and in its moment), in the character sheet, and on any choice that would break it ("Breaks vow: Never to speak a lie · Yudhishthira, Vidura, the sages will not forgive it · your chariot wheel will stick at the worst moment"). Since 2 November a choice that would break a vow shows the vow's emblem struck through instead, labelled with the vow and its watchers; the price is no longer shown there (§18.15) [69]. Watchers' bonds fall by 3 when a vow is broken. Gifts grow the longer a vow is kept: one more point after holding firm in a deadly fight (never to retreat), after fifteen years kept (honest persuasion, the common people's warnings), and Bhishma's blessing in the war (celibacy). Spiritual merit for celibacy waits for §18.8.
 - *Never to retreat:* +1 attack; one more after holding firm through a deadly fight. Watchers Bhima, Karna, your company. Broken: the company is shaken (weakened) in its next fight; the strength is lost.
 - *Never to lie:* "My word": once in each act, a statecraft test that is not itself a lie passes without a roll ("Your word is enough"); +1 on honest persuasion. Watchers Yudhishthira, Vidura, the sages. Broken: "My word" is gone, and once, in a deadly fight of the war, the chariot wheel sticks in the earth (a curse that fires as the fight begins).
 - *Never to strike the unarmed:* common people warn you of ambushes (+1 stealth); a foe you spared may drag you out of a deadly fight once (a scar instead of death). Watchers Arjuna, Charu, the common people. Broken: a weapon given on this condition is lost.
@@ -616,6 +664,53 @@ Decided 30 October in a design session, then built. Numbers in brackets are the 
 - *A divine weapon's condition,* named by its giver and shown in its moment and the character sheet: Drona, never against someone who cannot fight back; Kripa, never lie to me or before the court; Mauni, never say who taught you; the voice in the fire (penance), never against someone who cannot fight back. A teacher takes the weapon back at once; the fire's gift stays, but its mantra fails once in a deadly fight.
 - *Friends who pull at a vow:* new scenes, each only when it applies: your friend asks you to lie for them at court (Act III; Duryodhana's version when he is your friend; refusing raises Vidura or Yudhishthira); your wounded friend begs you to fall back at a river crossing (Act V, never to retreat); your friend wants a bound spy silenced (Act V, never to strike the unarmed); a Pandava friend wants you to loose at Karna, stuck open in a ford during the cattle raid (Act V, never to strike Karna). Each has an honest third way through a test.
 - *The way back:* one heavy penance a life, at an ashram before the war, lifts a broken vow's shame (the price, not the gift; watchers +2, conscience +2); a lost friend returns only through a scene with that friend (a ride to their camp before the war; a test of wisdom, easier after penance). The telling names broken vows atoned, lost friendships and broken weapon conditions.
+
+### 18.13 The war storylines (built 2 November)
+Proposed and built on 2 November, and on the public site the same day after the full test pass. Numbers in brackets are the Change List's; storyline numbers (#1 to #8) are the proposal's. Code: one file per storyline in `content/war_*.js`, with `war_reach.js` loaded first; `ui/fightmodes.js` and `ui/warmap.js`; Hindi in `i18n/hi/manual_war_*.json`; checks in `tests/rules.js` and `tests/crossing.js`. Paintings: a batch of 31, and the great duel's two (`scene_duel_ground`, Vrishasena's portrait). Each storyline comes only to the lives it fits, in scenes before the war days that every road reaches. Canon holds: every canon death comes on its day, and champions are held, never killed.
+
+- **Yuyutsu's call (#1, days 1–4)** [64]. Before the first arrow Yudhishthira calls that anyone may still change sides. A Kaurava-side player may cross with Yuyutsu: every bond on the old side falls by 3, a friend for life there ends at once, and crossing counts as retreat. The new side gives a place, not trust: rank and the call for help are lost, and a guard sleeps across the tent door. You prove yourself by any of: the day-2 duel against the man your old side sends (Ugra if he stood beside you, otherwise Kanaka from your old company); explaining to Dhrishtadyumna why you spared him; a test of truth before Yudhishthira on the third night; catching the real spy who copies the array on the fourth. Not proven by then, you stay suspected for the war: no rank, no help, the worst postings. A Pandava-side player may instead call a sibling across (a statecraft test). Everything after follows the new side. Its own ending, "The one who crossed".
+- **Iravan (#2, day 8)** [62]. Pandava players with a naga tie ride beside Arjuna's son by Ulupi against Shakuni's horse (a six-round hold). At dusk he is dead, as written; his body can be carried to the river under fire (a stealth test), and then a naga of Ulupi's people answers one call for help in the war. The nagas' trust also comes from leading families out of the Khandava fire, or leading the cobra out of the well-house as a child.
+- **The Samshaptakas' oath (#3, day 12)** [63]. Kaurava side: swear with the Trigartas to fight Arjuna until he or you die, a fourth vow above the limit, for the war only (+2 attack, +1 defence). You hold in front of Arjuna's chariot on days 12 and 16; withdrawing breaks the oath. Falling with it on you is its own ending, "The oath to the death". Pandava side: the crescent array that keeps Drona's eagle off the king.
+- **Bhurishravas (#4, day 14)** [57, 58]. Hold him off Satyaki, then choose while he sits after losing his arm (the vow never to strike the unarmed). Every Pandava fighter is ordered to ride with Satyaki that day, and how the ride goes sets how worn out Satyaki is when Bhurishravas reaches him. Satyaki is a full, larger figure.
+- **The Shakti spent (#5, the night of day 14)** [56]. Kaurava side: hold off Ghatotkacha's night form and call Karna in. Pandava side: try to reach Karna's chariot before he throws. What you said is what Karna answers on day 17.
+- **Your king falls (#6, day 15)** [57, 58]. For those born in or serving Panchala or Matsya: carry your king from the field, see Dhrishtadyumna go for Drona, and take word home. The cry "Ashwatthama is dead" is a lie, and joining it breaks the vow never to lie; days 14 and 15 are quoted back at you in one night debate.
+- **Your child on the field (#7)** [55]. The child raised in the exile years may serve another company: choose his commander, tie a thread on his wrist on the eve (a moment), receive two letters from his lines, and on one day his line comes up beside yours, where a call for help can reach him. What he lived through decides his fate, the night raid included.
+- **The lake (day 18)** [62]. Spies, scouts and Duryodhana's friends search the reeds of Dvaipayana at dusk (a noticing test) and fight in the reeds after dark, beside or against Ashwatthama, Kripa and Kritavarma (who cannot be killed); then tell the Pandavas, keep silent, or warn Duryodhana. He never runs, the hunters always tell, and the duel is fought as written.
+
+**The great duel (#8, day 17)** [59]. Kaurava side: guard Karna's son Vrishasena; he falls when it ends, however long you held. Four rounds or more and Karna's last words name it; withdraw early and he never looks at you again. Pandava side: ride at Arjuna's wheels with the Panchala princes Yudhamanyu and Uttamaujas while the two champions' divine weapons clash overhead; held to the end, and the princes remember you on the night of the raid. Both fights use the chariot controls.
+
+**Arjuna and Bhishma, shown twice** [65]. Day 9: Krishna takes up the wheel and Arjuna holds him back. Pandava side, a hold first in the line breaking under Bhishma's arrows; Kaurava side, in Bhishma's guard as Krishna runs at him. That night, those close to Yudhishthira or Arjuna go with the brothers to Bhishma's tent, where he names Shikhandi. Day 10: the barrage of arrows and the fall, with one choice (go to him, hold the line, look away). Both are moments staged with puppets over the field painting; no god is painted, and Krishna never strikes Bhishma. This is the only scene with Krishna's puppet.
+
+**Reach** [66]. Every storyline has a plain entrance, and weaker ties bring more lives to it, strongest first: its own entrance, a company posted there by the morning's orders, a friend's word the night before, the word round the camp, and the war-day map on days 14 and 15 (the field from above, with a tappable spot for each place to stand, `ui/warmap.js`). Only fighters are drawn in by a weaker tie, and the opening line says how they came. Early ties are seeded in Acts III and IV: Satyaki at the swayamvara, little Vrishasena in Anga. Part Two of the private play page offers "Begin at the war" (§16.10). The sibling on the other side is one line on the eve of the war [71].
+
+**Fights of other kinds** [67, 68]. In side battles only, each a hold of four rounds with one twist: escort (keep someone whole), break through (a lane each round), weather it (no striking back: guard in time and take cover), chariot duel, archery at range, mace duel, carry the wounded. By path on days 6 and 11 (one optional skirmish each), and on canon days: Bhishma's arrows (day 3), Supratika's charge (12), the outer ring of the wheel (13), the road to Jayadratha (14), the Narayana weapon (15, lay down your weapons), an archer across the field (16), the last champion (18). At most one special kind a war day. The live kinds play as their test on the fight's stage (race, aim, parry drill, steady hands); with motion off, and under the tests, they are the plain hold. Main fights keep their form and length (`tests/rules.js` §90). A cart, an elephant and the Narayana weapon are drawn as what they are.
+
+### 18.14 The puppet's look: master leather (decided 3 November; being built 3 November)
+**Decision (3 November, owner):** the characters stay tholu bommalata leather puppets, redrawn as a master craftsman would cut them (option B of the five compared on the puppet-options test page). Being built from 3 November.
+
+**What changes.** The figure keeps today's identity: the same colours, the same opaque leather, the same faint outer glow, the same profile and joints. What changes is the craft of the cut:
+- **Curved, tapered limbs.** Calf and forearm swell; ankle, wrist and neck narrow, in place of today's straight wedges and rectangles.
+- **Joints you can see.** At each joint (shoulder, elbow, hip, knee) the two pieces overlap on a leather disc tied with a thread knot, as on real puppets. This suits the spring-driven rod motion already approved.
+- **A firm cut edge.** A dark outline, slightly heavier than today's, so the figure reads as a cut-out against any painting.
+- **Ornament where a craftsman puts it,** not all over: punched holes in rows along hems, crowns, armlets and the dhoti's edge (replacing today's even dot grid); a printed border on the dhoti or sari, a zigzag with dots in the trim colour; a scalloped hem below it; necklaces and chains as strings of beads; gold armlets, bracelets and anklets; pleats and a sash end falling from the waist.
+- **Bigger hands and eyes.** A larger almond eye and fuller hands, as puppet makers exaggerate them, so expressions and gestures read on a phone.
+- **Crowns** keep the approved tall form with a gold fan behind the head, now with tiers outlined in the trim colour and rows of punched holes.
+- **The puppeteer's main rod** stays, faint, from the waist down out of the frame.
+
+**What stays.** Master leather is drawn under every puppet decision of the quality review (2 November) and changes none of them: the spring-driven motion, wind-ups, hit-freeze and slack-limbed falls; solid far enemies, ground shadows, figures half the stage's height, the right gear for each test; the fight-move animations and the upright, drawing bow; the archery, stealth, race and timing-test changes; the enemy silhouettes, crowns only for the named, each hero's own mark, and age shown in Bhishma's and Drona's beards.
+
+**What it does not do.** No backlight: the backlit-leather treatment was tried and rejected on 2 November, and colours stay opaque. No change of medium: the four other styles were set aside (A, today's puppet unchanged; C, Kalamkari painted cloth; D, Ravanachhaya pure shadow; E, painted cut-outs shaded like the paintings).
+
+**Cost and risk.** About a week, all in code (`ui/puppet.js` and the puppet section of `css/screens.css`); no new paintings and no new AI art. Every body part is redrawn, so every pose (about 30), every test stage and every fight must be checked again. The joint origins in CSS must match the new parts exactly; a screen check should confirm that no limb separates at its joint in any pose. Figures carry more detail, so drawing cost per frame rises a little: check the frame rate on a mid-range phone in a three-a-side fight.
+
+### 18.15 Less to read (decided and built 2 November)
+The owner's decisions of 2 November on how much a player has to read [69, 70]:
+- **Every question cut to the bare minimum,** and scene-setting to a line. Canon boxes ("As it is written") are one sentence; test rules one line. No screen holds more than half a phone of text (36 screens did before, none after). Ekalavya and the swayamvara show only the choices.
+- **No effect lines on choice cards.** Bonds, duties, reputation, skills and odds are found in play, not shown before the choice. This replaces the ▲/▼ previews, the "Danger:" line (§16.4) and the "Breaks vow:" line (§18.12).
+- **Icons instead,** small, in the ink of the card, each with its full words as its label: a bow (leads to a fight); a skull (can cost your life); bars (can cost your freedom); the vow's emblem (swears a vow, with its gift and price as the label); the vow's emblem struck through (breaks one of your vows, naming who will not forgive it); a split heart (ends a friendship); a broken arrow (breaks a divine weapon's condition). A plain choice has none.
+- **Hidden locks.** At the teacher and the ashram, choices you cannot take are not shown (if none can be taken, they stay). Elsewhere a locked choice shows its short reason, and a way closed by two failed tests stays on the page, struck through.
+- **The weapon grid.** The weapon choice (§18.11 D3) is a grid of weapon pictures you tap.
+- **The dice hall in five screens:** the invitation; Shakuni's hands (spotting the cheat calls it out); the hall, with the stakes and Draupadi's question together and four choices, and no walking out partway; the robe; the road out. (§6's single long scene of Act IV stands for the full game.)
 
 ## 19. Success metrics
 
