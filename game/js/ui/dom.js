@@ -141,14 +141,14 @@
 
   // Living paintings: short clips made from some paintings (game/video/<key>.mp4). The painting
   // shows at once; its clip fades in over it when it can play, plays once and rests on its last
-  // frame. Off in the menu, with reduced motion, when the device asks to save data, and in tests.
+  // frame. Off in the menu, with calm motion, when the device asks to save data, and in tests.
   const VIDEOS = new Set(["war_eve", "scene_dice_hall", "scene_poison", "scene_lac", "scene_dice_cloth", "war_day17", "scene_arrows",
     "end_death", "end_survivor", "end_broken", "end_elder", "end_forest", "end_river", "scene_princes", "scene_fair", "scene_teacher",
     "scene_teaching", "scene_tournament", "scene_swayamvara", "scene_indraprastha", "scene_dice_throws", "scene_exile", "scene_virata",
     "scene_day13", "war_day18"]);
   U.living = function () {
     if (/jsdom/i.test(navigator.userAgent || "") || K.headless) return false;
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
+    if (U.calm()) return false;
     if (navigator.connection && navigator.connection.saveData) return false;
     return K.prefs().living !== false;
   };
@@ -432,22 +432,31 @@
     else story.scrollTop = story.scrollHeight;
   };
 
+  // ---------- Motion ----------
+  // Motion is always on: the game does not follow the device's reduce-motion setting. The menu's
+  // "Calm motion" (off unless the player turns it on) stills the puppets and quietens the effects;
+  // the html element carries the class "calm" then, and the CSS keys its still rules off it.
+  U.calm = () => K.prefs().calm === true;
+  U.applyCalm = function () { if (typeof document !== "undefined" && document.documentElement) document.documentElement.classList.toggle("calm", U.calm()); };
+  // Whether things on screen move: puppets, fights, tests, effects, timings. Off with calm motion
+  // and in the automated (jsdom) tests.
+  U.motion = function () {
+    if (/jsdom/i.test(navigator.userAgent || "")) return false;
+    return !U.calm();
+  };
   // ---------- Staged reveal ----------
   // Story screens bring their parts in one after another: painting, title, each line of the scene,
   // and only then the choices. The pause after each line follows its length. A tap on the page,
-  // Space, Enter or a number key shows everything at once. Off with reduced motion, in the
-  // automated tests, or when the player turns "Reveal the story line by line" off in the menu.
-  U.motion = function () {
-    if (/jsdom/i.test(navigator.userAgent || "")) return false;
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return false;
-    return K.prefs().gradual !== false;
-  };
+  // Space, Enter or a number key shows everything at once. Off with calm motion, in the automated
+  // tests, or when the player turns "Reveal the story line by line" off in the menu (that switch
+  // changes only this: the puppets and fights keep moving).
+  U.gradual = () => U.motion() && K.prefs().gradual !== false;
   let stageRun = null;
   // whole: a page shown again comes up all at once, with no quill (see U.pageAgain below).
   U.stage = function (items, done, whole) {
     U.stageFinish(false);
     items = items.filter(Boolean);
-    if (!U.motion() || whole) { items.forEach((el) => el.classList.remove("staged")); if (done) done(); return; }
+    if (!U.gradual() || whole) { items.forEach((el) => el.classList.remove("staged")); if (done) done(); return; }
     items.forEach((el) => { el.classList.add("staged"); el.classList.remove("shown"); });
     const run = { items, i: 0, timer: null, done };
     stageRun = run;

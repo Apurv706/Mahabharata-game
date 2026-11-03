@@ -375,7 +375,8 @@ async function fresh(page, url, o, prefs = {}) {
   await page.waitForFunction(() => window.K && K.UI && K.UI.renderScene);
   await page.evaluate(() => document.fonts && document.fonts.ready.then(() => true));
   await page.addStyleTag({ content: `:root{--sat:${o.sat}px!important;--sab:${o.sab}px!important;--sal:${o.sal || 0}px!important;--sar:${o.sar || 0}px!important}` });
-  await page.evaluate((p) => { localStorage.clear(); K.prefs(Object.assign({ gradual: false, beats: false, sound: false, timed: false, living: false }, p)); }, prefs);
+  // The layouts are checked still ("Calm motion" on), so the screens hold steady to be measured.
+  await page.evaluate((p) => { localStorage.clear(); K.prefs(Object.assign({ gradual: false, calm: true, beats: false, sound: false, timed: false, living: false }, p)); }, prefs);
 }
 async function goScene(page, id, extra) {
   await page.evaluate(([id, life, extra]) => {
@@ -477,7 +478,7 @@ async function runDevice(browser, base, o, report) {
   await goScene(page, "a2_trial");
   await check("short scene", ["topbar", "scene", "painting"], { short: true });
   // The story written line by line: midway, the page holds only what is written.
-  await page.evaluate((life) => { K.prefs({ gradual: true }); K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { origin: "matsya", age: 9, act: 1 }); K.S.at = "matsya"; K.go("a1_sage"); }, LIFE);
+  await page.evaluate((life) => { K.prefs({ gradual: true, calm: false }); K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { origin: "matsya", age: 9, act: 1 }); K.S.at = "matsya"; K.go("a1_sage"); }, LIFE);
   await page.waitForTimeout(1600);
   await check("story being written", ["growing"]);
   {
@@ -487,7 +488,7 @@ async function runDevice(browser, base, o, report) {
     const upright = o.h > o.w * 1.15;
     report.push({ browser: browser._name, device: label, screen: "painting still while writing", problems: (a[0] !== b[0] || a[1] !== b[1]) ? ["painting moved while the story was written (" + a + " → " + b + ")"] : upright && a[2] !== "whole" ? ["painting not shown whole while the scene opens (" + a[2] + ")"] : [] });
   }
-  await page.evaluate(() => { K.UI.stageFinish(true); K.prefs({ gradual: false }); });
+  await page.evaluate(() => { K.UI.stageFinish(true); K.prefs({ gradual: false, calm: true }); });
   await goScene(page, "a2_trial");
   // See the painting whole, and back.
   await page.click("#view-full");
@@ -500,7 +501,7 @@ async function runDevice(browser, base, o, report) {
     report.push({ browser: browser._name, device: label, screen: "back from the painting", problems: back ? [] : ["a tap did not bring the page back"] });
   }
   // A living painting: the training ground has a clip; it plays and shows over the painting.
-  await page.evaluate(() => K.prefs({ living: true }));
+  await page.evaluate(() => K.prefs({ living: true, calm: false }));
   await page.evaluate(() => { K.UI.setBackdrop(null); });
   await goScene(page, "a2_trial");
   await page.waitForTimeout(2200);
@@ -509,6 +510,7 @@ async function runDevice(browser, base, o, report) {
     // Clips are MP4 (H.264) only. A test browser built without it cannot play them; players' browsers can. The painting stays.
     if (v.can) report.push({ browser: browser._name, device: label, screen: "living painting", problems: !v.el ? ["no clip on a painting that has one"] : v.el.on && v.el.t > 0.3 ? [] : ["clip did not play (" + JSON.stringify(v.el) + ")"] });
   }
+  await page.evaluate(() => K.prefs({ calm: true }));
   const picks = await page.evaluate(() => {
     const len = (b) => JSON.stringify(b || "").length;
     let longest = null, most = null, n = 0, L = 0;
@@ -699,6 +701,29 @@ async function runDevice(browser, base, o, report) {
   await page.waitForTimeout(3200); // short title (about 1 s), then the painting alone (about 1.3 s)
   if (await page.evaluate(() => !!document.getElementById("beat"))) probs.push("short title did not fade by itself");
   report.push({ browser: browser._name, device: label, screen: "act and title cards", problems: probs });
+
+  // Motion is always on: a device asking for reduced motion still sees the puppets move in a fight,
+  // and so does a player who turned the line-by-line story off. "Calm motion" stills them.
+  {
+    const mctx = await browser.newContext({ viewport: { width: o.w, height: o.h }, isMobile: o.mobile && browser._name !== "firefox", hasTouch: o.mobile, reducedMotion: "reduce" });
+    const mp = await mctx.newPage();
+    if (FONTS) { const css = fontCss(); await mp.route(/fonts\.googleapis\.com/, (r) => r.fulfill({ status: 200, contentType: "text/css", body: css })); }
+    const mprobs = [];
+    const fight = async (prefs) => {
+      await fresh(mp, url, o, prefs);
+      await mp.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 17, act: 2 }); K.go("a2_spar"); K.UI.startBattle("e_spar", () => {}); }, LIFE);
+      await mp.waitForTimeout(700);
+      const look = () => mp.evaluate(() => [...document.querySelectorAll("#arena .actor svg")].map((v) => v.innerHTML).join("|"));
+      const a = await look(); await mp.waitForTimeout(600); const b = await look();
+      return { moved: a !== b && a.length > 0, calm: await mp.evaluate(() => document.documentElement.classList.contains("calm")), motion: await mp.evaluate(() => K.UI.motion()) };
+    };
+    const on = await fight({ calm: false });
+    if (!on.motion || on.calm || !on.moved) mprobs.push("device reduced motion: the fight should still move (motion " + on.motion + ", calm " + on.calm + ", moved " + on.moved + ")");
+    const calm = await fight({ calm: true });
+    if (calm.motion || !calm.calm || calm.moved) mprobs.push("calm motion: the fight should stand still (motion " + calm.motion + ", calm " + calm.calm + ", moved " + calm.moved + ")");
+    report.push({ browser: browser._name, device: label, screen: "motion on despite the device; calm motion stills it", problems: mprobs });
+    await mctx.close();
+  }
 
   report.push({ browser: browser._name, device: label, screen: "script errors", problems: errors.map((e) => "error: " + e) });
   await ctx.close();

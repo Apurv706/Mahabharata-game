@@ -5,7 +5,7 @@
    kicked (knocked back), frozen for a beat on contact (hit-stop), made to tremble, pinned by the
    foot, or let fall limb by limb, pivoting on its feet.
 
-   U.rig(svg, actorEl, base) → a Rig (or null when motion is reduced: the CSS poses are used then).
+   U.rig(svg, actorEl, base) → a Rig (or null with calm motion: the CSS poses are used then).
    rig.set(pose, stiffness, damping, snap)  aim every joint at a pose from POSES
    rig.home()                               back to its own resting pose
    rig.kick({ joint: velocity })            a push on some joints (an impact)
@@ -160,7 +160,7 @@
     if (this.el && this.el.style) this.el.style.translate = Math.abs(x.dx) < 0.05 ? "" : x.dx.toFixed(1) + "px 0";
   };
 
-  // Make a live figure of an SVG drawn with { pose: "live" }. With reduced motion, the figure is
+  // Make a live figure of an SVG drawn with { pose: "live" }. With calm motion, the figure is
   // given back its plain CSS pose instead, and null is returned.
   U.rig = function (svg, el, base) {
     if (!svg) return null;
@@ -168,7 +168,7 @@
       svg.setAttribute("class", svg.getAttribute("class").replace(/pose-live\b/, "pose-" + ({ ready: "brace", bowready: "brace" }[base] || base || "stand")));
       return null;
     }
-    const own = svg.getAttribute("data-stance"); // with reduced motion the CSS stand pose shows the stance
+    const own = svg.getAttribute("data-stance"); // with calm motion the CSS stand pose shows the stance
     if ((!base || base === "stand") && own && POSES[own]) base = own;
     if (!/\bpose-live\b/.test(svg.getAttribute("class"))) svg.setAttribute("class", svg.getAttribute("class").replace(/\bpose-\S+/, "pose-live"));
     return new Rig(svg, el, base);

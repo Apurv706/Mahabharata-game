@@ -9,7 +9,7 @@
      generic   a white bolt and a shockwave (the one astra the game has today)
    Against one of the epic's heroes the counter-weapon answers: two streaks meet in the air in a white
    flash and a ring of force, the screen shakes once, and both are gone.
-   With reduced motion: one soft flash. Nothing flashes more than once. */
+   With calm motion: one soft flash. Nothing flashes more than once. */
 (function (K) {
   "use strict";
   const U = K.UI;
@@ -31,7 +31,7 @@
     if (K.Sound) { K.Sound.play("gong"); setTimeout(() => K.Sound.play(o.clash ? "hit" : "choose"), 650); }
     const layer = U.el('<div class="astra-fx" aria-hidden="true"><i class="ax-dark"></i><i class="ax-tint" style="background:' + K2.tint + '"></i><i class="ax-mantra"></i><canvas></canvas></div>');
     (o.into || document.body).appendChild(layer); // inside a moment, over its painting
-    const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = U.calm();
     if (reduced) { layer.classList.add("still"); setTimeout(() => layer.remove(), 700); return; }
     const cv = layer.querySelector("canvas"), dpr = Math.min(2, window.devicePixelRatio || 1);
     cv.width = W * dpr; cv.height = H * dpr;

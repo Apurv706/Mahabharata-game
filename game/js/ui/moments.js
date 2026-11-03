@@ -3,7 +3,7 @@
    friend, your figure and your friend's step in and clasp hands; for a divine weapon the screen
    darkens, the mantra runs as a line of light, and its emblem rises from the ground into your raised hand (its glow stays).
    Where a moment has no painting of its own yet, the person's portrait stands in a gold frame over
-   the painting of the place (option A). With reduced motion: the still painting and the title.
+   the painting of the place (option A). With calm motion: the still painting and the title.
    Moments are noticed in the engine (core.js), kept in S.moments for the character sheet and the
    Book of Lives, and played from K.momentQueue. */
 (function (K) {
@@ -57,7 +57,7 @@
   K.momentThumb = (m) => { const i = K.momentInfo(m); return i ? i.art || i.portrait || i.emblem || i.place : null; };
 
   const tx = (v) => U.t(v);
-  const reduced = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduced = () => U.calm();
 
   // The emblem of a divine weapon: an arrow of light.
   const ASTRA_SVG = '<svg viewBox="0 0 120 120" aria-hidden="true"><defs><radialGradient id="mo-ag" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff8e0"/><stop offset="0.45" stop-color="#ffd680" stop-opacity="0.75"/><stop offset="1" stop-color="#ffb040" stop-opacity="0"/></radialGradient></defs>' +

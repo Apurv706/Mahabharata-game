@@ -404,7 +404,7 @@
   U.games.race = function (box, done, c) {
     return U.trialFrame(box, done, c, "race", ({ host, power, t, finish, cue, onAct }) => {
       const o = Object.assign(U.raceSetup(t, power), { who: t.rival }), R = U.raceRules(o, K.rng), hullMode = !o.rival, base = o.base;
-      const chariot = o.chariot, still = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+      const chariot = o.chariot, still = U.calm();
       let last = 0, scroll = 0;
       const stage = K.val(t.stage);
       host.innerHTML = '<p class="score" aria-live="polite"></p>' +
@@ -572,7 +572,7 @@
         if (vertical) track.style.backgroundPositionY = (scroll * 1.6).toFixed(1) + "px";
         else if (tileW) strip.style.transform = "translateX(" + (-(scroll % (tileW * 2))).toFixed(1) + "px)";
         for (const ob of R.obs) { const el = els.get(ob); if (el) { if (vertical) el.style.top = (96 - ob.x) + "%"; else el.style.left = ob.x + "%"; } }
-        // The chariots: lane springs, the gallop, the dust; with reduced motion they simply change lane.
+        // The chariots: lane springs, the gallop, the dust; with calm motion they simply change lane.
         const diff = R.rival - R.dist;
         if (chariot) {
           if (still) { ME.x = LANEX[R.lane]; if (RV) RV.x = LANEX[R.rLane]; } else { chariotSprings(ME, LANEX[R.lane], dt); if (RV) chariotSprings(RV, LANEX[R.rLane], dt); }

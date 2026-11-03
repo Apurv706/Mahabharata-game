@@ -36,6 +36,6 @@
     ".warmap .spot:hover .lbl,.warmap .spot:focus-visible .lbl,.warmap .spot.on .lbl{background:#7a2a1a}" +
     ".warmap .spot:disabled{cursor:default;opacity:.55}.warmap .spot.on{opacity:1}" +
     "@keyframes wmPulse{50%{box-shadow:0 0 0 8px rgba(192,71,47,0)}}" +
-    "@media (prefers-reduced-motion:reduce){.warmap .dot{animation:none}}";
+    "html.calm .warmap .dot{animation:none}";
   document.head.appendChild(css);
 })(window.K);

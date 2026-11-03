@@ -303,7 +303,7 @@
       const at = (side, n) => { const [x, y] = sqXY(Math.min(MK, n)); return [x + (side === "me" ? 8 : -8), y + 8]; };
       const put = (side, xy) => toks[side].setAttribute("transform", "translate(" + xy[0].toFixed(1) + " " + xy[1].toFixed(1) + ")");
       const place = (side, n) => put(side, at(side, n));
-      // A ladder or a snake carries the piece in a few quick frames (none with reduced motion).
+      // A ladder or a snake carries the piece in a few quick frames (none with calm motion).
       const glide = (side, from, n, then) => {
         const a = from, b = at(side, n), F = U.motion() ? 5 : 0;
         let f = 0;

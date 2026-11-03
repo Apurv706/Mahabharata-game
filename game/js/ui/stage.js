@@ -4,7 +4,7 @@
      involved standing on its ground: you on the left, the others facing you. They react: you draw,
      push or duck as you act; they stagger when you score and you stagger when you slip.
    - Effects drawn in code over the backdrop: fireflies, dust, rain, embers, sparks, mist, falling
-     leaves, torchlight. They stop on phones and with reduced motion, and pause when the tab is hidden.
+     leaves, torchlight. They stop on phones and with calm motion, and pause when the tab is hidden.
    Top-down stages (a table, a forest seen from above) have no ground to stand on: the painting goes
    under the play area instead, and the figures stand small beside it. */
 (function (K) {
@@ -136,7 +136,7 @@
   const calm = () => !U.motion() || window.innerWidth < 720 || /jsdom/i.test(navigator.userAgent || "");
   U.stageFx = {
     // opts.story: a living effect over a story painting (the lac house burning, its smoke at dawn).
-    // It plays on phones too, with fewer particles, and follows "living paintings" (off with reduced
+    // It plays on phones too, with fewer particles, and follows "living paintings" (off with calm
     // motion, when the device saves data, or when the player turns living paintings off).
     start(stageKey, kindOverride, opts) {
       this.stop();

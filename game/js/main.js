@@ -34,6 +34,7 @@
   U.$("nav-menu").addEventListener("click", U.openMenu);
   U.$("nav-standing").addEventListener("click", () => U.toggleLedger());
   if (K.prefs().bigText) document.body.classList.add("big-text");
+  U.applyCalm(); // "Calm motion" from the menu (ui/dom.js U.calm)
   // Language: the saved choice, else Hindi for a browser set to Hindi, else English.
   const saved = K.prefs().lang;
   const nav = (navigator.languages && navigator.languages[0]) || navigator.language || "";
