@@ -728,7 +728,7 @@
         hand.style.left = pos * 100 + "%";
         moodEl.classList.toggle("on", inside);
         bar.style.width = calm * 100 + "%";
-        U.trLabel(score, t.tally || "Calm: {c}% · {s} seconds left", { c: Math.round(calm * 100), s: Math.max(0, Math.ceil(LIMIT - s)) });
+        U.trLabel(score, t.tally || "Calm: {c}%", { c: Math.round(calm * 100), s: Math.max(0, Math.ceil(LIMIT - s)) });
         clock.set(LIMIT - s, LIMIT);
         if (calm >= 1) finish("win", t.wonLine || "The horse stands still, trembling, and lets you lay a hand on its neck.");
         else if (s >= LIMIT) finish(calm >= 0.7 ? "close" : "lose", calm >= 0.7 ? t.nearLine || "Nearly. The horse is quieter, but not yet still." : t.lostLine || "The horse pulls free and bolts across the yard.");
@@ -963,7 +963,7 @@
         me.style.left = painted ? "calc(" + shown * 100 + "% + " + Math.round((1 - shown) * 40) + "px)" : pos * 100 + "%"; // the painted figure starts fully on screen
         me.classList.toggle("lit", lit);
         susBar.style.width = sus * 100 + "%";
-        U.trLabel(score, t.tally || "Loads: {d} of {n} · Seen: {s} of {m} · {t} seconds", { d: trips, n: need, s: seen, m: lives, t: Math.max(0, Math.ceil(LIMIT - s)) });
+        U.trLabel(score, t.tally || "Loads: {d} of {n} · Seen: {s} of {m}", { d: trips, n: need, s: seen, m: lives, t: Math.max(0, Math.ceil(LIMIT - s)) });
         clock.set(LIMIT - s, LIMIT);
         if (trips >= need) finish("win", ["{d} loads carried, seen {s} times.", { d: trips, s: seen }]);
         else if (seen >= lives || s >= LIMIT) finish("lose", ["{d} loads carried, seen {s} times.", { d: trips, s: seen }]);

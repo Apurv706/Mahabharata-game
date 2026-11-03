@@ -642,7 +642,7 @@
       cv.addEventListener("pointerdown", (e) => { sx = e.clientX; sy = e.clientY; });
       cv.addEventListener("pointerup", (e) => { if (sx == null) return; const dx = e.clientX - sx, dy = e.clientY - sy; if (Math.max(Math.abs(dx), Math.abs(dy)) > 14) turn(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up")); sx = null; });
       const followers = () => snake.length - 1;
-      const tally = (s) => { score.textContent = K.tr(t.tally || "With you: {f} of {n} · Lost: {d} of {l} · {s} seconds", { f: followers(), n: need, d: dead, l: lives, s: Math.max(0, Math.ceil(LIMIT - s)) }); };
+      const tally = (s) => { score.textContent = K.tr(t.tally || "With you: {f} of {n} · Lost: {d} of {l}", { f: followers(), n: need, d: dead, l: lives, s: Math.max(0, Math.ceil(LIMIT - s)) }); };
       function crash(why) {
         dead++; flashT = 0.5; sfx("hit"); cue("bad");
         // The line breaks: two who were following scatter back into the field.
@@ -765,7 +765,7 @@
         svg.querySelectorAll(".hitring").forEach((el) => el.addEventListener("pointerdown", (e) => { e.preventDefault(); pick(+el.dataset.i); }));
       }
       const beats = (s) => Math.round((s || 0) * 1.2);
-      const tally = (s) => { if (mode === "last") { score.textContent = K.tr("Rings in line: {a} of 4 · Held for {n} heartbeats", { a: inLine(), n: beats(s) }); return; } score.textContent = K.tr(mode === "open" ? t.tally || "Rings in line: {a} of 4 · Turns: {m} · {s} seconds" : t.tally || "Rings in line: {a} of 4 · Hold for {s} more seconds", { a: gaps.filter((g) => g === gaps[0]).length, m: moves, s: Math.max(0, Math.ceil(LIMIT - s)) }); };
+      const tally = (s) => { if (mode === "last") { score.textContent = K.tr("Rings in line: {a} of 4 · Held for {n} heartbeats", { a: inLine(), n: beats(s) }); return; } score.textContent = K.tr(mode === "open" ? t.tally || "Rings in line: {a} of 4 · Turns: {m}" : t.tally || "Rings in line: {a} of 4 · Hold for {s} more seconds", { a: gaps.filter((g) => g === gaps[0]).length, m: moves, s: Math.max(0, Math.ceil(LIMIT - s)) }); };
       const pick = (i) => { sel = clamp(i, 0, 3); draw(); };
       const turn = (d) => {
         if (over) return;

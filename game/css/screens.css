@@ -1930,7 +1930,8 @@ svg .pr-hint { outline: none; filter: drop-shadow(0 0 6px #ffd680) drop-shadow(0
 .ftour .ft-cap { position: fixed; padding: 10px 14px; border-radius: 12px; background: rgba(var(--surface-rgb), 0.97); border: 1px solid var(--gold-line); color: var(--ink); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
 .ftour .ft-cap p { margin: 2px 0 4px; font-size: 16px; line-height: 1.35; }
 .ftour .ft-n, .ftour .ft-tap { font-size: 12px; color: var(--faint); }
-.ftour .ft-skip { position: fixed; right: max(16px, var(--sar)); top: max(12px, var(--sat)); min-height: 44px; min-width: 88px; z-index: 1; background: rgba(var(--surface-rgb), 0.95); }
+.ftour .ft-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ftour .ft-skip { min-height: 44px; min-width: 88px; }
 @media (prefers-reduced-motion: no-preference) {
   .ftour:not(.still) .ft-hole, .ftour:not(.still) .ft-cap { transition: top 0.3s ease, left 0.3s ease, width 0.3s ease, height 0.3s ease; }
 }

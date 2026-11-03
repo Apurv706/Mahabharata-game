@@ -58,5 +58,16 @@
  "Shout for a friend. Once a battle.": "मित्र को पुकारो। हर लड़ाई में एक बार।",
  "Withdraw: leave the fight. It has a cost.": "पीछे हटो: लड़ाई छोड़ो। इसकी कीमत है।",
  "Tap a foe's card, or his figure, to mark him for your soldiers.": "किसी शत्रु के कार्ड या उसकी आकृति को छुओ, ताकि तुम्हारे सैनिक उसी पर टूटें।",
- "Tap a foe's card, or his figure, to make him your target.": "किसी शत्रु के कार्ड या उसकी आकृति को छुओ, ताकि वह तुम्हारा निशाना बने।"
+ "Tap a foe's card, or his figure, to make him your target.": "किसी शत्रु के कार्ड या उसकी आकृति को छुओ, ताकि वह तुम्हारा निशाना बने।",
+ "Calm: {c}%": "शांति: {c}%",
+ "Loads: {d} of {n} · Seen: {s} of {m}": "खेप: {n} में से {d} · देखे गए: {m} में से {s}",
+ "Seen: {s} of {m}": "देखे गए: {m} में से {s}",
+ "Toward the river: {d} of {n} · Seen: {s} of {m}": "नदी की ओर: {n} में से {d} · देखे गए: {m} में से {s}",
+ "Messages through: {d} of {n} · Seen: {s} of {m}": "संदेश पहुँचे: {n} में से {d} · देखे गए: {m} में से {s}",
+ "With you: {f} of {n} · Lost: {d} of {l}": "साथ में: {n} में से {f} · खोए: {l} में से {d}",
+ "Rings in line: {a} of 4 · Turns: {m}": "सीध में घेरे: 4 में से {a} · चालें: {m}",
+ "Crossings: {d} of {n} · Seen: {s} of {m}": "पार किए: {n} में से {d} · देखे गए: {m} में से {s}",
+ "Set: {c}%": "बैठी: {c}%",
+ "Crew across: {c}%": "पार आया दल: {c}%",
+ "Brought through: {d} of {n} · Seen: {s} of {m}": "पार कराए: {n} में से {d} · देखे गए: {m} में से {s}"
 }

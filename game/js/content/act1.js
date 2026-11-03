@@ -121,12 +121,12 @@
   const TAG = {
     bhima: { attr: "grace", skill: "stealth", verb: "Creep", watch: "duryodhana", daylight: true, stage: "stage_lotus_garden", trips: 1, spots: 2, secs: 40,
       help: "Hold to creep along the hedge. Stop when Duryodhana looks your way.",
-      tally: "Seen: {s} of {m} · {t} seconds", spotted: "Duryodhana turns, and you freeze behind the hedge. His brothers point.", made: "You tag him!",
+      tally: "Seen: {s} of {m}", spotted: "Duryodhana turns, and you freeze behind the hedge. His brothers point.", made: "You tag him!",
       rules: "Creep up on Duryodhana along the hedge. Seen twice, and you are out.",
       stakes: ["You tag Duryodhana in front of everyone, and Bhima throws him in the pond.", "Duryodhana tags you out, and his brothers cheer."] },
     duryo: { attr: "grace", skill: "stealth", verb: "Run", watch: "bhima", daylight: true, stage: "stage_lotus_garden", trips: 1, spots: 2, secs: 40,
       help: "Hold to slip from bush to bush. Stop when Bhima looks your way.",
-      tally: "Seen: {s} of {m} · {t} seconds", spotted: "Bhima sees you and comes crashing through the lotuses. You dive back under the bushes.", made: "You touch the far wall!",
+      tally: "Seen: {s} of {m}", spotted: "Bhima sees you and comes crashing through the lotuses. You dive back under the bushes.", made: "You touch the far wall!",
       rules: "Get across the garden to the far wall. Seen twice, and you are in the pond.",
       stakes: ["You are the only one on your side Bhima never catches.", "Bhima catches you and throws you into the pond."] }
   };

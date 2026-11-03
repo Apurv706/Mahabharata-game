@@ -54,7 +54,7 @@
       show: [["hold", "Hold for a moment to move your hand toward the horse. Let go before you reach it."], ["stand", "Your hand drifts back by itself. Use that: hold, let go, hold."]] },
     sneak: { group: "stealth", name: "Moving unseen", partner: "teacher", who: { watch: "puppet" },
       trial: { attr: "grace", skill: "stealth", verb: "Move", rules: "Your teacher walks the far side with a lamp. Cross the ground twice, and do not be seen twice.",
-        tally: "Crossings: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "Across. Back you go, for another.", spotted: "Seen! You slip back into the shadow." },
+        tally: "Crossings: {d} of {n} · Seen: {s} of {m}", made: "Across. Back you go, for another.", spotted: "Seen! You slip back into the shadow." },
       tip: "Stop before the light reaches you, not when it does. When the lamp turns away, go.",
       show: [["sneak", "Watch the lamp-bearer stop and lift the lamp: that means he is about to turn."], ["walk", "Move while the light goes away from you, and stop well before it comes back."]] },
     herd: { group: "stealth", name: "Leading a line to safety", partner: "teacher",

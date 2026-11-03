@@ -902,7 +902,7 @@
     if (!steps.length) return;
     const still = !U.motion();
     const el = U.el('<div class="ftour' + (still ? " still" : "") + '" role="dialog" aria-modal="true" aria-label="' + U.esc(K.tr("How to fight")) + '"><div class="ft-hole"></div>' +
-      '<div class="ft-cap" aria-live="polite"><span class="ft-n"></span><p></p><span class="ft-tap"></span></div><button type="button" class="ghost ft-skip"></button></div>');
+      '<div class="ft-cap" aria-live="polite"><span class="ft-n"></span><p></p><div class="ft-foot"><span class="ft-tap"></span><button type="button" class="ghost ft-skip"></button></div></div></div>');
     document.body.appendChild(el);
     const hole = el.querySelector(".ft-hole"), cap = el.querySelector(".ft-cap"), skip = el.querySelector(".ft-skip");
     let i = -1, timer = null;
