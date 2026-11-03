@@ -68,13 +68,13 @@
   const needs = (n) => ["Needs {n} tapas", { n }];
   const push = (scene, choice) => { const sc = K.SCENES[scene]; if (sc && Array.isArray(sc.choices)) sc.choices.push(choice); };
   // At the ashram in the exile years: the two mantras, the vanishing, the rite.
-  push("a5_forest_boon", { id: "bala", t: "Ask the sages for the mantras against hunger and weariness", req: { tapas: 3, noFlag: "had_bala" }, locked: needs(3),
+  push("a5_forest_boon", { id: "bala", t: "Ask for the mantras against weariness", req: { tapas: 3, noFlag: "had_bala" }, locked: needs(3),
     // What the mantras actually add (an attribute already at 8 gains nothing), so exactly that is taken back.
     resolve: (S) => ({ attr: { might: 1, grace: 1 }, set: { balaUntil: 5, balaGain: { might: Math.min(1, 8 - S.attrs.might), grace: Math.min(1, 8 - S.attrs.grace) } } }),
     fx: { tapas: -3, boon: "bala", flag: "had_bala", journal: "The sages taught you Bala and Atibala. For a season you were never tired and never hungry." },
     hint: "Costs 3 tapas: +1 Might, +1 Grace until the war",
     text: "Two mantras, one for the morning and one for the night. The old sage makes you say them until he is satisfied, which takes four days." });
-  push("a5_forest_boon", { id: "rite", t: "Ask the sages to lift the curse on you", req: { tapas: 6, cursed: true }, locked: "Needs a curse to lift, and 6 tapas.",
+  push("a5_forest_boon", { id: "rite", t: "Ask them to lift your curse", req: { tapas: 6, cursed: true }, locked: "Needs a curse to lift, and 6 tapas.",
     fx: { tapas: -6, liftCurse: true }, hint: "Costs 6 tapas",
     text: "Seven nights of fire and fasting. On the last morning the oldest sage pours water over your head and says the thing that was waiting for you is waiting no longer." });
   // The vanishing comes from the Gandharvas (the ambush in the exile years), or from a naga.
@@ -190,7 +190,7 @@
     choices: [K.testChoice("w_naga", "heal", NAGA), { id: "no", t: "Leave him. The river people look after their own", fx: { duty: { conscience: -1 } } }] } }));
 
   // Other ways: a year serving a sage; a stolen temple offering; the shrine of light on the mountain.
-  push("a5_forest_boon", { id: "year", t: "Stay a whole year in the sage's service, and let the camp go on without you", req: { rep: ["sages", 4], noAstra: "vayavya" }, locked: "The sages do not know you yet.",
+  push("a5_forest_boon", { id: "year", t: "Serve the sage a whole year", req: { rep: ["sages", 4], noAstra: "vayavya" }, locked: "The sages do not know you yet.",
     fx: { tapas: 3, astraGrant: { id: "vayavya", from: "hermitage" }, rep: { pandava: -1 }, flag: "served_a_year", journal: "You served a sage for a year in the exile, and he gave you the mantra of the wind." },
     hint: "A year of your life: tapas +3, and a divine weapon", text: "A year of water carried and silence kept. On the last day the sage gives you the mantra of the wind, and tells you never to turn your back on a fight you chose." });
   const OFFERING = { t: "Go into the robber chief's house by night and bring it back", game: "sneak", hint: "A test of stealth",

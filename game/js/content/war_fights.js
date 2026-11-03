@@ -285,7 +285,7 @@
 
   // After a broken hold (command.js): carry a wounded man out, instead of only falling back with a scar.
   const broken = K.SCENES.hold_broken;
-  if (broken && !broken.choices.some((c) => c.id === "carry")) broken.choices.splice(1, 0, { id: "carry", t: "Carry a wounded man out of it", combat: "fs_carry", fx: mark("broken", "carry"), hint: "A test of strength under the arrows" });
+  if (broken && !broken.choices.some((c) => c.id === "carry")) broken.choices.splice(1, 0, { id: "carry", t: "Carry a wounded man out of it", combat: "fs_carry", fx: mark("broken", "carry"), hint: "A test of strength" });
 
   // ---------- Where they come ----------
   const before = (id, list, after) => {

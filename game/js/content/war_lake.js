@@ -38,7 +38,7 @@
     const P = (K.PATHS && K.PATHS[S.path]) || { stat: "might", skill: "mace" };
     return K.attr(P.stat, S) + (S.skills[P.skill] || 0) + K.merits({ attr: P.stat, skill: P.skill }, S).n < K.PERIL_MIN;
   };
-  const DANGER = "Danger: failing could cost your life", HOLD = "Won by standing, not by killing";
+  const DANGER = "Danger: failing could cost your life", HOLD = "Won by standing";
 
   // ---------- The naga who answers once ----------
   K.UNITS.naga = () => ({ name: "Ulupi's naga", hp: 130, atk: 11, def: 3, abilities: ["strike", "heavy"], person: "naga" });

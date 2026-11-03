@@ -24,15 +24,15 @@
       id: "a5_child", act: 5, age: 31, art: "origin", place: (S) => K.homePlace(S),
       title: "Vasu",
       body: (S) => [
-        S.spouse ? "Your son Vasu was born two years before the dice game. He is three now, and already climbing everything." : "Two years before the dice game you took in a boy whose parents died of fever. His name is Vasu. He is three now, and already climbing everything.",
+        S.spouse ? "Your son Vasu was born two years before the dice game. He is three now, and already climbing everything." : "You took in an orphan boy, Vasu. He is three now.",
         "How will you raise him?"
       ],
       choices: [
-        { id: "warrior", t: "As a warrior. The world he will grow up in needs them", fx: { set: { child: "vasu" }, setBond: { vasu: 6 }, duty: { family: 1 }, flag: "vasu_warrior", journal: "You raised Vasu to be a warrior." },
+        { id: "warrior", t: "As a warrior", fx: { set: { child: "vasu" }, setBond: { vasu: 6 }, duty: { family: 1 }, flag: "vasu_warrior", journal: "You raised Vasu to be a warrior." },
           text: "By six he can hold a wooden sword the right way round. By eight he hits back. You are prouder of it than you say." },
-        { id: "gentle", t: "To be kind before he is brave", fx: { set: { child: "vasu" }, setBond: { vasu: 7 }, duty: { family: 1, conscience: 1 }, flag: "vasu_gentle", journal: "You raised Vasu to be kind before he was brave." },
+        { id: "gentle", t: "To be kind first", fx: { set: { child: "vasu" }, setBond: { vasu: 7 }, duty: { family: 1, conscience: 1 }, flag: "vasu_gentle", journal: "You raised Vasu to be kind before he was brave." },
           text: "He brings home every hurt bird and stray dog in the village. When the other boys fight, he is the one who stops them." },
-        { id: "craft", t: "In your own craft, so he can earn a living without a sword", fx: { set: { child: "vasu" }, setBond: { vasu: 6 }, duty: { family: 2 }, flag: "vasu_craft", journal: "You taught Vasu your own craft." },
+        { id: "craft", t: "In your own craft", fx: { set: { child: "vasu" }, setBond: { vasu: 6 }, duty: { family: 2 }, flag: "vasu_craft", journal: "You taught Vasu your own craft." },
           text: "He sits at your elbow while you work, and by ten his hands know half of what yours do. He will never need a sword to eat." }
       ],
       next: "s_exile"
@@ -43,16 +43,16 @@
       id: "a5_forest_boon", when: forest, skipTo: "a5_court_raid", travel: "You follow the Pandavas into exile, north to the hermitages.",
       act: 5, age: 33, place: "An ashram on the upper Ganga", art: "scene_ashram", plate: ["#3e8c72", "#6f8fd8"], caption: "A hermitage in the mountains",
       title: "A season at the ashram",
-      body: ["Arjuna has gone north alone to seek divine weapons from the gods. The rest of the camp moves between hermitages. You spend a season at an ashram where the sages will teach anyone patient enough to sit still."],
+      body: ["You spend a season at a forest ashram. What do you ask of it?"],
       choices: [
-        { id: "astra", t: "Practise penance and ask for a divine weapon",
+        { id: "astra", t: "Do penance for a divine weapon",
           check: { attr: "wisdom", skill: "lore", dc: 8,
             pass: { fx: { boon: "astra", astraFrom: "penance", journal: "After a season of penance you were granted a divine weapon." }, text: "On the last night of the season, a voice in the fire gives you a mantra. You will be able to call an astra once in any battle. You will also be responsible for where it lands." },
             fail: { fx: { attr: { wisdom: 1 } }, text: "No weapon comes. But you leave the ashram quieter and clearer than you arrived." } } },
-        { id: "heal", t: "Learn from the ashram's healers", fx: { boon: "healing_hands", skill: { healing: 1 }, journal: "The ashram's healers taught you their remedies." } },
-        { id: "serve", t: "Serve the sages: carry water, sweep, keep silent", req: { any: [{ flag: "kind_to_sage" }, { rep: ["sages", 5] }] }, locked: "The sages do not know you yet.", fx: { boon: "foresight", rep: { sages: 1 }, journal: "An old sage blessed you with foresight." },
+        { id: "heal", t: "Learn from the healers", fx: { boon: "healing_hands", skill: { healing: 1 }, journal: "The ashram's healers taught you their remedies." } },
+        { id: "serve", t: "Serve the sages", req: { any: [{ flag: "kind_to_sage" }, { rep: ["sages", 5] }] }, locked: "The sages do not know you yet.", fx: { boon: "foresight", rep: { sages: 1 }, journal: "An old sage blessed you with foresight." },
           text: "On the last day, the oldest sage touches your forehead. \"You were kind to one of us once, on a dusty road,\" he says. You never told anyone." },
-        { id: "hunt", t: "Hunt for the camp, which is always hungry", fx: { skill: { archery: 1 }, rep: { pandava: 1 }, bond: { bhima: 1 } } }
+        { id: "hunt", t: "Hunt for the camp", fx: { skill: { archery: 1 }, rep: { pandava: 1 }, bond: { bhima: 1 } } }
       ],
       next: "a5_jayadratha"
     },
@@ -60,12 +60,12 @@
       id: "a5_jayadratha", when: forest, skipTo: "a5_court_raid",
       act: 5, age: 35, canon: true, place: "The Kamyaka forest", travel: "The Pandavas' camp moves to the Kamyaka forest, and you move with it.", art: "scene_jayadratha", plate: ["#3e8c72", "#c0472f"], caption: "An empty hermitage",
       title: "Jayadratha",
-      witness: ["While the Pandavas are out hunting, King Jayadratha of Sindhu, Duryodhana's brother-in-law, finds Draupadi alone at the hermitage and carries her off in his chariot."],
-      body: ["You are the first to hear her shout. Jayadratha's guards are covering his escape."],
+      witness: ["King Jayadratha finds Draupadi alone at the hermitage and carries her off in his chariot."],
+      body: ["You hear her shout first."],
       choices: [
         { id: "chase", t: "Go after the chariot", combat: "e_jayadratha" },
         { id: "run", t: "Run to find Bhima and Arjuna", fx: { bond: { bhima: 1 }, rep: { pandava: 1 } }, text: "You find them by the river and point the way. Bhima is already running before you finish." },
-        { id: "guard", t: "Guard Dhaumya and the hermitage in case they come back", fx: { rep: { sages: 1 } } }
+        { id: "guard", t: "Guard the hermitage", fx: { rep: { sages: 1 } } }
       ],
       after: ["The Pandavas catch Jayadratha. Bhima shaves his head in five tufts as a mark of shame, and Yudhishthira lets him go. Jayadratha goes straight into the mountains to pray for a boon: one day on which he can hold back every Pandava except Arjuna."],
       next: "a5_yaksha"
@@ -75,12 +75,11 @@
       act: 5, age: 42, canon: true, place: "A lake in the forest", to: "dvaita", travel: "The camp moves on to the Dvaita forest. The dry season comes.", art: "scene_lake", plate: ["#6f8fd8", "#16131f"], caption: "A still lake in the heat",
       title: "The lake of questions",
       witness: [
-        "In the twelfth year, the brothers grow desperate with thirst. One by one, Nakula, Sahadeva, Arjuna and Bhima go to a lake, ignore a voice that tells them to answer its questions first, drink, and fall down as if dead.",
-        "Yudhishthira comes last, and agrees to answer."
+        "At a lake, a voice tells the thirsty brothers to answer its questions before they drink. Four drink anyway and fall as if dead."
       ],
-      body: ["You came with Bhima. Your own throat is cracked with thirst, and the water is right there."],
+      body: ["You are as thirsty as they were."],
       choices: [
-        { id: "drink", t: "Drink. You cannot think for thirst", fx: { attr: { might: -1 } }, text: "Darkness, and then you are lying on the bank in the evening, alive, with a strange heaviness in your limbs that never quite leaves." },
+        { id: "drink", t: "Drink", fx: { attr: { might: -1 } }, text: "Darkness, and then you are lying on the bank in the evening, alive, with a strange heaviness in your limbs that never quite leaves." },
         Object.assign(K.testChoice("a5_yaksha", "answer", K.YAKSHA), { noAfter: false })
       ],
       after: ["Pleased with Yudhishthira's answers, the voice gives back his brothers' lives. It was Dharma himself, testing his son."],
@@ -89,10 +88,10 @@
     {
       id: "a5_yaksha_again", when: K.retryWhen("a5_yaksha", ["answer"]), skipTo: "a5_charu",
       act: 5, age: 42, place: "A lake in the forest", to: "dvaita", art: "stage_forest_lake", caption: "The voice waits",
-      title: "The voice waits", body: ["The voice in the water is still waiting. So is your thirst. You will not be asked a third time."],
+      title: "The voice waits", body: ["The voice is still waiting. There will not be a third time."],
       choices: [
         Object.assign(K.retryChoice("a5_yaksha", "answer", K.YAKSHA), { trial: Object.assign({}, K.YAKSHA.trial, { stakes: K.YAKSHA.retryStakes, rounds: K.YAKSHA_AGAIN }) }),
-        { id: "drink", t: "Drink, and stop thinking", fx: { attr: { might: -1 } }, text: "Darkness, and then you are lying on the bank in the evening, alive, with a strange heaviness in your limbs that never quite leaves." }
+        { id: "drink", t: "Drink", fx: { attr: { might: -1 } }, text: "Darkness, and then you are lying on the bank in the evening, alive, with a strange heaviness in your limbs that never quite leaves." }
       ],
       next: "a5_charu"
     },
@@ -102,12 +101,12 @@
       id: "a5_court_raid", when: court, skipTo: "a5_own_life",
       act: 5, age: 33, canon: true, place: "The edge of the Dvaita forest", travel: "Duryodhana rides out to the Dvaita forest to count his cattle, and to gloat. The court goes with him.", art: "scene_cattle", plate: ["#d4a84b", "#3e8c72"], caption: "Royal tents near the forest",
       title: "The cattle count",
-      witness: ["Duryodhana takes his court to the forest, saying it is to count the royal herds. Everyone knows it is to show off in front of the exiled Pandavas. A band of Gandharvas, forest warriors who serve no king, ambushes the royal camp. Karna's line breaks."],
+      witness: ["Duryodhana rides out to gloat over the exiled Pandavas. Gandharvas ambush his camp, and Karna's line breaks."],
       body: ["Duryodhana is being dragged off in chains."],
       choices: [
         { id: "fight", t: "Fight the Gandharvas", combat: "e_gandharva" },
-        { id: "pandavas", t: "Run to the Pandavas' camp for help", fx: { rep: { pandava: 1 }, bond: { yudhishthira: 1, duryodhana: -1 } }, text: "Yudhishthira hears you out and sends Arjuna and Bhima at once. \"He is still our cousin,\" he says." },
-        { id: "flee", t: "Get out with the rest of the court", tags: ["retreat"], fx: { duty: { court: -1 } } }
+        { id: "pandavas", t: "Run to the Pandavas for help", fx: { rep: { pandava: 1 }, bond: { yudhishthira: 1, duryodhana: -1 } }, text: "Yudhishthira hears you out and sends Arjuna and Bhima at once. \"He is still our cousin,\" he says." },
+        { id: "flee", t: "Get out", tags: ["retreat"], fx: { duty: { court: -1 } } }
       ],
       after: ["Arjuna and Bhima free Duryodhana on Yudhishthira's orders. Rescued by his enemies, Duryodhana tries to starve himself to death from shame. His friends talk him out of it, and he comes home hating the Pandavas more than ever."],
       next: "a5_vikarna"
@@ -116,13 +115,13 @@
       id: "a5_court_armour", when: court, skipTo: "a5_own_life",
       act: 5, age: 38, canon: true, place: "The river at dawn", to: "hastinapura", art: "scene_armour", plate: ["#e5872e", "#6f8fd8"], caption: "Karna at his morning prayers",
       title: "Karna's armour",
-      witness: ["Karna was born with armour and earrings that make him almost impossible to kill. Every morning after his prayers to the sun, he gives anyone whatever they ask. One morning an old brahmin asks for the armour. Everyone says it is Indra, Arjuna's father, in disguise."],
-      body: (S) => [S.bonds.karna >= 6 ? { memory: "You have known Karna for most of your life. You know he already knows." } : "You are at the river with the morning crowd."],
+      witness: ["Karna gives whatever he is asked after his morning prayers. Today an old brahmin, said to be Indra in disguise, asks for the armour he was born with."],
+      body: (S) => [S.bonds.karna >= 6 ? { memory: "You have known Karna for most of your life. You know he already knows." } : null],
       choices: [
-        { id: "warn", t: "Push through and warn Karna it is a trick", fx: { bond: { karna: 2 }, memory: ["karna", "You tried to save his armour."] },
+        { id: "warn", t: "Warn Karna it is a trick", fx: { bond: { karna: 2 }, memory: ["karna", "You tried to save his armour."] },
           text: "\"I know who he is,\" Karna says quietly. \"I gave my word to give what is asked.\" He cuts the armour from his own body, and the brahmin gives him a spear in return that can kill anyone, once." },
         { id: "watch", t: "Watch in silence", fx: {} },
-        { id: "astra", t: "Ask {teacher} to teach you the weapon you were promised", req: { teacher: ["drona", "kripa"], duty: ["teacher", 5] }, locked: "Your teacher must think you have earned it.", fx: { boon: "astra", astraFrom: "teacher", duty: { teacher: 1 }, journal: "{teacher} taught you to call a divine weapon." },
+        { id: "astra", t: "Ask {teacher} for the promised weapon", req: { teacher: ["drona", "kripa"], duty: ["teacher", 5] }, locked: "Your teacher must think you have earned it.", fx: { boon: "astra", astraFrom: "teacher", duty: { teacher: 1 }, journal: "{teacher} taught you to call a divine weapon." },
           text: "{teacher} weighs you up in silence, then teaches you the mantra in a whisper. \"Never against someone who cannot fight back,\" he says." }
       ],
       next: "a5_charu"
@@ -134,7 +133,7 @@
       act: 5, age: 33, art: "origin", place: (S) => K.homePlace(S),
       title: "A life of your own",
       body: (S) => [
-        "Far from the courts, the years are your own. Vasu grows. Your hair starts to grey.",
+        "Far from the courts, the years are your own.",
         S.flags.includes("debt_refused") ? { memory: "Sudatta the moneylender has been patient. Now his men have fenced off your family's field." } : null,
         "How do you make your living?"
       ],
@@ -145,7 +144,7 @@
           text: "Within a year there is a line at your door every morning, and people from three villages away know your name." },
         { id: "teach", t: "Teach the village children to fight", fx: { skill: { [ "mace" ]: 1 }, attr: { might: 1 }, rep: { common: 1 } },
           text: "Every dawn a line of children with sticks waits in the square. When raiders come through the next winter, the village is ready for them." },
-        { id: "sudatta", t: "Take your field back from Sudatta's men", req: { flag: "debt_refused" }, combat: "e_sudatta" }
+        { id: "sudatta", t: "Take your field back from Sudatta", req: { flag: "debt_refused" }, combat: "e_sudatta" }
       ],
       next: "a5_forge"
     },
@@ -153,14 +152,14 @@
       id: "a5_own_crisis", when: own, skipTo: "a5_charu",
       act: 5, age: 38, art: "origin", place: (S) => K.homePlace(S),
       title: "The fever year",
-      body: ["A fever comes up the river in the dry season. Half the village is sick, the granary is low, and the nearest king is busy with his own troubles."],
+      body: ["A fever comes up the river. Half the village is sick, and the granary is low."],
       choices: [
         { id: "tend", t: "Tend the sick yourself",
           check: { attr: "wisdom", skill: "healing", dc: 8,
             pass: { fx: { rep: { common: 3 }, duty: { conscience: 1 }, journal: "You nursed your village through the fever year." }, text: "You lose eleven people. Without you it would have been many more." },
             fail: { fx: { rep: { common: 1 } }, text: "You do everything you can. The fever takes its own count." } } },
-        { id: "grain", t: "Ride to the next kingdom and come back with grain", fx: { skill: { chariot: 1 }, rep: { common: 2 } } },
-        { id: "mauni", t: "Go into the forest to find Mauni, your old teacher", req: { teacher: "hermit", noFlag: "betrayed_hermit" }, locked: "", fx: { boon: "astra", astraFrom: "mauni", rep: { common: 1 }, journal: "Mauni gave you medicine for the village, and a divine weapon for what was coming." },
+        { id: "grain", t: "Ride for grain", fx: { skill: { chariot: 1 }, rep: { common: 2 } } },
+        { id: "mauni", t: "Find Mauni in the forest", req: { teacher: "hermit", noFlag: "betrayed_hermit" }, locked: "", fx: { boon: "astra", astraFrom: "mauni", rep: { common: 1 }, journal: "Mauni gave you medicine for the village, and a divine weapon for what was coming." },
           text: "Mauni is older, and just as silent. He gives you a bundle of roots for the fever, and then, before you leave, a mantra. \"You kept my secret,\" he says. \"Keep this one too.\"" }
       ],
       next: "a5_charu"
@@ -172,13 +171,13 @@
       act: 5, art: "scene_smith", place: (S) => K.homePlace(S), caption: "A forge at dawn",
       title: "The old smith",
       body: (S) => [
-        "A boy brings word from home. Old Kesava, Charu's father, the smith who first put a hammer in your hands, is dying.",
-        S.spouse === "charu" ? "Charu is already packing, and does not ask whether you will come. Charu never asks." : "Charu has not sent for you. Charu never asks for anything."
+        "Word comes from home: Charu's father, old Kesava, is dying.",
+        S.spouse === "charu" ? "Charu is already packing, and does not ask whether you will come. Charu never asks." : "Charu has not sent for you."
       ],
       choices: [
-        { id: "go", t: "Go home and sit with Charu until the end", fx: { bond: { charu: 2 }, duty: { family: 1 }, flag: "sat_with_kesava", memory: ["charu", "You came home when my father was dying."] },
+        { id: "go", t: "Go home to Charu", fx: { bond: { charu: 2 }, duty: { family: 1 }, flag: "sat_with_kesava", memory: ["charu", "You came home when my father was dying."] },
           text: "Old Kesava knows you at once. On his last morning he puts his hammer in your hands and says nothing at all. Charu holds the lamp." },
-        { id: "send", t: "Send word that you cannot leave", fx: { bond: { charu: -2 }, memory: ["charu", "You did not come when my father died."] },
+        { id: "send", t: "Send word you cannot come", fx: { bond: { charu: -2 }, memory: ["charu", "You did not come when my father died."] },
           text: "Charu's answer comes back with the same boy, one line long. \"I know.\"" }
       ],
       next: "s_late"
@@ -189,30 +188,28 @@
       id: "a5_matsya", act: 5, age: 43, canon: true, art: "scene_virata", place: "King Virata's court, Matsya", travel: "In the thirteenth year, the road leads to King Virata's court in Matsya.", caption: "The lake country of Matsya",
       title: "The hidden year",
       witness: [
-        "For the thirteenth year the Pandavas must live unrecognised. They take service at King Virata's court: Yudhishthira as a dice master, Bhima as a cook, Arjuna as Brihannala, a teacher of dance, Draupadi as a queen's maid.",
-        "When the king's commander Kichaka will not leave Draupadi alone, Bhima kills him one night in the dancing hall.",
-        "With Kichaka dead, the Kauravas raid Matsya's cattle. Young Prince Uttara rides out to stop them, with the dance teacher Brihannala as his charioteer."
+        "In their thirteenth year the Pandavas hide at King Virata's court, Arjuna as Brihannala, a dance teacher. Now the Kauravas raid Virata's cattle."
       ],
       // Where you are when the raid comes depends on the road you took (K.raidGroup): the Pandavas'
       // people are in Matsya, the Kuru court is called to ride, and everyone else hears it from afar.
       body: (S) => {
         const g = K.raidGroup(S);
         if (g === "matsya") return [S.origin === "matsya" ? { memory: "This is your home. Those are your neighbours' herds." } : "You are in Matsya when the raid comes. You have been here most of the year, quietly, near the people you followed into exile."];
-        if (g === "kuru") return ["Duryodhana calls every sword at court to ride on Matsya's herds. If the Pandavas are hiding there, he says, they will come out to save the cattle, and be found before the year is up.",
+        if (g === "kuru") return ["Duryodhana calls every sword at court to ride on Matsya, to draw the hidden Pandavas out.",
           S.origin === "matsya" ? { memory: "Matsya is your homeland. Those are your neighbours' herds." } : null];
-        return ["The news of the raid reaches you late, from a traveller who saw the dust. Here, the same week brings trouble of its own."];
+        return ["You hear of the raid late. The same week brings trouble here too."];
       },
       choices: [
-        { id: "defend", t: "Ride out with Prince Uttara to save the herds", req: (S) => K.raidGroup(S) === "matsya", combat: "e_cattle" },
+        { id: "defend", t: "Ride out with Prince Uttara", req: (S) => K.raidGroup(S) === "matsya", combat: "e_cattle" },
         { id: "raid", t: "Ride with Duryodhana against Matsya", req: (S) => K.raidGroup(S) === "kuru", combat: "e_cattle_k" },
-        { id: "refuse", t: "Refuse to ride against a kingdom that has done you no wrong", req: (S) => K.raidGroup(S) === "kuru", hint: "Duryodhana does not forgive a refusal",
+        { id: "refuse", t: "Refuse to ride", req: (S) => K.raidGroup(S) === "kuru",
           fx: { rep: { kuru: -2 }, bond: { duryodhana: -2 }, duty: { court: -2, conscience: 2 }, flag: ["refused_raid", "imprisoned"], memory: ["duryodhana", "You refused to ride with him against Matsya."], journal: "You refused to ride against Matsya. Duryodhana had you thrown in the prison yard." },
           text: "The hall goes quiet. Duryodhana looks at you, then smiles. \"Then you can wait for us here,\" he says. His guards are already moving." },
-        { id: "secret", t: "Recognise Brihannala, and keep the secret", req: (S) => K.raidGroup(S) === "matsya",
+        { id: "secret", t: "Recognise Brihannala, and keep quiet", req: (S) => K.raidGroup(S) === "matsya",
           check: { attr: "wisdom", skill: "stealth", dc: 8,
             pass: { fx: { bond: { arjuna: 2 }, flag: "kept_arjuna_secret", journal: "You recognised Arjuna in Matsya and kept his secret." }, text: "You know that walk, even in bangles. When your eyes meet, Arjuna puts a finger to his lips. You say nothing to anyone." },
             fail: { fx: {}, text: "Brihannala is just a dance teacher to you. Later you will feel a fool." } } },
-        { id: "home", t: "Leave Matsya's troubles to Matsya. There is trouble enough at home", req: (S) => K.raidGroup(S) === "local" },
+        { id: "home", t: "Stay home", req: (S) => K.raidGroup(S) === "local" },
         { id: "stay", t: "Stay out of it", req: (S) => K.raidGroup(S) === "matsya" }
       ],
       after: ["Brihannala is Arjuna. He takes up his bow Gandiva, defeats the whole Kaurava force alone and drives them home. The thirteen years are over. Arjuna's son Abhimanyu marries Virata's daughter Uttara."],
@@ -223,17 +220,16 @@
       act: 5, age: 44, canon: true, place: "The river at dusk", to: "hastinapura", art: "scene_birth", plate: ["#e5872e", "#16131f"], caption: "The river where a basket once floated",
       title: "The secret of Karna's birth",
       witness: [
-        "Krishna meets Karna before the war and tells him the truth: he is Kunti's firstborn son, born before her marriage, set adrift on the river. He is the eldest Pandava. If he changes sides, he will be king.",
-        "Karna refuses. Duryodhana stood by him when no one else would, and he will not leave him now."
+        "Krishna tells Karna the truth: he is Kunti's firstborn, the eldest Pandava. Karna will not leave Duryodhana."
       ],
       body: (S) => [
         S.flags.includes("left_arena") ? { memory: "You have known about the basket on the river since you were seventeen. Karna never knew you knew." } : { memory: "Karna tells you all of it that night. He has not told anyone else." }
       ],
       choices: [
-        { id: "tell", t: "Tell Karna you have always known, and that it changes nothing for you", req: { flag: "left_arena" }, fx: { bond: { karna: 2 }, memory: ["karna", "You knew who he was all along, and stayed his friend."] },
+        { id: "tell", t: "Tell him it changes nothing", req: { flag: "left_arena" }, fx: { bond: { karna: 2 }, memory: ["karna", "You knew who he was all along, and stayed his friend."] },
           text: "Karna laughs, for the first time in weeks. \"Then you are the only one in the world who has not changed their mind about me today.\"" },
-        { id: "urge", t: "Urge him to take the crown and stop the war", fx: { bond: { karna: -1 }, duty: { conscience: 1 } }, text: "\"And be remembered as the man who betrayed his only friend for a throne?\" he says. \"No.\"" },
-        { id: "stand", t: "Tell him you will stand with him, whatever he decides", fx: { bond: { karna: 2 }, flag: "pledged_to_karna" } }
+        { id: "urge", t: "Urge him to take the crown", fx: { bond: { karna: -1 }, duty: { conscience: 1 } }, text: "\"And be remembered as the man who betrayed his only friend for a throne?\" he says. \"No.\"" },
+        { id: "stand", t: "Stand with him, whatever he decides", fx: { bond: { karna: 2 }, flag: "pledged_to_karna" } }
       ],
       after: ["Kunti comes to Karna at the river and asks him herself. He promises her she will still have five sons when the war ends: he will kill no Pandava except Arjuna."],
       next: "a5_side"
@@ -242,21 +238,20 @@
       id: "a5_side", act: 5, age: 44, canon: true, art: "scene_envoy", place: "Hastinapura", travel: "Krishna comes to Hastinapura as the Pandavas' envoy, and the whole kingdom gathers to hear him.", caption: "Thirteen years, gone",
       title: "Not a needle's point",
       witness: [
-        "The Pandavas ask for their kingdom back. When that is refused, they ask for five villages. Krishna goes to Hastinapura himself to plead for peace.",
-        "Duryodhana says he will not give them as much land as the point of a needle can cover. Both sides gather their armies at Kurukshetra."
+        "Duryodhana will not give the Pandavas even five villages. Both sides gather at Kurukshetra."
       ],
       body: (S) => [
         S.teacher === "balarama" ? { memory: "Balarama has gone on pilgrimage rather than fight. He asked you to do the same." } : null,
         S.child === "vasu" && !S.dead.includes("vasu") ? "Vasu is sixteen. He will follow wherever you go." : null,
         spouseView(S) ? { memory: spouseView(S).line } : null,
-        "This is the most important decision of your life."
+        "Which side are you on?"
       ],
       choices: [
         { id: "pandava", t: "Fight for the Pandavas", fx: (S) => withSpouse(S, "pandava", { set: { side: "pandava" }, rep: { pandava: 2 }, duty: { court: S.court === "hastinapura" ? -4 : 1, teacher: S.teacher === "balarama" ? -4 : 0 }, journal: "You chose to fight for the Pandavas." }) },
-        { id: "kaurava", t: "Fight for the Kuru throne under Duryodhana", fx: (S) => withSpouse(S, "kaurava", { set: { side: "kaurava" }, rep: { kuru: 2 }, duty: { court: S.court === "indraprastha" ? -4 : 1, teacher: S.teacher === "balarama" ? -4 : 0 }, journal: "You chose to fight for Duryodhana and the Kuru throne." }) },
-        { id: "neither", t: "Refuse to fight. Serve in the healers' tents, which take in both sides", fx: (S) => withSpouse(S, "neutral", { set: { side: "neutral" }, rep: { sages: 2, common: 1 }, skill: { healing: 1 }, journal: "You refused to fight, and went to serve in the healers' tents." }) },
+        { id: "kaurava", t: "Fight for Duryodhana", fx: (S) => withSpouse(S, "kaurava", { set: { side: "kaurava" }, rep: { kuru: 2 }, duty: { court: S.court === "indraprastha" ? -4 : 1, teacher: S.teacher === "balarama" ? -4 : 0 }, journal: "You chose to fight for Duryodhana and the Kuru throne." }) },
+        { id: "neither", t: "Refuse to fight; serve the healers", fx: (S) => withSpouse(S, "neutral", { set: { side: "neutral" }, rep: { sages: 2, common: 1 }, skill: { healing: 1 }, journal: "You refused to fight, and went to serve in the healers' tents." }) },
         // A secret you hold can be spent. This one cannot change the story, and the story makes sure of it.
-        { id: "secret", t: "Go to Arjuna and tell him who Karna really is", req: (S) => (S.flags.includes("left_arena") || S.seen.includes("a5_karna_secret")) && !S.flags.includes("tried_secret"),
+        { id: "secret", t: "Tell Arjuna who Karna is", req: (S) => (S.flags.includes("left_arena") || S.seen.includes("a5_karna_secret")) && !S.flags.includes("tried_secret"),
           fx: { flag: "tried_secret", bond: { krishna: 1 }, memory: ["krishna", "You nearly told Arjuna the truth about Karna. Krishna asked you not to."], journal: "You set out to tell Arjuna the truth about Karna. Krishna stopped you on the road." },
           text: "Krishna is waiting on the road to Arjuna's tent, as if he knew you would come. \"Not from you,\" he says gently. \"If Arjuna learns it now, he will never lift his bow against his brother, and Karna has already chosen. Let him keep his choice.\" He holds your eyes until you nod.",
           hint: "A secret you could spend", next: "a5_side" }

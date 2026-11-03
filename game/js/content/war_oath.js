@@ -77,7 +77,7 @@
   Object.assign(K.COMMAND_FIGHT_BG, { oath_arjuna_12: "fight_arjuna_chariot", oath_arjuna_16: "fight_arjuna_chariot", oath_king_hold: "fight_war_chariot" });
 
   const holdChoices = (enc) => [
-    { id: "hold", t: "Hold, as you swore", combat: enc, hint: "Won by standing, not by killing" },
+    { id: "hold", t: "Hold, as you swore", combat: enc, hint: "Won by standing" },
     { id: "withdraw", t: "Pull your chariot out of his road", tags: WITHDRAW, fx: { flag: "oath_withdrew" },
       text: "You turn your horses. The sworn men on either side of you watch you go, and close the gap without a word." }
   ];
@@ -140,7 +140,7 @@
       id: "oath_king", act: 6, age: 44, war: true, away: true, art: "fight_war_chariot", place: "Kurukshetra · day 12", caption: "Drona through the gap", title: "The king's chariot",
       body: ["The crescent is broken where you stood. Drona's chariots pour through the gap toward its heart, where Yudhishthira is."],
       choices: [
-        { id: "hold", t: "Get to the king's chariot and hold", combat: "oath_king_hold", hint: "Won by standing, not by killing" },
+        { id: "hold", t: "Get to the king's chariot and hold", combat: "oath_king_hold", hint: "Won by standing" },
         { id: "back", t: "Fall back to the second line", tags: ["retreat"], fx: { duty: { court: -1 } }, text: "You fall back with the broken horn. Others reach the king before you, or do not." }
       ],
       next: "a6_wheel"

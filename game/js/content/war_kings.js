@@ -197,7 +197,7 @@
       title: "The king falls",
       body: (S) => ["You are thirty paces off when Drona's arrows find the two old kings, one after the other. Drupada falls, then Virata, and the white parasols go down in the dust. Drona's chariot turns away toward whatever is next in its way.",
         ["{who} is dead when you reach him. The arrows are still coming.", { who: KP(S).who }]],
-      choices: [{ id: "carry", t: "Carry him off the field under the arrows", game: "steady", hint: "A test of strength under the arrows",
+      choices: [{ id: "carry", t: "Carry him off the field under the arrows", game: "steady", hint: "A test of strength",
         trial: { attr: "might", skill: "mace", stage: "fight_war_field", verb: "Carry", secs: 16,
           help: "Hold to take his weight; let go when you stagger. Keep your feet over the glow until you reach the line.", tally: "Back to the line: {c}% · {s} seconds",
           wonLine: "You lay him down behind your own line.", nearLine: "Ten paces short, an arrow takes you in the shoulder.", lostLine: "An arrow takes you in the shoulder, and you go down under him.",

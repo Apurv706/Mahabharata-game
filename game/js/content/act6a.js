@@ -23,7 +23,7 @@
   // On the eve of the war, a company is not handed out: the army's commander (Bhishma for the
   // Kauravas, Dhrishtadyumna for the Pandavas) sees you set one in the day's array first.
   // A warrior does not hand his life to a driver he has not seen drive.
-  const CHARIOT = { t: "Drive a chariot for a warrior who needs one", req: { side: ["pandava", "kaurava"], skill: ["chariot", 2] }, locked: "You need some skill with a chariot.", game: "race", hint: "He will ride with you once before he decides",
+  const CHARIOT = { t: "Drive a warrior's chariot", req: { side: ["pandava", "kaurava"], skill: ["chariot", 2] }, locked: "You need some skill with a chariot.", game: "race", hint: "He will try you first",
     trial: { attr: "grace", skill: "chariot", kind: "war", stage: "stage_war_road", vehicle: "chariot", obstacles: ["rock", "wreck"], hull: 3, speed: 3.2,
       tally: "Distance: {d}% · Hits: {h} of {l}", bump: "A wheel catches, and the old warrior grabs the rail.", help: "Steer between the carts and the stakes: up and down, or the buttons.",
       rules: "An old warrior whose driver was killed in a raid will ride with you once, at dusk, along the road behind the lines: carts, stakes, tethered horses. Bring him to the end of it without a wheel touching anything.",
@@ -32,8 +32,8 @@
     win: { fx: { flag: "role_chariot", skill: { chariot: 1 }, journal: "On the eve of the war an old warrior rode with you once behind the lines, and chose you as his driver." }, text: "You bring the chariot to a stop at the end of the road. He climbs down, slowly. \"First light,\" he says." },
     lose: { fx: {}, text: "A wheel clips a cart, and the old warrior nearly goes over the rail. He climbs down without a word." },
     retryLose: { penalty: 1, fx: { flag: ["role_front", "driver_refused"], journal: "On the eve of the war you were not chosen as a driver. You fought in the front line." }, text: "He finds another driver before the conches sound. You take a spear and find a place in the front line." } };
-  const COMMAND = { t: "Ask for a company to command", req: { side: ["pandava", "kaurava"], any: [{ path: "strategist" }, { attr: ["command", 4] }] },
-    locked: "You need a strategist's training or a commander's presence.", game: "formation", hint: "The commander will test you first",
+  const COMMAND = { t: "Command a company", req: { side: ["pandava", "kaurava"], any: [{ path: "strategist" }, { attr: ["command", 4] }] },
+    locked: "You need a strategist's training or a commander's presence.", game: "formation", hint: "A test first",
     trial: { attr: "command", skill: "statecraft", stage: "stage_muster_field_top", cast: (S) => [S.side === "kaurava" ? "bhishma" : "dhrishtadyumna"],
       rules: (S) => (S.side === "kaurava"
         ? "Bhishma names an array and shows it to you once. Then your company comes onto the field, unit by unit: put each on its mark before the drum stops. Then the enemy tests a flank, and you send the reserve. He has just refused Karna a place under him. He will not be kinder to you."
@@ -52,22 +52,20 @@
       travel: (S) => (S.side === "neutral" ? "The healers go to Kurukshetra, and you go with them." : "You march to Kurukshetra with the army."),
       title: "Before the first arrow",
       witness: [
-        "Eighteen armies face each other across the plain of Kurukshetra. Conch shells sound from both sides.",
-        "Arjuna drives his chariot out between the two armies and looks at his teachers, his grandfather and his cousins on the other side. He puts down his bow. Krishna, his charioteer, speaks to him for a long time.",
-        "You are too far away to hear the words. You only see Arjuna stand up at last and take up his bow again."
+        "Eighteen armies face each other at Kurukshetra. Arjuna lays down his bow, and Krishna talks with him until he takes it up again."
       ],
       enter: { unflag: "imprisoned" },
       body: (S) => [
         S.flags.includes("refused_raid") ? { memory: S.flags.includes("escaped_prison") ? "Duryodhana's men are still looking for the prisoner who went over the wall. Some of them are standing in the same army as you." : "They let you out of the prison yard the day the armies marched. Duryodhana passed you on the road and did not look at you. He has not forgotten Matsya." } : null,
         S.flags.includes("turned_herd") ? { memory: "Prince Uttara rides past and raises a hand to you. He has not forgotten the ford." } : null,
         S.flags.includes("strung_great_bow") ? { memory: "Across the field, the Panchala archers know your face. You strung their king's bow, once." } : null,
-        S.side === "neutral" ? "The healers' tents stand behind both armies. You will see everything from there." : "You are forty-four. Where do you take your place?"],
+        S.side === "neutral" ? "The healers' tents stand behind both armies. You will see everything from there." : "You are forty-four. Where do you stand?"],
       choices: [
-        { id: "front", t: "In the front line, with your weapon", req: fighting, fx: { flag: "role_front", duty: { court: 1 } } },
+        { id: "front", t: "In the front line", req: fighting, fx: { flag: "role_front", duty: { court: 1 } } },
         K.testChoice("a6_eve", "chariot", CHARIOT),
         K.testChoice("a6_eve", "command", COMMAND),
         { id: "healer", t: "In the healers' tents", fx: { flag: "role_healer", skill: { healing: 1 } } },
-        { id: "bard", t: "Singing to the troops before every battle", req: { path: "bard" }, fx: { flag: "role_bard", skill: { lore: 1 } } }
+        { id: "bard", t: "Singing to the troops", req: { path: "bard" }, fx: { flag: "role_bard", skill: { lore: 1 } } }
       ],
       next: "a6_eve_again"
     },
@@ -76,15 +74,15 @@
       id: "a6_eve_again", when: K.retryWhen("a6_eve", ["command", "chariot"]), skipTo: "a6_vasu",
       act: 6, age: 44, war: true, art: "war_eve", place: "Kurukshetra, before the first day", caption: "Dawn, before the conches",
       title: "Once more, at dawn",
-      body: (S) => [S.flags.includes("a6_eve_chariot_again") ? "The old warrior has not found another driver yet. He will ride with you once more before he decides." : S.side === "kaurava" ? "Bhishma has not given your company away yet. He will watch you set it once more, and then he will decide." : "Dhrishtadyumna has not given your company away yet. He will watch you set it once more, and then he will decide."],
-      choices: [K.retryChoice("a6_eve", "command", COMMAND), K.retryChoice("a6_eve", "chariot", CHARIOT), { id: "let", t: "Take your place in the line instead", fx: { flag: "role_front", duty: { court: 1 } }, text: "You find a place in the front line, among people who do not know your name yet." }],
+      body: (S) => [S.flags.includes("a6_eve_chariot_again") ? "The old warrior has not found another driver yet. He will ride with you once more before he decides." : S.side === "kaurava" ? "Bhishma will watch you set your company once more." : "Dhrishtadyumna will watch you set your company once more."],
+      choices: [K.retryChoice("a6_eve", "command", COMMAND), K.retryChoice("a6_eve", "chariot", CHARIOT), { id: "let", t: "Take your place in the line", fx: { flag: "role_front", duty: { court: 1 } }, text: "You find a place in the front line, among people who do not know your name yet." }],
       next: "a6_vasu"
     },
     {
       // The last test inside the wheel cannot be won: it measures how long you hold the ring open.
       id: "a6_ring_closes", act: 6, age: 44, canon: true, war: true, art: "stage_chakravyuha_top", place: "Inside the Chakravyuha", caption: "The ring closing",
       title: "The ring closes",
-      body: ["Abhimanyu's bow is cut. His charioteer is dead. His sword is broken. He has a chariot wheel in his hands, and you are at his back.", "The ring of chariots turns and tightens. Somewhere outside it, the Pandavas are still trying to break in. Hold a way open for them as long as you can."],
+      body: ["Abhimanyu's bow is cut. His charioteer is dead. His sword is broken. He has a chariot wheel in his hands, and you are at his back.", "Hold a way open for the Pandavas as long as you can."],
       choices: [{ id: "hold", t: "Hold the ring open", game: "rings", hint: "No one has ever held it",
         trial: { attr: "command", skill: "chariot", kind: "war", mode: "last", stage: "stage_chakravyuha_top", cast: ["abhimanyu"],
           rules: "The rings are in line, a way out for a breath. The Kaurava chariots push them out of line, faster and faster. Turn them back. Every heartbeat you hold is a heartbeat the Pandavas can use.",
@@ -109,7 +107,7 @@
       // Kaurava side: you held your stretch of the ring against the boy. Then the order comes down.
       id: "a6_d13_bow", act: 6, age: 44, canon: true, war: true, art: "scene_day13", place: "Kurukshetra · day 13", caption: "Drona's order",
       title: "Drona's order",
-      body: ["Abhimanyu cannot be beaten from the front. Drona sees it. \"Cut his bow from behind,\" he says. \"Kill his horses. Then he is only a boy.\"", "The order is passed along the ring, and it reaches you."],
+      body: ["Drona gives the order: \"Cut his bow from behind. Kill his horses. Then he is only a boy.\"", "It reaches you."],
       choices: [
         { id: "obey", t: "Do as Drona says", tags: ["strike_unarmed"], fx: { duty: { court: 2, conscience: -4 }, flag: "cut_abhimanyu_bow", memory: ["all", "You were one of those who cut Abhimanyu's bow from behind."], journal: "On the thirteenth day you obeyed Drona and helped cut Abhimanyu's bow from behind." },
           text: "Karna's arrow cuts the bowstring; yours finds a horse. Abhimanyu turns, and sees you." },
@@ -126,34 +124,33 @@
       act: 6, age: 44, war: true, place: "Your tent, the night before", art: "scene_vasu", plate: ["#5c3361", "#16131f"], caption: "A lamp in a tent",
       title: "Vasu asks to ride with you",
       body: (S) => [
-        "Vasu is sixteen. He has a sword, a borrowed shield and no idea what tomorrow is going to be like. He wants to be beside you.",
+        "Vasu is sixteen, with a borrowed shield. He wants to be beside you.",
         S.flags.includes("vasu_gentle") ? { memory: "You raised him to be kind before he was brave. He is trying very hard to be both." } : null
       ],
       choices: [
-        { id: "with", t: "Keep him beside you, where you can see him", req: fighting, fx: { flag: "vasu_with_you", bond: { vasu: 1 } } },
-        { id: "camp", t: "Order him to stay in the camp", fx: { flag: "vasu_in_camp", bond: { vasu: -1 }, duty: { family: 1 } }, text: "He argues, then sulks, then obeys. The camp is behind the lines. It should be safe." },
-        { id: "away", t: "Let him join another company. He has to learn without you", req: fighting, fx: { flag: "vasu_away", attr: { wisdom: 1 } } }
+        { id: "with", t: "Keep him beside you", req: fighting, fx: { flag: "vasu_with_you", bond: { vasu: 1 } } },
+        { id: "camp", t: "Order him to stay in camp", fx: { flag: "vasu_in_camp", bond: { vasu: -1 }, duty: { family: 1 } }, text: "He argues, then sulks, then obeys. The camp is behind the lines. It should be safe." },
+        { id: "away", t: "Let him join another company", req: fighting, fx: { flag: "vasu_away", attr: { wisdom: 1 } } }
       ],
       next: "a6_day1"
     },
     {
       id: "a6_day1", act: 6, age: 44, canon: true, war: true, art: "war_bhishma", place: "Kurukshetra · days 1 to 9", caption: "Bhishma commands the Kaurava host",
       title: "Nine days of Bhishma",
-      witness: ["For nine days Bhishma, the grandsire, commands the Kaurava army, and no one can stand against him. He has promised not to kill the Pandava brothers themselves. He kills nearly everyone else."],
+      witness: ["For nine days Bhishma commands the Kauravas, and no one can stand against him."],
       body: (S) => [
-        S.side === "pandava" ? "On the first day you watch Prince Uttara of Matsya fall." : S.side === "kaurava" ? "On your side, the old man fights like a storm. It is hard not to feel safe behind him." : "The first wounded reach the tents before noon. By evening there is nowhere left to lay them.",
+        S.side === "pandava" ? "On the first day Prince Uttara falls." : S.side === "kaurava" ? "On your side, the old man fights like a storm." : "The first wounded reach the tents before noon. By evening there is nowhere left to lay them.",
         S.side !== "neutral" && S.flags.includes("beat_ugra") && K.ugraAlly(S) ? { memory: "In the line beside you stands a big man with a miller's shoulders. Ugra, the miller's son from the spring fair. \"You put me on my back once,\" he says. \"I have waited thirty years to stand next to you instead.\"" } : null,
         S.side !== "neutral" && S.flags.includes("lost_to_ugra") && K.ugraAlly(S) ? { memory: "In the line beside you stands a big man with a miller's shoulders. Ugra, the miller's son from the spring fair. \"You were the only one who ever stood up to me,\" he says. \"You lost. You still stood up. I am with you.\"" } : null,
         S.side !== "neutral" && S.flags.includes("shamed_ugra") && K.ugraAcross(S) ? { memory: "Across the field, under the enemy's banners, there is a big man with a miller's shoulders. Ugra, the miller's son from the spring fair, never forgave the crowd for laughing, or you for making them." } : null,
         // A risk that went wrong long ago comes back: someone else is wearing your heirloom.
         S.heirloomLost && S.heirloomLost.at === "bandits" ? { memory: "Among the levies brought in from the villages, you see a thin man with a farmer's hands, wearing your {heirloom!}. He sees you see it, and looks away." } : null,
-        S.heirloomLost && S.heirloomLost.at === "outriders" ? { memory: "A Kaurava captain rides along the line with your {heirloom!} hanging from his belt. He has worn it for twenty-six years. He has no idea whose it was." } : null,
-        "These are the days of first battles, first kills and first friends lost."
+        S.heirloomLost && S.heirloomLost.at === "outriders" ? { memory: "A Kaurava captain rides along the line with your {heirloom!} hanging from his belt. He has worn it for twenty-six years. He has no idea whose it was." } : null
       ],
       choices: [
         { id: "fight", t: "Fight in the line", req: fighting, combat: "e_day1" },
-        { id: "supply", t: "Guard the supply lines and the river crossings", req: fighting, fx: { duty: { court: 1 }, rep: { common: 1 } } },
-        { id: "tend", t: "Work in the healers' tents through the nine days",
+        { id: "supply", t: "Guard the supply lines", req: fighting, fx: { duty: { court: 1 }, rep: { common: 1 } } },
+        { id: "tend", t: "Work in the healers' tents",
           check: { attr: "wisdom", skill: "healing", dc: 8,
             pass: { fx: { rep: { common: 2, sages: 1 }, skill: { healing: 1 }, journal: "In the first nine days of the war you saved more lives than you could count." }, text: "You stop counting the ones you save. You never stop counting the ones you lose." },
             fail: { fx: { rep: { common: 1 } }, text: "There are too many of them, and too few of you." } } }
@@ -164,29 +161,28 @@
       id: "a6_bhishma", act: 6, age: 44, canon: true, war: true, place: "Kurukshetra · day 10", art: "scene_arrows", plate: ["#d4a84b", "#2a1c1f"], caption: "A bed of arrows at dusk",
       title: "The bed of arrows",
       witness: [
-        "On the tenth day the Pandavas put Shikhandi at the front of Arjuna's chariot. Bhishma will not fight one who was born a woman, and lowers his bow. Arjuna's arrows bring the grandsire down.",
-        "He falls on a bed of arrows, so many that his body does not touch the ground. He has the boon of choosing the hour of his death, and he chooses to wait."
+        "Bhishma lowers his bow before Shikhandi, and Arjuna's arrows bring him down onto a bed of arrows. He chooses to wait for his hour."
       ],
-      body: ["That night, warriors from both armies lay down their weapons and come to see him."],
+      body: ["That night both armies come to see him."],
       choices: [
-        { id: "duty", t: "Ask him how a person can know their duty", fx: { attr: { wisdom: 1 }, bond: { bhishma: 1 }, journal: "On the bed of arrows, Bhishma told you that duty is subtle, and that keeping your word can still lead you into wrong." },
+        { id: "duty", t: "Ask him how to know your duty", fx: { attr: { wisdom: 1 }, bond: { bhishma: 1 }, journal: "On the bed of arrows, Bhishma told you that duty is subtle, and that keeping your word can still lead you into wrong." },
           text: "\"With difficulty,\" he says, and almost smiles. \"I kept my word all my life, and look where it has brought us.\"" },
-        { id: "vows", t: "Ask him about the vows you have made", req: (S) => S.vows.length > 0, fx: { duty: { conscience: 1 }, bond: { bhishma: 1 } },
+        { id: "vows", t: "Ask him about your vows", req: (S) => S.vows.length > 0, fx: { duty: { conscience: 1 }, bond: { bhishma: 1 } },
           text: "\"A vow is a promise to the person you will become,\" he says. \"Be careful what you promise them.\"" },
         { id: "water", t: "Bring him water", fx: { bond: { bhishma: 1 }, rep: { sages: 1 } }, text: "He thanks you, but he does not drink. Later Arjuna shoots an arrow into the earth, and a spring of clear water rises to the old man's lips." },
-        { id: "away", t: "Stay away. You cannot face him", fx: {} }
+        { id: "away", t: "Stay away", fx: {} }
       ],
       next: "a6_capture"
     },
     {
       id: "a6_capture", act: 6, age: 44, canon: true, war: true, art: "war_capture", place: "Kurukshetra · days 11 and 12", caption: "Drona takes command",
       title: "Take the king alive",
-      witness: ["Drona takes command of the Kaurava army. Duryodhana wants one thing from him: capture Yudhishthira alive, so the war can be won with another game of dice. On the eleventh day Arjuna stays close to his brother, and the plan fails. On the twelfth, the Trigarta brothers, sworn to the death, draw him away to the south, and Drona comes at the king himself. Still Yudhishthira is not taken."],
+      witness: ["Drona, now commander, tries for two days to take Yudhishthira alive. He fails."],
       body: (S) => [S.side === "pandava" ? "Your company is posted beside the king's chariot." : S.side === "kaurava" ? "Your company is sent to break through to the king's chariot." : "Both days, the fighting is thickest around one chariot. The wounded come from there."],
       choices: [
         { id: "guard", t: "Guard Yudhishthira's chariot", req: { side: "pandava" }, combat: "e_guard" },
         { id: "hunt", t: "Drive for Yudhishthira's chariot", req: { side: "kaurava" }, combat: "e_hunt" },
-        { id: "carry", t: "Carry the wounded off the field under fire",
+        { id: "carry", t: "Carry the wounded off the field",
           peril: (S) => ({ kind: "prison", by: S.side === "kaurava" ? "Pandava soldiers" : "Kaurava soldiers", place: "A prisoners' pen behind the enemy's lines", waitThen: "a7_field",
             text: "On the fourth trip a horse goes down on top of you. When you wake, the enemy's camp guards are binding your hands.",
             journal: "Carrying the wounded under fire, you were taken by the enemy." }),
@@ -202,11 +198,11 @@
       lamp: (S) => (S.side === "kaurava" ? { secs: 30, silent: "ring", note: "The ring is closing. If the lamp burns out, you will hold your place in it." }
         : S.side === "pandava" ? { secs: 30, silent: "gate", note: "The breach will not stay open. If the lamp burns out, you will be at the gate with the others." } : null),
       witness: (S) => S.side === "kaurava" ? [
-        "Drona sets the Chakravyuha, a spinning wheel of warriors. Arjuna has been lured away to the far end of the field.",
-        "A boy of sixteen, Abhimanyu, Arjuna's son, has broken into its heart alone, and he is cutting through the finest warriors of your side. The order comes down the ring: close in around him."
+        "Drona sets the Chakravyuha while Arjuna is lured away.",
+        "Arjuna's son Abhimanyu, sixteen, has broken in alone. The order comes: close in around him."
       ] : [
-        "Drona sets the Chakravyuha, a spinning wheel of warriors. Arjuna has been lured away to the far end of the field. Only his son Abhimanyu, sixteen, knows how to break in. He does not know the way out.",
-        "He breaks through. The rest of you are meant to follow. At the breach, Jayadratha, with his boon, holds back every Pandava who tries."
+        "Drona sets the Chakravyuha while Arjuna is lured away. Only his son Abhimanyu, sixteen, knows the way in, not the way out.",
+        "He breaks in. At the breach, Jayadratha holds back everyone who follows."
       ],
       body: (S) => [
         S.side === "pandava" && S.flags.includes("stood_with_karna") ? { memory: "Inside the wheel you glimpse Karna's banner. You remember the arena, and who stood where." } : null,
@@ -216,16 +212,16 @@
         S.flags.includes("role_command") ? (S.side === "kaurava" ? "Your company holds a stretch of the ring. Whatever you do, they will do." : "Your company is behind you, waiting for your word. Whatever you do, they will follow.") : null
       ],
       choices: [
-        { id: "ride_in", t: "Drive into the breach after Abhimanyu", req: { side: "pandava" }, combat: "e_wheel", noAfter: true, hint: "There may be no way back" },
-        { id: "gate", t: "Hold at the gate and try to force it open", req: { side: "pandava" }, combat: "e_gate" },
-        { id: "pull_vasu", t: "Pull back to get Vasu out when the line breaks", req: (S) => S.side === "pandava" && vasuNear(S), tags: ["retreat"],
+        { id: "ride_in", t: "Follow Abhimanyu in", req: { side: "pandava" }, combat: "e_wheel", noAfter: true, hint: "No way back" },
+        { id: "gate", t: "Force the gate", req: { side: "pandava" }, combat: "e_gate" },
+        { id: "pull_vasu", t: "Pull back to get Vasu out", req: (S) => S.side === "pandava" && vasuNear(S), tags: ["retreat"],
           fx: { duty: { family: 3 }, bond: { vasu: 3 }, flag: "saved_vasu_d13", journal: "On the thirteenth day you pulled back to save your son." } },
-        { id: "ring", t: "Hold your place in the ring as ordered", req: { side: "kaurava" }, combat: "e_ring", noAfter: true, hint: "He has killed everyone who stood in front of him today",
+        { id: "ring", t: "Hold the ring as ordered", req: { side: "kaurava" }, combat: "e_ring", noAfter: true, hint: "He has killed everyone in his way",
           fx: { duty: { court: 2 }, flag: "held_the_ring", memory: ["all", "You were part of the ring that closed on the boy."], journal: "On the thirteenth day you held your place in the ring that closed on Abhimanyu." } },
-        { id: "refuse", t: "Refuse to close in on a lone boy", req: { side: "kaurava" },
+        { id: "refuse", t: "Refuse to close in", req: { side: "kaurava" },
           fx: { duty: { conscience: 3, court: -3 }, rep: { kuru: -2 }, flag: "refused_ring", memory: ["all", "You lowered your bow and would not close in."], journal: "On the thirteenth day you lowered your bow and would not close in on Abhimanyu." } },
-        { id: "carry", t: "Leave the ring to carry a wounded boy out", req: { side: "kaurava" }, tags: ["retreat"], fx: { duty: { family: 1, court: -1, conscience: 1 }, flag: "carried_wounded" } },
-        { id: "tend", t: "Work the tents behind the wheel", req: { side: "neutral" }, fx: { rep: { common: 1 }, flag: "tended_d13" } }
+        { id: "carry", t: "Carry a wounded boy out", req: { side: "kaurava" }, tags: ["retreat"], fx: { duty: { family: 1, court: -1, conscience: 1 }, flag: "carried_wounded" } },
+        { id: "tend", t: "Work the tents", req: { side: "neutral" }, fx: { rep: { common: 1 }, flag: "tended_d13" } }
       ],
       after: ["Abhimanyu fights until his bow is broken, then with his sword, then with a chariot wheel. Many warriors surround him at once, and he falls. That night Arjuna swears to kill Jayadratha before the next sunset, or walk into fire."],
       next: "a6_day14"
@@ -234,13 +230,13 @@
       id: "a6_d13_inside", act: 6, age: 44, canon: true, war: true, art: "scene_day13", place: "Inside the Chakravyuha", caption: "The gap closing behind you",
       title: "Inside the wheel",
       body: (S) => [
-        "You made it through the breach. Behind you, the gap has closed. Ahead, Abhimanyu is fighting alone against Drona, Karna, Kripa, Ashwatthama and Duryodhana's sons.",
+        "You are through, and the gap has closed behind you. Abhimanyu fights alone against Drona, Karna and the rest.",
         K.hasVow("never_retreat") ? { aside: "You swore never to retreat." } : null,
         vasuNear(S) ? { memory: "Vasu is somewhere on the other side of that wall of chariots." } : null
       ],
       choices: [
-        { id: "stay", t: "Stay beside Abhimanyu to the end", combat: "e_last_stand", noAfter: true, fx: { bond: { arjuna: 3 } }, hint: "No one comes out of the heart of the wheel" },
-        { id: "out", t: "Cut your way back out while you still can", tags: ["retreat"],
+        { id: "stay", t: "Stay beside him to the end", combat: "e_last_stand", noAfter: true, fx: { bond: { arjuna: 3 } } },
+        { id: "out", t: "Cut your way out", tags: ["retreat"],
           resolve: (S) => (S.curses.some((c) => !c.fired) ? { fireCurse: "any", injury: "eye", flag: "curse_fired_wheel", journal: "Your curse struck in the wheel. You lost an eye fighting your way out." } : { injury: "arm", journal: "You fought your way out of the wheel with a ruined arm." }),
           text: "You turn the chariot and drive at the weakest part of the wall. You come out the other side bleeding, alone, and alive." }
       ],

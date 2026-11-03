@@ -381,7 +381,7 @@
     { line: "\"What is the greatest wonder?\"", replies: ["\"That every day people die, and the living think they will not.\"", "\"That the sun rises every morning.\"", "\"That a lake can speak.\""] },
     { line: "\"What is the path?\"", replies: ["\"The one the great have walked.\"", "\"The one the scriptures argue over.\"", "\"The one you make yourself.\""] }
   ];
-  const YAKSHA = { t: "Answer the voice before you drink", game: "retort", hint: "A test of wisdom",
+  const YAKSHA = { t: "Answer the voice first", game: "retort", hint: "A test of wisdom",
     trial: { attr: "wisdom", skill: "lore", rounds: YAKSHA_ROUNDS, stage: "stage_forest_lake",
       rules: "The voice speaks from the water. \"Answer my questions first,\" it says, \"then drink.\" Answer before the lamp burns down. Two right answers of three.",
       stakes: ["The voice lets you drink, and you remember every answer for life.", "The voice falls silent, waiting. You may answer again before you drink."] },
