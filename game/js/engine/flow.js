@@ -63,7 +63,10 @@
     const prevScene = S.scene;
     S.scene = sc.id;
     if (sc.act && sc.act > S.act) drift(S, sc.act);
-    if (sc.act) S.act = sc.act;
+    // The act never goes back (a scene written for an earlier act, met late, stays in the current one);
+    // the one exception is waking from the prologue's dream of the war into childhood.
+    const fromDream = K.SCENES[prevScene] && K.SCENES[prevScene].prologue && !sc.prologue;
+    if (sc.act && (sc.act >= (S.act || 0) || sc.prologue || fromDream)) S.act = sc.act;
     // You never grow younger: not going back to an earlier question after a closed way, not in a scene
     // whose written age is earlier than the one before it, not on Continue. The one exception is waking
     // from the prologue's dream of the war (a grown warrior, then six years old).

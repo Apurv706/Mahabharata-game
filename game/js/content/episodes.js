@@ -253,7 +253,7 @@
     },
     // ---------- Threads: the sibling takes the other side ----------
     {
-      id: "ep_sibling_side", act: 5, age: 44, away: true, when: (S) => sibAlive(S) && warring(S), skipTo: "a6_eve", next: "a6_eve",
+      id: "ep_sibling_side", act: 6, age: 44, away: true, when: (S) => sibAlive(S) && warring(S), skipTo: "a6_eve", next: "a6_eve",
       art: homeArt, place: (S) => K.homePlace(S), caption: "Two spears in one house",
       title: "The other side of the house",
       body: (S) => [["{who} comes home in the colours of the other side.", sibP(S)],
