@@ -328,11 +328,14 @@
       if (!el) { el = U.el('<div class="rt-mark' + (m.lane ? " lane" : "") + '" data-k="' + key + '"><div class="rim"></div><div class="fill"></div><span class="tag"></span></div>'); V.world.appendChild(el); }
       el.dataset.keep = "1";
       const t = R.B.units.find((u) => u.uid === m.on), ta = t && V.actors.get(t.uid);
-      const L = m.x0 * G.W, Wd = Math.max(10, (m.x1 - m.x0) * G.W);
+      // A lane runs from its mark to the bow; the band that is struck is the end at the mark.
+      const lx0 = m.lane ? Math.min(m.x0, m.from) : m.x0, lx1 = m.lane ? Math.max(m.x1, m.from) : m.x1;
+      const L = lx0 * G.W, Wd = Math.max(10, (lx1 - lx0) * G.W);
       const hh = m.lane ? Math.max(6, G.fh * 0.05) : Math.max(10, G.fh * 0.1);
       const bottom = m.lane ? (ta ? ta.gy + ta.fh * 0.56 : G.gl + G.fh * 0.5) : (ta ? ta.gy : G.gl) - hh / 2;
       Object.assign(el.style, { left: L + "px", width: Wd + "px", height: hh + "px", bottom: bottom + "px" });
-      el.querySelector(".fill").style.width = (Wd * m.fill) + "px";
+      const fill = el.querySelector(".fill"); fill.style.width = (Wd * m.fill) + "px";
+      if ((m.lane ? m.from : e.rt.x) > (lx0 + lx1) / 2) { fill.style.left = "auto"; fill.style.right = "0"; } else { fill.style.left = "0"; fill.style.right = "auto"; } // filling from the attacker
       el.classList.toggle("locked", !!m.locked);
       const mine = m.on === p.uid || (p.rt.x >= m.x0 && p.rt.x <= m.x1);
       el.classList.toggle("me", mine);

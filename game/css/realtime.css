@@ -152,3 +152,4 @@ html[lang="hi"] .rt-sheet h2 { line-height: 1.35; }
 .rt-sheet .note { margin: 0; font-size: 14px; color: var(--faint, #bba98c); }
 .rt-sheet .go { background: var(--accent); color: var(--accent-ink, #2a120f); border-color: transparent; }
 .rt-sheet .danger { color: #ffd2c4; border-color: rgba(255, 138, 110, 0.6); }
+.rt-world .fly-arrow:not([style*="transform"]) { visibility: hidden; } /* not yet placed: its first frame */
