@@ -186,3 +186,13 @@ html.calm .rt-actor .nametag { transition: none; }
 .rt-mark.lane .rim { border: 0; border-top: 2px dashed rgba(255, 140, 70, 0.55); background: none; box-shadow: none; border-radius: 0; }
 .rt-mark.lane .fill { display: none; }
 .rt-mark.lane.locked .rim { border-top-color: rgba(255, 255, 255, 0.95); box-shadow: none; }
+/* Drop-down panels (Orders, the aid menu): small, under their button, with a flame burning down 6 s. */
+.rt-sheet.drop { left: auto; bottom: auto; width: min(300px, calc(100% - 12px)); padding: 8px; gap: 6px; border-radius: 12px; }
+.rt-sheet.drop h3 { font-size: 12px; }
+.rt-sheet.drop button { min-height: 38px; font-size: 13px; padding: 4px 8px; }
+.rt-sheet.drop .go { min-height: 34px; }
+.rt-sheet .flame { display: block; position: relative; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.1); overflow: hidden; }
+.rt-sheet .flame b { position: absolute; inset: 0; background: linear-gradient(90deg, #ffd27a, #ff8a2a); transform-origin: left; animation: rt-burn 6s linear forwards; }
+.rt-sheet .flame b::after { content: ""; position: absolute; right: -2px; top: -3px; width: 6px; height: 10px; border-radius: 50%; background: #ffe7a8; box-shadow: 0 0 6px #ff9a3c; }
+@keyframes rt-burn { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+html.calm .rt-sheet .flame b { animation-timing-function: steps(6); }

@@ -225,11 +225,10 @@
     if (kind === "orders") {
       const friend = R.B.units.find((u) => u.side === "ally" && u.hp > 0 && (u.called || u.person) && !u.still);
       const soldiers = R.B.units.some((u) => u.side === "ally" && u.hp > 0 && u.plural && !u.person && !u.called);
-      h += "<h2>" + T("Orders") + "</h2>";
       if (soldiers) h += '<div class="sec"><h3>' + T("Your soldiers") + '</h3><div class="opts three">' + btn("so", "defend", "Defend", R.orders.soldiers === "defend") + btn("so", "allout", "All-out", R.orders.soldiers === "allout") + btn("so", "stay", "Stay out", R.orders.soldiers === "stay") + "</div></div>";
       if (friend) h += '<div class="sec"><h3>' + T("{who}, while beside you", { who: K.text(friend.src || friend.name) }) + '</h3><div class="opts two">' + btn("fr", "balanced", "Balanced", R.orders.friend === "balanced") + btn("fr", "guard", "Guard me", R.orders.friend === "guard") + btn("fr", "allout", "All-out", R.orders.friend === "allout") + btn("fr", "hold", "Hold back", R.orders.friend === "hold") + "</div></div>";
       if (!soldiers && !friend) h += '<p class="note">' + T("No one is fighting beside you to take an order.") + "</p>";
-      h += '<p class="note">' + T("The fight waits while this is open.") + '</p><button type="button" class="go" data-close>' + T("Back to the fight") + "</button>";
+      h += '<button type="button" class="go" data-close>' + T("Back to the fight") + "</button>";
     } else if (kind === "pause") {
       h += "<h2>" + T("Paused") + '</h2><div class="opts one"><button type="button" class="go" data-close>' + T("Resume") + "</button>" +
         (C.canFlee() ? '<button type="button" class="danger" data-w>' + T("Withdraw from the fight") + "</button>" : "") + "</div>" +
@@ -248,8 +247,17 @@
       h += "<h2>" + T("You are beaten") + '</h2><p class="note">' + T("One more try: you start a little hurt, and what you used stays used.") + '</p><div class="opts one"><button type="button" class="go" data-retry>' + T("Try again") + '</button><button type="button" data-accept>' + T("Accept the loss") + "</button></div>";
     }
     sh.className = "rt-sheet " + kind; sh.innerHTML = h; sh.hidden = false;
-    sh.style.top = "";
-    if (kind === "more") { const mb = V.el.querySelector(".rt-hb.more").getBoundingClientRect(), er = V.el.getBoundingClientRect(); sh.style.top = (mb.bottom - er.top + 6) + "px"; } // just under its button
+    sh.style.top = ""; sh.style.right = ""; sh.style.left = ""; sh.style.bottom = ""; sh.style.transform = "";
+    clearTimeout(V.dropT);
+    // Orders and the aid drop-down are small panels under their buttons, with a flame that burns down
+    // over 6 s and then closes them (the fight goes on); a tap inside lights it again.
+    if (kind === "more" || kind === "orders") {
+      sh.classList.add("drop");
+      placeDrop(sh, kind);
+      sh.insertAdjacentHTML("afterbegin", '<i class="flame" aria-hidden="true"><b></b></i>');
+      const light = () => { clearTimeout(V.dropT); const fl = sh.querySelector(".flame b"); if (fl) { fl.style.animation = "none"; void fl.offsetWidth; fl.style.animation = ""; } V.dropT = setTimeout(() => { if (V && V.sheet === kind) closeSheet(); }, 6000); };
+      sh.onpointerdown = light; light();
+    } else sh.onpointerdown = null;
     sh.querySelectorAll("[data-so]").forEach((b) => b.addEventListener("click", () => { V.queue.orders = Object.assign(V.queue.orders || {}, { soldiers: b.dataset.so }); R.orders.soldiers = b.dataset.so; sheet("orders"); }));
     sh.querySelectorAll("[data-fr]").forEach((b) => b.addEventListener("click", () => { V.queue.orders = Object.assign(V.queue.orders || {}, { friend: b.dataset.fr }); R.orders.friend = b.dataset.fr; sheet("orders"); }));
     sh.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", closeSheet));
@@ -259,6 +267,18 @@
     const ab = sh.querySelector("[data-accept]"); if (ab) ab.addEventListener("click", () => { closeSheet(); RT.accept(V.R); finishSoon(); });
     const f = sh.querySelector("button"); if (f && !U.calm()) f.focus({ preventScroll: true });
     V.el.querySelectorAll(".rt-hb").forEach((b) => b.classList.toggle("on", b.dataset.act === kind));
+  }
+  // Where a drop-down opens: one swappable spot while the owner chooses (K.prefs().rtMenu or ?menu=):
+  // "button" under its button (default), "sky" above the figures, "controls" over the controls.
+  U.rtMenuSpot = () => { try { const m = /[?&]menu=(\w+)/.exec(location.search); if (m) return m[1]; } catch (e) { /* none */ } return K.prefs().rtMenu || "button"; };
+  function placeDrop(sh, kind) {
+    const er = V.el.getBoundingClientRect(), spot = U.rtMenuSpot();
+    sh.style.top = sh.style.bottom = sh.style.left = sh.style.right = "";
+    sh.dataset.spot = spot;
+    if (spot === "sky") { const hud = V.el.querySelector(".rt-hud").getBoundingClientRect(); sh.style.top = (hud.bottom - er.top + 60) + "px"; sh.style.left = "50%"; sh.style.transform = "translateX(-50%)"; return; }
+    if (spot === "controls") { const st = V.stage.getBoundingClientRect(); sh.style.top = "auto"; sh.style.bottom = (er.bottom - st.bottom + 6) + "px"; sh.style.left = "50%"; sh.style.transform = "translateX(-50%)"; return; }
+    const mb = V.el.querySelector(".rt-hb." + kind).getBoundingClientRect();
+    sh.style.transform = ""; sh.style.top = (mb.bottom - er.top + 6) + "px"; sh.style.right = Math.max(6, er.right - mb.right) + "px";
   }
   function closeSheet() { if (!V) return; const sh = V.el.querySelector("#rt-sheet"); sh.hidden = true; sh.innerHTML = ""; V.sheet = null; V.paused = false; V.last = 0; V.el.querySelectorAll(".rt-hb").forEach((b) => b.classList.remove("on")); }
 

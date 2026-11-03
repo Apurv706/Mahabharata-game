@@ -33,7 +33,7 @@
   RT.P = {
     story: 8,          // seconds per round of a fight's story: beats, the field event, holds and "rounds"
     hpFoe: 6.5,        // health is scaled up so a fight lasts its 30-60 s (blows are as in the turns)
-    hpFriend: 0.95,    // you act several times as often as any foe: your own health is scaled far less
+    hpFriend: 1.15,    // you act several times as often as any foe: your own health is scaled far less
     atkFoe: 1,
     hpAlly: null,      // those beside you act as often as foes: scaled as foes (null) unless set
     spacing: 0.45,
@@ -283,7 +283,7 @@
   // Knocked back: a foe winding up keeps its blow (it lunges after you); knocked down, it loses it.
   function knock(R, u, dir, dx, down) {
     if (down && u.rt.atk) cancel(R, u);
-    u.rt.x = clamp(u.rt.x + dir * dx, 0.03, 0.97);
+    u.rt.x = clamp(u.rt.x + dir * dx, 0.07, 0.93);
     if (!u.rt.atk) u.rt.stag = Math.max(u.rt.stag, 0.3);
     if (down) u.rt.down = Math.max(u.rt.down, 1.2);
   }
@@ -537,11 +537,11 @@
       const onNow = living(B, "enemy").filter((x) => x.rt.entered).length;
       if (onNow >= 2 && u.wave) return;
       u.x -= u.speed * dt;
-      if (u.x <= 0.96) u.entered = true;
+      if (u.x <= 0.93) u.entered = true;
       return;
     }
     // Beaten (in a fight where a foe may be spared): he kneels in the back row and fights no more.
-    if (B.enc.spare && e.hp <= e.maxHp * 0.3) { if (!u.beaten) { u.beaten = true; if (u.atk) cancel(R, e); R.fx.push({ k: "beaten", uid: e.uid }); } toRow(e, 2, dt); u.x = clamp(keepApart(R, e, u.x, dt, living(B, "enemy")), 0.03, 0.97); return; }
+    if (B.enc.spare && e.hp <= e.maxHp * 0.3) { if (!u.beaten) { u.beaten = true; if (u.atk) cancel(R, e); R.fx.push({ k: "beaten", uid: e.uid }); } toRow(e, 2, dt); u.x = clamp(keepApart(R, e, u.x, dt, living(B, "enemy")), 0.07, 0.93); return; }
     if (u.atk) {
       const a = u.atk, t = B.units.find((x) => x.uid === a.on);
       if (a.ranged && !a.locked) { if (t && t.hp > 0) a.lane = t.rt.x; if (a.land - R.t <= RT.P.lock) a.locked = true; }
@@ -576,7 +576,7 @@
       if (u.x >= p.rt.x && x < p.rt.x + pg) x = Math.max(x, Math.min(u.x, p.rt.x + pg));
       if (u.x < p.rt.x && x > p.rt.x - pg) x = Math.min(x, Math.max(u.x, p.rt.x - pg));
     }
-    u.x = clamp(x, 0.03, 0.97);
+    u.x = clamp(x, 0.07, 0.93);
     if (ad > 1e-4) u.face = sign(d);
   }
 
@@ -618,7 +618,7 @@
     let nx = u.x;
     if (Math.abs(d) > 0.01) nx = u.x + sign(d) * Math.min(Math.abs(d), u.speed * 1.05 * dt);
     toRow(a, backRow(a), dt); // your side stands in the rows behind you
-    u.x = clamp(keepApart(R, a, nx, dt, living(B, "ally")), 0.03, 0.97);
+    u.x = clamp(keepApart(R, a, nx, dt, living(B, "ally")), 0.07, 0.93);
     // A healer among your friends tends the hurt.
     const hurt = living(B, "friends").find((f) => !f.still && f.hp / f.maxHp < 0.45 && dist(f, a) < 2 * BODY);
     if (u.cool <= 0 && hurt && a.abilities.includes("salve") && !(u.cd.salve > 0)) { u.atk = { id: "salve", on: hurt.uid, land: R.t + 0.5, t0: R.t }; u.cd.salve = 3 * ROUND; return; }
@@ -694,9 +694,9 @@
         if (Math.abs(g) >= APART * 0.98) continue;
         const dir = Math.abs(g) > 1e-4 ? sign(g) : (b.rt.x > 0.5 ? -1 : 1); // b goes this way, a the other
         const push = 0.5 * STEP;
-        const nb = clamp(b.rt.x + dir * push, 0.03, 0.97), lostB = push - Math.abs(nb - b.rt.x);
-        const na = clamp(a.rt.x - dir * (push + lostB), 0.03, 0.97), lostA = push + lostB - Math.abs(na - a.rt.x);
-        a.rt.x = na; b.rt.x = clamp(nb + dir * lostA, 0.03, 0.97); // pressed against an edge, the other one moves the more
+        const nb = clamp(b.rt.x + dir * push, 0.07, 0.93), lostB = push - Math.abs(nb - b.rt.x);
+        const na = clamp(a.rt.x - dir * (push + lostB), 0.07, 0.93), lostA = push + lostB - Math.abs(na - a.rt.x);
+        a.rt.x = na; b.rt.x = clamp(nb + dir * lostA, 0.07, 0.93); // pressed against an edge, the other one moves the more
       }
     }
   }
