@@ -2,13 +2,16 @@
    Plays N random lives through the real UI in a headless DOM and reports
    crashes, dead ends, content problems and the spread of endings.
    Usage: npm install && npm test            (default 300 lives)
-          node tests/playthrough.js 1000 --story */
+          node tests/playthrough.js 1000 --story
+          RT=1 node tests/playthrough.js 20   (or --rt): the real-time fights (PRD §18.15) played by
+          engine/realtime.js's bot, which spares a beaten foe now and then */
 const fs = require("fs");
 const path = require("path");
 const { JSDOM, VirtualConsole } = require("jsdom");
 
 const N = parseInt(process.argv[2] || "300", 10);
 const STORY = process.argv.includes("--story");
+const RTM = process.env.RT === "1" || process.argv.includes("--rt");
 const GAME = path.join(__dirname, "..", "game");
 const html = fs.readFileSync(path.join(GAME, "index.html"), "utf8");
 const scripts = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map((m) => m[1]);
@@ -31,6 +34,7 @@ function boot(seed) {
   for (const src of scripts) w.eval(fs.readFileSync(path.join(GAME, src), "utf8"));
   w.K.headless = true;
   w.K.seed(seed);
+  if (RTM) { w.K.RT.force = true; w.K.UI.rtBotOptions = { spare: 0.3 }; }
   return { w, d: w.document, errors, jsErrors };
 }
 
@@ -123,7 +127,7 @@ results.filter((r) => r.ending).forEach((r) => { ends[r.ending] = (ends[r.ending
 const warn = new Set(results.flatMap((r) => r.errors || []));
 const problems = results[0] && results[0].problems || [];
 
-console.log("Lives played:     " + N + (STORY ? " (story mode)" : ""));
+console.log("Lives played:     " + N + (STORY ? " (story mode)" : "") + (RTM ? " (real-time fights)" : ""));
 console.log("Reached an end:   " + results.filter((r) => r.ending).length);
 console.log("Crashes:          " + crashes.length);
 console.log("Stuck:            " + stuck.length);

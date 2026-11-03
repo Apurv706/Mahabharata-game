@@ -1146,4 +1146,98 @@ require(G + "content/war_fights.js");
   const js = fs.readdirSync(path.join(GAME, "js"), { recursive: true }).filter((f) => /\.js$/.test(f)).map((f) => fs.readFileSync(path.join(GAME, "js", f), "utf8")).join("");
   ok(!/prefers-reduced-motion/.test(css + js + html), "nothing in the game follows prefers-reduced-motion");
 }
+// 104. Real-time fights (PRD §18.15, engine/realtime.js): behind the developer switch; deterministic;
+// one more try for a deadly fight; your side never blocks you and a blow marked on a friend lands on
+// you when you stand in its path; at most two foes attack at once; the edges; the same outcomes.
+{
+  require(G + "engine/realtime.js");
+  ["content/war_fights"].forEach((f) => require(G + f + ".js"));
+  const RT = K.RT, C = K.Combat;
+  const life = (o) => { const S = fresh(Object.assign({ path: "mace", act: 6, age: 30, side: "pandava" }, o || {})); S.attrs.might = 4; S.attrs.grace = 4; S.skills.mace = 3; S.items.herbs = 2; return S; };
+  ok(!RT.on() && !RT.wanted("e_bandits"), "the real-time fights are off unless the developer switch is on (players keep the turn-based fights)");
+  RT.force = true;
+  ok(RT.wanted("e_bandits") && RT.wanted("cross_e_duel") && RT.wanted("fs_sk_mace") && !RT.wanted("e_day1") && !RT.wanted("e_dream") && !RT.wanted("e_wheel") && !RT.wanted("fs_sk_range"), "which fights are real-time: the list in §18.15 and the mace duel; the line, the wheel, the dream and the archery duel stay");
+  // Determinism: the same seed, the same fight → the same outcome and the same final state.
+  const runFp = (id, seed) => { K.seed(seed); life(); const out = RT.autoplay(id); return out + ":" + RT.last.fingerprint + RT.fingerprint(RT.last) + ":" + JSON.stringify(K.S.flags) + K.S.items.herbs; };
+  ok(runFp("e_bandits", 77) === runFp("e_bandits", 77) && runFp("e_guard", 5) === runFp("e_guard", 5), "same seed, same fight: same outcome and the same state fingerprint");
+  ok(runFp("e_guard", 5) !== runFp("e_guard", 6), "another seed plays another fight");
+  // A standard fight ends with its foes dead (fallen, staying down), within the 30-60 s target.
+  { let n = 0, t = 0, dead = true;
+    for (let i = 0; i < 12; i++) { K.seed(300 + i); life(); const out = RT.autoplay("e_bandits"); const R = RT.last; if (out === "win") { n++; t += R.t; dead = dead && R.B.units.filter((u) => u.side === "enemy").every((u) => u.hp === 0 && u.rt.fell != null); } }
+    ok(n >= 6 && dead && t / n >= 30 && t / n <= 60, "a standard real-time fight (the bandits) is won " + n + " times in 12 with every foe fallen, in " + (t / Math.max(1, n)).toFixed(1) + " s on average (30-60 s)"); }
+  // Every blow is readable: a wind-up of at least 0.3 s, and the mark is full exactly as it lands.
+  { K.seed(9); life(); const B = C.start("e_guard"); const R = RT.begin(B); let minWind = 9, fullAtLand = true, max = 0, edge = true, foeOut = false, atEdge = 1;
+    const seen = new Map();
+    for (let i = 0; i < 60 * 70 && !R.over; i++) {
+      RT.step(R, i < 300 ? { move: -1 } : RT.bot(R));
+      if (i === 299) atEdge = C.player().rt.x;
+      for (const e of B.units.filter((u) => u.side === "enemy" && u.hp > 0)) {
+        const a = e.rt.atk; if (a && !seen.has(a)) { seen.set(a, 1); minWind = Math.min(minWind, a.land - a.t0); }
+        if (a && R.t >= a.land - 1e-6 && RT.markOf(R, e).fill < 1) fullAtLand = false;
+        if (e.rt.entered && (e.rt.x < 0.03 - 1e-9 || e.rt.x > 0.97 + 1e-9)) foeOut = true;
+      }
+      max = Math.max(max, RT.attacking(R));
+      if (C.player().rt.x < RT.EDGE - 1e-9 || C.player().rt.x > 1 - RT.EDGE + 1e-9) edge = false;
+    }
+    ok(minWind >= 0.3 && fullAtLand, "every enemy blow winds up at least 0.3 s, and its mark fills to the rim as it lands (shortest " + minWind.toFixed(2) + " s)");
+    ok(max <= 2, "at most two foes attack at once");
+    ok(edge && !foeOut && Math.abs(atEdge - RT.EDGE) < 1e-9, "you stay a tenth of the field from either edge, and foes stay on the field once in");
+    C.end && (R.B.over || C.settle("win")); C.end(); }
+  { // Four foes: two at a time come on, the rest wait as the next pack; still never more than two attack at once.
+    K.encounter({ id: "t_rt_pack", title: "Pack", realtime: true, lethal: false, enemies: [K.foe("Raider", 2), K.foe("Raider", 2), K.foe("Raider", 2), K.foe("Raider", 1)], win: {}, lose: {} });
+    K.seed(4); life(); const B = C.start("t_rt_pack"); const R = RT.begin(B); let max = 0; const c0 = RT.count(R), p0 = RT.packs(R);
+    while (!R.over) { RT.step(R, RT.bot(R)); max = Math.max(max, RT.attacking(R)); }
+    ok(c0 === 4 && p0.of === 2 && max <= 2, "a fight of four comes in two packs, with a running count; never more than two attack at once"); C.end(); }
+  // Your side never blocks you; a blow marked on a friend lands on you when you step into its path.
+  { K.seed(11); life(); const B = C.start("e_kings"); const R = RT.begin(B);
+    const p = C.player(), bh = B.units.find((u) => u.side === "ally"), foe = B.units.find((u) => u.side === "enemy");
+    B.units.filter((u) => u.side === "enemy" && u !== foe).forEach((u) => { u.rt.x = 0.97; u.rt.cool = 99; });
+    p.rt.x = 0.3; bh.rt.x = 0.36; bh.rt.cool = 99; foe.rt.x = 0.8; foe.rt.cool = 99;
+    for (let i = 0; i < 30; i++) RT.step(R, { move: 1 });
+    ok(p.rt.x > 0.36 + RT.BODY * 0.2, "you walk through your own side");
+    const fx = p.rt.x + 0.2; foe.rt.x = fx; bh.rt.x = fx - RT.BODY * 0.95; p.rt.x = fx - RT.BODY * 0.5; foe.rt.entered = true;
+    const bh0 = bh.hp, p0 = p.hp; foe.rt.atk = { id: "strike", on: bh.uid, t0: R.t, land: R.t + 0.5, heavy: false }; foe.rt.face = -1;
+    for (let i = 0; i < 40; i++) RT.step(R, {});
+    ok(p.hp < p0 && bh.hp === bh0, "a blow marked on a friend lands on you when you stand in its path");
+    // Foes block you: you cannot walk through one.
+    foe.rt.cool = 99; foe.rt.atk = null; p.rt.x = foe.rt.x - RT.BODY; for (let i = 0; i < 60; i++) RT.step(R, { move: 1 });
+    ok(p.rt.x < foe.rt.x, "a foe blocks your way"); C.settle("win"); C.end(); }
+  // An arrow strikes whoever is in its locked lane when it arrives (you, stepping in to cover a friend).
+  { K.seed(12); life(); const B = C.start("e_panchala"); const R = RT.begin(B);
+    const p = C.player(), ar = B.units.find((u) => /archer/.test(u.src)), cap = B.units.find((u) => u !== ar && u.side === "enemy");
+    cap.rt.x = 0.97; cap.rt.cool = 99; ar.rt.x = 0.9; ar.rt.entered = true; ar.rt.cool = 99;
+    B.units.push(Object.assign(C.core.makeUnit({ name: "Friend", hp: 40, atk: 3, abilities: ["strike"] }, "ally", 9, B.enc), {})); RT.step(R, {});
+    const fr = B.units.find((u) => u.src === "Friend"); fr.rt.x = 0.5; fr.rt.cool = 99; p.rt.x = 0.3;
+    ar.rt.atk = { id: "arrows", on: fr.uid, t0: R.t, land: R.t + 0.6, ranged: true, lane: 0.5, locked: false, heavy: false };
+    for (let i = 0; i < 20; i++) RT.step(R, {});
+    p.rt.x = 0.5; const p0 = p.hp, f0 = fr.hp;
+    for (let i = 0; i < 60; i++) RT.step(R, {});
+    ok(R.shots.length === 0 && p.hp < p0 && fr.hp === f0, "an arrow is a projectile down its locked lane: it strikes you, who stepped into the lane, not the friend it was aimed at"); C.settle("win"); C.end(); }
+  // One more try in a deadly fight, a little hurt; a second loss counts as any loss.
+  { K.seed(13); life(); let B = C.start("e_raid"); let R = RT.begin(B); let n = 0;
+    while (!R.over && n++ < 60 * 200) RT.step(R, {});
+    const first = R.over; const R2 = RT.retry(R);
+    const hp = C.player().hp / C.player().maxHp;
+    let m = 0; while (!R2.over && m++ < 60 * 200) RT.step(R2, {});
+    ok(first === "retry" && R2.tries === 1 && Math.abs(hp - RT.P.retryHp) < 0.02 && R2.over === "lose" && R2.B.over === "lose", "a deadly real-time fight lost: one more try (a little hurt), and the second loss counts");
+    C.end();
+    K.seed(14); life(); B = C.start("e_bandits"); R = RT.begin(B); n = 0; while (!R.over && n++ < 60 * 300) RT.step(R, {});
+    ok(R.over === "lose" && B.over === "lose", "an ordinary fight lost is lost at once (no second try)"); C.end(); }
+  // The same outcomes, routed through the turn-based engine's end: withdrawing breaks the vow, sparing spares.
+  { K.seed(15); const S = life(); S.vows.push({ id: "never_retreat", broken: false });
+    const B = C.start("e_guard"); const R = RT.begin(B); RT.step(R, {}); RT.step(R, { withdraw: true });
+    ok(R.over === "flee" && B.over === "flee" && S.vows.find((v) => v.id === "never_retreat").broken && S.flags.includes("company_shaken"), "Withdraw in real time ends the fight as a withdrawal and breaks the vow never to retreat, as on the turns");
+    C.end();
+    K.seed(16); life(); const B2 = C.start("e_ep_carts"); const R2 = RT.begin(B2); const e = B2.units.find((u) => u.side === "enemy"); e.hp = Math.round(e.maxHp * 0.2);
+    B2.units.filter((u) => u.side === "enemy" && u !== e).forEach((u) => { u.rt.x = 0.97; u.rt.cool = 99; });
+    e.rt.x = C.player().rt.x + RT.BODY; e.rt.entered = true; e.rt.cool = 99; RT.step(R2, {}); RT.step(R2, { spare: e.uid });
+    ok(R2.over === "spare" && B2.over === "spare", "sparing a beaten foe within reach ends the fight spared");
+    C.end();
+    const o = K.combatOutcome("e_ep_carts", "spare", "x"); ok(o.text === K.ENCOUNTERS.e_ep_carts.spare.text, "and the spare branch's text and effects follow, as on the turns"); }
+  // Effects that last rounds last about 4 s a round.
+  { K.seed(17); life(); const B = C.start("e_bandits"); const R = RT.begin(B); const e = B.units.find((u) => u.side === "enemy");
+    B.status(e, "stun", 1); let t0 = R.t; while (e.status.stun && R.t - t0 < 10) RT.step(R, {});
+    ok(Math.abs(R.t - t0 - RT.ROUND) < 0.1, "a stun of one round lasts about 4 s"); C.settle("win"); C.end(); }
+  RT.force = false;
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

@@ -6,7 +6,9 @@
    - no text shows an unfilled {token};
    - nobody fights on both sides of the same battle, and a friend called for help is not already there;
    - nothing throws, and every life ends.
-   Usage: node tests/lives.js [lives=400] [seed=1] */
+   With RT=1 (or --rt) a real-time fight (PRD §18.15) is played by engine/realtime.js's bot for its
+   outcome instead of a random one, and each is checked to end with a proper outcome.
+   Usage: node tests/lives.js [lives=400] [seed=1] [--rt] */
 const fs = require("fs");
 const path = require("path");
 const G = path.join(__dirname, "..", "game");
@@ -18,6 +20,11 @@ for (const src of [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map((m
 K.UI = { esc: (s) => s };
 (0, eval)(fs.readFileSync(path.join(G, "js/ui/map.js"), "utf8")); // K.locOf, used by the homeland helpers
 K.save = () => true;
+const RTM = process.env.RT === "1" || process.argv.includes("--rt");
+if (RTM) K.RT.force = true;
+let rtFights = 0;
+const rtStats = {}, tbStats = {};
+if (RTM && process.env.PARAMS) Object.assign(K.RT.P, JSON.parse(process.env.PARAMS));
 
 const N = parseInt(process.argv[2] || "400", 10), SEED = parseInt(process.argv[3] || "1", 10);
 const problems = new Map();
@@ -74,7 +81,29 @@ for (let i = 0; i < N; i++) {
       for (const a of allies) if (foes.includes(a)) add("fights on both sides", res.combat + ": " + a);
       if (enc.callHelp) { try { const h = enc.callHelp(K.S); const who = h && h.unit && (h.unit.person || h.unit.name); if (who && (foes.includes(who) || allies.includes(who))) add("called friend is already in the fight", res.combat + ": " + who); } catch (e) { add("throws", res.combat + ".callHelp: " + e.message); } }
       let r;
-      try { r = K.combatOutcome(res.combat, K.rng() < 0.4 ? "win" : "lose", res.next); } catch (e) { add("throws", res.combat + " outcome: " + e.message); break; }
+      let out = K.rng() < 0.4 ? "win" : "lose";
+      if (RTM && process.env.COMPARE && K.RT.isRealtime(enc)) {
+        // The same fight on the turns first, played as tests/balance.js plays it, on a copy of the life.
+        const keep = JSON.stringify(K.S), C = K.Combat;
+        C.humanDefense = { counter: 0.12, block: 0.5 };
+        const B = C.start(res.combat, null);
+        for (let i = 0; i < 400 && !B.over; i++) {
+          const p = C.player(), rows = C.available().filter((a) => !a.why);
+          const heavy = B.units.filter((u) => u.side === "enemy" && u.hp > 0).map(C.threat).filter(Boolean).some((t) => t.heavy);
+          const last = B.habit[B.habit.length - 1], has = (id) => rows.find((a) => a.id === id);
+          const sp = rows.filter((a) => !["strike", "guard", "herbs"].includes(a.id));
+          const id = p.hp < p.maxHp * 0.35 && has("herbs") ? "herbs" : heavy && has("guard") && !(last && last.id === "guard") && p.hp < p.maxHp * 0.7 ? "guard" : sp.length ? sp[0].id : "strike";
+          if (!C.act(id, null)) C.act("strike", null);
+        }
+        const tst = (tbStats[res.combat] = tbStats[res.combat] || { w: 0, n: 0 }); tst.n++; if (B.over === "win" || B.over === "spare") tst.w++;
+        C.end(); K.S = JSON.parse(keep);
+      }
+      if (RTM && K.RT.isRealtime(enc)) {
+        try { out = K.RT.autoplay(res.combat, { spare: process.env.RTSTATS ? 0 : 0.3 }); rtFights++; const L = K.RT.log[K.RT.log.length - 1]; const st = (rtStats[L.id] = rtStats[L.id] || { w: 0, n: 0, t: [], tries: 0 }); st.n++; if (out === "win" || out === "spare") st.w++; if ((out === "win" || out === "spare") && L.tries === 1) st.w1 = (st.w1 || 0) + 1; st.t.push(L.t); if (L.tries > 1) st.tries++; } catch (e) { add("throws", res.combat + " real-time: " + e.stack.split("\n").slice(0, 3).join(" | ")); break; }
+        if (!["win", "lose", "flee", "spare"].includes(out)) add("real-time fight without an outcome", res.combat + ": " + out);
+        if (K.RT.last && K.RT.last.capped) add("real-time fight ran out of time", res.combat);
+      }
+      try { r = K.combatOutcome(res.combat, out, res.next); } catch (e) { add("throws", res.combat + " outcome: " + e.message); break; }
       txt(r.text, res.combat + " result");
       next = r.next;
     }
@@ -82,7 +111,14 @@ for (let i = 0; i < N; i++) {
     try { K.go(next); } catch (e) { add("throws", sc.id + ":" + c.id + " -> " + next + ": " + e.message); break; }
   }
 }
+if (RTM && process.env.RTSTATS) {
+  let w = 0, n = 0, T = [];
+  for (const [id, r] of Object.entries(rtStats).sort()) { w += r.w; n += r.n; T.push(...r.t); const m = r.t.reduce((a, b) => a + b, 0) / r.n; const tb = tbStats[id]; console.log("  " + id.padEnd(16) + String(r.w).padStart(4) + " /" + String(r.n).padStart(4) + "  " + String(Math.round(r.w / r.n * 100)).padStart(3) + "% (first try " + String(Math.round((r.w1 || 0) / r.n * 100)).padStart(3) + "%)  " + m.toFixed(1) + " s  retried " + r.tries + (tb ? "   turns " + Math.round(tb.w / tb.n * 100) + "%" : "")); }
+  if (Object.keys(tbStats).length) { let a = 0, b = 0; for (const r of Object.values(tbStats)) { a += r.w; b += r.n; } console.log("  all on the turns: " + Math.round(a / b * 100) + "% won"); }
+ const w1 = Object.values(rtStats).reduce((a, r) => a + (r.w1 || 0), 0); let err = 0; for (const [id, r] of Object.entries(rtStats)) if (tbStats[id]) err += r.n * Math.pow((r.w1 || 0) / r.n - tbStats[id].w / tbStats[id].n, 2);
+  console.log("  all real-time: " + Math.round(w / n * 100) + "% won (" + Math.round(w1 / n * 100) + "% at the first try; per-fight gap to the turns " + Math.sqrt(err / n).toFixed(3) + "), mean " + (T.reduce((a, b) => a + b, 0) / T.length).toFixed(1) + " s");
+}
 let bad = 0;
 for (const [k, m] of problems) { bad += [...m.values()].reduce((a, b) => a + b, 0); console.log("✗ " + k + " (" + m.size + " kinds)"); [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, 12).forEach(([v, n]) => console.log("    " + n + "× " + v)); }
-console.log(lives + " lives, " + ended + " reached an ending; " + (bad ? bad + " problems" : "no problems"));
+console.log(lives + " lives, " + ended + " reached an ending; " + (bad ? bad + " problems" : "no problems") + (RTM ? "; " + rtFights + " real-time fights played by the bot" : ""));
 process.exit(bad || ended < lives ? 1 : 0);

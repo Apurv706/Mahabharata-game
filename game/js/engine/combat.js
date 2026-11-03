@@ -307,13 +307,17 @@
     B.log.splice(at, 0, { key: ev.text, u, ev: true });
   }
 
-  function over() {
-    const p = C.player();
+  // A whole amulet turns aside a killing blow in a deadly fight, once (shared with engine/realtime.js).
+  function amulet(p) {
     if (p.hp <= 0 && B.enc.lethal && K.S.flags.includes("amulet_whole")) {
       p.hp = Math.max(1, Math.round(p.maxHp * 0.15));
       K.apply({ unflag: "amulet_whole", flag: "amulet_broken", journal: "Your amulet cracked and turned aside a killing blow." });
       api.say("The amulet at your throat cracks. The killing blow turns aside.");
     }
+  }
+  function over() {
+    const p = C.player();
+    amulet(p);
     if (p.hp <= 0) return finish("lose");
     { const r = B.rule && B.rule.over ? B.rule.over(B) : null; if (r) return finish(r); } // a fight of another kind ends on its own terms
     if (!living("enemy").length) return finish("win");
@@ -497,6 +501,16 @@
     if (!B || B.over) return;
     if (rounds != null) B.round = rounds + 1;
     finish(outcome);
+  };
+  // The pieces the real-time fight (engine/realtime.js) shares with the turns, so a fight played live
+  // builds its units, deals its blows and ends exactly as a turn-based one does.
+  C.core = {
+    use: (u, id, uid) => use(u, id, uid),
+    targetsFor: (u, ab, uid) => targetsFor(u, ab, uid),
+    amulet: (p) => amulet(p),
+    fieldEvent: () => fieldEvent(),
+    makeUnit: (def, side, i, enc) => makeUnit(def, side, i, enc),
+    TIMED
   };
   C.end = function () {
     if (!B || !B.over) return null;
