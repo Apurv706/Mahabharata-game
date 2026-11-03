@@ -171,7 +171,7 @@
     if (el.classList.contains("enemy")) el.classList.toggle("far", (p === "stand" || p === "brace") && !el.classList.contains("down"));
     clearTimeout(r._t);
     if (p === "hit") { r.kick({ rot: -150, tx: -36, head: -180, armF: 140 }); return; }
-    if (p === "fall") { r.fallDown(); return; }
+    if (p === "fall") { r.fallDown(null, 1); return; } // forward, toward the middle of the stage: never off its edge
     if (p === "turn") { // turning your back: the plain CSS turn
       r.stop(); rigs.delete(uid);
       r.svg.querySelectorAll("[style]").forEach((n) => n.removeAttribute("style")); el.style.translate = "";
@@ -295,7 +295,7 @@
       const d = t.hp - lastSeen[t.uid];
       if (d > 0) { pop(t.uid, "+" + d, "up"); return; }
       impact(t, d, HEAVY.has(t._by) || -d >= t.maxHp * 0.18, guardWas.has(t.uid) && !t.status.guard);
-      if (t.hp <= 0) setTimeout(() => { const el = actorEl(t.uid); if (el) el.classList.add("down"); const r = rigs.get(t.uid); if (r) r.fallDown(); else pose(t.uid, "fall"); }, finisher ? 160 : 70);
+      if (t.hp <= 0) setTimeout(() => { const el = actorEl(t.uid); if (el) el.classList.add("down"); const r = rigs.get(t.uid); if (r) r.fallDown(null, 1); else pose(t.uid, "fall"); }, finisher ? 160 : 70);
     };
     const lastSeen = Object.assign({}, lastHp), guardWas = new Set(lastGuard);
     let left = hurt.slice(), longest = 0;

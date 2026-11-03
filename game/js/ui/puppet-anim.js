@@ -9,7 +9,7 @@
    rig.set(pose, stiffness, damping, snap)  aim every joint at a pose from POSES
    rig.home()                               back to its own resting pose
    rig.kick({ joint: velocity })            a push on some joints (an impact)
-   rig.fallDown(floor)                      the joints go slack and it topples about its feet (to the
+   rig.fallDown(floor, dir)                 the joints go slack and it topples about its feet, backward (dir 1: forward) (to the
                                             ground, or held at floor degrees: Bhishma on the arrows)
    U.rigFreeze(ms)                          hold every live figure still for a moment (hit-stop)
    U.rigs.clear()                           forget every figure (a new screen)
@@ -116,7 +116,7 @@
   Rig.prototype.home = function (k) { return this.set(this.baseName, k || 520, 0.42); };
   Rig.prototype.base = function (name) { if (POSES[name]) this.baseName = name; return this; };
   Rig.prototype.kick = function (o) { for (const k in o) this.v[k] += o[k]; wake(); return this; };
-  Rig.prototype.fallDown = function (floor) { this.set("slack"); this.falling = true; this.fallV = 140; this.floor = floor || -86; wake(); return this; };
+  Rig.prototype.fallDown = function (floor, dir) { this.set("slack"); this.falling = true; this.fallV = 140; this.floor = floor || -86; this.fdir = dir || -1; wake(); return this; };
   Rig.prototype.stop = function () { live.delete(this); };
   Rig.prototype.step = function (dt, time) {
     const c = 2 * this.z * Math.sqrt(this.k);
@@ -144,13 +144,13 @@
     this.apply();
   };
   Rig.prototype.apply = function () {
-    const x = this.x, th = (x.rot + this.fall) * Math.PI / 180;
-    const ptx = this.fall ? 74 * Math.sin(th) : 0, pty = this.fall ? 74 - 74 * Math.cos(th) : 0;
-    if (this.body) this.body.style.transform = "translate(" + (x.tx + ptx).toFixed(2) + "px," + (x.ty + pty).toFixed(2) + "px) rotate(" + (x.rot + this.fall).toFixed(2) + "deg)";
+    const x = this.x, fall = this.fall * -(this.fdir || -1), th = (x.rot + fall) * Math.PI / 180;
+    const ptx = fall ? 74 * Math.sin(th) : 0, pty = fall ? 74 - 74 * Math.cos(th) : 0;
+    if (this.body) this.body.style.transform = "translate(" + (x.tx + ptx).toFixed(2) + "px," + (x.ty + pty).toFixed(2) + "px) rotate(" + (x.rot + fall).toFixed(2) + "deg)";
     for (const k in this.g) if (this.g[k]) this.g[k].style.transform = "rotate(" + x[k].toFixed(2) + "deg)";
     if (this.itemEl) this.itemEl.style.transform = "rotate(" + x.item.toFixed(2) + "deg)";
     if (this.bow) {
-      const up = -(x.rot + this.fall + x.armF + x.foreF) + x.tilt; // undo the arm's turn: the bow stays upright
+      const up = -(x.rot + fall + x.armF + x.foreF) + x.tilt; // undo the arm's turn: the bow stays upright
       this.bow.style.transform = "rotate(" + up.toFixed(2) + "deg)";
       const d = Math.max(-4, x.draw * 30); // the string's nocking point, pulled back
       this.string.setAttribute("d", "M50 86 L" + (50 - d).toFixed(2) + " 126 L50 166");
