@@ -268,15 +268,15 @@
     const f = sh.querySelector("button"); if (f && !U.calm()) f.focus({ preventScroll: true });
     V.el.querySelectorAll(".rt-hb").forEach((b) => b.classList.toggle("on", b.dataset.act === kind));
   }
-  // Where a drop-down opens: one swappable spot while the owner chooses (K.prefs().rtMenu or ?menu=):
-  // "button" under its button (default), "sky" above the figures, "controls" over the controls.
-  U.rtMenuSpot = () => { try { const m = /[?&]menu=(\w+)/.exec(location.search); if (m) return m[1]; } catch (e) { /* none */ } return K.prefs().rtMenu || "button"; };
+  // Where a menu opens (K.prefs().rtMenu or ?menu= can still try the others): "controls", sliding up from
+  // the bottom of the stage over the controls (the owner's pick); "button" under its button; "sky" above the figures.
+  U.rtMenuSpot = () => { try { const m = /[?&]menu=(\w+)/.exec(location.search); if (m) return m[1]; } catch (e) { /* none */ } return K.prefs().rtMenu || "controls"; }; // the owner's pick (3 November): up from the bottom, over the controls
   function placeDrop(sh, kind) {
     const er = V.el.getBoundingClientRect(), spot = U.rtMenuSpot();
     sh.style.top = sh.style.bottom = sh.style.left = sh.style.right = "";
     sh.dataset.spot = spot;
     if (spot === "sky") { const hud = V.el.querySelector(".rt-hud").getBoundingClientRect(); sh.style.top = (hud.bottom - er.top + 60) + "px"; sh.style.left = "50%"; sh.style.transform = "translateX(-50%)"; return; }
-    if (spot === "controls") { const st = V.stage.getBoundingClientRect(); sh.style.top = "auto"; sh.style.bottom = (er.bottom - st.bottom + 6) + "px"; sh.style.left = "50%"; sh.style.transform = "translateX(-50%)"; return; }
+    if (spot === "controls") { sh.style.top = "auto"; sh.style.bottom = "max(6px, var(--sab, 0px))"; sh.style.left = "50%"; sh.style.transform = "translateX(-50%)"; return; }
     const mb = V.el.querySelector(".rt-hb." + kind).getBoundingClientRect();
     sh.style.transform = ""; sh.style.top = (mb.bottom - er.top + 6) + "px"; sh.style.right = Math.max(6, er.right - mb.right) + "px";
   }

@@ -196,3 +196,6 @@ html.calm .rt-actor .nametag { transition: none; }
 .rt-sheet .flame b::after { content: ""; position: absolute; right: -2px; top: -3px; width: 6px; height: 10px; border-radius: 50%; background: #ffe7a8; box-shadow: 0 0 6px #ff9a3c; }
 @keyframes rt-burn { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 html.calm .rt-sheet .flame b { animation-timing-function: steps(6); }
+.rt-sheet.drop[data-spot="controls"] { width: min(360px, calc(100% - 12px)); animation: rt-slideup 0.18s ease-out; }
+@keyframes rt-slideup { from { translate: 0 24px; opacity: 0; } to { translate: 0 0; opacity: 1; } }
+html.calm .rt-sheet.drop { animation: none; }
