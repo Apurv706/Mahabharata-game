@@ -304,21 +304,20 @@
     {
       id: "bh_day9", act: 6, age: 44, war: true, away: true, when: (S) => S.side === "pandava" && free(S), skipTo: "a6_bhishma", next: "bh_wheel",
       art: "war_bhishma", place: "Kurukshetra · day 9", caption: "The grandsire's arrows", title: "Arjuna holds back",
-      body: (S) => ["On the ninth day Bhishma cuts through the Pandava army as if it were standing corn. Arjuna faces him, and his arrows keep missing. Everyone can see he does not want to hit his grandfather.",
+      body: (S) => ["Bhishma cuts through the Pandava army. Arjuna's arrows keep missing his grandfather.",
         S.friend === "arjuna" ? { memory: "You have known him since you were ten. You have never seen him miss like this." } : null],
       choices: [
-        { id: "call", t: "Shout to Arjuna: \"Fight him, or we all die\"", combat: "bh_line9", fx: { flag: "bh_called_arjuna", rep: { pandava: 1 } }, hint: "Then hold the line" },
-        { id: "quiet", t: "Hold your tongue, and hold the line", combat: "bh_line9", fx: { flag: "bh_held_tongue" } }
+        { id: "call", t: "Shout to Arjuna to fight", combat: "bh_line9", fx: { flag: "bh_called_arjuna", rep: { pandava: 1 } }, hint: "Then hold the line" },
+        { id: "quiet", t: "Hold the line", combat: "bh_line9", fx: { flag: "bh_held_tongue" } }
       ]
     },
     {
       id: "bh_wheel", act: 6, age: 44, war: true, away: true, next: "a6_bhishma", enter: { moment: { kind: "bh_wheel" } },
       art: "war_bhishma", place: "Kurukshetra · day 9", caption: "The wheel", title: "Krishna takes up the wheel",
-      body: (S) => ["Krishna swore he would not take up arms in this war. Now he leaps down from the chariot, lifts a broken wheel above his head and runs at Bhishma. The old man lowers his bow and opens his hands to welcome him.",
-        "Arjuna catches him from behind, and drags him back by the tenth step. He swears he will fight in earnest.",
+      body: (S) => ["Krishna, sworn not to fight, runs at Bhishma with a chariot wheel. Arjuna drags him back and swears to fight in earnest.",
         has(S, "bh_called_arjuna") ? "Arjuna does not look at you. He heard you." : null],
       choices: [
-        { id: "tent", t: "Go with the brothers to the grandsire's tent tonight", req: close,
+        { id: "tent", t: "Go to the grandsire's tent tonight", req: close,
           fx: { flag: "bh_heard_shikhandi", bond: { bhishma: 1 }, journal: "On the ninth night you went with the Pandava brothers to Bhishma's tent, and heard him tell them how he could be brought down." },
           text: "The brothers go unarmed, and he is glad to see them. \"I will not raise my bow against Shikhandi, who was born a woman,\" he says. \"Put him in front of Arjuna. Then come and take me.\"" },
         { id: "fires", t: "Stay at the fires", text: "Late in the night word goes round the fires that the brothers have gone to the grandsire's tent, unarmed." }
@@ -328,8 +327,7 @@
     {
       id: "bh_guard9", act: 6, age: 44, war: true, away: true, when: (S) => S.side === "kaurava" && free(S), skipTo: "a6_bhishma", next: "a6_bhishma", enter: { moment: { kind: "bh_wheel" } },
       art: "war_bhishma", place: "Kurukshetra · day 9", caption: "In the grandsire's guard", title: "The wheel",
-      body: ["You ride in Bhishma's guard. All day the Pandava line has broken in front of him.",
-        "Now Krishna, who swore he would not fight, leaps down from Arjuna's chariot with a broken wheel above his head and runs at the old man."],
+      body: ["Krishna, sworn not to fight, runs at Bhishma with a chariot wheel."],
       choices: [
         { id: "step", t: "Step in front of the old man", fx: { flag: "bh_stepped_in", bond: { bhishma: 1 }, rep: { kuru: 1 } },
           text: "You put yourself between them. Bhishma's hand on your shoulder moves you aside, the way he would move a child. \"Not you,\" he says. \"Let him come.\"" },
@@ -341,17 +339,16 @@
     {
       id: "bh_fall", act: 6, age: 44, war: true, away: true, when: (S) => S.side !== "neutral" && free(S), skipTo: "a6_bhishma", next: "a6_bhishma", enter: { moment: { kind: "bh_fall" } },
       art: "scene_shikhandi", place: "Kurukshetra · day 10", caption: "The arrows", title: "The grandsire falls",
-      body: (S) => [S.side === "kaurava" ? "You are in the grandsire's guard. Between you and him there are more arrows than you can count, and none of them are meant for you."
+      body: (S) => [S.side === "kaurava" ? "Between you and him are more arrows than you can count."
         : has(S, "held_for_shikhandi") ? "You are at Shikhandi's wheel, close enough to hear Arjuna's bowstring."
         : has(S, "refused_shikhandi") ? "You are at the back of the line. The arrows go over your head."
-        : "You are behind Arjuna's wheel, close enough to hear the bowstring.",
-        "Bhishma will not raise his bow against Shikhandi. Arjuna draws and looses, and draws again, until the old man sinks backward. The shafts hold him off the ground."],
+        : "Bhishma will not raise his bow against Shikhandi. Arjuna's arrows bring him down."],
       choices: [
-        { id: "go", t: (S) => (S.side === "kaurava" ? "Fight your way to him through the arrows" : "Go to him"), fx: { flag: "bh_went_to_him", bond: { bhishma: 1 }, memory: ["bhishma", "You were one of the first to reach him when he fell."] },
+        { id: "go", t: (S) => (S.side === "kaurava" ? "Fight your way to him" : "Go to him"), fx: { flag: "bh_went_to_him", bond: { bhishma: 1 }, memory: ["bhishma", "You were one of the first to reach him when he fell."] },
           text: (S) => (S.side === "kaurava"
             ? "You cannot reach him until the arrows stop. Then you are the first of his guard to kneel by him. His head hangs. He asks for a pillow, and waves away the silk ones they bring. Arjuna sets three arrows in the earth under his head. \"That is a pillow,\" the old man says."
             : "You reach him while the arrows are still falling. His head hangs. He asks for a pillow, and waves away the silk ones they bring. Arjuna sets three arrows in the earth under his head. \"That is a pillow,\" the old man says.") },
-        { id: "hold", t: "Hold the line. The day is not over", fx: { flag: "bh_held_line", duty: { court: 1 } }, text: "The fighting goes on around him until dark, as if he were not there." },
+        { id: "hold", t: "Hold the line", fx: { flag: "bh_held_line", duty: { court: 1 } }, text: "The fighting goes on around him until dark, as if he were not there." },
         { id: "away", t: "Look away", fx: { flag: "bh_looked_away", duty: { conscience: 1 } }, text: "You look at the ground until the shouting changes. When you look up, he is lying on the arrows." }
       ]
     }

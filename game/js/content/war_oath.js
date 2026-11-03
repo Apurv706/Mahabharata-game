@@ -78,7 +78,7 @@
 
   const holdChoices = (enc) => [
     { id: "hold", t: "Hold, as you swore", combat: enc, hint: "Won by standing" },
-    { id: "withdraw", t: "Pull your chariot out of his road", tags: WITHDRAW, fx: { flag: "oath_withdrew" },
+    { id: "withdraw", t: "Pull out of his road", tags: WITHDRAW, fx: { flag: "oath_withdrew" },
       text: "You turn your horses. The sworn men on either side of you watch you go, and close the gap without a word." }
   ];
 
@@ -89,27 +89,26 @@
       skipTo: "a6_wheel", next: "a6_wheel",
       art: "scene_samshaptaka_oath", place: "The Kaurava camp, the night of the eleventh day", caption: "Grass garlands around a fire",
       title: "The oath of the Samshaptakas",
-      body: (S) => ["On the eleventh night, after the king slipped through Drona's hands, Susharma of Trigarta and his brothers build a fire at the south end of the camp. Their men stand around it in garlands of kusha grass, the way the dead are dressed, and pour water for themselves as if their sons were doing it.",
-        { speaker: "Susharma", line: "Tomorrow we call Arjuna out. We fight him until he dies or we do, and while he is busy with us, Drona takes the king. There is room at the fire." },
+      body: (S) => ["Susharma of Trigarta and his men, garlanded like the dead, swear by a fire to fight Arjuna to the death.",
+        { speaker: "Susharma", line: "While Arjuna fights us, Drona takes the king. There is room at the fire." },
         S.friend === "arjuna" ? { memory: "Arjuna has been your friend since you were ten." } : null],
       choices: [
-        { id: "swear", t: "Put on the grass and swear with them", fx: { vowTake: "samshaptaka", tapas: 3, flag: "samshaptaka", journal: "On the eleventh night of the war you swore the Samshaptakas' oath: to fight Arjuna until he fell or you did." },
+        { id: "swear", t: "Swear with them", fx: { vowTake: "samshaptaka", tapas: 3, flag: "samshaptaka", journal: "On the eleventh night of the war you swore the Samshaptakas' oath: to fight Arjuna until he fell or you did." },
           resolve: (S) => (S.friend === "arjuna" ? { bond: { arjuna: -2 } } : null), hint: (S) => (K.vowsHeld(S) >= K.MAX_VOWS ? "A fourth vow, allowed for this war only" : null),
           text: "You say the words after Susharma and pour the water, and someone hangs a garland of grass around your neck. It weighs nothing. You feel it all night." },
-        { id: "watch", t: "Watch from the edge of the firelight, and keep your own oaths", text: "You watch them swear. When the fire burns low you go back to your own tent, and do not sleep much." }
+        { id: "watch", t: "Keep your own oaths", text: "You watch them swear. When the fire burns low you go back to your own tent, and do not sleep much." }
       ]
     },
     {
       id: "oath_south", act: 6, age: 44, war: true, away: true, when: (S) => sworn(S) && free12(S), skipTo: "a6_wheel", next: "a6_wheel",
       art: "fight_arjuna_chariot", place: "Kurukshetra · day 12, the south of the field", caption: "The white horses, turning", title: "Arjuna's chariot",
-      body: ["At dawn the sworn men ride to the south end of the field and shout Arjuna's name until he hears it. He cannot refuse a challenge. Krishna turns the white horses toward you.",
-        "Behind you, Drona's eagle array is already moving on the king."],
+      body: ["The sworn men call Arjuna out, and Krishna turns the white horses toward you."],
       choices: holdChoices("oath_arjuna_12")
     },
     {
       id: "oath_again", act: 6, age: 44, war: true, away: true, when: (S) => sworn(S) && !S.flags.includes("captive"), skipTo: "a6_day16", next: "a6_day16",
       art: "fight_arjuna_chariot", place: "Kurukshetra · day 16", caption: "The sworn men, fewer", title: "He comes again",
-      body: (S) => ["Karna commands now. On the sixteenth day Arjuna turns south again, toward what is left of the sworn men. There are fewer garlands than there were.",
+      body: (S) => ["Arjuna turns south again, toward what is left of the sworn men.",
         S.flags.includes("oath_held_12") ? "He has seen your banner before. He comes straight at it." : null],
       choices: holdChoices("oath_arjuna_16")
     },
@@ -118,17 +117,16 @@
     {
       id: "oath_crescent", act: 6, age: 44, war: true, away: true, when: (S) => S.side === "pandava" && free12(S), skipTo: "a6_wheel", next: "a6_wheel",
       art: "war_capture", place: "Kurukshetra · day 12", caption: "The crescent array", title: "The crescent",
-      body: ["On the twelfth morning the Trigarta brothers ride up at the south end of the field and call Arjuna out by name. He cannot refuse a challenge. He leaves Satyajit of Panchala to guard his brother, and goes.",
-        "Dhrishtadyumna sets the army in a crescent, horns forward, with the king at its heart. Drona's eagle is already coming."],
+      body: ["The Trigartas have drawn Arjuna away. Drona's eagle array is coming for the king."],
       choices: [
-        { id: "array", t: "Set your companies on the crescent", req: (S) => S.flags.includes("role_command") && !S.flags.includes("company_broken"), game: "array", hint: "Hold until Arjuna comes back",
+        { id: "array", t: "Set your companies", req: (S) => S.flags.includes("role_command") && !S.flags.includes("company_broken"), game: "array", hint: "Hold till Arjuna returns",
           trial: { attr: "command", skill: "statecraft", kind: "war", array: "crescent", rounds: 5, stage: "stage_vyuha_top", companies: (S) => companies(S),
             rules: "Dhrishtadyumna points at your stretch of the crescent. Put your companies on its marks. Then, round by round, the eagle pushes: hold, strike their flank, give ground, or send the reserve where they strike.",
             stakes: ["The crescent holds, and Drona does not reach the king through you.", "The crescent breaks where you stand, and Drona's chariots go through toward the king."] },
           win: { fx: { flag: "crescent_held", duty: { court: 1 }, journal: "On the twelfth day, with Arjuna drawn away south, you held your stretch of the crescent." }, text: "Your stretch of the crescent is where it was at dawn when the eagle draws back." },
           close: { fx: { flag: "crescent_held" }, text: "The crescent bends where you stand, and holds." },
           lose: { fx: { flag: "crescent_broke", duty: { court: -1 } }, next: "oath_king", text: "The horn bends, then breaks. Drona's chariots are through." } },
-        { id: "horn", t: "Fight in the horn of the crescent, beside Bhima", hint: "A test of might",
+        { id: "horn", t: "Fight beside Bhima", hint: "A test of might",
           check: { attr: "might", skill: "mace", dc: 8,
             pass: { fx: { flag: "crescent_held", bond: { bhima: 1 } }, text: "Bhima's horn does not bend all day. You are in the thick of it when the conches sound." },
             fail: { fx: { flag: "crescent_broke" }, next: "oath_king", text: "The horn folds under the eagle's charge, and you are thrown clear. When you get up, Drona's chariots are through." } } }
@@ -138,10 +136,10 @@
     },
     {
       id: "oath_king", act: 6, age: 44, war: true, away: true, art: "fight_war_chariot", place: "Kurukshetra · day 12", caption: "Drona through the gap", title: "The king's chariot",
-      body: ["The crescent is broken where you stood. Drona's chariots pour through the gap toward its heart, where Yudhishthira is."],
+      body: ["Drona's chariots pour through the gap toward Yudhishthira."],
       choices: [
-        { id: "hold", t: "Get to the king's chariot and hold", combat: "oath_king_hold", hint: "Won by standing" },
-        { id: "back", t: "Fall back to the second line", tags: ["retreat"], fx: { duty: { court: -1 } }, text: "You fall back with the broken horn. Others reach the king before you, or do not." }
+        { id: "hold", t: "Hold at the king's chariot", combat: "oath_king_hold", hint: "Won by standing" },
+        { id: "back", t: "Fall back", tags: ["retreat"], fx: { duty: { court: -1 } }, text: "You fall back with the broken horn. Others reach the king before you, or do not." }
       ],
       next: "a6_wheel"
     }
