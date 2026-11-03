@@ -107,6 +107,10 @@
       '<div class="seg" role="radiogroup" aria-label="' + U.tr("Scene titles") + '">' +
       ["full", "short"].map((v) => '<button type="button" role="radio" data-titles="' + v + '" aria-checked="' + ((prefs.titles || "full") === v) + '">' + U.tr(v === "full" ? "Full" : "Short") + "</button>").join("") + "</div></div>" +
       '<label class="toggle"><input type="checkbox" id="m-living"' + (prefs.living !== false ? " checked" : "") + "><span>" + U.tr("Living paintings") + "<small>" + U.tr("Some paintings move for a few seconds. Each uses about 1 MB of data.") + "</small></span></label>" +
+      // Fights: real-time / turn-based (PRD §18.15). Shown only behind the developer switch until the real-time screens are approved.
+      (K.RT && K.RT.dev() ? '<div class="seg-row"><span>' + U.tr("Fights") + "<small>" + U.tr("Real-time: you move, strike and roll as the fight happens. Turn-based: every fight in turns, as before.") + "</small></span>" +
+        '<div class="seg" role="radiogroup" aria-label="' + U.tr("Fights") + '">' +
+        ["realtime", "turns"].map((v) => '<button type="button" role="radio" data-fights="' + v + '" aria-checked="' + (K.RT.mode() === v) + '">' + U.tr(v === "turns" ? "Turn-based" : "Real-time") + "</button>").join("") + "</div></div>" : "") +
       '<label class="toggle"><input type="checkbox" id="m-assist"' + (U.assist() ? " checked" : "") + "><span>" + U.tr("Meet blows for me") + "<small>" + U.tr("In fights, blows aimed at you are met for you, on kinder odds. On by itself in story mode.") + "</small></span></label>" +
       '<label class="toggle"><input type="checkbox" id="m-timed"' + (prefs.timed !== false ? " checked" : "") + "><span>" + U.tr("Timed moments") + "<small>" + U.tr("At a few hard moments a lamp burns down. If it goes out, you hold your tongue.") + "</small></span></label>" +
       '<label class="toggle"><input type="checkbox" id="m-sound"' + (prefs.sound !== false ? " checked" : "") + "><span>" + U.tr("Sound") + "<small>" + U.tr("The quill, the conch, the dice and the gong.") + "</small></span></label>" +
@@ -135,6 +139,10 @@
           K.prefs({ living: e.target.checked });
           if (!e.target.checked) document.querySelectorAll("#backdrop video").forEach((v) => { v.pause(); v.remove(); });
         });
+        document.querySelectorAll("[data-fights]").forEach((b) => b.addEventListener("click", () => {
+          K.prefs({ fights: b.dataset.fights });
+          document.querySelectorAll("[data-fights]").forEach((x) => x.setAttribute("aria-checked", String(x === b)));
+        }));
         U.$("m-timed").addEventListener("change", (e) => { K.prefs({ timed: e.target.checked }); });
         U.$("m-assist").addEventListener("change", (e) => { K.prefs({ assist: e.target.checked }); });
         U.$("m-sound").addEventListener("change", (e) => { K.prefs({ sound: e.target.checked }); U.$("m-drone").disabled = !e.target.checked; if (K.Sound) K.Sound.refresh(); });
