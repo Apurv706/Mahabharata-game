@@ -742,8 +742,9 @@ Proposed and built on 2 November, and on the public site the same day after the 
 - *Your soldiers* in a real-time war fight take an order from a button at the top right, as in the test page: defend, all-out, or stay out.
 - *Phone controls:* a layout test page comes first.
 - *Speed:* the master-leather figures were measured in a three-a-side fight on a phone at 4× CPU slowdown: about 31 frames a second, the same as before.
+- *Withdraw and spare* (both in the game today: "Withdraw from the fight" on most war fights, which breaks the vow never to retreat; sparing a beaten foe at 30% strength, asleep or bound, in 41 fights, conscience +1) stay in real time as controls that appear only when allowed: Withdraw at the top right, Spare as a tap on the beaten foe.
 
-**Still open:** withdraw and spare in real time. Both exist today: "Withdraw from the fight" on most war fights (it breaks the vow never to retreat), and sparing a beaten foe (at 30% strength, asleep or bound; conscience +1, and some stories turn on it) in 41 fights. Proposed: keep both, as controls that appear only when allowed: Withdraw at the top right, Spare as a tap on the beaten foe. Also still to do: `tests/balance.js` runs out of memory above about 200 lives; Hindi and screen-fit checks for the new screens.
+**Still to do before building:** `tests/balance.js` runs out of memory above about 200 lives; Hindi and screen-fit checks for the new screens.
 
 **Cost and order.** After the returning-page fix and master leather (both being built 3 November): the real-time engine (about 2 weeks), converting the real-time fights (about 1 week), the turn-based additions (about 1 week), then balance passes for both together with the race's whip and contact.
 
