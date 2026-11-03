@@ -15,15 +15,14 @@
       id: "a6_day14", act: 6, age: 44, canon: true, war: true, art: "war_day14", place: "Kurukshetra · day 14", caption: "A sun that seems to set early",
       title: "Sunset and torches",
       witness: [
-        "All day Arjuna cuts his way toward Jayadratha, who is hidden deep behind the Kaurava lines. Near evening the sky darkens as if the sun has set. Jayadratha steps out to watch Arjuna fail. The sun is still up, and Arjuna's arrow finds him.",
-        "The fighting does not stop at dusk. For the first time, the armies fight on by torchlight. To save the Pandavas from Karna, Bhima's son Ghatotkacha fights through the dark until Karna is forced to spend the one spear that could have killed Arjuna."
+        "Arjuna kills Jayadratha before sunset, and the armies fight on into the night."
       ],
-      body: (S) => [S.side === "neutral" ? "The tents are lit with torches all night." : "Your company is ordered forward into the dark."],
+      body: (S) => [S.side === "neutral" ? "The tents are lit with torches all night." : null],
       choices: [
-        { id: "road", t: "Clear the road for Arjuna's chariot", req: { side: "pandava" }, combat: "e_road" },
-        { id: "jaya", t: "Guard the ground in front of Jayadratha", req: { side: "kaurava" }, combat: "e_jaya" },
-        { id: "hold", t: "Hold your company's ground until dusk", req: fighting, fx: { duty: { court: 1 } } },
-        { id: "tend", t: "Tend the wounded as they come in", req: { side: ["neutral", null, undefined] }, fx: { rep: { common: 1 } } }
+        { id: "road", t: "Clear Arjuna's road", req: { side: "pandava" }, combat: "e_road" },
+        { id: "jaya", t: "Guard Jayadratha", req: { side: "kaurava" }, combat: "e_jaya" },
+        { id: "hold", t: "Hold your ground", req: fighting, fx: { duty: { court: 1 } } },
+        { id: "tend", t: "Tend the wounded", req: { side: ["neutral", null, undefined] }, fx: { rep: { common: 1 } } }
       ],
       next: "a6_night"
     },
@@ -31,18 +30,17 @@
       id: "a6_day15", act: 6, age: 44, canon: true, war: true, art: "war_day15", place: "Kurukshetra · day 15", caption: "An elephant named Ashwatthama",
       title: "Ashwatthama is dead",
       witness: [
-        "Drona cannot be beaten while he holds his bow. Bhima kills an elephant named Ashwatthama, the same name as Drona's son, and shouts that Ashwatthama is dead.",
-        "Drona does not believe it. He asks Yudhishthira, who has never told a lie. Yudhishthira says, \"Ashwatthama is dead,\" and then, under his breath, \"the elephant.\" Drona lays down his weapons, and Dhrishtadyumna kills him where he sits."
+        "Bhima kills an elephant named Ashwatthama and shouts that Ashwatthama, Drona's son, is dead."
       ],
       body: (S) => [
         S.teacher === "drona" ? { memory: "Drona taught you everything you know." } : null,
-        S.side === "pandava" ? "Bhima is shouting it, and he wants everyone else shouting it too." : S.side === "kaurava" ? "The rumour races down your line toward Drona's chariot." : "Even in the tents, people are repeating it."
+        S.side === "pandava" ? "Bhima is shouting it, and he wants everyone else shouting it too." : S.side === "kaurava" ? "The rumour races toward Drona's chariot." : "Even in the tents, people are repeating it."
       ],
       choices: [
-        { id: "spread", t: "Shout it along the line: Ashwatthama is dead", req: { side: "pandava" }, tags: ["lie"],
+        { id: "spread", t: "Shout it: Ashwatthama is dead", req: { side: "pandava" }, tags: ["lie"],
           fx: (S) => ({ flag: "spread_the_lie", duty: { teacher: S.teacher === "drona" ? -4 : 0, conscience: -2 }, rep: { pandava: 1 }, journal: "On the fifteenth day you helped spread the half-truth that killed Drona." }) },
         { id: "refuse", t: "Refuse to repeat it", req: { side: "pandava" }, fx: { duty: { conscience: 1 }, flag: "refused_lie" } },
-        { id: "warn", t: "Ride to Drona and tell him his son is alive", req: { any: [{ side: "kaurava" }, { teacher: "drona" }] },
+        { id: "warn", t: "Tell Drona his son is alive", req: { any: [{ side: "kaurava" }, { teacher: "drona" }] },
           fx: (S) => ({ duty: { teacher: S.teacher === "drona" ? 3 : 1, court: S.side === "pandava" ? -3 : 1 }, memory: ["drona", "You rode to tell him the truth."], journal: "On the fifteenth day you tried to tell Drona his son was alive." }),
           text: "You reach his chariot and shout it. He looks past you, toward Yudhishthira, the one man he trusts not to lie. He does not hear you." },
         { id: "tend", t: "Stay with the wounded", fx: { rep: { common: 1 } } }
@@ -53,8 +51,8 @@
     {
       id: "a6_day16", act: 6, age: 44, canon: true, war: true, art: "war_day16", place: "Kurukshetra · day 16", caption: "Karna takes command",
       title: "Bhima's vow",
-      witness: ["Karna takes command of the Kaurava army. On the sixteenth day, Bhima finds Dushasana on the field and fulfils the terrible vow he made in the dice hall, thirteen years ago."],
-      body: (S) => [S.flags.includes("enemy_dushasana") ? { memory: "Dushasana never forgot your face from the dice hall. Before Bhima finds him, his men find you." } : "The fighting is fiercer than it has ever been."],
+      witness: ["Karna takes command. Bhima finds Dushasana and keeps the vow he made in the dice hall."],
+      body: (S) => [S.flags.includes("enemy_dushasana") ? { memory: "Dushasana never forgot your face from the dice hall. Before Bhima finds him, his men find you." } : null],
       choices: [
         { id: "ambush", t: "Fight Dushasana's men", req: { flag: "enemy_dushasana" }, combat: "e_dushasana" },
         { id: "fight", t: "Fight in the line", req: { side: ["pandava", "kaurava"], noFlag: "enemy_dushasana" }, combat: "e_day16" },
@@ -66,26 +64,23 @@
       id: "a6_day17", act: 6, age: 44, canon: true, war: true, art: "war_day17", place: "Kurukshetra · day 17", caption: "A chariot wheel sinks into the earth",
       title: "Karna",
       enter: (S) => (K.hasVow("vengeance") && S.flags.includes("vengeance_dice") ? { vowRelease: "vengeance", flag: "vengeance_answered", journal: "Your vow of vengeance for the dice hall was answered by Bhima's hand." } : null),
-      witness: [
-        "Arjuna and Karna meet at last. In the middle of the duel, Karna's chariot wheel sinks into the earth, as a brahmin once cursed it would. He reaches for the mantra of his greatest weapon, and it is gone from his mind, as his teacher Parashurama once cursed it would be.",
-        "He climbs down to lift the wheel and asks Arjuna to wait, as the rules of war demand."
-      ],
+      witness: ["Mid-duel, Karna's wheel sinks into the earth. He climbs down to lift it and asks Arjuna to wait."],
       body: (S) => [
         S.bonds.karna >= 6 ? { memory: S.flags.includes("met_karna_young") ? "You have known Karna since you were children." : "You have known Karna since the day in the arena." } : null,
         K.hasVow("spare_karna") ? { aside: "You swore never to raise a weapon against Karna." } : null,
         S.side === "kaurava" ? "Your chariot is the nearest to his." : S.side === "pandava" ? "You are close enough to see his face." : "You are close enough to see his face."
       ],
       choices: [
-        { id: "shoot", t: "Loose an arrow at Karna while he lifts the wheel", req: { side: "pandava" }, tags: ["strike_karna", "strike_unarmed"], fx: { duty: { conscience: -2 }, bond: { arjuna: 1, karna: -3 }, flag: "shot_karna", journal: "On the seventeenth day you shot at Karna while he was lifting his chariot wheel." } },
-        { id: "call", t: "Shout to Arjuna to wait until Karna is armed", req: { side: "pandava" }, fx: { duty: { conscience: 2 }, bond: { arjuna: -1, karna: 1 }, memory: ["karna", "You called out for a fair fight."] } },
-        { id: "wheel", t: "Jump down and help Karna lift the wheel", req: { side: "kaurava" },
+        { id: "shoot", t: "Shoot Karna at the wheel", req: { side: "pandava" }, tags: ["strike_karna", "strike_unarmed"], fx: { duty: { conscience: -2 }, bond: { arjuna: 1, karna: -3 }, flag: "shot_karna", journal: "On the seventeenth day you shot at Karna while he was lifting his chariot wheel." } },
+        { id: "call", t: "Shout to Arjuna to wait", req: { side: "pandava" }, fx: { duty: { conscience: 2 }, bond: { arjuna: -1, karna: 1 }, memory: ["karna", "You called out for a fair fight."] } },
+        { id: "wheel", t: "Help Karna lift the wheel", req: { side: "kaurava" },
           peril: { kind: "death", flag: "died_with_karna", art: "war_day17", caption: "A chariot wheel sinks into the earth", text: "The arrows come from across the field, and they do not care whose hands are on the wheel.",
             deathText: "{They} jumped down to help Karna lift his sunken wheel, and fell in the dust beside it." },
           check: { attr: "might", skill: "chariot", dc: 9,
             pass: { fx: { bond: { karna: 2 }, flag: "lifted_wheel" }, text: "The wheel moves. It moves too slowly." },
             fail: { fx: { bond: { karna: 1 } }, text: "The earth will not give it back." } } },
-        { id: "stand", t: "Stand over Karna and fight to the end", req: { side: "kaurava" }, fx: { die: true, flag: "died_with_karna", deathText: "You fell beside Karna on the seventeenth day, standing over him as the wheel sank.", bond: { karna: 3 } }, hint: "You will not survive this" },
-        { id: "home", t: "Pull back while you can. Vasu is waiting", req: (S) => S.side === "kaurava" && S.child === "vasu" && !S.dead.includes("vasu"), tags: ["retreat"], fx: { duty: { family: 2 }, flag: "left_karna" } },
+        { id: "stand", t: "Stand over Karna to the end", req: { side: "kaurava" }, fx: { die: true, flag: "died_with_karna", deathText: "You fell beside Karna on the seventeenth day, standing over him as the wheel sank.", bond: { karna: 3 } }, hint: "You will not survive this" },
+        { id: "home", t: "Pull back to Vasu", req: (S) => S.side === "kaurava" && S.child === "vasu" && !S.dead.includes("vasu"), tags: ["retreat"], fx: { duty: { family: 2 }, flag: "left_karna" } },
         { id: "watch", t: "Watch, and remember", fx: { flag: "watched_karna" } }
       ],
       after: (S) => [
@@ -99,13 +94,12 @@
       id: "a6_day18", act: 6, age: 44, canon: true, war: true, art: "war_day18", place: "Kurukshetra · day 18", caption: "The last day",
       title: "The last day",
       witness: [
-        "Shalya leads what is left of the Kaurava army and falls to Yudhishthira. Sahadeva kills Shakuni, who started all of this with a pair of dice.",
-        "Duryodhana, alone, hides in a lake. The Pandavas find him and he comes out to fight Bhima with the mace. Bhima strikes him on the thigh, below the waist, against every rule of mace fighting. Balarama, who taught them both, has to be held back from striking Bhima."
+        "On the last day Bhima breaks Duryodhana's thigh, striking below the waist against the rules."
       ],
-      body: ["It is the last day. Survival is not certain."],
+      body: ["The last day."],
       choices: [
         { id: "fight", t: "Fight in the last battle", req: fighting, combat: "e_day18" },
-        { id: "lake", t: "Go to the lake to witness the duel", fx: { flag: "saw_duel" } },
+        { id: "lake", t: "Witness the duel at the lake", fx: { flag: "saw_duel" } },
         { id: "tend", t: "Stay with the wounded", fx: { rep: { common: 1 } } }
       ],
       next: "a6_duryodhana"
@@ -114,11 +108,11 @@
       id: "a6_duryodhana", when: { any: [{ friend: "duryodhana" }, { bond: ["duryodhana", 7] }] }, skipTo: "a6_raid",
       act: 6, age: 44, war: true, place: "The lakeside, that night", to: "kurukshetra", art: "scene_duryodhana", plate: ["#5c3361", "#2a1c1f"], caption: "A broken king by the water",
       title: "Duryodhana at the lake",
-      body: (S) => ["Duryodhana lies where Bhima left him, his thigh shattered. He is waiting to die. He sees you, and for a moment he looks like the boy at the lotus pond.",
+      body: (S) => ["Duryodhana lies dying, his thigh shattered. He sees you.",
         K.lakeLines ? K.lakeLines.dying(S) : null], // what you did at the lake before the duel (content/war_lake.js)
       choices: [
-        { id: "comfort", t: "Sit with him, and talk about when you were young", fx: { bond: { duryodhana: 2 }, memory: ["duryodhana", "You sat with him at the end."], journal: "You sat with Duryodhana by the lake as he lay dying." } },
-        { id: "truth", t: "Tell him what he did to all of you", fx: { duty: { conscience: 2 }, bond: { duryodhana: -2 } }, text: "\"I lived as a king,\" he says. \"I am dying as one. Which of them can say that?\"" },
+        { id: "comfort", t: "Sit with him", fx: { bond: { duryodhana: 2 }, memory: ["duryodhana", "You sat with him at the end."], journal: "You sat with Duryodhana by the lake as he lay dying." } },
+        { id: "truth", t: "Tell him what he did", fx: { duty: { conscience: 2 }, bond: { duryodhana: -2 } }, text: "\"I lived as a king,\" he says. \"I am dying as one. Which of them can say that?\"" },
         { id: "leave", t: "Leave him to the night", fx: {} }
       ],
       after: ["Before midnight, Ashwatthama comes to the lake. Duryodhana makes him commander of an army of three: Ashwatthama, Kripa and Kritavarma."],
@@ -127,9 +121,9 @@
     {
       id: "a6_raid", act: 6, age: 44, canon: true, war: true, place: "The Pandava camp, the night after the last day", art: "scene_raid", plate: ["#c0472f", "#16131f"], caption: "Fire in the sleeping camp",
       title: "The night raid",
-      witness: ["The war is over. The Pandava camp sleeps for the first time in eighteen days. Ashwatthama, mad with grief for his father, comes through the gate in the dark with a sword."],
+      witness: ["The war is over. In the dark, Ashwatthama comes into the sleeping Pandava camp with a sword."],
       body: (S) => [
-        S.side === "kaurava" ? "Ashwatthama finds you before he goes. He wants one more sword." : "You wake to screaming.",
+        S.side === "kaurava" ? "Ashwatthama wants one more sword: yours." : "You wake to screaming.",
         K.lakeLines ? K.lakeLines.raid(S) : null, // the reeds at the lake, a few hours ago (content/war_lake.js)
         S.boons.includes("foresight") && S.side !== "kaurava" ? { memory: "Your foresight woke you a moment before the first scream." } : null,
         S.side !== "kaurava" && (vasuAt(S, "vasu_in_camp") || vasuAt(S, "vasu_with_you")) ? { memory: "Vasu is sleeping three tents away." } : null
@@ -144,11 +138,11 @@
             pass: { fx: { rep: { pandava: 2, common: 2 }, flag: "woke_camp", journal: "On the night of the raid your shouting woke enough of the camp to save many lives." }, text: "Your voice carries. Tents empty into the dark. Many who should have died that night live." },
             fail: { resolve: null, fx: { flag: "raid_failed_wake" }, text: "The smoke takes your voice. Too few hear you." } } },
         { id: "gate", t: "Fight Ashwatthama at the gate", req: { not: { side: "kaurava" } }, combat: "e_raid" },
-        { id: "nishada", t: "Whistle for the Nishada archers camped at the forest's edge", req: (S) => S.side !== "kaurava" && (S.flags.includes("helped_ekalavya") || S.flags.includes("stood_with_ekalavya")),
+        { id: "nishada", t: "Whistle for the Nishada archers", req: (S) => S.side !== "kaurava" && (S.flags.includes("helped_ekalavya") || S.flags.includes("stood_with_ekalavya")),
           resolve: (S) => (vasuAt(S, "vasu_in_camp") || vasuAt(S, "vasu_with_you") ? { flag: "saved_vasu_raid", bond: { vasu: 1 } } : {}),
           fx: { flag: ["woke_camp", "nishada_came"], rep: { common: 2 }, journal: "On the night of the raid, the Nishada archers came out of the dark when you whistled." },
           text: "They come out of the trees without a sound. They know the whistle: Ekalavya taught it to them, long ago, and told them who had bound his hand. Their arrows hold the gate long enough for half the camp to run." },
-        { id: "join", t: "Go with Ashwatthama into the sleeping camp", req: { side: "kaurava" }, tags: ["strike_unarmed"],
+        { id: "join", t: "Go with Ashwatthama", req: { side: "kaurava" }, tags: ["strike_unarmed"],
           fx: { duty: { conscience: -5 }, rep: { sages: -3, common: -2 }, flag: "joined_raid", journal: "You went into the sleeping Pandava camp with Ashwatthama." } },
         { id: "refuse", t: "Refuse him", req: { side: "kaurava" }, fx: { duty: { conscience: 2 }, flag: "refused_ashwatthama" }, text: "\"Then go home,\" he says, \"and live with that.\"" },
         { id: "stop", t: "Try to stop him", req: { side: "kaurava" }, combat: "e_ash" }

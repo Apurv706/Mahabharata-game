@@ -109,20 +109,18 @@
       art: "scene_yuyutsu_crossing", place: "Kurukshetra · the first morning", caption: "One man crossing the empty ground",
       title: "The call across the field",
       witness: [
-        "Before the first arrow, Yudhishthira steps down from his chariot and calls across the field: anyone who wants to change sides may still do it, and will be welcome.",
-        "No one moves. Then Yuyutsu, a son of Dhritarashtra by a maid of the palace, walks out of the Kaurava ranks alone and crosses the empty ground to the Pandavas."
+        "Yudhishthira calls across the field: anyone may still change sides. Only Yuyutsu, a son of Dhritarashtra, crosses."
       ],
       body: (S) => (S.side === "kaurava"
-        ? ["The ground between the armies is empty again. The call still stands.",
+        ? ["The call still stands.",
           S.friend && KAURAVA.includes(S.friend) ? { memory: "{friend} is somewhere behind you in this army." } : null,
           K.hasVow("never_retreat", S) ? { aside: "You swore never to retreat. Walking out of your own line counts." } : null]
         : S.side !== "pandava" ? ["From the healers' tents you watch him go. By evening both sides will be bringing you their wounded."]
-        : ["Yuyutsu walks into your lines. Men make room for him without quite looking at him.",
-          sibAlive(S) && has(S, "sibling_other_side_set") ? ["Across the field, under the Kaurava banners, is {who}. The call still stands.", { who: sibName(S) }] : "Across the field the Kaurava ranks are very still."]),
+        : [sibAlive(S) && has(S, "sibling_other_side_set") ? ["Across the field, under the Kaurava banners, is {who}. The call still stands.", { who: sibName(S) }] : null]),
       choices: (S) => (S.side !== "kaurava" && S.side !== "pandava" ? [{ id: "tents", t: "Go back to the tents", text: "You go back to the tents and lay out the bandages." }]
         : S.side === "kaurava" ? [
-        { id: "cross", t: "Walk out after Yuyutsu, and cross to the Pandavas", tags: ["retreat"], fx: crossFx(S), hint: "The new side will give you a place. Trust comes later", text: crossText },
-        { id: "stay", t: "Stay in your place in the line", fx: { duty: { court: 1 } }, text: "You stay. Beside you, someone lets out a breath." }
+        { id: "cross", t: "Cross to the Pandavas", tags: ["retreat"], fx: crossFx(S), hint: "Trust comes later", text: crossText },
+        { id: "stay", t: "Stay in your place", fx: { duty: { court: 1 } }, text: "You stay. Beside you, someone lets out a breath." }
       ] : [
         sibAlive(S) && has(S, "sibling_other_side_set") ? { id: "call", t: ["Call across the field to {who}", { who: sibName(S) }], hint: "A test of wits",
           check: { attr: "wisdom", skill: "statecraft", dc: 10,
@@ -137,7 +135,7 @@
           fx: { flag: "called_friend_across", memory: [S.friend, "You called me across on the first morning, as if I were Yuyutsu."] },
           text: S.friend === "karna" ? "Karna hears you. Everyone hears you. He lifts his bow to you, once, and does not move." : "Duryodhana hears you. Everyone hears you. He laughs once, and turns his chariot away." } : null,
         { id: "welcome", t: "Make room for Yuyutsu beside you", fx: { duty: { conscience: 1 }, flag: "welcomed_yuyutsu" }, text: "He takes the place, thanks you, and says nothing else all morning. He keeps looking back at his brothers' banners." },
-        { id: "still", t: "Go back to your place. There is a war to fight", fx: { duty: { court: 1 } }, text: "You take your place. The conches begin." }
+        { id: "still", t: "Go back to your place", fx: { duty: { court: 1 } }, text: "You take your place. The conches begin." }
       ].filter(Boolean))
     },
     {
@@ -145,9 +143,8 @@
       id: "cross_watched", act: 6, age: 44, war: true, when: (S) => crossed(S) && suspected(S), skipTo: "a6_day1", next: "a6_day1",
       art: "battle_night", place: "Kurukshetra · the Pandava camp, the first evening", caption: "A guard at the tent door", title: "Watched",
       travel: "You crossed the open ground behind Yuyutsu. The Pandava camp gave you a place to sleep, and no one spoke to you.",
-      body: ["That evening Dhrishtadyumna comes to the fire where they have put you, with two Panchala spearmen behind him.",
-        { speaker: "Dhrishtadyumna", line: "The king took Yuyutsu in himself. You, nobody here knows. Men have been sent across on a first morning before." },
-        "The spearmen stay. One of them sleeps across the door of your tent."],
+      body: ["Dhrishtadyumna comes to your fire with two spearmen.",
+        { speaker: "Dhrishtadyumna", line: "Nobody here knows you. Men have been sent across before." }],
       choices: [{ id: "bear", t: "Let them watch. You will show them", fx: { journal: "On your first night in the Pandava camp Dhrishtadyumna set a guard on your tent. They think you may be a spy." },
         text: "You lie awake a long time, listening to the guard breathe." }]
     },
@@ -159,14 +156,13 @@
       enter: (S) => ({ set: { crossFoe: duelFoe(S) } }),
       body: (S) => [
         duelFoe(S) === "ugra" ? "On the second morning a big man with a miller's shoulders walks out of the Kaurava line and stops halfway across. It is Ugra, the miller's son, who stood in the line beside you yesterday morning."
-          : "On the second morning a man walks out of the Kaurava line and stops halfway across. It is Kanaka, who shared your fire on the march to Kurukshetra.",
+          : "Kanaka, who shared your fire on the march, walks out of the Kaurava line.",
         duelFoe(S) === "ugra" ? { speaker: "Ugra", line: "I waited thirty years to stand next to you, and you stood there one morning. Come back, or come out here." }
-          : { speaker: "Kanaka", line: "They sent me to bring you back. Or not to. Come out and we will see which." },
-        "Both armies have stopped to watch.",
+          : { speaker: "Kanaka", line: "They sent me to bring you back. Or not. Come out." },
         has(S, "crossed_untrusted") ? { aside: "No one on this side of the field knows you yet. No one will come if you call." } : null
       ],
       choices: [
-        { id: "meet", t: "Walk out and meet him", combat: "cross_e_duel", hint: "A deadly fight, with both armies watching" }
+        { id: "meet", t: "Walk out and meet him", combat: "cross_e_duel", hint: "A deadly fight" }
       ]
     },
     {
@@ -174,41 +170,40 @@
       id: "cross_called", act: 6, age: 44, war: true, when: (S) => has(S, "called_across_came") && !!S.calledAcross && !S.dead.includes(S.calledAcross), skipTo: "a6_day1", next: "a6_day1",
       art: "fight_between_lines", place: "Kurukshetra · the second morning", caption: "Riders from the Kaurava line",
       title: "Riders from the other side",
-      body: (S) => [["On the second morning a knot of riders comes out of the Kaurava line for {who}. Their captain shouts that {who} can walk back with them or be carried.", { who: sibName(S) }],
-        "Both armies stop to watch."],
+      body: (S) => [["Kaurava riders come for {who}: walk back, or be carried.", { who: sibName(S) }]],
       choices: [{ id: "stand", t: (S) => ["Stand beside {who} and fight them", { who: sibName(S) }], combat: "cross_e_called" }]
     },
     {
       // The second evening: sparing the man your old side sent looks like a spy's mercy.
       id: "cross_explain", act: 6, age: 44, war: true, when: (S) => crossed(S) && suspected(S) && has(S, "spared_crossing_duel"), skipTo: "a6_day1", next: "a6_day1",
       art: "battle_night", place: "Kurukshetra · the Pandava camp, the second evening", caption: "Dhrishtadyumna at your fire", title: "A spy's mercy",
-      body: ["By evening the whole camp is saying it. You beat the man your old side sent, and let him walk home to tell them everything he saw.",
-        { speaker: "Dhrishtadyumna", line: "A spy would have spared him. Tell me why you did." }],
+      body: ["You beat the man your old side sent, and let him go home.",
+        { speaker: "Dhrishtadyumna", line: "A spy would have spared him. Why did you?" }],
       choices: (S) => [
-        { id: "explain", t: "Tell him why you let him live", hint: "A test of wits",
+        { id: "explain", t: "Tell him why", hint: "A test of wits",
           check: { attr: "wisdom", skill: "statecraft", dc: 10,
             pass: { fx: (S2) => proved(S2, "spared"), text: "\"He will go home and tell them that the one who crossed could have killed him and did not,\" you say. \"Let them think about that the night before they fight us.\" Dhrishtadyumna is quiet a while. Then he sends the guard away." },
             fail: { fx: { flag: "suspicion_deepened" }, text: "Every reason you give sounds like one a spy would give. Dhrishtadyumna hears you out, and leaves the guard where he is." } } },
-        { id: "silent", t: "Say nothing. You do not owe him a reason", fx: { flag: "suspicion_deepened" }, text: "He waits. Then he goes, and the guard stays." }
+        { id: "silent", t: "Say nothing", fx: { flag: "suspicion_deepened" }, text: "He waits. Then he goes, and the guard stays." }
       ]
     },
     {
       // The third night: the truth before the king who never lies.
       id: "cross_truth", act: 6, age: 44, war: true, when: (S) => crossed(S) && suspected(S), skipTo: "a6_day1", next: "a6_day1",
       art: "scene_war_council", place: "Kurukshetra · Yudhishthira's tent, the third night", caption: "Three questions", title: "Before Yudhishthira",
-      body: (S) => ["On the third night you are brought to Yudhishthira's tent. Bhima stands behind his brother with his arms folded. Dhrishtadyumna has the guard's report in his hand.",
+      body: (S) => ["You are brought to Yudhishthira's tent.",
         has(S, "suspicion_deepened") ? { aside: "Dhrishtadyumna reminds the king that you let the man your old side sent walk home." } : null,
-        { speaker: "Yudhishthira", line: "I cannot see into you. Tell me something true about the army you left, something a spy would never give away, and I will know it when I hear it." }],
+        { speaker: "Yudhishthira", line: "Tell me something true about the army you left, something a spy would never give away." }],
       choices: [
-        { id: "tell", t: "Tell him what you know of the Kaurava plans", game: "retort", hint: "A test of wits",
+        { id: "tell", t: "Tell him the Kaurava plans", game: "retort", hint: "A test of wits",
           trial: { attr: "wisdom", skill: "statecraft", rounds: TRUTH, stage: "stage_battlefield_night", cast: ["yudhishthira"],
-            rules: "Yudhishthira has never told a lie, and he knows one when he hears it. Answer each question true and plain before the lamp burns down. Two of three.",
+            rules: "Answer true and plain before the lamp burns down. Two of three.",
             stakes: ["Yudhishthira believes you.", "Yudhishthira cannot tell, and the guard stays at your tent."] },
           win: { fx: (S) => { const bond = {}; for (const w of KAURAVA) if (S.bonds[w] != null && !S.dead.includes(w)) bond[w] = -1;
               return Object.assign(proved(S, "truth"), { bond, duty: { conscience: -1 }, journal: "Before Yudhishthira you told the truth about the Kaurava array. The next morning men died where you said they would be." }); },
             text: "Yudhishthira hears you to the end. \"That is true,\" he says, \"and it cost you something to say.\" The next morning Bhima's men are waiting where you said, and many of the men you marched with do not go home." },
           lose: { fx: { flag: "truth_doubted" }, text: "You tell the truth, and it comes out wrong, too quick and then too slow. Yudhishthira looks at you a long time and says he cannot tell." } },
-        { id: "refuse", t: "Refuse. You will not sell the men you marched with", fx: { duty: { conscience: 1 }, flag: "refused_to_inform" },
+        { id: "refuse", t: "Refuse", fx: { duty: { conscience: 1 }, flag: "refused_to_inform" },
           text: "\"I crossed to fight beside you,\" you say, \"not to sell them.\" Bhima laughs. Yudhishthira does not. The guard stays." }
       ]
     },
@@ -216,18 +211,18 @@
       // The fourth night: a real spy, and you are blamed. The last chance before the suspicion sets.
       id: "cross_spy", act: 6, age: 44, war: true, when: (S) => crossed(S) && suspected(S), skipTo: "a6_day1", next: "a6_day1",
       art: "battle_night", place: "Kurukshetra · the Pandava camp, the fourth night", caption: "A copied array", title: "A thief in the camp",
-      body: ["On the fourth night someone gets into Dhrishtadyumna's tent and copies the next day's array off the board. By morning the guard on your tent swears he dozed, and the whole camp is looking at you.",
-        "Last night you saw a man by the horse lines going the wrong way with a groom's bucket. If you can remember him well enough, he can be found."],
+      body: ["Someone has copied tomorrow's array from Dhrishtadyumna's tent, and the camp blames you.",
+        "Last night you saw a man by the horse lines going the wrong way."],
       choices: [
-        { id: "remember", t: "Tell Dhrishtadyumna what you saw of the man", game: "notice", hint: "A test of what you notice",
+        { id: "remember", t: "Describe the man", game: "notice", hint: "A test of what you notice",
           trial: { attr: "wisdom", skill: "statecraft", stage: "stage_supply_camp_night", things: SPY_THINGS, count: 5,
             lookLine: "Remember the man by the horse lines. You have {n} seconds.", ask: "Which of these did the man have?",
-            rules: "Dhrishtadyumna gives you until the lamp burns down. Call back what you saw of the man by the horse lines. Two right answers of three.",
+            rules: "Before the lamp burns down, say what you saw of the man. Two right of three.",
             stakes: ["The man is found.", "Nobody is found, and the camp keeps its eyes on you."] },
           win: { fx: (S) => Object.assign(proved(S, "spy"), { journal: "In the Pandava camp you found the spy everyone took you for: a groom who had been Shakuni's man for ten years." }),
             text: "They find him at dawn among the grooms, as you described him, with the copied array folded in the bottom of his bucket. He has been Shakuni's man for ten years. Dhrishtadyumna takes the guard off your tent himself." },
           lose: { fx: SUSPECTED, text: "Nobody is found, and neither is the copied array. From now on there is always a Panchala spearman two paces behind you." } },
-        { id: "wait", t: "Say nothing, and let the guard answer for you", fx: SUSPECTED,
+        { id: "wait", t: "Say nothing", fx: SUSPECTED,
           text: "The guard answers for you, badly. Nobody is found. From now on there is always a Panchala spearman two paces behind you." }
       ]
     }

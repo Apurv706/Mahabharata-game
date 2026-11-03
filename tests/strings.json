@@ -2010,26 +2010,6 @@
   "ctx": "scene:a1_home"
  },
  {
-  "id": 403,
-  "en": "Follow the soldiers to their drills and copy them",
-  "ctx": "scene:a1_home"
- },
- {
-  "id": 404,
-  "en": "Sit with the old storyteller in the evenings",
-  "ctx": "scene:a1_home"
- },
- {
-  "id": 405,
-  "en": "Run wild by the river and the woods",
-  "ctx": "scene:a1_home"
- },
- {
-  "id": 406,
-  "en": "Help at home with the animals and the little ones",
-  "ctx": "scene:a1_home"
- },
- {
   "id": 407,
   "en": "The palace gardens, Hastinapura",
   "ctx": "scene:a1_princes"
@@ -2045,21 +2025,6 @@
   "ctx": "scene:a1_princes"
  },
  {
-  "id": 410,
-  "en": "King Pandu has died in the forest, and his five sons have come to Hastinapura with their mother Kunti. They grow up beside their hundred cousins, the sons of blind King Dhritarashtra.",
-  "ctx": "scene:a1_princes"
- },
- {
-  "id": 411,
-  "en": "Bhima, the second Pandava, wins every game. He holds the Kaurava boys under water until they gasp, and shakes trees until they fall out with the fruit. He means it as play.",
-  "ctx": "scene:a1_princes"
- },
- {
-  "id": 412,
-  "en": "Duryodhana, eldest of the hundred, does not laugh.",
-  "ctx": "scene:a1_princes"
- },
- {
   "id": 413,
   "en": "You are eight, visiting the palace for a festival. The princes are choosing sides for a game of tag by the lotus pond.",
   "ctx": "scene:a1_princes"
@@ -2067,21 +2032,6 @@
  {
   "id": 414,
   "en": "Play on Bhima's side",
-  "ctx": "scene:a1_princes"
- },
- {
-  "id": 415,
-  "en": "Join Duryodhana and his brothers",
-  "ctx": "scene:a1_princes"
- },
- {
-  "id": 416,
-  "en": "Slip away and watch Arjuna practise with a borrowed bow",
-  "ctx": "scene:a1_princes"
- },
- {
-  "id": 417,
-  "en": "Help the charioteers' boy Karna rub down the horses",
   "ctx": "scene:a1_princes"
  },
  {
@@ -2100,23 +2050,8 @@
   "ctx": "scene:a1_sage"
  },
  {
-  "id": 421,
-  "en": "On the way home, an old sage sits by the road. His hair is matted, his body grey with ash, his water pot empty. He holds it out to you without a word.",
-  "ctx": "scene:a1_sage"
- },
- {
-  "id": 422,
-  "en": "Give him water and the best of your food",
-  "ctx": "scene:a1_sage"
- },
- {
   "id": 423,
   "en": "He drinks, blesses you, and walks on. You feel watched over for days.",
-  "ctx": "scene:a1_sage"
- },
- {
-  "id": 424,
-  "en": "Make fun of his ash and his matted hair",
   "ctx": "scene:a1_sage"
  },
  {
@@ -2130,28 +2065,8 @@
   "ctx": "scene:a1_sage"
  },
  {
-  "id": 427,
-  "en": "Walk past. Your mother told you not to talk to strangers",
-  "ctx": "scene:a1_sage"
- },
- {
   "id": 428,
   "en": "A friend for life",
-  "ctx": "scene:a1_friend"
- },
- {
-  "id": 429,
-  "en": "Charu, the blacksmith's child from your lane, has followed you everywhere for a year. Charu is loud, loyal and afraid of nothing except the dark.",
-  "ctx": "scene:a1_friend"
- },
- {
-  "id": 430,
-  "en": "Children choose their friends as if it were nothing. It is the most important choice of your childhood.",
-  "ctx": "scene:a1_friend"
- },
- {
-  "id": 431,
-  "en": "Charu, who has never once left your side",
   "ctx": "scene:a1_friend"
  },
  {
@@ -2165,11 +2080,6 @@
   "ctx": "scene:a1_friend"
  },
  {
-  "id": 434,
-  "en": "Bhima, who laughs louder than anyone",
-  "ctx": "scene:a1_friend"
- },
- {
   "id": 435,
   "en": "You would have needed to play on Bhima's side.",
   "ctx": "scene:a1_friend"
@@ -2177,11 +2087,6 @@
  {
   "id": 436,
   "en": "Bhima became your closest friend.",
-  "ctx": "scene:a1_friend"
- },
- {
-  "id": 437,
-  "en": "Duryodhana, who remembers every kindness and every slight",
   "ctx": "scene:a1_friend"
  },
  {
@@ -2195,11 +2100,6 @@
   "ctx": "scene:a1_friend"
  },
  {
-  "id": 440,
-  "en": "Arjuna, who practises until his fingers bleed",
-  "ctx": "scene:a1_friend"
- },
- {
   "id": 441,
   "en": "You would have needed to watch Arjuna practise.",
   "ctx": "scene:a1_friend"
@@ -2207,11 +2107,6 @@
  {
   "id": 442,
   "en": "Arjuna became your closest friend.",
-  "ctx": "scene:a1_friend"
- },
- {
-  "id": 443,
-  "en": "Karna, the charioteer's son who wants to be more",
   "ctx": "scene:a1_friend"
  },
  {
@@ -2240,16 +2135,6 @@
   "ctx": "scene:a1_poison"
  },
  {
-  "id": 449,
-  "en": "Duryodhana holds a river festival at Pramanakoti. He feeds Bhima sweets laced with poison, and when Bhima falls asleep he has him tied with vines and rolled into the Ganga.",
-  "ctx": "scene:a1_poison"
- },
- {
-  "id": 450,
-  "en": "Bhima does not come back that night, or the next.",
-  "ctx": "scene:a1_poison"
- },
- {
   "id": 451,
   "en": "Tell Vidura what you saw",
   "ctx": "scene:a1_poison"
@@ -2265,11 +2150,6 @@
   "ctx": "scene:a1_poison"
  },
  {
-  "id": 454,
-  "en": "Search the riverbank yourself after dark",
-  "ctx": "scene:a1_poison"
- },
- {
   "id": 455,
   "en": "Downstream you find cut vines on a sandbar, and footprints leading out of the water, not in. Whatever happened to Bhima, he walked out alive.",
   "ctx": "scene:a1_poison"
@@ -2280,18 +2160,8 @@
   "ctx": "scene:a1_poison"
  },
  {
-  "id": 457,
-  "en": "Say nothing. It is not your quarrel",
-  "ctx": "scene:a1_poison"
- },
- {
   "id": 458,
   "en": "You saw, and kept quiet.",
-  "ctx": "scene:a1_poison"
- },
- {
-  "id": 459,
-  "en": "Ask Duryodhana to tell the elders it was a prank",
   "ctx": "scene:a1_poison"
  },
  {
@@ -2315,16 +2185,6 @@
   "ctx": "scene:a1_wrestle"
  },
  {
-  "id": 464,
-  "en": "Step into the wrestling ring and challenge him",
-  "ctx": "scene:a1_wrestle"
- },
- {
-  "id": 465,
-  "en": "Shame him in front of the crowd",
-  "ctx": "scene:a1_wrestle"
- },
- {
   "id": 466,
   "en": "You turn the crowd's laughter on him. Ugra drops what he took and stalks off.",
   "ctx": "scene:a1_wrestle"
@@ -2332,11 +2192,6 @@
  {
   "id": 467,
   "en": "The crowd laughs at you instead. Ugra keeps his prize.",
-  "ctx": "scene:a1_wrestle"
- },
- {
-  "id": 468,
-  "en": "Walk away. He is too big",
   "ctx": "scene:a1_wrestle"
  },
  {
@@ -2385,11 +2240,6 @@
   "ctx": "scene:a2_teacher"
  },
  {
-  "id": 478,
-  "en": "Ask Drona to take you as a student",
-  "ctx": "scene:a2_teacher"
- },
- {
   "id": 479,
   "en": "Drona refuses you. He teaches only those born to the royal and priestly orders.",
   "ctx": "scene:a2_teacher"
@@ -2400,38 +2250,8 @@
   "ctx": "scene:a2_teacher"
  },
  {
-  "id": 481,
-  "en": "His fee may one day set you against your friends",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 482,
-  "en": "Train with Kripa, preceptor of the Kuru house",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 483,
-  "en": "Kripa teaches those tied to the Kuru court.",
-  "ctx": "scene:a2_teacher"
- },
- {
   "id": 484,
   "en": "Kripa took you into his school.",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 485,
-  "en": "His price is loyalty to the Kuru throne",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 486,
-  "en": "Go to Balarama, who teaches the mace",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 487,
-  "en": "Balarama teaches Yadavas, and those he has seen fight.",
   "ctx": "scene:a2_teacher"
  },
  {
@@ -2440,33 +2260,8 @@
   "ctx": "scene:a2_teacher"
  },
  {
-  "id": 489,
-  "en": "He will ask you to stay out of the war his family cannot avoid",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 490,
-  "en": "Follow Mauni, the forest hermit who shoots blindfolded",
-  "ctx": "scene:a2_teacher"
- },
- {
   "id": 491,
   "en": "Mauni the hermit took you as his student and made you promise never to say who taught you.",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 492,
-  "en": "He asks one thing: never say who taught you",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 493,
-  "en": "Join Vidura's circle of scribes, envoys and listeners",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 494,
-  "en": "Vidura draws his people from the court.",
   "ctx": "scene:a2_teacher"
  },
  {
@@ -2475,23 +2270,8 @@
   "ctx": "scene:a2_teacher"
  },
  {
-  "id": 496,
-  "en": "Vidura will judge every choice you make",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 497,
-  "en": "Teach yourself, in secret, at night",
-  "ctx": "scene:a2_teacher"
- },
- {
   "id": 498,
   "en": "You taught yourself, alone, by night.",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 499,
-  "en": "No debt, and no one to protect you",
   "ctx": "scene:a2_teacher"
  },
  {
@@ -2505,43 +2285,8 @@
   "ctx": "scene:a2_path"
  },
  {
-  "id": 502,
-  "en": "The bow, like Arjuna and Karna",
-  "ctx": "scene:a2_path"
- },
- {
   "id": 503,
   "en": "You chose the path of the {path!}.",
-  "ctx": "scene:a2_path"
- },
- {
-  "id": 504,
-  "en": "The mace and wrestling, like Bhima and Duryodhana",
-  "ctx": "scene:a2_path"
- },
- {
-  "id": 505,
-  "en": "The reins, like the great charioteers",
-  "ctx": "scene:a2_path"
- },
- {
-  "id": 506,
-  "en": "Strategy and statecraft, like Vidura",
-  "ctx": "scene:a2_path"
- },
- {
-  "id": 507,
-  "en": "Healing, which no one else at your school wants",
-  "ctx": "scene:a2_path"
- },
- {
-  "id": 508,
-  "en": "Listening and carrying secrets",
-  "ctx": "scene:a2_path"
- },
- {
-  "id": 509,
-  "en": "The songs and stories of the sutas",
   "ctx": "scene:a2_path"
  },
  {
@@ -2560,41 +2305,6 @@
   "ctx": "scene:a2_ekalavya"
  },
  {
-  "id": 513,
-  "en": "On a hunt, the princes' dog barks at a dark-skinned boy in the forest. Seven arrows close its mouth without drawing blood. The boy is Ekalavya, a Nishada prince. Drona once refused to teach him, so he made a clay image of Drona and practised in front of it.",
-  "ctx": "scene:a2_ekalavya"
- },
- {
-  "id": 514,
-  "en": "He is a better archer than Arjuna. Arjuna reminds Drona of his promise that no one would surpass him.",
-  "ctx": "scene:a2_ekalavya"
- },
- {
-  "id": 515,
-  "en": "Drona asks Ekalavya for his fee as a student: his right thumb. Ekalavya cuts it off and gives it without a word.",
-  "ctx": "scene:a2_ekalavya"
- },
- {
-  "id": 516,
-  "en": "Say out loud that this is wrong",
-  "ctx": "scene:a2_ekalavya"
- },
- {
-  "id": 517,
-  "en": "Drona and Arjuna will remember",
-  "ctx": "scene:a2_ekalavya"
- },
- {
-  "id": 518,
-  "en": "Keep silent. It is between a teacher and a student",
-  "ctx": "scene:a2_ekalavya"
- },
- {
-  "id": 519,
-  "en": "Go back afterwards and bind Ekalavya's hand",
-  "ctx": "scene:a2_ekalavya"
- },
- {
   "id": 520,
   "en": "You bound Ekalavya's hand. He thanked you and said he would learn to shoot with two fingers.",
   "ctx": "scene:a2_ekalavya"
@@ -2607,11 +2317,6 @@
  {
   "id": 522,
   "en": "You do what you can. It is not much. He thanks you anyway.",
-  "ctx": "scene:a2_ekalavya"
- },
- {
-  "id": 523,
-  "en": "Walk away from Drona's party and stay with Ekalavya",
   "ctx": "scene:a2_ekalavya"
  },
  {
@@ -2635,18 +2340,8 @@
   "ctx": "scene:a2_spar"
  },
  {
-  "id": 528,
-  "en": "Before the princes' tournament, every student must prove themselves in a sparring bout. Your opponent is Ketan, the armourer's son, who has beaten everyone this season.",
-  "ctx": "scene:a2_spar"
- },
- {
   "id": 529,
   "en": "Take the bout",
-  "ctx": "scene:a2_spar"
- },
- {
-  "id": 530,
-  "en": "Train alone instead. You have nothing to prove",
   "ctx": "scene:a2_spar"
  },
  {
@@ -2690,33 +2385,8 @@
   "ctx": "scene:a2_tournament"
  },
  {
-  "id": 539,
-  "en": "Arjuna splits target after target, and the city roars for him. Then a stranger in golden armour walks into the arena and matches every feat. He is Karna. He challenges Arjuna to single combat.",
-  "ctx": "scene:a2_tournament"
- },
- {
-  "id": 540,
-  "en": "\"Arjuna is Pandu's son, of the Kuru line. Name your father and your house, stranger. Princes do not duel nameless men.\"",
-  "ctx": "scene:a2_tournament"
- },
- {
-  "id": 541,
-  "en": "Karna lowers his bow. Duryodhana rises in the royal box.",
-  "ctx": "scene:a2_tournament"
- },
- {
-  "id": 542,
-  "en": "Step down and stand beside Karna",
-  "ctx": "scene:a2_tournament"
- },
- {
   "id": 543,
   "en": "You stood beside him when the arena laughed.",
-  "ctx": "scene:a2_tournament"
- },
- {
-  "id": 544,
-  "en": "Shout the name of your own charioteer house beside his",
   "ctx": "scene:a2_tournament"
  },
  {
@@ -2732,11 +2402,6 @@
  {
   "id": 547,
   "en": "You stayed at his side.",
-  "ctx": "scene:a2_tournament"
- },
- {
-  "id": 548,
-  "en": "Say nothing and watch",
   "ctx": "scene:a2_tournament"
  },
  {
@@ -2775,26 +2440,6 @@
   "ctx": "scene:a2_drupada"
  },
  {
-  "id": 556,
-  "en": "Their training is done, and Drona asks his students for his fee: bring him King Drupada of Panchala, the friend who once humiliated him, as a prisoner.",
-  "ctx": "scene:a2_drupada"
- },
- {
-  "id": 557,
-  "en": "The Kauravas ride first, and the Panchala army throws them back.",
-  "ctx": "scene:a2_drupada"
- },
- {
-  "id": 558,
-  "en": "Ride with Drona's students against Panchala",
-  "ctx": "scene:a2_drupada"
- },
- {
-  "id": 559,
-  "en": "Refuse to ride. Your fee will be paid some other way",
-  "ctx": "scene:a2_drupada"
- },
- {
   "id": 560,
   "en": "You refused to help him take Drupada.",
   "ctx": "scene:a2_drupada"
@@ -2802,11 +2447,6 @@
  {
   "id": 561,
   "en": "Defend Panchala's border villages",
-  "ctx": "scene:a2_drupada"
- },
- {
-  "id": 562,
-  "en": "Run ahead and warn the villages on the road",
   "ctx": "scene:a2_drupada"
  },
  {
@@ -2925,43 +2565,13 @@
   "ctx": "scene:a2_vow"
  },
  {
-  "id": 586,
-  "en": "Swear never to retreat in battle",
-  "ctx": "scene:a2_vow"
- },
- {
-  "id": 587,
-  "en": "Swear never to speak a lie",
-  "ctx": "scene:a2_vow"
- },
- {
-  "id": 588,
-  "en": "Swear never to strike someone who cannot defend themselves",
-  "ctx": "scene:a2_vow"
- },
- {
-  "id": 589,
-  "en": "Swear never to raise a weapon against Karna",
-  "ctx": "scene:a2_vow"
- },
- {
   "id": 590,
   "en": "Needs a close bond with Karna.",
   "ctx": "scene:a2_vow"
  },
  {
-  "id": 591,
-  "en": "Swear a vow of celibacy, as Bhishma did",
-  "ctx": "scene:a2_vow"
- },
- {
   "id": 592,
   "en": "Make no vow",
-  "ctx": "scene:a2_vow"
- },
- {
-  "id": 593,
-  "en": "Nothing to keep, nothing to break",
   "ctx": "scene:a2_vow"
  },
  {
@@ -2980,16 +2590,6 @@
   "ctx": "scene:a3_secret"
  },
  {
-  "id": 597,
-  "en": "Your skill has been noticed. Drona himself asks, in front of the whole court, who trained you. Mauni made you promise never to say.",
-  "ctx": "scene:a3_secret"
- },
- {
-  "id": 598,
-  "en": "Tell the truth: a hermit in the forest",
-  "ctx": "scene:a3_secret"
- },
- {
   "id": 599,
   "en": "You told the court who taught you, and broke your promise to Mauni.",
   "ctx": "scene:a3_secret"
@@ -3002,11 +2602,6 @@
  {
   "id": 601,
   "en": "Say you taught yourself",
-  "ctx": "scene:a3_secret"
- },
- {
-  "id": 602,
-  "en": "Refuse to answer the teacher of the princes",
   "ctx": "scene:a3_secret"
  },
  {
@@ -3025,11 +2620,6 @@
   "ctx": "scene:a3_debt"
  },
  {
-  "id": 606,
-  "en": "Work it off on his trading caravans for a year",
-  "ctx": "scene:a3_debt"
- },
- {
   "id": 607,
   "en": "You worked a year on Sudatta's caravans to clear your family's debt.",
   "ctx": "scene:a3_debt"
@@ -3037,11 +2627,6 @@
  {
   "id": 608,
   "en": "Ask {friend} for help",
-  "ctx": "scene:a3_debt"
- },
- {
-  "id": 609,
-  "en": "Tear up the note in front of him",
   "ctx": "scene:a3_debt"
  },
  {
@@ -3070,21 +2655,6 @@
   "ctx": "scene:a3_lac"
  },
  {
-  "id": 615,
-  "en": "Duryodhana's minister Purochana builds a beautiful house at Varnavata for Kunti and her sons. It is made of lac, hemp and resin, and it is meant to burn.",
-  "ctx": "scene:a3_lac"
- },
- {
-  "id": 616,
-  "en": "Vidura warns Yudhishthira in a riddle only he understands, and sends a miner to dig a tunnel under the floor.",
-  "ctx": "scene:a3_lac"
- },
- {
-  "id": 617,
-  "en": "Help carry the earth out of the tunnel at night",
-  "ctx": "scene:a3_lac"
- },
- {
   "id": 618,
   "en": "Only Vidura's people know about the tunnel.",
   "ctx": "scene:a3_lac"
@@ -3105,18 +2675,8 @@
   "ctx": "scene:a3_lac"
  },
  {
-  "id": 622,
-  "en": "Try to wake the Nishada woman and her sons sleeping in the house",
-  "ctx": "scene:a3_lac"
- },
- {
   "id": 623,
   "en": "They drank deep at Kunti's feast and do not wake, however hard you shake them. Then the smoke comes, and someone drags you out by the collar.",
-  "ctx": "scene:a3_lac"
- },
- {
-  "id": 624,
-  "en": "Warn Duryodhana that people are talking about the house",
   "ctx": "scene:a3_lac"
  },
  {
@@ -3145,36 +2705,6 @@
   "ctx": "scene:a3_swayamvara"
  },
  {
-  "id": 630,
-  "en": "Drupada holds a contest for his daughter's hand. A golden fish turns on a wheel high above a pool. The winner must string a great bow and hit the fish's eye while looking only at its reflection.",
-  "ctx": "scene:a3_swayamvara"
- },
- {
-  "id": 631,
-  "en": "King after king fails to even string the bow. Karna rises and strings it, and the hall goes quiet. Whatever passes between him and the princess, he walks back to his seat.",
-  "ctx": "scene:a3_swayamvara"
- },
- {
-  "id": 632,
-  "en": "Then a young brahmin in a deerskin steps forward, strings the bow in one motion, and hits the eye.",
-  "ctx": "scene:a3_swayamvara"
- },
- {
-  "id": 633,
-  "en": "The kings are on their feet, furious that a brahmin has beaten them. Some are drawing swords. A huge brahmin beside the winner pulls up a tree by the roots.",
-  "ctx": "scene:a3_swayamvara"
- },
- {
-  "id": 634,
-  "en": "Stand with the two brahmins against the angry kings",
-  "ctx": "scene:a3_swayamvara"
- },
- {
-  "id": 635,
-  "en": "Talk the nearest kings down before blood is spilled",
-  "ctx": "scene:a3_swayamvara"
- },
- {
   "id": 636,
   "en": "Two kings sheathe their swords and walk out with you. Fewer men are hurt that day because of it.",
   "ctx": "scene:a3_swayamvara"
@@ -3182,16 +2712,6 @@
  {
   "id": 637,
   "en": "Nobody listens to you. You step back as the fighting starts.",
-  "ctx": "scene:a3_swayamvara"
- },
- {
-  "id": 638,
-  "en": "Side with the kings. A contest for kshatriyas was won by a brahmin",
-  "ctx": "scene:a3_swayamvara"
- },
- {
-  "id": 639,
-  "en": "Stay against the wall and watch",
   "ctx": "scene:a3_swayamvara"
  },
  {
@@ -3250,28 +2770,8 @@
   "ctx": "scene:a3_court"
  },
  {
-  "id": 651,
-  "en": "To avoid war, Dhritarashtra gives the Pandavas half the kingdom: the wild land of Khandavaprastha. The Khandava forest is burned to clear it, and on the ashes they build Indraprastha, a city of white stone and glass.",
-  "ctx": "scene:a3_court"
- },
- {
-  "id": 652,
-  "en": "Now there are two courts, and everyone must decide where they belong.",
-  "ctx": "scene:a3_court"
- },
- {
-  "id": 653,
-  "en": "Serve the old throne at Hastinapura",
-  "ctx": "scene:a3_court"
- },
- {
   "id": 654,
   "en": "You pledged yourself to the court at Hastinapura.",
-  "ctx": "scene:a3_court"
- },
- {
-  "id": 655,
-  "en": "Go to Indraprastha and serve Yudhishthira",
   "ctx": "scene:a3_court"
  },
  {
@@ -3280,18 +2780,8 @@
   "ctx": "scene:a3_court"
  },
  {
-  "id": 657,
-  "en": "Go home and serve your own people",
-  "ctx": "scene:a3_court"
- },
- {
   "id": 658,
   "en": "You went home to serve your own people.",
-  "ctx": "scene:a3_court"
- },
- {
-  "id": 659,
-  "en": "Serve no king. Go where your skills are needed",
   "ctx": "scene:a3_court"
  },
  {
@@ -3325,11 +2815,6 @@
   "ctx": "scene:a3_marriage"
  },
  {
-  "id": 666,
-  "en": "Marry Charu, your oldest friend",
-  "ctx": "scene:a3_marriage"
- },
- {
   "id": 667,
   "en": "You married Charu, your oldest friend.",
   "ctx": "scene:a3_marriage"
@@ -3350,21 +2835,6 @@
   "ctx": "scene:a3_rajasuya"
  },
  {
-  "id": 671,
-  "en": "Yudhishthira performs the Rajasuya sacrifice and is proclaimed emperor. When King Shishupala insults Krishna past all bearing, Krishna's discus ends his life, and the gathered kings fall silent.",
-  "ctx": "scene:a3_rajasuya"
- },
- {
-  "id": 672,
-  "en": "Duryodhana stays to see the wonders of the hall built by the architect Maya. He mistakes a polished floor for water and lifts his robes, then walks into real water and falls in. Bhima laughs, and the servants laugh with him.",
-  "ctx": "scene:a3_rajasuya"
- },
- {
-  "id": 673,
-  "en": "You are standing near the pool when Duryodhana comes up, soaked and shaking with rage.",
-  "ctx": "scene:a3_rajasuya"
- },
- {
   "id": 674,
   "en": "Laugh with everyone else",
   "ctx": "scene:a3_rajasuya"
@@ -3375,18 +2845,8 @@
   "ctx": "scene:a3_rajasuya"
  },
  {
-  "id": 676,
-  "en": "Give Duryodhana your hand and a dry cloak",
-  "ctx": "scene:a3_rajasuya"
- },
- {
   "id": 677,
   "en": "You helped him out of the water when everyone was laughing.",
-  "ctx": "scene:a3_rajasuya"
- },
- {
-  "id": 678,
-  "en": "Follow Duryodhana and Shakuni and listen",
   "ctx": "scene:a3_rajasuya"
  },
  {
@@ -3410,11 +2870,6 @@
   "ctx": "scene:a3_rajasuya"
  },
  {
-  "id": 683,
-  "en": "Look away and leave him his dignity",
-  "ctx": "scene:a3_rajasuya"
- },
- {
   "id": 684,
   "en": "Duryodhana goes home and tells his uncle Shakuni he would rather die than live with this. Shakuni tells him there is no need for either.",
   "ctx": "scene:a3_rajasuya"
@@ -3430,21 +2885,6 @@
   "ctx": "scene:a4_invite"
  },
  {
-  "id": 687,
-  "en": "Dhritarashtra builds a new assembly hall and invites Yudhishthira to a friendly game of dice. Vidura carries the invitation, and his face says what his words cannot.",
-  "ctx": "scene:a4_invite"
- },
- {
-  "id": 688,
-  "en": "Yudhishthira accepts. A king does not refuse a challenge.",
-  "ctx": "scene:a4_invite"
- },
- {
-  "id": 689,
-  "en": "Warn Yudhishthira that Shakuni's dice cannot lose",
-  "ctx": "scene:a4_invite"
- },
- {
   "id": 690,
   "en": "He thanks you, and takes your hand, and goes anyway. \"If I am called, I must play,\" he says.",
   "ctx": "scene:a4_invite"
@@ -3452,11 +2892,6 @@
  {
   "id": 691,
   "en": "Go to the hall",
-  "ctx": "scene:a4_invite"
- },
- {
-  "id": 692,
-  "en": "Stay away. You want no part of it",
   "ctx": "scene:a4_invite"
  },
  {
@@ -3480,63 +2915,8 @@
   "ctx": "scene:a4_stakes"
  },
  {
-  "id": 697,
-  "en": "Shakuni throws for Duryodhana. Yudhishthira stakes his jewels and loses. Then his gold, his chariots, his servants, his army and his kingdom. Every throw goes the same way.",
-  "ctx": "scene:a4_stakes"
- },
- {
-  "id": 698,
-  "en": "Then he stakes his brothers, one by one, and loses them. Then he stakes himself, and loses.",
-  "ctx": "scene:a4_stakes"
- },
- {
-  "id": 699,
-  "en": "Bhishma, Drona and Kripa sit very still. Dhritarashtra keeps asking who has won.",
-  "ctx": "scene:a4_stakes"
- },
- {
-  "id": 700,
-  "en": "You are standing among the courtiers by the pillars.",
-  "ctx": "scene:a4_stakes"
- },
- {
-  "id": 701,
-  "en": "Call out that Shakuni's dice are false",
-  "ctx": "scene:a4_stakes"
- },
- {
-  "id": 702,
-  "en": "You have watched Shakuni's hands, and you say exactly what they are doing. Shakuni smiles. Nobody stops the game, but Vidura looks at you as if marking your face for later.",
-  "ctx": "scene:a4_stakes"
- },
- {
-  "id": 703,
-  "en": "You shout, and the hall turns to look at you. Shakuni asks, very kindly, whether you would like to inspect the dice yourself. People laugh.",
-  "ctx": "scene:a4_stakes"
- },
- {
-  "id": 704,
-  "en": "Beg Bhishma to stop the game",
-  "ctx": "scene:a4_stakes"
- },
- {
   "id": 705,
   "en": "Bhishma looks at his hands. \"The way of dharma is subtle,\" he says, and says nothing more.",
-  "ctx": "scene:a4_stakes"
- },
- {
-  "id": 706,
-  "en": "Stay silent. It is the king's game",
-  "ctx": "scene:a4_stakes"
- },
- {
-  "id": 707,
-  "en": "Leave the hall now",
-  "ctx": "scene:a4_stakes"
- },
- {
-  "id": 708,
-  "en": "You walked out of the dice game before the worst of it.",
   "ctx": "scene:a4_stakes"
  },
  {
@@ -3550,26 +2930,6 @@
   "ctx": "scene:a4_draupadi"
  },
  {
-  "id": 711,
-  "en": "Yudhishthira stakes Draupadi, and loses her. Duryodhana sends for her as a slave. She sends back a question: did he lose me before or after he lost himself?",
-  "ctx": "scene:a4_draupadi"
- },
- {
-  "id": 712,
-  "en": "Dushasana drags her into the hall by her hair. She stands before the elders and asks again. No one answers her.",
-  "ctx": "scene:a4_draupadi"
- },
- {
-  "id": 713,
-  "en": "Then Vikarna, one of Duryodhana's own brothers, stands up: a man who has lost himself has nothing left to stake. The hall shouts him down.",
-  "ctx": "scene:a4_draupadi"
- },
- {
-  "id": 714,
-  "en": "Stand beside Vikarna and answer her question out loud",
-  "ctx": "scene:a4_draupadi"
- },
- {
   "id": 715,
   "en": "You spoke against him in the hall.",
   "ctx": "scene:a4_draupadi"
@@ -3577,11 +2937,6 @@
  {
   "id": 716,
   "en": "In the dice hall you answered Draupadi's question out loud. Dushasana marked you.",
-  "ctx": "scene:a4_draupadi"
- },
- {
-  "id": 717,
-  "en": "The Pandavas will trust you. Dushasana will not forget",
   "ctx": "scene:a4_draupadi"
  },
  {
@@ -3605,11 +2960,6 @@
   "ctx": "scene:a4_draupadi"
  },
  {
-  "id": 722,
-  "en": "Beg Duryodhana, as his oldest friend, to stop this",
-  "ctx": "scene:a4_draupadi"
- },
- {
   "id": 723,
   "en": "You begged him to stop, in front of everyone.",
   "ctx": "scene:a4_draupadi"
@@ -3630,38 +2980,8 @@
   "ctx": "scene:a4_draupadi"
  },
  {
-  "id": 727,
-  "en": "Leave the hall. You cannot watch this",
-  "ctx": "scene:a4_draupadi"
- },
- {
   "id": 728,
   "en": "The cloth that does not end",
-  "ctx": "scene:a4_robe"
- },
- {
-  "id": 729,
-  "en": "Karna, who has not forgotten the swayamvara, says she is a slave now and may be treated like one. Duryodhana bares his thigh to her.",
-  "ctx": "scene:a4_robe"
- },
- {
-  "id": 730,
-  "en": "Dushasana takes hold of her garment and pulls. It does not end. However hard he pulls, there is more cloth, until he falls back exhausted on a heap of it.",
-  "ctx": "scene:a4_robe"
- },
- {
-  "id": 731,
-  "en": "Bhima rises and swears, before everyone, that he will break Duryodhana's thigh and drink Dushasana's blood on the battlefield.",
-  "ctx": "scene:a4_robe"
- },
- {
-  "id": 732,
-  "en": "Outside, jackals are howling in daylight. The old king is afraid.",
-  "ctx": "scene:a4_robe"
- },
- {
-  "id": 733,
-  "en": "Swear your own vow that this will be answered",
   "ctx": "scene:a4_robe"
  },
  {
@@ -3670,33 +2990,8 @@
   "ctx": "scene:a4_robe"
  },
  {
-  "id": 735,
-  "en": "Tell Karna he is better than this",
-  "ctx": "scene:a4_robe"
- },
- {
-  "id": 736,
-  "en": "You told him he was better than what he said in the hall.",
-  "ctx": "scene:a4_robe"
- },
- {
-  "id": 737,
-  "en": "Karna does not look at you. His jaw is tight. Later you will wonder whether he agreed.",
-  "ctx": "scene:a4_robe"
- },
- {
-  "id": 738,
-  "en": "Remember every face in the hall, and what each one did",
-  "ctx": "scene:a4_robe"
- },
- {
   "id": 739,
   "en": "You memorised every face in the dice hall: who spoke, who laughed, who looked away.",
-  "ctx": "scene:a4_robe"
- },
- {
-  "id": 740,
-  "en": "Look at the floor until it is over",
   "ctx": "scene:a4_robe"
  },
  {
@@ -3725,28 +3020,8 @@
   "ctx": "scene:a4_aftermath"
  },
  {
-  "id": 746,
-  "en": "The Pandavas walk out of Hastinapura in deerskins, with Draupadi beside them, her hair still unbound. Kunti stays behind with Vidura.",
-  "ctx": "scene:a4_aftermath"
- },
- {
-  "id": 747,
-  "en": "The city watches in silence. Everyone knows that when the thirteen years end, there will be war.",
-  "ctx": "scene:a4_aftermath"
- },
- {
-  "id": 748,
-  "en": "Follow the Pandavas into the forest",
-  "ctx": "scene:a4_aftermath"
- },
- {
   "id": 749,
   "en": "You followed the Pandavas into exile.",
-  "ctx": "scene:a4_aftermath"
- },
- {
-  "id": 750,
-  "en": "Stay at Hastinapura and watch Duryodhana rule",
   "ctx": "scene:a4_aftermath"
  },
  {
@@ -3755,19 +3030,9 @@
   "ctx": "scene:a4_aftermath"
  },
  {
-  "id": 752,
-  "en": "Go home, make your fortune and raise a family",
-  "ctx": "scene:a4_aftermath"
- },
- {
   "id": 753,
   "en": "You went home to make your own life.",
   "ctx": "scene:a4_aftermath"
- },
- {
-  "id": 754,
-  "en": "As a warrior. The world he will grow up in needs them",
-  "ctx": "scene:a5_child"
  },
  {
   "id": 755,
@@ -3775,18 +3040,8 @@
   "ctx": "scene:a5_child"
  },
  {
-  "id": 756,
-  "en": "To be kind before he is brave",
-  "ctx": "scene:a5_child"
- },
- {
   "id": 757,
   "en": "You raised Vasu to be kind before he was brave.",
-  "ctx": "scene:a5_child"
- },
- {
-  "id": 758,
-  "en": "In your own craft, so he can earn a living without a sword",
   "ctx": "scene:a5_child"
  },
  {
@@ -3810,16 +3065,6 @@
   "ctx": "scene:a5_forest_boon"
  },
  {
-  "id": 763,
-  "en": "Arjuna has gone north alone to seek divine weapons from the gods. The rest of the camp moves between hermitages. You spend a season at an ashram where the sages will teach anyone patient enough to sit still.",
-  "ctx": "scene:a5_forest_boon"
- },
- {
-  "id": 764,
-  "en": "Practise penance and ask for a divine weapon",
-  "ctx": "scene:a5_forest_boon"
- },
- {
   "id": 765,
   "en": "After a season of penance you were granted a divine weapon.",
   "ctx": "scene:a5_forest_boon"
@@ -3835,18 +3080,8 @@
   "ctx": "scene:a5_forest_boon"
  },
  {
-  "id": 768,
-  "en": "Learn from the ashram's healers",
-  "ctx": "scene:a5_forest_boon"
- },
- {
   "id": 769,
   "en": "The ashram's healers taught you their remedies.",
-  "ctx": "scene:a5_forest_boon"
- },
- {
-  "id": 770,
-  "en": "Serve the sages: carry water, sweep, keep silent",
   "ctx": "scene:a5_forest_boon"
  },
  {
@@ -3865,11 +3100,6 @@
   "ctx": "scene:a5_forest_boon"
  },
  {
-  "id": 774,
-  "en": "Hunt for the camp, which is always hungry",
-  "ctx": "scene:a5_forest_boon"
- },
- {
   "id": 775,
   "en": "The Kamyaka forest",
   "ctx": "scene:a5_jayadratha"
@@ -3885,16 +3115,6 @@
   "ctx": "scene:a5_jayadratha"
  },
  {
-  "id": 778,
-  "en": "While the Pandavas are out hunting, King Jayadratha of Sindhu, Duryodhana's brother-in-law, finds Draupadi alone at the hermitage and carries her off in his chariot.",
-  "ctx": "scene:a5_jayadratha"
- },
- {
-  "id": 779,
-  "en": "You are the first to hear her shout. Jayadratha's guards are covering his escape.",
-  "ctx": "scene:a5_jayadratha"
- },
- {
   "id": 780,
   "en": "Go after the chariot",
   "ctx": "scene:a5_jayadratha"
@@ -3907,11 +3127,6 @@
  {
   "id": 782,
   "en": "You find them by the river and point the way. Bhima is already running before you finish.",
-  "ctx": "scene:a5_jayadratha"
- },
- {
-  "id": 783,
-  "en": "Guard Dhaumya and the hermitage in case they come back",
   "ctx": "scene:a5_jayadratha"
  },
  {
@@ -3975,26 +3190,6 @@
   "ctx": "scene:a5_yaksha"
  },
  {
-  "id": 796,
-  "en": "In the twelfth year, the brothers grow desperate with thirst. One by one, Nakula, Sahadeva, Arjuna and Bhima go to a lake, ignore a voice that tells them to answer its questions first, drink, and fall down as if dead.",
-  "ctx": "scene:a5_yaksha"
- },
- {
-  "id": 797,
-  "en": "Yudhishthira comes last, and agrees to answer.",
-  "ctx": "scene:a5_yaksha"
- },
- {
-  "id": 798,
-  "en": "You came with Bhima. Your own throat is cracked with thirst, and the water is right there.",
-  "ctx": "scene:a5_yaksha"
- },
- {
-  "id": 799,
-  "en": "Drink. You cannot think for thirst",
-  "ctx": "scene:a5_yaksha"
- },
- {
   "id": 800,
   "en": "Darkness, and then you are lying on the bank in the evening, alive, with a strange heaviness in your limbs that never quite leaves.",
   "ctx": "scene:a5_yaksha"
@@ -4035,11 +3230,6 @@
   "ctx": "scene:a5_court_raid"
  },
  {
-  "id": 808,
-  "en": "Duryodhana takes his court to the forest, saying it is to count the royal herds. Everyone knows it is to show off in front of the exiled Pandavas. A band of Gandharvas, forest warriors who serve no king, ambushes the royal camp. Karna's line breaks.",
-  "ctx": "scene:a5_court_raid"
- },
- {
   "id": 809,
   "en": "Duryodhana is being dragged off in chains.",
   "ctx": "scene:a5_court_raid"
@@ -4050,18 +3240,8 @@
   "ctx": "scene:a5_court_raid"
  },
  {
-  "id": 811,
-  "en": "Run to the Pandavas' camp for help",
-  "ctx": "scene:a5_court_raid"
- },
- {
   "id": 812,
   "en": "Yudhishthira hears you out and sends Arjuna and Bhima at once. \"He is still our cousin,\" he says.",
-  "ctx": "scene:a5_court_raid"
- },
- {
-  "id": 813,
-  "en": "Get out with the rest of the court",
   "ctx": "scene:a5_court_raid"
  },
  {
@@ -4110,16 +3290,6 @@
   "ctx": "scene:a5_court_armour"
  },
  {
-  "id": 823,
-  "en": "Karna was born with armour and earrings that make him almost impossible to kill. Every morning after his prayers to the sun, he gives anyone whatever they ask. One morning an old brahmin asks for the armour. Everyone says it is Indra, Arjuna's father, in disguise.",
-  "ctx": "scene:a5_court_armour"
- },
- {
-  "id": 824,
-  "en": "Push through and warn Karna it is a trick",
-  "ctx": "scene:a5_court_armour"
- },
- {
   "id": 825,
   "en": "You tried to save his armour.",
   "ctx": "scene:a5_court_armour"
@@ -4132,11 +3302,6 @@
  {
   "id": 827,
   "en": "Watch in silence",
-  "ctx": "scene:a5_court_armour"
- },
- {
-  "id": 828,
-  "en": "Ask {teacher} to teach you the weapon you were promised",
   "ctx": "scene:a5_court_armour"
  },
  {
@@ -4175,11 +3340,6 @@
   "ctx": "scene:a5_own_life"
  },
  {
-  "id": 836,
-  "en": "Take your field back from Sudatta's men",
-  "ctx": "scene:a5_own_life"
- },
- {
   "id": 837,
   "en": "Sudatta's men",
   "ctx": "fight:e_sudatta"
@@ -4210,11 +3370,6 @@
   "ctx": "scene:a5_own_crisis"
  },
  {
-  "id": 843,
-  "en": "A fever comes up the river in the dry season. Half the village is sick, the granary is low, and the nearest king is busy with his own troubles.",
-  "ctx": "scene:a5_own_crisis"
- },
- {
   "id": 844,
   "en": "Tend the sick yourself",
   "ctx": "scene:a5_own_crisis"
@@ -4232,16 +3387,6 @@
  {
   "id": 847,
   "en": "You do everything you can. The fever takes its own count.",
-  "ctx": "scene:a5_own_crisis"
- },
- {
-  "id": 848,
-  "en": "Ride to the next kingdom and come back with grain",
-  "ctx": "scene:a5_own_crisis"
- },
- {
-  "id": 849,
-  "en": "Go into the forest to find Mauni, your old teacher",
   "ctx": "scene:a5_own_crisis"
  },
  {
@@ -4270,33 +3415,8 @@
   "ctx": "scene:a5_matsya"
  },
  {
-  "id": 855,
-  "en": "For the thirteenth year the Pandavas must live unrecognised. They take service at King Virata's court: Yudhishthira as a dice master, Bhima as a cook, Arjuna as Brihannala, a teacher of dance, Draupadi as a queen's maid.",
-  "ctx": "scene:a5_matsya"
- },
- {
-  "id": 856,
-  "en": "When the king's commander Kichaka will not leave Draupadi alone, Bhima kills him one night in the dancing hall.",
-  "ctx": "scene:a5_matsya"
- },
- {
-  "id": 857,
-  "en": "With Kichaka dead, the Kauravas raid Matsya's cattle. Young Prince Uttara rides out to stop them, with the dance teacher Brihannala as his charioteer.",
-  "ctx": "scene:a5_matsya"
- },
- {
-  "id": 858,
-  "en": "Ride out with Prince Uttara to save the herds",
-  "ctx": "scene:a5_matsya"
- },
- {
   "id": 859,
   "en": "Ride with the Kaurava raiders",
-  "ctx": "scene:a5_matsya"
- },
- {
-  "id": 860,
-  "en": "Recognise Brihannala, and keep the secret",
   "ctx": "scene:a5_matsya"
  },
  {
@@ -4410,21 +3530,6 @@
   "ctx": "scene:a5_karna_secret"
  },
  {
-  "id": 883,
-  "en": "Krishna meets Karna before the war and tells him the truth: he is Kunti's firstborn son, born before her marriage, set adrift on the river. He is the eldest Pandava. If he changes sides, he will be king.",
-  "ctx": "scene:a5_karna_secret"
- },
- {
-  "id": 884,
-  "en": "Karna refuses. Duryodhana stood by him when no one else would, and he will not leave him now.",
-  "ctx": "scene:a5_karna_secret"
- },
- {
-  "id": 885,
-  "en": "Tell Karna you have always known, and that it changes nothing for you",
-  "ctx": "scene:a5_karna_secret"
- },
- {
   "id": 886,
   "en": "You knew who he was all along, and stayed his friend.",
   "ctx": "scene:a5_karna_secret"
@@ -4435,18 +3540,8 @@
   "ctx": "scene:a5_karna_secret"
  },
  {
-  "id": 888,
-  "en": "Urge him to take the crown and stop the war",
-  "ctx": "scene:a5_karna_secret"
- },
- {
   "id": 889,
   "en": "\"And be remembered as the man who betrayed his only friend for a throne?\" he says. \"No.\"",
-  "ctx": "scene:a5_karna_secret"
- },
- {
-  "id": 890,
-  "en": "Tell him you will stand with him, whatever he decides",
   "ctx": "scene:a5_karna_secret"
  },
  {
@@ -4465,28 +3560,8 @@
   "ctx": "scene:a5_side"
  },
  {
-  "id": 894,
-  "en": "The Pandavas ask for their kingdom back. When that is refused, they ask for five villages. Krishna goes to Hastinapura himself to plead for peace.",
-  "ctx": "scene:a5_side"
- },
- {
-  "id": 895,
-  "en": "Duryodhana says he will not give them as much land as the point of a needle can cover. Both sides gather their armies at Kurukshetra.",
-  "ctx": "scene:a5_side"
- },
- {
   "id": 896,
   "en": "Fight for the Pandavas",
-  "ctx": "scene:a5_side"
- },
- {
-  "id": 897,
-  "en": "Fight for the Kuru throne under Duryodhana",
-  "ctx": "scene:a5_side"
- },
- {
-  "id": 898,
-  "en": "Refuse to fight. Serve in the healers' tents, which take in both sides",
   "ctx": "scene:a5_side"
  },
  {
@@ -4510,26 +3585,6 @@
   "ctx": "scene:a6_eve"
  },
  {
-  "id": 903,
-  "en": "Eighteen armies face each other across the plain of Kurukshetra. Conch shells sound from both sides.",
-  "ctx": "scene:a6_eve"
- },
- {
-  "id": 904,
-  "en": "Arjuna drives his chariot out between the two armies and looks at his teachers, his grandfather and his cousins on the other side. He puts down his bow. Krishna, his charioteer, speaks to him for a long time.",
-  "ctx": "scene:a6_eve"
- },
- {
-  "id": 905,
-  "en": "You are too far away to hear the words. You only see Arjuna stand up at last and take up his bow again.",
-  "ctx": "scene:a6_eve"
- },
- {
-  "id": 906,
-  "en": "In the front line, with your weapon",
-  "ctx": "scene:a6_eve"
- },
- {
   "id": 907,
   "en": "Driving a chariot for a warrior who needs one",
   "ctx": "scene:a6_eve"
@@ -4545,18 +3600,8 @@
   "ctx": "scene:a6_eve"
  },
  {
-  "id": 910,
-  "en": "You need a strategist's training or a commander's presence.",
-  "ctx": "scene:a6_eve"
- },
- {
   "id": 911,
   "en": "In the healers' tents",
-  "ctx": "scene:a6_eve"
- },
- {
-  "id": 912,
-  "en": "Singing to the troops before every battle",
   "ctx": "scene:a6_eve"
  },
  {
@@ -4575,23 +3620,8 @@
   "ctx": "scene:a6_vasu"
  },
  {
-  "id": 916,
-  "en": "Keep him beside you, where you can see him",
-  "ctx": "scene:a6_vasu"
- },
- {
-  "id": 917,
-  "en": "Order him to stay in the camp",
-  "ctx": "scene:a6_vasu"
- },
- {
   "id": 918,
   "en": "He argues, then sulks, then obeys. The camp is behind the lines. It should be safe.",
-  "ctx": "scene:a6_vasu"
- },
- {
-  "id": 919,
-  "en": "Let him join another company. He has to learn without you",
   "ctx": "scene:a6_vasu"
  },
  {
@@ -4610,23 +3640,8 @@
   "ctx": "scene:a6_day1"
  },
  {
-  "id": 923,
-  "en": "For nine days Bhishma, the grandsire, commands the Kaurava army, and no one can stand against him. He has promised not to kill the Pandava brothers themselves. He kills nearly everyone else.",
-  "ctx": "scene:a6_day1"
- },
- {
   "id": 924,
   "en": "Fight in the line",
-  "ctx": "scene:a6_day1"
- },
- {
-  "id": 925,
-  "en": "Guard the supply lines and the river crossings",
-  "ctx": "scene:a6_day1"
- },
- {
-  "id": 926,
-  "en": "Work in the healers' tents through the nine days",
   "ctx": "scene:a6_day1"
  },
  {
@@ -4695,26 +3710,6 @@
   "ctx": "scene:a6_bhishma"
  },
  {
-  "id": 940,
-  "en": "On the tenth day the Pandavas put Shikhandi at the front of Arjuna's chariot. Bhishma will not fight one who was born a woman, and lowers his bow. Arjuna's arrows bring the grandsire down.",
-  "ctx": "scene:a6_bhishma"
- },
- {
-  "id": 941,
-  "en": "He falls on a bed of arrows, so many that his body does not touch the ground. He has the boon of choosing the hour of his death, and he chooses to wait.",
-  "ctx": "scene:a6_bhishma"
- },
- {
-  "id": 942,
-  "en": "That night, warriors from both armies lay down their weapons and come to see him.",
-  "ctx": "scene:a6_bhishma"
- },
- {
-  "id": 943,
-  "en": "Ask him how a person can know their duty",
-  "ctx": "scene:a6_bhishma"
- },
- {
   "id": 944,
   "en": "On the bed of arrows, Bhishma told you that duty is subtle, and that keeping your word can still lead you into wrong.",
   "ctx": "scene:a6_bhishma"
@@ -4722,11 +3717,6 @@
  {
   "id": 945,
   "en": "\"With difficulty,\" he says, and almost smiles. \"I kept my word all my life, and look where it has brought us.\"",
-  "ctx": "scene:a6_bhishma"
- },
- {
-  "id": 946,
-  "en": "Ask him about the vows you have made",
   "ctx": "scene:a6_bhishma"
  },
  {
@@ -4742,11 +3732,6 @@
  {
   "id": 949,
   "en": "He thanks you, but he does not drink. Later Arjuna shoots an arrow into the earth, and a spring of clear water rises to the old man's lips.",
-  "ctx": "scene:a6_bhishma"
- },
- {
-  "id": 950,
-  "en": "Stay away. You cannot face him",
   "ctx": "scene:a6_bhishma"
  },
  {
@@ -4777,11 +3762,6 @@
  {
   "id": 956,
   "en": "Drive for Yudhishthira's chariot",
-  "ctx": "scene:a6_capture"
- },
- {
-  "id": 957,
-  "en": "Carry the wounded off the field under fire",
   "ctx": "scene:a6_capture"
  },
  {
@@ -4885,33 +3865,8 @@
   "ctx": "scene:a6_day13"
  },
  {
-  "id": 978,
-  "en": "Drive into the breach after Abhimanyu",
-  "ctx": "scene:a6_day13"
- },
- {
-  "id": 979,
-  "en": "There may be no way back",
-  "ctx": "scene:a6_day13"
- },
- {
-  "id": 980,
-  "en": "Hold at the gate and try to force it open",
-  "ctx": "scene:a6_day13"
- },
- {
-  "id": 981,
-  "en": "Pull back to get Vasu out when the line breaks",
-  "ctx": "scene:a6_day13"
- },
- {
   "id": 982,
   "en": "On the thirteenth day you pulled back to save your son.",
-  "ctx": "scene:a6_day13"
- },
- {
-  "id": 983,
-  "en": "Hold your place in the ring as ordered",
   "ctx": "scene:a6_day13"
  },
  {
@@ -4925,11 +3880,6 @@
   "ctx": "scene:a6_day13"
  },
  {
-  "id": 986,
-  "en": "Refuse to close in on a lone boy",
-  "ctx": "scene:a6_day13"
- },
- {
   "id": 987,
   "en": "You lowered your bow and would not close in.",
   "ctx": "scene:a6_day13"
@@ -4937,16 +3887,6 @@
  {
   "id": 988,
   "en": "On the thirteenth day you lowered your bow and would not close in on Abhimanyu.",
-  "ctx": "scene:a6_day13"
- },
- {
-  "id": 989,
-  "en": "Leave the ring to carry a wounded boy out",
-  "ctx": "scene:a6_day13"
- },
- {
-  "id": 990,
-  "en": "Work the tents behind the wheel",
   "ctx": "scene:a6_day13"
  },
  {
@@ -5035,18 +3975,8 @@
   "ctx": "scene:a6_d13_inside"
  },
  {
-  "id": 1008,
-  "en": "Stay beside Abhimanyu to the end",
-  "ctx": "scene:a6_d13_inside"
- },
- {
   "id": 1009,
   "en": "You fell beside Abhimanyu in the heart of the wheel, on the thirteenth day.",
-  "ctx": "scene:a6_d13_inside"
- },
- {
-  "id": 1010,
-  "en": "Cut your way back out while you still can",
   "ctx": "scene:a6_d13_inside"
  },
  {
@@ -5067,26 +3997,6 @@
  {
   "id": 1014,
   "en": "Sunset and torches",
-  "ctx": "scene:a6_day14"
- },
- {
-  "id": 1015,
-  "en": "All day Arjuna cuts his way toward Jayadratha, who is hidden deep behind the Kaurava lines. Near evening the sky darkens as if the sun has set. Jayadratha steps out to watch Arjuna fail. The sun is still up, and Arjuna's arrow finds him.",
-  "ctx": "scene:a6_day14"
- },
- {
-  "id": 1016,
-  "en": "The fighting does not stop at dusk. For the first time, the armies fight on by torchlight. To save the Pandavas from Karna, Bhima's son Ghatotkacha fights through the dark until Karna is forced to spend the one spear that could have killed Arjuna.",
-  "ctx": "scene:a6_day14"
- },
- {
-  "id": 1017,
-  "en": "Clear the road for Arjuna's chariot",
-  "ctx": "scene:a6_day14"
- },
- {
-  "id": 1018,
-  "en": "Guard the ground in front of Jayadratha",
   "ctx": "scene:a6_day14"
  },
  {
@@ -5215,28 +4125,8 @@
   "ctx": "scene:a6_day15"
  },
  {
-  "id": 1044,
-  "en": "Drona cannot be beaten while he holds his bow. Bhima kills an elephant named Ashwatthama, the same name as Drona's son, and shouts that Ashwatthama is dead.",
-  "ctx": "scene:a6_day15"
- },
- {
-  "id": 1045,
-  "en": "Drona does not believe it. He asks Yudhishthira, who has never told a lie. Yudhishthira says, \"Ashwatthama is dead,\" and then, under his breath, \"the elephant.\" Drona lays down his weapons, and Dhrishtadyumna kills him where he sits.",
-  "ctx": "scene:a6_day15"
- },
- {
-  "id": 1046,
-  "en": "Shout it along the line: Ashwatthama is dead",
-  "ctx": "scene:a6_day15"
- },
- {
   "id": 1047,
   "en": "Refuse to repeat it",
-  "ctx": "scene:a6_day15"
- },
- {
-  "id": 1048,
-  "en": "Ride to Drona and tell him his son is alive",
   "ctx": "scene:a6_day15"
  },
  {
@@ -5267,11 +4157,6 @@
  {
   "id": 1054,
   "en": "Bhima's vow",
-  "ctx": "scene:a6_day16"
- },
- {
-  "id": 1055,
-  "en": "Karna takes command of the Kaurava army. On the sixteenth day, Bhima finds Dushasana on the field and fulfils the terrible vow he made in the dice hall, thirteen years ago.",
   "ctx": "scene:a6_day16"
  },
  {
@@ -5345,38 +4230,13 @@
   "ctx": "scene:a6_day17"
  },
  {
-  "id": 1070,
-  "en": "Arjuna and Karna meet at last. In the middle of the duel, Karna's chariot wheel sinks into the earth, as a brahmin once cursed it would. He reaches for the mantra of his greatest weapon, and it is gone from his mind, as his teacher Parashurama once cursed it would be.",
-  "ctx": "scene:a6_day17"
- },
- {
-  "id": 1071,
-  "en": "He climbs down to lift the wheel and asks Arjuna to wait, as the rules of war demand.",
-  "ctx": "scene:a6_day17"
- },
- {
-  "id": 1072,
-  "en": "Loose an arrow at Karna while he lifts the wheel",
-  "ctx": "scene:a6_day17"
- },
- {
   "id": 1073,
   "en": "On the seventeenth day you shot at Karna while he was lifting his chariot wheel.",
   "ctx": "scene:a6_day17"
  },
  {
-  "id": 1074,
-  "en": "Shout to Arjuna to wait until Karna is armed",
-  "ctx": "scene:a6_day17"
- },
- {
   "id": 1075,
   "en": "You called out for a fair fight.",
-  "ctx": "scene:a6_day17"
- },
- {
-  "id": 1076,
-  "en": "Jump down and help Karna lift the wheel",
   "ctx": "scene:a6_day17"
  },
  {
@@ -5390,11 +4250,6 @@
   "ctx": "scene:a6_day17"
  },
  {
-  "id": 1079,
-  "en": "Stand over Karna and fight to the end",
-  "ctx": "scene:a6_day17"
- },
- {
   "id": 1080,
   "en": "You fell beside Karna on the seventeenth day, standing over him as the wheel sank.",
   "ctx": "scene:a6_day17"
@@ -5402,11 +4257,6 @@
  {
   "id": 1081,
   "en": "You will not survive this",
-  "ctx": "scene:a6_day17"
- },
- {
-  "id": 1082,
-  "en": "Pull back while you can. Vasu is waiting",
   "ctx": "scene:a6_day17"
  },
  {
@@ -5425,28 +4275,8 @@
   "ctx": "scene:a6_day18"
  },
  {
-  "id": 1086,
-  "en": "Shalya leads what is left of the Kaurava army and falls to Yudhishthira. Sahadeva kills Shakuni, who started all of this with a pair of dice.",
-  "ctx": "scene:a6_day18"
- },
- {
-  "id": 1087,
-  "en": "Duryodhana, alone, hides in a lake. The Pandavas find him and he comes out to fight Bhima with the mace. Bhima strikes him on the thigh, below the waist, against every rule of mace fighting. Balarama, who taught them both, has to be held back from striking Bhima.",
-  "ctx": "scene:a6_day18"
- },
- {
-  "id": 1088,
-  "en": "It is the last day. Survival is not certain.",
-  "ctx": "scene:a6_day18"
- },
- {
   "id": 1089,
   "en": "Fight in the last battle",
-  "ctx": "scene:a6_day18"
- },
- {
-  "id": 1090,
-  "en": "Go to the lake to witness the duel",
   "ctx": "scene:a6_day18"
  },
  {
@@ -5500,16 +4330,6 @@
   "ctx": "scene:a6_duryodhana"
  },
  {
-  "id": 1101,
-  "en": "Duryodhana lies where Bhima left him, his thigh shattered. He is waiting to die. He sees you, and for a moment he looks like the boy at the lotus pond.",
-  "ctx": "scene:a6_duryodhana"
- },
- {
-  "id": 1102,
-  "en": "Sit with him, and talk about when you were young",
-  "ctx": "scene:a6_duryodhana"
- },
- {
   "id": 1103,
   "en": "You sat with him at the end.",
   "ctx": "scene:a6_duryodhana"
@@ -5517,11 +4337,6 @@
  {
   "id": 1104,
   "en": "You sat with Duryodhana by the lake as he lay dying.",
-  "ctx": "scene:a6_duryodhana"
- },
- {
-  "id": 1105,
-  "en": "Tell him what he did to all of you",
   "ctx": "scene:a6_duryodhana"
  },
  {
@@ -5552,11 +4367,6 @@
  {
   "id": 1111,
   "en": "The night raid",
-  "ctx": "scene:a6_raid"
- },
- {
-  "id": 1112,
-  "en": "The war is over. The Pandava camp sleeps for the first time in eighteen days. Ashwatthama, mad with grief for his father, comes through the gate in the dark with a sword.",
   "ctx": "scene:a6_raid"
  },
  {
@@ -5597,11 +4407,6 @@
  {
   "id": 1120,
   "en": "Fight Ashwatthama at the gate",
-  "ctx": "scene:a6_raid"
- },
- {
-  "id": 1121,
-  "en": "Go with Ashwatthama into the sleeping camp",
   "ctx": "scene:a6_raid"
  },
  {
@@ -5695,38 +4500,8 @@
   "ctx": "scene:a7_field"
  },
  {
-  "id": 1140,
-  "en": "The women of both houses come to the battlefield to find their dead. Gandhari, who has worn a blindfold all her married life so as not to see more than her husband could, walks among her hundred sons.",
-  "ctx": "scene:a7_field"
- },
- {
-  "id": 1141,
-  "en": "In her grief she curses Krishna: as the Kuru clan destroyed itself, so will his own Yadavas, thirty-six years from now. Krishna accepts the curse without a word.",
-  "ctx": "scene:a7_field"
- },
- {
-  "id": 1142,
-  "en": "At the water rites, Kunti tells her sons that Karna was their eldest brother. Yudhishthira weeps for a long time.",
-  "ctx": "scene:a7_field"
- },
- {
-  "id": 1143,
-  "en": "Help build the pyres for the dead of both sides",
-  "ctx": "scene:a7_field"
- },
- {
-  "id": 1144,
-  "en": "Sit with your own dead and let no one move you",
-  "ctx": "scene:a7_field"
- },
- {
   "id": 1145,
   "en": "Swear vengeance on Ashwatthama",
-  "ctx": "scene:a7_field"
- },
- {
-  "id": 1146,
-  "en": "He has been cursed to wander the earth. You could follow",
   "ctx": "scene:a7_field"
  },
  {
@@ -5737,16 +4512,6 @@
  {
   "id": 1148,
   "en": "The last teaching",
-  "ctx": "scene:a7_bhishma"
- },
- {
-  "id": 1149,
-  "en": "Bhishma has waited on his bed of arrows for the sun to turn north. Before he dies, he teaches Yudhishthira how to rule, at great length, while the Pandavas and the survivors listen.",
-  "ctx": "scene:a7_bhishma"
- },
- {
-  "id": 1150,
-  "en": "You sit at the edge of the crowd. When he pauses, he looks at you as if he expects a question.",
   "ctx": "scene:a7_bhishma"
  },
  {
@@ -5800,28 +4565,8 @@
   "ctx": "scene:a7_final"
  },
  {
-  "id": 1161,
-  "en": "You are forty-five. Everything you were raised for has happened. How will you spend the rest of your life?",
-  "ctx": "scene:a7_final"
- },
- {
-  "id": 1162,
-  "en": "Serve Yudhishthira's court as an advisor",
-  "ctx": "scene:a7_final"
- },
- {
   "id": 1163,
   "en": "The new court would need to trust you.",
-  "ctx": "scene:a7_final"
- },
- {
-  "id": 1164,
-  "en": "Go to the forest with Dhritarashtra, Gandhari and Kunti",
-  "ctx": "scene:a7_final"
- },
- {
-  "id": 1165,
-  "en": "Tell the story of the war, as it really happened",
   "ctx": "scene:a7_final"
  },
  {
@@ -5830,18 +4575,8 @@
   "ctx": "scene:a7_final"
  },
  {
-  "id": 1167,
-  "en": "Hunt Ashwatthama to the ends of the earth",
-  "ctx": "scene:a7_final"
- },
- {
   "id": 1168,
   "en": "Go home",
-  "ctx": "scene:a7_final"
- },
- {
-  "id": 1169,
-  "en": "Walk away from everything",
   "ctx": "scene:a7_final"
  },
  {
@@ -5870,24 +4605,9 @@
   "ctx": "play:a1_home"
  },
  {
-  "id": 1175,
-  "en": "You are six years old. How do you spend your days?",
-  "ctx": "play:a1_home"
- },
- {
   "id": 1176,
   "en": "Vows ({n} / {max})",
   "ctx": "play:a1_home"
- },
- {
-  "id": 1177,
-  "en": "You saw two of Duryodhana's men carrying something heavy to the water at dusk. Nobody else seems to have noticed.",
-  "ctx": "play:a1_poison"
- },
- {
-  "id": 1178,
-  "en": "Ugra, the miller's son, is two years older and twice your size. Every fair he takes the smaller children's sweets and dares anyone to stop him.",
-  "ctx": "play:a1_wrestle"
  },
  {
   "id": 1179,
@@ -5960,16 +4680,6 @@
   "ctx": "play:a1_wrestle"
  },
  {
-  "id": 1193,
-  "en": "You are fourteen. Drona, a brahmin who knows the secrets of every weapon, now teaches the Kuru princes. Every family with ambition wants a place near him.",
-  "ctx": "play:a2_teacher"
- },
- {
-  "id": 1194,
-  "en": "A teacher shapes your skills, and you will owe them for the rest of your life.",
-  "ctx": "play:a2_teacher"
- },
- {
   "id": 1195,
   "en": "A clearing at night",
   "ctx": "play:a2_path"
@@ -6030,24 +4740,9 @@
   "ctx": "play:a2_spar"
  },
  {
-  "id": 1207,
-  "en": "You are standing in the stands.",
-  "ctx": "play:a2_tournament"
- },
- {
   "id": 1208,
   "en": "The army passes your door on its way east.",
   "ctx": "play:a2_drupada"
- },
- {
-  "id": 1209,
-  "en": "The river is full of lamps. People make vows here. A vow gives you strength, and breaking one marks you for life. You may hold up to three.",
-  "ctx": "play:a2_vow"
- },
- {
-  "id": 1210,
-  "en": "You are in Varnavata for the spring festival. You have noticed the smell of resin in the new house's walls.",
-  "ctx": "play:a3_lac"
  },
  {
   "id": 1211,
@@ -6058,26 +4753,6 @@
   "id": 1212,
   "en": "{friend} asks where you will go.",
   "ctx": "play:a3_court"
- },
- {
-  "id": 1213,
-  "en": "Your family has been talking about marriage for years. Two names keep coming up, and a third you have never said out loud.",
-  "ctx": "play:a3_marriage"
- },
- {
-  "id": 1214,
-  "en": "Madhavi is a healer's daughter from home, quiet and stubborn. Revat trains horses for the royal stables and laughs at everything.",
-  "ctx": "play:a3_marriage"
- },
- {
-  "id": 1215,
-  "en": "You are thirty. Half the kingdom will be in that hall. Will you?",
-  "ctx": "play:a4_invite"
- },
- {
-  "id": 1216,
-  "en": "You hear the story secondhand, and it changes with every telling.",
-  "ctx": "play:a4_aftermath"
  },
  {
   "id": 1217,
@@ -6115,19 +4790,9 @@
   "ctx": "play:a5_side"
  },
  {
-  "id": 1224,
-  "en": "This is the most important decision of your life.",
-  "ctx": "play:a5_side"
- },
- {
   "id": 1225,
   "en": "The healers' tents stand behind both armies. You will see everything from there.",
   "ctx": "play:a6_eve"
- },
- {
-  "id": 1226,
-  "en": "Vasu is sixteen. He has a sword, a borrowed shield and no idea what tomorrow is going to be like. He wants to be beside you.",
-  "ctx": "play:a6_vasu"
  },
  {
   "id": 1227,
@@ -6135,24 +4800,9 @@
   "ctx": "play:a6_day1"
  },
  {
-  "id": 1228,
-  "en": "These are the days of first battles, first kills and first friends lost.",
-  "ctx": "play:a6_day1"
- },
- {
   "id": 1229,
   "en": "Both days, the fighting is thickest around one chariot. The wounded come from there.",
   "ctx": "play:a6_capture"
- },
- {
-  "id": 1230,
-  "en": "Drona sets the Chakravyuha, a spinning wheel of warriors. Arjuna has been lured away to the far end of the field. Only his son Abhimanyu, sixteen, knows how to break in. He does not know the way out.",
-  "ctx": "play:a6_day13"
- },
- {
-  "id": 1231,
-  "en": "He breaks through. The rest of you are meant to follow. At the breach, Jayadratha, with his boon, holds back every Pandava who tries.",
-  "ctx": "play:a6_day13"
  },
  {
   "id": 1232,
@@ -6163,11 +4813,6 @@
   "id": 1233,
   "en": "Even in the tents, people are repeating it.",
   "ctx": "play:a6_day15"
- },
- {
-  "id": 1234,
-  "en": "The fighting is fiercer than it has ever been.",
-  "ctx": "play:a6_day16"
  },
  {
   "id": 1235,
@@ -6275,11 +4920,6 @@
   "ctx": "play:end_life"
  },
  {
-  "id": 1256,
-  "en": "Your village fishes the river and hunts the forest. City people call you Nishada as if it were an insult.",
-  "ctx": "play:a1_home"
- },
- {
   "id": 1257,
   "en": "In your village they still speak of Ekalavya, who asked Drona to teach him and was turned away.",
   "ctx": "play:a2_teacher"
@@ -6365,16 +5005,6 @@
   "ctx": "play:end_life"
  },
  {
-  "id": 1274,
-  "en": "Your mother makes arrows for the king's archers. In Panchala, people say a good arrow matters more than a good name.",
-  "ctx": "play:a1_home"
- },
- {
-  "id": 1275,
-  "en": "Drona hates your king, Drupada. Whether he will hold that against a child of Panchala, no one can say.",
-  "ctx": "play:a2_teacher"
- },
- {
   "id": 1276,
   "en": "Panchala is your home. Your mother's arrows are in those quivers.",
   "ctx": "play:a2_drupada"
@@ -6383,26 +5013,6 @@
   "id": 1277,
   "en": "{a} hits {t} for {n}.",
   "ctx": "play:a2_drupada"
- },
- {
-  "id": 1278,
-  "en": "Everyone in this hall will be remembered for what they did now.",
-  "ctx": "play:a4_draupadi"
- },
- {
-  "id": 1279,
-  "en": "You saw it all. You will see it every night for years.",
-  "ctx": "play:a4_aftermath"
- },
- {
-  "id": 1280,
-  "en": "You are forty-four. Where do you take your place?",
-  "ctx": "play:a6_eve"
- },
- {
-  "id": 1281,
-  "en": "On your side, the old man fights like a storm. It is hard not to feel safe behind him.",
-  "ctx": "play:a6_day1"
  },
  {
   "id": 1282,
@@ -6433,26 +5043,6 @@
   "id": 1287,
   "en": "{t} avoids the attack.",
   "ctx": "play:a6_capture"
- },
- {
-  "id": 1288,
-  "en": "Drona sets the Chakravyuha, a spinning wheel of warriors. Arjuna has been lured away to the far end of the field.",
-  "ctx": "play:a6_day13"
- },
- {
-  "id": 1289,
-  "en": "A boy of sixteen, Abhimanyu, Arjuna's son, has broken into its heart alone, and he is cutting through the finest warriors of your side. The order comes down the ring: close in around him.",
-  "ctx": "play:a6_day13"
- },
- {
-  "id": 1290,
-  "en": "Your company is ordered forward into the dark.",
-  "ctx": "play:a6_day14"
- },
- {
-  "id": 1291,
-  "en": "The rumour races down your line toward Drona's chariot.",
-  "ctx": "play:a6_day15"
  },
  {
   "id": 1292,
@@ -6535,16 +5125,6 @@
   "ctx": "play:a2_ekalavya"
  },
  {
-  "id": 1308,
-  "en": "Drona looks at each of his students in turn, and then at you.",
-  "ctx": "play:a2_drupada"
- },
- {
-  "id": 1309,
-  "en": "Far from the courts, the years are your own. Vasu grows. Your hair starts to grey.",
-  "ctx": "play:a5_own_life"
- },
- {
   "id": 1310,
   "en": "How do you make your living?",
   "ctx": "play:a5_own_life"
@@ -6578,11 +5158,6 @@
   "id": 1316,
   "en": "Pandava veteran",
   "ctx": "play:a6_day18"
- },
- {
-  "id": 1317,
-  "en": "Ashwatthama finds you before he goes. He wants one more sword.",
-  "ctx": "play:a6_raid"
  },
  {
   "id": 1318,
@@ -6690,24 +5265,9 @@
   "ctx": "play:a3_marriage"
  },
  {
-  "id": 1339,
-  "en": "Two years before the dice game you took in a boy whose parents died of fever. His name is Vasu. He is three now, and already climbing everything.",
-  "ctx": "play:a5_child"
- },
- {
-  "id": 1340,
-  "en": "You are at the river with the morning crowd.",
-  "ctx": "play:a5_court_armour"
- },
- {
   "id": 1341,
   "en": "Duryodhana, your oldest friend, went to heaven, the stories say, for dying as a warrior.",
   "ctx": "play:end_death"
- },
- {
-  "id": 1342,
-  "en": "Your family keeps horses on the lake shore. Visitors from the big kingdoms rarely come this far.",
-  "ctx": "play:a1_home"
  },
  {
   "id": 1343,
@@ -6810,11 +5370,6 @@
   "ctx": "play:end_death"
  },
  {
-  "id": 1363,
-  "en": "Your father keeps the palace stores. You learn early that everyone in the palace is listening.",
-  "ctx": "play:a1_home"
- },
- {
   "id": 1364,
   "en": "{t} is pinned in place.",
   "ctx": "play:a5_jayadratha"
@@ -6853,11 +5408,6 @@
   "id": 1371,
   "en": "You roar a challenge.",
   "ctx": "play:a5_matsya"
- },
- {
-  "id": 1372,
-  "en": "On the first day you watch Prince Uttara of Matsya fall.",
-  "ctx": "play:a6_day1"
  },
  {
   "id": 1373,
@@ -6908,11 +5458,6 @@
   "id": 1382,
   "en": "Vasu served in Parikshit's guard and rose high.",
   "ctx": "play:end_life"
- },
- {
-  "id": 1383,
-  "en": "Vidura's miner needs someone to carry the earth out at night without being seen.",
-  "ctx": "play:a3_lac"
  },
  {
   "id": 1384,
@@ -7013,11 +5558,6 @@
   "id": 1403,
   "en": "You survived the fighting, but not whole: {inj!}.",
   "ctx": "play:end_death"
- },
- {
-  "id": 1404,
-  "en": "You made it through the breach. Behind you, the gap has closed. Ahead, Abhimanyu is fighting alone against Drona, Karna, Kripa, Ashwatthama and Duryodhana's sons.",
-  "ctx": "play:a6_d13_inside"
  },
  {
   "id": 1405,
@@ -7905,28 +6445,8 @@
   "ctx": "scene:a1_pasha"
  },
  {
-  "id": 1582,
-  "en": "The spring fair has come. Under a striped awning an old man called Haridatta keeps a dice-board: a cloth cross of squares, and three long dice of ivory, each marked one, two, five and six.",
-  "ctx": "scene:a1_pasha"
- },
- {
   "id": 1583,
   "en": "Haridatta",
-  "ctx": "scene:a1_pasha"
- },
- {
-  "id": 1584,
-  "en": "Kings have lost kingdoms at this board. Sit down, if you have a copper. I will teach you for nothing, and beat you for one.",
-  "ctx": "scene:a1_pasha"
- },
- {
-  "id": 1585,
-  "en": "Put down a copper and play him",
-  "ctx": "scene:a1_pasha"
- },
- {
-  "id": 1586,
-  "en": "A game of dice, best of three rounds",
   "ctx": "scene:a1_pasha"
  },
  {
@@ -7945,18 +6465,8 @@
   "ctx": "scene:a1_pasha"
  },
  {
-  "id": 1590,
-  "en": "Watch the grown men play, and listen to their stories",
-  "ctx": "scene:a1_pasha"
- },
- {
   "id": 1591,
   "en": "The players talk while they throw. A king called Nala, they say, once lost his kingdom at dice, and his wife, and very nearly himself.",
-  "ctx": "scene:a1_pasha"
- },
- {
-  "id": 1592,
-  "en": "Go on to the wrestling ground",
   "ctx": "scene:a1_pasha"
  },
  {
@@ -7980,33 +6490,13 @@
   "ctx": "scene:a4_stakes"
  },
  {
-  "id": 1597,
-  "en": "In the dice hall you saw Shakuni swap a die from his sleeve.",
-  "ctx": "scene:a4_stakes"
- },
- {
-  "id": 1598,
-  "en": "One of those throws showed a face no long die has. His sleeve moved before it, and after. You are sure now.",
-  "ctx": "scene:a4_stakes"
- },
- {
   "id": 1599,
   "en": "You watch until your eyes ache. If he did anything, you did not see it.",
   "ctx": "scene:a4_stakes"
  },
  {
-  "id": 1600,
-  "en": "The hall is waiting. If the lamp burns out before you act, you will have said nothing.",
-  "ctx": "scene:a4_draupadi"
- },
- {
   "id": 1601,
   "en": "The old smith",
-  "ctx": "scene:a5_charu"
- },
- {
-  "id": 1602,
-  "en": "Go home and sit with Charu until the end",
   "ctx": "scene:a5_charu"
  },
  {
@@ -8020,11 +6510,6 @@
   "ctx": "scene:a5_charu"
  },
  {
-  "id": 1605,
-  "en": "Send word that you cannot leave",
-  "ctx": "scene:a5_charu"
- },
- {
   "id": 1606,
   "en": "You did not come when my father died.",
   "ctx": "scene:a5_charu"
@@ -8033,11 +6518,6 @@
   "id": 1607,
   "en": "Charu's answer comes back with the same boy, one line long. \"I know.\"",
   "ctx": "scene:a5_charu"
- },
- {
-  "id": 1608,
-  "en": "Go to Arjuna and tell him who Karna really is",
-  "ctx": "scene:a5_side"
  },
  {
   "id": 1609,
@@ -8060,11 +6540,6 @@
   "ctx": "scene:a5_side"
  },
  {
-  "id": 1613,
-  "en": "Whistle for the Nishada archers camped at the forest's edge",
-  "ctx": "scene:a6_raid"
- },
- {
   "id": 1614,
   "en": "On the night of the raid, the Nishada archers came out of the dark when you whistled.",
   "ctx": "scene:a6_raid"
@@ -8075,11 +6550,6 @@
   "ctx": "scene:a6_raid"
  },
  {
-  "id": 1616,
-  "en": "Ask him about the other life you dream of",
-  "ctx": "scene:a7_bhishma"
- },
- {
   "id": 1617,
   "en": "\"Amba came back to me as Shikhandi, to finish what she began,\" he says. \"Perhaps you came back to finish something too.\" He looks at you for a long time. \"Did you?\"",
   "ctx": "scene:a7_bhishma"
@@ -8087,26 +6557,6 @@
  {
   "id": 1618,
   "en": "The note, again",
-  "ctx": "scene:a7_note"
- },
- {
-  "id": 1619,
-  "en": "A young man finds you after the war. He has his grandfather's patience, and his grandfather's palm-leaf note. Sudatta is dead. The debt is not.",
-  "ctx": "scene:a7_note"
- },
- {
-  "id": 1620,
-  "en": "Sudatta's grandson",
-  "ctx": "scene:a7_note"
- },
- {
-  "id": 1621,
-  "en": "I lost two brothers on the field. I would like to be paid.",
-  "ctx": "scene:a7_note"
- },
- {
-  "id": 1622,
-  "en": "Pay him, whatever it costs",
   "ctx": "scene:a7_note"
  },
  {
@@ -8155,16 +6605,6 @@
   "ctx": "scene:ev_snake"
  },
  {
-  "id": 1632,
-  "en": "A cobra has made its home in the well-house, and the women will not go for water. Your grandmother says a cobra in the house is a guest of the gods. Your uncle has found a stick.",
-  "ctx": "scene:ev_snake"
- },
- {
-  "id": 1633,
-  "en": "Lure it out with a bowl of milk and lead it to the fields",
-  "ctx": "scene:ev_snake"
- },
- {
   "id": 1634,
   "en": "It drinks, and considers you for a long moment, and flows away into the millet. The women sing your name at the well for a week.",
   "ctx": "scene:ev_snake"
@@ -8172,11 +6612,6 @@
  {
   "id": 1635,
   "en": "It rears and spreads its hood. You drop the bowl and run. Your uncle uses the stick.",
-  "ctx": "scene:ev_snake"
- },
- {
-  "id": 1636,
-  "en": "Run to the next village for the snake-charmer",
   "ctx": "scene:ev_snake"
  },
  {
@@ -8205,23 +6640,8 @@
   "ctx": "scene:ev_bard"
  },
  {
-  "id": 1642,
-  "en": "A wandering suta sets up under the village banyan with a veena and a voice like a river. Tonight he sings of the churning of the ocean, when gods and demons pulled a serpent back and forth for a thousand years.",
-  "ctx": "scene:ev_bard"
- },
- {
-  "id": 1643,
-  "en": "Sit at his feet until the last verse",
-  "ctx": "scene:ev_bard"
- },
- {
   "id": 1644,
   "en": "You fall asleep before the nectar rises out of the sea. You dream of it for years.",
-  "ctx": "scene:ev_bard"
- },
- {
-  "id": 1645,
-  "en": "Ask him to teach you a verse of your own",
   "ctx": "scene:ev_bard"
  },
  {
@@ -8232,11 +6652,6 @@
  {
   "id": 1647,
   "en": "He laughs, kindly. \"Come back when your voice breaks.\"",
-  "ctx": "scene:ev_bard"
- },
- {
-  "id": 1648,
-  "en": "Pick the pockets of his audience while they listen",
   "ctx": "scene:ev_bard"
  },
  {
@@ -8260,11 +6675,6 @@
   "ctx": "scene:ev_horses"
  },
  {
-  "id": 1653,
-  "en": "Horse-traders have come down the river road with forty northern horses. One grey mare lets no one near her. The traders want her gone before she kills someone.",
-  "ctx": "scene:ev_horses"
- },
- {
   "id": 1654,
   "en": "Try to gentle the grey mare",
   "ctx": "scene:ev_horses"
@@ -8282,11 +6692,6 @@
  {
   "id": 1657,
   "en": "She throws you into the fence. The traders help you up, and tell you better riders than you have tried.",
-  "ctx": "scene:ev_horses"
- },
- {
-  "id": 1658,
-  "en": "Haggle for a sound horse for your family",
   "ctx": "scene:ev_horses"
  },
  {
@@ -8320,21 +6725,6 @@
   "ctx": "scene:ev_deer"
  },
  {
-  "id": 1665,
-  "en": "In the forest you find a doe with an arrow in her flank, still breathing. Behind you, a hunting party is crashing through the brush. A prince's party, by the sound of the horns.",
-  "ctx": "scene:ev_deer"
- },
- {
-  "id": 1666,
-  "en": "You think of King Pandu, who shot a deer in the forest and was cursed for it.",
-  "ctx": "scene:ev_deer"
- },
- {
-  "id": 1667,
-  "en": "Draw out the arrow and bind the wound",
-  "ctx": "scene:ev_deer"
- },
- {
   "id": 1668,
   "en": "She lies still under your hands, then stands, and is gone. An old woman gathering wood saw it all. She says the forest will remember.",
   "ctx": "scene:ev_deer"
@@ -8345,18 +6735,8 @@
   "ctx": "scene:ev_deer"
  },
  {
-  "id": 1670,
-  "en": "Hide her trail from the hunters",
-  "ctx": "scene:ev_deer"
- },
- {
   "id": 1671,
   "en": "You drag a branch across the blood. The horns go past, and fade.",
-  "ctx": "scene:ev_deer"
- },
- {
-  "id": 1672,
-  "en": "Call the hunters to her. It is their kill",
   "ctx": "scene:ev_deer"
  },
  {
@@ -8380,33 +6760,13 @@
   "ctx": "scene:ev_lamps"
  },
  {
-  "id": 1677,
-  "en": "On the new-moon night of Kartika the whole city sets out lamps, in rows along every wall and step. You have a hundred clay lamps and a little oil.",
-  "ctx": "scene:ev_lamps"
- },
- {
-  "id": 1678,
-  "en": "Float them down the river for your family's dead",
-  "ctx": "scene:ev_lamps"
- },
- {
   "id": 1679,
   "en": "The river carries some of them a long way. You watch until the last one goes out.",
   "ctx": "scene:ev_lamps"
  },
  {
-  "id": 1680,
-  "en": "Give your oil to the potters' lane, which has none",
-  "ctx": "scene:ev_lamps"
- },
- {
   "id": 1681,
   "en": "The potters' lane is the brightest in the city that night. Nobody knows why, except the potters.",
-  "ctx": "scene:ev_lamps"
- },
- {
-  "id": 1682,
-  "en": "Spend the night at dice in the palace courtyard, as the nobles do",
   "ctx": "scene:ev_lamps"
  },
  {
@@ -8422,11 +6782,6 @@
  {
   "id": 1685,
   "en": "The river rises",
-  "ctx": "scene:ev_flood"
- },
- {
-  "id": 1686,
-  "en": "The rains come late and then all at once. In the night the river comes over its banks, and the low quarter of the town is under water to the rooftops.",
   "ctx": "scene:ev_flood"
  },
  {
@@ -8447,11 +6802,6 @@
  {
   "id": 1690,
   "en": "The current takes the boat on the first trip and a beam opens your arm. Someone else pulls you out.",
-  "ctx": "scene:ev_flood"
- },
- {
-  "id": 1691,
-  "en": "Get the high town to open its doors",
   "ctx": "scene:ev_flood"
  },
  {
@@ -8485,21 +6835,6 @@
   "ctx": "scene:ev_riddle"
  },
  {
-  "id": 1698,
-  "en": "An ascetic sits by the road with his eyes closed, as he has for days. As you pass he speaks without opening them.",
-  "ctx": "scene:ev_riddle"
- },
- {
-  "id": 1699,
-  "en": "The ascetic",
-  "ctx": "scene:ev_riddle"
- },
- {
-  "id": 1700,
-  "en": "Answer me, and I will give you what you need. What, once given, can never be taken back?",
-  "ctx": "scene:ev_riddle"
- },
- {
   "id": 1701,
   "en": "\"Your word\"",
   "ctx": "scene:ev_riddle"
@@ -8530,11 +6865,6 @@
   "ctx": "scene:ev_riddle"
  },
  {
-  "id": 1707,
-  "en": "Walk on. You have no time for riddles",
-  "ctx": "scene:ev_riddle"
- },
- {
   "id": 1708,
   "en": "Where the road narrows",
   "ctx": "scene:ev_bandits"
@@ -8550,28 +6880,13 @@
   "ctx": "scene:ev_bandits"
  },
  {
-  "id": 1711,
-  "en": "Five men step out of the trees where the road narrows. They are thin, and their weapons are farm tools. The one in front is shaking.",
-  "ctx": "scene:ev_bandits"
- },
- {
   "id": 1712,
   "en": "Draw your weapon",
   "ctx": "scene:ev_bandits"
  },
  {
-  "id": 1713,
-  "en": "Give them the food you carry",
-  "ctx": "scene:ev_bandits"
- },
- {
   "id": 1714,
   "en": "The one in front weeps. Their village is two days east. The king's men took its grain, for the war everyone says is coming.",
-  "ctx": "scene:ev_bandits"
- },
- {
-  "id": 1715,
-  "en": "Talk them into working for you instead",
   "ctx": "scene:ev_bandits"
  },
  {
@@ -8630,33 +6945,13 @@
   "ctx": "scene:ev_teacher"
  },
  {
-  "id": 1727,
-  "en": "Word comes that {teacher} is ill and asking for students. The fever is in the chest. The physicians are not hopeful.",
-  "ctx": "scene:ev_teacher"
- },
- {
-  "id": 1728,
-  "en": "Go at once and nurse {teacher} yourself",
-  "ctx": "scene:ev_teacher"
- },
- {
   "id": 1729,
   "en": "You sit up through eleven nights. On the twelfth the fever breaks, and {teacher} looks at you and says, \"Still here?\" That is all. It is enough.",
   "ctx": "scene:ev_teacher"
  },
  {
-  "id": 1730,
-  "en": "Send the best physician you can find",
-  "ctx": "scene:ev_teacher"
- },
- {
   "id": 1731,
   "en": "The physician comes back with a message: thank you, and come yourself next time.",
-  "ctx": "scene:ev_teacher"
- },
- {
-  "id": 1732,
-  "en": "You cannot leave. Send your regrets",
   "ctx": "scene:ev_teacher"
  },
  {
@@ -8667,11 +6962,6 @@
  {
   "id": 1734,
   "en": "A letter from home",
-  "ctx": "scene:ev_letter"
- },
- {
-  "id": 1735,
-  "en": "A palm-leaf letter comes from {origin}, in your mother's hand, which has grown shaky. Your father is old now. The roof needs mending. When are you coming home?",
   "ctx": "scene:ev_letter"
  },
  {
@@ -8687,11 +6977,6 @@
  {
   "id": 1738,
   "en": "Send money and a long letter",
-  "ctx": "scene:ev_letter"
- },
- {
-  "id": 1739,
-  "en": "Write back that your place is here now",
   "ctx": "scene:ev_letter"
  },
  {
@@ -8790,11 +7075,6 @@
   "ctx": "play:title"
  },
  {
-  "id": 1759,
-  "en": "A boy brings word from home. Old Kesava, Charu's father, the smith who first put a hammer in your hands, is dying.",
-  "ctx": "play:a5_charu"
- },
- {
   "id": 1760,
   "en": "Charu is already packing, and does not ask whether you will come. Charu never asks.",
   "ctx": "play:a5_charu"
@@ -8833,11 +7113,6 @@
   "id": 1767,
   "en": "Sudatta's family still keeps the pieces of your grandfather's note.",
   "ctx": "play:end_life"
- },
- {
-  "id": 1768,
-  "en": "Charu has not sent for you. Charu never asks for anything.",
-  "ctx": "play:a5_charu"
  },
  {
   "id": 1769,
@@ -8915,18 +7190,8 @@
   "ctx": "scene:a1_journey"
  },
  {
-  "id": 1784,
-  "en": "Watch the caravan guards, and learn how they keep watch at night",
-  "ctx": "scene:a1_journey"
- },
- {
   "id": 1785,
   "en": "By the end of the road you can tell a guard who is awake from one who only looks awake.",
-  "ctx": "scene:a1_journey"
- },
- {
-  "id": 1786,
-  "en": "Learn the words and ways of the new city from everyone you meet",
   "ctx": "scene:a1_journey"
  },
  {
@@ -8935,18 +7200,8 @@
   "ctx": "scene:a1_journey"
  },
  {
-  "id": 1788,
-  "en": "Ride up front with the drivers and beg to hold the reins",
-  "ctx": "scene:a1_journey"
- },
- {
   "id": 1789,
   "en": "On the last day, on a straight stretch of road, the old driver lets you.",
-  "ctx": "scene:a1_journey"
- },
- {
-  "id": 1790,
-  "en": "Keep a handful of earth from home, tied in a cloth",
   "ctx": "scene:a1_journey"
  },
  {
@@ -8960,11 +7215,6 @@
   "ctx": "scene:a1_journey"
  },
  {
-  "id": 1793,
-  "en": "You are eight. The palace has opened its gardens for a festival, and half the city has come in. The princes are choosing sides for a game of tag by the lotus pond.",
-  "ctx": "scene:a1_princes"
- },
- {
   "id": 1794,
   "en": "A forge at dawn",
   "ctx": "scene:a5_charu"
@@ -8973,21 +7223,6 @@
   "id": 1795,
   "en": "A doorway after the war",
   "ctx": "scene:a7_note"
- },
- {
-  "id": 1796,
-  "en": "The Kuru royal stables need horses, and your family breeds the best in Matsya. Your father takes the work of keeping the king's horses, and the whole family moves east to the stable quarter outside Hastinapura.",
-  "ctx": "play:a1_journey"
- },
- {
-  "id": 1797,
-  "en": "Hastinapura is a city of elephants: walls, gateways, a river crowded with boats, and somewhere behind it all, a palace full of princes your own age.",
-  "ctx": "play:a1_journey"
- },
- {
-  "id": 1798,
-  "en": "On the long road, what do you hold on to?",
-  "ctx": "play:a1_journey"
  },
  {
   "id": 1799,
@@ -9000,34 +7235,9 @@
   "ctx": "play:a1_journey"
  },
  {
-  "id": 1801,
-  "en": "Your father's company of the Anga guard is posted to Hastinapura, where the Kuru king keeps soldiers from every land that pays him tribute. You ride the whole month up the Ganga in a baggage cart.",
-  "ctx": "play:a1_journey"
- },
- {
-  "id": 1802,
-  "en": "The princes' tutors need guides for the royal hunts, and nobody knows the forest like your father. Your family moves to the forest's edge outside Hastinapura, close enough to hear the palace drums.",
-  "ctx": "play:a1_journey"
- },
- {
   "id": 1803,
   "en": "The forest's edge outside Hastinapura",
   "ctx": "play:a1_friend"
- },
- {
-  "id": 1804,
-  "en": "Your family serves in the household of King Subala, high in the mountains. Everyone still talks about his daughter Gandhari, who married the blind Kuru king and bound her own eyes so as never to see more than he could.",
-  "ctx": "play:a1_home"
- },
- {
-  "id": 1805,
-  "en": "When you are seven, word comes down from Hastinapura: Queen Gandhari wants people from home around her. Your family packs everything it owns and joins the long caravan east, out of the mountains, across the Indus and the five rivers. It takes two months.",
-  "ctx": "play:a1_journey"
- },
- {
-  "id": 1806,
-  "en": "The Kuru armoury has sent for Panchala arrowsmiths, whatever the two kings think of each other. Your mother takes the work, and your family moves into the craft quarter of Hastinapura.",
-  "ctx": "play:a1_journey"
  },
  {
   "id": 1807,
@@ -9035,23 +7245,8 @@
   "ctx": "play:a6_day14"
  },
  {
-  "id": 1808,
-  "en": "The palace stores are a city inside the city: grain, cloth, weapons, gifts from kings. Three people in your family seem to know every corner of it.",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 1809,
-  "en": "Grandmother Sumitra, who knows the name and the secrets of every lord at court",
-  "ctx": "world:ROOTS"
- },
- {
   "id": 1810,
   "en": "She teaches you to listen more than you speak. \"Everyone in a palace is telling you something,\" she says, \"usually by accident.\"",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 1811,
-  "en": "Your father Devaka, who counts every sack and never loses one",
   "ctx": "world:ROOTS"
  },
  {
@@ -9060,23 +7255,8 @@
   "ctx": "world:ROOTS"
  },
  {
-  "id": 1813,
-  "en": "Your cousin Kirti, who stands guard at the palace gate",
-  "ctx": "world:ROOTS"
- },
- {
   "id": 1814,
   "en": "Kirti lets you hold the spear when no captain is looking, and shows you how a guard stands all night without falling asleep.",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 1815,
-  "en": "The house smells of feathers, glue and river mud. Arrows lie drying on every roof beam. Three people in your family are always busy.",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 1816,
-  "en": "Grandfather Bhadrasena, who drew a bow in King Drupada's father's army",
   "ctx": "world:ROOTS"
  },
  {
@@ -9085,18 +7265,8 @@
   "ctx": "world:ROOTS"
  },
  {
-  "id": 1818,
-  "en": "Your mother Vrinda, who makes the best arrows in Kampilya",
-  "ctx": "world:ROOTS"
- },
- {
   "id": 1819,
   "en": "You learn which feathers fly and which do not, and how to bind a cut finger so it heals clean. Arrowsmiths cut themselves often.",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 1820,
-  "en": "Your aunt Kalindi, who ferries people across the Ganga",
   "ctx": "world:ROOTS"
  },
  {
@@ -9105,33 +7275,13 @@
   "ctx": "world:ROOTS"
  },
  {
-  "id": 1822,
-  "en": "Your family's horses graze the lake meadows all summer. Three people in your family are always out among them.",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 1823,
-  "en": "Grandmother Sunanda, who can heal a horse that others would put down",
-  "ctx": "world:ROOTS"
- },
- {
   "id": 1824,
   "en": "She shows you how to feel a leg for heat and how to make a poultice of river clay. Horses trust her, and soon they trust you.",
   "ctx": "world:ROOTS"
  },
  {
-  "id": 1825,
-  "en": "Your father Ajaka, who breeds horses for kings",
-  "ctx": "world:ROOTS"
- },
- {
   "id": 1826,
   "en": "He puts you on a horse before you can walk properly. By six you can harness a pair by yourself.",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 1827,
-  "en": "Your elder sister Tara, who rides in the summer races and wins",
   "ctx": "world:ROOTS"
  },
  {
@@ -9155,11 +7305,6 @@
   "ctx": "world:ROOTS"
  },
  {
-  "id": 1832,
-  "en": "Grandmother Lavanya, who sings the old songs of the Yadava clans",
-  "ctx": "world:ROOTS"
- },
- {
   "id": 1833,
   "en": "She knows the name of every Yadava chief for twenty generations, and a song for most of them. You learn half the songs by heart.",
   "ctx": "world:ROOTS"
@@ -9175,11 +7320,6 @@
   "ctx": "world:ROOTS"
  },
  {
-  "id": 1836,
-  "en": "Your family has served in the Anga guard for four generations. Three people in your family taught you what that means, each in a different way.",
-  "ctx": "world:ROOTS"
- },
- {
   "id": 1837,
   "en": "Your father Virasena, a captain of the guard",
   "ctx": "world:ROOTS"
@@ -9190,28 +7330,13 @@
   "ctx": "world:ROOTS"
  },
  {
-  "id": 1839,
-  "en": "Grandmother Champavati, who keeps the shrine by the river",
-  "ctx": "world:ROOTS"
- },
- {
   "id": 1840,
   "en": "She lights the lamps at dusk and lets you help. She says the river has seen every king of Anga come and go, and will see the next ones too.",
   "ctx": "world:ROOTS"
  },
  {
-  "id": 1841,
-  "en": "Your uncle Hastika, a mahout with an elephant called Megharaja",
-  "ctx": "world:ROOTS"
- },
- {
   "id": 1842,
   "en": "Megharaja lets you sit on her neck. Hastika teaches you the words an elephant answers to, and how to be patient with something much bigger than you.",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 1843,
-  "en": "Sutas drive the chariots of kings and sing the stories of kings, and your family does both. Three people in your family shaped what kind of suta you will be.",
   "ctx": "world:ROOTS"
  },
  {
@@ -9225,18 +7350,8 @@
   "ctx": "world:ROOTS"
  },
  {
-  "id": 1846,
-  "en": "Grandmother Saumya, a bard who has sung before three kings",
-  "ctx": "world:ROOTS"
- },
- {
   "id": 1847,
   "en": "She teaches you the first verses of the great stories, and how to watch a king's face while you sing, so you know when to stop.",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 1848,
-  "en": "Your elder brother Rathin, who mends wheels and axles",
   "ctx": "world:ROOTS"
  },
  {
@@ -9245,23 +7360,8 @@
   "ctx": "world:ROOTS"
  },
  {
-  "id": 1850,
-  "en": "Your village lives between the river and the deep forest. Three people in your family each taught you a different part of that world.",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 1851,
-  "en": "Grandmother Malati, who knows every healing root in the forest",
-  "ctx": "world:ROOTS"
- },
- {
   "id": 1852,
   "en": "She takes you into the forest at dawn and names every plant. Some heal, some kill, and a few do both, depending on the dose.",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 1853,
-  "en": "Your father Sharabha, the best tracker in the village",
   "ctx": "world:ROOTS"
  },
  {
@@ -9270,23 +7370,8 @@
   "ctx": "world:ROOTS"
  },
  {
-  "id": 1855,
-  "en": "Your uncle Nadija, who fishes the river at night",
-  "ctx": "world:ROOTS"
- },
- {
   "id": 1856,
   "en": "You learn to stand still in cold water for an hour, and to strike faster than a fish can turn.",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 1857,
-  "en": "Snow lies on the passes above your town most of the year, and caravans from the far west come through all summer. Three people in your family shaped you there.",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 1858,
-  "en": "Grandfather Ashvaka, who tames the wild mountain horses",
   "ctx": "world:ROOTS"
  },
  {
@@ -9295,18 +7380,8 @@
   "ctx": "world:ROOTS"
  },
  {
-  "id": 1860,
-  "en": "Your great-aunt Pushkala, who remembers songs in four languages",
-  "ctx": "world:ROOTS"
- },
- {
   "id": 1861,
   "en": "Travellers stop at her door to hear her sing. You learn that every people has a story about a great war, and that the stories are always sad.",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 1862,
-  "en": "Your mother Uttama, who weaves the finest wool in the valley",
   "ctx": "world:ROOTS"
  },
  {
@@ -9320,33 +7395,13 @@
   "ctx": "world:CUSTOMS"
  },
  {
-  "id": 1865,
-  "en": "Once a year blind King Dhritarashtra is carried through the city on an elephant draped in gold, with Queen Gandhari, her eyes bound, beside him. The whole city comes out.",
-  "ctx": "world:CUSTOMS"
- },
- {
-  "id": 1866,
-  "en": "Push through to the front to see the elephants",
-  "ctx": "world:CUSTOMS"
- },
- {
   "id": 1867,
   "en": "An elephant looks right at you as it passes. You will remember its eye for the rest of your life.",
   "ctx": "world:CUSTOMS"
  },
  {
-  "id": 1868,
-  "en": "Slip away into the palace kitchens while everyone is watching",
-  "ctx": "world:CUSTOMS"
- },
- {
   "id": 1869,
   "en": "Nobody stops you. You come home with sweets in both fists and the knowledge that a palace has many back doors.",
-  "ctx": "world:CUSTOMS"
- },
- {
-  "id": 1870,
-  "en": "Stay with your family and learn the name of every lord who rides past",
   "ctx": "world:CUSTOMS"
  },
  {
@@ -9357,11 +7412,6 @@
  {
   "id": 1872,
   "en": "The children's games at Kampilya",
-  "ctx": "world:CUSTOMS"
- },
- {
-  "id": 1873,
-  "en": "Every spring King Drupada holds archery games on the river meadow, and on the first day the children shoot at a straw deer.",
   "ctx": "world:CUSTOMS"
  },
  {
@@ -9380,18 +7430,8 @@
   "ctx": "world:CUSTOMS"
  },
  {
-  "id": 1877,
-  "en": "Help at your family's arrow stall",
-  "ctx": "world:CUSTOMS"
- },
- {
   "id": 1878,
   "en": "You sell more arrows than your mother expected. Archers like to buy from a child who knows what the fletching is for.",
-  "ctx": "world:CUSTOMS"
- },
- {
-  "id": 1879,
-  "en": "Sit with the old soldiers and listen to them argue about the great archers",
   "ctx": "world:CUSTOMS"
  },
  {
@@ -9402,11 +7442,6 @@
  {
   "id": 1881,
   "en": "The cattle festival",
-  "ctx": "world:CUSTOMS"
- },
- {
-  "id": 1882,
-  "en": "At the end of the rains Matsya garlands its cattle, paints their horns and races its calves across the lake meadow. The children run the calves.",
   "ctx": "world:CUSTOMS"
  },
  {
@@ -9425,18 +7460,8 @@
   "ctx": "world:CUSTOMS"
  },
  {
-  "id": 1886,
-  "en": "Help your grandmother with a lame calf instead",
-  "ctx": "world:CUSTOMS"
- },
- {
   "id": 1887,
   "en": "By the evening the calf is standing. Your grandmother says nothing, but she lets you carry her bag home.",
-  "ctx": "world:CUSTOMS"
- },
- {
-  "id": 1888,
-  "en": "Lead the herding song as the cattle come home",
   "ctx": "world:CUSTOMS"
  },
  {
@@ -9480,11 +7505,6 @@
   "ctx": "world:CUSTOMS"
  },
  {
-  "id": 1897,
-  "en": "Make the family's boat yourself, and name the people it is for",
-  "ctx": "world:CUSTOMS"
- },
- {
   "id": 1898,
   "en": "You name your grandfather, whom you never met, and every ship your uncle has ever sailed on. The little boat goes out a long way.",
   "ctx": "world:CUSTOMS"
@@ -9495,33 +7515,13 @@
   "ctx": "world:CUSTOMS"
  },
  {
-  "id": 1900,
-  "en": "Once a year the elephants of Anga are painted, belled and led through Champa to bathe in the river, and the children run beside them.",
-  "ctx": "world:CUSTOMS"
- },
- {
-  "id": 1901,
-  "en": "Ride on your uncle's elephant at the head of the line",
-  "ctx": "world:CUSTOMS"
- },
- {
   "id": 1902,
   "en": "From up there you can see the whole city, the river and the forests beyond. It looks small. You do not feel small.",
   "ctx": "world:CUSTOMS"
  },
  {
-  "id": 1903,
-  "en": "Carry flowers to the river shrine with your grandmother",
-  "ctx": "world:CUSTOMS"
- },
- {
   "id": 1904,
   "en": "She lets you set the first lamp on the water. It does not go out, which she says is a good sign.",
-  "ctx": "world:CUSTOMS"
- },
- {
-  "id": 1905,
-  "en": "Wrestle the other guards' children on the riverbank",
   "ctx": "world:CUSTOMS"
  },
  {
@@ -9540,28 +7540,13 @@
   "ctx": "world:CUSTOMS"
  },
  {
-  "id": 1909,
-  "en": "Groom the king's own horses until they shine",
-  "ctx": "world:CUSTOMS"
- },
- {
   "id": 1910,
   "en": "The stablemaster inspects your work, says nothing, and gives you the hardest horse next year. That is praise.",
   "ctx": "world:CUSTOMS"
  },
  {
-  "id": 1911,
-  "en": "Listen to the bards sing the deeds of charioteers",
-  "ctx": "world:CUSTOMS"
- },
- {
   "id": 1912,
   "en": "They sing of charioteers who turned battles, whom no one else remembers. You decide someone should.",
-  "ctx": "world:CUSTOMS"
- },
- {
-  "id": 1913,
-  "en": "Race the other children with a borrowed cart",
   "ctx": "world:CUSTOMS"
  },
  {
@@ -9580,33 +7565,13 @@
   "ctx": "world:CUSTOMS"
  },
  {
-  "id": 1917,
-  "en": "At seven, Nishada children go with the hunters for the first time. They are meant to watch, and carry water, and come home with a story.",
-  "ctx": "world:CUSTOMS"
- },
- {
-  "id": 1918,
-  "en": "Find the deer's trail before the hunters do",
-  "ctx": "world:CUSTOMS"
- },
- {
   "id": 1919,
   "en": "You see the bent grass first. The hunters let you lead for an hour, and the whole village hears about it.",
   "ctx": "world:CUSTOMS"
  },
  {
-  "id": 1920,
-  "en": "Free a fawn caught in a snare, when no one is looking",
-  "ctx": "world:CUSTOMS"
- },
- {
   "id": 1921,
   "en": "It runs off without looking back. Your father sees, and says nothing, and that evening gives you the best piece of the meal.",
-  "ctx": "world:CUSTOMS"
- },
- {
-  "id": 1922,
-  "en": "Make the offering to the river goddess with the old women",
   "ctx": "world:CUSTOMS"
  },
  {
@@ -9620,16 +7585,6 @@
   "ctx": "world:CUSTOMS"
  },
  {
-  "id": 1925,
-  "en": "Every summer the herders bring their horses down from the high pastures, and caravans from as far as the western deserts stop to trade.",
-  "ctx": "world:CUSTOMS"
- },
- {
-  "id": 1926,
-  "en": "Ride a mountain pony in the children's race",
-  "ctx": "world:CUSTOMS"
- },
- {
   "id": 1927,
   "en": "Your pony knows the way better than you do, and you let it. You win by a length.",
   "ctx": "world:CUSTOMS"
@@ -9640,18 +7595,8 @@
   "ctx": "world:CUSTOMS"
  },
  {
-  "id": 1929,
-  "en": "Trade with the caravan people from the far west",
-  "ctx": "world:CUSTOMS"
- },
- {
   "id": 1930,
   "en": "You come away with a silver coin with a stranger's face on it, and a few words of a language no one at home speaks.",
-  "ctx": "world:CUSTOMS"
- },
- {
-  "id": 1931,
-  "en": "Sit with your great-aunt as she sings for the travellers",
   "ctx": "world:CUSTOMS"
  },
  {
@@ -9890,23 +7835,8 @@
   "ctx": "world:ORIGINS"
  },
  {
-  "id": 1979,
-  "en": "The house looks over the Yamuna ghats, and every day boats come in from up and down the river. Three people in your family each bring the river home differently.",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 1980,
-  "en": "Your uncle Satyaka, who trades up and down the Yamuna",
-  "ctx": "world:ROOTS"
- },
- {
   "id": 1981,
   "en": "He takes you to the ghats and teaches you to bargain in three dialects, badly. \"Smile first,\" he says. \"Then name the price.\"",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 1982,
-  "en": "Your cousin Megha, who swims the Yamuna in the flood season",
   "ctx": "world:ROOTS"
  },
  {
@@ -9920,23 +7850,8 @@
   "ctx": "world:CUSTOMS"
  },
  {
-  "id": 1985,
-  "en": "On the full moon of Kartika, every family in Mathura sets a little leaf boat with a lamp on the Yamuna, for the ones who went away and the ones who will. Even King Kamsa's guards stop to watch.",
-  "ctx": "world:CUSTOMS"
- },
- {
-  "id": 1986,
-  "en": "Swim out to the sandbank with the older children",
-  "ctx": "world:CUSTOMS"
- },
- {
   "id": 1987,
   "en": "You touch the sandbank and swim back with the lamps all around you, like stars on the water.",
-  "ctx": "world:CUSTOMS"
- },
- {
-  "id": 1988,
-  "en": "Wander the traders' stalls along the ghats",
   "ctx": "world:CUSTOMS"
  },
  {
@@ -10050,16 +7965,6 @@
   "ctx": "scene:a1_journey"
  },
  {
-  "id": 2011,
-  "en": "Ask Kripa to take you, though your family is not of the court",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 2012,
-  "en": "Kripa will want to see what you are worth",
-  "ctx": "scene:a2_teacher"
- },
- {
   "id": 2013,
   "en": "Kripa took you into his school, though your family was not of the court.",
   "ctx": "scene:a2_teacher"
@@ -10072,16 +7977,6 @@
  {
   "id": 2015,
   "en": "Kripa hears you out politely. \"Come back when the court knows your name,\" he says. You will have to choose another teacher.",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 2016,
-  "en": "Ask Vidura to let you into his circle, though you were not born to the court",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 2017,
-  "en": "Vidura will test what you notice",
   "ctx": "scene:a2_teacher"
  },
  {
@@ -10133,21 +8028,6 @@
   "id": 2027,
   "en": "Your past helps (+{n})",
   "ctx": "play:a2_teacher"
- },
- {
-  "id": 2028,
-  "en": "Your uncle trades up and down the Yamuna. Mathura smells of river mud and cardamom, everyone argues about everything, and everyone lowers their voice when they speak of King Kamsa.",
-  "ctx": "play:a1_home"
- },
- {
-  "id": 2029,
-  "en": "Your uncle is sent to Hastinapura with a Yadava embassy. Kunti, the mother of the Pandavas, was born a Yadava, and while Kamsa rules at home the clans want friends at the Kuru court. Your family goes with him, and stays.",
-  "ctx": "play:a1_journey"
- },
- {
-  "id": 2030,
-  "en": "Your family serves in the Anga guard. Anga pays tribute to the Kuru throne, and its guard goes wherever the Kuru king sends it.",
-  "ctx": "play:a1_home"
  },
  {
   "id": 2031,
@@ -10280,11 +8160,6 @@
   "ctx": "scene:a1_friend"
  },
  {
-  "id": 2057,
-  "en": "Bhima wants to wrestle in the river shallows. A ring closes as he shifts his weight: push just as it meets the mark. Three good pushes and he goes into the water. Three slips and you do.",
-  "ctx": "scene:a1_friend"
- },
- {
   "id": 2058,
   "en": "Bhima becomes your closest friend.",
   "ctx": "scene:a1_friend"
@@ -10317,11 +8192,6 @@
  {
   "id": 2064,
   "en": "A test of nerve",
-  "ctx": "scene:a1_friend"
- },
- {
-  "id": 2065,
-  "en": "Duryodhana's brothers circle you by the lotus pond to see what you are made of. He is watching. Answer each taunt before the lamp burns down. Two good answers win his respect.",
   "ctx": "scene:a1_friend"
  },
  {
@@ -10412,11 +8282,6 @@
  {
   "id": 2083,
   "en": "An archery test",
-  "ctx": "scene:a1_friend"
- },
- {
-  "id": 2084,
-  "en": "Arjuna has hung a lamp from a branch and set it swinging in the dark. \"I shoot at the flame,\" he says. \"You try.\" Three arrows: release as the flame crosses your line. Two hits win his friendship.",
   "ctx": "scene:a1_friend"
  },
  {
@@ -10660,16 +8525,6 @@
   "ctx": "scene:a1_rematch"
  },
  {
-  "id": 2133,
-  "en": "At the edge of the yard grows an old mango tree, and the best fruit always hangs where no one can reach it.",
-  "ctx": "play:a1_first"
- },
- {
-  "id": 2134,
-  "en": "Your cousin, three years older and very sure of herself, puts three smooth pebbles in your hand. \"Knock one down,\" she says, \"and it is yours.\"",
-  "ctx": "play:a1_first"
- },
- {
   "id": 2135,
   "en": "A first test. This one does not count; it shows you how tests work.",
   "ctx": "play:a1_first"
@@ -10745,11 +8600,6 @@
   "ctx": "play:a1_second"
  },
  {
-  "id": 2150,
-  "en": "You will not be asked a third time.",
-  "ctx": "play:a1_second"
- },
- {
   "id": 2151,
   "en": "Ashram on the Ganga",
   "ctx": "play:a5_forest_boon"
@@ -10773,11 +8623,6 @@
   "id": 2155,
   "en": "At the spring fair there is an archery stall: a lamp on a cord, swinging in the shade of an awning. Arjuna is there. He sees you, and holds out his bow.",
   "ctx": "play:a1_second"
- },
- {
-  "id": 2156,
-  "en": "At the edge of the yard grows an old apricot tree, and the best fruit always hangs where no one can reach it.",
-  "ctx": "play:a1_first"
  },
  {
   "id": 2157,
@@ -11145,11 +8990,6 @@
   "ctx": "scene:a2_trial"
  },
  {
-  "id": 2230,
-  "en": "Drona has set a wooden bird high in a tree. \"What do you see?\" he asks each of you. Arjuna sees only the eye. Now it is your turn: three arrows, and two must find the eye.",
-  "ctx": "scene:a2_trial"
- },
- {
   "id": 2231,
   "en": "Drona counts you among his best.",
   "ctx": "scene:a2_trial"
@@ -11207,11 +9047,6 @@
  {
   "id": 2242,
   "en": "Too late. The wood cracks on your ribs.",
-  "ctx": "scene:a2_trial"
- },
- {
-  "id": 2243,
-  "en": "Kripa attacks with a wooden sword, faster each time. Parry as the ring meets the mark. Three clean parries pass; three hits and you are done.",
   "ctx": "scene:a2_trial"
  },
  {
@@ -11300,11 +9135,6 @@
   "ctx": "scene:a2_trial"
  },
  {
-  "id": 2261,
-  "en": "Mauni ties a thin cloth over your eyes. Through it you see the swinging bell only at the ends of its swing, where it rings. Shoot where it will be. Two hits of three.",
-  "ctx": "scene:a2_trial"
- },
- {
   "id": 2262,
   "en": "Mauni breaks his silence to say your name.",
   "ctx": "scene:a2_trial"
@@ -11332,11 +9162,6 @@
  {
   "id": 2267,
   "en": "A test of what you notice",
-  "ctx": "scene:a2_trial"
- },
- {
-  "id": 2268,
-  "en": "Vidura lifts a cloth from a table for a few heartbeats, then covers it again. \"What was there?\" he asks. Two right answers of three.",
   "ctx": "scene:a2_trial"
  },
  {
@@ -11370,11 +9195,6 @@
   "ctx": "scene:a2_trial"
  },
  {
-  "id": 2275,
-  "en": "Alone at night, you have hung a leaf from a thread. If you miss, no one will ever know. You will. Two hits of three.",
-  "ctx": "scene:a2_trial"
- },
- {
   "id": 2276,
   "en": "You know you are good, and no one can take that away.",
   "ctx": "scene:a2_trial"
@@ -11402,11 +9222,6 @@
  {
   "id": 2281,
   "en": "Once more",
-  "ctx": "scene:a2_trial_again"
- },
- {
-  "id": 2282,
-  "en": "You did not sleep. You have one more chance, and you will not be offered a third.",
   "ctx": "scene:a2_trial_again"
  },
  {
@@ -11470,11 +9285,6 @@
   "ctx": "scene:a2_trial_again"
  },
  {
-  "id": 2295,
-  "en": "Let it go. There will be other tests",
-  "ctx": "scene:a2_trial_again"
- },
- {
   "id": 2296,
   "en": "You let it go. Your teacher does not mention it, and neither do you.",
   "ctx": "scene:a2_trial_again"
@@ -11487,11 +9297,6 @@
  {
   "id": 2298,
   "en": "The great bow",
-  "ctx": "scene:a3_bow"
- },
- {
-  "id": 2299,
-  "en": "Every warrior in the land has come to Kampilya for the princess's swayamvara. In the courtyard, under torches, the great bow lies on a rack. It is said that only five men alive can string it.",
   "ctx": "scene:a3_bow"
  },
  {
@@ -11512,11 +9317,6 @@
  {
   "id": 2303,
   "en": "Hold to bend the bow. Let go while the bar is in the bright band. Hold too long and the string slips.",
-  "ctx": "scene:a3_bow"
- },
- {
-  "id": 2304,
-  "en": "The night before the contest, Drupada's bow-masters let young warriors try the great bow in the courtyard, so that no king is shamed tomorrow by an unknown. Three tries; string it twice.",
   "ctx": "scene:a3_bow"
  },
  {
@@ -11585,16 +9385,6 @@
   "ctx": "scene:a4_hands"
  },
  {
-  "id": 2318,
-  "en": "Before the real stakes, Shakuni throws a few rounds for nothing, to warm the dice. You are close enough to see his hands.",
-  "ctx": "scene:a4_hands"
- },
- {
-  "id": 2319,
-  "en": "If you see a dishonest throw, you will know what is happening here. If you miss it, you will not.",
-  "ctx": "scene:a4_hands"
- },
- {
   "id": 2320,
   "en": "Watch Shakuni's hands",
   "ctx": "scene:a4_hands"
@@ -11607,11 +9397,6 @@
  {
   "id": 2322,
   "en": "Another round",
-  "ctx": "scene:a4_hands_again"
- },
- {
-  "id": 2323,
-  "en": "Shakuni gathers the dice for another round. You will not get a third look.",
   "ctx": "scene:a4_hands_again"
  },
  {
@@ -11637,11 +9422,6 @@
  {
   "id": 2328,
   "en": "Vidura's message",
-  "ctx": "scene:a4_message"
- },
- {
-  "id": 2329,
-  "en": "You stayed away from the hall, but the news reaches you before midnight: everything is lost.",
   "ctx": "scene:a4_message"
  },
  {
@@ -11677,11 +9457,6 @@
  {
   "id": 2336,
   "en": "A shout. You run back into the dark.",
-  "ctx": "scene:a4_message"
- },
- {
-  "id": 2337,
-  "en": "Vidura's servant finds you. The game is lost, the Pandavas leave for exile at dawn, and Duryodhana's watchmen guard Kunti's door. Carry Vidura's two messages past them unseen.",
   "ctx": "scene:a4_message"
  },
  {
@@ -11897,11 +9672,6 @@
  {
   "id": 2380,
   "en": "The spears drive you back. Behind you, the second wave is forming.",
-  "ctx": "scene:a6_wheel"
- },
- {
-  "id": 2381,
-  "en": "Hold your place in the ring",
   "ctx": "scene:a6_wheel"
  },
  {
@@ -12270,11 +10040,6 @@
   "ctx": "scene:a3_lac"
  },
  {
-  "id": 2455,
-  "en": "Purochana's guard walks the house with a torch. Carry two baskets of earth out of the tunnel without being seen. Seen twice, and you must stop for the night.",
-  "ctx": "scene:a3_lac"
- },
- {
   "id": 2456,
   "en": "The tunnel grows by a night's digging, and the Pandavas will owe you.",
   "ctx": "scene:a3_lac"
@@ -12295,18 +10060,8 @@
   "ctx": "scene:a3_tunnel_again"
  },
  {
-  "id": 2460,
-  "en": "The miner is waiting at the mouth of the tunnel with an empty basket. You will not be asked a third time.",
-  "ctx": "scene:a3_tunnel_again"
- },
- {
   "id": 2461,
   "en": "A guard sees you, and Purochana starts asking questions. It counts as two failures, and it will weigh on every stealth test to come.",
-  "ctx": "scene:a3_tunnel_again"
- },
- {
-  "id": 2462,
-  "en": "Leave the digging to the miner",
   "ctx": "scene:a3_tunnel_again"
  },
  {
@@ -12322,11 +10077,6 @@
  {
   "id": 2466,
   "en": "A year of training. Today {teacher} finds out what you have learned.",
-  "ctx": "play:a2_trial"
- },
- {
-  "id": 2467,
-  "en": "If you fail, you will get one more chance. Only one.",
   "ctx": "play:a2_trial"
  },
  {
@@ -12795,16 +10545,6 @@
   "ctx": "world:ORIGINS"
  },
  {
-  "id": 2561,
-  "en": "Your father Dhruva, who drives for the lords of Anga",
-  "ctx": "world:ROOTS"
- },
- {
-  "id": 2562,
-  "en": "On the charioteers' feast day in Champa, every horse in the king of Anga's stables is washed, garlanded and blessed, and the suta children help.",
-  "ctx": "world:CUSTOMS"
- },
- {
   "id": 2563,
   "en": "You missed Arjuna's lamp twice, and he stopped offering.",
   "ctx": "world:MERITS"
@@ -13065,11 +10805,6 @@
   "ctx": "scene:a2_trial"
  },
  {
-  "id": 2615,
-  "en": "Balarama swings the practice mace in a slow, heavy rhythm, and on every beat his guard opens for a heartbeat. Strike as each beat reaches the ring.",
-  "ctx": "scene:a2_trial"
- },
- {
   "id": 2616,
   "en": "Drona stops watching you shoot, and you must find another teacher. It counts as two failures, and it will weigh on every archery test to come.",
   "ctx": "scene:a2_trial_again"
@@ -13160,11 +10895,6 @@
   "ctx": "scene:a2_pathtest"
  },
  {
-  "id": 2634,
-  "en": "An old war bow hangs on the wall of the school, heavier than anything you have drawn. Draw it to the ear and loose clean: three tries, two clean ones.",
-  "ctx": "scene:a2_pathtest"
- },
- {
   "id": 2635,
   "en": "You draw the war bow, and your teacher hangs it in your room.",
   "ctx": "scene:a2_pathtest"
@@ -13215,11 +10945,6 @@
   "ctx": "scene:a2_pathtest"
  },
  {
-  "id": 2645,
-  "en": "A post of seasoned teak stands in the yard. Strike as the ring meets the mark: three clean blows split it. Three glancing ones and your arms give out.",
-  "ctx": "scene:a2_pathtest"
- },
- {
   "id": 2646,
   "en": "The post splits, and the younger students stare.",
   "ctx": "scene:a2_pathtest"
@@ -13245,11 +10970,6 @@
   "ctx": "scene:a2_pathtest"
  },
  {
-  "id": 2651,
-  "en": "A post of seasoned teak stands in the yard. Kripa beats the time on a shield. Strike the post on every beat, and keep the rhythm to the end.",
-  "ctx": "scene:a2_pathtest"
- },
- {
   "id": 2652,
   "en": "You split the practice post, keeping Kripa's time.",
   "ctx": "scene:a2_pathtest"
@@ -13265,18 +10985,8 @@
   "ctx": "scene:a2_pathtest"
  },
  {
-  "id": 2655,
-  "en": "Race Karna round the training ground",
-  "ctx": "scene:a2_pathtest"
- },
- {
   "id": 2656,
   "en": "A race",
-  "ctx": "scene:a2_pathtest"
- },
- {
-  "id": 2657,
-  "en": "Karna, the charioteer's son, races anyone who asks, and nobody has beaten him this year. Change lanes to miss the stones and broken wheels in the road. First past the post wins.",
   "ctx": "scene:a2_pathtest"
  },
  {
@@ -13302,21 +11012,6 @@
  {
   "id": 2662,
   "en": "Karna crosses the line a length ahead, and comes back to show you where you lost it.",
-  "ctx": "scene:a2_pathtest"
- },
- {
-  "id": 2663,
-  "en": "Sit down at Shakuni's chaupar board",
-  "ctx": "scene:a2_pathtest"
- },
- {
-  "id": 2664,
-  "en": "A board game, a minute or two",
-  "ctx": "scene:a2_pathtest"
- },
- {
-  "id": 2665,
-  "en": "Shakuni, the queen's brother, plays chaupar in the evenings with anyone who will lose to him. Two pieces each, around the cross and home. Land on his piece to send it back; the green squares are safe.",
   "ctx": "scene:a2_pathtest"
  },
  {
@@ -13380,11 +11075,6 @@
   "ctx": "scene:a2_pathtest"
  },
  {
-  "id": 2678,
-  "en": "A boy from the stables has broken his arm. The old healer is busy. Hold the bone steady while it goes back into line.",
-  "ctx": "scene:a2_pathtest"
- },
- {
   "id": 2679,
   "en": "The arm heals straight, and the healers start sending for you.",
   "ctx": "scene:a2_pathtest"
@@ -13427,11 +11117,6 @@
  {
   "id": 2687,
   "en": "A guard turns. You slip back behind a pillar.",
-  "ctx": "scene:a2_pathtest"
- },
- {
-  "id": 2688,
-  "en": "Your teacher hands you a sealed note. Carry it the length of the palace and back, past the night guard and his lamp, twice, without being seen.",
   "ctx": "scene:a2_pathtest"
  },
  {
@@ -13485,11 +11170,6 @@
   "ctx": "scene:a2_pathtest"
  },
  {
-  "id": 2699,
-  "en": "At the fair, an old bard speaks the lines of a verse once, in order, and asks you to say them back. Three verses, each longer than the last. Two must be perfect.",
-  "ctx": "scene:a2_pathtest"
- },
- {
   "id": 2700,
   "en": "The old bard lets you sing in his place that night.",
   "ctx": "scene:a2_pathtest"
@@ -13513,11 +11193,6 @@
   "id": 2704,
   "en": "The lines tangle. The bard pats your hand. \"Tomorrow,\" he says. \"Sleep on them.\"",
   "ctx": "scene:a2_pathtest"
- },
- {
-  "id": 2705,
-  "en": "One more try. After this, the path will have to prove itself some other way.",
-  "ctx": "scene:a2_pathtest_again"
  },
  {
   "id": 2706,
@@ -13595,11 +11270,6 @@
   "ctx": "scene:a2_pathtest_again"
  },
  {
-  "id": 2721,
-  "en": "Let it go. You will prove it some other way",
-  "ctx": "scene:a2_pathtest_again"
- },
- {
   "id": 2722,
   "en": "You let it go. The path is still yours, whatever anyone says.",
   "ctx": "scene:a2_pathtest_again"
@@ -13625,18 +11295,8 @@
   "ctx": "scene:a3_hunt"
  },
  {
-  "id": 2727,
-  "en": "While half the land rides to Kampilya, the year's work goes on at home. At the end of the rains comes the spring hunt on the meadow at the forest's edge.",
-  "ctx": "scene:a3_hunt"
- },
- {
   "id": 2728,
   "en": "Join the spring hunt",
-  "ctx": "scene:a3_hunt"
- },
- {
-  "id": 2729,
-  "en": "At the end of the rains the young men and women of the town hunt the meadow at the forest's edge. A deer breaks from the trees. Loose as it crosses your line: two arrows of three.",
   "ctx": "scene:a3_hunt"
  },
  {
@@ -13670,11 +11330,6 @@
   "ctx": "scene:a3_hunt_again"
  },
  {
-  "id": 2736,
-  "en": "The mist is still on the meadow. The old hunters have saved you a place at the edge of the trees.",
-  "ctx": "scene:a3_hunt_again"
- },
- {
   "id": 2737,
   "en": "The deer gets away again, and the hunters stop waiting for you. It counts as two failures, and it will weigh on every archery test to come.",
   "ctx": "scene:a3_hunt_again"
@@ -13700,16 +11355,6 @@
   "ctx": "scene:a3_courttest"
  },
  {
-  "id": 2742,
-  "en": "Take the tigers on Duryodhana's board",
-  "ctx": "scene:a3_courttest"
- },
- {
-  "id": 2743,
-  "en": "Duryodhana plays tigers and goats with his new courtiers, and judges them by it. He gives you the two tigers and keeps the goats. Jump a goat to take it; take three before his goats hem you in.",
-  "ctx": "scene:a3_courttest"
- },
- {
   "id": 2744,
   "en": "Duryodhana laughs, and you are his for the asking.",
   "ctx": "scene:a3_courttest"
@@ -13732,16 +11377,6 @@
  {
   "id": 2748,
   "en": "The goats close in around your tigers. Duryodhana sets the board up again without a word.",
-  "ctx": "scene:a3_courttest"
- },
- {
-  "id": 2749,
-  "en": "Go into the burning forest for the families",
-  "ctx": "scene:a3_courttest"
- },
- {
-  "id": 2750,
-  "en": "The Khandava forest is burning to clear the land for the new city, and forest families are trapped inside. Reach them through the smoke; each one falls in behind you. Then bring the line out through the gap by the river. The fire spreads as you go.",
   "ctx": "scene:a3_courttest"
  },
  {
@@ -13782,11 +11417,6 @@
  {
   "id": 2758,
   "en": "A test of wits",
-  "ctx": "scene:a3_courttest"
- },
- {
-  "id": 2759,
-  "en": "King Drupada's council tests newcomers the old way: in riddles. Answer each one before the lamp burns down. Two right answers of three.",
   "ctx": "scene:a3_courttest"
  },
  {
@@ -13875,11 +11505,6 @@
   "ctx": "scene:a3_courttest"
  },
  {
-  "id": 2777,
-  "en": "Bring your boat in through the storm",
-  "ctx": "scene:a3_courttest"
- },
- {
   "id": 2778,
   "en": "A test in the storm",
   "ctx": "scene:a3_courttest"
@@ -13902,11 +11527,6 @@
  {
   "id": 2782,
   "en": "Steer between the rocks and the breaking waves: up and down, or the buttons.",
-  "ctx": "scene:a3_courttest"
- },
- {
-  "id": 2783,
-  "en": "A storm comes in off the western sea while the fishing boats are still out, and yours is the last. Bring it in through the rocks at the harbour mouth. Two hits and the boat is in trouble; three and it is on the rocks.",
   "ctx": "scene:a3_courttest"
  },
  {
@@ -13975,11 +11595,6 @@
   "ctx": "scene:a3_courttest"
  },
  {
-  "id": 2797,
-  "en": "Karna is king of Anga now, and drills his war elephants himself. He hands you the great drum. Keep the beat, and forty elephants step as one.",
-  "ctx": "scene:a3_courttest"
- },
- {
   "id": 2798,
   "en": "King Karna gives you charge of his elephants.",
   "ctx": "scene:a3_courttest"
@@ -14005,11 +11620,6 @@
   "ctx": "scene:a3_courttest"
  },
  {
-  "id": 2803,
-  "en": "Go into the old forest after the lost child",
-  "ctx": "scene:a3_courttest"
- },
- {
   "id": 2804,
   "en": "A puzzle",
   "ctx": "scene:a3_courttest"
@@ -14022,11 +11632,6 @@
  {
   "id": 2806,
   "en": "The old forest grows in rings of trees. Line up every clearing with the outer one to open a path to the heart. Turning a ring drags the ring inside it the other way.",
-  "ctx": "scene:a3_courttest"
- },
- {
-  "id": 2807,
-  "en": "A child has wandered into the old forest where the paths go round in rings, and the people of the place say it moves. Find the way to the clearing at its heart before dark.",
   "ctx": "scene:a3_courttest"
  },
  {
@@ -14053,11 +11658,6 @@
   "id": 2812,
   "en": "You come out where you went in. The rings have turned while you walked.",
   "ctx": "scene:a3_courttest"
- },
- {
-  "id": 2813,
-  "en": "One more chance, and then the place will make up its mind about you.",
-  "ctx": "scene:a3_courttest_again"
  },
  {
   "id": 2814,
@@ -14170,11 +11770,6 @@
   "ctx": "scene:a3_courttest_again"
  },
  {
-  "id": 2836,
-  "en": "Let it go. You will find your place some other way",
-  "ctx": "scene:a3_courttest_again"
- },
- {
   "id": 2837,
   "en": "You let it go. It takes longer, but in the end the place gets used to you.",
   "ctx": "scene:a3_courttest_again"
@@ -14207,11 +11802,6 @@
  {
   "id": 2843,
   "en": "A patrol shouts. You pull them back into a doorway.",
-  "ctx": "scene:a4_household"
- },
- {
-  "id": 2844,
-  "en": "Before dawn, Duryodhana's men ride in to seize everything that was Yudhishthira's, and everyone who served him. Your neighbours have been hiding one of his stewards and his family. Get them out through the night streets, past the patrols, in two trips.",
   "ctx": "scene:a4_household"
  },
  {
@@ -14275,11 +11865,6 @@
   "ctx": "scene:a5_vikarna"
  },
  {
-  "id": 2857,
-  "en": "The court is louder than it used to be, and emptier. One evening Vikarna, Duryodhana's brother, the only one who spoke for Draupadi in the dice hall, sends for you.",
-  "ctx": "scene:a5_vikarna"
- },
- {
   "id": 2858,
   "en": "Vikarna",
   "ctx": "scene:a5_vikarna"
@@ -14292,11 +11877,6 @@
  {
   "id": 2860,
   "en": "Sit down at Vikarna's board",
-  "ctx": "scene:a5_vikarna"
- },
- {
-  "id": 2861,
-  "en": "Vikarna, the brother who spoke for Draupadi in the dice hall, keeps a Moksha Patam board: ladders of virtue, snakes of vice, and moksha at sixty-four. Throw two dice and move by the one you choose. First to moksha wins.",
   "ctx": "scene:a5_vikarna"
  },
  {
@@ -14365,11 +11945,6 @@
   "ctx": "scene:a5_forge"
  },
  {
-  "id": 2875,
-  "en": "Charu came to live near you after the dice game, and keeps the forge at the end of the lane now. One morning Charu leans in the doorway, black to the elbows.",
-  "ctx": "scene:a5_forge"
- },
- {
   "id": 2876,
   "en": "I have a blade that needs two hammers, and you have two arms. Come on.",
   "ctx": "scene:a5_forge"
@@ -14402,11 +11977,6 @@
  {
   "id": 2882,
   "en": "Too late. The iron is cooling.",
-  "ctx": "scene:a5_forge"
- },
- {
-  "id": 2883,
-  "en": "Charu is the village smith now, and has a blade on the anvil that needs two hammers. Charu strikes, then you, then Charu. Keep the rhythm while the iron is hot.",
   "ctx": "scene:a5_forge"
  },
  {
@@ -14510,11 +12080,6 @@
   "ctx": "scene:a5_herd"
  },
  {
-  "id": 2904,
-  "en": "The raid has stampeded Virata's herds toward the river. Gather the scattered cattle into a line behind your horse, and bring them across at the ford before they drown in the deep water.",
-  "ctx": "scene:a5_herd"
- },
- {
   "id": 2905,
   "en": "You bring the herd across the ford, and the herders cheer you.",
   "ctx": "scene:a5_herd"
@@ -14580,11 +12145,6 @@
   "ctx": "scene:a5_prison"
  },
  {
-  "id": 2918,
-  "en": "Duryodhana does not forgive a refusal. His guards come for you the night the army rides out, and you wake in the prison yard below the palace walls, in chains, with the smell of the river coming through the bars.",
-  "ctx": "scene:a5_prison"
- },
- {
   "id": 2919,
   "en": "On the third night, the bar on the gate is loose.",
   "ctx": "scene:a5_prison"
@@ -14612,11 +12172,6 @@
  {
   "id": 2924,
   "en": "The guard on the platform calls out. You freeze in the corner.",
-  "ctx": "scene:a5_prison"
- },
- {
-  "id": 2925,
-  "en": "The guard on the watch platform swings his torch across the yard. Reach the gate twice: once to slip the bar, once to slip through.",
   "ctx": "scene:a5_prison"
  },
  {
@@ -14660,11 +12215,6 @@
   "ctx": "scene:a5_prison_again"
  },
  {
-  "id": 2934,
-  "en": "Wait. They will need you when the war comes",
-  "ctx": "scene:a5_prison_again"
- },
- {
   "id": 2935,
   "en": "You wait. When the war comes, they do need you, and they let you out.",
   "ctx": "scene:a5_prison_again"
@@ -14697,11 +12247,6 @@
  {
   "id": 2941,
   "en": "Too late. The gate gives.",
-  "ctx": "scene:a5_local"
- },
- {
-  "id": 2942,
-  "en": "Raiders come out of the dusk at the village by the border, the week the Kauravas ride on Matsya, as if the whole land had been given leave. Brace the gate as each rush meets it. Hold three.",
   "ctx": "scene:a5_local"
  },
  {
@@ -14760,11 +12305,6 @@
   "ctx": "scene:a5_local"
  },
  {
-  "id": 2954,
-  "en": "A trading boat is sinking off the harbour mouth in the storm, and its crew is climbing across to yours on a single line. Keep it taut when the wreck rolls away, slack when it rolls back.",
-  "ctx": "scene:a5_local"
- },
- {
   "id": 2955,
   "en": "Every one of the crew comes across alive.",
   "ctx": "scene:a5_local"
@@ -14795,11 +12335,6 @@
   "ctx": "scene:a5_local"
  },
  {
-  "id": 2961,
-  "en": "Karna's war drums, beating for the war that is coming, have maddened the elephants at Champa. They stampede toward the bathing ghat, where the children are. Throw your rope over the lead elephant's neck as she crosses your line: two throws of three.",
-  "ctx": "scene:a5_local"
- },
- {
   "id": 2962,
   "en": "You turn the lead elephant, and the herd follows her away from the ghat.",
   "ctx": "scene:a5_local"
@@ -14827,11 +12362,6 @@
  {
   "id": 2967,
   "en": "Hunt the man-eater",
-  "ctx": "scene:a5_local"
- },
- {
-  "id": 2968,
-  "en": "A tiger has been taking cattle, and then a herdboy, at the edge of the Kamyaka forest. You wait for it at dusk with the boy's brother. It comes out of the long grass fast. Two arrows of three.",
   "ctx": "scene:a5_local"
  },
  {
@@ -14915,11 +12445,6 @@
   "ctx": "scene:a6_wheel"
  },
  {
-  "id": 2985,
-  "en": "The wheel of warriors turns ring within ring, and each ring has one opening that moves. Line every opening up with the outer one, and your company can follow Abhimanyu in.",
-  "ctx": "scene:a6_wheel"
- },
- {
   "id": 2986,
   "en": "You open a way, and your company holds it longer than anyone thought it could.",
   "ctx": "scene:a6_wheel"
@@ -14942,11 +12467,6 @@
  {
   "id": 2990,
   "en": "Keep the wheel shut",
-  "ctx": "scene:a6_wheel"
- },
- {
-  "id": 2991,
-  "en": "The Pandava chariots push at the wheel ring by ring, trying to line up a way in. Turn the rings to keep them out of line. Hold until the sun moves.",
   "ctx": "scene:a6_wheel"
  },
  {
@@ -15055,11 +12575,6 @@
   "ctx": "scene:a6_wheel"
  },
  {
-  "id": 3013,
-  "en": "The wounded from the wheel come in faster than anyone can count. Look along the cots once, then tell the healers who is there, so the worst are seen first.",
-  "ctx": "scene:a6_wheel"
- },
- {
   "id": 3014,
   "en": "The worst are seen first, and the boy from the wheel lives.",
   "ctx": "scene:a6_wheel"
@@ -15120,11 +12635,6 @@
   "ctx": "scene:a6_night"
  },
  {
-  "id": 3026,
-  "en": "Drive arrows up to the front in the dark",
-  "ctx": "scene:a6_night"
- },
- {
   "id": 3027,
   "en": "You hit something in the dark, and the chariot slews.",
   "ctx": "scene:a6_night"
@@ -15132,11 +12642,6 @@
  {
   "id": 3028,
   "en": "Steer between the wrecks and the burning carts: up and down, or the buttons.",
-  "ctx": "scene:a6_night"
- },
- {
-  "id": 3029,
-  "en": "The battle goes on after dark, by torchlight, for the first time in the war. Your line is out of arrows. Drive a loaded chariot up to the front between the wrecks and the burning carts.",
   "ctx": "scene:a6_night"
  },
  {
@@ -15165,11 +12670,6 @@
   "ctx": "scene:a6_night"
  },
  {
-  "id": 3035,
-  "en": "Carry the wounded back between the torches",
-  "ctx": "scene:a6_night"
- },
- {
   "id": 3036,
   "en": "Carry",
   "ctx": "scene:a6_night"
@@ -15192,11 +12692,6 @@
  {
   "id": 3040,
   "en": "Arrows come out of the dark. You flatten yourself in the mud.",
-  "ctx": "scene:a6_night"
- },
- {
-  "id": 3041,
-  "en": "The battle goes on by torchlight. Between the lines, the wounded are calling. Archers on both sides shoot at anything that moves in the torchlight. Carry two of them back.",
   "ctx": "scene:a6_night"
  },
  {
@@ -15322,11 +12817,6 @@
  {
   "id": 3066,
   "en": "\"Wait until it passes.\"",
-  "ctx": "scene:a7_question"
- },
- {
-  "id": 3067,
-  "en": "Bhishma has been teaching Yudhishthira for days: how to rule, how to give, how to grieve. Now he tests you on what he taught. Answer before the lamp burns down. Two right answers of three.",
   "ctx": "scene:a7_question"
  },
  {
@@ -15495,11 +12985,6 @@
   "ctx": "scene:a1_friend_again"
  },
  {
-  "id": 3101,
-  "en": "Let it go. Charu is waiting at the gate",
-  "ctx": "scene:a1_friend_again"
- },
- {
   "id": 3102,
   "en": "You walk home with Charu, who pretends not to be pleased.",
   "ctx": "scene:a1_friend_again"
@@ -15535,11 +13020,6 @@
   "ctx": "scene:a1_wrestle"
  },
  {
-  "id": 3109,
-  "en": "Ugra fights the fair way: falls in the ring. He shifts his weight like a drummer keeping time. Catch him on the beat, again and again, and he goes down.",
-  "ctx": "scene:a1_wrestle"
- },
- {
   "id": 3110,
   "en": "Ugra goes to one knee, and gets up again. Charu is still in his grip.",
   "ctx": "scene:a1_wrestle"
@@ -15570,16 +13050,6 @@
   "ctx": "scene:a3_kampilya"
  },
  {
-  "id": 3116,
-  "en": "Ride to Kampilya for the swayamvara",
-  "ctx": "scene:a3_kampilya"
- },
- {
-  "id": 3117,
-  "en": "Stay home. The year's work will not wait",
-  "ctx": "scene:a3_kampilya"
- },
- {
   "id": 3118,
   "en": "A traveller's story",
   "ctx": "scene:a3_news"
@@ -15590,33 +13060,8 @@
   "ctx": "scene:a3_news"
  },
  {
-  "id": 3120,
-  "en": "At Draupadi's swayamvara, king after king failed to string the great bow. Karna strung it, and walked back to his seat. Then a young brahmin in a deerskin strung it in one motion, and hit the fish's eye.",
-  "ctx": "scene:a3_news"
- },
- {
-  "id": 3121,
-  "en": "The brahmins were Arjuna and Bhima in disguise. The Pandavas are alive, and Draupadi is the wife of all five brothers.",
-  "ctx": "scene:a3_news"
- },
- {
-  "id": 3122,
-  "en": "Drink to the Pandavas being alive",
-  "ctx": "scene:a3_news"
- },
- {
-  "id": 3123,
-  "en": "Wonder aloud what Duryodhana will do now",
-  "ctx": "scene:a3_news"
- },
- {
   "id": 3124,
   "en": "An old man at the well looks at you sharply. \"Nothing good,\" he says.",
-  "ctx": "scene:a3_news"
- },
- {
-  "id": 3125,
-  "en": "Shrug. Kings and their weddings are nothing to you",
   "ctx": "scene:a3_news"
  },
  {
@@ -15628,16 +13073,6 @@
   "id": 3127,
   "en": "You follow the Pandavas into exile, north to the hermitages.",
   "ctx": "scene:a5_forest_boon"
- },
- {
-  "id": 3128,
-  "en": "Answer the voice before you drink",
-  "ctx": "scene:a5_yaksha"
- },
- {
-  "id": 3129,
-  "en": "The voice speaks from the water. \"Answer my questions first,\" it says, \"then drink.\" Answer before the lamp burns down. Two right answers of three.",
-  "ctx": "scene:a5_yaksha"
  },
  {
   "id": 3130,
@@ -15670,11 +13105,6 @@
   "ctx": "scene:a5_yaksha_again"
  },
  {
-  "id": 3136,
-  "en": "The voice in the water is still waiting. So is your thirst. You will not be asked a third time.",
-  "ctx": "scene:a5_yaksha_again"
- },
- {
   "id": 3137,
   "en": "\"Arrows in a war.\"",
   "ctx": "scene:a5_yaksha_again"
@@ -15700,23 +13130,8 @@
   "ctx": "scene:a5_yaksha_again"
  },
  {
-  "id": 3142,
-  "en": "Drink, and stop thinking",
-  "ctx": "scene:a5_yaksha_again"
- },
- {
   "id": 3143,
   "en": "Ride with Duryodhana against Matsya",
-  "ctx": "scene:a5_matsya"
- },
- {
-  "id": 3144,
-  "en": "Refuse to ride against a kingdom that has done you no wrong",
-  "ctx": "scene:a5_matsya"
- },
- {
-  "id": 3145,
-  "en": "Duryodhana does not forgive a refusal",
   "ctx": "scene:a5_matsya"
  },
  {
@@ -15733,21 +13148,6 @@
   "id": 3148,
   "en": "The hall goes quiet. Duryodhana looks at you for a long time, and then he smiles, which is worse. \"Then you can wait for us here,\" he says. His guards are already moving.",
   "ctx": "scene:a5_matsya"
- },
- {
-  "id": 3149,
-  "en": "Leave Matsya's troubles to Matsya. There is trouble enough at home",
-  "ctx": "scene:a5_matsya"
- },
- {
-  "id": 3150,
-  "en": "Hold your company's ground until dusk",
-  "ctx": "scene:a6_day14"
- },
- {
-  "id": 3151,
-  "en": "Tend the wounded as they come in",
-  "ctx": "scene:a6_day14"
  },
  {
   "id": 3152,
@@ -15768,31 +13168,6 @@
   "id": 3155,
   "en": "You are sixteen, and you have chosen the path of the {path!}. Before the year is out, someone wants to see whether you were right.",
   "ctx": "play:a2_pathtest"
- },
- {
-  "id": 3156,
-  "en": "Messengers ride out from Kampilya to every court in the land. King Drupada will give his daughter Draupadi in a swayamvara, to whoever can string the great bow and hit the mark.",
-  "ctx": "play:a3_kampilya"
- },
- {
-  "id": 3157,
-  "en": "Half the land is going. Are you?",
-  "ctx": "play:a3_kampilya"
- },
- {
-  "id": 3158,
-  "en": "The great bow will be there",
-  "ctx": "play:a3_kampilya"
- },
- {
-  "id": 3159,
-  "en": "The spring hunt comes at the end of the rains",
-  "ctx": "play:a3_kampilya"
- },
- {
-  "id": 3160,
-  "en": "You hear it from a traveller at the well, and then from everyone. By evening the story has grown a fight with a hundred kings and an uprooted tree.",
-  "ctx": "play:a3_news"
  },
  {
   "id": 3161,
@@ -15820,28 +13195,13 @@
   "ctx": "play:a4_household"
  },
  {
-  "id": 3166,
-  "en": "By morning, Duryodhana's men will be in the streets here too.",
-  "ctx": "play:a4_household"
- },
- {
   "id": 3167,
   "en": "You block, and {a}'s blow still hits you for {n}.",
   "ctx": "play:a5_own_life"
  },
  {
-  "id": 3168,
-  "en": "The news of the raid reaches you late, from a traveller who saw the dust. Here, the same week brings trouble of its own.",
-  "ctx": "play:a5_matsya"
- },
- {
   "id": 3169,
   "en": "The man-eater",
-  "ctx": "play:a5_local"
- },
- {
-  "id": 3170,
-  "en": "The same week the Kauravas ride on Matsya, trouble comes here too, as if the whole land had been given leave.",
   "ctx": "play:a5_local"
  },
  {
@@ -15878,16 +13238,6 @@
   "id": 3177,
   "en": "The old forest",
   "ctx": "play:a3_courttest"
- },
- {
-  "id": 3178,
-  "en": "A new place takes your measure in the first year. Here is how this one does it.",
-  "ctx": "play:a3_courttest"
- },
- {
-  "id": 3179,
-  "en": "Duryodhana calls every sword at court to ride on Matsya's herds. If the Pandavas are hiding there, he says, they will come out to save the cattle, and be found before the year is up.",
-  "ctx": "play:a5_matsya"
  },
  {
   "id": 3180,
@@ -15953,16 +13303,6 @@
   "id": 3192,
   "en": "The charioteers' lane, Champa",
   "ctx": "play:a1_home"
- },
- {
-  "id": 3193,
-  "en": "Your father drives chariots for the lords of Anga, in the household of the old charioteer Adhiratha. He tells you to keep your eyes down and your hands steady.",
-  "ctx": "play:a1_home"
- },
- {
-  "id": 3194,
-  "en": "When you are seven, Adhiratha is called to Hastinapura to drive for the Kuru court, and his whole household goes with him: horses, carts, cousins, and your family. His foster son Karna, a boy your age, rides on the lead cart and asks the drivers questions all the way up the Ganga.",
-  "ctx": "play:a1_journey"
  },
  {
   "id": 3195,
@@ -16240,11 +13580,6 @@
   "ctx": "scene:x_captive"
  },
  {
-  "id": 3250,
-  "en": "A guard on the watch platform swings his torch across the yard. Reach the gate twice: once to slip the bar, once to slip through.",
-  "ctx": "scene:x_captive"
- },
- {
   "id": 3251,
   "en": "The guard nearly sees you. You can try again another night.",
   "ctx": "scene:x_captive"
@@ -16257,11 +13592,6 @@
  {
   "id": 3253,
   "en": "The bar lifts without a sound. You are through the gate and over the ditch before the guard turns back.",
-  "ctx": "scene:x_captive"
- },
- {
-  "id": 3254,
-  "en": "Wait. Someone will remember you, in time",
   "ctx": "scene:x_captive"
  },
  {
@@ -16370,16 +13700,6 @@
   "ctx": "scene:a4_stakes"
  },
  {
-  "id": 3276,
-  "en": "Duryodhana rises. \"Slander, in the king's hall,\" he says, and the guards take you down to the cells while the game goes on above you.",
-  "ctx": "scene:a4_stakes"
- },
- {
-  "id": 3277,
-  "en": "You called Shakuni's dice false, and Duryodhana had you locked away.",
-  "ctx": "scene:a4_stakes"
- },
- {
   "id": 3278,
   "en": "Dushasana's guards drag you out of the hall. Duryodhana does not even look round. \"Below,\" he says, \"until they learn the king's peace.\"",
   "ctx": "scene:a4_draupadi"
@@ -16427,11 +13747,6 @@
  {
   "id": 3287,
   "en": "You wake in chains, on stone. {who} took you, and nobody will come asking for you soon.",
-  "ctx": "play:x_captive"
- },
- {
-  "id": 3288,
-  "en": "Above you a torch swings on the watch platform. The bar on the gate is old, and loose.",
   "ctx": "play:x_captive"
  },
  {
@@ -16645,21 +13960,6 @@
   "ctx": "scene:a1_poison"
  },
  {
-  "id": 3331,
-  "en": "Ask Drona to take you, though your family is not of the court",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 3332,
-  "en": "He will set you one shot, at a bird no one can hit",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 3333,
-  "en": "Drona points to a wooden bird on the highest branch, far across the field. Three arrows. Hit it twice, and he will think about it.",
-  "ctx": "scene:a2_teacher"
- },
- {
   "id": 3334,
   "en": "Drona takes you, grudgingly, and the whole court hears of it.",
   "ctx": "scene:a2_teacher"
@@ -16682,16 +13982,6 @@
  {
   "id": 3338,
   "en": "Your arrows fall short and wide. Drona has already turned away. \"Find another teacher,\" he says, not unkindly.",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 3339,
-  "en": "He turned Ekalavya away. He will set you a shot no one makes",
-  "ctx": "scene:a2_teacher"
- },
- {
-  "id": 3340,
-  "en": "Drona points to a wooden bird on the highest branch, far across the field. Three arrows, and every one must hit. He does not expect you to.",
   "ctx": "scene:a2_teacher"
  },
  {
@@ -16750,16 +14040,6 @@
   "ctx": "scene:a5_side"
  },
  {
-  "id": 3352,
-  "en": "Drive a chariot for a warrior who needs one",
-  "ctx": "scene:a6_eve"
- },
- {
-  "id": 3353,
-  "en": "He will ride with you once before he decides",
-  "ctx": "scene:a6_eve"
- },
- {
   "id": 3354,
   "en": "A wheel catches, and the old warrior grabs the rail.",
   "ctx": "scene:a6_eve"
@@ -16767,11 +14047,6 @@
  {
   "id": 3355,
   "en": "Steer between the carts and the stakes: up and down, or the buttons.",
-  "ctx": "scene:a6_eve"
- },
- {
-  "id": 3356,
-  "en": "An old warrior whose driver was killed in a raid will ride with you once, at dusk, along the road behind the lines: carts, stakes, tethered horses. Bring him to the end of it without a wheel touching anything.",
   "ctx": "scene:a6_eve"
  },
  {
@@ -16797,16 +14072,6 @@
  {
   "id": 3361,
   "en": "A wheel clips a cart, and the old warrior nearly goes over the rail. He climbs down without a word.",
-  "ctx": "scene:a6_eve"
- },
- {
-  "id": 3362,
-  "en": "Ask for a company to command",
-  "ctx": "scene:a6_eve"
- },
- {
-  "id": 3363,
-  "en": "The commander will test you first",
   "ctx": "scene:a6_eve"
  },
  {
@@ -16870,11 +14135,6 @@
   "ctx": "scene:a6_eve_again"
  },
  {
-  "id": 3376,
-  "en": "Take your place in the line instead",
-  "ctx": "scene:a6_eve_again"
- },
- {
   "id": 3377,
   "en": "You find a place in the front line, among people who do not know your name yet.",
   "ctx": "scene:a6_eve_again"
@@ -16890,16 +14150,6 @@
   "ctx": "scene:a6_ring_closes"
  },
  {
-  "id": 3380,
-  "en": "Abhimanyu's bow is cut. His charioteer is dead. His sword is broken. He has a chariot wheel in his hands, and you are at his back.",
-  "ctx": "scene:a6_ring_closes"
- },
- {
-  "id": 3381,
-  "en": "The ring of chariots turns and tightens. Somewhere outside it, the Pandavas are still trying to break in. Hold a way open for them as long as you can.",
-  "ctx": "scene:a6_ring_closes"
- },
- {
   "id": 3382,
   "en": "Hold the ring open",
   "ctx": "scene:a6_ring_closes"
@@ -16907,11 +14157,6 @@
  {
   "id": 3383,
   "en": "No one has ever held it",
-  "ctx": "scene:a6_ring_closes"
- },
- {
-  "id": 3384,
-  "en": "The rings are in line, a way out for a breath. The Kaurava chariots push them out of line, faster and faster. Turn them back. Every heartbeat you hold is a heartbeat the Pandavas can use.",
   "ctx": "scene:a6_ring_closes"
  },
  {
@@ -16927,16 +14172,6 @@
  {
   "id": 3387,
   "en": "Drona's order",
-  "ctx": "scene:a6_d13_bow"
- },
- {
-  "id": 3388,
-  "en": "Abhimanyu cannot be beaten from the front. Drona sees it. \"Cut his bow from behind,\" he says. \"Kill his horses. Then he is only a boy.\"",
-  "ctx": "scene:a6_d13_bow"
- },
- {
-  "id": 3389,
-  "en": "The order is passed along the ring, and it reaches you.",
   "ctx": "scene:a6_d13_bow"
  },
  {
@@ -17025,11 +14260,6 @@
   "ctx": "fight:e_ring"
  },
  {
-  "id": 3407,
-  "en": "No one comes out of the heart of the wheel",
-  "ctx": "scene:a6_d13_inside"
- },
- {
   "id": 3408,
   "en": "The heart of the wheel",
   "ctx": "fight:e_last_stand"
@@ -17085,16 +14315,6 @@
   "ctx": "play:a1_poison"
  },
  {
-  "id": 3419,
-  "en": "After a year alone, you lay out everything you have gathered on a mat: a bamboo bow, a mace, a set of chariot reins, a scribe's tablet, a healer's satchel, a dark cloak, a vina.",
-  "ctx": "play:a2_path"
- },
- {
-  "id": 3420,
-  "en": "What you choose decides how you fight, how you are useful when you are not fighting, and, one day, which blessings can find you. Fail its test twice and you will have to choose again.",
-  "ctx": "play:a2_path"
- },
- {
   "id": 3421,
   "en": "Your balance suits the reins.",
   "ctx": "play:a2_path"
@@ -17102,26 +14322,6 @@
  {
   "id": 3422,
   "en": "Your light step suits the dark cloak.",
-  "ctx": "play:a2_path"
- },
- {
-  "id": 3423,
-  "en": "You have chosen the path of the {path!}. Before you may call it yours, you have to show it was the right choice.",
-  "ctx": "play:a2_pathtest"
- },
- {
-  "id": 3424,
-  "en": "If you fail, you will get one more chance. Fail that too, and you choose again.",
-  "ctx": "play:a2_pathtest"
- },
- {
-  "id": 3425,
-  "en": "Two years of teaching yourself. Tonight you find out whether it worked.",
-  "ctx": "play:a2_trial"
- },
- {
-  "id": 3426,
-  "en": "After a year, {teacher} lays out everything the school has on a mat: a bamboo bow, a mace, a set of chariot reins, a scribe's tablet, a healer's satchel, a dark cloak, a vina. \"Pick one,\" {teacher} says. \"Then show me it was the right one.\"",
   "ctx": "play:a2_path"
  },
  {
@@ -17140,11 +14340,6 @@
   "ctx": "play:a2_path"
  },
  {
-  "id": 3430,
-  "en": "Two years of training. Today {teacher} finds out what you have learned.",
-  "ctx": "play:a2_trial"
- },
- {
   "id": 3431,
   "en": "Dvaita forest",
   "ctx": "play:a5_court_raid"
@@ -17153,11 +14348,6 @@
   "id": 3432,
   "en": "Dhrishtadyumna names an array and shows it to you once. Then your company comes onto the field, unit by unit: put each on its mark before the drum stops. Then the enemy tests a flank, and you send the reserve.",
   "ctx": "play:a6_eve"
- },
- {
-  "id": 3433,
-  "en": "Dhrishtadyumna has not given your company away yet. He will watch you set it once more, and then he will decide.",
-  "ctx": "play:a6_eve_again"
  },
  {
   "id": 3434,
@@ -17178,11 +14368,6 @@
   "id": 3437,
   "en": "Bhishma names an array and shows it to you once. Then your company comes onto the field, unit by unit: put each on its mark before the drum stops. Then the enemy tests a flank, and you send the reserve. He has just refused Karna a place under him. He will not be kinder to you.",
   "ctx": "play:a6_eve"
- },
- {
-  "id": 3438,
-  "en": "Bhishma has not given your company away yet. He will watch you set it once more, and then he will decide.",
-  "ctx": "play:a6_eve_again"
  },
  {
   "id": 3439,
@@ -17335,38 +14520,13 @@
   "ctx": "ability"
  },
  {
-  "id": 3469,
-  "en": "+1 attack in every fight, and one more once you have held firm in a deadly fight.",
-  "ctx": "world:VOWS"
- },
- {
-  "id": 3470,
-  "en": "Bhima and Karna turn from you, your company is shaken in its next fight, and the extra strength is lost for good.",
-  "ctx": "world:VOWS"
- },
- {
   "id": 3471,
   "en": "your company will be shaken",
   "ctx": "world:VOWS"
  },
  {
-  "id": 3472,
-  "en": "\"My word\": once in each part of your life, a court believes you without a test. +1 when you persuade honestly.",
-  "ctx": "world:VOWS"
- },
- {
-  "id": 3473,
-  "en": "Yudhishthira and Vidura turn from you, \"My word\" is gone, and once, at the worst moment, your chariot wheel will stick in the earth.",
-  "ctx": "world:VOWS"
- },
- {
   "id": 3474,
   "en": "your chariot wheel will stick at the worst moment",
-  "ctx": "world:VOWS"
- },
- {
-  "id": 3475,
-  "en": "Karna answers your call in battle, even across the lines (to stand off your enemies, never against his brothers).",
   "ctx": "world:VOWS"
  },
  {
@@ -17380,28 +14540,8 @@
   "ctx": "world:VOWS"
  },
  {
-  "id": 3478,
-  "en": "Foes you spare may one day return the favour; common people warn you of ambushes (+1 stealth).",
-  "ctx": "world:VOWS"
- },
- {
-  "id": 3479,
-  "en": "Arjuna and Charu turn from you, and a divine weapon given on this condition is taken back.",
-  "ctx": "world:VOWS"
- },
- {
   "id": 3480,
   "en": "a weapon given on this condition is lost",
-  "ctx": "world:VOWS"
- },
- {
-  "id": 3481,
-  "en": "+1 Wisdom, and Bhishma's blessing before the war (+1 defence in battle).",
-  "ctx": "world:VOWS"
- },
- {
-  "id": 3482,
-  "en": "Bhishma withholds his blessing, and the Wisdom point is lost.",
   "ctx": "world:VOWS"
  },
  {
@@ -17463,16 +14603,6 @@
   "id": 3494,
   "en": "Hold to move your hand right; let go and it drifts back. Keep it on the horse's head as it shies.",
   "ctx": "scene:a1_friend"
- },
- {
-  "id": 3495,
-  "en": "A festival drum has maddened one of the chariot horses, and Karna is trying to hold it. \"Help me,\" he says. Keep your hand on the horse's head until it is calm.",
-  "ctx": "scene:a1_friend"
- },
- {
-  "id": 3496,
-  "en": "He has killed everyone who stood in front of him today",
-  "ctx": "scene:a6_day13"
  },
  {
   "id": 3497,
@@ -17550,11 +14680,6 @@
   "ctx": "scene:v_word"
  },
  {
-  "id": 3512,
-  "en": "Tell the court only what you saw, and keep your friend out of it",
-  "ctx": "scene:v_word"
- },
- {
   "id": 3513,
   "en": "You tell the truth, all of it that you saw, and nothing more. The court is satisfied. Your friend's name is never spoken.",
   "ctx": "scene:v_word"
@@ -17570,11 +14695,6 @@
   "ctx": "scene:v_word"
  },
  {
-  "id": 3516,
-  "en": "Refuse. You will not lie, not even for a friend",
-  "ctx": "scene:v_word"
- },
- {
   "id": 3517,
   "en": "A camp in the forest",
   "ctx": "scene:v_hold"
@@ -17585,28 +14705,8 @@
   "ctx": "scene:v_hold"
  },
  {
-  "id": 3519,
-  "en": "Raiders come over the river at dusk, more of them than anyone counted. {friend} takes a spear in the thigh and goes down beside you.",
-  "ctx": "scene:v_hold"
- },
- {
-  "id": 3520,
-  "en": "\"Fall back to the trees,\" {friend} gasps. \"Carry me. We can hold them at the trees.\" Falling back is the one thing you swore you would never do.",
-  "ctx": "scene:v_hold"
- },
- {
-  "id": 3521,
-  "en": "Carry your friend back to the trees",
-  "ctx": "scene:v_hold"
- },
- {
   "id": 3522,
   "en": "You get {friend} over your shoulder and run. At the trees you turn, and hold, and the raiders give up before dark. Your vow is broken, and your friend is alive.",
-  "ctx": "scene:v_hold"
- },
- {
-  "id": 3523,
-  "en": "Hold the crossing, and shout for someone else to carry your friend",
   "ctx": "scene:v_hold"
  },
  {
@@ -17622,11 +14722,6 @@
  {
   "id": 3526,
   "en": "A test of might",
-  "ctx": "scene:v_hold"
- },
- {
-  "id": 3527,
-  "en": "Stand over your friend and fight where you are",
   "ctx": "scene:v_hold"
  },
  {
@@ -17650,38 +14745,13 @@
   "ctx": "scene:v_captive"
  },
  {
-  "id": 3532,
-  "en": "A spy is caught at the edge of the camp, a boy hardly older than you were when you first held a bow. He has seen where everyone sleeps.",
-  "ctx": "scene:v_captive"
- },
- {
-  "id": 3533,
-  "en": "{friend} draws you aside. \"If he gets back to his masters, we are all dead by the new moon,\" {friend} says. \"It has to be done, and it has to be you. The men will not do it.\"",
-  "ctx": "scene:v_captive"
- },
- {
-  "id": 3534,
-  "en": "Do it, quickly, while he is bound",
-  "ctx": "scene:v_captive"
- },
- {
   "id": 3535,
   "en": "It is quick. It is not clean. You wash your hands in the river for a long time, and they do not feel washed.",
   "ctx": "scene:v_captive"
  },
  {
-  "id": 3536,
-  "en": "Cut his bonds and let him run",
-  "ctx": "scene:v_captive"
- },
- {
   "id": 3537,
   "en": "The boy runs. You break camp before dawn and move everyone to the far side of the hills. {friend} does not speak to you for three days.",
-  "ctx": "scene:v_captive"
- },
- {
-  "id": 3538,
-  "en": "Keep him bound, and carry him with you until it no longer matters",
   "ctx": "scene:v_captive"
  },
  {
@@ -17710,18 +14780,8 @@
   "ctx": "scene:v_penance"
  },
  {
-  "id": 3544,
-  "en": "Do the penance, the whole season of it",
-  "ctx": "scene:v_penance"
- },
- {
   "id": 3545,
   "en": "You come down out of the hills thinner, quieter, and lighter in some way you could not explain. People look at you differently. Some of them, at least.",
-  "ctx": "scene:v_penance"
- },
- {
-  "id": 3546,
-  "en": "Go back down. There is no time",
   "ctx": "scene:v_penance"
  },
  {
@@ -17770,16 +14830,6 @@
   "ctx": "scene:v_mend"
  },
  {
-  "id": 3556,
-  "en": "Your grace suits the reins.",
-  "ctx": "play:a2_path"
- },
- {
-  "id": 3557,
-  "en": "Your grace suits the dark cloak.",
-  "ctx": "play:a2_path"
- },
- {
   "id": 3558,
   "en": "your company",
   "ctx": "play:a2_vow"
@@ -17823,21 +14873,6 @@
   "id": 3566,
   "en": "The wrong {they} swore to answer was never answered. It is the part of the story the tellers say quickly, and look away.",
   "ctx": "play:end_life"
- },
- {
-  "id": 3567,
-  "en": "Your might suits the mace.",
-  "ctx": "play:a2_path"
- },
- {
-  "id": 3568,
-  "en": "Your wisdom suits the healer's satchel.",
-  "ctx": "play:a2_path"
- },
- {
-  "id": 3569,
-  "en": "Your wisdom suits the vina.",
-  "ctx": "play:a2_path"
  },
  {
   "id": 3570,
@@ -17888,16 +14923,6 @@
   "id": 3579,
   "en": "{They} lost {who}'s friendship, and never found the way back.",
   "ctx": "play:end_life"
- },
- {
-  "id": 3580,
-  "en": "A granary steward is accused of selling the king's grain, and the night it went missing {friend} was with him, at a dice table no one is supposed to know about. If the court asks where the steward was, {friend}'s name comes out with his.",
-  "ctx": "play:v_word"
- },
- {
-  "id": 3581,
-  "en": "{friend} takes your arm in the corridor before the hearing. \"Say he was with you,\" {friend} whispers. \"They will believe you. Everyone knows you never lie.\"",
-  "ctx": "play:v_word"
  },
  {
   "id": 3582,
@@ -17968,11 +14993,6 @@
   "id": 3595,
   "en": "You shout for help. In the roar of the wheel no one you trust is near enough to hear.",
   "ctx": "play:a6_day13"
- },
- {
-  "id": 3596,
-  "en": "Your aim suits the bow.",
-  "ctx": "play:a2_path"
  },
  {
   "id": 3597,
@@ -18875,11 +15895,6 @@
   "ctx": "scene:v_ford"
  },
  {
-  "id": 3777,
-  "en": "Duryodhana's men come raiding for cattle at the end of the hidden year, and you are caught up in the fighting at a ford. Karna's chariot is stuck halfway across, the water to its axles, and he has his back to you.",
-  "ctx": "scene:v_ford"
- },
- {
   "id": 3778,
   "en": "\"Now!\" {friend} shouts. \"He will never be this open again. Loose!\"",
   "ctx": "scene:v_ford"
@@ -18892,11 +15907,6 @@
  {
   "id": 3780,
   "en": "Your arrow takes him in the shoulder. He turns in the water and looks straight at you, and you will see that look for the rest of your life.",
-  "ctx": "scene:v_ford"
- },
- {
-  "id": 3781,
-  "en": "Loose at his banner instead, and let him go",
   "ctx": "scene:v_ford"
  },
  {
@@ -18975,11 +15985,6 @@
   "ctx": "scene:cmd_promotion_1"
  },
  {
-  "id": 3797,
-  "en": "Ask to stay with your company",
-  "ctx": "scene:cmd_promotion_1"
- },
- {
   "id": 3798,
   "en": "\"Your company, then,\" he says. \"Keep them alive.\" You intend to.",
   "ctx": "scene:cmd_promotion_1"
@@ -19015,11 +16020,6 @@
   "ctx": "scene:cmd_promotion_2"
  },
  {
-  "id": 3805,
-  "en": "Stand at the back, as an officer should",
-  "ctx": "scene:cmd_promotion_2"
- },
- {
   "id": 3806,
   "en": "You stand at the back with the other officers. Later you will wonder what you might have said.",
   "ctx": "scene:cmd_promotion_2"
@@ -19037,31 +16037,6 @@
  {
   "id": 3809,
   "en": "Your part of the line",
-  "ctx": "scene:cmd_array_1"
- },
- {
-  "id": 3810,
-  "en": "At dawn the commander rides along the line naming the day's array to each division officer in turn. He reaches you, names it, points at your stretch of the field, and rides on.",
-  "ctx": "scene:cmd_array_1"
- },
- {
-  "id": 3811,
-  "en": "Three companies, and the morning to put them where they belong.",
-  "ctx": "scene:cmd_array_1"
- },
- {
-  "id": 3812,
-  "en": "Set your division in the day's array",
-  "ctx": "scene:cmd_array_1"
- },
- {
-  "id": 3813,
-  "en": "The orders are yours today",
-  "ctx": "scene:cmd_array_1"
- },
- {
-  "id": 3814,
-  "en": "The commander names the array and points at your part of the line. Put your companies on its marks. Then, round by round, the enemy pushes: hold, strike their flank, give ground, or send the reserve where they strike.",
   "ctx": "scene:cmd_array_1"
  },
  {
@@ -19095,11 +16070,6 @@
   "ctx": "scene:cmd_array_1"
  },
  {
-  "id": 3821,
-  "en": "Let a senior officer set it, and fight in the line",
-  "ctx": "scene:cmd_array_1"
- },
- {
   "id": 3822,
   "en": "An older officer sets your division in the array. You take your place in it, like anyone.",
   "ctx": "scene:cmd_array_1"
@@ -19112,16 +16082,6 @@
  {
   "id": 3824,
   "en": "The line after the night",
-  "ctx": "scene:cmd_array_2"
- },
- {
-  "id": 3825,
-  "en": "The army that fought by torchlight is grey with tiredness. The commander names the array anyway, and points at your stretch of the field.",
-  "ctx": "scene:cmd_array_2"
- },
- {
-  "id": 3826,
-  "en": "The men you set today have not slept.",
   "ctx": "scene:cmd_array_2"
  },
  {
@@ -19142,31 +16102,6 @@
  {
   "id": 3830,
   "en": "Karna's chariot",
-  "ctx": "scene:hold_karna_offer"
- },
- {
-  "id": 3831,
-  "en": "On the sixteenth day Karna commands the Kaurava army, and his chariot goes where it likes. Dhrishtadyumna wants it kept on one stretch of road until sunset, so that the king's wing can withdraw.",
-  "ctx": "scene:hold_karna_offer"
- },
- {
-  "id": 3832,
-  "en": "He does not say anyone will survive it. He asks whose division it will be.",
-  "ctx": "scene:hold_karna_offer"
- },
- {
-  "id": 3833,
-  "en": "Hold them, with your division",
-  "ctx": "scene:hold_karna_offer"
- },
- {
-  "id": 3834,
-  "en": "Won by standing, not by killing",
-  "ctx": "scene:hold_karna_offer"
- },
- {
-  "id": 3835,
-  "en": "Ask that another division take it",
   "ctx": "scene:hold_karna_offer"
  },
  {
@@ -19235,16 +16170,6 @@
   "ctx": "scene:hold_duryodhana_offer"
  },
  {
-  "id": 3849,
-  "en": "Duryodhana's division has found Yudhishthira's flank. The king must be got away, and someone must stand on the flank while it happens.",
-  "ctx": "scene:hold_duryodhana_offer"
- },
- {
-  "id": 3850,
-  "en": "Eight rounds, Dhrishtadyumna says. Eight rounds, and the king is gone.",
-  "ctx": "scene:hold_duryodhana_offer"
- },
- {
   "id": 3851,
   "en": "You fall back. Others close the flank, late.",
   "ctx": "fight:hold_duryodhana"
@@ -19292,16 +16217,6 @@
  {
   "id": 3860,
   "en": "Arjuna's chariot",
-  "ctx": "scene:hold_arjuna_offer"
- },
- {
-  "id": 3861,
-  "en": "Arjuna's white horses are turning toward your part of the line. Drona's order comes down the line ahead of them: stand, and keep standing, until something draws him away.",
-  "ctx": "scene:hold_arjuna_offer"
- },
- {
-  "id": 3862,
-  "en": "Nobody who has stood in front of that chariot has told anyone what it was like.",
   "ctx": "scene:hold_arjuna_offer"
  },
  {
@@ -19360,16 +16275,6 @@
   "ctx": "scene:hold_bhima_offer"
  },
  {
-  "id": 3874,
-  "en": "Bhima is coming across the field toward the Kaurava princes, and your division is in the way. Karna, who commands now, sends one word: hold.",
-  "ctx": "scene:hold_bhima_offer"
- },
- {
-  "id": 3875,
-  "en": "Seven rounds, the runner says. Then he looks at your company, and does not say anything else.",
-  "ctx": "scene:hold_bhima_offer"
- },
- {
   "id": 3876,
   "en": "You fall back before the charge reaches you. The men who stayed do not.",
   "ctx": "fight:hold_bhima"
@@ -19425,16 +16330,6 @@
   "ctx": "scene:hold_broken"
  },
  {
-  "id": 3887,
-  "en": "The line is gone. Your company is gone, or scattered, or lying where it stood. The champion's banner is already moving on to the next stretch of the field.",
-  "ctx": "scene:hold_broken"
- },
- {
-  "id": 3888,
-  "en": "There is a moment, no longer, in which you can still choose what happens to you.",
-  "ctx": "scene:hold_broken"
- },
- {
   "id": 3889,
   "en": "Fall back with the wounded",
   "ctx": "scene:hold_broken"
@@ -19485,11 +16380,6 @@
   "ctx": "scene:hold_broken"
  },
  {
-  "id": 3899,
-  "en": "This is the end of the story",
-  "ctx": "scene:hold_broken"
- },
- {
   "id": 3900,
   "en": "The council tent, after the night of torches",
   "ctx": "scene:cmd_council_1"
@@ -19505,38 +16395,13 @@
   "ctx": "scene:cmd_council_1"
  },
  {
-  "id": 3903,
-  "en": "The council sits late. Tomorrow's array is argued over, and then someone asks where your division will stand.",
-  "ctx": "scene:cmd_council_1"
- },
- {
-  "id": 3904,
-  "en": "You may ask for the flank where the enemy's chariots come, or the one where their divisions press. The council will give you what you ask.",
-  "ctx": "scene:cmd_council_1"
- },
- {
-  "id": 3905,
-  "en": "The flank where their chariots come",
-  "ctx": "scene:cmd_council_1"
- },
- {
   "id": 3906,
   "en": "\"The chariots, then,\" the commander says, and writes nothing down, because he does not need to.",
   "ctx": "scene:cmd_council_1"
  },
  {
-  "id": 3907,
-  "en": "The flank where their divisions press",
-  "ctx": "scene:cmd_council_1"
- },
- {
   "id": 3908,
   "en": "\"The divisions, then.\" Someone at the far end of the tent lets out a breath he had been holding.",
-  "ctx": "scene:cmd_council_1"
- },
- {
-  "id": 3909,
-  "en": "Argue for a truce at dusk, to gather the dead",
   "ctx": "scene:cmd_council_1"
  },
  {
@@ -19560,18 +16425,8 @@
   "ctx": "scene:cmd_council_2"
  },
  {
-  "id": 3914,
-  "en": "Counsel whatever ends the war soonest",
-  "ctx": "scene:cmd_council_2"
- },
- {
   "id": 3915,
   "en": "You say it. The commander nods. It is what he wanted to hear.",
-  "ctx": "scene:cmd_council_2"
- },
- {
-  "id": 3916,
-  "en": "Say nothing. It is not your council",
   "ctx": "scene:cmd_council_2"
  },
  {
@@ -19597,11 +16452,6 @@
  {
   "id": 3921,
   "en": "\"Everything,\" you say. The commander counts the word.",
-  "ctx": "scene:cmd_council_3"
- },
- {
-  "id": 3922,
-  "en": "Keep the army whole for what comes after",
   "ctx": "scene:cmd_council_3"
  },
  {
@@ -20185,26 +17035,6 @@
   "ctx": "scene:a3_fuse"
  },
  {
-  "id": 4039,
-  "en": "The feast is over. Kunti and her sons are asleep upstairs, and so are the Nishada woman and her five sons, who drank what was given them. In the cellar, Purochana's oil lines run from the door to every sleeping room.",
-  "ctx": "scene:a3_fuse"
- },
- {
-  "id": 4040,
-  "en": "He means to light them tonight. The fire will come whatever you do. What you do before it comes is yours.",
-  "ctx": "scene:a3_fuse"
- },
- {
-  "id": 4041,
-  "en": "Go down to the cellar and cut the oil lines",
-  "ctx": "scene:a3_fuse"
- },
- {
-  "id": 4042,
-  "en": "Purochana's guard walks the cellar with a lamp. Choose a line and hold to cut it while the light is away; caught in the light, let go. Cut two of the three before the guard has seen you twice.",
-  "ctx": "scene:a3_fuse"
- },
- {
   "id": 4043,
   "en": "Every line cut slows the fire tonight, and the Pandavas will owe you.",
   "ctx": "scene:a3_fuse"
@@ -20235,18 +17065,8 @@
   "ctx": "scene:a3_fuse"
  },
  {
-  "id": 4049,
-  "en": "Tell Yudhishthira plainly what is in the walls, and that it is tonight",
-  "ctx": "scene:a3_fuse"
- },
- {
   "id": 4050,
   "en": "Yudhishthira listens without surprise. \"Vidura told me in a riddle,\" he says. \"You have told me in plain words. We will not forget either.\"",
-  "ctx": "scene:a3_fuse"
- },
- {
-  "id": 4051,
-  "en": "Say nothing. Your family lives under Duryodhana's hand",
   "ctx": "scene:a3_fuse"
  },
  {
@@ -20270,21 +17090,6 @@
   "ctx": "scene:a3_fire"
  },
  {
-  "id": 4056,
-  "en": "The house of lac burns on the last night of the festival. Kunti and the Pandavas go down into the tunnel and out into the forest. Purochana dies in his own fire.",
-  "ctx": "scene:a3_fire"
- },
- {
-  "id": 4057,
-  "en": "The way through the burning rooms",
-  "ctx": "scene:a3_fire"
- },
- {
-  "id": 4058,
-  "en": "The fire comes from Purochana's side, room by room, with the smoke ahead of it. Move through the doors to the storeroom, where the tunnel mouth is. Some doors are stuck: hold to force them. Sleepers can be woken and carried, and each one slows you.",
-  "ctx": "scene:a3_fire"
- },
- {
   "id": 4059,
   "en": "You reach the tunnel, and whoever you carried comes with you.",
   "ctx": "scene:a3_fire"
@@ -20302,11 +17107,6 @@
  {
   "id": 4062,
   "en": "You come through the last room with your sleeve alight. Whoever was on your back is not there when you drop into the dark, and you cannot go back.",
-  "ctx": "scene:a3_fire"
- },
- {
-  "id": 4063,
-  "en": "Stay with the sleepers and keep shaking them",
   "ctx": "scene:a3_fire"
  },
  {
@@ -20335,11 +17135,6 @@
   "ctx": "scene:a3_fire"
  },
  {
-  "id": 4069,
-  "en": "Ask the sages for the mantras against hunger and weariness",
-  "ctx": "scene:a5_forest_boon"
- },
- {
   "id": 4070,
   "en": "Needs {n} tapas",
   "ctx": "scene:a5_forest_boon"
@@ -20360,11 +17155,6 @@
   "ctx": "scene:a5_forest_boon"
  },
  {
-  "id": 4074,
-  "en": "Ask the sages to lift the curse on you",
-  "ctx": "scene:a5_forest_boon"
- },
- {
   "id": 4075,
   "en": "Needs a curse to lift, and 6 tapas.",
   "ctx": "scene:a5_forest_boon"
@@ -20377,11 +17167,6 @@
  {
   "id": 4077,
   "en": "Seven nights of fire and fasting. On the last morning the oldest sage pours water over your head and says the thing that was waiting for you is waiting no longer.",
-  "ctx": "scene:a5_forest_boon"
- },
- {
-  "id": 4078,
-  "en": "Stay a whole year in the sage's service, and let the camp go on without you",
   "ctx": "scene:a5_forest_boon"
  },
  {
@@ -20422,11 +17207,6 @@
  {
   "id": 4086,
   "en": "The Soma",
-  "ctx": "scene:w_soma"
- },
- {
-  "id": 4087,
-  "en": "Before the great sacrifice the priests press the Soma, and a cup of it is offered to those who have kept their vows. One of them holds a cup out to you.",
   "ctx": "scene:w_soma"
  },
  {
@@ -20480,11 +17260,6 @@
   "ctx": "scene:w_eve"
  },
  {
-  "id": 4098,
-  "en": "The night before the first arrow, the camp does the small things: threads are tied, blessings asked, letters written that may not be sent.",
-  "ctx": "scene:w_eve"
- },
- {
   "id": 4099,
   "en": "Once, outside battle, it turns a death into a wound",
   "ctx": "scene:w_eve"
@@ -20525,21 +17300,6 @@
   "ctx": "scene:w_fire"
  },
  {
-  "id": 4107,
-  "en": "Arjuna has gone north for weapons. A sage at the hermitage tells you there is a smaller road: a fire altar on the hill above, where those who can sit still through a season of storms are sometimes answered.",
-  "ctx": "scene:w_fire"
- },
- {
-  "id": 4108,
-  "en": "It is the rains. The altar is open to the sky.",
-  "ctx": "scene:w_fire"
- },
- {
-  "id": 4109,
-  "en": "Sit at the altar and keep the fire alive through the storms",
-  "ctx": "scene:w_fire"
- },
- {
   "id": 4110,
   "en": "A long test of stillness",
   "ctx": "scene:w_fire"
@@ -20570,11 +17330,6 @@
   "ctx": "scene:w_fire"
  },
  {
-  "id": 4116,
-  "en": "A fire altar on a bare hill, and the rains coming. Keep your hands around the flame as the gusts push it: hold to shield it, let go when the wind drops. If it goes out, the season is lost.",
-  "ctx": "scene:w_fire"
- },
- {
   "id": 4117,
   "en": "On the last night, a voice in the fire gives you the Agneyastra.",
   "ctx": "scene:w_fire"
@@ -20595,11 +17350,6 @@
   "ctx": "scene:w_fire"
  },
  {
-  "id": 4121,
-  "en": "Stay with the camp. Someone has to hunt",
-  "ctx": "scene:w_fire"
- },
- {
   "id": 4122,
   "en": "A deep lake in the hills",
   "ctx": "scene:w_dive"
@@ -20615,16 +17365,6 @@
   "ctx": "scene:w_dive"
  },
  {
-  "id": 4125,
-  "en": "An old sage sits by a lake that no one fishes. His golden vessel, the one he pours the morning offering from, slipped from his hands into the deep water a month ago, and he has not eaten since.",
-  "ctx": "scene:w_dive"
- },
- {
-  "id": 4126,
-  "en": "The lake is cold and very deep, and something moves the water at the bottom.",
-  "ctx": "scene:w_dive"
- },
- {
   "id": 4127,
   "en": "Dive for the offering",
   "ctx": "scene:w_dive"
@@ -20632,11 +17372,6 @@
  {
   "id": 4128,
   "en": "A test of breath",
-  "ctx": "scene:w_dive"
- },
- {
-  "id": 4129,
-  "en": "The sage's golden vessel lies on the lake bed, and the current moves it. Hold to dive and let go to rise; reach the glow before your breath runs out, and surface before it is gone. Three dives: bring it up on two.",
   "ctx": "scene:w_dive"
  },
  {
@@ -20660,11 +17395,6 @@
   "ctx": "scene:w_dive"
  },
  {
-  "id": 4134,
-  "en": "Leave him food, and go on",
-  "ctx": "scene:w_dive"
- },
- {
   "id": 4135,
   "en": "The foot of the high mountains",
   "ctx": "scene:w_climb"
@@ -20677,11 +17407,6 @@
  {
   "id": 4137,
   "en": "The hermit of the heights",
-  "ctx": "scene:w_climb"
- },
- {
-  "id": 4138,
-  "en": "In the last year of the forest a herdsman tells you of a hermit who lives above the snow, who knows the mantra of the wind and gives it to no one, because no one comes.",
   "ctx": "scene:w_climb"
  },
  {
@@ -20715,11 +17440,6 @@
   "ctx": "scene:w_climb"
  },
  {
-  "id": 4145,
-  "en": "A path up through snow to a hermitage no one has reached in years. Rocks come down it, and the ice gives way. Three falls and you turn back.",
-  "ctx": "scene:w_climb"
- },
- {
   "id": 4146,
   "en": "The hermit of the heights gives you the Vayavyastra. Nearly there, a sanjivani root on a ledge.",
   "ctx": "scene:w_climb"
@@ -20750,11 +17470,6 @@
   "ctx": "scene:w_climb"
  },
  {
-  "id": 4152,
-  "en": "It is too late in the year. Go on",
-  "ctx": "scene:w_climb"
- },
- {
   "id": 4153,
   "en": "A pool at the edge of the Dvaita forest",
   "ctx": "scene:w_riddle"
@@ -20767,11 +17482,6 @@
  {
   "id": 4155,
   "en": "The Gandharva at the pool",
-  "ctx": "scene:w_riddle"
- },
- {
-  "id": 4156,
-  "en": "Riding the forest's edge on the court's business, you stop at a pool to drink, and a voice in the branches tells you that you may not, yet.",
   "ctx": "scene:w_riddle"
  },
  {
@@ -20840,11 +17550,6 @@
   "ctx": "scene:w_riddle"
  },
  {
-  "id": 4170,
-  "en": "The Gandharva sits in the branches above the pool and will not let you drink until you have answered him. Three riddles; answer before the lamp burns down. Two right of three.",
-  "ctx": "scene:w_riddle"
- },
- {
   "id": 4171,
   "en": "He gives you the mantra of sleep, laughing.",
   "ctx": "scene:w_riddle"
@@ -20885,11 +17590,6 @@
   "ctx": "scene:w_naga"
  },
  {
-  "id": 4179,
-  "en": "Coming down to the river at dusk you find a man on the bank with an arrow through his shoulder, and eyes that are not quite a man's. The naga folk do not come out of the water. This one has.",
-  "ctx": "scene:w_naga"
- },
- {
   "id": 4180,
   "en": "Draw the arrow and dress the wound",
   "ctx": "scene:w_naga"
@@ -20915,11 +17615,6 @@
   "ctx": "scene:w_naga"
  },
  {
-  "id": 4185,
-  "en": "A man of the naga folk lies on the bank with a hunter's arrow through his shoulder, and he does not trust your hands. Keep your hand steady on the wound as he flinches: hold to press, let go when he pulls away.",
-  "ctx": "scene:w_naga"
- },
- {
   "id": 4186,
   "en": "He gives you the serpent-noose for it.",
   "ctx": "scene:w_naga"
@@ -20940,11 +17635,6 @@
   "ctx": "scene:w_naga"
  },
  {
-  "id": 4190,
-  "en": "Leave him. The river people look after their own",
-  "ctx": "scene:w_naga"
- },
- {
   "id": 4191,
   "en": "A village temple on the road to Matsya",
   "ctx": "scene:w_offering"
@@ -20957,21 +17647,6 @@
  {
   "id": 4193,
   "en": "The stolen offering",
-  "ctx": "scene:w_offering"
- },
- {
-  "id": 4194,
-  "en": "On the road to Matsya you sleep in a village whose temple lamp was carried off by a robber band in the spring. The priest does not ask you for anything. He only looks at the empty hook.",
-  "ctx": "scene:w_offering"
- },
- {
-  "id": 4195,
-  "en": "Go into the robber chief's house by night and bring it back",
-  "ctx": "scene:w_offering"
- },
- {
-  "id": 4196,
-  "en": "The temple's golden lamp hangs in the robber chief's own room. His men keep watch with torches. Cross the house twice, in and out, and do not be seen twice.",
   "ctx": "scene:w_offering"
  },
  {
@@ -20995,11 +17670,6 @@
   "ctx": "scene:w_offering"
  },
  {
-  "id": 4201,
-  "en": "Give the priest a coin, and sleep",
-  "ctx": "scene:w_offering"
- },
- {
   "id": 4202,
   "en": "High in the mountains",
   "ctx": "scene:w_mountain"
@@ -21012,16 +17682,6 @@
  {
   "id": 4204,
   "en": "The light on the mountain",
-  "ctx": "scene:w_mountain"
- },
- {
-  "id": 4205,
-  "en": "Arjuna came back from the north with weapons from the gods, and will not say much about it. A sage of the camp tells you that there is a place on the mountain where a light stands at dusk, with no lamp in it, and those who stand in it are sometimes given something, and sometimes only frightened.",
-  "ctx": "scene:w_mountain"
- },
- {
-  "id": 4206,
-  "en": "Climb to the light, and stand in it",
   "ctx": "scene:w_mountain"
  },
  {
@@ -21055,11 +17715,6 @@
   "ctx": "scene:w_mountain"
  },
  {
-  "id": 4213,
-  "en": "A light on the mountain, with no lamp in it, and a voice with no one speaking. Stand in it and do not move: hold to keep still as the cold and the fear push you. No one has told you what is in there.",
-  "ctx": "scene:w_mountain"
- },
- {
   "id": 4214,
   "en": "Something is given to you: a weapon, or a kavacha against one death in the war.",
   "ctx": "scene:w_mountain"
@@ -21080,11 +17735,6 @@
   "ctx": "scene:w_mountain"
  },
  {
-  "id": 4218,
-  "en": "Some things are not for you. Stay below",
-  "ctx": "scene:w_mountain"
- },
- {
   "id": 4219,
   "en": "The camp, the night after the last day",
   "ctx": "scene:w_brahmastra"
@@ -21097,16 +17747,6 @@
  {
   "id": 4221,
   "en": "The mantra no one should hold",
-  "ctx": "scene:w_brahmastra"
- },
- {
-  "id": 4222,
-  "en": "An old brahmin of the camp, whose sons are all dead, finds you in the dark with a palm-leaf scroll. \"It was given to Drona's son tonight, as it was given to him,\" he says. \"The Brahmastra. The weapon that ends everything it is pointed at, and the one who points it, slower. I can give it to you too. You have the merit to hold it.\"",
-  "ctx": "scene:w_brahmastra"
- },
- {
-  "id": 4223,
-  "en": "He is not lying. You can feel it in the scroll, like heat.",
   "ctx": "scene:w_brahmastra"
  },
  {
@@ -21150,16 +17790,6 @@
   "ctx": "scene:ep_sibling"
  },
  {
-  "id": 4232,
-  "en": "In most houses there is someone a few years older who went first: first to the river, first to the drills, first to be shouted at. Was there one in yours?",
-  "ctx": "scene:ep_sibling"
- },
- {
-  "id": 4233,
-  "en": "A brother, Dev, three years older, who lets you follow him everywhere",
-  "ctx": "scene:ep_sibling"
- },
- {
   "id": 4234,
   "en": "You followed me everywhere when you were six.",
   "ctx": "scene:ep_sibling"
@@ -21167,11 +17797,6 @@
  {
   "id": 4235,
   "en": "Dev pretends to mind. Dev never once sends you home.",
-  "ctx": "scene:ep_sibling"
- },
- {
-  "id": 4236,
-  "en": "A sister, Devi, four years older, who taught you to swim by pushing you in",
   "ctx": "scene:ep_sibling"
  },
  {
@@ -21185,11 +17810,6 @@
   "ctx": "scene:ep_sibling"
  },
  {
-  "id": 4239,
-  "en": "No one. You were the eldest, or the only one",
-  "ctx": "scene:ep_sibling"
- },
- {
   "id": 4240,
   "en": "The morning before the princes' tournament",
   "ctx": "scene:ep_ugra_tournament"
@@ -21200,18 +17820,8 @@
   "ctx": "scene:ep_ugra_tournament"
  },
  {
-  "id": 4242,
-  "en": "Step into the dust with him, here and now",
-  "ctx": "scene:ep_ugra_tournament"
- },
- {
   "id": 4243,
   "en": "A wrestling bout",
-  "ctx": "scene:ep_ugra_tournament"
- },
- {
-  "id": 4244,
-  "en": "Ugra plants his feet in the dust where the horses are watered. Push as the ring meets the mark. Three good pushes win; three slips lose.",
   "ctx": "scene:ep_ugra_tournament"
  },
  {
@@ -21235,18 +17845,8 @@
   "ctx": "scene:ep_ugra_tournament"
  },
  {
-  "id": 4249,
-  "en": "Ask him what a miller's son is doing at the princes' tournament",
-  "ctx": "scene:ep_ugra_tournament"
- },
- {
   "id": 4250,
   "en": "\"Holding horses,\" he says. \"And watching. Someone has to see how the princes fight, for when we have to fight them.\" He says it lightly. He does not mean it lightly.",
-  "ctx": "scene:ep_ugra_tournament"
- },
- {
-  "id": 4251,
-  "en": "Walk past him. You have a tournament to watch",
   "ctx": "scene:ep_ugra_tournament"
  },
  {
@@ -21275,23 +17875,8 @@
   "ctx": "scene:ep_mentor_vidura"
  },
  {
-  "id": 4257,
-  "en": "\"{friend} is close to you,\" he says. \"Closer than to anyone. I need to know what {friend} says when the court is not listening: who is spoken to, what is promised. For the kingdom's sake. You would be doing nothing wrong.\" He does not quite meet your eyes when he says the last part.",
-  "ctx": "scene:ep_mentor_vidura"
- },
- {
-  "id": 4258,
-  "en": "Do as he asks, and report what your friend says",
-  "ctx": "scene:ep_mentor_vidura"
- },
- {
   "id": 4259,
   "en": "You carry Vidura what you hear, a little at a time. {friend} never finds out. You find that you cannot look at {friend} for very long.",
-  "ctx": "scene:ep_mentor_vidura"
- },
- {
-  "id": 4260,
-  "en": "Tell him you will listen, and then tell him nothing he does not already know",
   "ctx": "scene:ep_mentor_vidura"
  },
  {
@@ -21302,11 +17887,6 @@
  {
   "id": 4262,
   "en": "Vidura sees through it in a week. \"If you would not do it, you should have said so,\" he says, and it is the only time he is ever cold with you.",
-  "ctx": "scene:ep_mentor_vidura"
- },
- {
-  "id": 4263,
-  "en": "Refuse him to his face",
   "ctx": "scene:ep_mentor_vidura"
  },
  {
@@ -21325,16 +17905,6 @@
   "ctx": "scene:ep_mentor_kripa"
  },
  {
-  "id": 4267,
-  "en": "Before the game begins, Kripa finds you by the pillars. He has served the Kuru throne all his life, and he will serve it to the end, whatever it does.",
-  "ctx": "scene:ep_mentor_kripa"
- },
- {
-  "id": 4268,
-  "en": "Whatever happens in this hall today, the throne is in the right, because it is the throne. If anyone asks you afterwards, that is what you will say. Swear it to me.",
-  "ctx": "scene:ep_mentor_kripa"
- },
- {
   "id": 4269,
   "en": "Swear it",
   "ctx": "scene:ep_mentor_kripa"
@@ -21342,11 +17912,6 @@
  {
   "id": 4270,
   "en": "You swear it. An hour later you watch what the throne does, and the oath sits in your mouth like a stone.",
-  "ctx": "scene:ep_mentor_kripa"
- },
- {
-  "id": 4271,
-  "en": "Tell him you will say what you see",
   "ctx": "scene:ep_mentor_kripa"
  },
  {
@@ -21370,21 +17935,6 @@
   "ctx": "scene:ep_mentor_peace"
  },
  {
-  "id": 4276,
-  "en": "Promise not to fight in the war",
-  "ctx": "scene:ep_mentor_peace"
- },
- {
-  "id": 4277,
-  "en": "Fight anyway, and the promise is broken",
-  "ctx": "scene:ep_mentor_peace"
- },
- {
-  "id": 4278,
-  "en": "Tell the truth: you will go where your duty takes you",
-  "ctx": "scene:ep_mentor_peace"
- },
- {
   "id": 4279,
   "en": "Hastinapura, before the war",
   "ctx": "scene:ep_secret_tell"
@@ -21397,16 +17947,6 @@
  {
   "id": 4281,
   "en": "Who to tell",
-  "ctx": "scene:ep_secret_tell"
- },
- {
-  "id": 4282,
-  "en": "You have known since you were seventeen what Karna does not: whose son he is. The war is coming. A secret kept this long starts to feel like a weapon, and weapons want to be used.",
-  "ctx": "scene:ep_secret_tell"
- },
- {
-  "id": 4283,
-  "en": "Tell Duryodhana. He should know whom he has made a king",
   "ctx": "scene:ep_secret_tell"
  },
  {
@@ -21425,11 +17965,6 @@
   "ctx": "scene:ep_secret_tell"
  },
  {
-  "id": 4287,
-  "en": "Tell Yudhishthira. He would not fight his own brother",
-  "ctx": "scene:ep_secret_tell"
- },
- {
   "id": 4288,
   "en": "Yudhishthira would need to know you.",
   "ctx": "scene:ep_secret_tell"
@@ -21440,18 +17975,8 @@
   "ctx": "scene:ep_secret_tell"
  },
  {
-  "id": 4290,
-  "en": "Go to Kunti, and tell her you know",
-  "ctx": "scene:ep_secret_tell"
- },
- {
   "id": 4291,
   "en": "Kunti does not ask how you know. \"Then you know what I am going to the river to do,\" she says. \"Pray that I am braver than I was.\"",
-  "ctx": "scene:ep_secret_tell"
- },
- {
-  "id": 4292,
-  "en": "Keep it. It was never yours",
   "ctx": "scene:ep_secret_tell"
  },
  {
@@ -21490,11 +18015,6 @@
   "ctx": "scene:ep_ugra_rise"
  },
  {
-  "id": 4300,
-  "en": "Burn it. There is a war coming",
-  "ctx": "scene:ep_ugra_rise"
- },
- {
   "id": 4301,
   "en": "You burn it, and remember every word anyway.",
   "ctx": "scene:ep_ugra_rise"
@@ -21515,11 +18035,6 @@
   "ctx": "scene:ep_sibling_side"
  },
  {
-  "id": 4305,
-  "en": "Argue, all night, to change your sibling's side",
-  "ctx": "scene:ep_sibling_side"
- },
- {
   "id": 4306,
   "en": "At dawn {who} puts the other side's colours in the fire. \"If we die, we die together, then,\" {who} says. \"Our mother will be furious.\"",
   "ctx": "scene:ep_sibling_side"
@@ -21527,11 +18042,6 @@
  {
   "id": 4307,
   "en": "{who} leaves before dawn without saying goodbye. You tell yourself there will be time afterwards.",
-  "ctx": "scene:ep_sibling_side"
- },
- {
-  "id": 4308,
-  "en": "Say nothing. There is nothing to say",
   "ctx": "scene:ep_sibling_side"
  },
  {
@@ -21547,16 +18057,6 @@
  {
   "id": 4311,
   "en": "The storm",
-  "ctx": "scene:ep_storm"
- },
- {
-  "id": 4312,
-  "en": "In the fourth year of the exile the rains come early and all at once. The camp is in a ravine, and the children are furthest from the rock shelter.",
-  "ctx": "scene:ep_storm"
- },
- {
-  "id": 4313,
-  "en": "Run for the rock shelter before the flood comes down the ravine",
   "ctx": "scene:ep_storm"
  },
  {
@@ -21585,11 +18085,6 @@
   "ctx": "scene:ep_storm"
  },
  {
-  "id": 4319,
-  "en": "The sky goes black at noon and the ravine fills. Run for the rock shelter: round the falling branches and the water coming down the gullies. Three falls and the flood has you.",
-  "ctx": "scene:ep_storm"
- },
- {
   "id": 4320,
   "en": "You reach the shelter with the camp's children, and the storm passes over you.",
   "ctx": "scene:ep_storm"
@@ -21615,11 +18110,6 @@
   "ctx": "scene:ep_storm"
  },
  {
-  "id": 4325,
-  "en": "Climb a tree with whoever is nearest and wait it out",
-  "ctx": "scene:ep_storm"
- },
- {
   "id": 4326,
   "en": "You spend the night in the branches with two children clinging to you. In the morning the camp is a riverbed. Three people are missing, and found.",
   "ctx": "scene:ep_storm"
@@ -21632,11 +18122,6 @@
  {
   "id": 4328,
   "en": "Charu drinks",
-  "ctx": "scene:ep_lake_charu"
- },
- {
-  "id": 4329,
-  "en": "While you stand with your wrong answer in your mouth, Charu, who came behind you and heard no voice at all, kneels and drinks. Charu falls face down at the water's edge and does not move.",
   "ctx": "scene:ep_lake_charu"
  },
  {
@@ -21690,11 +18175,6 @@
   "ctx": "scene:ep_lake_charu"
  },
  {
-  "id": 4340,
-  "en": "\"One of you drank without answering,\" says the voice. \"Answer for both, and both of you may drink.\" Two right answers of three.",
-  "ctx": "scene:ep_lake_charu"
- },
- {
   "id": 4341,
   "en": "Charu sits up on the bank, coughing, and asks what you are staring at.",
   "ctx": "scene:ep_lake_charu"
@@ -21730,11 +18210,6 @@
   "ctx": "scene:ep_lake_charu"
  },
  {
-  "id": 4348,
-  "en": "Drag Charu away from the water and run for the camp",
-  "ctx": "scene:ep_lake_charu"
- },
- {
   "id": 4349,
   "en": "At the lake in the forest Charu drank first and fell, and you could not carry Charu back to the camp in time.",
   "ctx": "scene:ep_lake_charu"
@@ -21752,16 +18227,6 @@
  {
   "id": 4352,
   "en": "Your false name",
-  "ctx": "scene:ep_false_name"
- },
- {
-  "id": 4353,
-  "en": "In Virata's household you are someone else: a groom, a cook's helper, a hanger-on of the new dancing teacher. The steward has begun to count the new faces, and to ask.",
-  "ctx": "scene:ep_false_name"
- },
- {
-  "id": 4354,
-  "en": "Answer the steward's questions without a flicker",
   "ctx": "scene:ep_false_name"
  },
  {
@@ -21825,11 +18290,6 @@
   "ctx": "scene:ep_false_name"
  },
  {
-  "id": 4367,
-  "en": "Virata's steward has started asking questions about the new people in the household. Answer each one before the lamp burns down, and never say anything true. Two of three.",
-  "ctx": "scene:ep_false_name"
- },
- {
   "id": 4368,
   "en": "The steward loses interest, and your name stays yours.",
   "ctx": "scene:ep_false_name"
@@ -21847,11 +18307,6 @@
  {
   "id": 4371,
   "en": "The steward says nothing more, which is worse. A rider leaves for Hastinapura that evening.",
-  "ctx": "scene:ep_false_name"
- },
- {
-  "id": 4372,
-  "en": "Leave the household before he asks you anything",
   "ctx": "scene:ep_false_name"
  },
  {
@@ -21875,21 +18330,6 @@
   "ctx": "scene:ep_kichaka"
  },
  {
-  "id": 4377,
-  "en": "Kichaka, the queen's brother and the kingdom's commander, will not leave the queen's maid alone. The maid is Draupadi. Bhima tells her to send Kichaka to the dancing hall at midnight, and goes in her place.",
-  "ctx": "scene:ep_kichaka"
- },
- {
-  "id": 4378,
-  "en": "Draupadi must be somewhere else when it happens, seen by people who will swear to it. Bhima asks you to see to it.",
-  "ctx": "scene:ep_kichaka"
- },
- {
-  "id": 4379,
-  "en": "Cross the dancing hall in the dark and get her out before he comes",
-  "ctx": "scene:ep_kichaka"
- },
- {
   "id": 4380,
   "en": "Hold to move along the pillars. Stop when Kichaka's lamp turns your way.",
   "ctx": "scene:ep_kichaka"
@@ -21907,11 +18347,6 @@
  {
   "id": 4383,
   "en": "The lamp swings toward you. You press into a pillar.",
-  "ctx": "scene:ep_kichaka"
- },
- {
-  "id": 4384,
-  "en": "Kichaka has told the queen's maid to come to the dancing hall tonight. Bhima is going in her place, and the maid must be somewhere else, seen by no one. Cross the hall to her and back along the pillars while Kichaka's lamp sweeps the floor.",
   "ctx": "scene:ep_kichaka"
  },
  {
@@ -21940,11 +18375,6 @@
   "ctx": "scene:ep_kichaka"
  },
  {
-  "id": 4390,
-  "en": "Stay out of it. It is a family matter",
-  "ctx": "scene:ep_kichaka"
- },
- {
   "id": 4391,
   "en": "Bhima does it alone, as he would have anyway. In the morning there is a thing in the dancing hall that used to be a man.",
   "ctx": "scene:ep_kichaka"
@@ -21970,18 +18400,8 @@
   "ctx": "scene:ep_shikhandi"
  },
  {
-  "id": 4396,
-  "en": "On the tenth morning the word goes down the line: Shikhandi will ride at the front of Arjuna's chariot, and the grandsire will not loose at one who was born a woman. Someone must ride in front of Shikhandi, to take the arrows of the men around Bhishma who have no such scruple.",
-  "ctx": "scene:ep_shikhandi"
- },
- {
   "id": 4397,
   "en": "Ride in front of Shikhandi",
-  "ctx": "scene:ep_shikhandi"
- },
- {
-  "id": 4398,
-  "en": "Refuse. There is no honour in this",
   "ctx": "scene:ep_shikhandi"
  },
  {
@@ -22050,28 +18470,13 @@
   "ctx": "scene:ep_letter_1"
  },
  {
-  "id": 4412,
-  "en": "Write back, and keep the letter",
-  "ctx": "scene:ep_letter_1"
- },
- {
   "id": 4413,
   "en": "You write three lines and send the boy back with them. The letter you fold small and keep against your skin.",
   "ctx": "scene:ep_letter_1"
  },
  {
-  "id": 4414,
-  "en": "Send the boy back with nothing",
-  "ctx": "scene:ep_letter_1"
- },
- {
   "id": 4415,
   "en": "The boy waits a long time before he understands, and goes.",
-  "ctx": "scene:ep_letter_1"
- },
- {
-  "id": 4416,
-  "en": "Burn it unread. You cannot afford it",
   "ctx": "scene:ep_letter_1"
  },
  {
@@ -22095,16 +18500,6 @@
   "ctx": "scene:ep_carts"
  },
  {
-  "id": 4421,
-  "en": "The night after the twelfth day a captain asks for someone who can move quietly. The enemy's grain and fodder stand in carts behind their lines, and hungry horses pull badly.",
-  "ctx": "scene:ep_carts"
- },
- {
-  "id": 4422,
-  "en": "Go in through the horse lines and cut the carts loose",
-  "ctx": "scene:ep_carts"
- },
- {
   "id": 4423,
   "en": "Hold to move between the carts. Stop when the sentry's torch turns.",
   "ctx": "scene:ep_carts"
@@ -22122,11 +18517,6 @@
  {
   "id": 4426,
   "en": "The sentry turns. You drop behind a wheel.",
-  "ctx": "scene:ep_carts"
- },
- {
-  "id": 4427,
-  "en": "The enemy's grain and fodder carts stand in a camp behind their lines. A sentry walks the far side with a torch. Reach the carts twice: once to cut the horse lines, once to fire the fodder.",
   "ctx": "scene:ep_carts"
  },
  {
@@ -22155,11 +18545,6 @@
   "ctx": "scene:ep_carts"
  },
  {
-  "id": 4433,
-  "en": "Say no. You fight by daylight",
-  "ctx": "scene:ep_carts"
- },
- {
   "id": 4434,
   "en": "Someone else goes. Someone else does not come back.",
   "ctx": "scene:ep_carts"
@@ -22177,11 +18562,6 @@
  {
   "id": 4437,
   "en": "Out of the camp",
-  "ctx": "scene:ep_carts_fight"
- },
- {
-  "id": 4438,
-  "en": "Torches, shouting, men coming out of tents with whatever is nearest to hand. The horse lines are behind you.",
   "ctx": "scene:ep_carts_fight"
  },
  {
@@ -22245,16 +18625,6 @@
   "ctx": "scene:ep_orders"
  },
  {
-  "id": 4451,
-  "en": "After the wheel closed, a captain of your own side puts a sealed packet in your hands: orders in the enemy's own cipher, with the enemy's own seal, telling their left division to be somewhere it should not be at dawn. \"Someone they trust has to carry it,\" he says. \"You have a face no one has seen.\"",
-  "ctx": "scene:ep_orders"
- },
- {
-  "id": 4452,
-  "en": "Swim the river with the packet in your teeth",
-  "ctx": "scene:ep_orders"
- },
- {
   "id": 4453,
   "en": "Swim",
   "ctx": "scene:ep_orders"
@@ -22280,11 +18650,6 @@
   "ctx": "scene:ep_orders"
  },
  {
-  "id": 4458,
-  "en": "Between the camps the river runs black under the watch-fires. Swim it with the packet dry and come up under the enemy's bank unseen.",
-  "ctx": "scene:ep_orders"
- },
- {
   "id": 4459,
   "en": "You come up under their bank with the packet dry.",
   "ctx": "scene:ep_orders"
@@ -22307,11 +18672,6 @@
  {
   "id": 4463,
   "en": "On the night of the thirteenth day you carried false orders across the river, and in the morning the enemy's line was in the wrong place.",
-  "ctx": "scene:ep_orders"
- },
- {
-  "id": 4464,
-  "en": "Burn the packet, and tell the captain the river was watched",
   "ctx": "scene:ep_orders"
  },
  {
@@ -22395,11 +18755,6 @@
   "ctx": "scene:ep_letter_2"
  },
  {
-  "id": 4481,
-  "en": "Keep it, and send nothing. Words are used up",
-  "ctx": "scene:ep_letter_2"
- },
- {
   "id": 4482,
   "en": "You fold it into the first one.",
   "ctx": "scene:ep_letter_2"
@@ -22420,21 +18775,6 @@
   "ctx": "scene:ep_sibling_field"
  },
  {
-  "id": 4486,
-  "en": "Lower your weapon and turn your chariot away",
-  "ctx": "scene:ep_sibling_field"
- },
- {
-  "id": 4487,
-  "en": "Strike first. This is war",
-  "ctx": "scene:ep_sibling_field"
- },
- {
-  "id": 4488,
-  "en": "Shout to your driver to turn, and do not look",
-  "ctx": "scene:ep_sibling_field"
- },
- {
   "id": 4489,
   "en": "The miller's son, with a captain's spear",
   "ctx": "scene:ep_ugra_last"
@@ -22447,16 +18787,6 @@
  {
   "id": 4491,
   "en": "On the seventeenth day a captain of levies comes through the smoke with his spear up and stops dead. It is Ugra. He has been looking for you after all.",
-  "ctx": "scene:ep_ugra_last"
- },
- {
-  "id": 4492,
-  "en": "Fight him, as you did at the fair",
-  "ctx": "scene:ep_ugra_last"
- },
- {
-  "id": 4493,
-  "en": "Lower your weapon and tell him to go home to his mill",
   "ctx": "scene:ep_ugra_last"
  },
  {
@@ -22530,16 +18860,6 @@
   "ctx": "scene:ep_rebuild"
  },
  {
-  "id": 4508,
-  "en": "The quarter below the walls burned in the last week of the war, when nobody was left to put it out. The new king has no men to spare. The people who lived there are living in it anyway.",
-  "ctx": "scene:ep_rebuild"
- },
- {
-  "id": 4509,
-  "en": "Work on the roofs yourself, every day, until they are done",
-  "ctx": "scene:ep_rebuild"
- },
- {
   "id": 4510,
   "en": "After the war you rebuilt the roofs of the burned quarter with your own hands.",
   "ctx": "scene:ep_rebuild"
@@ -22550,11 +18870,6 @@
   "ctx": "scene:ep_rebuild"
  },
  {
-  "id": 4512,
-  "en": "Organise it: find the timber, set the carpenters, argue with the treasury",
-  "ctx": "scene:ep_rebuild"
- },
- {
   "id": 4513,
   "en": "It takes a season of arguing and the quarter is rebuilt before the rains. Nobody thanks you, which is how you know it was done properly.",
   "ctx": "scene:ep_rebuild"
@@ -22562,11 +18877,6 @@
  {
   "id": 4514,
   "en": "The treasury has no timber, the carpenters have gone home to their own ruined villages, and the rains come first.",
-  "ctx": "scene:ep_rebuild"
- },
- {
-  "id": 4515,
-  "en": "It is not your city. Go home",
   "ctx": "scene:ep_rebuild"
  },
  {
@@ -22585,28 +18895,13 @@
   "ctx": "scene:ep_rite"
  },
  {
-  "id": 4519,
-  "en": "Send a lamp for your dead, and one for whoever killed them",
-  "ctx": "scene:ep_rite"
- },
- {
   "id": 4520,
   "en": "Two lamps. The second is harder to let go of than the first. It goes out around the bend, like the other one.",
   "ctx": "scene:ep_rite"
  },
  {
-  "id": 4521,
-  "en": "Send lamps for your own, and no one else's",
-  "ctx": "scene:ep_rite"
- },
- {
   "id": 4522,
   "en": "You send them out one by one, saying each name. The river takes them.",
-  "ctx": "scene:ep_rite"
- },
- {
-  "id": 4523,
-  "en": "Stay on the bank. You have nothing to say to the river",
   "ctx": "scene:ep_rite"
  },
  {
@@ -22625,11 +18920,6 @@
   "ctx": "scene:ep_student"
  },
  {
-  "id": 4527,
-  "en": "A child from the lane has been waiting at your door every morning for a week, with a stick for a spear, the way you once followed the soldiers. There is no one else left to teach.",
-  "ctx": "scene:ep_student"
- },
- {
   "id": 4528,
   "en": "The road to the forest",
   "ctx": "scene:ep_pilgrimage"
@@ -22645,16 +18935,6 @@
   "ctx": "scene:ep_pilgrimage"
  },
  {
-  "id": 4531,
-  "en": "Before they leave the city for the last time, the old king, the queen and Kunti go on foot to the holy places along the river. They ask for someone to walk with them who is not their son.",
-  "ctx": "scene:ep_pilgrimage"
- },
- {
-  "id": 4532,
-  "en": "Walk with them the whole way",
-  "ctx": "scene:ep_pilgrimage"
- },
- {
   "id": 4533,
   "en": "After the war you walked the holy places with Dhritarashtra, Gandhari and Kunti.",
   "ctx": "scene:ep_pilgrimage"
@@ -22662,11 +18942,6 @@
  {
   "id": 4534,
   "en": "Dhritarashtra asks you every evening how many of his sons you killed. Gandhari asks you nothing at all. Kunti, on the last night, asks whether you ever met Karna, and you tell her the truth, and she holds your hand until the fire goes out.",
-  "ctx": "scene:ep_pilgrimage"
- },
- {
-  "id": 4535,
-  "en": "Walk the first day, and turn back",
   "ctx": "scene:ep_pilgrimage"
  },
  {
@@ -22705,11 +18980,6 @@
   "ctx": "scene:ep_bard"
  },
  {
-  "id": 4543,
-  "en": "Correct him, there in front of everyone",
-  "ctx": "scene:ep_bard"
- },
- {
   "id": 4544,
   "en": "You tell him what happened. He listens, nods, and sings it again, right this time, and the right version is the one that travels.",
   "ctx": "scene:ep_bard"
@@ -22722,11 +18992,6 @@
  {
   "id": 4546,
   "en": "Lore helps",
-  "ctx": "scene:ep_bard"
- },
- {
-  "id": 4547,
-  "en": "Let it stand. Songs are not the truth",
   "ctx": "scene:ep_bard"
  },
  {
@@ -22795,34 +19060,9 @@
   "ctx": "play:ep_ugra_tournament"
  },
  {
-  "id": 4561,
-  "en": "Shouting wakes you. From the lane you can see the roof of the new house burning, and the heat of it on your face.",
-  "ctx": "play:a3_fire"
- },
- {
-  "id": 4562,
-  "en": "Run into the house to get people out",
-  "ctx": "play:a3_fire"
- },
- {
   "id": 4563,
   "en": "Let {spouse} tie the raksha sutra on your wrist",
   "ctx": "play:w_eve"
- },
- {
-  "id": 4564,
-  "en": "A boy under a truce flag brings a letter from {who}, across the field.",
-  "ctx": "play:ep_letter_1"
- },
- {
-  "id": 4565,
-  "en": "I said I would not look for you in the press. I am looking anyway. Stay alive, you stubborn fool.",
-  "ctx": "play:ep_letter_1"
- },
- {
-  "id": 4566,
-  "en": "Every evening after the horns there is an hour at the river when both sides go down for water and the dead, and nobody draws.",
-  "ctx": "play:ep_truce"
  },
  {
   "id": 4567,
@@ -22832,16 +19072,6 @@
  {
   "id": 4568,
   "en": "Your student's first test",
-  "ctx": "play:ep_student"
- },
- {
-  "id": 4569,
-  "en": "Set your student the test you were set",
-  "ctx": "play:ep_student"
- },
- {
-  "id": 4570,
-  "en": "Send the child away. You have taught enough people to die",
   "ctx": "play:ep_student"
  },
  {
@@ -22860,11 +19090,6 @@
   "ctx": "play:ep_keepsakes"
  },
  {
-  "id": 4574,
-  "en": "You lay out on a cloth the few small things you kept through all of it.",
-  "ctx": "play:ep_keepsakes"
- },
- {
   "id": 4575,
   "en": "On the cloth: {list}.",
   "ctx": "play:ep_keepsakes"
@@ -22873,16 +19098,6 @@
   "id": 4576,
   "en": "Hang Kesava's hammer over your own door",
   "ctx": "play:ep_keepsakes"
- },
- {
-  "id": 4577,
-  "en": "Wrap them up again. They are yours",
-  "ctx": "play:ep_keepsakes"
- },
- {
-  "id": 4578,
-  "en": "In a courtyard a bard is singing the war to anyone who will listen. He has a fine voice and he has your name in it, and he has one thing wrong.",
-  "ctx": "play:ep_bard"
  },
  {
   "id": 4579,
@@ -22933,11 +19148,6 @@
   "id": 4588,
   "en": "The {name}",
   "ctx": "play:w_mountain"
- },
- {
-  "id": 4589,
-  "en": "Go to the elders of the camp for a blessing",
-  "ctx": "play:w_eve"
  },
  {
   "id": 4590,
@@ -23045,16 +19255,6 @@
   "ctx": "play:w_dive"
  },
  {
-  "id": 4611,
-  "en": "{who} comes home the night before you leave for the field, in the colours of the other side.",
-  "ctx": "play:ep_sibling_side"
- },
- {
-  "id": 4612,
-  "en": "\"I serve who I serve,\" {who} says. \"So do you. If we meet out there, look the other way. I will.\"",
-  "ctx": "play:ep_sibling_side"
- },
- {
   "id": 4613,
   "en": "Company leader",
   "ctx": "play:a6_eve"
@@ -23070,19 +19270,9 @@
   "ctx": "play:a6_day14"
  },
  {
-  "id": 4616,
-  "en": "The same boy, thinner. A second letter from {who}, shorter than the first.",
-  "ctx": "play:ep_letter_2"
- },
- {
   "id": 4617,
   "en": "Tomorrow is the day. Whatever happens, I was glad of you.",
   "ctx": "play:ep_letter_2"
- },
- {
-  "id": 4618,
-  "en": "In the press of the seventeenth day a chariot comes broadside to yours, and the one on it is {who}.",
-  "ctx": "play:ep_sibling_field"
  },
  {
   "id": 4619,
@@ -23093,11 +19283,6 @@
   "id": 4620,
   "en": "On the seventeenth day you turned your chariot away from mine.",
   "ctx": "play:ep_sibling_field"
- },
- {
-  "id": 4621,
-  "en": "Your student asks the questions every student asks. Answer each before the lamp burns down. Two of three.",
-  "ctx": "play:ep_student"
  },
  {
   "id": 4622,
@@ -23305,11 +19490,6 @@
   "ctx": "play:ep_mentor_peace"
  },
  {
-  "id": 4663,
-  "en": "A boy brings a leaf with three words burned into it, in Mauni's hand: never fight them. It is the longest message he has ever sent you.",
-  "ctx": "play:ep_mentor_peace"
- },
- {
   "id": 4664,
   "en": "You send the boy back with no answer. Mauni will understand the silence. He always did.",
   "ctx": "play:ep_mentor_peace"
@@ -23323,11 +19503,6 @@
   "id": 4666,
   "en": "On the seventeenth day {they} had Ugra at {their} mercy, and let him go.",
   "ctx": "play:end_life"
- },
- {
-  "id": 4667,
-  "en": "You hang a lamp from a branch and set it swinging, as Arjuna once did. Show your student how it is done: two hits of three.",
-  "ctx": "play:ep_student"
  },
  {
   "id": 4668,
@@ -23380,11 +19555,6 @@
   "ctx": "play:ep_sibling_field"
  },
  {
-  "id": 4678,
-  "en": "A month after the war the whole city goes down to the river with lamps for the dead. You have your own to send out.",
-  "ctx": "play:ep_rite"
- },
- {
   "id": 4679,
   "en": "Yours: {list}.",
   "ctx": "play:ep_rite"
@@ -23402,16 +19572,6 @@
  {
   "id": 4682,
   "en": "What Balarama asks",
-  "ctx": "play:ep_mentor_peace"
- },
- {
-  "id": 4683,
-  "en": "Balarama finds you on the road. He has refused both sides and is going on pilgrimage along the Sarasvati rather than watch his students kill each other.",
-  "ctx": "play:ep_mentor_peace"
- },
- {
-  "id": 4684,
-  "en": "Come with me. Everything I taught you was for a quarrel, not for this. Promise me you will not fight in it.",
   "ctx": "play:ep_mentor_peace"
  },
  {
@@ -23550,16 +19710,6 @@
   "ctx": "play:end_life"
  },
  {
-  "id": 4712,
-  "en": "On the ninth night Dhrishtadyumna sends for you. Your company has held every day it was asked to, and he has lost three division officers in nine days.",
-  "ctx": "play:cmd_promotion_1"
- },
- {
-  "id": 4713,
-  "en": "\"Three companies,\" he says. \"Yours and two more. From tomorrow the array on your part of the line is yours to set.\"",
-  "ctx": "play:cmd_promotion_1"
- },
- {
   "id": 4714,
   "en": "{They} led a division of three companies, and set its array in the field.",
   "ctx": "play:end_life"
@@ -23585,29 +19735,9 @@
   "ctx": "play:end_death"
  },
  {
-  "id": 4719,
-  "en": "Your command suits the scribe's tablet.",
-  "ctx": "play:a2_path"
- },
- {
   "id": 4720,
   "en": "Never say who taught you.",
   "ctx": "play:a5_own_crisis"
- },
- {
-  "id": 4721,
-  "en": "On the ninth night Bhishma sends for you. Your company has held every day it was asked to, and he has lost three division officers in nine days.",
-  "ctx": "play:cmd_promotion_1"
- },
- {
-  "id": 4722,
-  "en": "After the wheel, Yudhishthira calls the council: Krishna, Arjuna, Bhima, Dhrishtadyumna, Satyaki, and the officers whose divisions still stand. Yours stands. There is a mat for you at the edge of the lamplight.",
-  "ctx": "play:cmd_promotion_2"
- },
- {
-  "id": 4723,
-  "en": "No one says what the seat means. Everyone knows.",
-  "ctx": "play:cmd_promotion_2"
  },
  {
   "id": 4724,
@@ -23675,16 +19805,6 @@
   "ctx": "play:a6_wheel"
  },
  {
-  "id": 4737,
-  "en": "On the thirteenth morning Drona sets the Chakravyuha, a wheel of warriors turning ring within ring, and you are one of its rings. The Pandava chariots are already coming.",
-  "ctx": "play:a6_wheel"
- },
- {
-  "id": 4738,
-  "en": "On the thirteenth morning Drona sets the Chakravyuha, a wheel of warriors turning ring within ring. Abhimanyu rides at its face, looking for the way in, and your company waits on you.",
-  "ctx": "play:a6_wheel"
- },
- {
   "id": 4739,
   "en": "The huge brahmin",
   "ctx": "play:a3_swayamvara"
@@ -23705,44 +19825,9 @@
   "ctx": "play:a6_raid"
  },
  {
-  "id": 4743,
-  "en": "After the wheel, Drona calls the council: Karna, Duryodhana, Shakuni, Kripa, Ashwatthama, and the officers whose divisions still stand. Yours stands. There is a mat for you at the edge of the lamplight.",
-  "ctx": "play:cmd_promotion_2"
- },
- {
-  "id": 4744,
-  "en": "Drona is dead. Karna will command tomorrow. Ashwatthama wants the Narayana weapon loosed on the whole Pandava army tonight, and half the tent agrees with him.",
-  "ctx": "play:cmd_council_2"
- },
- {
-  "id": 4745,
-  "en": "The council turns, as councils do, to the officer who has said nothing yet.",
-  "ctx": "play:cmd_council_2"
- },
- {
-  "id": 4746,
-  "en": "Counsel against the weapon: it will take the war with it",
-  "ctx": "play:cmd_council_2"
- },
- {
   "id": 4747,
   "en": "The truce you argued for at the council holds for an hour at dusk: soldiers of both sides go down to the river for water and the dead, and nobody draws.",
   "ctx": "play:ep_truce"
- },
- {
-  "id": 4748,
-  "en": "Karna will meet Arjuna tomorrow. Everyone in the tent knows it. Shakuni wants the king's own guard thrown at the Pandava flank to make it certain; Kripa wants the army kept whole.",
-  "ctx": "play:cmd_council_3"
- },
- {
-  "id": 4749,
-  "en": "The commander asks the council for one word each.",
-  "ctx": "play:cmd_council_3"
- },
- {
-  "id": 4750,
-  "en": "Warn against any night attack on the sleeping camp",
-  "ctx": "play:cmd_council_3"
  },
  {
   "id": 4751,
@@ -23763,11 +19848,6 @@
   "id": 4754,
   "en": "Balarama nods slowly. \"Then at least be the one who comes back,\" he says, and walks on toward the river.",
   "ctx": "play:ep_mentor_peace"
- },
- {
-  "id": 4755,
-  "en": "Let the old women of the camp tie the raksha sutra on your wrist",
-  "ctx": "play:w_eve"
  },
  {
   "id": 4756,
@@ -23925,11 +20005,6 @@
   "ctx": "early"
  },
  {
-  "id": 4787,
-  "en": "Bhima wants Duryodhana tagged. Creep up on him along the hedge by the pond while he watches the others. Seen twice, and you are out.",
-  "ctx": "early"
- },
- {
   "id": 4788,
   "en": "You tag Duryodhana in front of everyone, and Bhima throws him in the pond.",
   "ctx": "early"
@@ -23937,11 +20012,6 @@
  {
   "id": 4789,
   "en": "Duryodhana tags you out, and his brothers cheer.",
-  "ctx": "early"
- },
- {
-  "id": 4790,
-  "en": "Bhima is hunting your side and throwing everyone he catches into the pond. Get across the garden to the far wall. Seen twice, and you are in the water.",
   "ctx": "early"
  },
  {
@@ -23995,21 +20065,6 @@
   "ctx": "early"
  },
  {
-  "id": 4801,
-  "en": "Your mother sends you down to the river steps with a basket of washing. It is the first time she has let you go alone.",
-  "ctx": "early"
- },
- {
-  "id": 4802,
-  "en": "Ugra, the miller's son, is nine and already as broad as a door. He takes the basket out of your hands, looks inside, and tips the whole thing into the river.",
-  "ctx": "early"
- },
- {
-  "id": 4803,
-  "en": "Before you can move, a small, loud child you have never spoken to jumps straight in after it, clothes and all.",
-  "ctx": "early"
- },
- {
   "id": 4804,
   "en": "Go for Ugra",
   "ctx": "early"
@@ -24017,11 +20072,6 @@
  {
   "id": 4805,
   "en": "Jump in and help the stranger",
-  "ctx": "early"
- },
- {
-  "id": 4806,
-  "en": "Tell Ugra your father will hear of this",
   "ctx": "early"
  },
  {
@@ -24075,18 +20125,8 @@
   "ctx": "early"
  },
  {
-  "id": 4817,
-  "en": "Ugra, who tipped your washing into the river when you were seven, is fifteen now and bigger than ever. Every fair he takes the smaller children's sweets and dares anyone to stop him.",
-  "ctx": "early"
- },
- {
   "id": 4818,
   "en": "He sees you, and grins. He has not forgotten the river steps either.",
-  "ctx": "early"
- },
- {
-  "id": 4819,
-  "en": "Answer only with true things, and let him draw the wrong conclusions",
   "ctx": "early"
  },
  {
@@ -24130,21 +20170,6 @@
   "ctx": "early"
  },
  {
-  "id": 4828,
-  "en": "The morning before the tournament, the grounds are full of levies from the villages come to carry water and hold horses. One of them is a head taller than the rest and has a miller's shoulders. It is Ugra, the miller's son who ruled the wrestling ring at the spring fair.",
-  "ctx": "early"
- },
- {
-  "id": 4829,
-  "en": "A letter comes, written in a large careful hand that learned late. Ugra, the miller's son who held the ring at the spring fair, is a captain of levies now. He does not say whose. He says the pay is good, and that he thinks of the fair more than a grown man should, and that if the war comes he hopes to be on the same side as you, and that if he is not, he will not look for you in the press.",
-  "ctx": "early"
- },
- {
-  "id": 4830,
-  "en": "On the seventeenth day a captain of levies comes through the smoke with his spear up and stops dead. It is Ugra, the miller's son from the spring fair. He has been looking for you after all.",
-  "ctx": "early"
- },
- {
   "id": 4831,
   "en": "In the line beside you stands a big man with a miller's shoulders. Ugra, the miller's son from the spring fair. \"You put me on my back once,\" he says. \"I have waited thirty years to stand next to you instead.\"",
   "ctx": "early"
@@ -24173,11 +20198,6 @@
   "id": 4836,
   "en": "Your target",
   "ctx": "early"
- },
- {
-  "id": 4837,
-  "en": "Sudatta the moneylender arrives at your door with a palm-leaf note your grandfather signed. With interest, it is more than your family owns. He is polite about it.",
-  "ctx": "style"
  },
  {
   "id": 4838,

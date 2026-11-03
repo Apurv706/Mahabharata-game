@@ -142,7 +142,7 @@
     lose: { fx: {}, text: "He runs the length of your line, and you are a length behind him all the way." } });
   const MACE = (feints) => ({ attr: "might", skill: "mace", face: "drill", item: "mace", foeItem: "mace", foe: "the champion", verb: "Strike", feints, stage: "fight_war_field",
     tally: "Blows landed: {g} of 3 · Breath left: {r}", good: "Your mace gets through!", soon: "Too soon. He steps back from it.", late: "Too late. His mace finds you.",
-    rules: "Strike as the ring meets the mark. When it burns red he is feinting: let it pass. Three good blows and he goes down; three bad ones and you do." });
+    rules: "Strike as the ring meets the mark; let the red ones pass. Three good blows win." });
   side({ id: "fs_sk_mace", kind: "mace", title: "A champion with a mace", art: "war_bhishma", caption: "A mace duel",
     intro: "A champion in scale armour has come out of the enemy line with a mace, calling for someone to meet him.",
     enemies: (S) => [K.foe(pick2(S, "Kaurava mace champion", "Pandava mace champion"), 6, { abilities: ["strike", "heavy"] })],
@@ -236,56 +236,56 @@
 
   // ---------- The scenes ----------
   const scene = (o) => Object.assign({ act: 6, age: 44, war: true, away: true, place: "Kurukshetra" }, o);
-  const LEAVE = { id: "leave", t: "Leave it to another company", fx: {}, text: "Another company goes. You hear later how it went for them." };
+  const LEAVE = { id: "leave", t: "Leave it to others", fx: {}, text: "Another company goes. You hear later how it went for them." };
   // A. One skirmish, its kind from your path.
   const SK = {
-    hold: { t: "Hold the gap", body: "A gap opens in the line near you, and the enemy has seen it before the reserve has." },
-    escort: { t: "Ride with the healers' cart", body: "Riders have found the healers' cart on its way back from the line. Someone has to get it home." },
-    breakthrough: { t: "Go through the mist to them", body: "A company of your side is cut off across the field, somewhere in the morning mist. Someone has to reach them." },
-    range: { t: "Take your bow and go out to him", body: "An archer in a light chariot is circling your part of the line, picking men off one at a time." },
-    chariot: { t: "Drive out and meet him", body: "An enemy chariot is running down your line, scattering men as it goes." },
-    mace: { t: "Take up your mace and meet him", body: "A champion has come out of the enemy line with a mace, calling for someone to meet him." },
-    carry: { t: "Go out and carry him back", body: "A man from your company is down between the lines, still moving, under the enemy's archers." }
+    hold: { t: "Hold the gap", body: "A gap opens in the line near you." },
+    escort: { t: "Ride with the healers' cart", body: "Riders have found the healers' cart." },
+    breakthrough: { t: "Go through the mist to them", body: "A company of your side is cut off in the mist." },
+    range: { t: "Go out with your bow", body: "An enemy archer is picking off your men." },
+    chariot: { t: "Drive out and meet him", body: "An enemy chariot is running down your line." },
+    mace: { t: "Meet him with your mace", body: "An enemy champion with a mace calls for someone to meet him." },
+    carry: { t: "Carry him back", body: "One of your men is down between the lines, still moving." }
   };
   const skirmish = (day, then, art, place) => {
     const kind = (S) => K.fightKind(S, day, "path") || "hold";
     return scene({ id: "fs_sk_" + day, when: warring, skipTo: then, next: then, art, place, caption: "A fight of your own", title: "Between the great fights",
-      body: (S) => [SK[kind(S)].body, "No one has ordered you, but you are the nearest."],
+      body: (S) => [SK[kind(S)].body],
       choices: Object.keys(SK).map((k) => ({ id: "fight_" + k, t: SK[k].t, req: (S) => kind(S) === k, combat: k === "breakthrough" ? "fs_sk_break" : "fs_sk_" + k, fx: mark(day, k), hint: "A short fight" })).concat([LEAVE]) });
   };
   K.scenes([
     skirmish(6, "a6_day1", "war_bhishma", "Kurukshetra · day 6"),
     skirmish(11, "a6_capture", "war_capture", "Kurukshetra · day 11"),
     scene({ id: "fs_d3", when: (S) => fighter(S) && S.side === "pandava", skipTo: "a6_day1", next: "a6_day1", art: "war_bhishma", place: "Kurukshetra · day 3", caption: "Arrows like rain", title: "Bhishma's arrows",
-      body: ["On the third day Bhishma's chariot comes along the Pandava line, and wherever it goes the arrows come down like rain.", "It is coming along your stretch of the line now."],
-      choices: [{ id: "stand", t: "Stand in the line under the arrows", combat: "fs_d3_storm", fx: mark(3, "weather"), hint: "Live through it" },
-        { id: "back", t: "Fall back with the men behind you", fx: {}, text: "You fall back with the second rank. The arrows find the first." }] }),
+      body: ["Bhishma's chariot comes along your line, and the arrows come down like rain."],
+      choices: [{ id: "stand", t: "Stand under the arrows", combat: "fs_d3_storm", fx: mark(3, "weather"), hint: "Live through it" },
+        { id: "back", t: "Fall back", fx: {}, text: "You fall back with the second rank. The arrows find the first." }] }),
     scene({ id: "fs_d12", when: fighter, skipTo: "a6_capture", next: "a6_capture", art: "war_capture", place: "Kurukshetra · day 12", caption: "An elephant called Supratika", title: "Supratika's charge",
-      body: (S) => [S.side === "kaurava" ? "On the twelfth day old Bhagadatta rides his elephant Supratika through the Pandava army, and you follow in the press behind it. Then Arjuna turns his chariot toward the elephant." : "On the twelfth day old Bhagadatta rides his elephant Supratika into the Pandava army. Chariots go over. Horses scream.",
-        S.side === "kaurava" ? "Every arrow he looses at the old king falls among you as well." : "It is coming through your part of the line."],
-      choices: [{ id: "stand", t: "Stay where you are and live through it", combat: "fs_d12_elephant", fx: mark(12, "weather"), hint: "Live through it" }, LEAVE] }),
+      body: (S) => [S.side === "kaurava" ? "You follow Bhagadatta's elephant through the Pandava army, and Arjuna turns toward it." : "Old Bhagadatta's elephant Supratika is coming through your line.",
+        S.side === "kaurava" ? "His arrows fall among you too." : null],
+      choices: [{ id: "stand", t: "Live through it", combat: "fs_d12_elephant", fx: mark(12, "weather"), hint: "Live through it" }, LEAVE] }),
     scene({ id: "fs_d13", when: fighter, skipTo: "a6_day13", next: "a6_day13", art: "scene_day13", place: "Kurukshetra · day 13, at dawn", caption: "Ring inside ring", title: "The outer ring",
-      body: (S) => [S.side === "kaurava" ? "At dawn Drona sets the army in a wheel of chariots, ring inside ring, and you stand in the outermost." : "At dawn the Kaurava army stands in a wheel of chariots, ring inside ring. Nobody on your side has broken one.",
-        S.side === "kaurava" ? "The Pandava divisions come at it before the sun is up." : "Yudhishthira sends the divisions at the outer ring before anyone thinks of Abhimanyu."],
-      choices: [{ id: "break", t: "Go at the outer ring with your division", req: { side: "pandava" }, combat: "fs_d13_break", fx: mark(13, "breakthrough"), hint: "Choose your way in" },
-        { id: "hold", t: "Hold your place in the ring", req: { side: "kaurava" }, combat: "fs_d13_hold", hint: "A short fight" }, LEAVE] }),
+      body: (S) => [S.side === "kaurava" ? "You stand in the outer ring of Drona's wheel." : "The Kaurava army stands in a wheel of chariots that no one has broken.",
+        S.side === "kaurava" ? "The Pandavas are coming." : null],
+      choices: [{ id: "break", t: "Attack the outer ring", req: { side: "pandava" }, combat: "fs_d13_break", fx: mark(13, "breakthrough"), hint: "Choose your way in" },
+        { id: "hold", t: "Hold the ring", req: { side: "kaurava" }, combat: "fs_d13_hold", hint: "A short fight" }, LEAVE] }),
     scene({ id: "fs_d14", when: (S) => fighter(S) && S.side === "pandava" && (S.path === "charioteer" || has(S, "role_chariot")), skipTo: "a6_day14", next: "a6_day14", art: "war_day14", place: "Kurukshetra · day 14", caption: "Before sunset", title: "On the road to Jayadratha",
-      body: ["Arjuna has sworn to kill Jayadratha before sunset, or die. All day the Kaurava chariots throw themselves across the road between them.", "One of them cuts across the road in front of you."],
+      body: ["Kaurava chariots throw themselves across Arjuna's road to Jayadratha.", "One cuts across in front of you."],
       choices: [{ id: "drive", t: "Drive at him", combat: "fs_d14_chariot", fx: mark(14, "chariot"), hint: "A chariot duel" }, LEAVE] }),
     scene({ id: "fs_d15", when: (S) => warring(S) && S.side === "pandava", skipTo: "a6_day16", next: "a6_day16", art: "war_day15", place: "Kurukshetra · day 15, after Drona", caption: "Fire out of a clear sky", title: "The Narayana weapon",
-      body: ["Drona is dead, and his son has heard how. Ashwatthama stands up in his chariot and speaks a mantra no one on your side has heard before.", "The sky over the Pandava army begins to burn."],
+      body: ["Ashwatthama looses the Narayana weapon to avenge his father.", "The sky begins to burn."],
       choices: [{ id: "stand", t: "Stand where you are", combat: "fs_d15_narayana", fx: mark(15, "weather"), hint: "Lay down your weapons, or face it" }] }),
     scene({ id: "fs_d16", when: (S) => warring(S) && S.path === "archer", skipTo: "a6_day16", next: "a6_day16", art: "war_day16", place: "Kurukshetra · day 16", caption: "Bow against bow", title: "An archer across the field",
-      body: (S) => [pick2(S, "One of Karna's archers has been shooting at your line from a light chariot all morning, and nobody has answered him.", "One of Arjuna's archers has been shooting at your line from a light chariot all morning, and nobody has answered him."), "You have a bow, and a full quiver."],
-      choices: [{ id: "shoot", t: "Go out and shoot it out with him", combat: "fs_d16_range", fx: mark(16, "range"), hint: "An archery duel" }, LEAVE] }),
+      body: (S) => [pick2(S, "One of Karna's archers has shot at your line all morning.", "One of Arjuna's archers has shot at your line all morning.")],
+      choices: [{ id: "shoot", t: "Shoot it out with him", combat: "fs_d16_range", fx: mark(16, "range"), hint: "An archery duel" }, LEAVE] }),
     scene({ id: "fs_d18", when: (S) => warring(S) && S.path === "mace", skipTo: "a6_day18", next: "a6_day18", art: "war_day18", place: "Kurukshetra · day 18", caption: "Mace against mace", title: "The last champion",
-      body: ["On the last morning there is not much left of either army. A champion walks out of what is left of the enemy line with a mace on his shoulder, and calls for anyone.", "Your own men look at you."],
+      body: ["On the last morning an enemy champion with a mace calls for anyone."],
       choices: [{ id: "meet", t: "Walk out and meet him", combat: "fs_d18_mace", fx: mark(18, "mace"), hint: "A mace duel" }, LEAVE] })
   ]);
 
   // After a broken hold (command.js): carry a wounded man out, instead of only falling back with a scar.
   const broken = K.SCENES.hold_broken;
-  if (broken && !broken.choices.some((c) => c.id === "carry")) broken.choices.splice(1, 0, { id: "carry", t: "Carry a wounded man out of it", combat: "fs_carry", fx: mark("broken", "carry"), hint: "A test of strength under the arrows" });
+  if (broken && !broken.choices.some((c) => c.id === "carry")) broken.choices.splice(1, 0, { id: "carry", t: "Carry a wounded man out of it", combat: "fs_carry", fx: mark("broken", "carry"), hint: "A test of strength" });
 
   // ---------- Where they come ----------
   const before = (id, list, after) => {

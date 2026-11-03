@@ -45,7 +45,7 @@
     kind: "chariot",
     play: { attr: "grace", skill: "chariot", stage: "fight_arjuna_chariot", stageTall: "stage_vyuha_top", vehicle: "chariot", rival: "Pandava chariot-guard", shield: true, obstacles: ["arrow"], hull: 4, speed: 3,
       tally: "Arrows caught: {c} · Past you: {m} of {l} · {d}%", help: "Steer into each arrow's lane and take it on your shield: up and down, or the buttons. Space cracks the whip.",
-      helpSide: "Steer left and right into each arrow's lane.", rules: "Drive beside Vrishasena's chariot. Arjuna's arrows come in from across the field: steer into each one's lane and take it on your shield before it reaches him. The Pandava chariot-guard will try to drive you off. Four arrows past you, and he is open." },
+      helpSide: "Steer left and right into each arrow's lane.", rules: "Steer into each arrow's lane and take it on your shield. Four past you, and he is open." },
     allies: (S) => K.warAllies(S).concat([VRISHA(S)]), callHelp: K.warHelp, spare: false, flee: { tags: ["retreat"] },
     holdText: "Arjuna stops shooting. He has seen Karna's chariot turning toward him.",
     intro: "Vrishasena stands up in his chariot and shoots at Arjuna as if Arjuna were any man. Arjuna's arrows start coming back, and they are all for him.",
@@ -80,7 +80,7 @@
     kind: "chariot",
     play: { attr: "grace", skill: "chariot", stage: "fight_war_chariot", stageTall: "stage_vyuha_top", vehicle: "chariot", rival: "Kaurava chariot-warrior", bow: true, knock: true, turn: 3, obstacles: ["wreck", "fire"],
       tally: "Turned away: {n} of {k} · You: {d}% · {who}: {r}%",
-      rules: "Keep pace at Arjuna's left wheel. The Kaurava chariots come for his flank: steer into them to knock them off the line, and shoot when one draws level. Turn three away, or keep them off his flank to the end." },
+      rules: "Steer into the Kaurava chariots and shoot when one draws level. Turn three away." },
     allies: (S) => K.warAllies(S).concat([PRINCES(S)]), callHelp: K.warHelp, spare: false, flee: { tags: ["retreat"] },
     holdText: "The Kaurava chariots fall back. Above you, Karna's wheel has gone into the earth.",
     intro: "The Kaurava chariots come at the flanks, low and fast, to get under Arjuna's bow. Over your head the air is already burning.",
@@ -111,22 +111,21 @@
     {
       id: "kd_son", act: 6, age: 44, war: true, away: true, when: nearSon, skipTo: "a6_day17", next: "a6_day17",
       art: "war_day16", place: "Kurukshetra · day 17", caption: "Karna's son drives out", title: "Vrishasena",
-      body: (S) => ["Before noon Arjuna's chariot turns toward Karna's division, and Karna's son Vrishasena drives out to meet it. Karna is held on the far side of the line by Bhima.",
-        S.friend === "karna" || S.origin === "anga" || S.court === "anga" || S.flags.includes("saw_vrishasena") ? { memory: "You have known Vrishasena since he was small enough to ride on Karna's shoulders." } : null,
-        "Your chariot is the nearest to his wheel."],
+      body: (S) => ["Karna's son Vrishasena drives out to meet Arjuna.",
+        S.friend === "karna" || S.origin === "anga" || S.court === "anga" || S.flags.includes("saw_vrishasena") ? { memory: "You have known Vrishasena since he was small enough to ride on Karna's shoulders." } : null],
       choices: [
-        { id: "ride", t: "Ride at Vrishasena's wheel, and keep him alive", combat: "kd_e_son", hint: "Every round counts. Karna will see" },
+        { id: "ride", t: "Guard Vrishasena's wheel", combat: "kd_e_son", hint: "Karna will see" },
         { id: "line", t: "Keep your place in the line", fx: { flag: "kd_kept_line" }, text: "You hold your place. From there you see Arjuna's arrow find Vrishasena's throat, and you see Karna see it." }
       ]
     },
     {
       id: "kd_guard", act: 6, age: 44, war: true, away: true, when: wheelGuard, skipTo: "a6_day17", next: "a6_day17",
       art: "scene_duel_ground", place: "Kurukshetra · day 17", caption: "Two chariots, and the ground between", title: "Arjuna's wheels",
-      body: ["In the afternoon both armies draw back and leave a strip of open ground. Arjuna's chariot goes out onto it, and Karna's comes to meet it.",
-        "The Panchala princes Yudhamanyu and Uttamaujas ride at Arjuna's wheels. One of their men is down, and Yudhamanyu waves you up to the left wheel."],
+      body: ["Arjuna and Karna meet on open ground.",
+        "Yudhamanyu waves you up to Arjuna's left wheel."],
       choices: [
-        { id: "wheel", t: "Take the place at Arjuna's left wheel", combat: "kd_e_wheel", hint: "Every round you hold, the princes take less harm" },
-        { id: "line", t: "Stay in the line and watch", fx: { flag: "kd_guard_declined" }, text: "Someone else takes the place. You watch the sky over the two chariots catch fire." }
+        { id: "wheel", t: "Take the left wheel", combat: "kd_e_wheel", hint: "Hold, and the princes are spared" },
+        { id: "line", t: "Watch from the line", fx: { flag: "kd_guard_declined" }, text: "Someone else takes the place. You watch the sky over the two chariots catch fire." }
       ]
     }
   ]);

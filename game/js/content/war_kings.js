@@ -78,12 +78,11 @@
       id: "kb_ride", act: 6, age: 44, war: true, away: true, when: pandavaFighter, skipTo: "a6_day14", next: "a6_day14",
       art: "war_day14", place: "Kurukshetra · day 14", caption: "Yudhishthira's order",
       title: "Ride with Satyaki",
-      body: (S) => ["In the middle of the morning a runner brings you to Yudhishthira's chariot. Arjuna is somewhere beyond the whole Kaurava army, hunting Jayadratha, and no word has come back from him since dawn.",
+      body: (S) => ["No word has come from Arjuna since dawn. Yudhishthira sends for you.",
         { speaker: "Yudhishthira", line: "Satyaki is going through to find him. Ride with him." },
-        has(S, "met_satyaki") ? { memory: "Satyaki knows your face from Drupada's hall, the day of the swayamvara." } : null,
-        { speaker: "Satyaki", line: "Keep up, then. I will not wait for you, and I will not turn back." }],
+        has(S, "met_satyaki") ? { memory: "Satyaki knows your face from Drupada's hall, the day of the swayamvara." } : null],
       choices: [
-        { id: "ride", t: "Ride with Satyaki", combat: "e_kb_ride", fx: { flag: "kb_rode" }, hint: "The better you ride, the less worn out he is when he gets there" },
+        { id: "ride", t: "Ride with Satyaki", combat: "e_kb_ride", fx: { flag: "kb_rode" }, hint: "Ride well, and he arrives fresher" },
         { id: "stay", t: "Stay and guard Yudhishthira",
           fx: { flag: "kb_stayed_king", duty: { court: 1 }, bond: { satyaki: -2, yudhishthira: 1 }, memory: ["satyaki", "You stayed behind with the king the day I rode for Arjuna."], journal: "On the fourteenth day you stayed to guard Yudhishthira when Satyaki rode through the Kaurava army." },
           text: "Satyaki looks at you once, and rides. You stand at Yudhishthira's wheel all day. By evening the whole army knows what happened to Satyaki when he got through." }
@@ -94,16 +93,15 @@
       art: "fight_war_field", place: "Kurukshetra · day 14", caption: (S) => (S.side === "kaurava" ? "The Yadava guard closing in" : "Bhurishravas over Satyaki"),
       title: (S) => (S.side === "kaurava" ? "The Yadava guard" : "Satyaki in the dust"),
       body: (S) => (S.side === "kaurava"
-        ? ["At noon word comes down the line: Bhurishravas has Satyaki down, out beyond the chariots. Satyaki's Yadava guard has seen it too, and is closing round the two of them.",
-          "Bhurishravas is a Kuru, of Bahlika's house. Whatever happens out there, someone from his own side should be near it.",
+        ? ["Bhurishravas has Satyaki down, and Satyaki's Yadava guard is closing in.",
           K.tieLine(S, K.tieBhuri(S), { general: "You chose his part of the field this morning, and so you are near when it happens." })]
         : [has(S, "kb_rode") ? (ride(S) >= 2 ? "At noon Satyaki's horses go down under him, past the last of the Kaurava lines. He is on his feet at once, sword out, and that is when Bhurishravas finds him."
               : "At noon Satyaki's horses go down under him. He has fought every line twice, and he can barely lift his sword when Bhurishravas finds him.")
-            : "All morning Satyaki has cut his way through the Kaurava divisions toward Arjuna. By noon his horses are dead and his sword arm is tired, and Bhurishravas finds him.",
-          "When you reach them Satyaki is on his back in the dust. Bhurishravas has him by the hair and is dragging him, sword raised, while both armies watch."]),
+            : "At noon, Bhurishravas catches Satyaki with his horses dead.",
+          "Bhurishravas drags Satyaki by the hair, sword raised."]),
       choices: [
-        { id: "hold", t: "Get between them and hold Bhurishravas off", req: { side: "pandava" }, combat: "e_kb_hold", hint: "Every round you hold, Satyaki is hurt less" },
-        { id: "through", t: "Cut through the Yadava guard to Bhurishravas", req: { side: "kaurava" }, combat: "e_kb_guard", hint: "Won by getting through, not by killing" }
+        { id: "hold", t: "Hold Bhurishravas off", req: { side: "pandava" }, combat: "e_kb_hold", hint: "Each round held saves Satyaki pain" },
+        { id: "through", t: "Cut through to Bhurishravas", req: { side: "kaurava" }, combat: "e_kb_guard", hint: "Won by getting through, not by killing" }
       ]
     },
     {
@@ -112,9 +110,9 @@
       body: (S) => {
         const n = held(S);
         return S.side === "kaurava"
-          ? ["You come through as Bhurishravas spreads his arrows on the ground and sits down on them, facing the sun, his arm in the dust beside him. Satyaki is on his feet with a sword.",
-            "You are thirty paces away. You run, and Satyaki's sword comes down before you are halfway."]
-          : ["Bhurishravas looks at his arm in the dust, and then across the field at Arjuna's chariot. \"Not from you,\" he says. Then he spreads his arrows on the ground, sits down on them facing the sun, and closes his eyes to wait for death.",
+          ? ["Bhurishravas sits on his arrows facing the sun, his arm in the dust. Satyaki has a sword.",
+            "You run, and Satyaki's sword comes down before you are halfway."]
+          : ["Arjuna's arrow has cut off Bhurishravas's arm. He sits down on his arrows, facing the sun, to wait for death.",
             { memory: n >= 5 ? "Satyaki gets up with nothing worse than a cut scalp. You held long enough for that." : n >= 2 ? "Satyaki gets up bleeding from the head and the shoulder. It could have been worse." : "Satyaki gets up at last with his scalp opened and his shoulder cut through. You could not hold long enough." },
             "Satyaki picks up a sword.",
             has(S, "kb_rode") ? { speaker: "Satyaki", line: ride(S) >= 2 ? "I came through seven divisions today for Arjuna. No man drags me by the hair and lives." : "Seven divisions. I came through seven divisions for Arjuna, and this old man thought I was his to drag." } : null,
@@ -124,7 +122,7 @@
         if (S.side === "kaurava") return [
           { id: "carry", t: "Carry his body back to his men", fx: { rep: { kuru: 1 }, duty: { court: 1 }, flag: "kb_carried_body", memory: ["all", "You came for Bhurishravas, and carried him back to his own lines."], journal: "On the fourteenth day you came too late to save Bhurishravas, and carried him back to his own lines." },
             text: "You and two of his men carry him back to the Kuru lines on a broken chariot board. His men walk beside you the whole way and say nothing. They will remember who came." },
-          { id: "leave", t: "Leave him. There is half a day still to fight", fx: { flag: "kb_left_body" }, text: "You leave him in the dust with his arrows. Someone else will carry him." }
+          { id: "leave", t: "Leave him", fx: { flag: "kb_left_body" }, text: "You leave him in the dust with his arrows. Someone else will carry him." }
         ];
         const st = strongest(S);
         return [
@@ -133,7 +131,7 @@
             check: Object.assign({ dc: 9 }, st, {
               pass: { fx: { flag: "kb_stayed_a_breath" }, text: "For a breath Satyaki stops, and Bhurishravas finishes his prayer. Then Satyaki strikes." },
               fail: { text: "Satyaki goes past you as if you were not there. The sword comes down." } }) },
-          { id: "arms", t: "Hold Bhurishravas's arm for Satyaki", tags: ["strike_unarmed"], fx: { duty: { conscience: -2 }, bond: { satyaki: 3 }, flag: "kb_held_arms", journal: "On the fourteenth day you held Bhurishravas's arm while Satyaki killed him at his prayer." },
+          { id: "arms", t: "Hold him for Satyaki", tags: ["strike_unarmed"], fx: { duty: { conscience: -2 }, bond: { satyaki: 3 }, flag: "kb_held_arms", journal: "On the fourteenth day you held Bhurishravas's arm while Satyaki killed him at his prayer." },
             text: "You take his one arm and hold it. He does not fight you. He opens his eyes once to see who it is, and closes them again. Satyaki strikes." },
           { id: "away", t: "Look away", fx: { flag: "kb_looked_away" }, text: "You look at the ground. You hear it anyway." }
         ];
@@ -149,8 +147,8 @@
       title: "Was it dharma?",
       body: (S) => [
         has(S, "role_council") ? "Late in the night the torches burn down. The council sits anyway, and before anyone speaks of tomorrow, it argues about two deaths: Bhurishravas at his prayer yesterday, and Drona with his bow on his knees today."
-          : "Late in the night the torches burn down. Around your fire nobody sleeps. They are arguing about two deaths: Bhurishravas at his prayer yesterday, and Drona with his bow on his knees today.",
-        S.side === "kaurava" ? { speaker: "One of Bhurishravas's men", line: "Yesterday a man at prayer. Today an old man with his bow laid down, because the one man who never lies told him a lie. Put that in your songs." }
+          : "Around the fire they argue about two deaths: Bhurishravas at prayer, and Drona with his bow laid down.",
+        S.side === "kaurava" ? { speaker: "One of Bhurishravas's men", line: "A man at prayer, and an old man tricked by a lie. Put that in your songs." }
           : S.seen.includes("kb_sits") ? { speaker: "Satyaki", line: "He dragged me by the hair while I lay on the ground. I swore long ago what I would do to the man who did that." }
           : { speaker: "Dhrishtadyumna", line: "He killed my father this morning. Ask me again whether it was dharma." },
         has(S, "kb_held_arms") ? { memory: "Someone says that you held the old man's arm for Satyaki. Nobody answers for you." }
@@ -168,14 +166,14 @@
       choices: (S) => {
         const d14 = S.seen.includes("kb_sits"), d15 = S.seen.includes("kf_drona") || has(S, "kf_cried");
         return [
-          { id: "adharma", t: "Say neither death was dharma, whichever side did it",
+          { id: "adharma", t: "Neither was dharma",
             fx: S.side === "kaurava" ? { duty: { conscience: 1 }, rep: { sages: 1, kuru: -1 }, flag: "kb_said_adharma" }
               : { duty: { conscience: 1 }, rep: { sages: 1 }, bond: Object.assign({}, d14 ? { satyaki: -1 } : {}, d15 ? { dhrishtadyumna: -1 } : {}), flag: "kb_said_adharma" },
             text: S.side === "kaurava" ? "\"Bhurishravas dragged a fallen man by the hair, and Drona led the wheel that killed a boy,\" you say. \"None of it was dharma.\" His men look at you for a long time."
               : "\"A man at prayer, and an old man tricked into laying down his bow,\" you say. \"None of it was dharma.\" Somebody gets up and leaves the fire." },
           S.side === "kaurava"
-            ? { id: "murder", t: "Say a man at prayer and a man with his bow laid down were murdered, and the Pandavas will answer for it", fx: { duty: { court: 1 }, rep: { kuru: 1 }, flag: "kb_said_murder" }, text: "His men beat their spear-butts on the ground. By morning the whole army is saying it." }
-            : { id: "war", t: "Say men who drag the fallen and break a boy in the wheel have no claim to mercy", fx: { duty: { court: 1 }, bond: Object.assign({}, d14 ? { satyaki: 1 } : {}, d15 ? { dhrishtadyumna: 1 } : {}), flag: "kb_said_war" }, text: "A few of them nod at you. Nobody else says anything for a while." },
+            ? { id: "murder", t: "They were murdered, and the Pandavas will answer for it", fx: { duty: { court: 1 }, rep: { kuru: 1 }, flag: "kb_said_murder" }, text: "His men beat their spear-butts on the ground. By morning the whole army is saying it." }
+            : { id: "war", t: "They had no claim to mercy", fx: { duty: { court: 1 }, bond: Object.assign({}, d14 ? { satyaki: 1 } : {}, d15 ? { dhrishtadyumna: 1 } : {}), flag: "kb_said_war" }, text: "A few of them nod at you. Nobody else says anything for a while." },
           { id: "silent", t: "Say nothing", fx: {}, text: "You say nothing. The argument goes round without you, and comes back, and goes round again." }
         ];
       }
@@ -186,22 +184,22 @@
       id: "kf_reach", act: 6, age: 44, war: true, away: true, when: (S) => !!K.tieKings(S), skipTo: "a6_day15", next: "a6_day15",
       art: "war_capture", place: "Kurukshetra · day 15", caption: "Two white parasols",
       title: (S) => (kingOf(S) === "virata" ? "Virata's parasol" : "Drupada's parasol"),
-      body: (S) => ["In the grey before sunrise, after the night of torches, Drona drives his division at the Panchala and Matsya lines. Drupada and Virata ride out to meet him side by side, two old kings under white parasols.",
+      body: (S) => ["Drona drives at the Panchala and Matsya lines. Drupada and Virata ride out to meet him.",
         K.tieLine(S, K.tieKings(S), { company: "Your company was posted to the Panchala lines before dawn. Drupada is not your king, but his men are yours today.",
           general: "You came to the Panchala lines this morning by choice. Drupada is not your king, and nobody here knows your name." }),
-        ["You are a hundred paces behind {who}, and Drona's chariots are already closing the gap.", { who: KP(S).who }]],
+        ["You are a hundred paces behind {who}.", { who: KP(S).who }]],
       choices: (S) => [{ id: "reach", t: homeKing(S) ? "Cut through to your king" : "Cut through to the kings", combat: "e_kf_reach", hint: "Won by getting through, not by killing" }]
     },
     {
       id: "kf_fall", act: 6, age: 44, war: true, away: true, art: "scene_kings_fall", place: "Kurukshetra · day 15", caption: "A white parasol in the dust",
       title: "The king falls",
-      body: (S) => ["You are thirty paces off when Drona's arrows find the two old kings, one after the other. Drupada falls, then Virata, and the white parasols go down in the dust. Drona's chariot turns away toward whatever is next in its way.",
+      body: (S) => ["Drona's arrows find the two old kings. Drupada falls, then Virata.",
         ["{who} is dead when you reach him. The arrows are still coming.", { who: KP(S).who }]],
-      choices: [{ id: "carry", t: "Carry him off the field under the arrows", game: "steady", hint: "A test of strength under the arrows",
+      choices: [{ id: "carry", t: "Carry him off the field", game: "steady", hint: "A test of strength",
         trial: { attr: "might", skill: "mace", stage: "fight_war_field", verb: "Carry", secs: 16,
           help: "Hold to take his weight; let go when you stagger. Keep your feet over the glow until you reach the line.", tally: "Back to the line: {c}% · {s} seconds",
           wonLine: "You lay him down behind your own line.", nearLine: "Ten paces short, an arrow takes you in the shoulder.", lostLine: "An arrow takes you in the shoulder, and you go down under him.",
-          rules: (S) => ["{who} is heavy in his armour, and Drona's archers are still loosing at anything that moves near the parasols. Carry him back to your own line: hold to take his weight, ease off when you stagger.", { who: KP(S).who }],
+          rules: (S) => ["Hold to take {who}'s weight; ease off when you stagger.", { who: KP(S).who }],
           stakes: ["You bring him back to his own people, and nothing touches you.", "An arrow finds you on the way. You still bring him back."] },
         win: { fx: (S) => ({ flag: "kf_carried_king", rep: { common: 1 }, journal: { src: "On the fifteenth day you carried {who} from the field under Drona's arrows.", p: { who: KP(S).who } } }),
           text: "You lay him down behind your own line. His charioteer's boy is there, and covers his face with the edge of his own cloth." },
@@ -219,12 +217,12 @@
       title: "Ashwatthama is dead",
       // Ashwatthama hears who tried to stop Satyaki's sword the day before his father died.
       enter: (S) => (has(S, "kb_tried_stop") ? { flag: "kf_ash_knows", memory: ["ashwatthama", "You tried to stop Satyaki's sword when Bhurishravas sat at prayer, the day before my father died."] } : null),
-      body: (S) => ["Late in the morning Bhima kills an elephant with his mace. Its name was Ashwatthama, the same as Drona's son. Bhima stands on the carcass and roars that Ashwatthama is dead.",
-        { speaker: "Dhrishtadyumna", line: "Shout it, all of you! Let the old man hear it from every throat on the field." },
+      body: (S) => ["Bhima kills an elephant named Ashwatthama and roars that Ashwatthama is dead.",
+        { speaker: "Dhrishtadyumna", line: "Shout it, all of you!" },
         pupil(S) ? { memory: "Drona taught you everything you know." } : null,
         K.hasVow("never_lie", S) ? { aside: "You swore never to lie." } : null],
       choices: (S) => [
-        { id: "cry", t: "Take up the cry: Ashwatthama is dead", tags: ["lie"],
+        { id: "cry", t: "Shout it: Ashwatthama is dead", tags: ["lie"],
           fx: { flag: ["spread_the_lie", "kf_cried"], bond: { dhrishtadyumna: 2 }, rep: { pandava: 1 }, duty: pupil(S) ? { conscience: -2, teacher: -4 } : { conscience: -2 },
             journal: pupil(S) ? "On the fifteenth day you shouted that Ashwatthama was dead, at your own teacher, and saw his face when he heard it." : "On the fifteenth day you helped spread the half-truth that killed Drona." },
           text: pupil(S) ? "You shout it with the rest. Across the field Drona's head turns toward the sound, and for a moment you see his face. You will see it for the rest of your life."
@@ -244,16 +242,16 @@
         const warned = S.log.includes("a6_day15:warn");
         return S.side === "kaurava"
           ? [warned ? "You rode to his chariot to tell him his son was alive, and he did not hear you. Now he lays his bow across his knees and closes his eyes, and you are ten paces away."
-              : "The shout reaches you and you run. You reach Drona's chariot as he lays his bow across his knees and closes his eyes.",
-            "Dhrishtadyumna is coming across the open ground on foot, with a sword in his hand.",
+              : "You reach Drona as he lays his bow across his knees and closes his eyes.",
+            "Dhrishtadyumna is coming on foot with a sword.",
             { memory: "Drona taught you everything you know." }]
-          : [warned ? "You told him his son was alive, and he did not hear you. Now he has laid his bow across his knees and closed his eyes." : "Drona has laid his bow across his knees and closed his eyes. All down the line men are still shouting that Ashwatthama is dead.",
-            "Dhrishtadyumna jumps down from his chariot with a sword in his hand. His father's blood is still on his armour from the morning. He passes close enough to touch.",
+          : [warned ? "You told him his son was alive, and he did not hear you. Now he has laid his bow across his knees and closed his eyes." : "Drona has laid his bow across his knees and closed his eyes.",
+            "Dhrishtadyumna jumps down with a sword, his father's blood still on his armour.",
             pupil(S) ? { memory: "Drona taught you everything you know." } : null];
       },
       choices: (S) => {
         if (S.side === "kaurava") return [
-          { id: "step", t: "Step between Dhrishtadyumna and your teacher", fx: { duty: { teacher: 3, court: 1 }, flag: "kf_stood_between" },
+          { id: "step", t: "Step in front of your teacher", fx: { duty: { teacher: 3, court: 1 }, flag: "kf_stood_between" },
             peril: { kind: "death", flag: "died_for_drona", art: "war_day15", caption: "Drona with his bow laid down", text: "His sword does not stop for you.",
               spareText: "His sword opens you from shoulder to hip. You wake in the healers' tents with a scar you will carry all your life.",
               deathText: "{They} stepped between Dhrishtadyumna's sword and Drona, {their} teacher, on the fifteenth day." },
@@ -289,14 +287,14 @@
       id: "kf_word", act: 6, age: 44, war: true, away: true, when: (S) => S.seen.includes("kf_fall") && !!homeKing(S), skipTo: "a6_day16", next: "a6_day16",
       art: "scene_letter_camp", place: "The camp, the night of day 15", caption: "The king's ring in a cloth",
       title: "Word for home",
-      body: (S) => [["That night {who}'s old steward finds you, with the king's ring wrapped in a cloth.", { who: KP(S).who }],
-        ["\"Someone must take it home to the queen in {home},\" he says. \"Someone from home, not a runner.\"", { home: KP(S).home }]],
+      body: (S) => [["{who}'s old steward brings you the king's ring.", { who: KP(S).who }],
+        ["\"Take it home to the queen in {home},\" he says.", { home: KP(S).home }]],
       choices: (S) => [
-        { id: "home", t: ["Take the ring home to {home}", { home: KP(S).home }], hint: "You will miss the rest of the night in the camp",
+        { id: "home", t: ["Take the ring home to {home}", { home: KP(S).home }], hint: "You will miss the night in camp",
           fx: { duty: { family: 2 }, flag: "kf_took_word", journal: { src: "On the night of the fifteenth day you took {who}'s ring home to the queen in {home}.", p: { who: KP(S).who, home: KP(S).home } } },
           resolve: (S2) => { const list = K.BEFORE.a6_day16 || [], i = list.indexOf("kf_word"); return { set: { missed: (Array.isArray(S2.missed) ? S2.missed : []).concat(list.slice(i + 1).filter((id) => !S2.seen.includes(id))) } }; },
           text: "You ride through the night with the ring against your chest. The queen takes it from your hand and does not open the cloth. By the time you are back at the lines, the sixteenth day's fighting has begun." },
-        { id: "stay", t: "Stay with the army, and let him send a runner", fx: { duty: { court: 1 }, flag: "kf_stayed" }, text: "The steward nods and goes to find a runner. You stay where the king left you." }
+        { id: "stay", t: "Stay with the army", fx: { duty: { court: 1 }, flag: "kf_stayed" }, text: "The steward nods and goes to find a runner. You stay where the king left you." }
       ]
     }
   ]);
