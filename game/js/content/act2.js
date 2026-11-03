@@ -2,20 +2,20 @@
 (function (K) {
   "use strict";
   const COURTISH = ["hastinapura", "anga", "gandhara", "matsya"];
-  // The armoury: each thing laid out says whether it suits you (your best attribute), or what it is for.
-  const SUITS = { archer: "Your aim suits the bow.", mace: "Your might suits the mace.", charioteer: "Your grace suits the reins.", strategist: "Your command suits the scribe's tablet.",
-    healer: "Your wisdom suits the healer's satchel.", spy: "Your grace suits the dark cloak.", bard: "Your wisdom suits the vina." };
+  // The armoury: a thing that suits your best attribute says so.
+  const SUITS = { archer: "Suits your aim", mace: "Suits your might", charioteer: "Suits your grace", strategist: "Suits your command",
+    healer: "Suits your wisdom", spy: "Suits your grace", bard: "Suits your wisdom" };
   const suits = (id, S) => { const st = K.PATHS[id].stat, top = Math.max(...Object.keys(K.ATTRS).map((a) => K.attr(a, S))); return K.attr(st, S) >= top; };
   const pathChoice = (id, t, extra = {}) => ({
     id, t, img: "path_" + id, fx: Object.assign({ set: { path: id }, skill: { [K.PATHS[id].skill]: 2 }, journal: "You chose the path of the {path!}." }, extra),
-    hint: (S) => (suits(id, S) ? SUITS[id] : K.PATHS[id].desc)
+    hint: (S) => (suits(id, S) ? SUITS[id] : "")
   });
   // Drona takes the court's children; anyone else must first make a shot almost no one makes.
   const COURT_CHILD = { any: [{ origin: "hastinapura" }, { rep: ["kuru", 5] }] };
   const DRONA_TAKES = { set: { teacher: "drona" }, duty: { teacher: 5 }, skill: { archery: 2 }, flag: ["drona_student", "drona_audition"], rep: { kuru: 2 } };
-  const audition = (low) => ({ id: low ? "drona_ask_low" : "drona_ask", img: "teacher_drona", t: "Ask Drona to take you, though your family is not of the court",
+  const audition = (low) => ({ id: low ? "drona_ask_low" : "drona_ask", img: "teacher_drona", t: "Ask Drona to test you",
     req: low ? { origin: ["suta", "nishada"], noFlag: "drona_refused" } : { not: { any: [COURT_CHILD, { origin: ["suta", "nishada"] }] }, noFlag: "drona_refused" },
-    game: "aim", hint: low ? "He turned Ekalavya away. He will set you a shot no one makes" : "He will set you one shot, at a bird no one can hit",
+    game: "aim", hint: low ? "A shot no one makes" : "One impossible shot",
     trial: { attr: "aim", skill: "archery", icon: "bird", small: true, easy: low ? -0.06 : -0.04, speed: low ? 2.4 : 2.1, shots: 3, need: low ? 3 : 2, verb: "Release",
       stage: "stage_drona_gate", cast: ["drona", "arjuna"],
       rules: low ? "Drona points to a wooden bird on the highest branch, far across the field. Three arrows, and every one must hit. He does not expect you to." : "Drona points to a wooden bird on the highest branch, far across the field. Three arrows. Hit it twice, and he will think about it.",
@@ -29,33 +29,32 @@
       id: "a2_teacher", act: 2, age: 14, art: "scene_teacher", place: "Hastinapura and beyond", caption: "The training grounds at dawn",
       title: "Who will teach you?",
       body: (S) => [
-        "You are fourteen. Drona, a brahmin who knows the secrets of every weapon, now teaches the Kuru princes. Every family with ambition wants a place near him.",
+        "You are fourteen.",
         S.origin === "nishada" ? { memory: "In your village they still speak of Ekalavya, who asked Drona to teach him and was turned away." } : null,
-        S.origin === "panchala" ? { aside: "Drona hates your king, Drupada. Whether he will hold that against a child of Panchala, no one can say." } : null,
-        "A teacher shapes your skills, and you will owe them for the rest of your life."
+        S.origin === "panchala" ? { aside: "Drona hates your king, Drupada." } : null
       ],
       choices: [
         audition(false), audition(true),
-        { id: "drona", img: "teacher_drona", t: "Ask Drona to take you as a student", req: COURT_CHILD, locked: "",
-          fx: { set: { teacher: "drona" }, duty: { teacher: 5 }, skill: { archery: 2 }, rep: { kuru: 1 }, flag: "drona_student", journal: "Drona accepted you as a student." }, hint: "His fee may one day set you against your friends" },
-        { id: "kripa", img: "teacher_kripa", t: "Train with Kripa, preceptor of the Kuru house", req: { any: [{ origin: COURTISH }, { rep: ["kuru", 5] }] }, locked: "Kripa teaches those tied to the Kuru court.",
-          fx: { set: { teacher: "kripa" }, duty: { teacher: 3, court: 2 }, skill: { mace: 1, archery: 1 }, journal: "Kripa took you into his school." }, hint: "His price is loyalty to the Kuru throne" },
+        { id: "drona", img: "teacher_drona", t: "Drona", req: COURT_CHILD, locked: "",
+          fx: { set: { teacher: "drona" }, duty: { teacher: 5 }, skill: { archery: 2 }, rep: { kuru: 1 }, flag: "drona_student", journal: "Drona accepted you as a student." }, hint: "His fee may cost you friends" },
+        { id: "kripa", img: "teacher_kripa", t: "Kripa", req: { any: [{ origin: COURTISH }, { rep: ["kuru", 5] }] }, locked: "Kripa teaches those tied to the Kuru court.",
+          fx: { set: { teacher: "kripa" }, duty: { teacher: 3, court: 2 }, skill: { mace: 1, archery: 1 }, journal: "Kripa took you into his school." }, hint: "Loyalty to the Kuru throne" },
         // Families from other lands may still ask. A test decides, and a refusal sends you back to choose again.
-        { id: "kripa_ask", img: "teacher_kripa", t: "Ask Kripa to take you, though your family is not of the court", req: { not: { any: [{ origin: COURTISH }, { rep: ["kuru", 5] }] }, noFlag: "kripa_refused" }, hint: "Kripa will want to see what you are worth",
+        { id: "kripa_ask", img: "teacher_kripa", t: "Ask Kripa to take you", req: { not: { any: [{ origin: COURTISH }, { rep: ["kuru", 5] }] }, noFlag: "kripa_refused" },
           check: { attr: "command", skill: "statecraft", dc: 7,
             pass: { fx: { set: { teacher: "kripa" }, duty: { teacher: 3, court: 2 }, skill: { mace: 1, archery: 1 }, journal: "Kripa took you into his school, though your family was not of the court." }, text: "Kripa questions you for an hour, then sets you to sweep the practice ground. That means yes." },
             fail: { fx: { flag: "kripa_refused" }, text: "Kripa hears you out politely. \"Come back when the court knows your name,\" he says. You will have to choose another teacher.", next: "a2_teacher" } } },
-        { id: "balarama", img: "teacher_balarama", t: "Go to Balarama, who teaches the mace", req: { any: [{ origin: "mathura" }, { flag: "balarama_noticed" }] }, locked: "Balarama teaches Yadavas, and those he has seen fight.",
-          fx: { set: { teacher: "balarama" }, duty: { teacher: 4 }, skill: { mace: 2 }, rep: { yadava: 2 }, journal: "Balarama agreed to teach you the mace." }, hint: "He will ask you to stay out of the war his family cannot avoid" },
-        { id: "hermit", img: "teacher_mauni", t: "Follow Mauni, the forest hermit who shoots blindfolded",
-          fx: { set: { teacher: "hermit" }, duty: { teacher: 5, conscience: 1 }, skill: { archery: 1, stealth: 1, lore: 1 }, flag: "hermit_secret", journal: "Mauni the hermit took you as his student and made you promise never to say who taught you." }, hint: "He asks one thing: never say who taught you" },
-        { id: "vidura", img: "teacher_vidura", t: "Join Vidura's circle of scribes, envoys and listeners", req: { origin: ["hastinapura", "anga", "gandhara"] }, locked: "Vidura draws his people from the court.",
-          fx: { set: { teacher: "vidura" }, duty: { teacher: 3, conscience: 1 }, skill: { statecraft: 2, stealth: 1 }, bond: { vidura: 2 }, journal: "You joined Vidura's circle." }, hint: "Vidura will judge every choice you make" },
-        { id: "vidura_ask", img: "teacher_vidura", t: "Ask Vidura to let you into his circle, though you were not born to the court", req: { not: { origin: ["hastinapura", "anga", "gandhara"] }, noFlag: "vidura_refused" }, hint: "Vidura will test what you notice",
+        { id: "balarama", img: "teacher_balarama", t: "Balarama, master of the mace", req: { any: [{ origin: "mathura" }, { flag: "balarama_noticed" }] }, locked: "Balarama teaches Yadavas, and those he has seen fight.",
+          fx: { set: { teacher: "balarama" }, duty: { teacher: 4 }, skill: { mace: 2 }, rep: { yadava: 2 }, journal: "Balarama agreed to teach you the mace." }, hint: "He will ask you to stay out of the war" },
+        { id: "hermit", img: "teacher_mauni", t: "Mauni, the forest hermit",
+          fx: { set: { teacher: "hermit" }, duty: { teacher: 5, conscience: 1 }, skill: { archery: 1, stealth: 1, lore: 1 }, flag: "hermit_secret", journal: "Mauni the hermit took you as his student and made you promise never to say who taught you." }, hint: "Never say who taught you" },
+        { id: "vidura", img: "teacher_vidura", t: "Vidura's circle", req: { origin: ["hastinapura", "anga", "gandhara"] }, locked: "Vidura draws his people from the court.",
+          fx: { set: { teacher: "vidura" }, duty: { teacher: 3, conscience: 1 }, skill: { statecraft: 2, stealth: 1 }, bond: { vidura: 2 }, journal: "You joined Vidura's circle." }, hint: "He will judge your choices" },
+        { id: "vidura_ask", img: "teacher_vidura", t: "Ask Vidura to take you", req: { not: { origin: ["hastinapura", "anga", "gandhara"] }, noFlag: "vidura_refused" },
           check: { attr: "wisdom", skill: "statecraft", dc: 7,
             pass: { fx: { set: { teacher: "vidura" }, duty: { teacher: 3, conscience: 1 }, skill: { statecraft: 2, stealth: 1 }, bond: { vidura: 2 }, journal: "Vidura let you into his circle, though you were not born to the court." }, text: "Vidura asks what you noticed on your way to his door. You tell him: the guard who was not where he should be, the merchant who was. He nods slowly." },
             fail: { fx: { flag: "vidura_refused" }, text: "Vidura asks what you noticed on your way to his door. You did not notice anything. \"Then you are not ready,\" he says, kindly. You will have to choose another teacher.", next: "a2_teacher" } } },
-        { id: "self", img: "teacher_self", t: "Teach yourself, in secret, at night", fx: { set: { teacher: "self" }, skill: { archery: 1 }, attr: { aim: 1 }, flag: "self_taught", journal: "You taught yourself, alone, by night." }, hint: "No debt, and no one to protect you" }
+        { id: "self", img: "teacher_self", t: "Teach yourself", fx: { set: { teacher: "self" }, skill: { archery: 1 }, attr: { aim: 1 }, flag: "self_taught", journal: "You taught yourself, alone, by night." }, hint: "No debt, no protector" }
       ],
       next: "a2_path"
     },
@@ -63,17 +62,16 @@
       id: "a2_path", act: 2, age: 15, place: (S) => (S.teacher === "hermit" ? "Mauni's clearing" : S.teacher === "self" ? "A clearing at night" : "Your teacher's school"), art: "scene_armoury", plate: ["#3e8c72", "#d4a84b"], caption: "The armoury",
       title: "Choose, then prove it",
       body: (S) => [
-        (S.teacher === "self" ? "After a year alone, you lay out everything you have gathered on a mat: a bamboo bow, a mace, a set of chariot reins, a scribe's tablet, a healer's satchel, a dark cloak, a vina." : "After a year, {teacher} lays out everything the school has on a mat: a bamboo bow, a mace, a set of chariot reins, a scribe's tablet, a healer's satchel, a dark cloak, a vina. \"Pick one,\" {teacher} says. \"Then show me it was the right one.\""),
-        "What you choose decides how you fight, how you are useful when you are not fighting, and, one day, which blessings can find you. Fail its test twice and you will have to choose again."
+        (S.teacher === "self" ? "Which weapon do you choose?" : "Which weapon do you choose?")
       ],
       choices: [
-        pathChoice("archer", "The bow, like Arjuna and Karna"),
-        pathChoice("mace", "The mace and wrestling, like Bhima and Duryodhana"),
-        pathChoice("charioteer", "The reins, like the great charioteers", { attr: { grace: 1 } }),
-        pathChoice("strategist", "Strategy and statecraft, like Vidura", { attr: { command: 1 } }),
-        pathChoice("healer", "Healing, which no one else at your school wants", { item: { herbs: 2 } }),
-        pathChoice("spy", "Listening and carrying secrets", { attr: { grace: 1 } }),
-        pathChoice("bard", "The songs and stories of the sutas", { attr: { wisdom: 1 } })
+        pathChoice("archer", "The bow"),
+        pathChoice("mace", "The mace"),
+        pathChoice("charioteer", "The reins", { attr: { grace: 1 } }),
+        pathChoice("strategist", "Statecraft", { attr: { command: 1 } }),
+        pathChoice("healer", "Healing", { item: { herbs: 2 } }),
+        pathChoice("spy", "Secrets", { attr: { grace: 1 } }),
+        pathChoice("bard", "The vina", { attr: { wisdom: 1 } })
       ],
       next: "a2_pathtest"
     },
@@ -81,32 +79,30 @@
       id: "a2_ekalavya", act: 2, age: 16, canon: true, place: "The forest near Hastinapura", travel: "Drona takes his students hunting in the forest near Hastinapura.", art: "scene_ekalavya", plate: ["#3e8c72", "#16131f"], caption: "A clay image in a forest clearing",
       title: "Ekalavya's fee",
       witness: [
-        "On a hunt, the princes' dog barks at a dark-skinned boy in the forest. Seven arrows close its mouth without drawing blood. The boy is Ekalavya, a Nishada prince. Drona once refused to teach him, so he made a clay image of Drona and practised in front of it.",
-        "He is a better archer than Arjuna. Arjuna reminds Drona of his promise that no one would surpass him.",
-        "Drona asks Ekalavya for his fee as a student: his right thumb. Ekalavya cuts it off and gives it without a word."
+        "Ekalavya, the Nishada archer Drona refused to teach, is better than Arjuna. Drona asks him for his right thumb as his fee, and he cuts it off."
       ],
       body: (S) => [
         S.teacher === "drona" ? "You are standing behind Drona when he asks." : "You are with the hunting party, holding the horses.",
         S.origin === "nishada" ? { memory: "He is from a village like yours. You know his mother's name." } : null
       ],
       choices: [
-        { id: "speak", t: "Say out loud that this is wrong", fx: (S) => ({ duty: { conscience: 2, teacher: S.teacher === "drona" ? -2 : 0 }, bond: { arjuna: -1 }, rep: { common: 1 }, memory: ["drona", "You objected to the fee he asked of Ekalavya."] }) , hint: "Drona and Arjuna will remember" },
-        { id: "silent", t: "Keep silent. It is between a teacher and a student", fx: { duty: { conscience: -1, teacher: 1 } } },
-        { id: "tend", t: "Go back afterwards and bind Ekalavya's hand",
+        { id: "speak", t: "Say it is wrong", fx: (S) => ({ duty: { conscience: 2, teacher: S.teacher === "drona" ? -2 : 0 }, bond: { arjuna: -1 }, rep: { common: 1 }, memory: ["drona", "You objected to the fee he asked of Ekalavya."] })  },
+        { id: "silent", t: "Keep silent", fx: { duty: { conscience: -1, teacher: 1 } } },
+        { id: "tend", t: "Bind Ekalavya's hand",
           check: { attr: "wisdom", skill: "healing", dc: 7,
             pass: { fx: { rep: { common: 2 }, duty: { conscience: 1 }, flag: "helped_ekalavya", journal: "You bound Ekalavya's hand. He thanked you and said he would learn to shoot with two fingers." }, text: "The wound is clean when you leave. Ekalavya says he will learn to draw a bow with two fingers. You believe him." },
             fail: { fx: { duty: { conscience: 1 }, flag: "helped_ekalavya" }, text: "You do what you can. It is not much. He thanks you anyway." } } },
-        { id: "kin", t: "Walk away from Drona's party and stay with Ekalavya", req: { origin: "nishada" }, fx: { duty: { conscience: 3 }, rep: { common: 2, kuru: -2 }, flag: "stood_with_ekalavya", memory: ["all", "You chose your own people over the princes' hunt."] } }
+        { id: "kin", t: "Stay with Ekalavya", req: { origin: "nishada" }, fx: { duty: { conscience: 3 }, rep: { common: 2, kuru: -2 }, flag: "stood_with_ekalavya", memory: ["all", "You chose your own people over the princes' hunt."] } }
       ],
       next: "s_youth"
     },
     {
       id: "a2_spar", act: 2, age: 17, art: "scene_teacher", place: "The practice ground", caption: "Sparring at the practice ground",
       title: "The sparring trial",
-      body: ["Before the princes' tournament, every student must prove themselves in a sparring bout. Your opponent is Ketan, the armourer's son, who has beaten everyone this season."],
+      body: ["Before the tournament, you must spar with Ketan, the armourer's son. He is unbeaten this season."],
       choices: [
         { id: "fight", t: "Take the bout", combat: "e_spar" },
-        { id: "skip", t: "Train alone instead. You have nothing to prove", fx: { attr: { wisdom: 1 } } }
+        { id: "skip", t: "Train alone instead", fx: { attr: { wisdom: 1 } } }
       ],
       next: "a2_tournament"
     },
@@ -114,21 +110,19 @@
       id: "a2_tournament", act: 2, age: 17, canon: true, art: "scene_tournament", place: "Tournament grounds, Hastinapura", caption: "Karna walks into the arena",
       title: "The tournament",
       witness: [
-        "Arjuna splits target after target, and the city roars for him. Then a stranger in golden armour walks into the arena and matches every feat. He is Karna. He challenges Arjuna to single combat.",
-        { speaker: "Kripa", line: "\"Arjuna is Pandu's son, of the Kuru line. Name your father and your house, stranger. Princes do not duel nameless men.\"" },
-        "Karna lowers his bow. Duryodhana rises in the royal box."
+        "At the tournament Karna matches Arjuna feat for feat, then is shamed for having no royal name. Duryodhana rises in the royal box."
       ],
       body: (S) => [
         S.origin === "suta" ? { memory: "You know the old charioteer pushing through the crowd. Everyone in your lane knows Adhiratha." } : null,
         S.friend === "karna" ? { memory: "Karna is your closest friend. You know exactly what this moment is costing him." } : null,
-        "You are standing in the stands."
+        "What do you do?"
       ],
       choices: [
-        { id: "beside", t: "Step down and stand beside Karna", fx: { bond: { karna: 3, arjuna: -1 }, duty: { conscience: 1, court: -1 }, flag: "stood_with_karna", memory: ["karna", "You stood beside him when the arena laughed."] } },
-        { id: "shout", t: "Shout the name of your own charioteer house beside his", req: { origin: "suta" },
+        { id: "beside", t: "Stand beside Karna", fx: { bond: { karna: 3, arjuna: -1 }, duty: { conscience: 1, court: -1 }, flag: "stood_with_karna", memory: ["karna", "You stood beside him when the arena laughed."] } },
+        { id: "shout", t: "Shout your own charioteer house", req: { origin: "suta" },
           fx: { bond: { karna: 4 }, rep: { kuru: -2, common: 2 }, duty: { court: -2, family: 1 }, flag: ["stood_with_karna", "named_house"], memory: ["karna", "You said your father's trade out loud, in front of the princes."] } },
         { id: "princes", t: "Stay with the princes", fx: { duty: { court: 2, teacher: 1 }, bond: { karna: -2, arjuna: 2 }, flag: "stood_with_princes", memory: ["arjuna", "You stayed at his side."] } },
-        { id: "silent", t: "Say nothing and watch", fx: { duty: { conscience: -1 }, bond: { karna: -1 }, flag: "silent_at_tournament", memory: ["karna", "You were in the stands, and you said nothing."] } },
+        { id: "silent", t: "Watch", fx: { duty: { conscience: -1 }, bond: { karna: -1 }, flag: "silent_at_tournament", memory: ["karna", "You were in the stands, and you said nothing."] } },
         { id: "leave", t: "Leave the arena", fx: { rep: { kuru: -1 }, bond: { karna: 1 }, flag: "left_arena" }, hint: "Opens a hidden thread" }
       ],
       after: ["Duryodhana makes Karna king of Anga on the spot. When old Adhiratha comes forward to embrace his son, Bhima laughs at the charioteer's boy who would be king. The sun sets before the duel can begin."],
@@ -138,20 +132,19 @@
       id: "a2_drupada", act: 2, age: 18, canon: true, place: "The road to Panchala", travel: "Drona marches his students east to Panchala to collect his fee.", art: "scene_drupada", plate: ["#c0472f", "#5c3361"], caption: "The road to Drupada's capital",
       title: "Drona's fee",
       witness: [
-        "Their training is done, and Drona asks his students for his fee: bring him King Drupada of Panchala, the friend who once humiliated him, as a prisoner.",
-        "The Kauravas ride first, and the Panchala army throws them back."
+        "For his fee, Drona asks his students to bring him King Drupada of Panchala as a prisoner."
       ],
       body: (S) => [
         S.origin === "panchala" ? { memory: S.flags.includes("moved_capital") ? "Panchala is your homeland. The arrows in the Kuru quivers came from your mother's workshop in the armoury." : "Panchala is your home. Your mother's arrows are in those quivers." } : null,
-        S.teacher === "drona" ? "Drona looks at each of his students in turn, and then at you." : "The army passes your door on its way east."
+        S.teacher === "drona" ? "Drona looks at you." : "The army passes your door on its way east."
       ],
       choices: [
-        { id: "ride", t: "Ride with Drona's students against Panchala", req: { teacher: "drona" }, combat: "e_panchala",
+        { id: "ride", t: "Ride against Panchala", req: { teacher: "drona" }, combat: "e_panchala",
           resolve: (S) => (S.origin === "panchala" ? { duty: { conscience: -3, family: -2 }, memory: ["all", "You rode against your own homeland to pay your teacher."] } : null) },
-        { id: "refuse", t: "Refuse to ride. Your fee will be paid some other way", req: { teacher: "drona" },
+        { id: "refuse", t: "Refuse to ride", req: { teacher: "drona" },
           fx: { duty: { teacher: -4, conscience: 1 }, rep: { panchala: 2 }, flag: "refused_dakshina", memory: ["drona", "You refused to help him take Drupada."] } },
         { id: "defend", t: "Defend Panchala's border villages", req: { origin: "panchala", not: { teacher: "drona" } }, combat: "e_border" },
-        { id: "warn", t: "Run ahead and warn the villages on the road", req: { not: { teacher: "drona" } },
+        { id: "warn", t: "Warn the villages", req: { not: { teacher: "drona" } },
           peril: { kind: "prison", by: "Kaurava outriders", place: "A cell below the palace, Hastinapura",
             text: "Kaurava outriders ride you down on the road. This time they do not send you home. They tie your hands to a saddle and take you back to Hastinapura, to wait on the elders' pleasure.",
             journal: "Kaurava outriders caught you warning Panchala's villages, and locked you away." },
@@ -171,15 +164,15 @@
       title: "A vow by the river",
       body: (S) => [
         S.flags.includes("left_arena") ? { memory: "Two years ago, outside the arena, you found Adhiratha alone by the chariots. He told you Karna was found as a baby, floating down this river in a basket." } : null,
-        "The river is full of lamps. People make vows here. A vow gives you strength, and breaking one marks you for life. You may hold up to three."
+        "Which vow do you swear? You may hold three."
       ],
       choices: [
-        { id: "retreat", img: "vow_never_retreat", t: "Swear never to retreat in battle", fx: { vowTake: "never_retreat" } },
-        { id: "lie", img: "vow_never_lie", t: "Swear never to speak a lie", fx: { vowTake: "never_lie", rep: { sages: 1 } } },
-        { id: "unarmed", img: "vow_spare_unarmed", t: "Swear never to strike someone who cannot defend themselves", fx: { vowTake: "spare_unarmed", rep: { sages: 1, common: 1 } } },
-        { id: "karna", img: "vow_spare_karna", t: "Swear never to raise a weapon against Karna", req: { bond: ["karna", 6] }, locked: "Needs a close bond with Karna.", fx: { vowTake: "spare_karna", bond: { karna: 1 } } },
-        { id: "celibate", img: "vow_celibacy", t: "Swear a vow of celibacy, as Bhishma did", fx: { vowTake: "celibacy", attr: { wisdom: 1 } } },
-        { id: "none", t: "Make no vow", fx: {}, hint: "Nothing to keep, nothing to break" }
+        { id: "retreat", img: "vow_never_retreat", t: "Never retreat", fx: { vowTake: "never_retreat" } },
+        { id: "lie", img: "vow_never_lie", t: "Never lie", fx: { vowTake: "never_lie", rep: { sages: 1 } } },
+        { id: "unarmed", img: "vow_spare_unarmed", t: "Never strike the defenceless", fx: { vowTake: "spare_unarmed", rep: { sages: 1, common: 1 } } },
+        { id: "karna", img: "vow_spare_karna", t: "Never fight Karna", req: { bond: ["karna", 6] }, locked: "Needs a close bond with Karna.", fx: { vowTake: "spare_karna", bond: { karna: 1 } } },
+        { id: "celibate", img: "vow_celibacy", t: "Celibacy, like Bhishma", fx: { vowTake: "celibacy", attr: { wisdom: 1 } } },
+        { id: "none", t: "Make no vow", fx: {} }
       ],
       next: "a3_secret"
     }

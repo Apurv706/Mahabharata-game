@@ -109,7 +109,7 @@
   const sw = K.SCENES.a3_swayamvara;
   if (sw) {
     const body = sw.body, enter = sw.enter;
-    sw.body = (S) => [].concat(K.val(body, S) || [], ["In the uproar a young Yadava from Krishna's party puts his back to yours and grins. His name is Satyaki, and he wants to know yours."]);
+    sw.body = (S) => [].concat(K.val(body, S) || [], ["A young Yadava, Satyaki, puts his back to yours and grins."]);
     sw.enter = (S) => Object.assign({}, K.val(enter, S) || {}, { flag: "met_satyaki", bond: { satyaki: 2 } });
   }
   // Karna's small son, seen in Anga by those near Karna: remembered on the seventeenth day (war_duel.js).
