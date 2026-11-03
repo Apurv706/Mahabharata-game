@@ -90,7 +90,7 @@
   const SIGNS = ["Reeds bent toward the water", "A gold armlet in the mud", "Footprints going into the lake", "A torn royal umbrella", "Blood on a reed stem", "Herons that will not land",
     "A hunter's snare", "Wet silk on a stone", "A broken mace strap", "Bubbles where no fish rise", "A crushed lotus", "A sandal with a gold buckle",
     "A dead horse in the shallows", "A boat pulled up on the bank", "A cold cooking fire", "Three sets of chariot tracks"];
-  const SEARCH = { id: "search", t: "Search the reeds before the hunters do", game: "notice", hint: "A test of what you notice",
+  const SEARCH = { id: "search", t: "Search the reeds first", game: "notice", hint: "A test of what you notice",
     trial: { attr: "wisdom", skill: "stealth", stage: "stage_lake_reeds", count: 7, things: SIGNS, lookLine: "Look along the bank. You have {n} seconds.", ask: "Which of these did you see in the reeds?",
       rules: "The light is going. Look along the bank once, then say what you saw. Two right answers of three, and you reach the place before the hunters do.",
       stakes: ["You find the place before the hunters do.", "The hunters find it first, and run for the Pandava camp."] },
@@ -136,7 +136,7 @@
   // you until the duel is over (a cell: tests.js x_captive, then the scene after the duel).
   const WARNED = { bond: { duryodhana: 3 }, flag: "lake_warned", memory: ["duryodhana", "You told me to run. I would not, and you stayed to see it."], journal: "On the last day you knelt at the lake and told Duryodhana to run. He would not." };
   const TOLD = { rep: { pandava: 2 }, flag: "lake_told", memory: ["duryodhana", "You stood on the bank with them when they called me out of the water."], journal: "On the last day you found where Duryodhana lay hidden in the lake, and told the Pandavas." };
-  const TELL = { t: "Go to the Pandavas and tell them where he is", locked: "The hunters were there before you.",
+  const TELL = { t: "Tell the Pandavas", locked: "The hunters were there before you.",
     text: "Yudhishthira hears you out and sends for his brothers. The hunters come in with the same news while the chariots are being yoked, and are paid anyway." };
   const WARN_TEXT = "The still water shivers, and his voice comes up through it, slow and thick. \"I have run as far as I am going to,\" he says. \"When they come, I will come up and fight. Stand on the bank and watch. I want one friend to see it.\"";
   // Seen: Pandava reputation -3 either way; out of your depth (the odds under even), Bhima's men also
@@ -152,16 +152,16 @@
       id: "wl_iravan", act: 6, age: 44, away: true, war: true, when: (S) => !!K.tieIravan(S), skipTo: "a6_bhishma", next: "a6_bhishma",
       art: "war_bhishma", place: "Kurukshetra · day 8", caption: "Naga warriors in the Pandava line", title: "Iravan",
       body: (S) => [
-        "On the eighth morning a young warrior rides along the Pandava line with naga warriors at his back, men who came up out of the river country for him. He is Iravan, Arjuna's son by Ulupi, the naga princess.",
+        "Iravan, Arjuna's son by the naga princess Ulupi, rides along the line with his naga warriors.",
         K.tieIravan(S) !== "own" ? K.tieLine(S, K.tieIravan(S), {
           company: "Your company's orders came at first light: ride on Iravan's flank, and keep Shakuni's horse off it.",
           friend: "{who} asked you here last night, and here you are.", letter: "You came because of what was said at the fire last night." }) :
         { memory: (S.astras || []).some((a) => a.id === "nagapasha" && !a.broken) ? "The nagas know your name. Years ago you drew a hunter's arrow out of one of them on a riverbank." : has(S, "khandava_nagas") ? "The nagas know your name. When the Khandava forest burned, a naga family came out of the smoke in your line, and Takshaka's people do not forget it." : "The nagas know your name. When you were a child you gave milk to a cobra in the well-house and led it out to the fields unharmed, and the serpent folk do not forget a kindness." },
-        { speaker: "Iravan", line: K.tieIravan(S) === "own" ? "Shakuni's horse is coming at my part of the field. My mother's people say you are a friend to them. Ride with us." : "Shakuni's horse is coming at my part of the field. I need every rider I can get." }
+        { speaker: "Iravan", line: K.tieIravan(S) === "own" ? "Shakuni's horse is coming at my part of the field. My mother's people say you are a friend to them. Ride with us." : "Shakuni's horse is coming. I need every rider." }
       ],
       choices: [
-        { id: "ride", t: "Ride beside Iravan against Shakuni's horse", img: "p_iravan", combat: "e_iravan", next: "wl_iravan_body", fx: { flag: "iravan_fought", bond: { iravan: 2 } }, hint: HOLD },
-        { id: "line", t: "Keep your own place in the line", fx: {}, next: "wl_iravan_body", text: "Iravan raises a hand and rides on. All morning you hear his war cry far down the field." }
+        { id: "ride", t: "Ride beside Iravan", img: "p_iravan", combat: "e_iravan", next: "wl_iravan_body", fx: { flag: "iravan_fought", bond: { iravan: 2 } }, hint: HOLD },
+        { id: "line", t: "Keep your place", fx: {}, next: "wl_iravan_body", text: "Iravan raises a hand and rides on. All morning you hear his war cry far down the field." }
       ]
     },
     {
@@ -169,17 +169,17 @@
       art: "stage_field_to_river", place: "Kurukshetra · the eighth day, at dusk", caption: "The field between you and the river", title: "Iravan's body",
       enter: { die: "iravan" },
       body: [
-        "At dusk the word comes down the line. Duryodhana sent the rakshasa Alambusha against Iravan, and Alambusha killed him with sorcery on the far side of the field.",
-        "His naga warriors lie dead around him. Ulupi's people are waiting for him at the river, and the Kaurava archers on the ridge loose fire-arrows at anything that moves."
+        "At dusk word comes: the rakshasa Alambusha has killed Iravan with sorcery.",
+        "Ulupi's people wait for him at the river, and Kaurava archers shoot at anything that moves."
       ],
-      choices: [CARRY, { id: "leave", t: "Leave him for the pyres with the others", fx: {}, text: "Someone else carries him, or no one does. In the morning the naga warriors are gone from the field." }]
+      choices: [CARRY, { id: "leave", t: "Leave him for the pyres", fx: {}, text: "Someone else carries him, or no one does. In the morning the naga warriors are gone from the field." }]
     },
     {
       id: "wl_iravan_river", act: 6, age: 44, away: true, war: true, next: "a6_bhishma",
       art: "scene_iravan_river", place: "The river, the night of the eighth day", caption: "Ulupi's people at the water", title: "The river",
       body: [
-        "Naga women come up out of the shallows with lamps. They lay Iravan on a bier under the stones of their serpent kings and cover him, and one of them looks at you for a long time.",
-        { speaker: "A naga woman", line: "Ulupi will hear who carried her son. Call once in this war, and one of us will come." }
+        "Naga women come out of the shallows with lamps and take Iravan.",
+        { speaker: "A naga woman", line: "Call once in this war, and one of us will come." }
       ],
       choices: [{ id: "go", t: "Leave him with his mother's people", fx: {}, text: "When you look back from the bank, the lamps are out on the water and the bier is gone." }]
     },
@@ -189,28 +189,28 @@
       id: "wl_lake", act: 6, age: 44, away: true, war: true, when: lakeWhen, skipTo: "a6_duryodhana", next: "wl_lake_reeds",
       art: "stage_lake_reeds", place: "Dvaipayana lake · the eighteenth day, at dusk", caption: "Reeds higher than a man", title: "The lake in the reeds",
       body: (S) => [
-        "Shalya fell at noon, and Shakuni soon after. When the fighting stops, Duryodhana is nowhere on the field. He went east alone, on foot, toward the lake called Dvaipayana.",
-        S.side === "pandava" ? "Yudhishthira has sent scouts to every lake and thicket, and you are one of them. The hunters who sell the camp its meat are looking too. They have heard there is gold in it."
-          : "Ashwatthama, Kripa and Kritavarma are looking for him, all that is left of eleven armies. So are the hunters who sell the Pandava camp its meat. They have heard there is gold in it.",
+        "When the fighting stops, Duryodhana is gone, on foot, toward the lake.",
+        S.side === "pandava" ? "You are one of Yudhishthira's scouts. Hunters are looking too, for gold."
+          : "Ashwatthama, Kripa and Kritavarma are looking for him. So are hunters, for gold.",
         K.tieLine(S, K.tieLake(S), { company: "Your company is one of those sent out to search the lake country.", friend: "{who} asked you to come, and is somewhere in the reeds behind you.", letter: "You came on the word that went round the camp at dusk." })
       ],
-      choices: [SEARCH, { id: "leave", t: "Leave the search to others", fx: {}, next: "a6_duryodhana", text: "You let the others search. By moonrise someone has found him." }]
+      choices: [SEARCH, { id: "leave", t: "Leave it to others", fx: {}, next: "a6_duryodhana", text: "You let the others search. By moonrise someone has found him." }]
     },
     {
       id: "wl_lake_reeds", act: 6, age: 44, away: true, war: true, next: "wl_lake_found",
       art: "fight_lake_reeds_night", place: "Dvaipayana lake, after dark", caption: "Fire-baskets on the bank", title: "The fight in the reeds",
       body: (S) => [
-        S.side === "kaurava" ? "Ashwatthama, Kripa and Kritavarma stand at the water's edge under the fire-baskets, talking to the still water. Out in the reeds, torches are moving. Pandava scouts are closing in."
-          : "The other scouts have found the place too. At the water's edge, under the fire-baskets, three men stand guard over the still water: Ashwatthama, Kripa and Kritavarma.",
+        S.side === "kaurava" ? "Ashwatthama, Kripa and Kritavarma talk to the still water. Pandava scouts are closing in."
+          : "At the water's edge, Ashwatthama, Kripa and Kritavarma stand guard over the still water.",
         S.side === "pandava" && dFriend(S) ? { memory: "Duryodhana is under that water. You could go down and stand with the three instead." } : null
       ],
       choices: (S) => {
         const deep = K.lakeDeep(S), hint = deep ? DANGER : HOLD;
         return [
-          S.side === "kaurava" || dFriend(S) ? { id: "stand", t: "Stand with Ashwatthama, Kripa and Kritavarma at the water's edge", img: "p_ashwatthama", combat: deep ? "e_lake_hold_deep" : "e_lake_hold", hint,
+          S.side === "kaurava" || dFriend(S) ? { id: "stand", t: "Stand with Ashwatthama", img: "p_ashwatthama", combat: deep ? "e_lake_hold_deep" : "e_lake_hold", hint,
             fx: S.side === "pandava" ? { flag: "lake_with_three", rep: { pandava: -2 } } : { flag: "lake_with_three" } } : null,
-          S.side === "pandava" ? { id: "scout", t: "Go in with the scouts, and hold on until you can slip away", combat: deep ? "e_lake_three_deep" : "e_lake_three", hint, fx: { flag: "lake_vs_three" } } : null,
-          { id: "hide", t: "Keep low in the reeds until it is over", fx: (S2) => ({ flag: S2.side === "kaurava" ? ["lake_hid", "lake_ash_cold"] : "lake_hid" }),
+          S.side === "pandava" ? { id: "scout", t: "Go in with the scouts", combat: deep ? "e_lake_three_deep" : "e_lake_three", hint, fx: { flag: "lake_vs_three" } } : null,
+          { id: "hide", t: "Hide in the reeds", fx: (S2) => ({ flag: S2.side === "kaurava" ? ["lake_hid", "lake_ash_cold"] : "lake_hid" }),
             text: (S2) => (S2.side === "kaurava" ? "You keep down in the reeds. When the torches have gone, Ashwatthama looks at the place where you lay, and says nothing." : "You keep down in the reeds while the others go in. Not all of them come back.") }
         ].filter(Boolean);
       }
@@ -219,16 +219,16 @@
       id: "wl_lake_found", act: 6, age: 44, away: true, war: true, next: "a6_duryodhana",
       art: "fight_lake_reeds_night", place: "Dvaipayana lake, after dark", caption: "Still water under the fire-baskets", title: "Under the water",
       body: (S) => [
-        "When the reeds are quiet you go down to the water. It lies flat in one place, too flat. Duryodhana is under it. He has bound the water over himself with a spell, and he can hear every word said on the bank.",
-        has(S, "lake_late") ? "The hunters have already gone, running for the Pandava camp with the news." : "Somewhere behind you in the reeds, the hunters are coming."
+        "Duryodhana is under the water, bound there by a spell. He can hear every word on the bank.",
+        has(S, "lake_late") ? "The hunters have already gone, running for the Pandava camp with the news." : "The hunters are coming."
       ],
       choices: [
         // Told by a Kaurava, it is also a betrayal of your own king.
         Object.assign({ id: "tell", req: (S) => S.side !== "kaurava" && has(S, "lake_first"), showIf: (S) => S.side !== "kaurava", fx: TOLD }, TELL),
         Object.assign({ id: "tell_k", req: (S) => S.side === "kaurava" && has(S, "lake_first"), showIf: { side: "kaurava" }, fx: Object.assign({ duty: { court: -3 } }, TOLD) }, TELL),
         { id: "silent", t: "Say nothing to anyone", fx: { flag: "lake_silent" }, text: "You keep his secret. The hunters do not." },
-        { id: "warn", t: "Kneel at the water and tell him to run", req: { side: "kaurava" }, fx: Object.assign({}, WARNED, { flag: ["lake_warned", "saw_duel"] }), text: WARN_TEXT },
-        { id: "warn_p", t: "Kneel at the water and tell him to run", req: (S) => S.side === "pandava" && dFriend(S), fx: WARNED, hint: "If a hunter sees you, the Pandavas will know",
+        { id: "warn", t: "Tell him to run", req: { side: "kaurava" }, fx: Object.assign({}, WARNED, { flag: ["lake_warned", "saw_duel"] }), text: WARN_TEXT },
+        { id: "warn_p", t: "Tell him to run", req: (S) => S.side === "pandava" && dFriend(S), fx: WARNED, hint: "A hunter may see you",
           peril: { kind: "prison", by: "Bhima's men", place: "A pen behind the Pandava lines", then: "a6_duryodhana", waitThen: "a6_duryodhana",
             text: "Getting up from the water, you see a hunter in the reeds. Before you are out of them, Bhima's men have your arms behind your back.",
             journal: "You were seen warning Duryodhana at the lake, and Bhima's men held you until the duel was over." },

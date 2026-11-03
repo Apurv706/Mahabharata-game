@@ -121,42 +121,42 @@
     {
       id: "wc_child_eve", act: 6, age: 44, war: true, away: true, when: (S) => childAway(S) && !cmdOf(S), skipTo: "a6_day1", next: "a6_day1",
       art: "scene_vasu", place: "Your tent, the night before", caption: "Two captains, one boy", title: "Whose division",
-      body: ["Vasu has found a place in another division, as you told him to. Two captains will take a boy of sixteen who can hold a spear, and he asks you to choose."],
+      body: ["Two captains will take Vasu. He asks you to choose."],
       choices: [
-        eveChoice("satyaki", "pandava", "Satyaki's: the Yadava who fights at Arjuna's side and never seems to tire"),
-        eveChoice("virata", "pandava", "King Virata's: the old king of Matsya, who keeps his boys behind the elephants"),
-        eveChoice("ashwatthama", "kaurava", "Ashwatthama's: Drona's son, who has never lost a fight"),
-        eveChoice("bhurishravas", "kaurava", "Bhurishravas's: an old king who says his prayers before every battle")
+        eveChoice("satyaki", "pandava", "Satyaki's"),
+        eveChoice("virata", "pandava", "King Virata's"),
+        eveChoice("ashwatthama", "kaurava", "Ashwatthama's"),
+        eveChoice("bhurishravas", "kaurava", "Bhurishravas's")
       ]
     },
     {
       id: "wc_child_letter_1", act: 6, age: 44, war: true, away: true, when: (S) => childAway(S) && !!cmdOf(S), skipTo: "a6_bhishma", next: "a6_bhishma",
       art: "scene_letter_camp", place: "Your tent, after the ninth day", caption: "A letter in Vasu's hand", title: "A letter from Vasu",
-      body: (S) => [["A runner from {cmd}'s lines brings you a letter in Vasu's hand. He writes the way he talks.", cmdP(S)], { speaker: "Vasu", line: LETTER_1[cmdOf(S)] }],
+      body: (S) => [["A letter comes from Vasu.", cmdP(S)], { speaker: "Vasu", line: LETTER_1[cmdOf(S)] }],
       choices: [
         { id: "write", t: "Write back tonight", fx: { bond: { vasu: 1 } }, text: "You write more than you mean to, and cross most of it out, and send the rest." },
-        { id: "go", t: "Walk to his lines in the dark, and see him", fx: { bond: { vasu: 2 }, duty: { court: -1 }, memory: ["vasu", "You walked across the camp in the dark to see me, after the ninth day."] },
+        { id: "go", t: "Go and see him", fx: { bond: { vasu: 2 }, duty: { court: -1 }, memory: ["vasu", "You walked across the camp in the dark to see me, after the ninth day."] },
           text: "He is asleep when you find him, with his sandals still on. You sit by him for an hour and go back before he wakes. Someone tells him in the morning." }
       ]
     },
     {
       id: "wc_child_line", act: 6, age: 44, war: true, away: true, when: (S) => childAway(S) && !!cmdOf(S), skipTo: "a6_capture", next: "a6_capture",
       art: "war_capture", place: (S) => (S.side === "kaurava" ? "Kurukshetra · day 12" : "Kurukshetra · day 11"), caption: "Two lines, side by side", title: "Vasu's line",
-      body: (S) => [[S.side === "kaurava" ? "On the twelfth morning the whole army is thrown at Yudhishthira's chariot, and {cmd}'s division comes up on your right." : "On the eleventh morning Drona drives for Yudhishthira's chariot, and {cmd}'s division comes up on your left to meet him.", cmdP(S)],
-        "In its front rank, with a shield too big for him, is Vasu."],
+      body: (S) => [[S.side === "kaurava" ? "{cmd}'s division comes up on your right." : "{cmd}'s division comes up on your left.", cmdP(S)],
+        "In its front rank is Vasu."],
       choices: [
-        { id: "hold", t: "Close up with his line, and hold it beside him", combat: "wc_e_child_line", hint: "Won by standing" },
-        { id: "send", t: "Send him back to his own captain. He has to learn without you", fx: { flag: "child_sent_back", bond: { vasu: -1 } },
+        { id: "hold", t: "Hold the line beside him", combat: "wc_e_child_line", hint: "Won by standing" },
+        { id: "send", t: "Send him back to his captain", fx: { flag: "child_sent_back", bond: { vasu: -1 } },
           text: "He goes, red to the ears. That evening he comes to your fire with a cut across his ribs and says it is nothing." }
       ]
     },
     {
       id: "wc_child_letter_2", act: 6, age: 44, war: true, away: true, when: (S) => childAway(S) && !!cmdOf(S), skipTo: "a6_day16", next: "a6_day16",
       art: "scene_letter_camp", place: "Your tent, the night Drona fell", caption: "A second letter, shorter", title: "Vasu's second letter",
-      body: (S) => ["A second letter from Vasu, shorter than the first.", { speaker: "Vasu", line: LETTER_2[cmdOf(S)] }],
+      body: (S) => ["A second letter from Vasu.", { speaker: "Vasu", line: LETTER_2[cmdOf(S)] }],
       choices: [
         { id: "write", t: "Write back", fx: { bond: { vasu: 1 } }, text: "Three lines. The last one is about his mother's cooking, because you cannot think what else to say." },
-        { id: "keep", t: "Keep it, and send nothing. He will understand", fx: {}, text: "You fold it into the first one." }
+        { id: "keep", t: "Keep it, and send nothing", fx: {}, text: "You fold it into the first one." }
       ]
     },
     {
@@ -166,12 +166,12 @@
       art: "war_day18", place: "Kurukshetra · the last evening", caption: "Looking for one face", title: "After the last day",
       body: (S) => [S.dead.includes("vasu")
         ? "You find Vasu at dusk among the dead, where the last line broke. The red thread is still on his wrist."
-        : "You find Vasu at dusk sitting on an overturned cart, alive, with someone else's blood on him. When he sees you he tries to stand up, and cannot."],
+        : "At dusk you find Vasu alive, with someone else's blood on him."],
       choices: (S) => (S.dead.includes("vasu")
         ? [{ id: "carry", t: "Carry him to the pyres yourself", fx: { duty: { family: 1 } }, text: "He is heavier than he was at three, and lighter than you thought." },
           { id: "sit", t: "Sit with him until it is dark", fx: { attr: { wisdom: 1 } } }]
         : [{ id: "sit", t: "Sit down beside him", fx: { bond: { vasu: 1 } }, text: "Neither of you says anything for a long time. Then he asks if you are hungry, and you both laugh, and cannot stop." },
-          { id: "away", t: "Take him off the field before anyone counts the living", fx: { duty: { family: 1 } } }])
+          { id: "away", t: "Take him off the field", fx: { duty: { family: 1 } } }])
     }
   ]);
 
@@ -234,11 +234,11 @@
     {
       id: "wc_shakti_k", act: 6, age: 44, war: true, away: true, when: (S) => S.side === "kaurava" && !!K.tieShakti(S), skipTo: "a6_day15", next: "wc_shakti_call",
       art: "fight_night_torches", place: "Kurukshetra · the night of day 14", caption: "The torches going out", title: "Ghatotkacha in the dark",
-      body: (S) => ["Past midnight the torches on the Pandava side go out together. Then Ghatotkacha comes, Bhima's son by a rakshasi, in his night form: a shape as tall as the sky over the field, laughing, with a host of rakshasas under it. Where it passes, the Kaurava line stops being there.",
+      body: (S) => ["Past midnight Ghatotkacha, Bhima's rakshasa son, comes as tall as the sky, and the Kaurava line breaks before him.",
         K.tieLine(S, K.tieShakti(S), { company: "Your company was posted beside Karna's chariot for the night.", general: "This morning you chose the ground near Karna's chariot. Tonight it is where the dark comes." }),
-        "Karna's chariot is behind your stretch of the line. The shape is coming toward it."],
+        "It is coming toward Karna's chariot."],
       choices: [
-        { id: "stand", t: "Stand against the shape and its host", combat: "wc_e_ghost", hint: "It cannot be beaten. Hold out" },
+        { id: "stand", t: "Stand against it", combat: "wc_e_ghost", hint: "Hold out" },
         { id: "run", t: "Run for Karna's chariot", fx: {}, text: "You run back through the dark toward the one bow on your side the rakshasas are afraid of." }
       ]
     },
@@ -246,12 +246,12 @@
       id: "wc_shakti_call", act: 6, age: 44, war: true, away: true, next: "a6_day15",
       art: "fight_night_torches", place: "Kurukshetra · the night of day 14", caption: "Karna's chariot", title: "The spear kept for Arjuna",
       body: (S) => [has(S, "called_karna_night") ? "Karna's chariot is beside you now, and his quiver is nearly empty." : "You reach Karna's chariot as his quiver runs low.",
-        "Duryodhana's chariot comes out of the dark with its rail torn away. He begs Karna: use the spear Indra gave you, the one you have kept for Arjuna, or there will be no army left by morning.",
-        "Karna looks up at the dark, and then at you."],
+        "Duryodhana begs Karna to use Indra's spear, kept for Arjuna, or there will be no army by morning.",
+        "Karna looks at you."],
       choices: [
-        urge("keep", "Tell him to keep the spear for Arjuna", { bond: { duryodhana: -1 }, memory: ["karna", "You told me to keep the spear for Arjuna. You were right."] },
+        urge("keep", "Keep it for Arjuna", { bond: { duryodhana: -1 }, memory: ["karna", "You told me to keep the spear for Arjuna. You were right."] },
           "Karna hears you. He looks at Duryodhana for a long breath, and then he throws it anyway."),
-        urge("use", "Tell him to use it, and save the army", { bond: { duryodhana: 2 }, memory: ["karna", "You told me to throw the spear. I would have anyway."] },
+        urge("use", "Use it, and save the army", { bond: { duryodhana: 2 }, memory: ["karna", "You told me to throw the spear. I would have anyway."] },
           "Karna nods, as if you had said what he was already thinking, and throws."),
         urge("silent", "Say nothing", {}, "Karna does not seem to expect you to speak. He throws.")
       ],
@@ -260,26 +260,26 @@
     {
       id: "wc_shakti_p", act: 6, age: 44, war: true, away: true, when: (S) => S.side === "pandava" && !!K.tieShakti(S), skipTo: "a6_day15", next: "wc_shakti_p_fall",
       art: "fight_night_torches", place: "Kurukshetra · the night of day 14", caption: "Torches across the field", title: "To Karna's chariot",
-      body: (S) => ["Past midnight Ghatotkacha comes up out of the dark with his night host, as tall as a palm tree and laughing, and Karna's division breaks in front of him.",
+      body: (S) => ["Past midnight Ghatotkacha comes out of the dark, and Karna's division breaks before him.",
         S.exile === "forest" ? { memory: "In the forest years he carried Draupadi over the mountain passes on his shoulders." } : null,
         K.tieLine(S, K.tieShakti(S), { company: "Your company was sent to stand with Ghatotkacha's host for the night.", general: "This morning you chose to stand near Ghatotkacha's host, and the dark has come." }),
-        "Across the torches you see Duryodhana's chariot drive to Karna's. Everyone in the army knows what Karna keeps in it: the spear Indra gave him, that kills one man and is spent, kept for Arjuna."],
+        "Duryodhana drives to Karna's chariot, where Karna keeps Indra's spear for Arjuna."],
       choices: [
-        { id: "reach", t: "Cut through the melee to Karna's chariot before he can throw", combat: "wc_e_reach", hint: "A fight through the dark" },
-        { id: "stay", t: "Stay with Ghatotkacha's host and keep it together", fx: { flag: "shakti_stayed", duty: { court: 1 } }, text: "You stay where the giant's host can see you, and shout the line back together each time it breaks." }
+        { id: "reach", t: "Reach Karna before he throws", combat: "wc_e_reach", hint: "A fight through the dark" },
+        { id: "stay", t: "Stay with Ghatotkacha's host", fx: { flag: "shakti_stayed", duty: { court: 1 } }, text: "You stay where the giant's host can see you, and shout the line back together each time it breaks." }
       ]
     },
     {
       id: "wc_shakti_p_fall", act: 6, age: 44, war: true, away: true, next: "a6_day15",
       enter: { moment: { kind: "shakti", from: "pandava" } },
       art: "battle_night", place: "The Pandava camp, before dawn", caption: "A giant on the ground", title: "Bhima's son",
-      body: ["The spear goes up like a second sun and finds Ghatotkacha high above the torches. He falls, and as he falls he makes himself vast, and comes down on the Kaurava host like a hill.",
-        "Before dawn you find Bhima sitting on the ground beside his son. Across the camp Krishna is laughing with relief, because the spear is spent and Arjuna is safe from it."],
+      body: ["The spear finds Ghatotkacha, and he falls on the Kaurava host like a hill.",
+        "Bhima sits beside his son. Across the camp Krishna laughs with relief: the spear is spent."],
       choices: [
-        { id: "sit", t: "Sit down beside Bhima, and say nothing", fx: { bond: { bhima: 2 }, flag: "sat_with_bhima", memory: ["bhima", "You sat with me the night my son fell."] },
+        { id: "sit", t: "Sit beside Bhima", fx: { bond: { bhima: 2 }, flag: "sat_with_bhima", memory: ["bhima", "You sat with me the night my son fell."] },
           text: "He does not look at you. After a long time he puts his hand on your shoulder, and leaves it there until it is light." },
-        { id: "tell", t: "Tell him his son bought Arjuna's life tonight", fx: { bond: { bhima: 1 } }, text: "\"I know,\" Bhima says. \"Krishna told me. He was dancing.\" He does not look up." },
-        { id: "line", t: "Go back to the line. There is no rest tonight", fx: { duty: { court: 1 } } }
+        { id: "tell", t: "Tell him his son saved Arjuna", fx: { bond: { bhima: 1 } }, text: "\"I know,\" Bhima says. \"Krishna told me. He was dancing.\" He does not look up." },
+        { id: "line", t: "Go back to the line", fx: { duty: { court: 1 } } }
       ]
     }
   ]);

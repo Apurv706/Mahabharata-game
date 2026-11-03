@@ -64,43 +64,43 @@
     id: "wr_map_" + day, act: 6, age: 44, war: true, away: true, when: (S) => free(S) && o.when(S), skipTo: o.then, next: o.then,
     art: o.art, place: "Kurukshetra · day " + day, caption: "The field this morning", title: "Where will you stand?",
     map: "stage_vyuha_top", spots: (S) => o.spots(S).concat([LINE(S)]), body: o.body,
-    choices: (S) => o.choices(S).concat([{ id: "line", t: "Keep your own place in the line", fx: {} }])
+    choices: (S) => o.choices(S).concat([{ id: "line", t: "Keep your place", fx: {} }])
   });
 
   K.scenes([
     word("iravan", {
       side: (S) => S.side === "pandava", tie: (S) => K.tieIravan(S), then: "a6_bhishma", art: "battle_night", place: "The camp, the night of day 7", title: "Iravan's flank",
-      ask: "Iravan's people need riders on his flank tomorrow. Come with me.",
+      ask: "Iravan needs riders on his flank tomorrow. Come with me.",
       rumour: "At the fire they say Shakuni's horse will hit Iravan's flank at dawn. Iravan is Arjuna's son by the naga princess, and his riders are few.",
-      go: "Ride on Iravan's flank at dawn", stay: "Keep your own place in the line"
+      go: "Ride on Iravan's flank", stay: "Keep your place"
     }),
     word("lake", {
       side: warring, tie: (S) => K.tieLake(S), then: "a6_duryodhana", art: "war_day18", place: "Kurukshetra · the eighteenth day, at dusk", title: "Where is the king?",
-      ask: (S) => (S.side === "kaurava" ? "The king is not among the dead. Ashwatthama is looking for him. Come with me." : "Duryodhana is not among the dead. Yudhishthira wants every lake searched. Come with me."),
+      ask: (S) => (S.side === "kaurava" ? "The king is not among the dead. Ashwatthama is looking for him. Come with me." : "Duryodhana is missing. Yudhishthira wants every lake searched. Come with me."),
       rumour: (S) => (S.side === "kaurava" ? "At dusk the word goes round what is left of the camp: the king is not among the dead. Ashwatthama is looking for him."
         : "At dusk the word goes round: Duryodhana is not among the dead, and Yudhishthira wants every lake and thicket searched."),
-      go: "Go out to the lake country", stay: "Stay with the army"
+      go: "Go to the lakes", stay: "Stay with the army"
     }),
     map(14, {
       when: (S) => !K.tieBhuri(S) || !K.tieShakti(S), then: "a6_day14", art: "war_day14",
       body: (S) => (S.side === "kaurava"
-        ? ["At first light the order goes along the line: keep Jayadratha from Arjuna until sunset. Bhurishravas's division holds the road Satyaki will come by. Karna's chariot stands behind the centre, and will still be there if the fighting goes on after dark."]
-        : ["At first light the whole army knows Arjuna's oath: Jayadratha dies before sunset, or Arjuna walks into the fire. Satyaki will be sent through after him. If the fighting goes on after dark, Ghatotkacha's host will be in the thick of it."]),
+        ? ["The order: keep Jayadratha from Arjuna until sunset. Where do you stand today?"]
+        : ["Arjuna has sworn Jayadratha dies before sunset. Where do you stand today?"]),
       spots: (S) => (S.side === "kaurava"
         ? [{ c: "bhuri", label: "Bhurishravas", x: 27, y: 50 }, { c: "shakti", label: "Karna's chariot", x: 70, y: 32 }]
         : [{ c: "bhuri", label: "Satyaki's road", x: 28, y: 44 }, { c: "shakti", label: "Ghatotkacha's host", x: 70, y: 60 }]),
       choices: (S) => (S.side === "kaurava"
-        ? [{ id: "bhuri", t: "Stand in Bhurishravas's division, on Satyaki's road", fx: { flag: "spot_bhuri" } },
-          { id: "shakti", t: "Stand near Karna's chariot when the dark comes", fx: { flag: "spot_shakti" } }]
-        : [{ id: "bhuri", t: "Go where Satyaki will ride, toward Arjuna", fx: { flag: "spot_bhuri" } },
-          { id: "shakti", t: "Stand with Ghatotkacha's host when the dark comes", fx: { flag: "spot_shakti" } }])
+        ? [{ id: "bhuri", t: "With Bhurishravas, on Satyaki's road", fx: { flag: "spot_bhuri" } },
+          { id: "shakti", t: "Near Karna's chariot after dark", fx: { flag: "spot_shakti" } }]
+        : [{ id: "bhuri", t: "Ride with Satyaki toward Arjuna", fx: { flag: "spot_bhuri" } },
+          { id: "shakti", t: "With Ghatotkacha after dark", fx: { flag: "spot_shakti" } }])
     }),
     map(15, {
       when: (S) => S.side === "pandava" && (!K.tieKings(S) || !K.nearDrona(S)), then: "a6_day15", art: "war_capture",
-      body: ["Before sunrise, after the night of torches, the word comes down the line: Drona means to break the Panchalas today. Drupada and Virata will ride out to meet him under their white parasols. Dhrishtadyumna, who was born to kill Drona, is looking for him."],
+      body: ["Drona means to break the Panchalas today. Drupada and Virata will ride out to meet him. Where do you stand?"],
       spots: () => [{ c: "kings", label: "The two kings", x: 27, y: 60 }, { c: "drona", label: "Drona's chariot", x: 68, y: 34 }],
-      choices: () => [{ id: "kings", t: "Go to the Panchala and Matsya lines, behind the two old kings", fx: { flag: "spot_kings" } },
-        { id: "drona", t: "Stay near Dhrishtadyumna, who is hunting Drona", fx: { flag: "spot_drona" } }]
+      choices: () => [{ id: "kings", t: "Behind the two old kings", fx: { flag: "spot_kings" } },
+        { id: "drona", t: "Near Dhrishtadyumna, hunting Drona", fx: { flag: "spot_drona" } }]
     })
   ]);
 
