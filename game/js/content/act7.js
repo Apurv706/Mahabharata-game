@@ -9,35 +9,33 @@
       title: "The women on the field",
       enter: (S) => (vasuLost(S) ? { die: "vasu", journal: "Vasu died in the night raid on the camp." } : null),
       witness: [
-        "The women of both houses come to the battlefield to find their dead. Gandhari, who has worn a blindfold all her married life so as not to see more than her husband could, walks among her hundred sons.",
-        "In her grief she curses Krishna: as the Kuru clan destroyed itself, so will his own Yadavas, thirty-six years from now. Krishna accepts the curse without a word.",
-        "At the water rites, Kunti tells her sons that Karna was their eldest brother. Yudhishthira weeps for a long time."
+        "Gandhari walks among her hundred dead sons and curses Krishna: his Yadavas will destroy themselves too. Kunti tells her sons that Karna was their eldest brother."
       ],
       body: (S) => [
         S.dead.includes("vasu") ? { curse: "You carry Vasu to the pyres yourself." } : S.child === "vasu" ? { memory: "Vasu is alive. You keep touching his shoulder to make sure." } : null,
         S.friend && K.PEOPLE[S.friend]?.canon && ["karna", "duryodhana"].includes(S.friend) ? { memory: "{friend}, your oldest friend, is among the dead." } : null
       ],
       choices: [
-        { id: "pyres", t: "Help build the pyres for the dead of both sides", fx: { rep: { common: 2 }, duty: { conscience: 1 } },
+        { id: "pyres", t: "Build pyres for both sides", fx: { rep: { common: 2 }, duty: { conscience: 1 } },
           text: "You carry wood for three days. Nobody asks which side the dead fought for. The smoke goes up the same." },
-        { id: "mourn", t: "Sit with your own dead and let no one move you", fx: { duty: { family: 1 }, attr: { wisdom: 1 } },
+        { id: "mourn", t: "Sit with your own dead", fx: { duty: { family: 1 }, attr: { wisdom: 1 } },
           text: "You sit by them until the women come with water and white cloth. When you finally stand, something in you stays sitting there." },
         { id: "hunt", t: "Swear vengeance on Ashwatthama", req: (S) => S.side !== "kaurava" && K.vowsHeld(S) < K.MAX_VOWS && !S.vows.some((v) => v.id === "vengeance" && !v.released), // the same test vowTake uses
-          fx: { vowTake: "vengeance", flag: "vengeance_ashwatthama" }, hint: "He has been cursed to wander the earth. You could follow" }
+          fx: { vowTake: "vengeance", flag: "vengeance_ashwatthama" }, hint: "You could follow him" }
       ],
       next: "a7_bhishma"
     },
     {
       id: "a7_bhishma", act: 7, age: 44, canon: true, place: "The bed of arrows", art: "scene_teaching", plate: ["#d4a84b", "#5c3361"], caption: "The grandsire's last teaching",
       title: "The last teaching",
-      witness: ["Bhishma has waited on his bed of arrows for the sun to turn north. Before he dies, he teaches Yudhishthira how to rule, at great length, while the Pandavas and the survivors listen."],
-      body: ["You sit at the edge of the crowd. When he pauses, he looks at you as if he expects a question."],
+      witness: ["Before he dies, Bhishma teaches Yudhishthira how to rule."],
+      body: ["He pauses, and looks at you."],
       choices: [
         { id: "rule", t: "Ask how a king should rule", fx: { skill: { statecraft: 1 }, attr: { command: 1 } } },
         { id: "grief", t: "Ask how to carry grief", fx: { attr: { wisdom: 1 }, duty: { family: 1 } }, text: "\"Like water,\" he says. \"You cannot put it down. You can learn to walk with it.\"" },
         { id: "vow", t: "Ask how to live with a broken vow", req: (S) => S.vows.some((v) => v.broken && !v.released), fx: { duty: { conscience: 2 } }, text: "\"Keep the next promise,\" he says. \"That is all any of us can do.\"" },
         { id: "listen", t: "Ask nothing. Just listen", fx: { skill: { lore: 1 } } },
-        { id: "dream", t: "Ask him about the other life you dream of", req: { flag: "reborn" }, fx: { attr: { wisdom: 1 }, duty: { conscience: 1 }, unflag: "karmic_debt" },
+        { id: "dream", t: "Ask about the life you dream of", req: { flag: "reborn" }, fx: { attr: { wisdom: 1 }, duty: { conscience: 1 }, unflag: "karmic_debt" },
           text: "\"Amba came back to me as Shikhandi, to finish what she began,\" he says. \"Perhaps you came back to finish something too.\" He waits. \"Did you?\"" }
       ],
       after: ["When the sun turns north, Bhishma dies. Yudhishthira is crowned king of Hastinapura, and reigns over an empty kingdom."],
@@ -48,11 +46,10 @@
       act: 7, age: 45, art: "scene_note", place: (S) => K.homePlace(S), caption: "A doorway after the war",
       title: "The note, again",
       body: [
-        "A young man finds you after the war. He has his grandfather's patience, and his grandfather's palm-leaf note. Sudatta is dead. The debt is not.",
-        { speaker: "Sudatta's grandson", line: "I lost two brothers on the field. I would like to be paid." }
+        "Sudatta's grandson brings the old note. Sudatta is dead. The debt is not."
       ],
       choices: [
-        { id: "pay", t: "Pay him, whatever it costs", fx: { duty: { conscience: 2, family: -1 }, unflag: "debt_refused", flag: "debt_paid_late", journal: "After the war you paid Sudatta's grandson your grandfather's debt." },
+        { id: "pay", t: "Pay him", fx: { duty: { conscience: 2, family: -1 }, unflag: "debt_refused", flag: "debt_paid_late", journal: "After the war you paid Sudatta's grandson your grandfather's debt." },
           text: "It takes most of what you have. He counts it twice, and thanks you, and you see that he did not expect it." },
         { id: "forgive", t: "Ask him to forgive it",
           check: { attr: "wisdom", skill: "statecraft", dc: 8,
@@ -66,14 +63,14 @@
     {
       id: "a7_final", act: 7, age: 45, art: "scene_years_remain", place: "After the war", caption: "By the river, after everything",
       title: "The years that remain",
-      body: ["You are forty-five. Everything you were raised for has happened. How will you spend the rest of your life?"],
+      body: ["You are forty-five. How will you spend the rest of your life?"],
       choices: [
-        { id: "elder", t: "Serve Yudhishthira's court as an advisor", req: { any: [{ rep: ["pandava", 5] }, { attr: ["wisdom", 6] }] }, locked: "The new court would need to trust you.", fx: { set: { endChoice: "elder" } } },
-        { id: "forest", t: "Go to the forest with Dhritarashtra, Gandhari and Kunti", fx: { set: { endChoice: "forest" } } },
-        { id: "teller", t: "Tell the story of the war, as it really happened", req: { any: [{ path: "bard" }, { skill: ["lore", 3] }, { flag: "remembered_hall" }] }, locked: "You would need a storyteller's training or memory.", fx: { set: { endChoice: "teller" } } },
-        { id: "vengeance", t: "Hunt Ashwatthama to the ends of the earth", req: { vow: "vengeance", flag: "vengeance_ashwatthama" }, fx: { set: { endChoice: "vengeance" } } },
+        { id: "elder", t: "Advise Yudhishthira's court", req: { any: [{ rep: ["pandava", 5] }, { attr: ["wisdom", 6] }] }, locked: "The new court would need to trust you.", fx: { set: { endChoice: "elder" } } },
+        { id: "forest", t: "Go to the forest with the old king", fx: { set: { endChoice: "forest" } } },
+        { id: "teller", t: "Tell the story of the war", req: { any: [{ path: "bard" }, { skill: ["lore", 3] }, { flag: "remembered_hall" }] }, locked: "You would need a storyteller's training or memory.", fx: { set: { endChoice: "teller" } } },
+        { id: "vengeance", t: "Hunt Ashwatthama", req: { vow: "vengeance", flag: "vengeance_ashwatthama" }, fx: { set: { endChoice: "vengeance" } } },
         { id: "home", t: "Go home", req: (S) => (S.spouse && !S.dead.includes(S.spouse)) || (S.child && !S.dead.includes(S.child)) || S.origin, fx: { set: { endChoice: "home" } } },
-        { id: "wander", t: "Walk away from everything", fx: { set: { endChoice: "wander" } } }
+        { id: "wander", t: "Walk away", fx: { set: { endChoice: "wander" } } }
       ],
       next: "end_life"
     },

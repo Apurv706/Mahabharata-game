@@ -86,7 +86,7 @@
   // Soma at the Rajasuya: its own small scene before the sacrifice, for those with the merit to be offered it.
   K.scene({ id: "w_soma", act: 3, age: 29, away: true, when: (S) => (S.tapas || 0) >= 2 && !S.flags.includes("drank_soma"), enter: { flag: "soma_offered" }, next: "a3_rajasuya", skipTo: "a3_rajasuya",
     place: "Indraprastha, the morning of the sacrifice", art: art("scene_soma"), caption: "The pressing of the Soma", title: "The Soma",
-    body: ["Before the great sacrifice the priests press the Soma, and a cup of it is offered to those who have kept their vows. One of them holds a cup out to you."],
+    body: ["A priest offers you a cup of Soma."],
     choices: [
       { id: "drink", t: "Drink the Soma", req: { tapas: 2 }, locked: needs(2),
         resolve: (S) => { const best = ["might", "aim", "grace", "wisdom", "command"].sort((a, b) => S.attrs[b] - S.attrs[a])[0]; return { attr: { [best]: 2 }, set: { soma: { attr: best, until: S.log.length + 4, gain: Math.min(2, 8 - S.attrs[best]) } } }; },
@@ -97,13 +97,13 @@
   // The night before the war: a thread tied by mother or spouse, and an elder's blessing (both, either, or neither).
   K.scene({ id: "w_eve", act: 6, age: 44, war: true, when: (S) => S.side !== "neutral" && !S.flags.includes("eve_rites"), enter: { flag: "eve_rites" }, next: "a6_eve", skipTo: "a6_eve",
     place: "The camp, the night before the first day", to: "kurukshetra", travel: "You march to Kurukshetra with the army.", art: art("scene_raksha_sutra"), caption: "Lamps in the tents", title: "The night before",
-    body: ["The night before the first arrow, the camp does the small things: threads are tied, blessings asked, letters written that may not be sent."],
+    body: ["The night before the war."],
     choices: [
       // Tied by a living spouse, or by the parent who raised you (a grandparent is long gone by the war), or by the camp's old women.
-      { id: "sutra", t: (S) => (S.spouse && !S.dead.includes(S.spouse) ? ["Let {spouse} tie the raksha sutra on your wrist", null] : S.kin && !K.kinElder(S) ? ["Let {kin} tie the raksha sutra on your wrist", { kin: S.kin }] : "Let the old women of the camp tie the raksha sutra on your wrist"),
+      { id: "sutra", t: (S) => (S.spouse && !S.dead.includes(S.spouse) ? ["Let {spouse} tie the raksha sutra on your wrist", null] : S.kin && !K.kinElder(S) ? ["Let {kin} tie the raksha sutra on your wrist", { kin: S.kin }] : "Have the raksha sutra tied"),
         fx: { boon: "raksha", charge: { raksha: 1 }, flag: "has_raksha", duty: { family: 1 } }, hint: "Once, outside battle, it turns a death into a wound",
         text: "A red and yellow thread, tied with a prayer you half hear. It is only a thread. You do not take it off." },
-      { id: "bless", t: (S) => (S.teacher && S.teacher !== "self" ? ["Go to {teacher} for a blessing", null] : "Go to the elders of the camp for a blessing"),
+      { id: "bless", t: (S) => (S.teacher && S.teacher !== "self" ? ["Go to {teacher} for a blessing", null] : "Ask the elders' blessing"),
         fx: (S) => ({ set: { blessed: S.log.length + 4, blessedBy: "An elder's blessing is on you." }, duty: { teacher: 1 } }), hint: "+1 to every test for the next day",
         text: "A hand on your head, a few words. You walk back to your tent lighter than you went." },
       { id: "sleep", t: "Sleep while you can", fx: {} }
@@ -118,7 +118,7 @@
   const quest = (o) => Object.assign({ act: 5, away: true, enter: take, next: o.then, skipTo: o.then, when: (S) => open(o.astra)(S) && (!SPLIT[o.astra] || SPLIT[o.astra](S)) }, o.scene);
 
   // Agneya: a season of penance at a fire altar, through the storms.
-  const FIRE = { t: "Sit at the altar and keep the fire alive through the storms", game: "steady", hint: "A long test of stillness",
+  const FIRE = { t: "Keep the fire through the storms", game: "steady", hint: "A long test of stillness",
     trial: { attr: "wisdom", skill: "lore", stage: art("stage_fire_altar"), secs: 24, verb: "Shield the flame",
       tally: "Flame kept: {c}% · {s} seconds of storm left", wonLine: "The storm passes. The flame is still there, and so are you.", nearLine: "The flame gutters, and comes back, and gutters. Not yet.", lostLine: "The wind takes the flame, and the season with it.",
       rules: "A fire altar on a bare hill, and the rains coming. Keep your hands around the flame as the gusts push it: hold to shield it, let go when the wind drops. If it goes out, the season is lost.",
@@ -127,9 +127,8 @@
     lose: { fx: { attr: { wisdom: 1 } }, text: "The flame goes out on the fortieth night. You come down the hill thinner, with no weapon and a little more patience." } };
   K.scene(quest({ astra: "agneya", then: "a5_jayadratha", scene: {
     id: "w_fire", age: 34, place: "A bare hill above the hermitages", art: art("stage_fire_altar"), caption: "An altar in the rain", title: "The fire altar",
-    body: ["Arjuna has gone north for weapons. A sage at the hermitage tells you there is a smaller road: a fire altar on the hill above, where those who can sit still through a season of storms are sometimes answered.",
-      "It is the rains. The altar is open to the sky."],
-    choices: [K.testChoice("w_fire", "sit", FIRE), { id: "no", t: "Stay with the camp. Someone has to hunt", fx: { rep: { pandava: 1 } } }] } }));
+    body: ["A sage tells you of a fire altar where those who sit through a season of storms are sometimes answered."],
+    choices: [K.testChoice("w_fire", "sit", FIRE), { id: "no", t: "Stay with the camp", fx: { rep: { pandava: 1 } } }] } }));
 
   // Varuna: a dive for a sage's lost offering, in the deep lake (the breath test, ui/breath.js).
   const DIVE = { t: "Dive for the offering", game: "breath", hint: "A test of breath",
@@ -140,9 +139,8 @@
     lose: { fx: {}, text: "The current is stronger than you. The vessel stays on the lake bed, and the sage goes on sitting by the water as if you had never come." } };
   K.scene(quest({ astra: "varuna", then: "a5_matsya", scene: {
     id: "w_dive", age: 42, place: "A deep lake in the hills", art: art("stage_deep_lake"), caption: "Still water over deep water", title: "The sage's offering",
-    body: ["An old sage sits by a lake that no one fishes. His golden vessel, the one he pours the morning offering from, slipped from his hands into the deep water a month ago, and he has not eaten since.",
-      "The lake is cold and very deep, and something moves the water at the bottom."],
-    choices: [K.testChoice("w_dive", "dive", DIVE), { id: "no", t: "Leave him food, and go on", fx: { rep: { sages: 1 } } }] } }));
+    body: ["An old sage's golden offering vessel lies at the bottom of a deep lake."],
+    choices: [K.testChoice("w_dive", "dive", DIVE), { id: "no", t: "Leave him food", fx: { rep: { sages: 1 } } }] } }));
 
   // Vayavya: the climb to a Himalayan hermitage (a course up the mountain, on foot).
   const CLIMB = { t: "Climb to the hermitage", game: "race", hint: "A climb",
@@ -156,8 +154,8 @@
     lose: { fx: {}, text: "Below the snow line your feet stop obeying you. You come down, and the hermitage stays where it is, above the clouds." } };
   K.scene(quest({ astra: "vayavya", then: "a5_matsya", scene: {
     id: "w_climb", age: 42, place: "The foot of the high mountains", art: art("stage_mountain_path"), caption: "A path into the snow", title: "The hermit of the heights",
-    body: ["In the last year of the forest a herdsman tells you of a hermit who lives above the snow, who knows the mantra of the wind and gives it to no one, because no one comes."],
-    choices: [K.testChoice("w_climb", "climb", CLIMB), { id: "no", t: "It is too late in the year. Go on", fx: {} }] } }));
+    body: ["A hermit above the snow knows the mantra of the wind."],
+    choices: [K.testChoice("w_climb", "climb", CLIMB), { id: "no", t: "Go on", fx: {} }] } }));
 
   // Sammohana: a Gandharva's riddles, at the edge of the Dvaita forest (the court road).
   const RIDDLES = [
@@ -173,7 +171,7 @@
     lose: { fx: {}, text: "\"Drink,\" he says, bored. \"You are no worse than the last hundred.\"" } };
   K.scene(quest({ astra: "sammohana", then: "a5_vikarna", scene: {
     id: "w_riddle", age: 36, place: "A pool at the edge of the Dvaita forest", art: art("stage_gandharva_grove"), caption: "A voice in the branches", title: "The Gandharva at the pool",
-    body: ["Riding the forest's edge on the court's business, you stop at a pool to drink, and a voice in the branches tells you that you may not, yet."],
+    body: ["At a forest pool, a voice in the branches forbids you to drink, yet."],
     choices: [K.testChoice("w_riddle", "answer", RIDDLE), { id: "no", t: "Ride on thirsty", fx: {} }] } }));
 
   // Nagapasha: healing a wounded naga by the river (your own life, before the forge).
@@ -186,14 +184,14 @@
     lose: { fx: {}, text: "He goes into the river, and the water closes over him, and you do not know whether he lived." } };
   K.scene(quest({ astra: "nagapasha", then: "a5_forge", scene: {
     id: "w_naga", age: 35, place: "The riverbank below the village", art: art("stage_naga_bank"), caption: "A stranger on the bank", title: "The wounded naga",
-    body: ["Coming down to the river at dusk you find a man on the bank with an arrow through his shoulder, and eyes that are not quite a man's. The naga folk do not come out of the water. This one has."],
-    choices: [K.testChoice("w_naga", "heal", NAGA), { id: "no", t: "Leave him. The river people look after their own", fx: { duty: { conscience: -1 } } }] } }));
+    body: ["On the riverbank lies a wounded naga, an arrow through his shoulder."],
+    choices: [K.testChoice("w_naga", "heal", NAGA), { id: "no", t: "Leave him", fx: { duty: { conscience: -1 } } }] } }));
 
   // Other ways: a year serving a sage; a stolen temple offering; the shrine of light on the mountain.
   push("a5_forest_boon", { id: "year", t: "Serve the sage a whole year", req: { rep: ["sages", 4], noAstra: "vayavya" }, locked: "The sages do not know you yet.",
     fx: { tapas: 3, astraGrant: { id: "vayavya", from: "hermitage" }, rep: { pandava: -1 }, flag: "served_a_year", journal: "You served a sage for a year in the exile, and he gave you the mantra of the wind." },
     hint: "A year of your life: tapas +3, and a divine weapon", text: "A year of water carried and silence kept. On the last day the sage gives you the mantra of the wind, and tells you never to turn your back on a fight you chose." });
-  const OFFERING = { t: "Go into the robber chief's house by night and bring it back", game: "sneak", hint: "A test of stealth",
+  const OFFERING = { t: "Steal it back by night", game: "sneak", hint: "A test of stealth",
     trial: { attr: "grace", skill: "stealth", stage: art("scene_temple_offering"),
       rules: "The temple's golden lamp hangs in the robber chief's own room. His men keep watch with torches. Cross the house twice, in and out, and do not be seen twice.",
       stakes: ["The temple gets its lamp back, and its priest gives you a charmed shield.", "You are caught, and beaten, and let go as a fool."] },
@@ -201,9 +199,9 @@
     lose: { fx: { injury: "scar" }, text: "A torch finds you on the stair. They beat you and throw you out, and keep the lamp." } };
   K.scene(Object.assign({ act: 5, away: true, when: (S) => S.act === 5 && !S.boons.includes("charm_shield") && !S.flags.includes("offering_tried"), enter: { flag: "offering_tried" }, next: "a5_matsya", skipTo: "a5_matsya" }, {
     id: "w_offering", age: 42, place: "A village temple on the road to Matsya", art: art("scene_temple_offering"), caption: "An empty hook over the altar", title: "The stolen offering",
-    body: ["On the road to Matsya you sleep in a village whose temple lamp was carried off by a robber band in the spring. The priest does not ask you for anything. He only looks at the empty hook."],
-    choices: [K.testChoice("w_offering", "steal", OFFERING), { id: "no", t: "Give the priest a coin, and sleep", fx: { rep: { common: 1 } } }] }));
-  const MOUNTAIN = { t: "Climb to the light, and stand in it", game: "steady", hint: "A test of stillness",
+    body: ["Robbers have stolen a village temple's lamp. The priest looks at the empty hook."],
+    choices: [K.testChoice("w_offering", "steal", OFFERING), { id: "no", t: "Give the priest a coin", fx: { rep: { common: 1 } } }] }));
+  const MOUNTAIN = { t: "Stand in the light", game: "steady", hint: "A test of stillness",
     trial: { attr: "wisdom", skill: "lore", stage: art("stage_shiva_mountain"), secs: 20, verb: "Hold still",
       tally: "Stillness: {c}% · {s} seconds", wonLine: "The light goes through you, and the voice says one word, and you do not remember it afterwards.", nearLine: "The light wavers, and so do you.", lostLine: "You step out of the light, shaking, and it is only snow.",
       rules: "A light on the mountain, with no lamp in it, and a voice with no one speaking. Stand in it and do not move: hold to keep still as the cold and the fear push you. No one has told you what is in there.",
@@ -213,8 +211,8 @@
     lose: { fx: { attr: { wisdom: 1 } }, text: "You come down the mountain and do not speak for three days. Something was there. It did not stay." } };
   K.scene(Object.assign({ act: 5, away: true, when: (S) => S.act === 5 && S.exile === "forest" && S.rep.sages >= 4 && !S.flags.includes("mountain_tried"), enter: { flag: "mountain_tried" }, next: "a5_yaksha", skipTo: "a5_yaksha" }, {
     id: "w_mountain", age: 36, place: "High in the mountains", art: art("stage_shiva_mountain"), caption: "A light where no lamp is", title: "The light on the mountain",
-    body: ["Arjuna came back from the north with weapons from the gods, and will not say much about it. A sage of the camp tells you that there is a place on the mountain where a light stands at dusk, with no lamp in it, and those who stand in it are sometimes given something, and sometimes only frightened."],
-    choices: [K.testChoice("w_mountain", "stand", MOUNTAIN), { id: "no", t: "Some things are not for you. Stay below", fx: { attr: { wisdom: 1 } } }] }));
+    body: ["On the mountain a light stands at dusk, with no lamp in it. Those who stand in it are sometimes given something."],
+    choices: [K.testChoice("w_mountain", "stand", MOUNTAIN), { id: "no", t: "Stay below", fx: { attr: { wisdom: 1 } } }] }));
   // A win branch with a `resolve`: the choice engine only reads fx, so fold it in here.
   { const w = MOUNTAIN.win; const r = w.resolve; delete w.resolve; const base = w.fx; w.fx = (S) => Object.assign({}, base, r(S)); }
 
@@ -222,8 +220,7 @@
   K.scene({
     id: "w_brahmastra", act: 6, war: true, canon: false, when: (S) => S.act === 6 && S.alive && !S.flags.includes("brahmastra_offered") && S.side !== "neutral", enter: { flag: "brahmastra_offered" }, next: "a6_raid", skipTo: "a6_raid",
     age: 44, place: "The camp, the night after the last day", to: "kurukshetra", art: art("scene_brahmastra"), caption: "A scroll in the dark", title: "The mantra no one should hold",
-    body: ["An old brahmin of the camp, whose sons are all dead, finds you in the dark with a palm-leaf scroll. \"It was given to Drona's son tonight, as it was given to him,\" he says. \"The Brahmastra. The weapon that ends everything it is pointed at, and the one who points it, slower. I can give it to you too. You have the merit to hold it.\"",
-      "He is not lying. You can feel it in the scroll, like heat."],
+    body: ["An old brahmin offers you the Brahmastra, the weapon that ends everything it is pointed at."],
     choices: [
       { id: "take", t: "Take it", fx: (S) => ({ tapas: -(S.tapas || 0), curse: "brahmastra", flag: "took_brahmastra", duty: { conscience: -3 }, journal: "On the last night of the war you took the mantra of the Brahmastra. You never spoke it. It spoke in you." }),
         hint: "All your tapas, a curse, and a darker telling", text: "You learn it in an hour, and it is the easiest thing you have ever learned, and you are never again entirely alone in your own head." },
