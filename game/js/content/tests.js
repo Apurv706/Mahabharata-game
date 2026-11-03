@@ -393,10 +393,15 @@
     retryLose: { penalty: 1, fx: { attr: { might: -1 }, flag: "yaksha_twice" }, text: "You cannot think for thirst. You drink. Darkness, and then you are lying on the bank in the evening, alive, with a heaviness in your limbs that never quite leaves." } };
   const MOKSHA = { t: "Sit down at Vikarna's board", game: "moksha", hint: "A board game",
     trial: { attr: "wisdom", skill: "lore", stage: "stage_board_table", cast: ["dushasana"], opponent: "Vikarna",
-      rules: "Throw two dice and move by the one you choose. First to moksha, at sixty-four, wins.",
+      rules: "Move by either die. A ladder's virtue saves you from one snake. First to thirty-six wins.",
+      // Vikarna's remarks as the game goes: on your ladders, snakes and karma, then on his own (his_).
+      remarks: { start: ["My brothers cheat at dice. This board cannot be cheated."], ladder: ["Even the board likes you."], snake: ["Everyone meets that one."],
+        saved: ["You kept something back. Good."], karma: ["Karma. Don't look at me like that."], his_ladder: ["I practise when no one is watching."],
+        his_snake: ["That snake knows my family."], his_saved: ["Not today, snake."], his_karma: ["Sorry. Well, a little sorry."],
+        win: ["Somebody in this family had to get there."], lose: ["Again tomorrow?"] },
       stakes: ["You reach moksha first, and Vikarna starts telling you what he really thinks of this court.", "Vikarna wins. He sets the board up again for tomorrow."] },
     retryStakes: ["You reach moksha first, and Vikarna starts telling you what he really thinks of this court.", "The snakes take you down again, and Vikarna stops inviting you. It counts as two failures, and it will weigh on every test of lore to come."],
-    win: { fx: { bond: { vikarna: 2 }, flag: ["beat_vikarna", "vikarna_friend"], journal: "You played Moksha Patam with Vikarna through the exile years, and won." }, text: "You land on sixty-four. Vikarna laughs and tips his piece over. \"Moksha,\" he says. \"At least one of us will get there.\" After that he tells you what he really thinks, about his brothers, about the hall, about the war that is coming." },
+    win: { fx: { bond: { vikarna: 2 }, flag: ["beat_vikarna", "vikarna_friend"], journal: "You played Moksha Patam with Vikarna through the exile years, and won." }, text: "You reach thirty-six. Vikarna laughs and tips his piece over. \"Moksha,\" he says. \"At least one of us will get there.\" After that he tells you what he really thinks, about his brothers, about the hall, about the war that is coming." },
     lose: { fx: {}, text: "Vikarna reaches moksha first and looks almost sorry. \"Tomorrow,\" he says." },
     retryLose: { penalty: 1, fx: { flag: "moksha_twice" }, text: "The snake of pride takes you all the way down again. Vikarna stops inviting you, and you never find out what he wanted to say." } };
   const FORGE = { t: "Take the hammer at Charu's anvil", game: "rhythm", hint: "A test of strength",
