@@ -30,12 +30,12 @@
   // converted so the crop and the tails land where intended. If the file is ever registered as wide,
   // they are used as written.
   const TRUE16 = {
-    oath_south: ["fight_arjuna_chariot", [{ c: 0 }, { p: [0.42, 0.4, 1.5, "2/1"] }, { c: 1 }, { p: [0.55, 0.44, 3, "4/3"] }]],
-    oath_again: ["fight_arjuna_chariot", [{ c: 0 }, { p: [0.5, 0.38, 1.5, "2/1"] }, { c: 1 }, { p: [0.34, 0.47, 3.2, "4/3"] }]],
+    oath_south: ["fight_arjuna_chariot", [{ c: 0 }, { p: [0.42, 0.4, 1.55, "2/1"] }, { c: 1 }, { p: [0.55, 0.44, 3, "4/3"] }]],
+    oath_again: ["fight_arjuna_chariot", [{ c: 0 }, { p: [0.5, 0.38, 1.55, "2/1"] }, { c: 1 }, { p: [0.34, 0.47, 3.2, "4/3"] }]],
     oath_king: ["fight_war_chariot", [{ c: 0 }, { p: [0.28, 0.36, 2.2, "2/1"] }]],
-    cross_duel: ["fight_between_lines", [{ c: 0 }, { p: [0.5, 0.4, 1.5, "2/1"] }, { s: 1 }, { p: [0.5, 0.56, 2.6, "4/3"] }, { c: 2 }, { c: 3 }, { p: [0.86, 0.44, 2.6, "2/1"] }]],
-    cross_called: ["fight_between_lines", [{ c: 0 }, { p: [0.12, 0.44, 2.4, "2/1"] }, { c: 1 }, { p: [0.5, 0.42, 1.5, "2/1"] }]],
-    cross_truth: ["scene_war_council", [{ c: 0 }, { c: 1 }, { p: [0.5, 0.4, 1.5, "2/1"] }, { p: [0.55, 0.3, 2.5, "4/3"], b: [{ i: 2, k: "bal", at: "tl", w: 44, to: [0.53, 0.25] }] }]]
+    cross_duel: ["fight_between_lines", [{ c: 0 }, { p: [0.5, 0.4, 1.55, "2/1"] }, { s: 1 }, { p: [0.5, 0.56, 2.6, "4/3"] }, { c: 2 }, { c: 3 }, { p: [0.86, 0.44, 2.6, "2/1"] }]],
+    cross_called: ["fight_between_lines", [{ c: 0 }, { p: [0.12, 0.44, 2.4, "2/1"] }, { c: 1 }, { p: [0.5, 0.42, 1.55, "2/1"] }]],
+    cross_truth: ["scene_war_council", [{ c: 0 }, { c: 1 }, { p: [0.5, 0.4, 1.55, "2/1"] }, { p: [0.55, 0.3, 2.5, "4/3"], b: [{ i: 2, k: "bal", at: "tl", w: 44, to: [0.53, 0.25] }] }]]
   };
   const ASP = { "2/1": 2, "16/9": 16 / 9, "4/3": 4 / 3, "1/1": 1, "3/4": 3 / 4 };
   const clamp = (v, a, b) => Math.min(Math.max(v, a), b);
