@@ -198,7 +198,7 @@
       ]
     },
     {
-      id: "ep_mentor_kripa", act: 4, age: 30, away: true, when: (S) => S.teacher === "kripa", skipTo: "a4_stakes", next: "a4_stakes",
+      id: "ep_mentor_kripa", act: 4, age: 30, away: true, when: (S) => S.teacher === "kripa", skipTo: "a4_hall", next: "a4_hall",
       art: art("scene_mentor_kripa"), place: "The assembly hall, Hastinapura", caption: "Before the dice are thrown",
       title: "What Kripa asks",
       body: ["Before the game begins, Kripa finds you by the pillars. He has served the Kuru throne all his life, and he will serve it to the end, whatever it does.",
@@ -542,7 +542,7 @@
   before("a1_first", ["ep_sibling"]);
   before("a2_tournament", ["ep_ugra_tournament"]);
   before("a3_rajasuya", ["ep_mentor_vidura"]);
-  before("a4_stakes", ["ep_mentor_kripa"]);
+  before("a4_hall", ["ep_mentor_kripa"]);
   before("a5_yaksha", ["ep_storm"]);
   before("a5_yaksha_again", ["ep_lake_charu"]);
   before("a5_herd", ["ep_false_name", "ep_kichaka"]);

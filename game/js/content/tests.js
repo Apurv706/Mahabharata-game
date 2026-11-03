@@ -207,7 +207,7 @@
       win: { fx: { skill: { mace: 1 }, attr: { might: 1 }, flag: "broke_post", journal: "You split the practice post, keeping Kripa's time." }, text: "On the last beat the post splits from top to bottom with a sound like a tree falling." },
       lose: { fx: {}, text: "You lose the beat, then the next. The post has a few dents in it, and it is laughing at you." },
       retryLose: { penalty: 1, fx: { flag: "post_twice" }, text: "The post stands. Your hands are bleeding. Maybe the mace is not for you." } },
-    charioteer: { t: "Race Karna round the training ground", req: { path: "charioteer" }, game: "race", hint: "A race",
+    charioteer: { t: "Race Karna", req: { path: "charioteer" }, game: "race", hint: "A race",
       trial: { attr: "grace", skill: "chariot", stage: "stage_racetrack", cast: ["karna"], rival: "Karna", vehicle: "chariot", obstacles: ["rock", "wreck"],
         rules: "Karna, the charioteer's son, races anyone who asks, and nobody has beaten him this year. Change lanes to miss the stones and broken wheels in the road. First past the post wins.",
         stakes: ["You beat Karna, and he asks for a rematch every week after.", "Karna wins by a length. He offers to race you again tomorrow."] },
@@ -216,7 +216,7 @@
       win: { fx: { skill: { chariot: 1 }, bond: { karna: 2 }, flag: "raced_karna", journal: "You beat Karna in a chariot race at sixteen." }, text: "You cross the line half a length ahead. Karna pulls up beside you, laughing, covered in dust. \"Again,\" he says. \"Next week.\"" },
       lose: { fx: { bond: { karna: 1 } }, text: "Karna crosses the line a length ahead, and comes back to show you where you lost it." },
       retryLose: { penalty: 1, fx: { flag: "race_twice" }, text: "Karna wins again, easily. He is kind about it, which is worse." } },
-    strategist: { t: "Sit down at Shakuni's chaupar board", req: { path: "strategist" }, game: "chaupar", hint: "A board game, a minute or two",
+    strategist: { t: "Play Shakuni at chaupar", req: { path: "strategist" }, game: "chaupar", hint: "A board game",
       trial: { attr: "wisdom", skill: "statecraft", stage: "stage_board_table", cast: ["shakuni"], opponent: "Shakuni",
         rules: "Shakuni, the queen's brother, plays chaupar in the evenings with anyone who will lose to him. Two pieces each, around the cross and home. Land on his piece to send it back; the green squares are safe.",
         stakes: ["You beat Shakuni, and he looks at you properly for the first time.", "Shakuni wins, and offers you another game tomorrow."] },
@@ -280,7 +280,7 @@
 
   // Where you make your life: the test of that place.
   const COURT = {
-    hastinapura: { t: "Take the tigers on Duryodhana's board", req: { court: "hastinapura" }, game: "baghchal", hint: "A board game, a minute or two",
+    hastinapura: { t: "Play Duryodhana's board", req: { court: "hastinapura" }, game: "baghchal", hint: "A board game",
       trial: { attr: "wisdom", skill: "statecraft", stage: "stage_board_table", cast: ["duryodhana"], opponent: "Duryodhana", need: 3,
         rules: "Duryodhana plays tigers and goats with his new courtiers, and judges them by it. He gives you the two tigers and keeps the goats. Jump a goat to take it; take three before his goats hem you in.",
         stakes: ["Duryodhana laughs, and you are his for the asking.", "His goats hem you in. He offers you another game, watching you."] },
@@ -288,7 +288,7 @@
       win: { fx: { bond: { duryodhana: 2 }, rep: { kuru: 1 }, flag: "beat_duryodhana_bagh", journal: "You beat Duryodhana at tigers and goats with his own tigers." }, text: "Duryodhana sweeps the last goat off the board himself, laughing. \"Hunt like that for me,\" he says, \"and you will never be hungry.\"" },
       lose: { fx: {}, text: "The goats close in around your tigers. Duryodhana sets the board up again without a word." },
       retryLose: { penalty: 1, fx: { rep: { kuru: -1 }, flag: "bagh_twice" }, text: "Hemmed in again. Duryodhana loses interest in you in the middle of a sentence." } },
-    indraprastha: { t: "Go into the burning forest for the families", req: { court: "indraprastha" }, game: "herd", hint: "A test of nerve",
+    indraprastha: { t: "Go into the burning forest", req: { court: "indraprastha" }, game: "herd", hint: "A test of nerve",
       trial: { attr: "command", skill: "stealth", stage: "stage_khandava_top", theme: "fire", need: 6, spread: 3.0,
         rules: "The Khandava forest is burning to clear the land for the new city, and forest families are trapped inside. Reach them through the smoke; each one falls in behind you. Then bring the line out through the gap by the river. The fire spreads as you go.",
         stakes: ["You bring a line of families out of the fire.", "The fire breaks your line. There is still a way in."] },
@@ -314,7 +314,7 @@
         { line: "\"What should a messenger carry besides the message?\"", replies: ["\"The way back.\"", "\"A sword.\"", "\"Gifts.\""] },
         { line: "\"When is it wise to lose?\"", replies: ["\"When winning would cost more.\"", "\"Never.\"", "\"When the gods say so.\""] }
       ] },
-    dwaraka: { t: "Bring your boat in through the storm", req: { court: "dwaraka" }, game: "race", hint: "A test in the storm",
+    dwaraka: { t: "Bring your boat in", req: { court: "dwaraka" }, game: "race", hint: "A test in the storm",
       trial: { attr: "grace", skill: "chariot", stage: "stage_storm_sea", vehicle: "boat", obstacles: ["wave", "rock"], hull: 3, upVerb: "Steer up", downVerb: "Steer down",
         tally: "Distance: {d}% · Hits: {h} of {l}", bump: "A wave slams into the boat.", help: "Steer between the rocks and the breaking waves: up and down, or the buttons.",
         rules: "A storm comes in off the western sea while the fishing boats are still out, and yours is the last. Bring it in through the rocks at the harbour mouth. Two hits and the boat is in trouble; three and it is on the rocks.",
@@ -332,7 +332,7 @@
       win: { fx: { bond: { karna: 2 }, rep: { common: 1 }, flag: "kept_the_beat", journal: "You kept the beat for Karna's war elephants at Champa." }, text: "Forty elephants come down the grounds at Champa in one long rolling step, and the ground shakes in time. Karna takes the drumsticks from you himself, smiling." },
       lose: { fx: {}, text: "The line stumbles, then bunches, then stops. An old mahout takes the drum from you gently." },
       retryLose: { penalty: 1, fx: { flag: "elephants_twice" }, text: "The line breaks again. Karna does not say anything. He hands the drum to the old mahout, and that is that." } },
-    forest: { t: "Go into the old forest after the lost child", req: { court: ["matsya", "nishada", "none", "gandhara", null, undefined] }, game: "rings", hint: "A puzzle",
+    forest: { t: "Go after the lost child", req: { court: ["matsya", "nishada", "none", "gandhara", null, undefined] }, game: "rings", hint: "A puzzle",
       trial: { attr: "wisdom", skill: "stealth", stage: "stage_forest_maze_top", mode: "open", theme: "maze", outVerb: "Outer ring", inVerb: "Inner ring", turns: "The forest shifts.",
         help: "The old forest grows in rings of trees. Line up every clearing with the outer one to open a path to the heart. Turning a ring drags the ring inside it the other way.",
         rules: "A child has wandered into the old forest where the paths go round in rings, and the people of the place say it moves. Find the way to the clearing at its heart before dark.",
@@ -391,7 +391,7 @@
     win: { fx: { attr: { wisdom: 1 }, flag: "answered_yaksha", journal: "At the lake you answered the voice in the water. What is faster than the wind? The mind." }, text: "\"Drink,\" says the voice. The water is cold and sweet. When you are old you can still say every word of it." },
     lose: { fx: {}, text: "Your answer comes out wrong, and the voice falls silent. The water is right there. You wait." },
     retryLose: { penalty: 1, fx: { attr: { might: -1 }, flag: "yaksha_twice" }, text: "You cannot think for thirst. You drink. Darkness, and then you are lying on the bank in the evening, alive, with a heaviness in your limbs that never quite leaves." } };
-  const MOKSHA = { t: "Sit down at Vikarna's board", game: "moksha", hint: "A board game, a minute or two",
+  const MOKSHA = { t: "Sit down at Vikarna's board", game: "moksha", hint: "A board game",
     trial: { attr: "wisdom", skill: "lore", stage: "stage_board_table", cast: ["dushasana"], opponent: "Vikarna",
       rules: "Vikarna, the brother who spoke for Draupadi in the dice hall, keeps a Moksha Patam board: ladders of virtue, snakes of vice, and moksha at sixty-four. Throw two dice and move by the one you choose. First to moksha wins.",
       stakes: ["You reach moksha first, and Vikarna starts telling you what he really thinks of this court.", "Vikarna wins. He sets the board up again for tomorrow."] },
@@ -494,7 +494,7 @@
       retryLose: { penalty: 1, fx: { rep: { common: -1 }, flag: "wheel_twice" }, text: "You mix them up again. A man waits who should not have, and the other healers say nothing, and that is worse." } }
   };
   const NIGHT = {
-    drive: { t: "Drive arrows up to the front in the dark", req: { side: ["pandava", "kaurava"] }, game: "race", hint: "A test in battle",
+    drive: { t: "Drive arrows to the front", req: { side: ["pandava", "kaurava"] }, game: "race", hint: "A test in battle",
       trial: { attr: "grace", skill: "chariot", kind: "war", stage: "stage_battlefield_night", vehicle: "chariot", obstacles: ["wreck", "fire"], hull: 3, speed: 3.5,
         tally: "Distance: {d}% · Hits: {h} of {l}", bump: "You hit something in the dark, and the chariot slews.", help: "Steer between the wrecks and the burning carts: up and down, or the buttons.",
         rules: "The battle goes on after dark, by torchlight, for the first time in the war. Your line is out of arrows. Drive a loaded chariot up to the front between the wrecks and the burning carts.",
@@ -503,7 +503,7 @@
       win: { fx: { rep: { common: 1 }, flag: "night_run", journal: "On the night of the fourteenth day you drove arrows up to the front through the dark." }, text: "You pull up behind the line with the axle smoking. Hands reach up out of the dark for the arrows, and somebody laughs, high and shaky." },
       lose: { fx: {}, text: "A wreck you never saw tips the chariot on one wheel. You get it down again and turn back for another run." },
       retryLose: { penalty: 1, fx: { injury: "leg", flag: "night_twice" }, text: "The chariot goes over in the dark. You crawl out from under it with your leg on fire, and the line runs dry an hour before dawn." } },
-    carry: { t: "Carry the wounded back between the torches", req: { side: ["neutral", null, undefined] }, game: "sneak", hint: "A test of nerve",
+    carry: { t: "Carry the wounded back", req: { side: ["neutral", null, undefined] }, game: "sneak", hint: "A test of nerve",
       trial: { attr: "grace", skill: "healing", kind: "war", stage: "stage_battlefield_night", cast: ["healer"], verb: "Carry", trips: 2, help: "Hold to carry. Stop when the archers' torchlight sweeps your way.",
         tally: "Carried back: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "One more behind the lines.", spotted: "Arrows come out of the dark. You flatten yourself in the mud.",
         rules: "The battle goes on by torchlight. Between the lines, the wounded are calling. Archers on both sides shoot at anything that moves in the torchlight. Carry two of them back.",
@@ -542,19 +542,19 @@
       id: "a2_trial", next: "a2_ekalavya", tests: TEACHER, back: { scene: "a2_teacher", then: "a2_trial" },
       scene: { act: 2, age: 16, art: "scene_teacher", place: (S) => (S.teacher === "hermit" ? "Mauni's clearing" : S.teacher === "self" ? "A clearing at night" : "Your teacher's school"), caption: "The end of the second year",
         title: "Your teacher's test",
-        body: (S) => [S.teacher === "self" ? "Two years of teaching yourself. Tonight you find out whether it worked." : "Two years of training. Today {teacher} finds out what you have learned.", "If you fail, you will get one more chance. Only one."] },
-      retry: { id: "a2_trial_again", letGo: "Let it go. There will be other tests", letText: "You let it go. Your teacher does not mention it, and neither do you.",
+        body: (S) => [S.teacher === "self" ? "Two years alone. Tonight you test yourself." : "Two years on, {teacher} tests you."] },
+      retry: { id: "a2_trial_again", letGo: "Let it go", letText: "You let it go. Your teacher does not mention it, and neither do you.",
         scene: { act: 2, age: 16, art: "scene_teacher", place: (S) => (S.teacher === "hermit" ? "Mauni's clearing" : S.teacher === "self" ? "A clearing at night" : "Your teacher's school"), caption: "The next morning",
-          title: "Once more", body: ["You did not sleep. You have one more chance, and you will not be offered a third."] } }
+          title: "Once more", body: ["One more chance. There will not be a third."] } }
     }),
     K.trialScenes({
       id: "a2_pathtest", next: "a2_trial", tests: PATH, back: { scene: "a2_path", then: "a2_pathtest" },
       scene: { act: 2, age: 15, art: "scene_path", place: (S) => (S.path === "bard" ? "The spring fair" : S.path === "spy" ? "The palace, at night" : S.path === "healer" ? "The healers' hall" : S.path === "strategist" ? "Shakuni's rooms" : "Your teacher's school"), caption: "Your second year",
         title: "The test of your path",
-        body: (S) => ["You have chosen the path of the {path!}. Before you may call it yours, you have to show it was the right choice.", "If you fail, you will get one more chance. Fail that too, and you choose again."] },
-      retry: { id: "a2_pathtest_again", letGo: "Let it go. You will prove it some other way", letText: "You let it go. The path is still yours, whatever anyone says.",
+        body: (S) => ["Prove the {path!} path is yours."] },
+      retry: { id: "a2_pathtest_again", letGo: "Let it go", letText: "You let it go. The path is still yours, whatever anyone says.",
         scene: { act: 2, age: 15, art: "scene_path", place: (S) => (S.path === "bard" ? "The spring fair" : S.path === "spy" ? "The palace, at night" : S.path === "healer" ? "The healers' hall" : S.path === "strategist" ? "Shakuni's rooms" : "Your teacher's school"), caption: "The next day",
-          title: "Once more", body: ["One more try. After this, the path will have to prove itself some other way."] } }
+          title: "Once more", body: ["One more try."] } }
     }),
     // Act III: the great bow, for those who rode to Kampilya and have not yet been tested.
     K.trialScenes({
@@ -562,7 +562,7 @@
       scene: { when: (S) => !S.flags.includes("act3_tested"), skipTo: "a3_swayamvara", act: 3, age: 25, art: "scene_swayamvara", place: "Drupada's courtyard, Kampilya", caption: "The night before the contest",
         travel: "You ride to Kampilya for the swayamvara.",
         title: "The great bow",
-        body: ["Every warrior in the land has come to Kampilya for the princess's swayamvara. In the courtyard, under torches, the great bow lies on a rack. It is said that only five men alive can string it."] },
+        body: ["The swayamvara's great bow lies on its rack. Only five men alive can string it."] },
       retry: { id: "a3_bow_again", letGo: "Leave the bow to the kings", letText: "You leave the bow on its rack. Tomorrow, the kings can break their backs on it.",
         scene: { act: 3, age: 25, art: "scene_swayamvara", place: "Drupada's courtyard, Kampilya", caption: "First light", title: "First light", body: ["The courtyard is empty except for the bow-master, the bow, and you."] } }
     }),
@@ -571,9 +571,9 @@
       id: "a3_hunt", next: "a3_news", tests: { hunt: HUNT },
       scene: { when: (S) => !S.flags.includes("act3_tested"), skipTo: "a3_news", act: 3, age: 25, art: (S) => K.childArt(S), place: (S) => K.homePlace(S), caption: "The end of the rains",
         title: "The spring hunt",
-        body: ["While half the land rides to Kampilya, the year's work goes on at home. At the end of the rains comes the spring hunt on the meadow at the forest's edge."] },
+        body: ["At home, the spring hunt gathers at the forest's edge."] },
       retry: { id: "a3_hunt_again", letGo: "Leave the hunting to the old hunters", letText: "You unstring your bow and walk home. The old hunters will manage.",
-        scene: { act: 3, age: 25, art: (S) => K.childArt(S), place: (S) => K.homePlace(S), caption: "Dawn", title: "Dawn", body: ["The mist is still on the meadow. The old hunters have saved you a place at the edge of the trees."] } }
+        scene: { act: 3, age: 25, art: (S) => K.childArt(S), place: (S) => K.homePlace(S), caption: "Dawn", title: "Dawn", body: ["The old hunters have saved you a place."] } }
     }),
     // Act III: the test of the place where you make your life.
     K.trialScenes({
@@ -583,30 +583,30 @@
         travel: (S) => (S.court && S.court !== "none" ? ["You make your home in {place}.", { place: K.COURTS[S.court].name }] : "You go where your skills are needed."),
         caption: "Your first year there",
         title: (S) => ({ hastinapura: "Tigers and goats", indraprastha: "The burning forest", panchala: "Drupada's council", dwaraka: "The harbour mouth", anga: "Karna's elephants" }[S.court] || "The old forest"),
-        body: (S) => [S.court === "indraprastha" ? "The new city needs land, and the land is forest. Krishna and Arjuna have set the Khandava forest burning, and they shoot down anything that tries to escape it." : "A new place takes your measure in the first year. Here is how this one does it.", "If you fail, you will get one more chance. Only one."] },
-      retry: { id: "a3_courttest_again", letGo: "Let it go. You will find your place some other way", letText: "You let it go. It takes longer, but in the end the place gets used to you.",
-        scene: { act: 3, age: 26, art: (S) => K.childArt(S), place: (S) => (S.court === "indraprastha" ? "The Khandava forest, Indraprastha" : K.homePlace(S)), caption: "Once more", title: "Once more", body: ["One more chance, and then the place will make up its mind about you."] } }
+        body: (S) => [S.court === "indraprastha" ? "The new city needs land, and the land is forest. Krishna and Arjuna have set the Khandava forest burning, and they shoot down anything that tries to escape it." : "Your new home tests you in the first year."] },
+      retry: { id: "a3_courttest_again", letGo: "Let it go", letText: "You let it go. It takes longer, but in the end the place gets used to you.",
+        scene: { act: 3, age: 26, art: (S) => K.childArt(S), place: (S) => (S.court === "indraprastha" ? "The Khandava forest, Indraprastha" : K.homePlace(S)), caption: "Once more", title: "Once more", body: ["One more chance."] } }
     }),
     // Act IV: Shakuni's hands, in the hall; or, for those who stayed away, the night after, at home.
     K.trialScenes({
-      id: "a4_hands", next: "a4_stakes",
+      id: "a4_hands", next: "a4_hall",
       tests: { watch: { t: "Watch Shakuni's hands", game: "hands", hint: "A test of your eyes", trial: { stage: "stage_dice_board_top", cast: ["shakuni"] },
-        win: { fx: { flag: ["watched_hands", "saw_swap"], journal: "In the dice hall you saw Shakuni swap a die from his sleeve." }, text: "One of those throws showed a face no long die has. His sleeve moved before it, and after. You are sure now." },
+        // Seeing the swap, you call it out; the hall does not listen, and the game goes on (canon).
+        win: { fx: { flag: ["watched_hands", "saw_swap", "spoke_dice"], rep: { pandava: 1, kuru: -1 }, journal: "In the dice hall you saw Shakuni swap a die from his sleeve, and said so." }, text: "One throw shows a face no long die has. You call it out. Shakuni smiles, and the game goes on." },
         lose: { fx: { flag: "watched_hands" }, text: "You watch until your eyes ache. If he did anything, you did not see it. He is about to throw again." },
         retryLose: { penalty: 1, fx: { rep: { kuru: -1 }, flag: "hands_twice" }, text: "You stare so hard that the courtiers nudge each other and laugh. You saw nothing." } } },
       scene: { act: 4, age: 30, art: "scene_dice_throws", place: "The assembly hall, Hastinapura", caption: "Before the stakes", travel: "You come to Hastinapura for the game.",
         title: "Shakuni's hands",
-        body: (S) => ["Before the real stakes, Shakuni throws a few rounds for nothing, to warm the dice. You are close enough to see his hands.",
-          S.flags.includes("beat_shakuni_board") ? { memory: "Shakuni sees you, and smiles. He has not forgotten the chaupar board, fourteen years ago." } : null,
-          "If you see a dishonest throw, you will know what is happening here. If you miss it, you will not."] },
+        body: (S) => ["Shakuni warms the dice with a few free throws. You can see his hands.",
+          S.flags.includes("beat_shakuni_board") ? { memory: "Shakuni sees you, and smiles. He has not forgotten the chaupar board, fourteen years ago." } : null] },
       retry: { id: "a4_hands_again", letGo: "Look away", letText: "You look away. Whatever he is doing, you cannot see it.",
-        scene: { act: 4, age: 30, art: "scene_dice_throws", place: "The assembly hall, Hastinapura", caption: "Another round", title: "Once more", body: ["Shakuni gathers the dice for another round. You will not get a third look."] } }
+        scene: { act: 4, age: 30, art: "scene_dice_throws", place: "The assembly hall, Hastinapura", caption: "Another round", title: "Once more", body: ["One more look. There will not be a third."] } }
     }),
     K.trialScenes({
       id: "a4_household", next: "a4_aftermath", tests: HOUSEHOLD,
       scene: { when: (S) => S.flags.includes("absent_dice"), skipTo: "a4_aftermath", act: 4, age: 30, art: "scene_years_remain", place: (S) => K.homePlace(S), caption: "The night after the dice game",
         title: (S) => (K.homeKey(S) === "hastinapura" ? "Vidura's message" : "The night streets"),
-        body: (S) => ["You stayed away from the hall, but the news reaches you before midnight: everything is lost.", K.homeKey(S) === "hastinapura" ? null : "By morning, Duryodhana's men will be in the streets here too."] },
+        body: (S) => ["Before midnight the news comes: everything is lost.", K.homeKey(S) === "hastinapura" ? null : "By morning Duryodhana's men will be here."] },
       retry: { id: "a4_household_again", letGo: "Give it up", letText: "You give it up. Whatever happens tonight will happen without you.",
         scene: { act: 4, age: 30, art: "scene_years_remain", place: (S) => K.homePlace(S), caption: "Before dawn", title: "Before dawn", body: ["The sky is going grey. One more try, or none."] } }
     }),
@@ -615,7 +615,7 @@
       id: "a5_vikarna", next: "a5_court_armour", tests: { play: MOKSHA },
       scene: { when: { exile: "court" }, skipTo: "a5_own_life", act: 5, age: 36, art: "scene_dice_hall", place: "The palace, Hastinapura", caption: "An evening at court", travel: "You stay at the Kuru court through the exile years.",
         title: "Vikarna's board",
-        body: ["The court is louder than it used to be, and emptier. One evening Vikarna, Duryodhana's brother, the only one who spoke for Draupadi in the dice hall, sends for you.", { speaker: "Vikarna", line: "Everyone here plays dice. I play a better game. Sit down." }] },
+        body: ["Vikarna, the one Kaurava who spoke for Draupadi, sends for you.", { speaker: "Vikarna", line: "Everyone here plays dice. I play a better game. Sit down." }] },
       retry: { id: "a5_vikarna_again", letGo: "Make your excuses", letText: "You make your excuses. Vikarna plays alone, which he seems used to.",
         scene: { act: 5, age: 36, art: "scene_dice_hall", place: "The palace, Hastinapura", caption: "The next evening", title: "Another game", body: ["Vikarna has set the board up again."] } }
     }),
@@ -623,7 +623,7 @@
       id: "a5_forge", next: "a5_own_crisis", tests: { forge: FORGE },
       scene: { when: { exile: "own" }, skipTo: "a5_charu", act: 5, age: 35, art: "scene_smith", place: (S) => K.homePlace(S), caption: "A forge at dawn",
         title: "Charu's anvil",
-        body: ["Charu came to live near you after the dice game, and keeps the forge at the end of the lane now. One morning Charu leans in the doorway, black to the elbows.", { speaker: "Charu", line: "I have a blade that needs two hammers, and you have two arms. Come on." }] },
+        body: ["Charu, who keeps the forge down your lane now, leans in your doorway.", { speaker: "Charu", line: "I have a blade that needs two hammers, and you have two arms. Come on." }] },
       retry: { id: "a5_forge_again", letGo: "Leave the blade to Charu", letText: "You leave it to Charu, who finishes it alone and never mentions it.",
         scene: { act: 5, age: 35, art: "scene_smith", place: (S) => K.homePlace(S), caption: "The fire again", title: "Back in the fire", body: ["The blade is glowing again. Charu nods at the second hammer."] } }
     }),
@@ -650,8 +650,8 @@
       id: "a5_prison", next: "a5_karna_secret", tests: { escape: PRISON },
       scene: { when: { flag: "imprisoned" }, skipTo: "a5_local", act: 5, age: 43, art: "scene_secret", place: "The prison yard, Hastinapura", caption: "Below the palace walls", travel: "Duryodhana's guards take you to the prison yard in chains.",
         title: "The prison yard",
-        body: ["Duryodhana does not forgive a refusal. His guards come for you the night the army rides out, and you wake in the prison yard below the palace walls, in chains, with the smell of the river coming through the bars.", "On the third night, the bar on the gate is loose."] },
-      retry: { id: "a5_prison_again", letGo: "Wait. They will need you when the war comes", letText: "You wait. When the war comes, they do need you, and they let you out.",
+        body: ["Duryodhana does not forgive a refusal. You wake in chains in the prison yard below the palace.", "On the third night, the bar on the gate is loose."] },
+      retry: { id: "a5_prison_again", letGo: "Wait for the war", letText: "You wait. When the war comes, they do need you, and they let you out.",
         scene: { act: 5, age: 43, art: "scene_secret", place: "The prison yard, Hastinapura", caption: "The next night", title: "The next night", body: ["The bar is still loose. The guard on the platform is a different man, and more awake."] } }
     }),
     // Act V: trouble at home, for those who were neither in Matsya nor at the Kuru court.
@@ -659,7 +659,7 @@
       id: "a5_local", next: "a5_karna_secret", tests: LOCAL,
       scene: { when: (S) => K.raidGroup(S) === "local", skipTo: "a5_karna_secret", act: 5, age: 43, art: (S) => ({ panchala: "battle_border", dwaraka: "roots_mathura", anga: "home_anga" }[K.homeKey(S)] || "ev_deer"), place: (S) => K.homePlace(S), caption: "The year of the raid",
         title: (S) => ({ panchala: "Raiders at the border", gandhara: "Raiders at the pass", dwaraka: "The wreck", anga: "The stampede at Champa" }[K.homeKey(S)] || "The man-eater"),
-        body: (S) => [K.homeKey(S) === "gandhara" ? "Hill raiders come down on the villages at the pass, as if the whole land had been given leave." : "The same week the Kauravas ride on Matsya, trouble comes here too, as if the whole land had been given leave.", "If you fail, you will get one more chance. Only one."] },
+        body: (S) => [K.homeKey(S) === "gandhara" ? "Hill raiders come down on the villages at the pass, as if the whole land had been given leave." : "The same week, trouble comes here too."] },
       retry: { id: "a5_local_again", letGo: "Leave it to others", letText: "You leave it to others. They do what they can.",
         scene: { act: 5, age: 43, art: (S) => ({ panchala: "battle_border", dwaraka: "roots_mathura", anga: "home_anga" }[K.homeKey(S)] || "ev_deer"), place: (S) => K.homePlace(S), caption: "Once more", title: "Once more", body: ["There is still time, just."] } }
     }),
@@ -668,8 +668,8 @@
       // Played before the day-13 scene (whose closing lines tell of Abhimanyu's fall), never after it.
       id: "a6_wheel", next: "a6_day13", tests: WHEEL,
       scene: { act: 6, age: 44, war: true, art: "scene_day13", place: "Kurukshetra · day 13", caption: "The wheel formation",
-        title: "What the wheel asks", body: (S) => [S.side === "pandava" ? "On the thirteenth morning Drona sets the Chakravyuha, a wheel of warriors turning ring within ring. Abhimanyu rides at its face, looking for the way in, and your company waits on you."
-          : S.side === "kaurava" ? "On the thirteenth morning Drona sets the Chakravyuha, a wheel of warriors turning ring within ring, and you are one of its rings. The Pandava chariots are already coming."
+        title: "What the wheel asks", body: (S) => [S.side === "pandava" ? "Drona sets the Chakravyuha. Abhimanyu looks for the way in, and your company waits on you."
+          : S.side === "kaurava" ? "Drona sets the Chakravyuha, and you are one of its rings. The Pandava chariots are coming."
           : "On the thirteenth morning the drums start before dawn, and by noon the carts are bringing the wounded in faster than anyone can count."] },
       retry: { id: "a6_wheel_again", letGo: "Fall back", letText: "You fall back with the others. Someone else takes your place.",
         scene: { act: 6, age: 44, war: true, art: "scene_day13", place: "Kurukshetra · day 13", caption: "The second wave", title: "Again", body: ["There is no time to think. Again."] } }
@@ -718,8 +718,8 @@
     retryLose: { penalty: 1, next: waitThen, fx: Object.assign({}, WAIT, { flag: ["waited_out_captivity", "captive_twice"] }), text: "They drag you back from the gate and double your chains. Months pass in the dark before anyone remembers to let you go." } };
   K.scenes([
     { id: "x_captive", art: captiveArt, place: captivePlace, caption: "In chains", title: "Locked away",
-      body: (S) => [["You wake in chains, on stone. {who} took you, and nobody will come asking for you soon.", { who: CAPTOR(S) }], "Above you a torch swings on the watch platform. The bar on the gate is old, and loose."],
-      choices: [K.testChoice("x_captive", "escape", ESCAPE), { id: "wait", t: "Wait. Someone will remember you, in time", fx: WAIT, next: waitThen, text: "You wait. The seasons turn outside the wall. When they finally open the gate, the world has gone on without you." }],
+      body: (S) => [["You wake in chains, on stone. {who} took you, and nobody will come asking for you soon.", { who: CAPTOR(S) }], "The bar on the gate is old, and loose."],
+      choices: [K.testChoice("x_captive", "escape", ESCAPE), { id: "wait", t: "Wait it out", fx: WAIT, next: waitThen, text: "You wait. The seasons turn outside the wall. When they finally open the gate, the world has gone on without you." }],
       next: "x_captive_again" },
     { id: "x_captive_again", when: K.retryWhen("x_captive", ["escape"]), skipTo: captiveThen, art: "stage_prison_yard", place: captivePlace, caption: "Another night", title: "Another night",
       body: ["The bar is still loose. The guard on the platform has a cough now, and turns away to spit."],
