@@ -101,7 +101,7 @@
     if (!cast.length && FOE_FOR[kind] && !(fc && fc.prop)) cast = FOE_FOR[kind];
     // Elders (a teacher, a sage) are marked: some tests stand them apart, further back.
     const others = cast.slice(0, 3).map((id, i) => { const sp = Object.assign({}, U.puppetFor(id) || {});
-      if (face === "drill") sp.item = fc.foe;
+      if (face === "drill") sp.item = t.foeItem || fc.foe; // a mace duel puts maces in both hands (t.item, t.foeItem)
       else if (face === "gate") sp.item = fc.raiders[i] || sp.item;
       else if (kind === "push") sp.item = null; // a shoving match is hand to hand
       return '<span class="actor foe f' + i + (sp.stage === "elder" ? " elder" : "") + (face === "gate" ? " raider" : "") + '" data-id="' + id + '">' + U.puppet(sp, { h: 150, flip: true }) + "</span>"; }).join("");

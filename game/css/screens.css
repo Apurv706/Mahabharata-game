@@ -1844,3 +1844,16 @@ svg .pr-hint { outline: none; filter: drop-shadow(0 0 6px #ffd680) drop-shadow(0
 .bit.mote { width: 7px; height: 7px; border-radius: 50%; background: radial-gradient(#e9ffe9, #7fcfa6 60%, rgba(127, 207, 166, 0)); }
 .bit.chip { width: 6px; height: 4px; border-radius: 1px; background: #c9a066; }
 .ward { position: absolute; z-index: 4; border-radius: 50%; border: 3px solid rgba(255, 214, 140, .8); border-left-color: transparent; border-bottom-color: transparent; box-shadow: 0 0 14px rgba(255, 196, 110, .6); pointer-events: none; }
+
+/* Fights of another kind (content/war_fights.js, ui/fightmodes.js): the bow in a chariot duel, arrows
+   to catch, a feint in a mace duel, an arrow coming back in an archery duel, and the beat of the fight. */
+.race-btns .bow { white-space: nowrap; background: var(--raised); color: var(--ink); border: 1px solid var(--gold-line); opacity: .7; }
+.race-btns .bow.ready { opacity: 1; background: var(--accent); color: var(--accent-ink); }
+.race-btns .bow kbd { display: none; }
+@media (hover: hover) and (pointer: fine) { .race-btns .bow kbd { display: inline-block; margin-left: 8px; padding: 3px 6px; border: 1px solid currentColor; border-radius: 4px; font: 600 12px/1 var(--text); vertical-align: middle; opacity: .75; } }
+.track.vertical .ob-arrow svg { transform: rotate(-90deg); }
+.ringbox .ring.feint { border-color: #e0553a !important; box-shadow: 0 0 18px rgba(224, 85, 58, 0.7); }
+.range.incoming { box-shadow: inset 0 0 0 4px #e0553a; }
+.fm-beat { position: fixed; left: 50%; top: max(12px, var(--sat, 0px)); transform: translateX(-50%); z-index: 40; width: min(92vw, 560px); margin: 0; padding: 10px 14px; border-radius: 10px; background: rgba(var(--surface-rgb), 0.92); color: var(--ink); font: 500 15px/1.4 var(--text); text-align: center; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35); pointer-events: none; opacity: 0; transition: opacity .3s ease; }
+.fm-beat.on { opacity: 1; }
+.race-btns:has(> .bow) > .trial-press { padding-left: 6px; padding-right: 6px; min-width: 0; }

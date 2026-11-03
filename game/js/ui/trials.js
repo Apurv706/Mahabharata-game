@@ -33,10 +33,10 @@
 
   const IMMERSIVE = new Set(["aim", "board", "push", "steady", "retort", "draw", "sneak", "notice", "drill", "rhythm", "race", "herd", "rings", "formation", "array", "breath", "escape", "fuse"]);
   // What hangs and swings in the archery test, drawn centred on its middle (about 64 units across).
-  const RUNNERS = new Set(["deer", "tiger", "elephant"]);
+  const RUNNERS = new Set(["deer", "tiger", "elephant", "chariot"]);
   // Half the width of each target as drawn, in its own units. On the painting the target is drawn
   // exactly as wide as its hit zone, so a shot that touches it is a hit and one that passes it is not.
-  const ART_HALF = { lamp: 18, fruit: 20, bell: 20, leaf: 20, bird: 28, deer: 30, tiger: 44, elephant: 36 };
+  const ART_HALF = { lamp: 18, fruit: 20, bell: 20, leaf: 20, bird: 28, deer: 30, tiger: 44, elephant: 36, chariot: 36 };
   // Where on the target a shot is aimed, in its own units, when that is not its middle: Arjuna's
   // lamp is shot at the flame.
   const AIM_AT = { lamp: [0, -18] };
@@ -48,6 +48,8 @@
     if (icon === "deer") return '<g stroke="#2b1609" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M-20 2 L-24 24 M-12 2 L-10 24 M10 2 L8 24 M17 0 L21 24" fill="none" stroke-width="3.2"/><path d="M-28 -6 Q-30 -18 -14 -19 L10 -19 Q17 -19 21 -25 L27 -37 Q31 -42 35 -37 L34 -30 Q38 -24 35 -18 Q31 -9 22 -6 L20 4 Q0 6 -20 4 Z" fill="#c9843e" fill-opacity=".92"/><path d="M-28 -9 l-7 -4" fill="none"/><path d="M29 -39 l-3 -10 l-6 -3 M27 -47 l4 -5 M33 -39 l5 -9 l6 -2" fill="none" stroke-width="2"/><path d="M-22 -11 Q0 -15 18 -11" fill="none" stroke="#a3302a" stroke-width="2.6"/><path d="M-22 -3 Q0 -6 16 -3" fill="none" stroke="#3f6b3a" stroke-width="2"/><g fill="#f4e4c1" stroke="none"><circle cx="-16" cy="-7" r="1.7"/><circle cx="-8" cy="-7.5" r="1.7"/><circle cx="0" cy="-8" r="1.7"/><circle cx="8" cy="-7.5" r="1.7"/></g><circle cx="31" cy="-31" r="1.7" fill="#2b1609" stroke="none"/><circle cx="-18" cy="1" r="2.4" fill="#d9a53a" stroke="#2b1609" stroke-width="1"/><circle cx="14" cy="0" r="2.4" fill="#d9a53a" stroke="#2b1609" stroke-width="1"/><circle cx="22" cy="-14" r="2.4" fill="#d9a53a" stroke="#2b1609" stroke-width="1"/></g>';
     if (icon === "tiger") return '<g stroke="#2b1609" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M-30 -8 Q-44 -14 -46 -28 Q-40 -18 -30 -14" fill="none" stroke="#e08a2a" stroke-width="5"/><path d="M-30 -8 Q-44 -14 -46 -28" fill="none" stroke-width="1.2"/><path d="M-22 4 L-26 24 L-19 24 L-16 6 M16 4 L14 24 L21 24 L24 4" fill="#e08a2a" fill-opacity=".92"/><path d="M-32 -8 Q-30 -21 -12 -21 L14 -21 Q26 -21 29 -13 L30 4 Q28 8 22 7 L-24 7 Q-33 6 -32 -8Z" fill="#e08a2a" fill-opacity=".92"/><path d="M24 -16 Q26 -30 36 -28 Q46 -26 46 -16 Q46 -6 36 -5 Q28 -5 24 -10Z" fill="#e08a2a" fill-opacity=".95"/><path d="M28 -27 l2 -7 l5 4 M38 -28 l4 -6 l3 6" fill="#e08a2a"/><g fill="none" stroke="#7a2a10" stroke-width="2.6"><path d="M-20 -21 q3 9 -1 15 M-10 -21 q3 9 -1 15 M0 -21 q3 9 -1 15 M10 -21 q3 9 -1 15"/></g><path d="M-26 1 H22" fill="none" stroke="#3f6b3a" stroke-width="2"/><g fill="#f4e4c1" stroke="none"><circle cx="-14" cy="3" r="1.5"/><circle cx="-4" cy="3" r="1.5"/><circle cx="6" cy="3" r="1.5"/></g><circle cx="40" cy="-18" r="1.8" fill="#2b1609" stroke="none"/><path d="M42 -10 h4" fill="none"/><circle cx="-20" cy="2" r="2.4" fill="#d9a53a" stroke="#2b1609" stroke-width="1"/><circle cx="19" cy="2" r="2.4" fill="#d9a53a" stroke="#2b1609" stroke-width="1"/><circle cx="26" cy="-12" r="2.4" fill="#d9a53a" stroke="#2b1609" stroke-width="1"/></g>';
     if (icon === "elephant") return '<g stroke="#2b1609" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M-24 8 L-24 26 L-15 26 L-15 10 M12 10 L12 26 L21 26 L21 8" fill="#8d8a86" fill-opacity=".95"/><path d="M-34 6 Q-36 -24 -6 -27 Q20 -28 26 -12 Q34 -6 34 8 Q34 24 27 27 Q24 18 22 10 Q14 12 -24 12 Q-33 12 -34 6Z" fill="#8d8a86" fill-opacity=".95"/><path d="M8 -20 Q4 -8 10 2 Q18 6 22 -4" fill="none" stroke-width="1.8"/><path d="M-20 -24 Q-6 -28 6 -24 L8 2 Q-6 6 -20 2 Z" fill="#a3302a" fill-opacity=".95"/><path d="M-20 2 l3 4 l3 -4 l3 4 l3 -4 l3 4 l3 -4 l3 4 l3 -4" fill="none" stroke="#d9a53a" stroke-width="2"/><g fill="#d9a53a" stroke="none"><circle cx="-14" cy="-14" r="1.8"/><circle cx="-6" cy="-15" r="1.8"/><circle cx="2" cy="-14" r="1.8"/><circle cx="-10" cy="-7" r="1.8"/><circle cx="-2" cy="-7" r="1.8"/></g><path d="M30 0 Q38 6 36 16" fill="none" stroke="#f4e4c1" stroke-width="3"/><circle cx="22" cy="-12" r="1.8" fill="#2b1609" stroke="none"/><circle cx="-19" cy="9" r="2.4" fill="#d9a53a" stroke="#2b1609" stroke-width="1"/><circle cx="16" cy="9" r="2.4" fill="#d9a53a" stroke="#2b1609" stroke-width="1"/></g>';
+    // An enemy chariot at range (an archery duel, content/war_fights.js): horse, car and archer, side on.
+    if (icon === "chariot") return '<g stroke="#2b1609" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M8 -4 Q14 -16 26 -16 L34 -24 L38 -20 L34 -12 Q38 -4 34 4 L30 6 L28 20 M18 4 L16 20" fill="#c9a679" fill-opacity=".95"/><path d="M-30 -2 H10 L6 -14 H-26 Z" fill="#3d5a8a" fill-opacity=".95"/><path d="M8 -6 L20 -6" stroke-width="3"/><circle cx="-14" cy="8" r="11" fill="none" stroke-width="3.5"/><path d="M-14 -3 V19 M-25 8 H-3 M-22 0 L-6 16 M-6 0 L-22 16" stroke-width="1.6"/><path d="M-16 -14 L-14 -34 M-20 -26 L-8 -24" stroke-width="3"/><circle cx="-14" cy="-38" r="5" fill="#2b1609"/><path d="M-4 -44 Q4 -30 -4 -16" fill="none" stroke-width="2"/><path d="M-4 -44 L-4 -16" stroke-width=".8"/></g>';
     if (icon === "bird") return '<g stroke="#2b1609" stroke-width="2" stroke-linejoin="round"><path d="M-28 0 Q-12 -20 0 -5 Q12 -20 28 0 Q12 -9 0 7 Q-12 -9 -28 0Z" fill="#3f6b3a" fill-opacity=".92"/><path d="M-20 -5 Q-10 -11 -3 -4 M20 -5 Q10 -11 3 -4" fill="none" stroke="#a3302a" stroke-width="2.2"/><circle cx="0" cy="0" r="3" fill="#d9a53a" stroke-width="1"/></g>';
     if (icon === "leaf") return loop + '<path d="M0 -30 Q20 -6 0 28 Q-20 -6 0 -30Z" fill="#6f8f3a" stroke="#3a4f1c" stroke-width="2"/><path d="M0 -26 V24" stroke="#3a4f1c" stroke-width="1.5"/>';
     // A plain straw target, rope-bound, as on the training ground.
@@ -190,10 +192,13 @@
       const shots = t.shots || 3, need = t.need || 2;
       const win = clamp(0.085 + power * 0.012 + (t.easy || 0), 0.08, t.practice ? 0.3 : 0.2) * (t.small ? 0.75 : 1); // half-width of the hit zone, as a share of the swing
       let shot = 0, hits = 0, speed = t.speed || 1.6, phase = 0, x = 0, busy = false;
+      // An archery duel (trial.returns: wounds you can take): after each of your shots he shoots back,
+      // and you press again to duck, once his arrow is in the air and before it arrives.
+      let incoming = 0, wounds = 0, inTimer = 0;
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="range' + (t.dark ? " dark" : t.field ? " field" : "") + '"><div class="zone" style="width:' + win * 90 + '%"></div><div class="line"></div>' +
         '<div class="target"><i class="t-' + (t.icon || "lamp") + '"></i></div><div class="arrow"></div></div><p class="game-note" aria-live="polite"></p><div class="btnrow"></div>';
       const range = host.querySelector(".range"), tgt = host.querySelector(".target"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
-      const marks = () => { U.trLabel(score, [["Shot {n} of {m}", { n: Math.min(shot + 1, shots), m: shots }], ["Hits: {h}", { h: hits }]]); };
+      const marks = () => { U.trLabel(score, [["Shot {n} of {m}", { n: Math.min(shot + 1, shots), m: shots }], ["Hits: {h}", { h: hits }]].concat(t.returns ? [["Wounds: {w} of {r}", { w: wounds, r: t.returns }]] : [])); };
       marks();
       // On the painting (immersive): the target hangs by a rope from the branch above and swings;
       // a faint dotted line runs up from your bow to where the arrow will fly; the arrow flies up
@@ -302,7 +307,23 @@
       const sway = clamp(0.05 - power * 0.004, 0.02, 0.05), drift = clamp(0.06 - power * 0.004, 0.03, 0.06);
       let wob = 0;
       const gauss = () => { let u = 0; for (let i = 0; i < 3; i++) u += K.rng(); return (u - 1.5) / 0.5; };
+      const ducked = (ok, msg) => {
+        clearTimeout(inTimer); incoming = 0; range.classList.remove("incoming");
+        if (!ok) wounds++;
+        note.textContent = K.tr(msg);
+        cue(ok ? "good" : "bad"); if (K.Sound) K.Sound.play(ok ? "quill" : "hit");
+        marks();
+        if (wounds >= t.returns) return setTimeout(() => end("lose", ["His arrows found you {w} times.", { w: wounds }]), 500);
+        setTimeout(() => { busy = false; note.textContent = ""; }, 600);
+      };
+      const comeBack = () => {
+        incoming = U.clock(); range.classList.add("incoming");
+        note.textContent = K.tr("He shoots back. Duck!");
+        if (K.Sound) K.Sound.play("drum");
+        inTimer = setTimeout(() => ducked(false, "Too late. His arrow finds you."), 1000);
+      };
       const release = () => {
+        if (incoming) { const dt = U.clock() - incoming; return ducked(dt >= 250, dt >= 250 ? "You duck under it." : "Too soon. His arrow finds you."); }
         if (busy || (P && !P.sw)) return; // not before the target is on the painting
         busy = true;
         const err = gauss() * drift;
@@ -331,7 +352,7 @@
         }
         // To the quiver, and the next arrow onto the string, within the pause before the next shot.
         if (rig) { setTimeout(() => hold(rig, QUIVER, 700, 0.55), 120); setTimeout(() => hold(rig, aimPose(P.th * 180 / Math.PI), 420, 0.62), 380); }
-        setTimeout(() => { busy = false; speed *= 1.15; note.textContent = ""; range.classList.remove("hit", "miss"); if (P) { P.stuck.innerHTML = ""; P.drop = 0; P.tgt.style.opacity = ""; } }, 700);
+        setTimeout(() => { speed *= 1.15; note.textContent = ""; range.classList.remove("hit", "miss"); if (P) { P.stuck.innerHTML = ""; P.drop = 0; P.tgt.style.opacity = ""; } if (t.returns && host.isConnected) comeBack(); else busy = false; }, 700);
       };
       host.querySelector(".btnrow").appendChild(pressButton(t.verb || "Release", release));
       onAct(release);
@@ -574,11 +595,14 @@
       // acts itself out instead (pushFace).
       const wrapEl = host.closest(".trial");
       const fx = t.face ? pushFace(t.face, wrapEl) : null;
-      const show = () => { U.trLabel(score, t.tally || "Good pushes: {g} of 3 · Slips: {b} of 3", { g: good, b: bad }); bal.style.left = (50 + (good - bad) * 15) + "%"; if (wrapEl && !fx) wrapEl.style.setProperty("--shove", (good - bad) * 7 + "vw"); };
+      // A mace duel (trial.feints: how often): some swings are feints, the ring burning red; let them pass.
+      let feint = false;
+      const show = () => { U.trLabel(score, t.tally || "Good pushes: {g} of 3 · Slips: {b} of 3", { g: good, b: bad, r: 3 - bad }); bal.style.left = (50 + (good - bad) * 15) + "%"; if (wrapEl && !fx) wrapEl.style.setProperty("--shove", (good - bad) * 7 + "vw"); };
       show();
       const MARK = 0.3; // the ring meets the mark at 30% of its starting size
       const push = () => {
         if (wait) return;
+        if (feint) return resolve(false, t.bit || "A feint, and you bit.", "soon");
         const p = clamp((now - start) / period, 0, 1), size = 1 - p * (1 - MARK) / 0.85;
         const ok = Math.abs(size - MARK) <= tol;
         resolve(ok, ok ? t.good || "He gives ground!" : size > MARK ? t.soon || "Too soon. He braces." : t.late || "Too late. He shoves back.", ok ? "ok" : size > MARK ? "soon" : "late");
@@ -593,15 +617,18 @@
         if (K.Sound) K.Sound.play(ok ? "hit" : "quill");
         show();
         if (good >= 3 || bad >= 3) return setTimeout(() => { if (fx) fx.end(good >= 3); finish(good >= 3 ? "win" : "lose", ["Good pushes {g}, slips {b}.", { g: good, b: bad }]); }, 450);
-        setTimeout(() => { wait = false; cycle++; period = Math.max(0.62, period * 0.9); start = now; note.textContent = ""; }, 650);
+        next(650);
       }
+      const next = (ms) => setTimeout(() => { wait = false; cycle++; period = Math.max(0.62, period * 0.9); start = now; note.textContent = ""; feint = !!t.feints && K.rng() < t.feints; ring.classList.toggle("feint", feint); }, ms);
+      // A feint let pass: nothing lost, and a breath to the good.
+      const read = () => { wait = true; note.textContent = K.tr(t.read || "You read the feint and let it pass."); ring.classList.remove("feint"); next(500); };
       host.querySelector(".btnrow").appendChild(pressButton(t.verb || "Push", push));
       onAct(push);
       return loop((s) => {
         now = s;
         if (wait) return;
         const p = (now - start) / period;
-        if (p > 1) return resolve(false, t.late || "Too late. He shoves back.", "late");
+        if (p > 1) return feint ? read() : resolve(false, t.late || "Too late. He shoves back.", "late");
         const size = Math.max(0.12, 1 - p * (1 - MARK) / 0.85);
         ring.style.transform = "translate(-50%, -50%) scale(" + size + ")";
         if (fx) fx.tell(p);

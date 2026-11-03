@@ -905,4 +905,123 @@ K.go("a6_day1"); K.choose(K.SCENES.cross_call, K.choiceList(K.SCENES.cross_call)
   ok(lives.length === 6 && ["pandava", "kaurava"].every((sd) => lives.filter((l) => l.side === sd).length === 3) && lives.every((l) => { const s = K.importCode(l.code); return s.scene === "a6_eve" && s.side === l.side && s.alive; }),
     "Part Two's ready-made war lives: three on each side, each saved on the eve of the war");
 }
+// 90. Fights of other kinds (PRD fights, content/war_fights.js): the main fights keep their form and length.
+// Each main fight of the war, by id: its hold, its rounds, deadly or not, and a hash of its enemies (both
+// sides). Only day 17's two fights changed, and only in how they are played (kind "chariot").
+require(G + "content/war_fights.js");
+{
+  const MAIN = "e_day1:0/0/1/ce4q e_guard:0/0/1/19jwq16 e_hunt:0/0/1/1abev2i e_wheel:0/0/1/1nsekju e_last_stand:0/6/1/k1xlai e_ring:0/0/1/rka4y2 e_gate:0/5/1/19hof7u e_road:0/0/1/17rmdfu e_jaya:0/0/1/1j6utpm e_night:0/0/1/vw016y e_dushasana:0/0/1/9axuyy e_day16:0/0/1/olpyve e_day18:0/0/1/1ha74ay e_raid:0/0/1/gug7ii e_ash:0/0/1/gug7ii hold_karna:6/0/0/11li45m hold_duryodhana:8/0/0/svt4qy hold_arjuna:6/0/0/ilpb2i hold_bhima:7/0/0/1hcd696 e_ep_bhishma:0/3/1/1oeefgq e_ep_carts:0/0/0/k7j2kq e_ep_ugra:0/0/1/1ld2l8q wc_e_child_line:0/5/0/1gpuwp5 wc_e_ghost:5/0/0/1c90tai wc_e_reach:0/5/0/1speu6i e_kb_ride:5/0/0/1vwrp3e e_kb_hold:6/0/0/10wpuoa e_kb_guard:5/0/0/16johai e_kf_reach:5/0/0/1pxmwy2 e_iravan:6/0/0/ebos96 e_lake_hold:5/0/0/1b5671m e_lake_hold_deep:5/0/1/1b5671m e_lake_three:4/0/0/1sfqbca e_lake_three_deep:4/0/1/1sfqbca oath_arjuna_12:7/0/1/bbh8cq oath_arjuna_16:7/0/1/k9u9qi oath_king_hold:6/0/0/18ttj4a bh_line9:5/0/0/1jtyiui cross_e_duel:0/0/1/zviave cross_e_called:0/0/1/oe7jii kd_e_son:6/0/0/e7g9xm kd_e_wheel:6/0/0/o241vu".split(" ");
+  const h = (s) => { let x = 5381; for (const ch of s) x = ((x * 33) ^ ch.charCodeAt(0)) >>> 0; return x.toString(36); };
+  const sig = (id) => { const e = K.ENCOUNTERS[id]; if (!e) return id + ":missing"; const en = ["pandava", "kaurava"].map((sd) => { const s = fresh({ age: 44, act: 6, side: sd }); s.flags.push("role_front"); return (K.val(e.enemies) || []).map((u) => u.name + ":" + u.hp + ":" + u.atk).join(","); }).join(" / ");
+    return id + ":" + (e.hold || 0) + "/" + (e.rounds || 0) + "/" + (e.lethal ? 1 : 0) + "/" + h(en); };
+  const changed = MAIN.filter((m) => sig(m.split(":")[0]) !== m);
+  ok(!changed.length, "the " + MAIN.length + " main fights keep their rounds and enemies" + (changed.length ? " (changed: " + changed.map((m) => m.split(":")[0]).join(", ") + ")" : ""));
+  const kinds = MAIN.map((m) => m.split(":")[0]).filter((id) => K.ENCOUNTERS[id].kind);
+  ok(kinds.join() === "kd_e_son,kd_e_wheel" && kinds.every((id) => K.ENCOUNTERS[id].kind === "chariot"), "only day 17's two fights are played another way: with the chariot controls");
+  const side = Object.keys(K.ENCOUNTERS).filter((id) => /^fs_/.test(id));
+  ok(side.length >= 15 && side.every((id) => { const e = K.ENCOUNTERS[id]; return e.hold === 4 && !e.lethal && (K.val(e.beats) || []).length === 1; }), "every side battle is a hold of four rounds with one twist, never deadly (" + side.length + ")");
+  // No main scene's fight was swapped for a side battle: side battles come only in their own scenes (and after a broken hold).
+  const swapped = Object.values(K.SCENES).filter((sc) => !/^fs_/.test(sc.id) && sc.id !== "hold_broken" && (K.val(sc.choices, fresh({ act: 6, age: 44, side: "pandava" })) || []).some((c) => /^fs_/.test(c.combat || "")));
+  ok(!swapped.length && ["a6_day1", "a6_capture", "a6_day13", "a6_day14", "a6_day16", "a6_day18"].every((d) => K.BEFORE[d].some((x) => /^fs_/.test(x))), "the side battles come in scenes of their own before the war days, and replace nothing");
+}
+// 91. Sprinkled by path, one special kind a war day at most (K.fightKind)
+{
+  const war = (o) => { const s = fresh(Object.assign({ act: 6, age: 44, side: "pandava" }, o)); s.flags.push("role_front"); return s; };
+  const kinds = ["archer", "charioteer", "mace", "healer", "spy", "strategist", "bard"].map((p) => { const s = war({ path: p }); return p + ":" + (K.fightKind(s, 6, "path") || "hold") + "/" + (K.fightKind(s, 11, "path") || "hold"); });
+  ok(kinds.join(" ") === "archer:range/range charioteer:chariot/chariot mace:mace/mace healer:carry/escort spy:breakthrough/breakthrough strategist:escort/breakthrough bard:hold/hold", "each path brings its kind: " + kinds.join(" "));
+  S = war({ path: "archer" });
+  const sk = K.SCENES.fs_sk_6, shown = K.choiceList(sk).filter((x) => x.ok).map((x) => x.c.id);
+  ok(shown.join() === "fight_range,leave", "the archer's skirmish is an archery duel, or another company's");
+  K.choose(sk, sk.choices.find((c) => c.id === "fight_range"));
+  ok(S.flags.includes("fk_6_range") && K.fightKind(S, 6, "weather") === null && K.fightKind(S, 6, "range") === "range" && K.fightKind(S, 3, "weather") === "weather", "once a day has had its special kind, any other fight that day is the plain hold");
+}
+// 92. Escort: the fight is lost when the one you keep falls
+{
+  S = fresh({ act: 6, age: 44, side: "pandava" }); S.flags.push("role_front");
+  const C = K.Combat, B = C.start("fs_sk_escort", () => {});
+  const cart = B.units.find((u) => u.src === "The healers' cart"), p = C.player(); p.hp = p.maxHp = 9999;
+  ok(B.rule && cart && cart.side === "ally", "the healers' cart rides with you");
+  cart.hp = 0; C.act("guard");
+  ok(B.over === "lose", "the cart goes over, and the fight is lost (" + B.over + ")");
+  C.end();
+}
+// 93. Break through: a lane each round, only that lane's foe comes at you; the outer ring of day 13 never opens
+{
+  S = fresh({ act: 6, age: 44, side: "kaurava" }); S.flags.push("role_front");
+  const C = K.Combat; let B = C.start("fs_sk_break", () => {}); let p = C.player(); p.hp = p.maxHp = 9999;
+  const lanes = C.available().map((a) => a.id);
+  ok(lanes.join() === "lane0,lane1,lane2,herbs" && !C.available().some((a) => a.id === "strike"), "the moves are the three ways through");
+  const before = B.acts.length; C.act("lane1");
+  ok(B.progress === 2 && B.acts.slice(before).filter((a) => /^e/.test(a.uid)).every((a) => a.uid === "e1"), "through the middle: two lengths, and only the spearmen strike at you");
+  C.act("lane2"); C.act("lane0");
+  ok(B.over === "win" && B.progress === 5, "through in three rounds: the fight is won (" + B.over + ")");
+  C.end();
+  S = fresh({ act: 6, age: 44, side: "pandava" }); S.flags.push("role_front");
+  B = C.start("fs_d13_break", () => {}); p = C.player(); p.hp = p.maxHp = 9999;
+  for (let i = 0; i < 8 && !B.over; i++) C.act("lane1");
+  ok(B.over === "win" && B.progress === B.enc.reach - 1 && /sends for Abhimanyu/.test(K.combatOutcome("fs_d13_break", B.over, "a6_day13").text), "the outer ring never opens (canon): you come back, and Yudhishthira sends for Abhimanyu");
+  C.end();
+}
+// 94. Weather it: no striking back; the Narayana weapon passes those who lay down their weapons
+{
+  S = fresh({ act: 6, age: 44, side: "pandava" }); S.flags.push("role_front");
+  const C = K.Combat; let B = C.start("fs_d3_storm", () => {}); let p = C.player(); p.hp = p.maxHp = 9999;
+  ok(C.available().map((a) => a.id).sort().join() === "cover,guard,herbs", "under Bhishma's arrows: guard, take cover, herbs, and nothing to strike with");
+  for (let i = 0; i < 8 && !B.over; i++) C.act(i % 2 ? "guard" : C.available().find((a) => a.id === "cover").why ? "guard" : "cover");
+  ok(B.over === "win", "live through four rounds and it is won (" + B.over + ")");
+  C.end();
+  B = C.start("fs_d15_narayana", () => {}); p = C.player(); p.hp = p.maxHp = 9999;
+  C.act("guard"); C.act("lay_down");
+  ok(B.over === "win" && /dragging Bhima down/.test(K.combatOutcome("fs_d15_narayana", "win", "a6_day16").text), "laying down your weapons inside the fight: it passes over you, and Bhima is dragged down (canon)");
+  C.end();
+  B = C.start("fs_d15_narayana", () => {}); p = C.player(); p.hp = p.maxHp = 9999;
+  for (let i = 0; i < 8 && !B.over; i++) C.act("guard");
+  ok(B.over === "lose", "stand against it to the end, and it finds you (" + B.over + ")");
+  C.end();
+}
+// 95. The live kinds: without the screen (the tests, or motion off) each is the plain hold it is written as
+{
+  S = fresh({ act: 6, age: 44, side: "pandava" }); S.flags.push("role_front");
+  const C = K.Combat;
+  for (const id of ["fs_sk_range", "fs_sk_chariot", "fs_sk_mace", "fs_sk_carry", "fs_d14_chariot", "fs_d16_range", "fs_d18_mace", "fs_carry"]) {
+    const B = C.start(id, () => {}), p = C.player(); p.hp = p.maxHp = 9999;
+    const plain = !B.rule && !B.mode && C.available().some((a) => a.id === "strike");
+    for (let i = 0; i < 10 && !B.over; i++) C.act("guard");
+    if (!plain || B.over !== "win") ok(false, id + " is fought as a plain hold (" + B.over + ")");
+    C.end();
+  }
+  ok(true, "the chariot, archery, mace and carrying fights are fought as plain four-round holds under the tests");
+  ok(["fs_sk_range", "fs_sk_chariot", "fs_sk_mace", "fs_sk_carry", "fs_d14_chariot", "fs_d16_range", "fs_d18_mace", "fs_carry"].every((id) => { const t = K.val(K.ENCOUNTERS[id].play, S); return t && t.rules && t.stage; }), "and each has its test to be played live: rules and a stage");
+}
+// 96. Day 17 driven as chariot duels: the same counts, flags and last words as the holding fights
+{
+  const war = (o) => { const s = fresh(Object.assign({ act: 6, age: 44 }, o)); s.flags.push("role_front"); return s; };
+  const C = K.Combat;
+  S = war({ side: "kaurava" }); S.bonds.karna = 4;
+  let B = C.start("kd_e_son", () => {});
+  ok(B.kind === "chariot" && !B.mode && !B.rule, "under the tests Vrishasena's wheel is still the holding fight");
+  C.settle("lose", 4); K.kdHoldCount(B);
+  const r = K.combatOutcome("kd_e_son", B.over, "a6_day17"); C.end();
+  ok(S.kdHeld === 4 && S.flags.includes("kd_stood") && S.bonds.karna === 6 && /Vrishasena's throat/.test(r.text) && /my son's wheel/.test(K.karnaLastWords(S)), "driven at his wheel until four rounds' worth: kd_stood, Karna +2, his last words, and Vrishasena still falls");
+  S = war({ side: "kaurava" }); S.bonds.karna = 4;
+  B = C.start("kd_e_son", () => {}); C.settle("lose", 2); K.kdHoldCount(B); K.combatOutcome("kd_e_son", B.over, "a6_day17"); C.end();
+  ok(S.kdHeld === 2 && S.flags.includes("kd_fell_short") && !S.flags.includes("kd_stood"), "driven off early: fell short, as before");
+  S = war({ side: "pandava" });
+  B = C.start("kd_e_wheel", () => {}); C.settle("win"); K.kdHoldCount(B); K.combatOutcome("kd_e_wheel", B.over, "a6_day17"); C.end();
+  ok(S.kdGuard === 6 && S.flags.includes("kd_guard_held"), "the Kaurava chariots kept off Arjuna's flank: kd_guard_held");
+  S = war({ side: "pandava" });
+  B = C.start("kd_e_wheel", () => {}); C.settle("lose", 3); K.kdHoldCount(B); K.combatOutcome("kd_e_wheel", B.over, "a6_day17"); C.end();
+  ok(S.kdGuard === 3 && S.flags.includes("kd_guard_broken") && S.flags.includes("company_shaken"), "a chariot through to his flank: kd_guard_broken, as before");
+  ok(["kd_e_son", "kd_e_wheel"].every((id) => K.ENCOUNTERS[id].play.stage && K.ENCOUNTERS[id].play.vehicle === "chariot") && K.ENCOUNTERS.kd_e_son.play.shield && K.ENCOUNTERS.kd_e_wheel.play.bow && K.ENCOUNTERS.kd_e_wheel.play.knock, "Vrishasena's wheel: arrows to catch; Arjuna's wheel: the bow and contact");
+}
+// 97. After a broken hold: carry a wounded man out instead of only a scar
+{
+  S = fresh({ act: 6, age: 44, side: "pandava" }); S.flags.push("role_division", "broke_karna", "company_broken");
+  const hb = K.SCENES.hold_broken, c = hb.choices.find((x) => x.id === "carry");
+  ok(c && c.combat === "fs_carry" && hb.choices.some((x) => x.id === "back"), "a broken line offers to carry a wounded man out, beside falling back");
+  K.combatOutcome("fs_carry", "win", "a6_day17");
+  ok(S.flags.includes("fs_carried") && !S.injuries.includes("scar"), "carried out whole: no scar");
+  S = fresh({ act: 6, age: 44, side: "pandava" }); K.combatOutcome("fs_carry", "lose", "a6_day17");
+  ok(S.flags.includes("fs_carried") && S.injuries.includes("scar"), "an arrow on the way: the scar, and he is still carried out");
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);
