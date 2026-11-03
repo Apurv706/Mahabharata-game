@@ -108,8 +108,18 @@
   // Satyaki at Draupadi's swayamvara (he came with Krishna's party): a bond he remembers on the field.
   const sw = K.SCENES.a3_swayamvara;
   if (sw) {
-    const body = sw.body, enter = sw.enter;
-    sw.body = (S) => [].concat(K.val(body, S) || [], ["A young Yadava, Satyaki, puts his back to yours and grins."]);
+    // The scene shows only its choices; the meeting is told in what comes of each one.
+    const enter = sw.enter, SAT = {
+      fight: "A young Yadava, Satyaki, puts his back to yours and grins.",
+      kings: "A young Yadava, Satyaki, blocks your way for a moment, grins, and tells you his name before he goes to the brahmins.",
+      watch: "A young Yadava, Satyaki, stands beside you and tells you his name. Then he goes in to help the brahmins.",
+      pass: "Two kings sheathe their swords and walk out with you. A young Yadava, Satyaki, walks out with you too and tells you his name. Fewer men are hurt that day because of it.",
+      fail: "Nobody listens to you. A young Yadava, Satyaki, pulls you back as the fighting starts, and tells you his name."
+    };
+    for (const c of sw.choices || []) {
+      if (c.check) { if (c.check.pass) c.check.pass.text = SAT.pass; if (c.check.fail) c.check.fail.text = SAT.fail; }
+      else if (SAT[c.id] && !c.text) c.text = SAT[c.id];
+    }
     sw.enter = (S) => Object.assign({}, K.val(enter, S) || {}, { flag: "met_satyaki", bond: { satyaki: 2 } });
   }
   // Karna's small son, seen in Anga by those near Karna: remembered on the seventeenth day (war_duel.js).

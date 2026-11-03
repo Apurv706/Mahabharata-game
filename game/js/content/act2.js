@@ -27,7 +27,7 @@
   K.scenes([
     {
       id: "a2_teacher", act: 2, age: 14, art: "scene_teacher", place: "Hastinapura and beyond", caption: "The training grounds at dawn",
-      title: "Who will teach you?",
+      title: "Who will teach you?", hideLocked: true,
       body: (S) => [
         "You are fourteen.",
         S.origin === "nishada" ? { memory: "In your village they still speak of Ekalavya, who asked Drona to teach him and was turned away." } : null,
@@ -60,7 +60,7 @@
     },
     {
       id: "a2_path", act: 2, age: 15, place: (S) => (S.teacher === "hermit" ? "Mauni's clearing" : S.teacher === "self" ? "A clearing at night" : "Your teacher's school"), art: "scene_armoury", plate: ["#3e8c72", "#d4a84b"], caption: "The armoury",
-      title: "Choose, then prove it",
+      title: "Choose, then prove it", grid: true,
       body: (S) => [
         (S.teacher === "self" ? "Which weapon do you choose?" : "Which weapon do you choose?")
       ],
@@ -78,13 +78,7 @@
     {
       id: "a2_ekalavya", act: 2, age: 16, canon: true, place: "The forest near Hastinapura", travel: "Drona takes his students hunting in the forest near Hastinapura.", art: "scene_ekalavya", plate: ["#3e8c72", "#16131f"], caption: "A clay image in a forest clearing",
       title: "Ekalavya's fee",
-      witness: [
-        "Drona asks the Nishada archer Ekalavya for his right thumb, and gets it."
-      ],
-      body: (S) => [
-        S.teacher === "drona" ? "You are standing behind Drona when he asks." : "You are with the hunting party, holding the horses.",
-        S.origin === "nishada" ? { memory: "He is from a village like yours. You know his mother's name." } : null
-      ],
+      body: ["What do you do?"],
       choices: [
         { id: "speak", t: "Say it is wrong", fx: (S) => ({ duty: { conscience: 2, teacher: S.teacher === "drona" ? -2 : 0 }, bond: { arjuna: -1 }, rep: { common: 1 }, memory: ["drona", "You objected to the fee he asked of Ekalavya."] })  },
         { id: "silent", t: "Keep silent", fx: { duty: { conscience: -1, teacher: 1 } } },

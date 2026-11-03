@@ -110,9 +110,12 @@
 
   K.choiceList = function (sc, S = K.S) {
     const crossed = (S.crossed || {})[sc.id] || {};
-    return (K.val(sc.choices, S) || [])
+    const rows = (K.val(sc.choices, S) || [])
       .map((c) => (crossed[c.id] ? { c, ok: false, crossed: crossed[c.id] } : { c, ok: K.test(c.req, S) }))
       .filter((x) => x.ok || x.crossed || (x.c.locked && K.test(x.c.showIf, S))); // no locked text = hidden when unavailable
+    // sc.hideLocked: only the choices you can take are shown (never none: then the closed ones stay).
+    if (sc.hideLocked && rows.some((x) => x.ok)) return rows.filter((x) => x.ok);
+    return rows;
   };
 
   // The failure rule: fail a test, and you get a second chance; fail that too, and the way is closed.
@@ -198,6 +201,27 @@
     if (!K.inPeril(c, S)) return null;
     const p = K.val(c.peril, S);
     return p.kind === "death" ? K.tr("Danger: failing could cost your life") : K.tr("Danger: failing could mean a cell");
+  };
+
+  // A choice that can lead to a fight: its own, or one behind its test or game.
+  K.leadsToFight = function (c, S = K.S) {
+    if (!c) return false;
+    const brs = [c, c.check && c.check.pass, c.check && c.check.fail, c.win, c.close, c.lose];
+    return brs.some((br) => br && br.combat && K.val(br.combat, S));
+  };
+  // The small signs on a choice card (the card shows no effect line; effects are found in play):
+  // a fight, a danger to your life or freedom, a vow taken. [kind, label, title, emblem]
+  K.choiceMarks = function (c, S = K.S) {
+    const out = [];
+    const fx = typeof c.fx === "object" && c.fx ? c.fx : {};
+    if (fx.vowTake && K.VOWS[fx.vowTake]) {
+      const V = K.VOWS[fx.vowTake], cut = (s) => K.tr(s).replace(/[.।]\s*$/, "");
+      const sum = V.keep && V.price ? K.tr("Kept: {gift} · Broken: {price}", { gift: cut(V.keep), price: cut(V.price) }) : K.tr(V.name);
+      out.push(["vow", K.tr(V.name), sum, "vow_" + fx.vowTake]);
+    }
+    if (K.inPeril(c, S)) { const p = K.val(c.peril, S); out.push(p.kind === "death" ? ["death", K.tr("Can cost your life")] : ["cell", K.tr("Can cost your freedom")]); }
+    if (K.leadsToFight(c, S)) out.push(["fight", K.tr("Leads to a fight")]);
+    return out;
   };
 
   // ▲/▼ previews are generated from the same data the engine applies.

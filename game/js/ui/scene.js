@@ -2,6 +2,14 @@
 (function (K) {
   "use strict";
   const U = K.UI;
+  // The signs at the right of a choice card: a bow (it can lead to a fight), a skull (it can cost
+  // your life), bars (it can cost your freedom). Drawn in the ink of the card, one size.
+  const SV = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">';
+  const MARK_SVG = {
+    fight: SV + '<path d="M7 2.5c5.5 2.6 9 6.3 9 9.5s-3.5 6.9-9 9.5"/><path d="M7 2.5v19" stroke-width="1"/><path d="M3 12h17M17.5 9.5 20 12l-2.5 2.5M3 10.5 4.5 12 3 13.5"/></svg>',
+    death: SV + '<path d="M12 3a7 7 0 0 0-7 7c0 2.5 1.2 4.1 3 5v3.5h8V15c1.8-.9 3-2.5 3-5a7 7 0 0 0-7-7z"/><circle cx="9.3" cy="10.5" r="1.6" fill="currentColor"/><circle cx="14.7" cy="10.5" r="1.6" fill="currentColor"/><path d="M10.5 18.5v2M13.5 18.5v2M12 13.2v1.3"/></svg>',
+    cell: SV + '<rect x="4" y="3.5" width="16" height="17" rx="1.5"/><path d="M8.5 3.5v17M12 3.5v17M15.5 3.5v17M4 9h16"/></svg>'
+  };
 
   function header(sc) {
     const S = K.S;
@@ -84,11 +92,22 @@
     const box = U.$("choices");
     const rows = K.choiceList(sc);
     const keys = [];
+    // sc.grid: the choices as a grid of large tappable pictures, each with its short label.
+    const grid = !!K.val(sc.grid) && rows.every(({ c }) => K.val(c.img));
+    box.classList.toggle("grid", grid);
     rows.forEach(({ c, ok, crossed }, i) => {
-      // A way closed by two failed tests stays on the page, struck through, with the reason.
-      const fx = crossed ? '<span class="down">' + U.t(crossed) + "</span>" : ok ? K.preview(c).map(([cls, t]) => '<span class="' + cls + '">' + U.esc(t) + "</span>").join("") : U.t(K.val(c.locked));
+      // The card shows no effect line (effects are found in play). A way closed by two failed tests
+      // stays on the page, struck through, with the reason; a locked one shows its short reason.
+      const fx = crossed ? '<span class="down">' + U.t(crossed) + "</span>" : ok ? "" : U.t(K.val(c.locked) || "");
       const img = K.val(c.img);
-      const b = U.button("choice" + (img ? " has-img" : "") + (crossed ? " crossed" : ""), '<span class="k">' + (i + 1) + "</span>" + (img ? U.thumb(img) : "") + '<span class="t">' + U.t(K.val(c.t)) + '</span><span class="fx">' + fx + "</span>", null, "choice-" + c.id);
+      const marks = ok ? K.choiceMarks(c) : [];
+      const vowMark = marks.find((m) => m[0] === "vow");
+      const signs = marks.filter((m) => !(m[0] === "vow" && img === m[3])).map((m) => m[0] === "vow" ? U.thumb(m[3], "emblem mark", m[1]).replace("<i ", '<i title="' + U.esc(m[2]) + '" ')
+        : '<i class="mark ' + m[0] + '" role="img" aria-label="' + U.esc(m[1]) + '" title="' + U.esc(m[1]) + '">' + MARK_SVG[m[0]] + "</i>").join("");
+      const cls = "choice" + (grid ? " tile" : "") + (img ? " has-img" : "") + (crossed ? " crossed" : "") + (fx ? " has-fx" : "") + (signs ? " has-marks" : "");
+      const b = U.button(cls, '<span class="k">' + (i + 1) + "</span>" + (img ? U.thumb(img, grid ? "emblem" : undefined) : "") + '<span class="t">' + U.t(K.val(c.t)) + "</span>" +
+        (fx ? '<span class="fx">' + fx + "</span>" : "") + (signs ? '<span class="marks">' + signs + "</span>" : ""), null, "choice-" + c.id);
+      if (vowMark) b.title = vowMark[2];
       b.disabled = !ok;
       const run = () => pick(sc, c, b);
       b.addEventListener("click", run);
