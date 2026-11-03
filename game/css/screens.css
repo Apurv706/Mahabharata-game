@@ -547,9 +547,9 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 .pose-fall .pp-body { transform-origin: 60px 190px; animation: pp-fall 0.8s ease-in forwards; }
 @keyframes pp-fall { to { transform: rotate(-86deg) translateX(-8px); } }
 /* In a fight the fallen fall forward, toward the middle of the stage, so no one lies past its edge. */
-.arena .pose-dead .pp-body { transform: rotate(86deg) translateX(8px); }
+.arena .pose-dead .pp-body { transform: rotate(86deg) translateX(-8px); } /* (turned, the shift lifts it: it lies on the ground, not in it) */
 .arena .pose-fall .pp-body { animation-name: pp-fall-fwd; }
-@keyframes pp-fall-fwd { to { transform: rotate(86deg) translateX(8px); } }
+@keyframes pp-fall-fwd { to { transform: rotate(86deg) translateX(-8px); } }
 /* The figure: in the page header beside the title, and in cards. */
 .ppbadge { display: inline-flex; align-items: flex-end; justify-content: center; flex: none; pointer-events: none; }
 .pp .rod { opacity: 0.4; }

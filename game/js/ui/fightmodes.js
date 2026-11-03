@@ -38,7 +38,10 @@
       U.where("<b>" + U.tr("Battle") + "</b><span>" + U.t(K.val(enc.title)) + "</span>");
       U.setBackdrop(t.stage); if (U.stageFx) U.stageFx.start(t.stage);
       if (K.Sound && K.Sound.test) K.Sound.test(game);
+      // The test's own figure of you holds the weapon this fight is fought with (a mace duel: the mace).
+      K.heldNow = K.fightItem(K.S, kind);
       const g = U.games[game](U.$("choices"), (outcome) => {
+        K.heldNow = undefined;
         if (K.Sound && K.Sound.test) K.Sound.test(null);
         clearTimeout(bannerT); banner.remove();
         const won = outcome === "win";

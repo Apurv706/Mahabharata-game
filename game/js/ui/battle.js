@@ -18,6 +18,7 @@
   let foeKey = null;      // the enemy turn being played, so a redraw does not start it twice
   let qte = null;
   let groundWatch = null; // keeps the painting's ground under the fighters (see the fresh draw)
+  let fitWatch = false;   // the figures are fitted to the stage again when the window changes size
   let astraPick = false;
   // Live figures (js/ui/puppet-anim.js): each fighter's spring rig, by unit; allies who have made
   // their entrance; who was guarding at the last draw; and until when the moves are still playing.
@@ -26,6 +27,7 @@
   U.battleRigs = () => rigs; // for the screenshot checks  // the divine-weapon chooser is open         // the defence moment in progress
 
   U.startBattle = function (encId, onEnd) {
+    K.heldNow = undefined; // (a fight played live left before its end does not keep its weapon in your hand)
     target = null; lastHp = {}; lastLogLen = 0; lastActs = 0; foeKey = null; autoKey = null; stopQte();
     rigs.clear(); seenAllies = new Set(); lastGuard = new Set(); animUntil = 0;
     onEndCb = onEnd;
@@ -68,7 +70,9 @@
   // Each kind of enemy has its own outline, and strength shows in the shape: a stooped bandit with a
   // club, a guard in a turban, a soldier behind a shield, an archer's feathered cap, a crested horseman,
   // and a champion in gold scale armour, the biggest of the unnamed. Crowns are kept for the named.
-  const NAMED = [[/Ugra/, "ugra"], [/Dushasana's/, "guard"], [/Dushasana/, "dushasana"], [/Karna/, "karna"], [/Bhima/, "bhima"], [/Brihannala/, "arjuna"], [/Ketan|boy/i, "boy"], [/Drona/, "drona"], [/^Satyaki$/, "satyaki"]];
+  // A name only stands for its owner, never for his men: "Karna's archers" are archers, not Karna.
+  const NAMED = [[/^Ugra(?!'s)/, "ugra"], [/Dushasana's/, "guard"], [/Dushasana(?!'s)/, "dushasana"], [/Karna(?!'s)/, "karna"], [/Bhima(?!'s)/, "bhima"], [/Brihannala(?!'s)/, "arjuna"], [/Ketan|boy/i, "boy"], [/Drona(?!'s)/, "drona"], [/^Satyaki$/, "satyaki"],
+    [/^Ghatotkacha$/, "ghatotkacha"], [/^Jayadratha$/, "jayadratha"], [/^Shalya$/, "shalya"], [/^Kripa$/, "kripa"], [/^Abhimanyu$/, "abhimanyu"]];
   const SPECIAL = {
     Ashwatthama: { pronoun: "he", palette: ["#c9905a", "#3a2a3a", "#c9a24e"], headgear: "crown", crown: { gem: "#8a5aa0", tall: 0.95, trim: "#3a2a3a" }, gear: ["browgem"], item: "bow", stance: "hero", stage: "adult", big: true, size: 1.18 },
     Gandharva: { pronoun: "he", palette: ["#9fb07a", "#2f5a3a", "#d9c27a"], headgear: "feather", item: "spear", stage: "adult" },
@@ -79,7 +83,7 @@
     common: { pronoun: "he", palette: ["#9c6a42", "#6b5a3a", "#a8875a"], item: "staff", stage: "adult" }
   };
   function specFor(u) {
-    if (u.side === "player") return K.puppetSpec(K.S);
+    if (u.side === "player") { const B = C.state(); return Object.assign(K.puppetSpec(K.S), { item: K.fightItem(K.S, B ? B.mode || (B.enc.dream ? "dream" : null) : null) }); } // the weapon this fight is fought with
     if (u.person && K.PUPPETS[u.person]) return U.puppetFor(u.person);
     const n = String(u.src || u.name);
     if (/\bcart$/i.test(n)) return { thing: "cart" }; // what is not a person is drawn as what it is
@@ -115,11 +119,23 @@
   };
   Object.assign(FIGHT_BG, K.COMMAND_FIGHT_BG || {}); // the holding fights (content/command.js)
   U.FIGHT_BG = FIGHT_BG;
+  U.battleSpecFor = (u) => specFor(u); // who each fighter is drawn as (tests/weapons.js)
+  // A fighter's figure; the fallen lie forward (toward the middle of the stage), their weapon on the ground beside them.
+  const figure = (u) => U.puppet(specFor(u), { h: 150, flip: u.side === "enemy", pose: u.hp <= 0 ? "dead" : liveFigures() ? "live" : u.side === "player" ? "brace" : "stand", fwd: true, label: u.side === "player" ? K.tr("You") : null });
+  // A fighter who has fallen without a live figure (reduced motion, or after the CSS fall): drawn again lying down.
+  function layDead(uid) {
+    const el = actorEl(uid), B = C.state(), u = B && B.units.find((x) => x.uid === uid), old = el && el.querySelector("svg.pp");
+    if (!old || !u || u.hp > 0 || old.classList.contains("pose-dead")) return;
+    el.classList.add("down");
+    if (old.classList.contains("thing")) return; // a cart or an elephant does not topple like a man: it greys where it stands (screens.css tilts a cart)
+    old.outerHTML = figure(u);
+    fitStage(); // lying down it takes more room along the ground
+  }
   function arenaHtml(B) {
     const stage = K.val(B.enc.stage) || K.val(B.enc.art);
     // A champion at your side (Satyaki) stands at full height, not shrunk like the other allies.
     const actor = (u) => '<span class="actor ' + u.side + (u.side === "ally" && (specFor(u).size || 0) >= 1.2 ? " champ" : "") + (specFor(u).thing === "elephant" ? " beast" : "") + (u.hp <= 0 ? " down" : "") + (u.side === "enemy" && u.hp > 0 ? " far" : "") + '" data-uid="' + u.uid + '">' +
-      U.puppet(specFor(u), { h: 150, flip: u.side === "enemy", pose: u.hp <= 0 ? "dead" : liveFigures() ? "live" : u.side === "player" ? "brace" : "stand", label: u.side === "player" ? K.tr("You") : null }) + '<span class="pops"></span></span>';
+      figure(u) + '<span class="pops"></span></span>';
     const friends = B.units.filter((u) => u.side !== "enemy"), foes = B.units.filter((u) => u.side === "enemy");
     return '<div class="arena" id="arena" style="--stage:url(\'' + U.artUrl(stage) + '\')" aria-hidden="true"><div class="team left">' + friends.map(actor).join("") +
       '</div><div class="team right">' + foes.map(actor).join("") + '</div><div class="arena-flash"></div></div>';
@@ -131,6 +147,8 @@
     if (!svg) return;
     const r = rigs.get(uid);
     if (r && r.svg === svg) return rigPose(uid, r, el, p, ms);
+    if (p === "fall" && (!U.motion() || svg.classList.contains("thing"))) return layDead(uid);
+    if (p === "fall") setTimeout(() => layDead(uid), 850);
     svg.setAttribute("class", svg.getAttribute("class").replace(/pose-\S+/, "pose-" + p));
     // An enemy steps into the light to act, and back into the soft distance after.
     if (el.classList.contains("enemy")) el.classList.toggle("far", p === "stand" && !el.classList.contains("down"));
@@ -164,6 +182,119 @@
     }
     B.units.forEach((u) => { if (u.side === "ally") seenAllies.add(u.uid); });
   }
+  // ---------- Keeping everyone on the stage ----------
+  // The painted box of a figure (its shapes, not its frame: a spear reaching past it counts, the faint
+  // rod under a resting puppet does not).
+  // core: without the arms and what they hold (two figures may cross weapons, not stand in each other).
+  function painted(el, core) {
+    const svg = el && el.querySelector("svg.pp");
+    let l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
+    if (!svg) return null;
+    for (const s of svg.querySelectorAll("path,rect,circle,ellipse,polygon,polyline,line")) {
+      if (s.closest('[opacity="0"], .rod') || (core && s.closest(".armF, .armB, .it, .it-w, .it-down"))) continue;
+      const q = s.getBoundingClientRect();
+      if (q.width < 0.5 && q.height < 0.5) continue;
+      l = Math.min(l, q.left); t = Math.min(t, q.top); r = Math.max(r, q.right); b = Math.max(b, q.bottom);
+    }
+    return l === Infinity ? null : { l, t, r, b };
+  }
+  const EDGE_PX = 10; // room left at the stage's edges, for a blow's knock-back
+  // Both sides fit the stage as drawn, at rest: a crowded side (four foes on a phone, a champion come to
+  // your side) is drawn a little smaller, each side shrinking toward its own edge, so no one stands past
+  // the stage's edge and the two sides do not stand inside each other. The right side keeps to the
+  // right edge even when the row is wider than the stage.
+  function fitStage() {
+    const a = U.$("arena"); if (!a) return;
+    lungeMemo.clear();
+    const L = a.querySelector(".team.left"), R = a.querySelector(".team.right"); if (!L || !R) return;
+    for (const t of [L, R]) { t.style.scale = ""; t.style.translate = ""; }
+    const acts = [...a.querySelectorAll(".actor")], saved = acts.map((el) => [el.style.translate, el.style.left]);
+    acts.forEach((el) => { el.style.translate = ""; el.style.left = ""; el.style.marginLeft = ""; }); // a friend still coming on, a figure eased back in: measured where they stand
+    // Side by side, each figure stands a little in front of the one before it; never so far that it hides
+    // most of that one's body (a champion of full height beside a small companion is moved along).
+    for (const t of [L, R]) {
+      const row = [...t.querySelectorAll(".actor:not(.down)")];
+      for (let i = 1; i < row.length; i++) {
+        const back = painted(row[i - 1], true), front = painted(row[i], true);
+        if (!back || !front) continue;
+        const hid = Math.min(back.r, front.r) - Math.max(back.l, front.l), w = back.r - back.l;
+        if (hid > w * 0.35) row[i].style.marginLeft = "calc(" + (getComputedStyle(row[i]).marginLeft) + " + " + (hid - w * 0.35).toFixed(1) + "px)"; // (a third at most: the poses of the fight shift it a little)
+      }
+    }
+    const ar = a.getBoundingClientRect(), cs = getComputedStyle(a);
+    const x0 = ar.left + (parseFloat(cs.paddingLeft) || 0), x1 = ar.right - (parseFloat(cs.paddingRight) || 0);
+    // Each standing figure is measured at rest, winding up for a blow (the arm and weapon swung far
+    // back, the widest it stands) and pinned, so none of these runs past the edge.
+    const reachOf = (el, core) => {
+      const p = painted(el, core), r = rigs.get(el.dataset.uid);
+      if (!r || core || !p) return p;
+      // (and straining against an arrow through the foot, leaning back from it)
+      const q = poseBox(el, r, "windup"), q2 = poseBox(el, r, "strain", 0, { rot: (U.RIG_POSES.strain.rot || 0) * 1.5 }); el.style.translate = ""; // (the lean overshoots, and tugs at the arrow) // (still measured where it stands)
+      for (const x of [q, q2]) if (x) p.l = Math.min(p.l, x.l), p.r = Math.max(p.r, x.r);
+      return p;
+    };
+    const span = (t, core) => { let l = Infinity, r = -Infinity; t.querySelectorAll(".actor:not(.down)").forEach((el) => { const p = reachOf(el, core); if (p) { l = Math.min(l, p.l); r = Math.max(r, p.r); } }); t.querySelectorAll(".actor.down").forEach((el) => { const p = painted(el); if (p && !core) { l = Math.min(l, p.l); r = Math.max(r, p.r); } }); return l === Infinity ? null : { l, r }; };
+    const ls = span(L), rs0 = span(R), lc = span(L, true), rc0 = span(R, true), rb = R.getBoundingClientRect();
+    acts.forEach((el, i) => { el.style.translate = saved[i][0]; el.style.left = saved[i][1]; });
+    if (!ls || !rs0) return;
+    const shift = Math.min(0, x1 - rb.right); // a row wider than the stage: the right side is brought back to its edge
+    const rs = { l: rs0.l + shift, r: rs0.r + shift };
+    const W = ar.width, lo = ar.left + EDGE_PX, hi = ar.right - EDGE_PX, ov = W * 0.1;
+    // First each side steps in from its edge as far as its outermost reach needs; then, if the two sides
+    // would stand in each other, both are drawn smaller, each toward its own edge.
+    const inL = Math.max(0, lo - ls.l), inR = Math.max(0, rs.r - hi);
+    const room = (x1 - inR) - (x0 + inL);
+    let k = 1;
+    const reach = (ls.r - x0) + (x1 - rs.l);
+    if (reach > room + ov) k = Math.min(k, (room + ov) / reach);
+    if (lc && rc0) { const body = (lc.r - x0) + (x1 - rc0.l - shift); if (body > room - EDGE_PX * 2) k = Math.min(k, (room - EDGE_PX * 2) / body); } // the two sides' bodies apart
+    k = Math.max(0.5, Math.min(1, k));
+    L.style.transformOrigin = "0 100%"; R.style.transformOrigin = "100% 100%";
+    if (k < 0.995) { L.style.scale = k.toFixed(3); R.style.scale = k.toFixed(3); }
+    if (inL) L.style.translate = inL.toFixed(1) + "px 0";
+    if (shift || inR) R.style.translate = (shift - inR).toFixed(1) + "px 0";
+  }
+  U.fitStage = fitStage;
+  // Where a live figure would reach in a pose (dx: stepped that far), measured in the same frame and put back.
+  function poseBox(el, r, pose, dx, extra) {
+    const x = Object.assign({}, r.x), t = Object.assign({}, r.t), was = r.pose;
+    r.set(pose, 0, null, true); if (dx || extra) { r.x.dx = dx || 0; Object.assign(r.x, extra || {}); r.apply(); }
+    const q = painted(el);
+    Object.assign(r.x, x); Object.assign(r.t, t); r.pose = was; r.apply();
+    return q;
+  }
+  // How far a figure may lunge forward for a blow: the full step, unless the stage's far edge is nearer
+  // than its blow would reach (a champion's long mace swung at a fighter standing at the edge). The blow
+  // is measured on its way out and back: the arm between the strike and its rest, the weapon turning over
+  // in the fist on its own slower spring. Measured once a fight per figure (fitStage forgets it).
+  const lungeMemo = new Map();
+  function lungeFor(u, r, el) {
+    const want = lunge(), side = u.side === "enemy" ? -1 : 1, a = U.$("arena"), P = U.RIG_POSES;
+    if (!a || !P) return want;
+    const key = u.uid + ":" + Math.round(want);
+    if (lungeMemo.has(key)) return lungeMemo.get(key);
+    const S = P.strike, R = P[r.baseName] || P.stand, mix = (f, g) => { const o = {}; for (const k of ["rot", "tx", "ty", "head", "armF", "foreF", "armB", "foreB", "legF", "shinF", "legB", "shinB"]) o[k] = (S[k] || 0) + ((R[k] || 0) - (S[k] || 0)) * f; o.item = (S.item || 0) + ((R.item || 0) - (S.item || 0)) * g; return o; };
+    let lo = Infinity, hi = -Infinity;
+    for (const f of [0, 0.33, 0.66, 1]) for (const g of [0, 0.33, 0.66, 1]) { const q = poseBox(el, r, "strike", side * want, mix(f, g)); if (q) { lo = Math.min(lo, q.l); hi = Math.max(hi, q.r); } }
+    if (lo === Infinity) return want;
+    const SWING = 14; // a blow overshoots its pose a little on the springs
+    const ar = a.getBoundingClientRect(), over = (side > 0 ? hi - (Math.min(ar.right, innerWidth) - EDGE_PX) : (Math.max(ar.left, 0) + EDGE_PX) - lo) + SWING;
+    const step = over > 0 ? Math.max(-20, want - over) : want; // (at the very edge he swings from where he stands, a half step back)
+    lungeMemo.set(key, step);
+    return step;
+  }
+  // A figure come to rest past the stage's edge (fallen, or knocked back) is eased back onto it.
+  function keepIn(uid) {
+    const a = U.$("arena"), el = actorEl(uid); if (!a || !el) return;
+    const p = painted(el); if (!p) return;
+    const ar = a.getBoundingClientRect(), lo = Math.max(0, ar.left) + EDGE_PX, hi = Math.min(innerWidth, ar.right) - EDGE_PX;
+    const now = parseFloat(el.style.left) || 0;
+    const d = p.l < lo ? lo - p.l : p.r > hi ? hi - p.r : 0;
+    if (Math.abs(d) < 1) return;
+    el.style.transition = "left .35s ease-out"; el.style.left = (now + d).toFixed(1) + "px";
+  }
+  const settleFallen = (uid) => setTimeout(() => keepIn(uid), 1500);
+
   // The CSS pose names the screen uses, as the rig's poses.
   const RIGPOSE = { strike: "strike", block: "guard", kneel: "kneel", loose: "loose", aim: "draw", hold: "windup", jump: "jump", duck: "duck", side: "side",
     sneak: "sneak", push: "push", cheer: "cheer", speak: "speak", think: "think", fold: "fold", slump: "slump" };
@@ -171,7 +302,7 @@
     if (el.classList.contains("enemy")) el.classList.toggle("far", (p === "stand" || p === "brace") && !el.classList.contains("down"));
     clearTimeout(r._t);
     if (p === "hit") { r.kick({ rot: -150, tx: -36, head: -180, armF: 140 }); return; }
-    if (p === "fall") { r.fallDown(null, 1); return; } // forward, toward the middle of the stage: never off its edge
+    if (p === "fall") { r.fallDown(null, 1, () => keepIn(uid)); return; } // forward, toward the middle of the stage: never off its edge
     if (p === "turn") { // turning your back: the plain CSS turn
       r.stop(); rigs.delete(uid);
       r.svg.querySelectorAll("[style]").forEach((n) => n.removeAttribute("style")); el.style.translate = "";
@@ -179,15 +310,32 @@
     }
     if (p === "stand" || p === "brace") { r.home(); return; }
     r.set(RIGPOSE[p] || "strike", p === "strike" ? 1900 : 700, 0.5);
-    if (p === "strike") r.t.dx = el.classList.contains("enemy") ? -lunge() : lunge();
+    if (p === "strike") { const u = (C.state() || { units: [] }).units.find((x) => x.uid === uid); const step = u ? lungeFor(u, r, el) : lunge(); r.t.dx = el.classList.contains("enemy") ? -step : step; }
     if (ms) r._t = setTimeout(() => { if (rigs.get(uid) === r && !el.classList.contains("down")) { r.t.dx = 0; r.home(); } }, ms);
   }
   const lunge = () => { const a = U.$("arena"); return Math.max(28, Math.min(70, (a ? a.clientHeight : 300) * 0.14)); };
+  // A point on a figure that an arrow follows as it flies: measured at the loosing, then carried along
+  // with the figure (stepping in, knocked back, its pose changing) by measuring again every few frames.
+  function follow(uid, where, ox, oy) {
+    let last = point(uid, where), n = 0;
+    return () => { if (++n % 3 === 0) { const q = point(uid, where); if (q.x || q.y) last = q; } return { x: last.x + (ox || 0), y: last.y + (oy || 0) }; };
+  }
   // Points on a figure, inside the arena: the drawing hand, the chest, the front foot.
   function point(uid, where) {
     const a = U.$("arena"), el = actorEl(uid), svg = el && el.querySelector(".pp");
     if (!a || !svg) return { x: 0, y: 0 };
     const s = a.getBoundingClientRect();
+    // From a bow, the arrow leaves where it lies nocked: its head just in front of the bow, at the grip.
+    const bow = where === "hand" && [...svg.querySelectorAll(".pp-body .it:not(.it-w)")].find((b) => b.style.display !== "none" && b.querySelector('path[d^="M50 86 L"]'));
+    if (bow) { // (a dot put there for a moment and measured: right through every turn, flip and scale)
+      const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      dot.setAttribute("cx", "84"); dot.setAttribute("cy", "126"); dot.setAttribute("r", "1"); bow.appendChild(dot);
+      const q = dot.getBoundingClientRect(); dot.remove();
+      if (q.width || q.height) return { x: q.left + q.width / 2 - s.left, y: q.top + q.height / 2 - s.top };
+    }
+    // The chest and the foot: on the body itself, not the box of what it holds (a spear held out, a shield).
+    const body = where === "chest" ? painted(el, true) : null;
+    if (body) return { x: (body.l + body.r) / 2 - s.left, y: body.t - s.top + (body.b - body.t) * 0.38 };
     const part = svg.querySelector(where === "hand" ? ".foreF" : where === "foot" ? ".shinF" : ".pp-body") || svg;
     const r = part.getBoundingClientRect();
     if (where === "hand") return { x: r.left - s.left + r.width / 2, y: r.top - s.top + r.height * 0.45 };
@@ -202,13 +350,19 @@
     const dir = u.side === "enemy" ? 1 : -1;
     if (guarded) {
       U.rigFreeze(45); U.flingBits(a, "spark", point(u.uid, "hand"), 10, 20, null, true);
-      if (r) r.kick({ rot: -120 * -dir, dx: dir * 140 });
+      const sp = painted(el), arr = a && a.getBoundingClientRect();
+      const room = sp && arr ? (dir > 0 ? Math.min(arr.right, innerWidth) - sp.r : sp.l - Math.max(arr.left, 0)) : 99;
+      if (r) r.kick({ rot: -120 * -dir, dx: dir * 140 * Math.max(0.2, Math.min(1, room / 30)) });
       pop(u.uid, String(d), "down small"); return;
     }
     U.rigFreeze(heavy ? 65 : 40);
+    // Knocked back toward the stage's edge, but not past it: with little room the push is a small one.
+    const sp = painted(el), arr = a && a.getBoundingClientRect();
+    const room = sp && arr ? (dir > 0 ? Math.min(arr.right, innerWidth) - sp.r : sp.l - Math.max(arr.left, 0)) : 99;
+    const push = Math.max(0.2, Math.min(1, room / 30));
     el.classList.add("flash"); setTimeout(() => el.classList.remove("flash"), 110);
     const k = heavy ? 1 : 0.55;
-    if (r) r.kick({ rot: -260 * k, tx: -60 * k, head: -320 * k, armF: 240 * k, foreB: 300 * k, dx: dir * 260 * k });
+    if (r) r.kick({ rot: -260 * k * push, tx: -60 * k * push, head: -320 * k, armF: 240 * k, foreB: 300 * k, dx: dir * 260 * k * push });
     U.flingBits(a, "flake", point(u.uid, "chest"), heavy ? 9 : 5, 30, "#8a3a2a");
     pop(u.uid, String(d), "down");
     if (heavy && a) { a.classList.remove("shake"); void a.offsetWidth; a.classList.add("shake"); setTimeout(() => a.classList.remove("shake"), 260); }
@@ -217,7 +371,16 @@
   const MELEE = new Set(["strike", "heavy", "breaker", "disarm", "crush", "nerve", "hamstring", "ridedown", "quake", "swerve"]);
   const SHOTS = new Set(["arrows", "aimed", "volley", "pin", "astra"]);
   // One move, played out on its figure; hit(target) is called at the moment each blow lands.
-  async function playMove(a, u, targets, hit) {
+  // A figure makes one move at a time: a second move of his in the same turn waits for the first to end
+  // (else the weapon one move took up is put by under the other).
+  function playMove(a, u, targets, hit) {
+    const r = rigs.get(u.uid);
+    if (!r) return playMoveNow(a, u, targets, hit);
+    const run = (r._queue || Promise.resolve()).then(() => playMoveNow(a, u, targets, hit));
+    r._queue = run.catch(() => {});
+    return run;
+  }
+  async function playMoveNow(a, u, targets, hit) {
     const r = rigs.get(u.uid);
     const el = actorEl(u.uid), ar = U.$("arena");
     if (!r || !el || !ar) {
@@ -227,6 +390,10 @@
     const W = U.wait, side = u.side === "enemy" ? -1 : 1;
     const first = targets[0];
     const shot = (r.bow && (a.id === "strike" || SHOTS.has(a.id))) || (SHOTS.has(a.id) && a.id !== "astra");
+    // Each move with the weapon it is made with: arrows from a bow (taken up for the move by one who
+    // carries a spear), a heavy blow with a blade (an archer draws a sword for it); home() puts it back.
+    if (shot && !r.bow) r.wield("bow");
+    else if (!shot && MELEE.has(a.id) && r.bow) r.wield("sword");
     if (a.id === "guard" || a.id === "brace") {
       r.set("guard", 900, 0.55);
       const ward = document.createElement("div"); ward.className = "ward"; ar.appendChild(ward);
@@ -251,14 +418,17 @@
       else if (a.id === "pin") { r.set("drawLow", 300, 0.75); await W(320); r.set("looseLow", 1600, 0.45); }
       else { r.set("draw", 900, 0.7); await W(150); r.set("loose", 1600, 0.3); }
       r.kick({ rot: -60 * side, armB: -200 });
-      const hand = point(u.uid, "hand");
+      // Struck down while drawing: the arrow is never loosed (the blow still counts).
+      if (r.falling || u.hp <= 0) { targets.forEach((t) => hit(t)); return 300; }
+      const hand = () => point(u.uid, "hand"); // where the bow is as the arrow leaves it
       if (a.id === "volley") {
         const list = targets.length === 1 ? [first, first, first] : targets.concat(targets).slice(0, Math.max(3, targets.length));
         const done = new Set();
-        await Promise.all(list.map((t, i) => W(i * 90).then(() => { const p = point(t.uid, "chest"); p.x += (i - 1) * 8; return U.flyArrow(ar, hand, p, ar.clientHeight * 0.32, 520); }).then(() => { if (!done.has(t.uid)) { done.add(t.uid); hit(t); } })));
+        await Promise.all(list.map((t, i) => W(i * 90).then(() => { const p = follow(t.uid, "chest", (i - 1) * 4, (i - 1) * 6); /* three arrows close together, all on him */ return U.flyArrow(ar, hand, p, ar.clientHeight * 0.32, 520, false, 0, { from: u.uid, to: t.uid, kind: "volley" }); }).then(() => { if (!done.has(t.uid)) { done.add(t.uid); hit(t); } })));
       } else if (a.id === "pin") {
+        const atFoot = follow(first.uid, "foot", -2, 4);
+        const arrow = await U.flyArrow(ar, hand, atFoot, -18, 170, true, 0, { from: u.uid, to: first.uid, kind: "pin" });
         const foot = point(first.uid, "foot");
-        const arrow = await U.flyArrow(ar, hand, { x: foot.x - 2, y: foot.y + 4 }, -18, 170, true);
         // Driven into the earth beside the foot: the tip buried, the shaft standing steeply.
         arrow.style.transform = "translate(" + (foot.x + 6 - arrow.offsetWidth) + "px," + (foot.y + 8 - arrow.offsetHeight / 2) + "px) rotate(" + (side > 0 ? 38 : 142) + "deg)";
         hit(first);
@@ -266,16 +436,17 @@
         if (tr) { tr.set("strain", 300, 0.4); tr.pinned = 1; setTimeout(() => { tr.pinned = 0.4; tr.home(); }, 1200); setTimeout(() => { tr.pinned = 0; }, 2600); }
         setTimeout(() => arrow.remove(), 2600);
       } else {
-        for (const t of targets) { await U.flyArrow(ar, hand, point(t.uid, "chest"), a.id === "aimed" ? 6 : 8, a.id === "aimed" ? 170 : 160); hit(t); }
+        for (const t of targets) { await U.flyArrow(ar, hand, follow(t.uid, "chest"), a.id === "aimed" ? 6 : 8, a.id === "aimed" ? 170 : 160, false, 0, { from: u.uid, to: t.uid, kind: a.id }); hit(t); }
       }
       await W(220); if (rigs.get(u.uid) === r) r.home();
       return 300;
     }
     if (MELEE.has(a.id) || targets.length) {
       if (r.pose !== "windup") { r.set("windup", 520, 0.7); await W(120); } // anticipation: the tell
-      r.set("strike", 1900, 0.5); r.t.dx = side * lunge(); await W(55);       // the blow
+      const step = lungeFor(u, r, el);
+      r.set("strike", 1900, 0.5); r.t.dx = side * step; await W(55);         // the blow
       targets.forEach((t) => hit(t)); await W(90);
-      r.t.dx = 0; r.set(r.baseName, 520, 0.42);                            // follow-through, and settle
+      r.t.dx = 0; r.home();                                                  // follow-through, and settle
       return 260;
     }
     rigPose(u.uid, r, el, POSE[a.id] || "strike", 650);
@@ -295,7 +466,7 @@
       const d = t.hp - lastSeen[t.uid];
       if (d > 0) { pop(t.uid, "+" + d, "up"); return; }
       impact(t, d, HEAVY.has(t._by) || -d >= t.maxHp * 0.18, guardWas.has(t.uid) && !t.status.guard);
-      if (t.hp <= 0) setTimeout(() => { const el = actorEl(t.uid); if (el) el.classList.add("down"); const r = rigs.get(t.uid); if (r) r.fallDown(null, 1); else pose(t.uid, "fall"); }, finisher ? 160 : 70);
+      if (t.hp <= 0) setTimeout(() => { const el = actorEl(t.uid); if (el) el.classList.add("down"); const r = rigs.get(t.uid); if (r) r.fallDown(null, 1, () => keepIn(t.uid)); else { pose(t.uid, "fall"); settleFallen(t.uid); } }, finisher ? 160 : 70);
     };
     const lastSeen = Object.assign({}, lastHp), guardWas = new Set(lastGuard);
     let left = hurt.slice(), longest = 0;
@@ -346,7 +517,7 @@
     const finisher = B.over === "win" && killed.some((u) => u.side === "enemy");
     if (finisher && arena) { arena.classList.add("slowmo"); if (K.Sound) setTimeout(() => K.Sound.play("gong"), 300); }
     if (K.Sound && killed.some((u) => u.side === "ally" && u.person)) K.Sound.play("friendFalls");
-    killed.forEach((u) => setTimeout(() => { const el = actorEl(u.uid); if (el) el.classList.add("down"); pose(u.uid, "fall"); }, finisher ? 260 : 160));
+    killed.forEach((u) => setTimeout(() => { const el = actorEl(u.uid); if (el) el.classList.add("down"); pose(u.uid, "fall"); settleFallen(u.uid); }, finisher ? 260 : 160));
     if (B.lastDef && arena) { /* a blow you met: the defence shows on your figure */
       const P = C.player();
       if (B.lastDef === "block") pose(P.uid, "block", 600);
@@ -499,6 +670,7 @@
     const off = () => { document.removeEventListener("keydown", onKey, true); document.removeEventListener("pointerdown", pd, true); document.removeEventListener("pointerup", pu, true); };
     U.keys([]);
     // The enemy winds up; what he looses flies at you across the stage, at the height it will strike.
+    { const rr = rigs.get(u.uid), aiming = th.id === "arrows" || rain; if (rr) { if (aiming && !rr.bow) rr.wield("bow"); else if (!aiming && rr.bow) rr.wield("sword"); } } // the weapon the blow comes with
     pose(u.uid, th.id === "arrows" || rain ? "aim" : "hold");
     const launch = () => {
       const ar = U.$("arena"), ae = actorEl(u.uid), pe = P && actorEl(P.uid);
@@ -568,6 +740,8 @@
         arenaHtml(B) + '<div class="text battle" id="battle-body"></div>';
       lastActs = B.acts.length; // nothing to replay on a fresh draw
       rigUp(B);
+      fitStage();
+      if (!fitWatch) { fitWatch = true; window.addEventListener("resize", () => { if (U.$("arena")) fitStage(); }); }
       // Put the painting's ground under the fighters' feet, once they are laid out.
       if (deep) requestAnimationFrame(() => U.fitBackdrop(true));
       // And keep it there: whenever the figures' band or the moves' panel changes size (a chooser opens, a
@@ -591,6 +765,8 @@
       if (lost) K.Sound.play("hit"); else if (gained) K.Sound.play("heal");
     }
     animate(B);
+    // Without motion nothing is played out: whoever has fallen simply lies on the ground, weapon beside them.
+    if (!U.motion()) B.units.forEach((u) => { if (u.hp <= 0) layDead(u.uid); });
     if (U.motion()) {
       for (const u of B.units) {
         const before = lastHp[u.uid];
@@ -637,7 +813,7 @@
         document.body.appendChild(veil);
         requestAnimationFrame(() => requestAnimationFrame(() => veil.classList.add("on")));
         setTimeout(() => {
-          if (!onEndCb) { veil.remove(); return; }
+          if (!onEndCb || C.state() !== B) { veil.remove(); return; }
           const cb = onEndCb; const out = C.end().over; onEndCb = null; const L = U.$("leaf"); if (L) L.dataset.battle = ""; document.body.classList.remove("intest"); cb(out);
           setTimeout(() => veil.remove(), 400); // the waking scene opens on its own white underneath
         }, U.motion() ? 1300 : 200);

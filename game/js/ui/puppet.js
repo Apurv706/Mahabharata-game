@@ -44,7 +44,7 @@
       headgear: HEADGEAR[S.origin] || null, temper: K.TEMPERAMENTS && K.TEMPERAMENTS[S.temperament] ? S.temperament : null,
       heir: S.heirloom && !(S.flags || []).includes("heirloom_lost") ? S.heirloom : null,
       cracked: (S.flags || []).includes("amulet_broken"),
-      item: S.path ? ITEM[S.path] : dreaming ? "sword" : null,
+      item: K.heldNow !== undefined && S === K.S ? K.heldNow : S.path ? ITEM[S.path] : dreaming ? "sword" : null,
       eye: inj.includes("eye"), sling: inj.includes("arm"), limp: inj.includes("leg"), scar: inj.includes("scar"),
       glow: (S.boons || []).includes("astra") || (S.astras || []).length > 0, // a faint light about one who carries a divine weapon
       chained: (S.flags || []).includes("imprisoned"), cuffed: (S.flags || []).includes("was_imprisoned") && !(S.flags || []).includes("imprisoned"), dead: S.alive === false
@@ -59,11 +59,11 @@
     bhima: { pronoun: "he", palette: ["#a8622f", "#6f3a24", "#e2b55a"], headgear: "crown", crown: { gem: "#b2432a", broad: true, trim: "#6f3a24" }, item: "mace", studs: ["#d9a53a"], stance: "broad", big: true, size: 1.25, peer: true },
     karna: { pronoun: "he", palette: ["#c9813f", "#d8a536", "#f3d27a"], headgear: "crown", crown: { gem: "#b2432a", tall: 1, trim: "#b2432a" }, item: "bow", armour: true, gear: ["earrings"], stance: "hero", size: 1.12, peer: true },
     duryodhana: { pronoun: "he", palette: ["#b8703b", "#7a1f2a", "#e2b55a"], headgear: "crown", crown: { gem: ["#2f7d55", "#b2432a", "#2d5aa0", "#b2432a"], tall: 1.15, trim: "#7a1f2a" }, item: "mace", studs: ["#b2432a", "#2d5aa0", "#2f7d55", "#2d5aa0", "#b2432a"], stance: "haughty", size: 1.15, peer: true },
-    dushasana: { pronoun: "he", palette: ["#b0683a", "#5e2430", "#c9a24e"], headgear: "mukuta", peer: true },
+    dushasana: { pronoun: "he", palette: ["#b0683a", "#5e2430", "#c9a24e"], headgear: "mukuta", item: "mace", peer: true },
     // Drona, a brahmin, keeps his matted knot: a grey forked beard and a water-pot at his hip.
     drona: { pronoun: "he", headgear: "jata", palette: ["#c9905a", "#efe6cf", "#c9a24e"], beard: "forked", stage: "elder", item: "bow", gear: ["waterpot"], stance: "sage", size: 1.12 },
-    kripa: { pronoun: "he", headgear: "jata", palette: ["#c48a55", "#e7dcc0", "#b49054"], beard: true, stage: "elder", item: "sword" },
-    balarama: { pronoun: "he", palette: ["#e9d9b8", "#2c4c86", "#e2b55a"], headgear: "kirita", item: "plough", big: true, stage: "adult" },
+    kripa: { pronoun: "he", headgear: "jata", palette: ["#c48a55", "#e7dcc0", "#b49054"], beard: true, stage: "elder", item: "bow" },
+    balarama: { pronoun: "he", palette: ["#e9d9b8", "#2c4c86", "#e2b55a"], headgear: "kirita", item: "mace", big: true, stage: "adult" }, // the master of the mace, who teaches it to Bhima and Duryodhana
     mauni: { pronoun: "he", headgear: "jata", palette: ["#b88352", "#c7a46c", "#8a6a3a"], beard: true, stage: "elder", item: "staff" },
     vidura: { pronoun: "he", headgear: "jata", palette: ["#c08a56", "#f0e8d6", "#9b8a6a"], beard: true, stage: "elder", item: "scroll" },
     // The sutradhara, who holds the strings of the story and opens each act.
@@ -82,8 +82,31 @@
     cousin: { pronoun: "she", palette: ["#b9743f", "#b2432a", "#e2b55a"], stage: "child" },
     healer: { pronoun: "she", palette: ["#b47a4a", "#e9dfc6", "#9a8a6a"], item: "bowl", stage: "adult" },
     boy: { pronoun: "he", palette: ["#b0703f", "#8a5a3a", "#c9a066"], stage: "youth" },
-    abhimanyu: { pronoun: "he", palette: ["#c27a44", "#f2ead2", "#3b6fb0"], headgear: "mukuta", item: "sword", stage: "youth" }
+    abhimanyu: { pronoun: "he", palette: ["#c27a44", "#f2ead2", "#3b6fb0"], headgear: "mukuta", item: "bow", stage: "youth" },
+    // The others of the epic, each with the weapon the story gives him (Krishna carries none: he does not fight).
+    yudhishthira: { pronoun: "he", palette: ["#c08050", "#efe6cc", "#c9a24e"], headgear: "crown", crown: { gem: "#2f7d55", tall: 0.95, trim: "#c9a24e" }, item: "spear", stance: "sage", size: 1.1, peer: true },
+    nakula: { pronoun: "he", palette: ["#c27a44", "#3f6b3a", "#e2b55a"], headgear: "mukuta", item: "sword", stance: "hero", peer: true },
+    sahadeva: { pronoun: "he", palette: ["#b8743f", "#4b5a73", "#e2b55a"], headgear: "mukuta", item: "sword", stance: "hero", peer: true },
+    krishna: { pronoun: "he", palette: ["#4a5f8f", "#e2b55a", "#e2b55a"], headgear: "peacock", stance: "hero", size: 1.12, stage: "adult" },
+    drupada: { pronoun: "he", palette: ["#c08a56", "#b2432a", "#e2b55a"], headgear: "crown", crown: { gem: "#b2432a", tall: 0.9, trim: "#e2b55a" }, beard: true, item: "bow", size: 1.1, stage: "adult" },
+    jayadratha: { pronoun: "he", palette: ["#b8703b", "#3a5a6a", "#c9a24e"], headgear: "crown", crown: { gem: "#2d5aa0", tall: 1, trim: "#3a5a6a" }, item: "bow", stance: "haughty", size: 1.1, stage: "adult" },
+    ekalavya: { pronoun: "he", palette: ["#8a5430", "#4f6a3a", "#b39255"], headgear: "feather", item: "bow", stance: "archer", peer: true },
+    shalya: { pronoun: "he", palette: ["#b8703b", "#6a4a2a", "#e2b55a"], headgear: "crown", crown: { gem: "#c9a24e", broad: true, trim: "#6a4a2a" }, beard: true, item: "mace", stance: "broad", size: 1.12, stage: "adult" },
+    shikhandi: { pronoun: "he", palette: ["#c27a44", "#8a2a3a", "#e2b55a"], headgear: "mukuta", item: "bow", stance: "archer", stage: "adult" },
+    ghatotkacha: { pronoun: "he", palette: ["#6a4a3a", "#3a2a2a", "#b2432a"], headgear: "band", item: "club", stance: "broad", big: true, size: 1.3, stage: "adult" },
+    ashwatthama: { pronoun: "he", palette: ["#c9905a", "#3a2a3a", "#c9a24e"], headgear: "crown", crown: { gem: "#8a5aa0", tall: 0.95, trim: "#3a2a3a" }, gear: ["browgem"], item: "bow", stance: "hero", stage: "adult", big: true, size: 1.18 }
   };
+  // What the player holds: the weapon of the path chosen at fifteen, and in a fight the weapon the fight
+  // asks for (a mace duel is fought with the mace, an archery or chariot duel with the bow). Paths that
+  // are not a weapon carry their sign about the story, and in a fight a blade: a sword for the driver and
+  // the commander, a short blade for the healer, the spy and the bard. Before the path, nothing.
+  const FIGHT_ITEM = { archer: "bow", mace: "mace", charioteer: "sword", strategist: "sword", healer: "dagger", spy: "dagger", bard: "dagger" };
+  const MODE_ITEM = { mace: "mace", range: "bow", chariot: "bow", carry: null, dream: "sword" }; // (the prologue's dream: you fight grown, with a sword)
+  K.fightItem = function (S = K.S, mode) {
+    if (mode && mode in MODE_ITEM) return MODE_ITEM[mode];
+    return S && S.path ? FIGHT_ITEM[S.path] || null : null;
+  };
+  K.heldNow = undefined; // set while a fight is on screen (ui/battle.js, ui/fightmodes.js): what the player's figure holds
   U.puppetFor = function (id, S = K.S) {
     const p = K.PUPPETS[id] || K.PUPPETS.guard;
     return Object.assign({ stage: p.peer && S ? K.puppetStage(S.age || 10) : "adult" }, p);
@@ -265,6 +288,27 @@
   const shieldSvg = (r, t) => '<circle cx="58" cy="112" r="' + r + '" fill="#8a5a2c"' + OUT + '/><circle cx="58" cy="112" r="' + (r - 3.5) + '" fill="none" stroke="' + t + '" stroke-width="2"/><circle cx="58" cy="112" r="4" fill="' + GOLD + '"' + OUT + "/>" +
     holeRow("M" + (58 - r + 6.5) + " 112 a" + (r - 6.5) + " " + (r - 6.5) + " 0 1 0 " + 2 * (r - 6.5) + " 0 a" + (r - 6.5) + " " + (r - 6.5) + " 0 1 0 " + -2 * (r - 6.5) + " 0", "#8a5a2c", 3);
 
+  // A fallen figure's weapon lies on the ground beside it (a live figure lets go of it as it falls:
+  // puppet-anim.js). For each kind: the top and foot of the weapon along its length (in the hand's
+  // frame, held upright), its tilt in the fist, and how far it reaches below its length once laid
+  // down pointing forward and pointing back. dir 1: the figure lies forward (in a fight, toward the
+  // middle of the stage); -1: backward. The ground is y = GROUND, the weapon's middle X along it.
+  const LIE = { bow: [80, 172, 0, 5, 12], mace: [33, 140, 20, 12.5, 12.5], sword: [68, 136, 16, 7, 7], woodsword: [68, 136, 16, 7, 7], spear: [40, 177, 0, 6, 6],
+    club: [66, 128, 0, 10, 5], staff: [99, 201, 0, 3.5, 1], plough: [54, 165, 0, 16, 1.5], whip: [90, 128, 0, 26, 1], dagger: [98, 132, 38, 4.5, 4.5], hammer: [94, 128, 0, 7, 7] };
+  U.itemSvg = (kind, trim) => itemSvg(kind, trim || "#c9a24e");
+  U.GROUND = 201; // a little in front of the feet (197): beside the body, not under it
+  U.itemLie = function (kind, dir) {
+    const L = LIE[kind]; if (!L) return null;
+    const d = dir > 0 ? 1 : -1, [yT, yB, tilt, bf, bb] = L;
+    const mid = 58 + d * ((126 - yT) - (yB - 126)) / 2;
+    return { a: d * 90 - tilt, tx: 60 + d * 90 - mid, ty: U.GROUND - (d > 0 ? bf : bb) - 126, cx: 58, cy: 126, sy: 1 };
+  };
+  // A shield lies flat on the ground, its rim towards us, a little ahead of the feet.
+  U.shieldLie = (r, dir) => ({ a: 0, tx: 60 + (dir > 0 ? 1 : -1) * 34 - 58, ty: U.GROUND - r * 0.42 - 112, cx: 58, cy: 112, sy: 0.42 });
+  // The transform that puts a dropped thing in place: about its centre (cx, cy), turned by a,
+  // squashed by sy (a shield seen lying), moved by (tx, ty).
+  U.lieTransform = (o) => "translate(" + (o.cx + o.tx).toFixed(2) + " " + (o.cy + o.ty).toFixed(2) + ") scale(1 " + o.sy.toFixed(3) + ") rotate(" + o.a.toFixed(2) + ") translate(" + -o.cx + " " + -o.cy + ")";
+
   // Things that are not people, cut from the same leather: a cart, an elephant, and the Narayana
   // weapon as a light in the sky. They have no joints, so they keep their CSS poses (no rig).
   const THING = {
@@ -384,7 +428,12 @@
     // Behind everything: Arjuna's second quiver, once he carries the Gandiva.
     const behind = gear("quivers") && grown ? QUIVER2 : "";
     // On the back arm: a round hide shield, or a horseman's small one.
-    const backHand = gear("shield") ? shieldSvg(19, trim) : gear("buckler") ? shieldSvg(13, trim) : "";
+    const shieldR = gear("shield") ? 19 : gear("buckler") ? 13 : 0;
+    // Fallen, the shield and the weapon are no longer held: they lie on the ground beside the body.
+    const dead = pose === "dead", ldir = o.fwd ? 1 : -1, laid = dead && spec.item && LIE[spec.item];
+    const backHand = shieldR && !dead ? '<g class="it-s" data-r="' + shieldR + '">' + shieldSvg(shieldR, trim) + "</g>" : "";
+    const onGround = !dead ? "" : (shieldR ? '<g class="it-down it-s-down" transform="' + U.lieTransform(U.shieldLie(shieldR, ldir)) + '">' + shieldSvg(shieldR, trim) + "</g>" : "") +
+      (laid ? '<g class="it-down" transform="' + U.lieTransform(U.itemLie(spec.item, ldir)) + '">' + itemSvg(spec.item, trim, { tips: gear("gandiva") && grown, studs: spec.studs }) + "</g>" : "");
     // Over the body: a leather cuirass, gold scale armour, a guard's sash, a torn hem, a water-pot at the hip.
     const bodyGear = (torn ? '<path d="M41.6 146 L43 158 L46 150 L49 161 L53 150 L56 156 L60 149 L63 160 L67 150 L71 157 L74 149 L78.4 155 L78.4 146 Z" fill="' + cloth + '"' + OUT + '/><path d="M48 112 L72 112" stroke="#3a2412" stroke-width="2.4"/>' : "") +
       (gear("sash") ? '<path d="M50 72 L70 106" stroke="' + (spec.hat || trim) + '" stroke-width="3"/>' : "") +
@@ -417,7 +466,10 @@
       // Smaller figures (children) are drawn by widening the view around the feet, so every joint
       // keeps its own coordinates and the CSS joint origins stay exact.
       // A fallen figure lies along the ground, so it gets a long, low view.
-      (pose === "dead" ? '<svg class="' + clsx + '" viewBox="-112 128 200 76" width="' + Math.round(h * 0.5 * 200 / 76) + '" height="' + Math.round(h * 0.5) + '"' :
+      // In a fight (o.fwd) it lies forward, in a frame as tall as a standing figure's, so it keeps its size
+      // on the stage and its ground stays the stage's ground; the frame runs forward the length of the body.
+      (pose === "dead" && o.fwd ? '<svg class="' + clsx + ' fwd" viewBox="' + [60 - 22 / scale, 200 - 200 / scale, 200 / scale, 210 / scale].map((v) => +v.toFixed(2)).join(" ") + '" width="' + Math.round(h * 200 / 210) + '" height="' + h + '"' :
+      pose === "dead" ? '<svg class="' + clsx + '" viewBox="-112 128 200 76" width="' + Math.round(h * 0.5 * 200 / 76) + '" height="' + Math.round(h * 0.5) + '"' :
       '<svg class="' + clsx + '" viewBox="' + [60 - 60 / scale, 200 - 200 / scale, 120 / scale, 210 / scale].map((v) => +v.toFixed(2)).join(" ") + '" width="' + Math.round(h * 120 / 210) + '" height="' + h + '"') +
       (stance ? ' data-stance="' + stance + '"' : "") + (o.label ? ' role="img" aria-label="' + U.esc(o.label) + '"' : ' aria-hidden="true"') + ">" +
       '<g class="pp-all">' +
@@ -434,10 +486,10 @@
         '<path d="' + skirt + '" fill="' + cloth + '"' + OUT + "/>" + skirtHem + bodyGear + belt +
         '<g class="j head"><g transform="translate(62 64) scale(' + headScale + ') translate(-62 -64)">' + head + "</g></g>" +
         (panels ? leg("legF") : "") + sashEnd +
-        '<g class="j armF">' + upper + armlet + shoulder + '<g class="j foreF">' + fore + elbow + manacle + cuff + (spec.item ? '<g class="it' + (WIELD.has(spec.item) ? " it-w" : "") + '">' + itemSvg(spec.item, trim, { tips: gear("gandiva") && grown, studs: spec.studs }) + "</g>" : "") + rod +
+        '<g class="j armF">' + upper + armlet + shoulder + '<g class="j foreF">' + fore + elbow + manacle + cuff + (spec.item && !laid ? '<g class="it' + (WIELD.has(spec.item) ? " it-w" : "") + '"' + (/^[a-z]+$/.test(spec.item) ? ' data-k="' + spec.item + '"' : "") + ">" + itemSvg(spec.item, trim, { tips: gear("gandiva") && grown, studs: spec.studs }) + "</g>" : "") + rod +
           (gear("bracer") ? '<path d="M54 108 L62 108 L61.5 118 L54.6 118 Z" fill="#5a3418"' + OUT + "/>" : "") + "</g></g>" +
         (spec.sling ? '<path d="M50 76 Q58 112 68 76" fill="none" stroke="#efe2c0" stroke-width="3" opacity="0.9"/>' : "") +
-      "</g></g></svg>";
+      "</g>" + onGround + "</g></svg>";
     return svg;
   };
 
