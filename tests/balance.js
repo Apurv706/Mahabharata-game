@@ -10,9 +10,11 @@ const GAME = path.join(__dirname, "..", "game");
 const html = fs.readFileSync(path.join(GAME, "index.html"), "utf8");
 const scripts = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map((m) => m[1]);
 const stats = {};
+let lastWindow = null; // closed after each life, so a long run does not keep every life's page in memory
 function life(seed) {
   const dom = new JSDOM(html.replace(/<script src="[^"]+"><\/script>/g, ""), { runScripts: "outside-only", pretendToBeVisual: true, url: "https://localhost/", virtualConsole: new VirtualConsole() });
   const w = dom.window, d = w.document;
+  lastWindow = w;
   w.HTMLElement.prototype.scrollIntoView = () => {};
   let s = seed >>> 0; w.Math.random = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
   for (const src of scripts) w.eval(fs.readFileSync(path.join(GAME, src), "utf8"));
@@ -50,7 +52,7 @@ function life(seed) {
     if (choices.length) pick(choices).click(); else if (cta.length) cta[0].click(); else return;
   }
 }
-for (let i = 1; i <= N; i++) life(i * 104729);
+for (let i = 1; i <= N; i++) { life(i * 104729); try { lastWindow.close(); } catch (e) { /* ignore */ } lastWindow = null; }
 const rows = Object.entries(stats).sort((a, b) => (b[1].win + b[1].lose) - (a[1].win + a[1].lose));
 let ev = [0, 0], hd = [0, 0];
 for (const [k, r] of rows) { const n = r.win + r.lose; (r.hard ? hd : ev)[0] += r.win; (r.hard ? hd : ev)[1] += n; console.log(k.padEnd(26) + String(r.win).padStart(4) + " /" + String(n).padStart(4) + "  " + (n ? Math.round((r.win / n) * 100) : 0) + "%" + (r.lethal ? "  deadly" : "")); }
