@@ -1059,6 +1059,9 @@ html[lang="hi"] .leaf .story .speech { font-size: 19px; }
 body.big-text .leaf .story { font-size: 17.5px; }
 body.big-text .leaf .choices .choice .t { font-size: 18px; }
 
+/* After a choice the scene's own lines step aside; only the choice and its outcome stay. */
+.leaf .story > .past { display: none; }
+
 /* ---------- The page comes up whole, then is written ----------
    Lines, the choices and the key hint not shown yet keep their room (owner, 2 Nov): the box opens at
    its full size over the painting, the story is written into it, and then the painting moves once. */

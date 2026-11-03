@@ -581,6 +581,9 @@
     const pimg = K.val(c.img);
     const picked = U.el('<div class="choice picked' + (pimg ? " has-img" : "") + '"><span class="k">·</span>' + (pimg ? U.thumb(pimg) : "") + '<span class="t">' + U.t(K.val(c.t)) + '</span><span class="fx">' + U.tr("Your choice") + "</span></div>");
     box.innerHTML = "";
+    // The page now holds only what you chose and what came of it: the scene's own lines step aside
+    // (owner, 3 Nov: a result page was over half text).
+    [...story.children].forEach((el) => el.classList.add("past"));
     const added = [picked];
     story.appendChild(picked);
     if (res.pre || res.text || res.check || res.lampOut) {

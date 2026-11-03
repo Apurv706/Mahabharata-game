@@ -52,7 +52,20 @@ function life(seed) {
     if (choices.length) pick(choices).click(); else if (cta.length) cta[0].click(); else return;
   }
 }
-for (let i = 1; i <= N; i++) { life(i * 104729); try { lastWindow.close(); } catch (e) { /* ignore */ } lastWindow = null; }
+// Each page leaves memory behind even when closed, so long runs play in batches of 40 lives, each in
+// its own process, and add up their counts.
+const BATCH = 40;
+if (process.env.BAL_FROM) {
+  const from = +process.env.BAL_FROM, to = +process.env.BAL_TO;
+  for (let i = from; i <= to; i++) { life(i * 104729); try { lastWindow.close(); } catch (e) { /* ignore */ } lastWindow = null; }
+  process.stdout.write("\nBALSTATS" + JSON.stringify(stats));
+  process.exit(0);
+}
+for (let from = 1; from <= N; from += BATCH) {
+  const out = require("child_process").execFileSync(process.execPath, [__filename, String(N)], { env: Object.assign({}, process.env, { BAL_FROM: String(from), BAL_TO: String(Math.min(N, from + BATCH - 1)) }), maxBuffer: 1 << 26 }).toString();
+  const part = JSON.parse(out.slice(out.lastIndexOf("BALSTATS") + 8));
+  for (const [k, r] of Object.entries(part)) { const t = (stats[k] = stats[k] || { win: 0, lose: 0, other: 0, hard: r.hard, lethal: r.lethal }); t.win += r.win; t.lose += r.lose; t.other += r.other; }
+}
 const rows = Object.entries(stats).sort((a, b) => (b[1].win + b[1].lose) - (a[1].win + a[1].lose));
 let ev = [0, 0], hd = [0, 0];
 for (const [k, r] of rows) { const n = r.win + r.lose; (r.hard ? hd : ev)[0] += r.win; (r.hard ? hd : ev)[1] += n; console.log(k.padEnd(26) + String(r.win).padStart(4) + " /" + String(n).padStart(4) + "  " + (n ? Math.round((r.win / n) * 100) : 0) + "%" + (r.lethal ? "  deadly" : "")); }
