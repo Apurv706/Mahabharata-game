@@ -81,7 +81,7 @@ for (const [k, r] of rows) { const n = r.win + r.lose; (r.hard ? hd : ev)[0] += 
 if (RTM) {
   console.log("Real-time fights (bot): won / fought, mean and range of fight length in simulated seconds");
   for (const [k, ts] of Object.entries(rtTimes).sort()) {
-    const r = Object.entries(stats).filter(([s]) => s.split(" ")[0] === k).map(([, v]) => v)[0] || { win: 0, lose: 0 };
+    const r = Object.entries(stats).filter(([s]) => s.split(" ")[0] === k).map(([, v]) => v).reduce((a, v) => ({ win: a.win + v.win, lose: a.lose + v.lose }), { win: 0, lose: 0 });
     const n = r.win + r.lose, m = ts.reduce((a, b) => a + b, 0) / ts.length;
     console.log("  " + k.padEnd(18) + String(r.win).padStart(4) + " /" + String(n).padStart(4) + "  " + (n ? Math.round(r.win / n * 100) : 0) + "%   " + m.toFixed(1) + " s  (" + Math.min(...ts).toFixed(0) + "-" + Math.max(...ts).toFixed(0) + ")");
   }
