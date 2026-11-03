@@ -749,6 +749,10 @@ body.inscene .jmap .bmap { max-height: min(520px, max(180px, calc(var(--vh) - 34
 .moksha .ladder path { stroke: #7a4a1c; stroke-width: 2.4; fill: none; stroke-linecap: round; }
 .moksha .snake path { stroke: #2f7d55; stroke-width: 5; fill: none; stroke-linecap: round; } .moksha .snake circle { fill: #1f5a3a; }
 .moksha text:not(.num) { font: italic 9px var(--display); fill: #2a120f; paint-order: stroke; stroke: #ecdcb6; stroke-width: 2.5px; }
+.moksha .sq.karma { fill: #b9c9a0; } .moksha .sq.goal { fill: #e9b949; }
+.moksha .tag { text-anchor: middle; font-size: 8px !important; }
+.moksha .aim { fill: none; stroke: var(--accent); stroke-width: 2.4; stroke-dasharray: 4 3; }
+.trial .game-note .remark { display: block; font-style: italic; color: var(--muted); }
 .moksha .tok circle { stroke: #1a0f0b; stroke-width: 2; } .moksha .tok.me circle { fill: var(--accent); } .moksha .tok.them circle { fill: #3b6fb0; }
 .pickdice { display: flex; gap: 10px; justify-content: center; }
 .pickdice .cta { min-width: 120px; }

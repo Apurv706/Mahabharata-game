@@ -1,7 +1,8 @@
 /* Board games as tests, each a minute or two, on the painted table (stage_board_table):
    chaupar  the cross-shaped race game: cowrie throws, two pieces each, capture and safe squares
    baghchal tigers and goats: you are the tigers, and must take goats before they hem you in
-   moksha   Moksha Patam, the game of virtues and vices: throw two dice, move by the one you choose
+   moksha   Moksha Patam, the game of virtues and vices on a short board of 36: move by either of two dice;
+            a ladder's virtue stops one snake, and the karma squares swap you with your opponent
    Each opponent plays a simple, honest strategy and slips more often against a stronger player
    (the player's stats, as for every test). Mouse, touch and keys all work. */
 (function (K) {
@@ -252,87 +253,133 @@
   };
 
   // ---------- Moksha Patam: virtues raise you, vices bring you down ----------
-  const LADDERS = { 3: [19, "Generosity"], 11: [27, "Faith"], 22: [41, "Knowledge"], 36: [55, "Truth"] };
-  const SNAKES = { 17: [6, "Anger"], 33: [13, "Pride"], 47: [26, "Greed"], 62: [43, "Deceit"] };
-  const sqXY = (n) => { const i = n - 1, row = Math.floor(i / 8), col = row % 2 ? 7 - (i % 8) : i % 8; return [col * 40 + 20, (7 - row) * 40 + 20]; };
+  // A short board of 36. Two dice, and you move by the one you choose; passing 36 counts.
+  // A ladder gives you its virtue, which saves you from the next snake you land on.
+  // The karma squares swap your place with the other player's.
+  const MK = 36, MW = 6;
+  const LADDERS = { 4: [15, "Generosity"], 12: [23, "Faith"], 20: [31, "Truth"] };
+  const SNAKES = { 16: [6, "Anger"], 28: [18, "Greed"], 34: [21, "Pride"] };
+  const KARMA = new Set([11, 26]);
+  const sqXY = (n) => { const i = n - 1, row = Math.floor(i / MW), col = row % 2 ? MW - 1 - (i % MW) : i % MW; return [col * 40 + 20, (MW - 1 - row) * 40 + 20]; };
   U.games.moksha = function (box, done, c) {
     return U.trialFrame(box, done, c, "board", ({ host, power, t, finish, cue }) => {
       const opp = K.tr(t.opponent || "Your opponent"), slip = clamp(0.1 + power * 0.03, 0.1, 0.4);
-      const G = { me: 1, them: 1, dice: null, phase: "throw", note: null, turns: 0 };
-      const timers = [];
-      const land = (n) => (LADDERS[n] ? LADDERS[n][0] : SNAKES[n] ? SNAKES[n][0] : n);
+      const G = { me: 1, them: 1, virtue: { me: 0, them: 0 }, dice: null, phase: "throw", note: null, said: null, turns: 0 };
+      const timers = [], R = t.remarks || null, rounds = t.turns || 14;
+      const other = (side) => (side === "me" ? "them" : "me");
+      // Where a move of v leaves both players, without making it: for the opponent's choice and the hint.
+      function outcome(side, v) {
+        const pos = { me: G.me, them: G.them }, to = Math.min(MK, pos[side] + v);
+        let end = to, ev = null;
+        if (LADDERS[to]) { end = LADDERS[to][0]; ev = "ladder"; }
+        else if (SNAKES[to]) { if (G.virtue[side]) ev = "saved"; else { end = SNAKES[to][0]; ev = "snake"; } }
+        pos[side] = end;
+        if (KARMA.has(to) && pos[side] !== pos[other(side)]) { const o = pos[other(side)]; pos[other(side)] = pos[side]; pos[side] = o; ev = "karma"; }
+        return { to, end, ev, pos };
+      }
+      const worth = (side, v) => { const o = outcome(side, v); return o.pos[side] - o.pos[other(side)] + (o.pos[side] >= MK ? 99 : 0) + (o.ev === "ladder" ? 2 : 0); };
       const roll = () => [1 + Math.floor(K.rng() * 6), 1 + Math.floor(K.rng() * 6)];
-      function step(side, v) {
-        const from = G[side], to = from + v;
-        if (to > 64) return false;
-        const end = land(to);
-        G[side] = end;
-        const L = LADDERS[to], Sn = SNAKES[to];
-        G.note = L ? [side === "me" ? "{v}: you climb the ladder of {what}, from {a} to {b}." : "{who} climbs the ladder of {what}, from {a} to {b}.", { v, what: L[1], a: to, b: end, who: opp }]
-          : Sn ? [side === "me" ? "{v}: the snake of {what} takes you down from {a} to {b}." : "The snake of {what} takes {who} down from {a} to {b}.", { v, what: Sn[1], a: to, b: end, who: opp }] : null;
-        if (side === "me") { cue(L ? "good" : Sn ? "bad" : "act"); sfx(Sn ? "hit" : "tap"); }
-        return true;
+      const remark = (ev) => { const l = R && R[ev]; if (l && l.length) G.said = K.pick(l); };
+      // The board, drawn once; each turn moves the pieces and rewrites the lines around it.
+      let sq = "", ld = "";
+      for (let n = 1; n <= MK; n++) {
+        const [x, y] = sqXY(n), k = KARMA.has(n);
+        sq += '<rect class="sq' + (k ? " karma" : n === MK ? " goal" : (Math.floor((n - 1) / MW) + (n - 1)) % 2 ? " alt" : "") + '" x="' + (x - 20) + '" y="' + (y - 20) + '" width="40" height="40"/><text class="num" x="' + (x - 16) + '" y="' + (y - 9) + '">' + n + "</text>" +
+          (k ? '<text class="tag" x="' + x + '" y="' + (y + 13) + '">' + U.esc(K.tr("Karma")) + "</text>" : n === MK ? '<text class="tag" x="' + x + '" y="' + (y + 13) + '">' + U.esc(K.tr("Moksha")) + "</text>" : "");
       }
-      function aiChoose(d) {
-        const ok = d.filter((v) => G.them + v <= 64);
-        if (!ok.length) return null;
-        if (K.rng() < slip) return K.pick(ok);
-        return ok.sort((a, b) => land(G.them + b) - land(G.them + a))[0];
+      for (const [a, [b, name]] of Object.entries(LADDERS)) {
+        const [x1, y1] = sqXY(+a), [x2, y2] = sqXY(b), dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), nx = (-dy / L) * 6, ny = (dx / L) * 6, n = Math.floor(L / 13);
+        let rungs = ""; for (let k = 1; k < n; k++) { const f = k / n, px = x1 + dx * f, py = y1 + dy * f; rungs += "M" + (px - nx) + "," + (py - ny) + " L" + (px + nx) + "," + (py + ny) + " "; }
+        ld += '<g class="ladder"><path d="M' + (x1 - nx) + "," + (y1 - ny) + " L" + (x2 - nx) + "," + (y2 - ny) + " M" + (x1 + nx) + "," + (y1 + ny) + " L" + (x2 + nx) + "," + (y2 + ny) + " " + rungs + '"/><text x="' + (x1 + 4) + '" y="' + (y1 + 15) + '">' + U.esc(K.tr(name)) + "</text></g>";
       }
+      for (const [a, [b, name]] of Object.entries(SNAKES)) {
+        const [x1, y1] = sqXY(+a), [x2, y2] = sqXY(b), mx = (x1 + x2) / 2;
+        ld += '<g class="snake"><path d="M' + x1 + "," + y1 + " C" + (mx + 34) + "," + (y1 + 10) + " " + (mx - 34) + "," + (y2 - 10) + " " + x2 + "," + y2 + '"/><circle cx="' + x1 + '" cy="' + y1 + '" r="6"/><text x="' + (x1 + 4) + '" y="' + (y1 + 16) + '">' + U.esc(K.tr(name)) + "</text></g>";
+      }
+      host.innerHTML = '<p class="score" aria-live="polite"></p>' +
+        boardWrap(t, '<svg class="moksha" viewBox="0 0 240 240" role="img" aria-label="' + U.esc(K.tr("The Moksha Patam board")) + '">' + sq + ld + '<g class="aims"></g><g class="tok them"><circle r="8"/></g><g class="tok me"><circle r="8"/></g></svg>') +
+        '<div class="pickdice"></div><p class="game-note" aria-live="polite"></p><div class="btnrow"></div>';
+      const svg = host.querySelector("svg"), toks = { me: svg.querySelector(".tok.me"), them: svg.querySelector(".tok.them") };
+      const at = (side, n) => { const [x, y] = sqXY(Math.min(MK, n)); return [x + (side === "me" ? 8 : -8), y + 8]; };
+      const put = (side, xy) => toks[side].setAttribute("transform", "translate(" + xy[0].toFixed(1) + " " + xy[1].toFixed(1) + ")");
+      const place = (side, n) => put(side, at(side, n));
+      // A ladder or a snake carries the piece in a few quick frames (none with reduced motion).
+      const glide = (side, from, n, then) => {
+        const a = from, b = at(side, n), F = U.motion() ? 5 : 0;
+        let f = 0;
+        const go = () => { f++; if (f >= F) { put(side, b); return then(); } put(side, [a[0] + (b[0] - a[0]) * f / F, a[1] + (b[1] - a[1]) * f / F]); later(timers, 40, go); };
+        go();
+      };
+      place("me", 1); place("them", 1);
       function draw() {
-        let sq = "";
-        for (let n = 1; n <= 64; n++) { const [x, y] = sqXY(n); sq += '<rect class="sq' + ((Math.floor((n - 1) / 8) + (n - 1)) % 2 ? " alt" : "") + '" x="' + (x - 20) + '" y="' + (y - 20) + '" width="40" height="40"/><text class="num" x="' + (x - 16) + '" y="' + (y - 9) + '">' + n + "</text>"; }
-        let ld = "";
-        for (const [a, [b, name]] of Object.entries(LADDERS)) {
-          const [x1, y1] = sqXY(+a), [x2, y2] = sqXY(b), dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy), nx = (-dy / L) * 6, ny = (dx / L) * 6;
-          let rungs = ""; for (let k = 1; k < Math.floor(L / 14); k++) { const f = k / Math.floor(L / 14), px = x1 + dx * f, py = y1 + dy * f; rungs += "M" + (px - nx) + "," + (py - ny) + " L" + (px + nx) + "," + (py + ny) + " "; }
-          ld += '<g class="ladder"><path d="M' + (x1 - nx) + "," + (y1 - ny) + " L" + (x2 - nx) + "," + (y2 - ny) + " M" + (x1 + nx) + "," + (y1 + ny) + " L" + (x2 + nx) + "," + (y2 + ny) + " " + rungs + '"/><text x="' + (x1 + 4) + '" y="' + (y1 + 15) + '">' + U.esc(K.tr(name)) + "</text></g>";
+        const v = (side) => (G.virtue[side] ? " · " + U.tr("virtue") + " ✦" : "");
+        host.querySelector(".score").innerHTML = U.tr("You: {a}", { a: Math.min(MK, G.me) }) + v("me") + " · " + U.tr("{who}: {b}", { b: Math.min(MK, G.them), who: opp }) + v("them");
+        const note = G.note ? U.t(G.note) : U.tr(G.phase === "choose" ? "Move by the die you choose." : G.phase === "throw" ? "Your throw." : "{who} throws.", { who: opp });
+        host.querySelector(".game-note").innerHTML = note + (G.said ? ' <span class="remark">' + U.esc(opp) + ": “" + U.t(G.said) + "”</span>" : "");
+        const pd = host.querySelector(".pickdice"), row = host.querySelector(".btnrow"), aims = svg.querySelector(".aims");
+        pd.innerHTML = ""; row.innerHTML = ""; aims.innerHTML = "";
+        if (G.phase === "throw") row.appendChild(U.button("cta", U.tr("Throw the dice"), throwMine));
+        if (G.dice) G.dice.forEach((d, i) => { const b = U.button("cta secondary die-pick", U.tr("Move {n}", { n: d }), () => choose(i)); b.disabled = G.phase !== "choose"; pd.appendChild(b); });
+        // Where each die would land, marked on the board.
+        if (G.phase === "choose") G.dice.forEach((d) => { const [x, y] = sqXY(Math.min(MK, G.me + d)); aims.innerHTML += '<rect class="aim" x="' + (x - 18) + '" y="' + (y - 18) + '" width="36" height="36"/>'; });
+        if (U.boardHint && G.phase === "choose") {
+          const bi = worth("me", G.dice[0]) >= worth("me", G.dice[1]) ? 0 : 1, o = outcome("me", G.dice[bi]);
+          U.boardHint(host, { el: pd.children[bi], line: o.ev === "ladder" ? "Move {n}: a ladder waits there." : o.ev === "karma" ? "Move {n}: the karma square puts you ahead." : outcome("me", G.dice[1 - bi]).ev === "snake" ? "Move {n}: the other die lands on a snake." : "Move {n}: the longer step.", p: { n: G.dice[bi] } });
         }
-        for (const [a, [b, name]] of Object.entries(SNAKES)) {
-          const [x1, y1] = sqXY(+a), [x2, y2] = sqXY(b), mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
-          ld += '<g class="snake"><path d="M' + x1 + "," + y1 + " C" + (mx + 40) + "," + (y1 + 10) + " " + (mx - 40) + "," + (y2 - 10) + " " + x2 + "," + y2 + '"/><circle cx="' + x1 + '" cy="' + y1 + '" r="6"/><text x="' + (x1 + 4) + '" y="' + (y1 + 16) + '">' + U.esc(K.tr(name)) + "</text></g>";
-        }
-        const tok = (side) => { const [x, y] = sqXY(G[side]); return '<g class="tok ' + side + '" transform="translate(' + (x + (side === "me" ? 8 : -8)) + " " + (y + 8) + ')"><circle r="8"/></g>'; };
-        const dice = G.dice ? '<div class="pickdice"></div>' : "";
-        host.innerHTML = '<p class="score" aria-live="polite">' + U.tr("You are on {a} · {who} is on {b} · Moksha is 64", { a: G.me, b: G.them, who: opp }) + "</p>" +
-          boardWrap(t, '<svg class="moksha" viewBox="0 0 320 320" role="img" aria-label="' + U.esc(K.tr("The Moksha Patam board")) + '">' + sq + ld + tok("them") + tok("me") + "</svg>") +
-          dice + '<p class="game-note" aria-live="polite">' + (G.note ? U.t(G.note) : U.tr(G.phase === "choose" ? "Two dice. Move by the one you choose." : G.phase === "throw" ? "Your throw." : "{who} throws.", { who: opp })) + '</p><div class="btnrow"></div>';
-        if (G.phase === "throw") host.querySelector(".btnrow").appendChild(U.button("cta", U.tr("Throw the dice"), throwMine));
-        const pd = host.querySelector(".pickdice");
-        if (pd) G.dice.forEach((v, i) => { const b = U.button("cta secondary die-pick", U.tr("Move {n}", { n: v }), () => choose(i)); b.disabled = G.phase !== "choose" || G.me + v > 64; pd.appendChild(b); });
-        if (U.boardHint && pd && G.phase === "choose") {
-          const val = (v) => (G.me + v > 64 ? -99 : land(G.me + v));
-          const bi = G.dice[0] === G.dice[1] ? 0 : val(G.dice[0]) >= val(G.dice[1]) ? 0 : 1;
-          const to = G.me + G.dice[bi];
-          U.boardHint(host, { el: pd.children[bi], line: LADDERS[to] ? "Move {n}: a ladder waits there." : SNAKES[G.me + G.dice[1 - bi]] ? "Move {n}: the other die lands on a snake." : "Move {n}: the longer step.", p: { n: G.dice[bi] } });
-        }
+      }
+      // A move: the piece hops square by square, then rides the ladder or the snake, then the karma swap.
+      function move(side, v, then) {
+        const from = G[side], o = outcome(side, v), hop = U.motion() ? 70 : 0;
+        G.note = null; if (side === "me") G.said = null; // a remark stays up until your next move
+        let n = from;
+        const next = () => {
+          if (n < o.to) { n++; place(side, n); sfx("tap"); return hop ? later(timers, hop, next) : next(); }
+          const L = LADDERS[o.to], Sn = SNAKES[o.to], me = side === "me";
+          if (o.ev === "ladder") { G.virtue[side] = 1; G.note = [me ? "The ladder of {what} lifts you to {b}, and you keep its virtue." : "The ladder of {what} lifts {who} to {b}.", { what: L[1], b: o.end, who: opp }]; }
+          else if (o.ev === "snake") G.note = [me ? "The snake of {what} takes you down to {b}." : "The snake of {what} takes {who} down to {b}.", { what: Sn[1], b: o.end, who: opp }];
+          else if (o.ev === "saved") { G.virtue[side] = 0; G.note = [me ? "Your virtue holds. The snake of {what} cannot touch you." : "{who}'s virtue holds against the snake of {what}.", { what: Sn[1], who: opp }]; }
+          if (me) { cue(o.ev === "ladder" || o.ev === "saved" ? "good" : o.ev === "snake" ? "bad" : "act"); if (o.ev === "snake") sfx("hit"); }
+          else if (o.ev === "snake") cue("good");
+          G.me = o.pos.me; G.them = o.pos.them;
+          if (o.ev === "karma") { G.note = [me ? "Karma: you and {who} change places." : "Karma: {who} lands on it, and you change places.", { who: opp }]; cue(G.me > G.them ? "good" : "bad"); }
+          // Remarks: the opponent's own words on what just happened, if the test gives any.
+          remark(o.ev ? (me ? "" : "his_") + o.ev : null);
+          draw();
+          // The piece rides the ladder or snake; on karma both pieces cross over.
+          const oth = other(side);
+          if (o.ev === "karma") { glide(oth, at(oth, G[side]), G[oth], () => {}); return glide(side, at(side, o.to), G[side], then); }
+          if (o.ev === "ladder" || o.ev === "snake") return later(timers, hop ? 80 : 0, () => glide(side, at(side, o.to), o.end, then));
+          then();
+        };
+        next();
       }
       function throwMine() {
         if (G.phase !== "throw") return;
         G.dice = roll(); sfx("dice"); G.note = null; cue("act");
-        if (G.dice.every((v) => G.me + v > 64)) { G.note = "Both throws would carry you past moksha. You must wait."; G.phase = "wait"; draw(); return later(timers, 1100, aiTurn); }
         G.phase = "choose"; draw();
         U.keys([() => choose(0), () => choose(1)]);
       }
       function choose(i) {
-        if (G.phase !== "choose" || G.me + G.dice[i] > 64) return;
-        U.keys([]);
-        step("me", G.dice[i]);
-        G.phase = "wait"; draw();
-        if (G.me === 64) return later(timers, 700, () => finish("win", "You reach moksha first."));
-        later(timers, 1100, aiTurn);
-      }
-      function aiTurn() {
-        G.dice = roll(); sfx("dice"); G.note = null; G.phase = "them"; draw();
-        later(timers, 900, () => {
-          const v = aiChoose(G.dice);
-          if (v != null) step("them", v); else G.note = ["{who} cannot move.", { who: opp }];
-          G.turns++;
-          if (G.them === 64) { draw(); return later(timers, 800, () => finish(64 - G.me <= 6 ? "close" : "lose", ["{who} reaches moksha first.", { who: opp }])); }
-          if (G.turns >= (t.turns || 30)) { draw(); return later(timers, 800, () => finish(G.me > G.them ? "win" : G.them - G.me <= 6 ? "close" : "lose", "The game is called before anyone reaches moksha.")); }
-          later(timers, 900, () => { G.phase = "throw"; G.dice = null; draw(); U.keys([throwMine]); });
+        if (G.phase !== "choose") return;
+        U.keys([]); G.phase = "wait";
+        move("me", G.dice[i], () => {
+          if (G.me >= MK) { remark("lose"); draw(); return later(timers, 600, () => finish("win", "You reach moksha first.")); }
+          later(timers, U.motion() ? 450 : 0, aiTurn);
         });
       }
+      function aiTurn() {
+        G.dice = roll(); sfx("dice"); G.phase = "them"; draw();
+        later(timers, 300, () => {
+          const v = K.rng() < slip ? K.pick(G.dice) : worth("them", G.dice[0]) >= worth("them", G.dice[1]) ? G.dice[0] : G.dice[1];
+          move("them", v, () => {
+            G.turns++;
+            if (G.them >= MK) { remark("win"); draw(); return later(timers, 700, () => finish(MK - G.me <= 5 ? "close" : "lose", ["{who} reaches moksha first.", { who: opp }])); }
+            if (G.turns >= rounds) return later(timers, 700, () => finish(G.me > G.them ? "win" : G.them - G.me <= 5 ? "close" : "lose", "The game is called before anyone reaches moksha."));
+            G.phase = "throw"; G.dice = null; draw(); U.keys([throwMine]);
+          });
+        });
+      }
+      if (R && R.start) G.said = K.pick(R.start);
       draw(); U.keys([throwMine]);
       return () => { timers.forEach(clearTimeout); U.keys([]); };
     });
