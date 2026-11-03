@@ -37,18 +37,18 @@
         audition(false), audition(true),
         { id: "drona", img: "teacher_drona", t: "Drona", req: COURT_CHILD, locked: "",
           fx: { set: { teacher: "drona" }, duty: { teacher: 5 }, skill: { archery: 2 }, rep: { kuru: 1 }, flag: "drona_student", journal: "Drona accepted you as a student." }, hint: "His fee may cost you friends" },
-        { id: "kripa", img: "teacher_kripa", t: "Kripa", req: { any: [{ origin: COURTISH }, { rep: ["kuru", 5] }] }, locked: "Kripa teaches those tied to the Kuru court.",
+        { id: "kripa", img: "teacher_kripa", t: "Kripa", req: { any: [{ origin: COURTISH }, { rep: ["kuru", 5] }] }, locked: "Kuru court only",
           fx: { set: { teacher: "kripa" }, duty: { teacher: 3, court: 2 }, skill: { mace: 1, archery: 1 }, journal: "Kripa took you into his school." }, hint: "Loyalty to the Kuru throne" },
         // Families from other lands may still ask. A test decides, and a refusal sends you back to choose again.
         { id: "kripa_ask", img: "teacher_kripa", t: "Ask Kripa to take you", req: { not: { any: [{ origin: COURTISH }, { rep: ["kuru", 5] }] }, noFlag: "kripa_refused" },
           check: { attr: "command", skill: "statecraft", dc: 7,
             pass: { fx: { set: { teacher: "kripa" }, duty: { teacher: 3, court: 2 }, skill: { mace: 1, archery: 1 }, journal: "Kripa took you into his school, though your family was not of the court." }, text: "Kripa questions you for an hour, then sets you to sweep the practice ground. That means yes." },
             fail: { fx: { flag: "kripa_refused" }, text: "Kripa hears you out politely. \"Come back when the court knows your name,\" he says. You will have to choose another teacher.", next: "a2_teacher" } } },
-        { id: "balarama", img: "teacher_balarama", t: "Balarama, master of the mace", req: { any: [{ origin: "mathura" }, { flag: "balarama_noticed" }] }, locked: "Balarama teaches Yadavas, and those he has seen fight.",
+        { id: "balarama", img: "teacher_balarama", t: "Balarama, master of the mace", req: { any: [{ origin: "mathura" }, { flag: "balarama_noticed" }] }, locked: "Yadavas, or those he has seen fight",
           fx: { set: { teacher: "balarama" }, duty: { teacher: 4 }, skill: { mace: 2 }, rep: { yadava: 2 }, journal: "Balarama agreed to teach you the mace." }, hint: "He will ask you to stay out of the war" },
         { id: "hermit", img: "teacher_mauni", t: "Mauni, the forest hermit",
           fx: { set: { teacher: "hermit" }, duty: { teacher: 5, conscience: 1 }, skill: { archery: 1, stealth: 1, lore: 1 }, flag: "hermit_secret", journal: "Mauni the hermit took you as his student and made you promise never to say who taught you." }, hint: "Never say who taught you" },
-        { id: "vidura", img: "teacher_vidura", t: "Vidura's circle", req: { origin: ["hastinapura", "anga", "gandhara"] }, locked: "Vidura draws his people from the court.",
+        { id: "vidura", img: "teacher_vidura", t: "Vidura's circle", req: { origin: ["hastinapura", "anga", "gandhara"] }, locked: "Court families only",
           fx: { set: { teacher: "vidura" }, duty: { teacher: 3, conscience: 1 }, skill: { statecraft: 2, stealth: 1 }, bond: { vidura: 2 }, journal: "You joined Vidura's circle." }, hint: "He will judge your choices" },
         { id: "vidura_ask", img: "teacher_vidura", t: "Ask Vidura to take you", req: { not: { origin: ["hastinapura", "anga", "gandhara"] }, noFlag: "vidura_refused" },
           check: { attr: "wisdom", skill: "statecraft", dc: 7,
@@ -79,7 +79,7 @@
       id: "a2_ekalavya", act: 2, age: 16, canon: true, place: "The forest near Hastinapura", travel: "Drona takes his students hunting in the forest near Hastinapura.", art: "scene_ekalavya", plate: ["#3e8c72", "#16131f"], caption: "A clay image in a forest clearing",
       title: "Ekalavya's fee",
       witness: [
-        "Ekalavya, the Nishada archer Drona refused to teach, is better than Arjuna. Drona asks him for his right thumb as his fee, and he cuts it off."
+        "Drona asks the Nishada archer Ekalavya for his right thumb, and gets it."
       ],
       body: (S) => [
         S.teacher === "drona" ? "You are standing behind Drona when he asks." : "You are with the hunting party, holding the horses.",
@@ -110,7 +110,7 @@
       id: "a2_tournament", act: 2, age: 17, canon: true, art: "scene_tournament", place: "Tournament grounds, Hastinapura", caption: "Karna walks into the arena",
       title: "The tournament",
       witness: [
-        "At the tournament Karna matches Arjuna feat for feat, then is shamed for having no royal name. Duryodhana rises in the royal box."
+        "Karna matches Arjuna, and is shamed for having no royal name."
       ],
       body: (S) => [
         S.origin === "suta" ? { memory: "You know the old charioteer pushing through the crowd. Everyone in your lane knows Adhiratha." } : null,

@@ -244,7 +244,7 @@
       id: "ep_ugra_rise", act: 5, age: 44, away: true, when: (S) => ugraMet(S) && !S.dead.includes("ugra"), skipTo: "a5_side", next: "a5_side",
       art: art("scene_ugra_letter"), place: "Before the war", caption: "A letter in a miller's hand",
       title: "Ugra's letter",
-      body: ["A letter from Ugra, a captain of levies now. If the war puts him on the other side, he will not look for you in the press."],
+      body: ["A letter from Ugra: if the war puts him on the other side, he will not look for you."],
       choices: [
         { id: "write", t: "Write back", fx: { bond: { ugra: 1 }, flag: "wrote_to_ugra" }, text: "You write back about the fair. You do not mention the war. He will have understood." },
         { id: "burn", t: "Burn it", fx: { flag: "burned_ugra_letter" }, text: "You burn it, and remember every word anyway." }

@@ -75,7 +75,7 @@
       act: 5, age: 42, canon: true, place: "A lake in the forest", to: "dvaita", travel: "The camp moves on to the Dvaita forest. The dry season comes.", art: "scene_lake", plate: ["#6f8fd8", "#16131f"], caption: "A still lake in the heat",
       title: "The lake of questions",
       witness: [
-        "At a lake, a voice tells the thirsty brothers to answer its questions before they drink. Four drink anyway and fall as if dead."
+        "Four brothers drink from the lake without answering the voice, and fall as if dead."
       ],
       body: ["You are as thirsty as they were."],
       choices: [
@@ -115,7 +115,7 @@
       id: "a5_court_armour", when: court, skipTo: "a5_own_life",
       act: 5, age: 38, canon: true, place: "The river at dawn", to: "hastinapura", art: "scene_armour", plate: ["#e5872e", "#6f8fd8"], caption: "Karna at his morning prayers",
       title: "Karna's armour",
-      witness: ["Karna gives whatever he is asked after his morning prayers. Today an old brahmin, said to be Indra in disguise, asks for the armour he was born with."],
+      witness: ["An old brahmin, said to be Indra in disguise, asks Karna for the armour he was born with."],
       body: (S) => [S.bonds.karna >= 6 ? { memory: "You have known Karna for most of your life. You know he already knows." } : null],
       choices: [
         { id: "warn", t: "Warn Karna it is a trick", fx: { bond: { karna: 2 }, memory: ["karna", "You tried to save his armour."] },
@@ -188,7 +188,7 @@
       id: "a5_matsya", act: 5, age: 43, canon: true, art: "scene_virata", place: "King Virata's court, Matsya", travel: "In the thirteenth year, the road leads to King Virata's court in Matsya.", caption: "The lake country of Matsya",
       title: "The hidden year",
       witness: [
-        "In their thirteenth year the Pandavas hide at King Virata's court, Arjuna as Brihannala, a dance teacher. Now the Kauravas raid Virata's cattle."
+        "The Kauravas raid King Virata's cattle, hoping to flush out the hidden Pandavas. Arjuna hides there as Brihannala, a dance teacher."
       ],
       // Where you are when the raid comes depends on the road you took (K.raidGroup): the Pandavas'
       // people are in Matsya, the Kuru court is called to ride, and everyone else hears it from afar.

@@ -33,7 +33,7 @@
     lose: { fx: {}, text: "A wheel clips a cart, and the old warrior nearly goes over the rail. He climbs down without a word." },
     retryLose: { penalty: 1, fx: { flag: ["role_front", "driver_refused"], journal: "On the eve of the war you were not chosen as a driver. You fought in the front line." }, text: "He finds another driver before the conches sound. You take a spear and find a place in the front line." } };
   const COMMAND = { t: "Command a company", req: { side: ["pandava", "kaurava"], any: [{ path: "strategist" }, { attr: ["command", 4] }] },
-    locked: "You need a strategist's training or a commander's presence.", game: "formation", hint: "A test first",
+    locked: "Needs a strategist or a commander", game: "formation", hint: "A test first",
     trial: { attr: "command", skill: "statecraft", stage: "stage_muster_field_top", cast: (S) => [S.side === "kaurava" ? "bhishma" : "dhrishtadyumna"],
       rules: (S) => (S.side === "kaurava"
         ? "Bhishma names an array and shows it to you once. Then your company comes onto the field, unit by unit: put each on its mark before the drum stops. Then the enemy tests a flank, and you send the reserve. He has just refused Karna a place under him. He will not be kinder to you."
@@ -52,7 +52,7 @@
       travel: (S) => (S.side === "neutral" ? "The healers go to Kurukshetra, and you go with them." : "You march to Kurukshetra with the army."),
       title: "Before the first arrow",
       witness: [
-        "Eighteen armies face each other at Kurukshetra. Arjuna lays down his bow, and Krishna talks with him until he takes it up again."
+        "At Kurukshetra, Arjuna lays down his bow, and Krishna talks with him until he takes it up again."
       ],
       enter: { unflag: "imprisoned" },
       body: (S) => [
@@ -82,7 +82,7 @@
       // The last test inside the wheel cannot be won: it measures how long you hold the ring open.
       id: "a6_ring_closes", act: 6, age: 44, canon: true, war: true, art: "stage_chakravyuha_top", place: "Inside the Chakravyuha", caption: "The ring closing",
       title: "The ring closes",
-      body: ["Abhimanyu's bow is cut. His charioteer is dead. His sword is broken. He has a chariot wheel in his hands, and you are at his back.", "Hold a way open for the Pandavas as long as you can."],
+      body: ["Abhimanyu fights on with a chariot wheel, and you are at his back.", "Hold a way open for the Pandavas as long as you can."],
       choices: [{ id: "hold", t: "Hold the ring open", game: "rings", hint: "No one has ever held it",
         trial: { attr: "command", skill: "chariot", kind: "war", mode: "last", stage: "stage_chakravyuha_top", cast: ["abhimanyu"],
           rules: "The Kaurava chariots push the rings out of line. Turn them back, as long as you can.",
@@ -161,7 +161,7 @@
       id: "a6_bhishma", act: 6, age: 44, canon: true, war: true, place: "Kurukshetra · day 10", art: "scene_arrows", plate: ["#d4a84b", "#2a1c1f"], caption: "A bed of arrows at dusk",
       title: "The bed of arrows",
       witness: [
-        "Bhishma lowers his bow before Shikhandi, and Arjuna's arrows bring him down onto a bed of arrows. He chooses to wait for his hour."
+        "Arjuna's arrows bring Bhishma down onto a bed of arrows, where he waits for his chosen hour."
       ],
       body: ["That night both armies come to see him."],
       choices: [
@@ -201,7 +201,7 @@
         "Drona sets the Chakravyuha while Arjuna is lured away.",
         "Arjuna's son Abhimanyu, sixteen, has broken in alone. The order comes: close in around him."
       ] : [
-        "Drona sets the Chakravyuha while Arjuna is lured away. Only his son Abhimanyu, sixteen, knows the way in, not the way out.",
+        "With Arjuna lured away, only his son Abhimanyu knows the way into Drona's wheel, not the way out.",
         "He breaks in. At the breach, Jayadratha holds back everyone who follows."
       ],
       body: (S) => [

@@ -50,7 +50,7 @@
       id: "a3_lac", act: 3, age: 23, canon: true, place: "Varnavata", to: "varnavata", travel: "You go to Varnavata for the spring festival.", art: "scene_lac", still: true, plate: ["#e5872e", "#2a1c1f"], caption: "A new house that smells of resin",
       title: "The house at Varnavata",
       witness: [
-        "At Varnavata, Duryodhana's minister Purochana has built the Pandavas a house of lac, meant to burn. Vidura sends a miner to dig a tunnel under it."
+        "Purochana has built the Pandavas a house of lac, meant to burn, and Vidura's miner digs a tunnel under it."
       ],
       body: (S) => [
         S.teacher === "vidura" ? "The miner needs someone to carry earth out at night, unseen." : null
@@ -150,7 +150,7 @@
       id: "a3_swayamvara", act: 3, age: 25, canon: true, place: "Drupada's hall, Panchala", to: "panchala", travel: "You ride to Kampilya for the swayamvara.", art: "scene_swayamvara", plate: ["#d4a84b", "#c0472f"], caption: "A golden fish turning above the water",
       title: "Draupadi's swayamvara",
       witness: [
-        "Karna strings the great bow and walks back to his seat. Then a young brahmin in a deerskin strings it and hits the fish's eye."
+        "A young brahmin strings the great bow and hits the mark."
       ],
       body: ["The kings draw swords, furious that a brahmin has won."],
       choices: [

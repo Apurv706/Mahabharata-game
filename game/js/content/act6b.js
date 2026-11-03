@@ -15,7 +15,7 @@
       id: "a6_day14", act: 6, age: 44, canon: true, war: true, art: "war_day14", place: "Kurukshetra · day 14", caption: "A sun that seems to set early",
       title: "Sunset and torches",
       witness: [
-        "Near sunset, Jayadratha steps out to watch Arjuna fail, and Arjuna's arrow finds him. That night the armies fight on by torchlight."
+        "Arjuna kills Jayadratha before sunset, and the armies fight on into the night."
       ],
       body: (S) => [S.side === "neutral" ? "The tents are lit with torches all night." : null],
       choices: [
@@ -64,7 +64,7 @@
       id: "a6_day17", act: 6, age: 44, canon: true, war: true, art: "war_day17", place: "Kurukshetra · day 17", caption: "A chariot wheel sinks into the earth",
       title: "Karna",
       enter: (S) => (K.hasVow("vengeance") && S.flags.includes("vengeance_dice") ? { vowRelease: "vengeance", flag: "vengeance_answered", journal: "Your vow of vengeance for the dice hall was answered by Bhima's hand." } : null),
-      witness: ["Karna's wheel sinks into the earth mid-duel, and his great mantra leaves him. He climbs down to lift the wheel and asks Arjuna to wait."],
+      witness: ["Mid-duel, Karna's wheel sinks into the earth. He climbs down to lift it and asks Arjuna to wait."],
       body: (S) => [
         S.bonds.karna >= 6 ? { memory: S.flags.includes("met_karna_young") ? "You have known Karna since you were children." : "You have known Karna since the day in the arena." } : null,
         K.hasVow("spare_karna") ? { aside: "You swore never to raise a weapon against Karna." } : null,
@@ -94,7 +94,7 @@
       id: "a6_day18", act: 6, age: 44, canon: true, war: true, art: "war_day18", place: "Kurukshetra · day 18", caption: "The last day",
       title: "The last day",
       witness: [
-        "Shalya and Shakuni fall. Duryodhana hides in a lake, then comes out to fight Bhima with the mace, and Bhima strikes him below the waist."
+        "On the last day Bhima breaks Duryodhana's thigh, striking below the waist against the rules."
       ],
       body: ["The last day."],
       choices: [

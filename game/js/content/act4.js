@@ -26,14 +26,11 @@
       title: "In the hall",
       lamp: { secs: 35, silent: "silent", note: "If the lamp burns out, you said nothing." },
       witness: [
-        "Yudhishthira loses everything: his kingdom, his brothers, himself, then Draupadi. Dragged into the hall, she asks if a man who has lost himself can stake her, and only Vikarna answers."
+        "Yudhishthira loses everything, then Draupadi. She asks if a man who lost himself could stake her."
       ],
-      body: (S) => [
-        S.friend === "duryodhana" ? { memory: "Duryodhana is your oldest friend. He is laughing." } : null,
-        "What do you do?"
-      ],
+      body: (S) => [S.friend === "duryodhana" ? { memory: "Duryodhana is your oldest friend. He is laughing." } : null],
       choices: [
-        { id: "answer", t: "Stand with Vikarna and answer her",
+        { id: "answer", t: "Answer her, as Vikarna does",
           fx: { duty: { conscience: 3, court: -2 }, rep: { pandava: 2, kuru: -2 }, bond: { draupadi: 2, yudhishthira: 1, dushasana: -4 }, flag: ["objected_dice", "enemy_dushasana"], memory: ["dushasana", "You spoke against him in the hall."], journal: "In the dice hall you answered Draupadi's question out loud. Dushasana marked you." } },
         { id: "between", t: "Step between Dushasana and Draupadi",
           peril: { kind: "prison", by: "Duryodhana's guards", place: "The cells below the assembly hall", then: "a4_aftermath",

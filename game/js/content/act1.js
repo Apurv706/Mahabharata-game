@@ -19,7 +19,7 @@
     matsya: "The Kuru stables need horses. Your family moves to the stable quarter outside Hastinapura.",
     anga: "Your father's company of the Anga guard is posted to Hastinapura.",
     panchala: "The Kuru armoury sends for Panchala arrowsmiths. Your family moves to Hastinapura.",
-    suta: "When you are seven, Adhiratha's household moves to Hastinapura, your family with it. His foster son Karna, a boy your age, rides on the lead cart.",
+    suta: "When you are seven, Adhiratha's household moves to Hastinapura, yours with it, and his foster son Karna, a boy your age.",
     nishada: "The royal hunts need your father as a guide. Your family moves to the forest's edge outside Hastinapura."
   };
   // Where the childhood that follows happens: near the capital for families who moved there.
@@ -170,8 +170,8 @@
       id: "a1_first", act: 1, age: 6, art: "origin", place: (S) => K.homePlace(S),
       title: "Three pebbles",
       body: (S) => [
-        S.origin === "gandhara" ? "At the edge of the yard grows an old apricot tree, and the best fruit always hangs where no one can reach it." : "At the edge of the yard grows an old mango tree, and the best fruit always hangs where no one can reach it.",
-        "Your cousin, three years older and very sure of herself, puts three smooth pebbles in your hand. \"Knock one down,\" she says, \"and it is yours.\""
+        S.origin === "gandhara" ? "The best apricot hangs where no one can reach it." : "The best mango hangs where no one can reach it.",
+        "Your cousin hands you three pebbles. \"Knock one down, and it is yours.\""
       ],
       choices: [
         { id: "throw", t: "Take the pebbles and aim", game: "aim", hint: "A first test",

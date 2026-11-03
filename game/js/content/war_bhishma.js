@@ -314,7 +314,7 @@
     {
       id: "bh_wheel", act: 6, age: 44, war: true, away: true, next: "a6_bhishma", enter: { moment: { kind: "bh_wheel" } },
       art: "war_bhishma", place: "Kurukshetra · day 9", caption: "The wheel", title: "Krishna takes up the wheel",
-      body: (S) => ["Krishna, sworn not to fight, runs at Bhishma with a chariot wheel. Arjuna drags him back and swears to fight in earnest.",
+      body: (S) => ["Krishna, sworn not to fight, runs at Bhishma with a chariot wheel until Arjuna drags him back.",
         has(S, "bh_called_arjuna") ? "Arjuna does not look at you. He heard you." : null],
       choices: [
         { id: "tent", t: "Go to the grandsire's tent tonight", req: close,

@@ -9,7 +9,7 @@
       title: "The women on the field",
       enter: (S) => (vasuLost(S) ? { die: "vasu", journal: "Vasu died in the night raid on the camp." } : null),
       witness: [
-        "Gandhari walks among her hundred dead sons and curses Krishna: his Yadavas will destroy themselves too. Kunti tells her sons that Karna was their eldest brother."
+        "Gandhari curses Krishna over her hundred dead sons, and Kunti tells hers that Karna was their eldest brother."
       ],
       body: (S) => [
         S.dead.includes("vasu") ? { curse: "You carry Vasu to the pyres yourself." } : S.child === "vasu" ? { memory: "Vasu is alive. You keep touching his shoulder to make sure." } : null,
