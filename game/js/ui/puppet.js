@@ -239,7 +239,7 @@
       '<rect x="18" y="128" width="146" height="22" rx="2" fill="#8a5a2c"' + OUT + '/>' + holes("M18 128 h146 v22 h-146 Z") +
       '<g fill="none" stroke="#3a2412"><circle cx="82" cy="160" r="36" stroke-width="7"/><path d="M82 124 V196 M46 160 H118 M57 135 L107 185 M107 135 L57 185" stroke-width="3"/></g><circle cx="82" cy="160" r="7" fill="' + GOLD + '"' + OUT + "/>"],
     elephant: [240, 250, '<path d="M32 98 Q14 124 22 146" fill="none" stroke="#24120a" stroke-width="3"/>' +
-      '<g opacity="0.78"><path d="M58 140 L80 140 L78 196 L60 196 Z M150 140 L170 140 L168 196 L152 196 Z" fill="#7d7062"' + OUT + "/></g>" +
+      '<g style="filter:brightness(0.68)"><path d="M58 140 L80 140 L78 196 L60 196 Z M150 140 L170 140 L168 196 L152 196 Z" fill="#7d7062"' + OUT + "/></g>" +
       '<path d="M28 130 Q22 70 96 62 Q162 56 186 86 Q198 104 192 132 L184 150 L40 152 Z" fill="#8f8172"' + OUT + "/>" + holes("M28 130 Q22 70 96 62 Q162 56 186 86 Q198 104 192 132 L184 150 L40 152 Z") +
       '<path d="M56 68 L150 62 L156 122 Q105 134 52 122 Z" fill="#a3302a"' + OUT + '/><path d="M54 112 Q105 124 154 112" fill="none" stroke="' + GOLD + '" stroke-width="3" stroke-dasharray="1 5" stroke-linecap="round"/><path d="M56 68 L150 62" stroke="' + GOLD + '" stroke-width="3"/>' +
       '<path d="M72 64 L72 38 L130 34 L130 62 Z" fill="' + GOLD + '"' + OUT + '/><path d="M66 40 Q101 14 136 36 Z" fill="#a3302a"' + OUT + "/>" +
@@ -285,7 +285,8 @@
     const skirt = she ? "M48 106 L72 106 L85 190 L37 190 Z" : "M48.5 108 L71.5 108 L80 153 L40 153 Z";
     const hem = she ? "M37 190 L41 185 L45 190 L49 185 L53 190 L57 185 L61 190 L65 185 L69 190 L73 185 L77 190 L81 185 L85 190" : "M40 153 L44 148 L48 153 L52 148 L56 153 L60 148 L64 153 L68 148 L72 153 L76 148 L80 153";
     const torso = "M44 71 Q60 61 76 71 L72 96 L68 116 L52 116 L48 96 Z";
-    const back = 'opacity="0.78"';
+    // The far arm and leg: solid leather in shadow, never see-through (see-through limbs read as ghosts).
+    const back = 'style="filter:brightness(0.68)"';
     const thigh = () => '<path d="M53 116 L67 116 L65.5 152 L54.5 152 Z" fill="' + skin + '"' + OUT + "/>";
     const shin = '<path d="M54.5 152 L65.5 152 L64 186 L56 186 Z" fill="' + skin + '"' + OUT + '/><path d="M55 186 L65 186 L78 191 L55 193 Z" fill="' + skin + '"' + OUT + '/><path d="M56 183h8" stroke="' + trim + '" stroke-width="1.6"/>';
     const upper = '<path d="M52 71 L64 71 L62.5 98 L53.5 98 Z" fill="' + skin + '"' + OUT + "/>";

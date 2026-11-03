@@ -764,10 +764,10 @@ body.inscene .jmap .bmap { max-height: min(520px, max(180px, calc(var(--vh) - 34
 .arena .team.right .actor + .actor { margin-left: -30px; }
 .arena .actor { position: relative; display: block; }
 .arena .actor svg { height: 160px; width: auto; overflow: visible; filter: drop-shadow(0 0 6px rgba(255, 200, 120, .35)) drop-shadow(0 4px 3px rgba(0, 0, 0, .55)); }
-.arena .actor.ally svg { height: 136px; opacity: .92; }
+.arena .actor.ally svg { height: 136px; }
 .arena .actor.ally.champ svg { height: 160px; opacity: 1; }
 .arena .actor.enemy + .actor.enemy svg { height: 146px; }
-.arena .actor.down svg { opacity: .55; filter: grayscale(.6) drop-shadow(0 4px 3px rgba(0, 0, 0, .55)); }
+.arena .actor.down svg { filter: grayscale(.6) brightness(.62) drop-shadow(0 4px 3px rgba(0, 0, 0, .55)); }
 .arena .actor.lunge-r { animation: lunge-r .52s cubic-bezier(.3, .7, .3, 1); }
 .arena .actor.lunge-l { animation: lunge-l .52s cubic-bezier(.3, .7, .3, 1); }
 @keyframes lunge-r { 35% { transform: translateX(46px); } }
@@ -1059,14 +1059,14 @@ html[lang="hi"] .leaf .story .speech { font-size: 19px; }
 body.big-text .leaf .story { font-size: 17.5px; }
 body.big-text .leaf .choices .choice .t { font-size: 18px; }
 
-/* ---------- The page grows as the story is written ----------
-   Lines, the choices and the key hint that are not shown yet take no room, so there is never an
-   empty band waiting for them; each one rises in as it comes. */
+/* ---------- The page comes up whole, then is written ----------
+   Lines, the choices and the key hint not shown yet keep their room (owner, 2 Nov): the box opens at
+   its full size over the painting, the story is written into it, and then the painting moves once. */
 body.inscene .leaf.split .story > .staged:not(.shown),
 body.inscene .leaf.split .witness > .staged:not(.shown),
 body.inscene .leaf.split .actions.staged:not(.shown),
 body.inscene .leaf.split .choices > .staged:not(.shown),
-body.inscene .leaf.split .actions > .hint.staged:not(.shown) { display: none; }
+body.inscene .leaf.split .actions > .hint.staged:not(.shown) { visibility: hidden; }
 body.inscene .leaf.split .actions.staged.shown { animation: growin 0.35s ease both; transform: none; opacity: 1; }
 body.inscene .leaf.split .choices > .staged.shown:not(.now) { animation: risein 0.5s cubic-bezier(.2, .7, .2, 1) both; }
 @keyframes growin { from { opacity: 0; } }
@@ -1737,6 +1737,7 @@ svg .pr-hint { outline: none; filter: drop-shadow(0 0 6px #ffd680) drop-shadow(0
 
 /* Your target: named on its card, and a ring of light at the figure's feet, so it is always clear who your moves will hit. */
 .unit .tgt-chip { justify-self: start; padding: 1px 8px; border-radius: 999px; background: var(--accent); color: #1a110a; font-size: 12px; font-weight: 700; letter-spacing: 0.02em; }
+#arena .actor.enemy:not(.down) { cursor: pointer; }
 #arena .actor.enemy.targeted::after { content: ""; position: absolute; left: 50%; bottom: 9%; width: 78%; height: 14px; transform: translateX(-50%); border-radius: 50%; border: 2px solid rgba(233, 194, 122, 0.95); box-shadow: 0 0 10px rgba(233, 194, 122, 0.7); pointer-events: none; z-index: 0; }
 @media (prefers-reduced-motion: no-preference) { #arena .actor.enemy.targeted::after { animation: tgt-pulse 1.6s ease-in-out infinite; } }
 @keyframes tgt-pulse { 50% { opacity: 0.55; } }

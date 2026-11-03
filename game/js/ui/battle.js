@@ -606,6 +606,17 @@
     lastActs = B.acts.length;
     // Picking out an enemy: your own target, and for a leader with people beside them, the company's mark.
     body.querySelectorAll(".unit.enemy").forEach((el) => el.addEventListener("click", () => { target = el.dataset.uid; if (C.mark) C.mark(target); U.renderBattle(B); }));
+    // ...or by tapping the figure itself on the field (once per arena; it outlives a redraw).
+    const arena = U.$("arena");
+    if (arena && !arena.dataset.tapTarget) {
+      arena.dataset.tapTarget = "1";
+      arena.addEventListener("click", (e) => {
+        const a = e.target.closest(".actor.enemy"); if (!a || a.classList.contains("down")) return;
+        const S2 = C.state && C.state(); if (!S2 || S2.over || S2.kind === "weather") return;
+        const u = S2.units.find((x) => x.uid === a.dataset.uid); if (!u || u.hp <= 0) return;
+        target = u.uid; if (C.mark) C.mark(target); U.renderBattle(S2);
+      });
+    }
     syncMark(B);
     const log = U.$("blog");
     log.scrollTop = log.scrollHeight;
