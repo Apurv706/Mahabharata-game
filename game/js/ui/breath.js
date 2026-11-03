@@ -21,6 +21,21 @@
         '<div class="breath"><span>' + U.tr("Breath") + '</span><i></i></div><p class="game-note" aria-live="polite">' + U.trSpan(t.help || "Hold to dive, let go to rise. Reach the glow, then surface before your breath is gone.") + '</p><div class="btnrow"></div>';
       const lake = host.querySelector(".lake"), diver = host.querySelector(".diver"), vessel = host.querySelector(".vessel"), bar = host.querySelector(".breath i"), score = host.querySelector(".score"), note = host.querySelector(".game-note"), depthEl = host.querySelector(".depth");
       const marks = () => { score.textContent = K.tr("Dive {n} of {m}", { n: Math.min(dive + 1, dives), m: dives }) + " · " + K.tr("Brought up: {h}", { h: got }); };
+      // On the lake painting the play sits in the water, below the painting's own waterline (the
+      // stage is split above and below the surface), whatever the screen's shape.
+      const placeLake = () => {
+        const wrap = host.closest(".trial.immersive"), pic = document.querySelector("#backdrop .bdl.on .pic");
+        if (!wrap || !pic) return;
+        // Only the deep lake is painted half under water; on any other stage the box stays as it was.
+        if (!/stage_deep_lake/.test(pic.style.backgroundImage || "")) { wrap.classList.remove("underwater"); return; }
+        wrap.classList.add("underwater");
+        const r = pic.getBoundingClientRect(); if (!r.height) return;
+        const tall = /_tall\./.test(pic.style.backgroundImage || "");
+        const line = r.top + r.height * (tall ? 0.46 : 0.51);
+        wrap.style.setProperty("--wl", Math.round(Math.max(window.innerHeight * 0.3, Math.min(window.innerHeight * 0.62, line))) + "px");
+      };
+      placeLake(); setTimeout(placeLake, 300); setTimeout(placeLake, 900);
+      window.addEventListener("resize", placeLake);
       marks();
       const down = () => { holding = true; cue("hold"); }, up = () => { holding = false; cue("rest"); };
       host.querySelector(".btnrow").appendChild(U.pressButton(t.verb || "Dive", down, up));
