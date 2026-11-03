@@ -1084,4 +1084,12 @@ require(G + "content/war_fights.js");
   ok(written() > 0, "a new scene is written by the quill");
   w.close();
 }
+// 101. Stars on the weapon that suits you best: three for a clear lead, one each for a tie, none when level
+{
+  const stars = (attrs) => { S = fresh({ act: 2, age: 15 }); Object.assign(S.attrs, attrs); return K.SCENES.a2_path.choices.map((c) => c.id + ":" + K.val(c.stars, S)).filter((x) => !/:0$/.test(x)).join(","); };
+  ok(stars({ aim: 5, might: 3, grace: 3, wisdom: 2, command: 1 }) === "archer:3", "a clear best attribute: three stars on its weapon");
+  ok(stars({ aim: 4, might: 3, grace: 2, wisdom: 2, command: 1 }) === "archer:2", "a lead of one: two stars");
+  ok(stars({ aim: 4, might: 4, grace: 2, wisdom: 2, command: 1 }) === "archer:1,mace:1", "two attributes level at the top: one star on each weapon");
+  ok(stars({ aim: 3, might: 3, grace: 3, wisdom: 3, command: 3 }) === "", "all attributes level: no stars");
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

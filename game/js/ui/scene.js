@@ -15,6 +15,8 @@
     astra: SV + '<path d="M3 21l7-7M14 10l7-7M16.5 3H21v4.5"/><path d="M10.2 13.8 12 12M12.5 10.5l1.5-.5M3 21l2.5-.5L4 19"/><path d="M11 8.5l1.5 1.5M8.5 11l1.5 1.5" stroke-width="1.2"/></svg>'
   };
 
+  const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.4l-6.1 3.4 1.4-6.8-5.1-4.7 6.9-.8z"/></svg>';
+
   function header(sc) {
     const S = K.S;
     // The prologue is a dream of the war, years ahead: no age, so the childhood that follows reads as now.
@@ -113,8 +115,11 @@
       const signs = marks.filter((m) => !(m[0] === "vow" && img === m[3])).map((m) => m[0] === "vow" ? U.thumb(m[3], "emblem mark", m[1]).replace("<i ", '<i title="' + U.esc(m[2]) + '" ')
         : m[0] === "breakvow" ? U.thumb(m[3], "emblem mark breakvow", m[1]).replace("<i ", '<i title="' + U.esc(m[1]) + '" ')
         : '<i class="mark ' + m[0] + '" role="img" aria-label="' + U.esc(m[1]) + '" title="' + U.esc(m[1]) + '">' + MARK_SVG[m[0]] + "</i>").join("");
-      const cls = "choice" + (grid ? " tile" : "") + (img ? " has-img" : "") + (crossed ? " crossed" : "") + (fx ? " has-fx" : "") + (signs ? " has-marks" : "");
-      const b = U.button(cls, '<span class="k">' + (i + 1) + "</span>" + (img ? U.thumb(img, grid ? "emblem" : undefined) : "") + '<span class="t">' + U.t(K.val(c.t)) + "</span>" +
+      // On a picture grid, small gold stars at the picture's corner on what suits you best (c.stars, 1 to 3).
+      const nStars = grid && ok ? Math.min(3, K.val(c.stars) | 0) : 0;
+      const stars = nStars ? '<span class="stars s' + nStars + '" role="img" aria-label="' + U.tr("Suits you best") + '" title="' + U.tr("Suits you best") + '">' + STAR.repeat(nStars) + "</span>" : "";
+      const cls = "choice" + (grid ? " tile" : "") + (img ? " has-img" : "") + (crossed ? " crossed" : "") + (fx ? " has-fx" : "") + (signs ? " has-marks" : "") + (stars ? " has-stars" : "");
+      const b = U.button(cls, '<span class="k">' + (i + 1) + "</span>" + (img ? U.thumb(img, grid ? "emblem" : undefined) : "") + stars + '<span class="t">' + U.t(K.val(c.t)) + "</span>" +
         (fx ? '<span class="fx">' + fx + "</span>" : "") + (signs ? '<span class="marks">' + signs + "</span>" : ""), null, "choice-" + c.id);
       if (vowMark) b.title = vowMark[2];
       b.disabled = !ok;

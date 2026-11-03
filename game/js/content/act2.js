@@ -6,9 +6,20 @@
   const SUITS = { archer: "Suits your aim", mace: "Suits your might", charioteer: "Suits your grace", strategist: "Suits your command",
     healer: "Suits your wisdom", spy: "Suits your grace", bard: "Suits your wisdom" };
   const suits = (id, S) => { const st = K.PATHS[id].stat, top = Math.max(...Object.keys(K.ATTRS).map((a) => K.attr(a, S))); return K.attr(st, S) >= top; };
+  // On the weapon grid, stars on the picture of what suits you best (ui/scene.js): one when your best
+  // attribute is tied with another, two when it leads by one, three when it leads by more. None when
+  // all your attributes are level, since then nothing suits you better than the rest.
+  const fitStars = (id, S) => {
+    const vals = Object.keys(K.ATTRS).map((a) => K.attr(a, S)), top = Math.max(...vals);
+    if (K.attr(K.PATHS[id].stat, S) < top || vals.every((v) => v === top)) return 0;
+    if (vals.filter((v) => v === top).length > 1) return 1;
+    return Math.min(3, 1 + top - Math.max(...vals.filter((v) => v < top)));
+  };
+  K.fitStars = fitStars;
   const pathChoice = (id, t, extra = {}) => ({
     id, t, img: "path_" + id, fx: Object.assign({ set: { path: id }, skill: { [K.PATHS[id].skill]: 2 }, journal: "You chose the path of the {path!}." }, extra),
-    hint: (S) => (suits(id, S) ? SUITS[id] : "")
+    hint: (S) => (suits(id, S) ? SUITS[id] : ""),
+    stars: (S) => fitStars(id, S)
   });
   // Drona takes the court's children; anyone else must first make a shot almost no one makes.
   const COURT_CHILD = { any: [{ origin: "hastinapura" }, { rep: ["kuru", 5] }] };
