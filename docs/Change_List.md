@@ -169,7 +169,7 @@ Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct);
     - **Later the same day:** supper has a second line on what time with the family is like ("Grandmother's old stories, your father's bad jokes, and always a little more rice for you."); on waking, the mother kneels by the bed with her hand out and sets the lamp down behind her, and the floating sweat drops are gone.
     - **From the tester's third life:** a journal line is written only once per life (the spy path's appeared twice); word tests say "best of 3", since two right or two wrong settle them early. The automated playthroughs no longer stop at the opening fight.
 
-## Built 2 Nov: the quality review (branch `quality-review`, on the private play page for review; not on the public site until approved)
+## Built 2 Nov: the quality review (on the public site)
 Following `Quality_Review_2026-11-02.md` and its "Decided 2 November" section. The backlit-leather look (items 1–3) was rejected there and is not built.
 46. **Staging (items 8–12):** far enemies are solid (no blur or see-through); a soft shadow under every figure in fights and tests; fight figures larger; in tests the figures stand above the line of help; each test gives the right gear (a bow to shoot; empty hands to wrestle, hold steady or creep); a push test with no one named gets an opponent.
 47. **Puppets with weight (items 13–15):** a new `js/ui/puppet-anim.js` drives each joint from a spring, timed by the clock so it moves the same on any screen. Limbs overshoot and settle; a blow has a wind-up, a short freeze on contact, knockback and flakes of leather; the dead fall limp from the feet. With reduced motion the old poses are used.
