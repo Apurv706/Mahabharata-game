@@ -354,3 +354,28 @@ body.inscene .ledger { position: fixed; z-index: 40; top: calc(max(8px, var(--sa
 .choice.crossed .t { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: rgba(200, 71, 31, .85); color: var(--muted); }
 .choice.crossed .fx .down { font-style: italic; }
 .loopnote { border-left: 3px solid var(--gold); padding-left: 10px; }
+
+/* The signs at the right of a choice card (the card has no effect line): a bow for a fight, a skull
+   or bars for a danger to your life or freedom, a vow's emblem. One size, centred, beside the text. */
+.choice.has-marks { grid-template-columns: 22px minmax(0, 1fr) auto; }
+.choice.has-img.has-marks { grid-template-columns: 22px auto minmax(0, 1fr) auto; }
+.choice .marks { grid-column: -2 / -1; grid-row: 1; align-self: center; display: flex; align-items: center; gap: 6px; }
+.choice .mark { display: block; flex: none; width: 22px; height: 22px; color: var(--muted); }
+.choice .mark svg { display: block; width: 100%; height: 100%; }
+.choice .mark.death, .choice .mark.cell { color: var(--negative); }
+.choice .thumb.emblem.mark, .split .actions .choice .thumb.emblem.mark { width: 26px; height: 26px; }
+.choice:not(.has-fx) .k, .choice:not(.has-fx) .thumb { grid-row: auto; }
+.choice:not(.has-fx) .t { align-self: center; }
+@media (pointer: coarse) {
+  .choice.has-marks { grid-template-columns: minmax(0, 1fr) auto; }
+  .choice.has-img.has-marks { grid-template-columns: auto minmax(0, 1fr) auto; }
+}
+/* A scene with `grid`: the choices are large pictures with a short label under each (the weapons). */
+.choices.grid { grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); }
+@media (max-width: 720px) { .choices.grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.choices.grid .choice.tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; position: relative; min-height: 0; padding: 10px 8px 9px; }
+.choices.grid .choice.tile .k { position: absolute; top: 6px; left: 10px; }
+.choices.grid .choice.tile .thumb.emblem, .split .actions .choices.grid .choice.tile .thumb.emblem { width: 76px; height: 76px; }
+.leaf .choices.grid .choice.tile .t { font-size: 15.5px; line-height: 1.2; }
+.choices.grid .choice.tile:hover:not(:disabled) { transform: translateY(-2px); }
+@media (max-width: 720px) { .choices.grid .choice.tile .thumb.emblem, .split .actions .choices.grid .choice.tile .thumb.emblem { width: 58px; height: 58px; } .choices.grid .choice.tile { padding: 8px 6px 7px; gap: 2px; } }

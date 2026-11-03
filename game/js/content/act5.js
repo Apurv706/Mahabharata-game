@@ -42,7 +42,7 @@
     {
       id: "a5_forest_boon", when: forest, skipTo: "a5_court_raid", travel: "You follow the Pandavas into exile, north to the hermitages.",
       act: 5, age: 33, place: "An ashram on the upper Ganga", art: "scene_ashram", plate: ["#3e8c72", "#6f8fd8"], caption: "A hermitage in the mountains",
-      title: "A season at the ashram",
+      title: "A season at the ashram", hideLocked: true,
       body: ["You spend a season at a forest ashram. What do you ask of it?"],
       choices: [
         { id: "astra", t: "Do penance for a divine weapon",

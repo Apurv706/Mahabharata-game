@@ -149,10 +149,7 @@
     {
       id: "a3_swayamvara", act: 3, age: 25, canon: true, place: "Drupada's hall, Panchala", to: "panchala", travel: "You ride to Kampilya for the swayamvara.", art: "scene_swayamvara", plate: ["#d4a84b", "#c0472f"], caption: "A golden fish turning above the water",
       title: "Draupadi's swayamvara",
-      witness: [
-        "A young brahmin strings the great bow and hits the mark."
-      ],
-      body: ["The kings draw swords, furious that a brahmin has won."],
+      body: ["What do you do?"],
       choices: [
         { id: "fight", t: "Stand with the brahmins", combat: "e_kings" },
         { id: "calm", t: "Talk the kings down",

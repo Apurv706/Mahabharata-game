@@ -616,7 +616,7 @@ require(G + "content/war_oath.js");
   S = fresh(war); ["never_lie", "never_retreat", "spare_unarmed"].forEach((id) => K.apply({ vowTake: id }));
   ok(K.resolveScene("a6_wheel").id === "oath_fire", "after the eleventh day a Kaurava warrior comes to the Samshaptakas' fire");
   const swear = K.SCENES.oath_fire.choices.find((c) => c.id === "swear");
-  ok(K.preview(swear, S).some(([, t]) => /fourth vow/.test(t)) && K.preview(swear, S).some(([cls]) => cls === "vow"), "the oath shows as a vow, and as a fourth one");
+  ok(K.choiceMarks(swear, S).some(([kind, , sum, emb]) => kind === "vow" && emb === "vow_samshaptaka" && /^Kept: .* · Broken: /.test(sum)), "the oath's card carries the vow's emblem, its one line kept and broken on the emblem");
   K.choose(K.SCENES.oath_fire, swear);
   ok(S.vows.length === 4 && K.hasVow("samshaptaka", S) && K.vowsHeld(S) === 3 && S.tapas === 3, "the oath is sworn above the limit of three (tapas +3), and stands outside the count");
   K.apply({ vowTake: "celibacy" });
@@ -1023,5 +1023,26 @@ require(G + "content/war_fights.js");
   ok(S.flags.includes("fs_carried") && !S.injuries.includes("scar"), "carried out whole: no scar");
   S = fresh({ act: 6, age: 44, side: "pandava" }); K.combatOutcome("fs_carry", "lose", "a6_day17");
   ok(S.flags.includes("fs_carried") && S.injuries.includes("scar"), "an arrow on the way: the scar, and he is still carried out");
+}
+// 98. Choice cards: no effect line; small signs for a fight, a danger and a vow; hidden locks on the teacher and the ashram
+{
+  const mk = (c, S) => K.choiceMarks(c, S).map((m) => m[0]).join(",");
+  S = fresh({ act: 3, age: 25 });
+  ok(mk(K.SCENES.a3_swayamvara.choices.find((c) => c.id === "fight"), S) === "fight" && mk(K.SCENES.a3_swayamvara.choices.find((c) => c.id === "watch"), S) === "", "a fight shows the bow; a plain choice shows no sign");
+  ok(mk({ id: "x", check: { attr: "might", dc: 7, pass: {}, fail: { combat: "e_kings" } } }, S) === "fight" && mk({ id: "x", game: "aim", win: {}, lose: { combat: "e_kings" } }, S) === "fight", "a fight behind a test or a game shows the bow too");
+  const calm = K.SCENES.a3_swayamvara.choices.find((c) => c.id === "calm");
+  S.attrs.command = 0; S.skills.statecraft = 0;
+  ok(K.choiceMarks(calm, S).some(([k, l]) => k === "death" && l === "Can cost your life") && mk({ id: "y", peril: { kind: "cell" }, check: { attr: "might", dc: 99 } }, S) === "cell", "a test out of your depth shows a skull for your life, bars for your freedom");
+  S.attrs.command = 9; S.skills.statecraft = 9;
+  ok(!K.choiceMarks(calm, S).length, "within your depth, no danger sign");
+  const vow = K.choiceMarks(K.SCENES.a2_vow.choices.find((c) => c.id === "retreat"), S).find((m) => m[0] === "vow");
+  ok(vow && vow[2] === "Kept: +1 attack in every fight · Broken: Bhima, Karna and your company turn from you", "a vow's one line: kept, then broken with who turns from you, once: " + (vow && vow[2]));
+  S = fresh({ act: 2, age: 14, origin: "nishada" });
+  const t = K.choiceList(K.SCENES.a2_teacher, S);
+  ok(t.length && t.every((x) => x.ok), "the teacher's question shows only the teachers you can go to (" + t.map((x) => x.c.id).join(",") + ")");
+  S = fresh({ act: 5, age: 33 });
+  const a = K.choiceList(K.SCENES.a5_forest_boon, S);
+  ok(a.every((x) => x.ok) && !a.some((x) => x.c.id === "serve"), "the ashram hides serving the sages until they know you");
+  ok(K.choiceList({ id: "z", hideLocked: true, choices: [{ id: "a", req: { flag: "nope" }, locked: "No." }] }, S).length === 1, "a scene that hides locks never shows nothing");
 }
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);
