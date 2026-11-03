@@ -65,11 +65,13 @@
     if (K.lives().length) { row.appendChild(U.button("ghost", U.tr("Book of Lives"), U.openLives, "btn-lives")); keys.push(U.openLives); }
     U.keys(keys);
     // The introduction is written in, like every other page.
+    // Shown again (a language switch), it is there whole at once (ui/dom.js U.pageAgain).
     const q = (sel) => leaf.querySelector(sel);
-    q(".tagline").classList.add("write");
-    q(".life-head p").classList.add("write");
+    const again = U.pageAgain("title");
+    if (!again) { q(".tagline").classList.add("write"); q(".life-head p").classList.add("write"); }
     q(".title").dataset.hold = 700;
-    U.stage([q(".title"), q(".tagline"), q(".hero .btnrow"), q(".slide-cap"), q(".life-head h2"), q(".life-head p"), ...leaf.querySelectorAll(".acts li"), q(".life .note")]);
+    U.pageShown("title");
+    U.stage([q(".title"), q(".tagline"), q(".hero .btnrow"), q(".slide-cap"), q(".life-head h2"), q(".life-head p"), ...leaf.querySelectorAll(".acts li"), q(".life .note")], null, again);
   };
 
   // ---------- Character creation ----------
@@ -225,7 +227,9 @@
     if (U.playMoments && K.momentQueue && K.momentQueue.length && U.playMoments(() => U.renderEnding(sc))) return;
     // Every ending plays its painting full-screen first, under the ending's name: a living painting
     // runs its clip; one without a clip gets the full title card (with its smoke, for the burnt house).
-    if (endingShown !== sc.id && U.beatsOn && U.beatsOn() && U.sceneBeats && K.composeEnding) {
+    // An ending already shown (a language switch, Continue onto it) is there whole at once (ui/dom.js U.pageAgain).
+    const pageKey = "ending:" + sc.id, again = U.pageAgain(pageKey, true);
+    if (endingShown !== sc.id && !again && U.beatsOn && U.beatsOn() && U.sceneBeats && K.composeEnding) {
       const e0 = K.composeEnding(K.S);
       endingShown = sc.id;
       if (e0 && e0.art) {
@@ -252,9 +256,9 @@
       '<div class="btnrow"><button class="cta" id="again" type="button">' + U.tr("Live another life") + '</button><button class="ghost" id="readj" type="button">' + U.tr("Read your journal") + "</button></div></div>";
     setTimeout(() => { U.fitBackdrop(); U.livePlay(); }, 0);
     if (U.storyFx && ENDING_FX[e.art]) U.storyFx(ENDING_FX[e.art], e.art);
-    const again = () => { K.deleteSlot("auto"); U.renderCreate(); };
+    const liveAgain = () => { K.deleteSlot("auto"); U.renderCreate(); };
     if (U.fitEmblems) U.fitEmblems(leaf);
-    U.$("again").addEventListener("click", again);
+    U.$("again").addEventListener("click", liveAgain);
     U.$("readj").addEventListener("click", () => U.openJournal());
     U.renderLedger();
     U.scrollTop();
@@ -262,9 +266,10 @@
     const plate = leaf.querySelector(".pagehead,.plate"); if (plate) plate.dataset.hold = 1400;
     const h1 = null;
     const lines = [...leaf.querySelectorAll(".telling p")];
-    lines.forEach((l) => l.classList.add("write"));
+    if (!again) lines.forEach((l) => l.classList.add("write"));
     const fates = leaf.querySelector(".fates");
     U.keys([]);
-    U.stage([plate, ...lines, fates, ...(fates ? fates.children : []), leaf.querySelector(".text .btnrow")], () => U.keys([again]));
+    U.pageShown(pageKey);
+    U.stage([plate, ...lines, fates, ...(fates ? fates.children : []), leaf.querySelector(".text .btnrow")], () => U.keys([liveAgain]), again);
   };
 })(window.K = window.K || {});

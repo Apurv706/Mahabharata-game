@@ -443,10 +443,11 @@
     return K.prefs().gradual !== false;
   };
   let stageRun = null;
-  U.stage = function (items, done) {
+  // whole: a page shown again comes up all at once, with no quill (see U.pageAgain below).
+  U.stage = function (items, done, whole) {
     U.stageFinish(false);
     items = items.filter(Boolean);
-    if (!U.motion()) { items.forEach((el) => el.classList.remove("staged")); if (done) done(); return; }
+    if (!U.motion() || whole) { items.forEach((el) => el.classList.remove("staged")); if (done) done(); return; }
     items.forEach((el) => { el.classList.add("staged"); el.classList.remove("shown"); });
     const run = { items, i: 0, timer: null, done };
     stageRun = run;
@@ -468,6 +469,18 @@
     run.timer = setTimeout(step, 60);
   };
   U.staging = () => !!stageRun;
+
+  // ---------- A page shown again ----------
+  // The quill writes a page once. Shown again, the whole page is there at once: no writing, no staged
+  // reveal, no title card, and the scene's conch and place music do not start over (ui/scene.js).
+  // Again means already put on screen in this visit to the scene (K.visit counts arrivals, so closing
+  // the menu or the journal over the page, the painting seen whole, a language switch and a redrawn
+  // result are all the same visit), or the scene that Continue, a loaded life or the way back from
+  // the practice ground returns to (K.resumed, engine/flow.js).
+  const pages = { visit: null, shown: new Set() };
+  const shownNow = () => { if (pages.visit !== K.visit) { pages.visit = K.visit; pages.shown = new Set(); } return pages.shown; };
+  U.pageAgain = (key, resumable) => shownNow().has(key) || (!!resumable && K.visit != null && K.resumed === K.visit);
+  U.pageShown = (key) => { shownNow().add(key); };
 
   // ---------- The quill ----------
   // Scene-setting lines are written out letter by letter by a peacock-feather pen. Letters are cut

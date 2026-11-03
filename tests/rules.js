@@ -1052,4 +1052,36 @@ require(G + "content/war_fights.js");
   ok(m.includes("breakvow") && m.includes("friend"), "breaking a vow Arjuna watches shows the struck vow and the broken friendship (" + m.join(",") + ")");
   ok(!K.choiceMarks({ id: "y", t: "y", fx: {} }, S).length, "a plain choice shows no icon");
 }
+// 100. A page already shown comes back whole: the quill writes a scene once per visit. A redraw (a
+// closed window, a language switch) or Continue onto a scene already seen shows it at once, and a
+// result redrawn is not written again. A new scene is written.
+{
+  S = fresh({ act: 6, age: 44, side: "pandava" }); S.seen.push("a6_eve"); S.scene = "a6_eve";
+  K.go("a6_eve", true);
+  ok(K.resumed === K.visit, "Continue onto a scene already seen marks the visit as a return");
+  K.go("a6_day1");
+  ok(K.resumed === 0, "a new arrival is not a return");
+  const fs = require("fs"), path = require("path"), { JSDOM, VirtualConsole } = require("jsdom");
+  const GAME = path.join(__dirname, "..", "game"), html = fs.readFileSync(path.join(GAME, "index.html"), "utf8");
+  const dom = new JSDOM(html.replace(/<script src="[^"]+"><\/script>/g, ""), { runScripts: "outside-only", pretendToBeVisual: true, url: "https://localhost/", virtualConsole: new VirtualConsole() });
+  const w = dom.window; w.HTMLElement.prototype.scrollIntoView = () => {};
+  for (const m of html.matchAll(/<script src="([^"]+)"><\/script>/g)) w.eval(fs.readFileSync(path.join(GAME, m[1]), "utf8"));
+  const WK = w.K; WK.headless = true;
+  const written = () => w.document.querySelectorAll("#leaf .write").length;
+  WK.S = Object.assign(WK.newLife(), { name: "T", origin: "panchala", pronoun: "she", age: 15, act: 2, teacher: "drona" });
+  WK.go("a2_path");
+  const first = written();
+  WK.UI.redraw();
+  const redrawn = written();
+  ok(first > 0 && redrawn === 0, "a scene is written by the quill once; redrawn in the same visit it is there at once (" + first + " → " + redrawn + ")");
+  WK.resume(JSON.parse(JSON.stringify(WK.S)));
+  ok(written() === 0, "Continue (a loaded copy of the life) onto the same scene shows it at once");
+  Object.assign(WK.S, { age: 8, act: 1 }); WK.go("a1_home");
+  w.document.querySelector("#choices .choice").click();
+  const res = written(); WK.UI.redraw();
+  ok(res > 0 && written() === 0 && w.document.querySelector("#story .picked"), "what came of a choice is written once; redrawn, it is there at once, still after the choice");
+  WK.go("a2_teacher");
+  ok(written() > 0, "a new scene is written by the quill");
+  w.close();
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);
