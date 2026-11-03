@@ -79,6 +79,9 @@
     if (u.side === "player") return K.puppetSpec(K.S);
     if (u.person && K.PUPPETS[u.person]) return U.puppetFor(u.person);
     const n = String(u.src || u.name);
+    if (/\bcart$/i.test(n)) return { thing: "cart" }; // what is not a person is drawn as what it is
+    if (/elephant/i.test(n)) return { thing: "elephant" };
+    if (/Narayana weapon/.test(n)) return { thing: "light" };
     if (/charioteer/i.test(n)) return SPECIAL.rider; // Karna's charioteer is not Karna
     for (const [re, id] of NAMED) if (re.test(n)) return U.puppetFor(id);
     if (/Ashwatthama/.test(n)) return SPECIAL.Ashwatthama;
@@ -214,7 +217,10 @@
   async function playMove(a, u, targets, hit) {
     const r = rigs.get(u.uid);
     const el = actorEl(u.uid), ar = U.$("arena");
-    if (!r || !el || !ar) { targets.forEach((t) => setTimeout(() => hit(t), 110)); return 400; }
+    if (!r || !el || !ar) {
+      if (el && el.querySelector(".thing") && !["guard", "brace"].includes(a.id)) burst(u.uid, u.side === "enemy" ? "lunge-l" : "lunge-r", 520); // a cart, an elephant, a light: no joints to move
+      targets.forEach((t) => setTimeout(() => hit(t), 110)); return 400;
+    }
     const W = U.wait, side = u.side === "enemy" ? -1 : 1;
     const first = targets[0];
     const shot = (r.bow && (a.id === "strike" || SHOTS.has(a.id))) || (SHOTS.has(a.id) && a.id !== "astra");
@@ -384,7 +390,7 @@
     return '<button type="button" class="unit ' + u.side + sel + (u.hp <= 0 ? " down" : "") + '" data-uid="' + u.uid + '"' + (!enemy || u.hp <= 0 || B.over ? " disabled" : "") + ">" +
       '<span class="nm">' + (u.person && U.portraitKey(u.person) ? U.thumb(U.portraitKey(u.person), "face") : "") + "<em>" + U.esc(label) + "</em><span>" + u.hp + " / " + u.maxHp + "</span></span>" +
       '<span class="hpbar"><i style="width:' + pct + '%"></i></span>' +
-      (enemy && target === u.uid && u.hp > 0 && !B.over ? '<span class="tgt-chip">' + U.tr("Your target") + "</span>" : "") +
+      (enemy && target === u.uid && u.hp > 0 && !B.over && B.kind !== "weather" ? '<span class="tgt-chip">' + U.tr("Your target") + "</span>" : "") +
       (st ? '<span class="st">' + st + "</span>" : "") +
       (enemy ? intentLine(u) : "") +
       (enemy && C.marked && C.marked() === u.uid ? '<span class="markline">' + MARK_SVG + U.esc(K.tr(B.units.some((x) => x.side === "ally" && x.plural && x.hp > 0) ? "Marked: your company is on it" : "Marked: those beside you are on it")) + "</span>" : "") +
@@ -435,8 +441,12 @@
     const g = K.attr("grace");
     const T = 1.1 * th.speed, END = T * 1.32;
     const W = { perfect: 0.065 + g * 0.004, move: 0.17 + g * 0.009, block: 0.2 + g * 0.01 }; // in seconds either side of the mark: a touch wider (2 Nov), a phone tap lands late
-    const who = K.text(u.src || u.name), shape = shapeFor(th.id), S2 = SHAPES[shape];
-    const what = th.id === "arrows" && S2.arrow ? S2.arrow : S2.line;
+    // Under the storm (a weather fight) whatever an archer looses is arrows, coming down or skimming low;
+    // the Narayana weapon is fire, and the elephant swings its trunk.
+    const thing = specFor(u).thing, rain = B.kind === "weather" && (thing === "light" || (u.abilities || []).includes("arrows"));
+    const who = K.text(u.src || u.name), shape = rain ? K.pick(["high", "low"]) : shapeFor(th.id), S2 = SHAPES[shape];
+    const what = thing === "light" ? (shape === "high" ? "Fire from above" : "Fire along the ground") : rain ? (shape === "high" ? "Arrows from above" : "Arrows, low, at your legs")
+      : thing === "elephant" && shape === "high" ? "Its trunk swings at your head" : th.id === "arrows" && S2.arrow ? S2.arrow : S2.line;
     const el = U.el('<div class="qte" role="group" aria-label="' + U.esc(K.tr("Meet the blow")) + '"><p class="qte-who"><b>' + U.esc(who) + "</b> · " + U.esc(K.tr(what)) + "</p>" +
       '<div class="qte-ring"><i class="mark"></i><i class="ring"></i></div><p class="qte-note" aria-live="assertive">' + U.esc(K.tr("Read the blow: jump, duck, sidestep or block, as the ring meets the mark. Swipe or use the arrow keys.")) + '</p><div class="btnrow qte-btns"></div></div>');
     const ring = el.querySelector(".ring"), note = el.querySelector(".qte-note");
@@ -486,12 +496,12 @@
     const off = () => { document.removeEventListener("keydown", onKey, true); document.removeEventListener("pointerdown", pd, true); document.removeEventListener("pointerup", pu, true); };
     U.keys([]);
     // The enemy winds up; what he looses flies at you across the stage, at the height it will strike.
-    pose(u.uid, th.id === "arrows" ? "aim" : "hold");
+    pose(u.uid, th.id === "arrows" || rain ? "aim" : "hold");
     const launch = () => {
       const ar = U.$("arena"), ae = actorEl(u.uid), pe = P && actorEl(P.uid);
       if (!ar || !ae || !pe || !U.motion()) return;
       const r0 = ar.getBoundingClientRect(), ra = ae.getBoundingClientRect(), rp = pe.getBoundingClientRect();
-      const kind = th.id === "arrows" ? "arrow" : shape === "charge" ? "charge" : "blade";
+      const kind = th.id === "arrows" || (rain && thing !== "light") ? "arrow" : shape === "charge" ? "charge" : "blade";
       flyer = U.el('<i class="incoming ' + kind + " " + shape + '" aria-hidden="true">' + CUT[kind] + "</i>");
       const y = rp.top - r0.top + rp.height * S2.y;
       flyer.style.cssText = "left:" + (ra.left - r0.left + ra.width * 0.3) + "px;top:" + y + "px;--to:" + (rp.left - ra.left + rp.width * 0.2 - ra.width * 0.3) + "px;--dur:" + T + "s";
@@ -565,7 +575,7 @@
     }
     const body = U.$("battle-body");
     body.innerHTML = '<div class="sides"><div class="side"><span class="lbl">' + U.tr("Your side") + "</span>" + friends.map((u) => unitCard(u, B)).join("") +
-      '</div><div class="side"><span class="lbl">' + U.tr(C.canMark && C.canMark() ? "Against you · tap to mark" : "Against you · tap to target") + "</span>" + enemies.map((u) => unitCard(u, B)).join("") + "</div></div>" +
+      '</div><div class="side"><span class="lbl">' + U.tr(B.kind === "weather" ? "Against you" : C.canMark && C.canMark() ? "Against you · tap to mark" : "Against you · tap to target") + "</span>" + enemies.map((u) => unitCard(u, B)).join("") + "</div></div>" +
       '<div id="battle-actions"></div><ol class="blog" id="blog" aria-live="polite">' + B.log.slice(-8).map((l) => "<li" + (l.ev ? ' class="ev"' : "") + ">" + U.esc(C.line(l)) + "</li>").join("") + "</ol>";
     // Blows are heard as well as seen.
     if (K.Sound && B.log.length !== lastLogLen) {

@@ -802,6 +802,12 @@ body.inscene .jmap .bmap { max-height: min(520px, max(180px, calc(var(--vh) - 34
 .qte-btns .trial-press { min-width: 150px; }
 @media (max-width: 720px) { .arena { height: 150px; padding: 0 3% 3px; } .arena .actor svg { height: 122px; } .arena .actor.ally svg { height: 104px; } }
 @media (prefers-reduced-motion: reduce) { .arena .actor, .arena .actor::after, .arena.slowmo { animation: none !important; } }
+/* Things in a fight that are not people (puppet.js THING): the elephant towers, the Narayana weapon is a light in the sky, a cart that is lost tips over. */
+.arena .actor .thing-elephant { scale: 1.32; transform-origin: 50% 100%; }
+.arena .actor .thing-light { translate: 0 -18%; filter: drop-shadow(0 0 16px rgba(255, 190, 90, .9)); animation: thing-glow 1.8s ease-in-out infinite; }
+@keyframes thing-glow { 50% { opacity: .78; scale: 1.06; } }
+.arena .actor.down .thing-cart { rotate: 14deg; transform-origin: 30% 100%; }
+@media (prefers-reduced-motion: reduce) { .arena .actor .thing-light { animation: none; } }
 .qte .cta.secondary { background: var(--hover); border: 1px solid var(--gold-line); }
 @media (max-width: 720px), (max-height: 520px) {
   .trial { padding: 14px; gap: 12px; }

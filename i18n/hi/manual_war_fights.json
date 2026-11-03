@@ -64,7 +64,6 @@
  "He swings out wide and comes back at you.": "वह चौड़ा घूमकर फिर तुम्हारी ओर आता है।",
  "Drive beside him. Steer into his car to knock him off the line, and shoot when you are level. Turn him away three times, or beat him to the end of the field.": "उसके बगल में रथ चलाओ। उसे पंक्ति से हटाने के लिए उसके रथ से टकराओ, और बराबर होने पर बाण चलाओ। उसे तीन बार भगाओ, या मैदान के छोर तक उससे पहले पहुँचो।",
  "You drove off an enemy chariot that was running down your line.": "तुमने अपनी पंक्ति को रौंदते एक शत्रु रथ को भगा दिया।",
- "He swings his horses away toward his own lines. Your men cheer you, which they do not often do.": "वह घोड़े अपनी पंक्ति की ओर मोड़ लेता है। तुम्हारे आदमी तुम्हारी जय-जयकार करते हैं, जो वे अक्सर नहीं करते।",
  "He runs the length of your line, and you are a length behind him all the way.": "वह तुम्हारी पूरी पंक्ति के साथ दौड़ता है, और तुम पूरे रास्ते उससे एक लंबाई पीछे रहते हो।",
  "Blows landed: {g} of 3 · Breath left: {r}": "लगे वार: 3 में से {g} · बची साँस: {r}",
  "Your mace gets through!": "तुम्हारी गदा भीतर तक पहुँचती है!",
@@ -182,7 +181,6 @@
  "A man from your company is down between the lines, still moving, under the enemy's archers.": "तुम्हारी टुकड़ी का एक आदमी पंक्तियों के बीच गिरा है, अब भी हिल रहा है, शत्रु के धनुर्धरों के नीचे।",
  "A fight of your own": "अपनी एक लड़ाई",
  "Between the great fights": "बड़ी लड़ाइयों के बीच",
- "No one has ordered you. It is near, and you are nearer than anyone.": "किसी ने तुम्हें आदेश नहीं दिया। यह पास है, और तुम सबसे पास हो।",
  "A short fight": "एक छोटी लड़ाई",
  "Kurukshetra · day 6": "कुरुक्षेत्र · दिन 6",
  "Kurukshetra · day 3": "कुरुक्षेत्र · दिन 3",
@@ -248,5 +246,14 @@
  "Too soon. His arrow finds you.": "बहुत जल्दी। उसका बाण तुम्हें आ लगता है।",
  "A feint, and you bit.": "छल था, और तुम फँस गए।",
  "You read the feint and let it pass.": "तुम छल पहचानकर उसे जाने देते हो।",
- "the champion": "योद्धा"
+ "the champion": "योद्धा",
+ "Against you": "तुम्हारे विरुद्ध",
+ "Arrows from above": "ऊपर से बरसते बाण",
+ "Arrows, low, at your legs": "टाँगों पर नीचे आते बाण",
+ "Fire from above": "ऊपर से आग",
+ "Fire along the ground": "धरती के साथ-साथ आती आग",
+ "Its trunk swings at your head": "उसकी सूँड़ तुम्हारे सिर की ओर घूमती है",
+ "{p} of {m} lengths through": "{m} में से {p} लंबाई पार",
+ "He swings his horses away toward his own lines. Your men cheer you.": "वह घोड़े अपनी पंक्ति की ओर मोड़ लेता है। तुम्हारे आदमी तुम्हारी जय-जयकार करते हैं।",
+ "No one has ordered you, but you are the nearest.": "किसी ने तुम्हें आदेश नहीं दिया, पर तुम सबसे पास हो।"
 }

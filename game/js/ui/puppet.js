@@ -230,9 +230,40 @@
   const shieldSvg = (r, t) => '<circle cx="58" cy="112" r="' + r + '" fill="#8a5a2c"' + OUT + '/><circle cx="58" cy="112" r="' + (r - 3.5) + '" fill="none" stroke="' + t + '" stroke-width="2"/><circle cx="58" cy="112" r="4" fill="' + GOLD + '"' + OUT + "/>" +
     holes("M" + (58 - r) + " 112 a" + r + " " + r + " 0 1 0 " + 2 * r + " 0 a" + r + " " + r + " 0 1 0 " + -2 * r + " 0");
 
+  // Things that are not people, cut from the same leather: a cart, an elephant, and the Narayana
+  // weapon as a light in the sky. They have no joints, so they keep their CSS poses (no rig).
+  const THING = {
+    cart: [200, '<path d="M150 150 L198 136" stroke="#5a3418" stroke-width="5" stroke-linecap="round"/>' +
+      '<path d="M24 104 Q90 40 158 104 Z" fill="#c9a24e"' + OUT + '/>' + holes("M24 104 Q90 40 158 104 Z") + '<path d="M40 104 Q90 58 142 104" fill="none" stroke="#8a3a2a" stroke-width="1.6"/>' +
+      '<path d="M26 102 L26 132 M60 102 L60 132 M94 102 L94 132 M128 102 L128 132 M156 102 L156 132 M20 102 L162 102" stroke="#6b4422" stroke-width="3.4"/>' +
+      '<rect x="18" y="128" width="146" height="22" rx="2" fill="#8a5a2c"' + OUT + '/>' + holes("M18 128 h146 v22 h-146 Z") +
+      '<g fill="none" stroke="#3a2412"><circle cx="82" cy="160" r="36" stroke-width="7"/><path d="M82 124 V196 M46 160 H118 M57 135 L107 185 M107 135 L57 185" stroke-width="3"/></g><circle cx="82" cy="160" r="7" fill="' + GOLD + '"' + OUT + "/>"],
+    elephant: [240, '<path d="M32 98 Q14 124 22 146" fill="none" stroke="#24120a" stroke-width="3"/>' +
+      '<g opacity="0.78"><path d="M58 140 L80 140 L78 196 L60 196 Z M150 140 L170 140 L168 196 L152 196 Z" fill="#7d7062"' + OUT + "/></g>" +
+      '<path d="M28 130 Q22 70 96 62 Q162 56 186 86 Q198 104 192 132 L184 150 L40 152 Z" fill="#8f8172"' + OUT + "/>" + holes("M28 130 Q22 70 96 62 Q162 56 186 86 Q198 104 192 132 L184 150 L40 152 Z") +
+      '<path d="M56 68 L150 62 L156 122 Q105 134 52 122 Z" fill="#a3302a"' + OUT + '/><path d="M54 112 Q105 124 154 112" fill="none" stroke="' + GOLD + '" stroke-width="3" stroke-dasharray="1 5" stroke-linecap="round"/><path d="M56 68 L150 62" stroke="' + GOLD + '" stroke-width="3"/>' +
+      '<path d="M72 64 L72 38 L130 34 L130 62 Z" fill="' + GOLD + '"' + OUT + '/><path d="M66 40 Q101 14 136 36 Z" fill="#a3302a"' + OUT + "/>" +
+      '<path d="M36 140 L60 140 L58 198 L38 198 Z M138 140 L160 140 L158 198 L140 198 Z" fill="#8f8172"' + OUT + "/>" +
+      '<path d="M176 64 Q214 60 218 100 L216 128 L188 134 Z" fill="#8f8172"' + OUT + "/>" +
+      '<path d="M212 100 Q232 128 224 164 Q220 186 232 192" fill="none" stroke="#24120a" stroke-width="15" stroke-linecap="round"/><path d="M212 100 Q232 128 224 164 Q220 186 232 192" fill="none" stroke="#8f8172" stroke-width="12" stroke-linecap="round"/>' +
+      '<path d="M206 122 Q222 136 238 126" fill="none" stroke="#efe2c0" stroke-width="5" stroke-linecap="round"/>' +
+      '<path d="M178 74 Q154 80 156 116 Q164 134 184 122 Z" fill="#7d7062"' + OUT + '/><circle cx="202" cy="86" r="2.6" fill="#24120a"/>' +
+      '<path d="M190 70 Q200 60 212 66" fill="none" stroke="' + GOLD + '" stroke-width="3"/>'],
+    light: [160, '<defs><radialGradient id="pp-nw"><stop offset="0" stop-color="#fffbe6"/><stop offset="0.35" stop-color="#ffd27a"/><stop offset="0.7" stop-color="#ff8a2a" stop-opacity="0.55"/><stop offset="1" stop-color="#ff6a1a" stop-opacity="0"/></radialGradient></defs>' +
+      '<circle cx="80" cy="74" r="74" fill="url(#pp-nw)"/>' +
+      '<g stroke="#ffe7a8" stroke-width="2.4" stroke-linecap="round" opacity="0.9"><path d="M80 14 V36 M80 112 V134 M20 74 H42 M118 74 H140 M38 32 L53 47 M107 101 L122 116 M122 32 L107 47 M53 101 L38 116"/></g>' +
+      '<circle cx="80" cy="74" r="20" fill="none" stroke="#fff3c8" stroke-width="3"/><circle cx="80" cy="74" r="8" fill="#fffbe6"/>' +
+      '<g stroke="#ffb54a" stroke-width="2" stroke-linecap="round" opacity="0.75"><path d="M40 130 L30 190 M66 140 L60 196 M94 140 L100 196 M120 130 L132 190"/></g>']
+  };
+  U.thingSvg = function (kind, o = {}) {
+    const t = THING[kind], h = o.h || 120;
+    return '<svg class="pp thing thing-' + kind + " pose-stand" + (o.flip ? " flip" : "") + '" viewBox="0 0 ' + t[0] + ' 200" width="' + Math.round(h * t[0] / 200) + '" height="' + h + '" aria-hidden="true"><g class="pp-all"><g class="pp-body">' + t[1] + "</g></g></svg>";
+  };
+
   U.puppet = function (spec, o = {}) {
     if (!spec) return "";
     ensureDefs();
+    if (spec.thing && THING[spec.thing]) return U.thingSvg(spec.thing, o);
     const [skin, cloth, trim] = spec.palette || PALETTE.none;
     const she = spec.pronoun === "she", they = spec.pronoun === "they";
     const stage = spec.stage || "adult";

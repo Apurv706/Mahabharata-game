@@ -136,7 +136,7 @@
     enemies: (S) => [K.foe(pick2(S, "Kaurava chariot-warrior", "Pandava chariot-warrior"), 5, { abilities: ["strike", "arrows"] })],
     beats: twist(3, "He swings out wide and comes back at you.", fire(1)),
     play: (S) => DUEL(pick2(S, "Kaurava chariot-warrior", "Pandava chariot-warrior"), "fight_war_chariot", "Drive beside him. Steer into his car to knock him off the line, and shoot when you are level. Turn him away three times, or beat him to the end of the field."),
-    win: { fx: { journal: "You drove off an enemy chariot that was running down your line." }, text: "He swings his horses away toward his own lines. Your men cheer you, which they do not often do." },
+    win: { fx: { journal: "You drove off an enemy chariot that was running down your line." }, text: "He swings his horses away toward his own lines. Your men cheer you." },
     lose: { fx: {}, text: "He runs the length of your line, and you are a length behind him all the way." } });
   const MACE = (feints) => ({ attr: "might", skill: "mace", face: "drill", item: "mace", foeItem: "mace", foe: "the champion", verb: "Strike", feints, stage: "fight_war_field",
     tally: "Blows landed: {g} of 3 · Breath left: {r}", good: "Your mace gets through!", soon: "Too soon. He steps back from it.", late: "Too late. His mace finds you.",
@@ -248,7 +248,7 @@
   const skirmish = (day, then, art, place) => {
     const kind = (S) => K.fightKind(S, day, "path") || "hold";
     return scene({ id: "fs_sk_" + day, when: warring, skipTo: then, next: then, art, place, caption: "A fight of your own", title: "Between the great fights",
-      body: (S) => [SK[kind(S)].body, "No one has ordered you. It is near, and you are nearer than anyone."],
+      body: (S) => [SK[kind(S)].body, "No one has ordered you, but you are the nearest."],
       choices: Object.keys(SK).map((k) => ({ id: "fight_" + k, t: SK[k].t, req: (S) => kind(S) === k, combat: k === "breakthrough" ? "fs_sk_break" : "fs_sk_" + k, fx: mark(day, k), hint: "A short fight" })).concat([LEAVE]) });
   };
   K.scenes([
