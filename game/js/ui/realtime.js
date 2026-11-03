@@ -94,13 +94,13 @@
     const vw = window.innerWidth, vh = window.innerHeight;
     const wide = vw >= 820 && vw / vh >= 1.15;
     V.el.classList.toggle("wide", wide); V.el.classList.toggle("upright", !wide);
-    V.el.style.setProperty("--bh", (wide ? 50 : Math.round(Math.max(58, Math.min(68, 58 + (vh - 660) / 10)))) + "px");
+    V.el.style.setProperty("--bh", (wide ? 44 : 44) + "px"); // compact (owner, 3 November): 44 px buttons, Strike 56
     const W = V.stage.clientWidth, H = V.stage.clientHeight;
     V.stage.style.backgroundImage = "url(" + (H > W * 1.25 && V.art[1] ? V.art[1] : V.art[0]) + ")";
     // The field is the same in game units everywhere (about nine bodies across); a phone draws the
     // figures smaller instead of showing less of it, with clear ground between them.
     const fh = Math.min(H * 0.3, W * RT.BODY * (wide ? 1.6 : 2.2));
-    V.G = { W, H, fh, bw: W * RT.BODY, gl: H * 0.07, dstep: Math.min(H * 0.035, fh * 0.12) };
+    V.G = { W, H, fh, bw: W * RT.BODY, gl: H * (wide ? 0.07 : 0.12), dstep: Math.min(H * 0.035, fh * 0.12) };
     V.actors.forEach((a) => size(a));
   }
   function onResize() { if (!V) return; const o = V.G && V.G.W > V.G.H; layout(); if (V.G && (V.G.W > V.G.H) !== o) pause(true); } // turning the phone pauses
