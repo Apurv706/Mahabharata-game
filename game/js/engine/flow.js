@@ -246,7 +246,10 @@
     }
     const danger = K.perilNote(c, S);
     if (danger) out.push(["down danger", danger]);
-    if (c.combat) out.push(["combat", K.tr("Leads to a fight")]);
+    if (c.combat) { // a holding fight says how long you must stand
+      const enc = K.ENCOUNTERS && K.ENCOUNTERS[K.val(c.combat, S)], hold = enc && enc.hold;
+      out.push(["combat", hold ? K.tr("Leads to a fight: hold for {n} rounds", { n: hold }) : K.tr("Leads to a fight")]);
+    }
     const hint = K.val(c.hint, S);
     if (hint) out.push(["", K.text(hint, null, S)]);
     return out;

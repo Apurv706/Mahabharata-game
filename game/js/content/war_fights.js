@@ -64,7 +64,9 @@
     },
     weather: {
       turn: true,
-      start: (B) => { const p = player(B); p.abilities.push("cover"); if (B.enc.layDown) p.abilities.push("lay_down"); },
+      // No one strikes back: those beside you keep their heads down too (no blows at a storm of arrows,
+      // an elephant or a weapon of fire).
+      start: (B) => { const p = player(B); p.abilities.push("cover"); if (B.enc.layDown) p.abilities.push("lay_down"); B.units.forEach((u) => { if (u.side === "ally") u.still = true; }); },
       moves: (rows) => rows.filter((r) => ["guard", "cover", "herbs", "lay_down"].includes(r.id)),
       over: (B) => (B.laidDown ? "win" : B.enc.mustYield && B.round > B.enc.hold ? "lose" : null),
       status: () => K.tr("No striking back")
@@ -105,7 +107,7 @@
     win: { fx: { journal: "In the war you held a gap in the line until the reserve came up." }, text: "The reserve takes the gap over from you. Someone hands you water." },
     lose: { fx: {}, text: "The gap widens past you, and the reserve closes it without you." } });
   side({ id: "fs_sk_escort", kind: "escort", escort: "The healers' cart", title: "The healers' cart", art: "war_capture", caption: "Keep the cart whole",
-    allies: (S) => company(S).concat([{ name: "The healers' cart", hp: 60, atk: 1, def: 2, abilities: ["guard"] }]),
+    allies: (S) => company(S).concat([{ name: "The healers' cart", hp: 60, atk: 1, def: 2, abilities: ["guard"], still: true }]),
     intro: "Riders have found the healers' cart on its way back from the line. Keep it whole until it reaches the camp.",
     holdText: "The cart rolls in among the tents.",
     enemies: (S) => [K.foe(pick2(S, "Kaurava raiders", "Pandava raiders"), 4, { plural: true }), K.foe(pick2(S, "Kaurava horseman", "Pandava horseman"), 4)],

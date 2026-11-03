@@ -255,5 +255,7 @@
  "Its trunk swings at your head": "उसकी सूँड़ तुम्हारे सिर की ओर घूमती है",
  "{p} of {m} lengths through": "{m} में से {p} लंबाई पार",
  "He swings his horses away toward his own lines. Your men cheer you.": "वह घोड़े अपनी पंक्ति की ओर मोड़ लेता है। तुम्हारे आदमी तुम्हारी जय-जयकार करते हैं।",
- "No one has ordered you, but you are the nearest.": "किसी ने तुम्हें आदेश नहीं दिया, पर तुम सबसे पास हो।"
+ "No one has ordered you, but you are the nearest.": "किसी ने तुम्हें आदेश नहीं दिया, पर तुम सबसे पास हो।",
+ "Hold: round {n} of {m}": "डटे रहो: दौर {n} / {m}",
+ "Leads to a fight: hold for {n} rounds": "इससे लड़ाई होगी: {n} दौर तक डटे रहना"
 }

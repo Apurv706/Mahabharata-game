@@ -115,7 +115,7 @@
   function arenaHtml(B) {
     const stage = K.val(B.enc.stage) || K.val(B.enc.art);
     // A champion at your side (Satyaki) stands at full height, not shrunk like the other allies.
-    const actor = (u) => '<span class="actor ' + u.side + (u.side === "ally" && (specFor(u).size || 0) >= 1.2 ? " champ" : "") + (u.hp <= 0 ? " down" : "") + (u.side === "enemy" && u.hp > 0 ? " far" : "") + '" data-uid="' + u.uid + '">' +
+    const actor = (u) => '<span class="actor ' + u.side + (u.side === "ally" && (specFor(u).size || 0) >= 1.2 ? " champ" : "") + (specFor(u).thing === "elephant" ? " beast" : "") + (u.hp <= 0 ? " down" : "") + (u.side === "enemy" && u.hp > 0 ? " far" : "") + '" data-uid="' + u.uid + '">' +
       U.puppet(specFor(u), { h: 150, flip: u.side === "enemy", pose: u.hp <= 0 ? "dead" : liveFigures() ? "live" : u.side === "player" ? "brace" : "stand", label: u.side === "player" ? K.tr("You") : null }) + '<span class="pops"></span></span>';
     const friends = B.units.filter((u) => u.side !== "enemy"), foes = B.units.filter((u) => u.side === "enemy");
     return '<div class="arena" id="arena" style="--stage:url(\'' + U.artUrl(stage) + '\')" aria-hidden="true"><div class="team left">' + friends.map(actor).join("") +
@@ -373,7 +373,7 @@
     const m = C.marked ? C.marked() : null;
     document.querySelectorAll("#arena .actor.enemy").forEach((el) => {
       // Who your moves will hit: a ring of light at that figure's feet.
-      el.classList.toggle("targeted", !B.over && el.dataset.uid === target);
+      el.classList.toggle("targeted", !B.over && el.dataset.uid === target && B.kind !== "weather"); // nothing to aim at under the storm
       const on = el.dataset.uid === m;
       el.classList.toggle("marked", on);
       let f = el.querySelector(":scope > .mark-flag");
@@ -385,7 +385,7 @@
     const pct = Math.round((u.hp / u.maxHp) * 100);
     const st = Object.keys(u.status).map((s) => "<span>" + U.tr(K.STATUS_TEXT[s] || s) + "</span>").join("");
     const enemy = u.side === "enemy";
-    const sel = (enemy && target === u.uid ? " sel" : "") + (enemy && C.marked && C.marked() === u.uid ? " marked" : "");
+    const sel = (enemy && target === u.uid && B.kind !== "weather" ? " sel" : "") + (enemy && C.marked && C.marked() === u.uid ? " marked" : "");
     const label = u.side === "player" ? K.tr("You") : K.text(u.src || u.name);
     return '<button type="button" class="unit ' + u.side + sel + (u.hp <= 0 ? " down" : "") + '" data-uid="' + u.uid + '"' + (!enemy || u.hp <= 0 || B.over ? " disabled" : "") + ">" +
       '<span class="nm">' + (u.person && U.portraitKey(u.person) ? U.thumb(U.portraitKey(u.person), "face") : "") + "<em>" + U.esc(label) + "</em><span>" + u.hp + " / " + u.maxHp + "</span></span>" +
@@ -545,7 +545,7 @@
     const enc = B.enc;
     const enemies = B.units.filter((u) => u.side === "enemy");
     if (!target || !enemies.find((e) => e.uid === target && e.hp > 0)) target = (enemies.find((e) => e.hp > 0) || {}).uid || null;
-    U.where("<b>" + U.tr("Battle") + "</b><span>" + U.t(K.val(enc.title)) + " · " + (enc.rounds ? U.tr("round {n} of {m}", { n: Math.min(B.round, enc.rounds), m: enc.rounds }) : U.tr("round {n}", { n: B.round })) + (B.rule && B.rule.status ? " · " + U.esc(B.rule.status(B)) : "") + "</span>");
+    U.where("<b>" + U.tr("Battle") + "</b><span>" + U.t(K.val(enc.title)) + " · " + (enc.rounds ? U.tr("round {n} of {m}", { n: Math.min(B.round, enc.rounds), m: enc.rounds }) : enc.hold ? U.tr("Hold: round {n} of {m}", { n: Math.min(B.round, enc.hold), m: enc.hold }) : U.tr("round {n}", { n: B.round })) + (B.rule && B.rule.status ? " · " + U.esc(B.rule.status(B)) : "") + "</span>");
     const friends = B.units.filter((u) => u.side !== "enemy");
     const leaf = U.$("leaf");
     // The painted stage with the figures is drawn once per fight, so they can move between draws.
@@ -574,7 +574,9 @@
       if (groundWatch) ["arena", "battle-body"].forEach((id) => { const el = U.$(id); if (el) groundWatch.observe(el); });
     }
     const body = U.$("battle-body");
-    body.innerHTML = '<div class="sides"><div class="side"><span class="lbl">' + U.tr("Your side") + "</span>" + friends.map((u) => unitCard(u, B)).join("") +
+    // How long you must stand, in sight from the first round (the top bar is hidden in a fight on a phone).
+    const roundsLine = enc.hold ? U.tr("Hold: round {n} of {m}", { n: Math.min(B.round, enc.hold), m: enc.hold }) : "";
+    body.innerHTML = (roundsLine ? '<p class="holdline">' + roundsLine + "</p>" : "") + '<div class="sides"><div class="side"><span class="lbl">' + U.tr("Your side") + "</span>" + friends.map((u) => unitCard(u, B)).join("") +
       '</div><div class="side"><span class="lbl">' + U.tr(B.kind === "weather" ? "Against you" : C.canMark && C.canMark() ? "Against you · tap to mark" : "Against you · tap to target") + "</span>" + enemies.map((u) => unitCard(u, B)).join("") + "</div></div>" +
       '<div id="battle-actions"></div><ol class="blog" id="blog" aria-live="polite">' + B.log.slice(-8).map((l) => "<li" + (l.ev ? ' class="ev"' : "") + ">" + U.esc(C.line(l)) + "</li>").join("") + "</ol>";
     // Blows are heard as well as seen.

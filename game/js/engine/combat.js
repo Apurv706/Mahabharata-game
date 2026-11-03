@@ -80,7 +80,7 @@
     return {
       uid: side[0] + i, name: K.fmt(def.name), src: def.name, side, hp, maxHp: hp, atk: Math.round(def.atk * m.atk * 10) / 10, def: def.def || 1,
       abilities: def.abilities || ["strike"], cds: {}, status: {}, armed: def.armed !== false,
-      vowTag: def.vowTag || null, person: def.person || null, note: def.note || null, plural: !!def.plural, hero: !!def.hero
+      vowTag: def.vowTag || null, person: def.person || null, note: def.note || null, plural: !!def.plural, hero: !!def.hero, still: !!def.still
     };
   }
 
@@ -273,6 +273,7 @@
   function aiTurn(u) {
     const it = u.intent;
     delete u.intent;
+    if (u.still) return; // a thing to keep whole (an escorted cart) takes no turn
     if (u.status.asleep) { api.tell("{t} sleeps on.", { t: u }); return; }
     if (u.status.bound) { api.tell("{t} strains against the serpent-noose.", { t: u }); return; }
     if (u.status.stun) { delete u.status.stun; api.tell("{t} is stunned and loses the turn.", { t: u }); return; }
