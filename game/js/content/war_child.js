@@ -195,6 +195,9 @@
   const karnaNear = (S) => S.side === "kaurava" && !S.dead.includes("karna") &&
     (S.friend === "karna" || ["anga", "suta"].includes(S.origin) || S.court === "anga" || (S.bonds.karna || 0) >= 6 || K.hasVow("spare_karna", S));
   const bhimaNear = (S) => S.side === "pandava" && (S.friend === "bhima" || (S.bonds.bhima || 0) >= 5 || S.exile === "forest");
+  // How you are tied to the night of the Shakti (war_reach.js): "own" (near Karna, or near Bhima), or a
+  // company posted there for the night, or the spot chosen on the morning's map.
+  K.tieShakti = (S = K.S) => (S.side === "kaurava" ? (S.dead.includes("karna") ? null : K.reachTie(S, "shakti", karnaNear(S))) : S.side === "pandava" ? K.reachTie(S, "shakti", bhimaNear(S)) : null);
 
   K.encounter({
     id: "wc_e_ghost", title: "Ghatotkacha's night host", art: "fight_night_torches", caption: "Under the torches",
@@ -229,9 +232,10 @@
   const urge = (id, t, fx, text) => ({ id, t, fx: Object.assign({ moment: { kind: "shakti", from: "kaurava" } }, fx, { flag: [id === "silent" ? "shakti_silent" : "shakti_urged_" + id].concat(fx.flag || []) }), text });
   K.scenes([
     {
-      id: "wc_shakti_k", act: 6, age: 44, war: true, away: true, when: (S) => karnaNear(S), skipTo: "a6_day15", next: "wc_shakti_call",
+      id: "wc_shakti_k", act: 6, age: 44, war: true, away: true, when: (S) => S.side === "kaurava" && !!K.tieShakti(S), skipTo: "a6_day15", next: "wc_shakti_call",
       art: "fight_night_torches", place: "Kurukshetra · the night of day 14", caption: "The torches going out", title: "Ghatotkacha in the dark",
-      body: ["Past midnight the torches on the Pandava side go out together. Then Ghatotkacha comes, Bhima's son by a rakshasi, in his night form: a shape as tall as the sky over the field, laughing, with a host of rakshasas under it. Where it passes, the Kaurava line stops being there.",
+      body: (S) => ["Past midnight the torches on the Pandava side go out together. Then Ghatotkacha comes, Bhima's son by a rakshasi, in his night form: a shape as tall as the sky over the field, laughing, with a host of rakshasas under it. Where it passes, the Kaurava line stops being there.",
+        K.tieLine(S, K.tieShakti(S), { company: "Your company was posted beside Karna's chariot for the night.", general: "This morning you chose the ground near Karna's chariot. Tonight it is where the dark comes." }),
         "Karna's chariot is behind your stretch of the line. The shape is coming toward it."],
       choices: [
         { id: "stand", t: "Stand against the shape and its host", combat: "wc_e_ghost", hint: "It cannot be beaten, only stood against" },
@@ -254,10 +258,11 @@
       after: [THROW]
     },
     {
-      id: "wc_shakti_p", act: 6, age: 44, war: true, away: true, when: (S) => bhimaNear(S), skipTo: "a6_day15", next: "wc_shakti_p_fall",
+      id: "wc_shakti_p", act: 6, age: 44, war: true, away: true, when: (S) => S.side === "pandava" && !!K.tieShakti(S), skipTo: "a6_day15", next: "wc_shakti_p_fall",
       art: "fight_night_torches", place: "Kurukshetra · the night of day 14", caption: "Torches across the field", title: "To Karna's chariot",
       body: (S) => ["Past midnight Ghatotkacha comes up out of the dark with his night host, as tall as a palm tree and laughing, and Karna's division breaks in front of him.",
         S.exile === "forest" ? { memory: "In the forest years he carried Draupadi over the mountain passes on his shoulders." } : null,
+        K.tieLine(S, K.tieShakti(S), { company: "Your company was sent to stand with Ghatotkacha's host for the night.", general: "This morning you chose to stand near Ghatotkacha's host, and the dark has come." }),
         "Across the torches you see Duryodhana's chariot drive to Karna's. Everyone in the army knows what Karna keeps in it: the spear Indra gave him, that kills one man and is spent, kept for Arjuna."],
       choices: [
         { id: "reach", t: "Cut through the melee to Karna's chariot before he can throw", combat: "wc_e_reach", hint: "A fight through the dark" },

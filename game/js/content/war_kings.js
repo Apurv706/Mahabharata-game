@@ -47,7 +47,10 @@
   // Day 14's order to ride with Satyaki reaches every Pandava fighter. Those who ride meet
   // Bhurishravas; those who stay with Yudhishthira do not. The Kaurava side keeps the old rules.
   const pandavaFighter = (S) => S.side === "pandava" && fighter(S);
-  const meetsDrag = (S) => (S.side === "pandava" ? has(S, "kb_rode") : nearBhurishravas(S));
+  // How you are tied to Bhurishravas's day (war_reach.js): every Pandava fighter has the order to ride;
+  // on the Kaurava side "own" (above), or a company, or the spot chosen on the morning's map.
+  K.tieBhuri = (S = K.S) => (S.side === "pandava" ? (pandavaFighter(S) ? "own" : null) : S.side === "kaurava" ? K.reachTie(S, "bhuri", nearBhurishravas(S)) : null);
+  const meetsDrag = (S) => (S.side === "pandava" ? has(S, "kb_rode") : !!K.tieBhuri(S));
   const ride = (S) => (S.kbRide != null ? S.kbRide : 1);
   const onField = (S) => S.side === "pandava" && !has(S, "role_healer") && !has(S, "role_bard");
   const HOLD = 6; // the most rounds before Arjuna's arrow comes
@@ -56,10 +59,14 @@
   // Your king: the court you serve, else the land you were born in.
   const KINGS = { drupada: { who: "Drupada", home: "Kampilya" }, virata: { who: "Virata", home: "Viratanagara" } };
   const BY_LAND = { panchala: "drupada", matsya: "virata" };
-  const kingOf = (S) => BY_LAND[S.court] || BY_LAND[S.origin] || null;
+  const homeKing = (S) => BY_LAND[S.court] || BY_LAND[S.origin] || null;
+  // Or a king you served: Drupada's great bow strung at Kampilya, Virata's herd or court in the hidden year.
+  const kingOf = (S) => homeKing(S) || (has(S, "strung_great_bow") ? "drupada" : has(S, "turned_herd") || has(S, "kept_false_name") ? "virata" : null);
+  // How you are tied to the kings' fall (war_reach.js): "own" (your king), "company", or "general" (the map).
+  K.tieKings = (S = K.S) => (S.side === "pandava" ? K.reachTie(S, "kings", !!kingOf(S)) : null);
   const KP = (S) => KINGS[kingOf(S)] || KINGS.drupada;
   const pupil = (S) => S.teacher === "drona";
-  const nearDrona = (S) => (S.side === "pandava" && (S.seen.includes("kf_fall") || pupil(S))) || (S.side === "kaurava" && pupil(S));
+  const nearDrona = (K.nearDrona = (S = K.S) => (S.side === "pandava" && (S.seen.includes("kf_fall") || pupil(S) || has(S, "spot_drona"))) || (S.side === "kaurava" && pupil(S)));
 
   // A test of your strongest kind: a hand on the sword arm (Might and Mace) or a voice that carries
   // (Command and Statecraft).
@@ -71,8 +78,9 @@
       id: "kb_ride", act: 6, age: 44, war: true, away: true, when: pandavaFighter, skipTo: "a6_day14", next: "a6_day14",
       art: "war_day14", place: "Kurukshetra · day 14", caption: "Yudhishthira's order",
       title: "Ride with Satyaki",
-      body: ["In the middle of the morning a runner brings you to Yudhishthira's chariot. Arjuna is somewhere beyond the whole Kaurava army, hunting Jayadratha, and no word has come back from him since dawn.",
+      body: (S) => ["In the middle of the morning a runner brings you to Yudhishthira's chariot. Arjuna is somewhere beyond the whole Kaurava army, hunting Jayadratha, and no word has come back from him since dawn.",
         { speaker: "Yudhishthira", line: "Satyaki is going through to find him. Ride with him." },
+        has(S, "met_satyaki") ? { memory: "Satyaki knows your face from Drupada's hall, the day of the swayamvara." } : null,
         { speaker: "Satyaki", line: "Keep up, then. I will not wait for you, and I will not turn back." }],
       choices: [
         { id: "ride", t: "Ride with Satyaki", combat: "e_kb_ride", fx: { flag: "kb_rode" }, hint: "The better you ride, the less worn out he is when he gets there" },
@@ -87,7 +95,8 @@
       title: (S) => (S.side === "kaurava" ? "The Yadava guard" : "Satyaki in the dust"),
       body: (S) => (S.side === "kaurava"
         ? ["At noon word comes down the line: Bhurishravas has Satyaki down, out beyond the chariots. Satyaki's Yadava guard has seen it too, and is closing round the two of them.",
-          "Bhurishravas is a Kuru, of Bahlika's house. Whatever happens out there, someone from his own side should be near it."]
+          "Bhurishravas is a Kuru, of Bahlika's house. Whatever happens out there, someone from his own side should be near it.",
+          K.tieLine(S, K.tieBhuri(S), { general: "You chose his part of the field this morning, and so you are near when it happens." })]
         : [has(S, "kb_rode") ? (ride(S) >= 2 ? "At noon Satyaki's horses go down under him, past the last of the Kaurava lines. He is on his feet at once, sword out, and that is when Bhurishravas finds him."
               : "At noon Satyaki's horses go down under him. He has fought every line twice, and he can barely lift his sword when Bhurishravas finds him.")
             : "All morning Satyaki has cut his way through the Kaurava divisions toward Arjuna. By noon his horses are dead and his sword arm is tired, and Bhurishravas finds him.",
@@ -174,12 +183,14 @@
 
     // ---------- Day 15: your king falls ----------
     {
-      id: "kf_reach", act: 6, age: 44, war: true, away: true, when: (S) => S.side === "pandava" && !!kingOf(S), skipTo: "a6_day15", next: "a6_day15",
+      id: "kf_reach", act: 6, age: 44, war: true, away: true, when: (S) => !!K.tieKings(S), skipTo: "a6_day15", next: "a6_day15",
       art: "war_capture", place: "Kurukshetra · day 15", caption: "Two white parasols",
       title: (S) => (kingOf(S) === "virata" ? "Virata's parasol" : "Drupada's parasol"),
       body: (S) => ["In the grey before sunrise, after the night of torches, Drona drives his division at the Panchala and Matsya lines. Drupada and Virata ride out to meet him side by side, two old kings under white parasols.",
+        K.tieLine(S, K.tieKings(S), { company: "Your company was posted to the Panchala lines before dawn. Drupada is not your king, but his men are yours today.",
+          general: "You came to the Panchala lines this morning by choice. Drupada is not your king, and nobody here knows your name." }),
         ["You are a hundred paces behind {who}, and Drona's chariots are already closing the gap.", { who: KP(S).who }]],
-      choices: [{ id: "reach", t: "Cut through to your king", combat: "e_kf_reach", hint: "Won by getting through, not by killing" }]
+      choices: (S) => [{ id: "reach", t: homeKing(S) ? "Cut through to your king" : "Cut through to the kings", combat: "e_kf_reach", hint: "Won by getting through, not by killing" }]
     },
     {
       id: "kf_fall", act: 6, age: 44, war: true, away: true, art: "scene_kings_fall", place: "Kurukshetra · day 15", caption: "A white parasol in the dust",
@@ -275,7 +286,7 @@
     // That night the king's household asks you to take word home. Going means missing the rest of
     // the night in the camp; the war's road picks up again on the sixteenth day.
     {
-      id: "kf_word", act: 6, age: 44, war: true, away: true, when: (S) => S.seen.includes("kf_fall"), skipTo: "a6_day16", next: "a6_day16",
+      id: "kf_word", act: 6, age: 44, war: true, away: true, when: (S) => S.seen.includes("kf_fall") && !!homeKing(S), skipTo: "a6_day16", next: "a6_day16",
       art: "scene_letter_camp", place: "The camp, the night of day 15", caption: "The king's ring in a cloth",
       title: "Word for home",
       body: (S) => [["That night {who}'s old steward finds you, with the king's ring wrapped in a cloth.", { who: KP(S).who }],
@@ -377,8 +388,8 @@
   // before the night council, the truce at dusk and the sixteenth day's offers.
   const before = (id, list) => { K.BEFORE[id] = (K.BEFORE[id] || []).concat(list); };
   const first = (id, list) => { K.BEFORE[id] = list.concat(K.BEFORE[id] || []); };
-  before("a6_day14", ["kb_ride", "kb_drag"]);
-  before("a6_day15", ["kf_reach", "kf_cry"]);
+  before("a6_day14", ["wr_map_14", "kb_ride", "kb_drag"]); // the morning's map first (war_reach.js)
+  before("a6_day15", ["wr_map_15", "kf_reach", "kf_cry"]);
   first("a6_day16", ["kf_drona", "kf_word", "kb_debate"]);
   // The half-truth's closing line (Ashwatthama's oath) waits until Dhrishtadyumna's sword has fallen,
   // for those who are there to see it: kf_drona carries it instead.
