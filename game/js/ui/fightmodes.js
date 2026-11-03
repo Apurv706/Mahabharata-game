@@ -16,6 +16,9 @@
     play(B) {
       const enc = B.enc, kind = B.mode, game = GAME[kind], hold = enc.hold || enc.rounds || 4;
       const t = Object.assign({ stage: STAGE[kind], kind: "war" }, K.val(enc.play) || {});
+      // The moves of this kind of fight, on the test's own rules card, with Fight to begin (ui/battle.js).
+      const brief = U.fightBriefLive ? U.fightBriefLive(B) : null;
+      if (brief) t.brief = brief;
       // The beats, as the race passes their rounds: the line on a banner at the top, and the beat's own effect.
       const beats = (K.val(enc.beats) || []).slice().sort((a, b) => a.round - b.round);
       const banner = U.el('<p class="fm-beat" aria-live="polite"></p>');

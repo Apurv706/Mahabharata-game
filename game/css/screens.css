@@ -395,8 +395,23 @@ input[type="text"]:focus-visible, textarea:focus-visible { outline: 2px solid va
 
 /* Retort: the taunt, a burning lamp, three replies. */
 .taunt { margin: 0; padding: 12px 16px; border-left: 3px solid var(--accent); font-family: var(--display); font-size: 25px; line-height: 1.35; }
-.timer { height: 10px; border-radius: 4px; background: var(--track); overflow: hidden; }
-.timer i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--negative), var(--accent)); }
+/* The clock of a timed test (U.countdown, ui/trials.js): the seconds left, large, beside a bar that
+   drains; at the top of the stage, above the play. Red in the last seconds; the number beats only
+   with motion on. Shown only while the test plays. */
+.t-clock { display: flex; align-items: center; gap: 10px; justify-self: center; align-self: center; width: min(100%, 440px); padding: 4px 14px 4px 12px; border-radius: 999px;
+  background: rgba(var(--surface-rgb), 0.82); border: 1px solid var(--gold-line); color: var(--ink); }
+.t-clock[hidden], .trial:not(.playing) .t-clock { display: none; }
+.t-clock .t-secs { min-width: 2ch; font-family: var(--text); font-size: 32px; line-height: 1; font-weight: 800; font-variant-numeric: tabular-nums; text-align: right; color: var(--ink); }
+.t-clock .t-unit { margin-left: -6px; font-size: 13px; color: var(--muted); align-self: flex-end; padding-bottom: 4px; }
+.t-clock .t-bar { flex: 1 1 auto; height: 12px; border-radius: 6px; background: var(--track); overflow: hidden; }
+.t-clock .t-bar i { display: block; height: 100%; width: 100%; transform-origin: left center; background: var(--data); }
+.t-clock.warn { border-color: var(--negative); }
+.t-clock.warn .t-secs { color: var(--negative); }
+.t-clock.warn .t-bar i { background: var(--negative); }
+@media (prefers-reduced-motion: no-preference) {
+  .t-clock.warn .t-secs { animation: t-beat 1s ease-in-out infinite; }
+  @keyframes t-beat { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.14); } }
+}
 .replies { display: grid !important; gap: 8px; }
 .replies button { text-align: left; white-space: normal; }
 @media (prefers-reduced-motion: reduce) { .range .t-lamp { animation: none; } }
@@ -1104,7 +1119,8 @@ body.intest .leaf .choices > .choice.picked, body.intest .leaf .pagehead { displ
 body.intest .backdrop::after { background: linear-gradient(to bottom, rgba(16, 6, 4, 0.55), rgba(16, 6, 4, 0) 22%, rgba(16, 6, 4, 0) 58%, rgba(16, 6, 4, 0.7)); } /* taste-skill-ignore: keeps the score and controls legible over the painting */
 .trial.immersive { position: fixed; inset: 0; z-index: 20; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 0; margin: 0; padding: max(10px, var(--sat)) max(14px, var(--sar)) max(12px, var(--sab)) max(14px, var(--sal));
   background: none; border: 0; border-radius: 0; animation: pagein 0.4s ease both; }
-.trial.immersive > .t-head { position: relative; z-index: 3; display: flex; justify-content: center; padding: 2px 0 8px; }
+.trial.immersive > .t-head { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 2px 0 8px; }
+.trial.immersive > .t-head .t-clock { box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); } /* taste-skill-ignore: the clock floats over the painting */
 .trial.immersive .t-name { font-family: var(--display); font-weight: 700; font-size: 18px; color: var(--ink); text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8); text-align: center; } /* taste-skill-ignore: text over a painting */
 /* The figures: big, on the painting's ground, at the two sides. */
 .trial.immersive > .cast { position: absolute; inset: auto 0 0 0; height: 100%; margin: 0; padding: 0 4% max(76px, calc(var(--sab) + 70px)); border-radius: 0; background: none; pointer-events: none; z-index: 1; display: flex; align-items: flex-end; justify-content: space-between; }
@@ -1236,7 +1252,7 @@ body.intest .leaf .text { background: none !important; }
    Shared: the play pieces lose their dark boxes and sit on the painting on soft glass where they
    need to be read; the figures stand on the ground; top-down games hide the standing figures. */
 .trial.immersive .game-note, .trial.immersive .score { max-width: min(92%, 520px); }
-.trial.immersive .timer, .trial.immersive .calm, .trial.immersive .sus { align-self: center; width: min(78%, 420px); height: 6px; background: rgba(var(--surface-rgb), 0.55); border: 1px solid var(--gold-line); }
+.trial.immersive .calm, .trial.immersive .sus { align-self: center; width: min(78%, 420px); height: 6px; background: rgba(var(--surface-rgb), 0.55); border: 1px solid var(--gold-line); }
 .trial.immersive .glass, .trial.immersive .taunt, .trial.immersive .table li, .trial.immersive .replies .cta, .trial.immersive .drill .tile {
   background: rgba(var(--surface-rgb), 0.62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border: 1px solid var(--gold-line); color: var(--ink); }
 .trial.immersive.trial-race > .cast, .trial.immersive.trial-herd > .cast, .trial.immersive.trial-rings > .cast, .trial.immersive.trial-sneak > .cast, .trial.immersive.trial-formation > .cast { display: none; }
@@ -1879,3 +1895,42 @@ svg .pr-hint { outline: none; filter: drop-shadow(0 0 6px #ffd680) drop-shadow(0
 .fm-beat { position: fixed; left: 50%; top: max(12px, var(--sat, 0px)); transform: translateX(-50%); z-index: 40; width: min(92vw, 560px); margin: 0; padding: 10px 14px; border-radius: 10px; background: rgba(var(--surface-rgb), 0.92); color: var(--ink); font: 500 15px/1.4 var(--text); text-align: center; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35); pointer-events: none; opacity: 0; transition: opacity .3s ease; }
 .fm-beat.on { opacity: 1; }
 .race-btns:has(> .bow) > .trial-press { padding-left: 6px; padding-right: 6px; min-width: 0; }
+
+/* Before a fight (ui/battle.js): how it is won, and what you can do; one Fight button. A card over
+   the field on every screen; a fight met before gets one line across the top of the field instead. */
+.fbrief-wrap { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: max(16px, var(--sat)) 16px max(16px, var(--sab)); background: rgba(16, 6, 4, 0.55); overflow-y: auto; } /* taste-skill-ignore: dims the field behind the card */
+.fbrief { width: min(440px, 100%); padding: 18px 18px 16px; border-radius: 16px; background: rgba(var(--surface-rgb), 0.94); border: 1px solid var(--gold-line); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); color: var(--ink); } /* taste-skill-ignore: the card floats over the fight */
+.fbrief h2 { margin: 2px 0 0; font-family: var(--display); font-size: 24px; line-height: 1.15; }
+.fbrief .fb-tag { margin: 0; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
+.fbrief .fb-mode { margin: 4px 0 0; font-weight: 700; color: var(--data); font-size: 15px; }
+.fbrief .fb-goal { margin: 6px 0 0; font-size: 16px; line-height: 1.4; }
+.fbrief .fb-lbl { margin: 14px 0 6px; font-size: 13px; color: var(--muted); }
+.fb-acts { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.fb-acts li { display: grid; grid-template-columns: 34px 1fr; column-gap: 10px; align-items: center; }
+.fb-acts .fb-ic { grid-row: span 2; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--raised); border: 1px solid var(--gold-line); }
+.fb-acts svg { width: 20px; height: 20px; fill: none; stroke: var(--data); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.fb-acts b { font-size: 15px; line-height: 1.2; }
+.fb-acts small { font-size: 13px; line-height: 1.25; color: var(--muted); }
+.fbrief .btnrow { margin-top: 14px; justify-content: center; }
+.fbrief .fb-go { min-width: min(240px, 70vw); min-height: 50px; font-size: 18px; }
+.fbrief.inline { width: auto; padding: 0; margin: 0; background: none; border: 0; box-shadow: none; }
+.fbrief.inline .fb-mode { margin: 0 0 6px; }
+.fb-line { position: absolute; z-index: 6; top: 8px; left: 50%; transform: translateX(-50%); width: max-content; max-width: calc(100% - 32px); margin: 0; padding: 6px 14px; border-radius: 999px; text-align: center;
+  background: rgba(var(--surface-rgb), 0.86); border: 1px solid var(--gold-line); color: var(--ink); font-size: 14px; pointer-events: none; } /* taste-skill-ignore: over the painted field */
+.fb-line b { color: var(--data); }
+@media (prefers-reduced-motion: no-preference) {
+  .fbrief-wrap:not(.still) .fbrief { animation: fb-in 0.3s ease both; }
+  .fb-line:not(.still) { animation: fb-line 4.2s ease both; }
+  @keyframes fb-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @keyframes fb-line { 0% { opacity: 0; } 8%, 85% { opacity: 1; } 100% { opacity: 0; } }
+}
+/* The first fight of a life: each part of the screen lit in turn, with its line beside it. */
+.ftour { position: fixed; inset: 0; z-index: 41; cursor: pointer; }
+.ftour .ft-hole { position: fixed; border-radius: 12px; border: 2px solid var(--data); box-shadow: 0 0 0 200vmax rgba(16, 6, 4, 0.66); pointer-events: none; } /* taste-skill-ignore: the dimmed screen around the lit part */
+.ftour .ft-cap { position: fixed; padding: 10px 14px; border-radius: 12px; background: rgba(var(--surface-rgb), 0.97); border: 1px solid var(--gold-line); color: var(--ink); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+.ftour .ft-cap p { margin: 2px 0 4px; font-size: 16px; line-height: 1.35; }
+.ftour .ft-n, .ftour .ft-tap { font-size: 12px; color: var(--faint); }
+.ftour .ft-skip { position: fixed; right: max(16px, var(--sar)); top: max(12px, var(--sat)); min-height: 44px; min-width: 88px; z-index: 1; background: rgba(var(--surface-rgb), 0.95); }
+@media (prefers-reduced-motion: no-preference) {
+  .ftour:not(.still) .ft-hole, .ftour:not(.still) .ft-cap { transition: top 0.3s ease, left 0.3s ease, width 0.3s ease, height 0.3s ease; }
+}

@@ -82,11 +82,12 @@
       host.innerHTML =
         (t.practice ? '<p class="trial-practice">' + U.tr("A first test. This one does not count; it shows you how tests work.") + "</p>" : "") +
         '<p class="game-rules">' + U.t(K.val(t.rules)) + "</p>" +
+        (typeof t.brief === "function" ? t.brief() : "") +
         (t.stakes ? '<ul class="stakes"><li class="win"><b>' + U.tr("If you succeed") + "</b> " + U.t(K.val(t.stakes[0])) + '</li><li class="lose"><b>' + U.tr("If you fail") + "</b> " + U.t(K.val(t.stakes[1])) + "</li></ul>" : "") +
         (t.attr || t.skill ? '<p class="trial-stats">' + U.tr("Helped by your {what}: {n}. The higher, the easier.", { what: statNames(t), n: power }) + "</p>" : "") +
         '<div class="btnrow"></div>';
       const go = () => begin();
-      host.querySelector(".btnrow").appendChild(U.button("cta", U.tr("Begin"), go));
+      host.querySelector(".btnrow").appendChild(U.button("cta", U.tr(t.brief ? "Fight" : "Begin"), go));
       // Antardhana (§18.8): once in each act, a stealth test can be skipped: you were simply not there.
       if ((kind === "sneak" || kind === "herd") && K.vanishReady && K.vanishReady() && !t.practice && !K.headless) {
         host.querySelector(".btnrow").appendChild(U.button("ghost", U.tr("Vanish instead (Antardhana)"), () => { K.S.vanishedAct = K.S.act; phase = "play"; finish("win", "You were simply not there. No one can say how."); }));
@@ -154,6 +155,36 @@
   // Runs every frame until stopped, or until its test is no longer on screen.
   // Game time stands still while the game is paused (the phone turned sideways, the tab hidden).
   const loop = (fn, el) => { let id, on = true; const t0 = U.clock(); const f = () => { if (!on) return; if (el && !el.isConnected) { on = false; return; } if (!U.paused()) fn((U.clock() - t0) / 1000); id = requestAnimationFrame(f); }; id = requestAnimationFrame(f); return () => { on = false; cancelAnimationFrame(id); }; };
+
+  // The clock of a timed test: the seconds left, large, and a bar that drains, at the top of the
+  // stage (in the test's header, above the play). The test sets it from its own game time
+  // (U.clock), so it stands still while the game is paused. In the last seconds it turns red, and
+  // with motion on its number beats; with reduced motion it only counts down. One clock per test:
+  // a test that times several things in turn (a question, then the next) sets the same clock again.
+  //   const clock = U.countdown(host); clock.set(secondsLeft, totalSeconds); clock.hide();
+  U.countdown = function (host) {
+    const wrap = host.closest(".trial") || host;
+    let el = wrap.querySelector(".t-clock");
+    if (!el) {
+      el = U.el('<div class="t-clock" role="timer" hidden><b class="t-secs" aria-hidden="true"></b><span class="t-unit" aria-hidden="true">' + U.trSpan("sec") + '</span><span class="t-bar" aria-hidden="true"><i></i></span></div>');
+      const head = wrap.querySelector(":scope > .t-head");
+      if (head) head.appendChild(el); else wrap.insertBefore(el, wrap.querySelector(":scope > .trial-body"));
+    }
+    const num = el.querySelector(".t-secs"), bar = el.querySelector(".t-bar i");
+    let shown = null;
+    return {
+      set(left, total) {
+        if (!el.isConnected) return;
+        left = clamp(left, 0, total);
+        el.hidden = false;
+        const n = Math.ceil(left);
+        if (n !== shown) { shown = n; num.textContent = n; el.setAttribute("aria-label", K.tr("{s} seconds left", { s: n })); }
+        bar.style.transform = "scaleX(" + (total > 0 ? left / total : 0).toFixed(4) + ")";
+        el.classList.toggle("warn", left <= Math.min(5, total * 0.34));
+      },
+      hide() { el.hidden = true; shown = null; }
+    };
+  };
 
   // Shared with the other kinds of test (ui/play.js, ui/boards.js).
   U.trialFrame = frame; U.pressButton = pressButton; U.loop = loop;
@@ -657,7 +688,7 @@
       const band = clamp(0.11 + power * 0.015, 0.1, 0.2), LIMIT = t.secs || 15;
       let pos = 0.5, vel = 0, holding = false, mood = 0.5, moodV = 0, calm = 0, last = 0;
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="steady"><div class="mood" style="width:' + band * 100 + '%"></div><div class="hand"></div></div><div class="calm"><i></i></div><p class="game-note">' + U.trSpan(t.help || "Hold to move your hand right; let go and it drifts back. Keep it over the glow.") + '</p><div class="btnrow"></div>';
-      const moodEl = host.querySelector(".mood"), hand = host.querySelector(".hand"), bar = host.querySelector(".calm i"), score = host.querySelector(".score");
+      const moodEl = host.querySelector(".mood"), hand = host.querySelector(".hand"), bar = host.querySelector(".calm i"), score = host.querySelector(".score"), clock = U.countdown(host);
       // A frightened horse (trial.horse): a leather puppet horse instead of the glow. Its head is
       // where your hand must be; it tosses its head and rears when frightened, lowers it as it calms.
       let horse = null;
@@ -698,6 +729,7 @@
         moodEl.classList.toggle("on", inside);
         bar.style.width = calm * 100 + "%";
         U.trLabel(score, t.tally || "Calm: {c}% · {s} seconds left", { c: Math.round(calm * 100), s: Math.max(0, Math.ceil(LIMIT - s)) });
+        clock.set(LIMIT - s, LIMIT);
         if (calm >= 1) finish("win", t.wonLine || "The horse stands still, trembling, and lets you lay a hand on its neck.");
         else if (s >= LIMIT) finish(calm >= 0.7 ? "close" : "lose", calm >= 0.7 ? t.nearLine || "Nearly. The horse is quieter, but not yet still." : t.lostLine || "The horse pulls free and bolts across the yard.");
       }, host);
@@ -710,22 +742,23 @@
     return frame(box, done, c, "retort", ({ host, power, t, finish, cue }) => {
       const rounds = K.val(t.rounds) || [], base = clamp(3.5 + power * 0.4, 3.5, 6.5);
       let i = 0, right = 0, timer = null, t0 = 0, raf = null;
+      const clock = U.countdown(host);
       function round() {
         const r = rounds[i];
         const order = r.replies.map((x, j) => j).sort(() => K.rng() - 0.5);
-        host.innerHTML = '<p class="score">' + U.tr("Round {n}, best of {m} · Right: {r}", { n: i + 1, m: rounds.length, r: right }) + '</p><blockquote class="taunt">' + U.t(r.line) + '</blockquote><div class="timer"><i></i></div><div class="btnrow replies"></div>';
-        const row = host.querySelector(".replies"), bar = host.querySelector(".timer i");
+        host.innerHTML = '<p class="score">' + U.tr("Round {n}, best of {m} · Right: {r}", { n: i + 1, m: rounds.length, r: right }) + '</p><blockquote class="taunt">' + U.t(r.line) + '</blockquote><div class="btnrow replies"></div>';
+        const row = host.querySelector(".replies");
         const keys = [];
         order.forEach((j) => { const f = () => answer(j === 0); row.appendChild(U.button("cta secondary", U.t(r.replies[j]), f)); keys.push(f); });
         U.keys(keys);
         // Longer replies get a little longer to read.
         const secs = base + r.replies.reduce((n, x) => n + K.tr(x).length, 0) / 70;
         t0 = U.clock();
-        const tick = () => { if (!host.isConnected) return; const left = 1 - (U.clock() - t0) / 1000 / secs; bar.style.width = Math.max(0, left) * 100 + "%"; if (left <= 0) return answer(false, true); raf = requestAnimationFrame(tick); };
+        const tick = () => { if (!host.isConnected) return; const left = secs - (U.clock() - t0) / 1000; clock.set(left, secs); if (left <= 0) return answer(false, true); raf = requestAnimationFrame(tick); };
         raf = requestAnimationFrame(tick);
       }
       function answer(ok, late) {
-        cancelAnimationFrame(raf);
+        cancelAnimationFrame(raf); clock.hide();
         U.keys([]);
         if (ok) right++;
         cue(ok ? "good" : "bad");
@@ -818,7 +851,7 @@
         '<div class="goal"></div><div class="guard">' + (painted ? U.puppet(Object.assign({}, U.puppetFor(t.watch || "guard"), { item: null }), { h: 150, pose: "live", flip: true }) : "") + '<i class="flame"></i></div><div class="me"></div></div><div class="sus"><i></i></div>' +
         '<p class="game-note" aria-live="polite">' + U.trSpan(t.help || "Hold to move. Stop before the light reaches you.") + '</p><div class="btnrow"></div>';
       const way = host.querySelector(".sneakway"), me = host.querySelector(".me"), susBar = host.querySelector(".sus i"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
-      const guard = host.querySelector(".guard"), poly = host.querySelector(".beam polygon"), pool = host.querySelector(".beam .pool");
+      const guard = host.querySelector(".guard"), poly = host.querySelector(".beam polygon"), pool = host.querySelector(".beam .pool"), clock = U.countdown(host);
       let flame = guard.querySelector(".flame");
       // On the painting your own puppet creeps along the ground through the shadows, empty-handed to
       // make no sound, with the load in a basket on the head. The guard holds his torch up in front
@@ -931,6 +964,7 @@
         me.classList.toggle("lit", lit);
         susBar.style.width = sus * 100 + "%";
         U.trLabel(score, t.tally || "Loads: {d} of {n} · Seen: {s} of {m} · {t} seconds", { d: trips, n: need, s: seen, m: lives, t: Math.max(0, Math.ceil(LIMIT - s)) });
+        clock.set(LIMIT - s, LIMIT);
         if (trips >= need) finish("win", ["{d} loads carried, seen {s} times.", { d: trips, s: seen }]);
         else if (seen >= lives || s >= LIMIT) finish("lose", ["{d} loads carried, seen {s} times.", { d: trips, s: seen }]);
       }, host);
@@ -945,23 +979,23 @@
       const look = clamp(3 + power * 0.3, 3, 5.5), secs = clamp(3.5 + power * 0.3, 3.5, 6), count = t.count || 7;
       const pool = (t.things || THINGS).slice().sort(() => K.rng() - 0.5), seen = pool.slice(0, count), unseen = pool.slice(count);
       let i = 0, right = 0, raf = null, timer = null;
-      host.innerHTML = '<p class="score">' + U.tr(t.lookLine || "Look. You have {n} seconds.", { n: Math.round(look) }) + '</p><ul class="table">' + seen.map((x) => "<li>" + U.tr(x) + "</li>").join("") + '</ul><div class="timer"><i></i></div>';
-      const bar = host.querySelector(".timer i"), t0 = U.clock();
-      const tickLook = () => { if (!host.isConnected) return; const left = 1 - (U.clock() - t0) / 1000 / look; bar.style.width = Math.max(0, left) * 100 + "%"; if (left <= 0) return ask(); raf = requestAnimationFrame(tickLook); };
+      host.innerHTML = '<p class="score">' + U.tr(t.lookLine || "Look. You have {n} seconds.", { n: Math.round(look) }) + '</p><ul class="table">' + seen.map((x) => "<li>" + U.tr(x) + "</li>").join("") + "</ul>";
+      const clock = U.countdown(host), t0 = U.clock();
+      const tickLook = () => { if (!host.isConnected) return; const left = look - (U.clock() - t0) / 1000; clock.set(left, look); if (left <= 0) return ask(); raf = requestAnimationFrame(tickLook); };
       raf = requestAnimationFrame(tickLook);
       function ask() {
         const yes = seen[(i * 3 + 1) % seen.length], no = unseen.slice(i * 2, i * 2 + 2);
         const opts = [yes].concat(no).sort(() => K.rng() - 0.5);
-        host.innerHTML = '<p class="score">' + U.tr("Question {n} of 3 · Right: {r}", { n: i + 1, r: right }) + '</p><p class="taunt">' + U.tr(t.ask || "Which of these was on the table?") + '</p><div class="timer"><i></i></div><div class="btnrow replies"></div>';
-        const row = host.querySelector(".replies"), b2 = host.querySelector(".timer i"), keys = [];
+        host.innerHTML = '<p class="score">' + U.tr("Question {n} of 3 · Right: {r}", { n: i + 1, r: right }) + '</p><p class="taunt">' + U.tr(t.ask || "Which of these was on the table?") + '</p><div class="btnrow replies"></div>';
+        const row = host.querySelector(".replies"), keys = [];
         opts.forEach((x) => { const f = () => answer(x === yes); row.appendChild(U.button("cta secondary", U.tr(x), f)); keys.push(f); });
         U.keys(keys);
         const t1 = U.clock();
-        const tick = () => { if (!host.isConnected) return; const left = 1 - (U.clock() - t1) / 1000 / secs; b2.style.width = Math.max(0, left) * 100 + "%"; if (left <= 0) return answer(false, true); raf = requestAnimationFrame(tick); };
+        const tick = () => { if (!host.isConnected) return; const left = secs - (U.clock() - t1) / 1000; clock.set(left, secs); if (left <= 0) return answer(false, true); raf = requestAnimationFrame(tick); };
         raf = requestAnimationFrame(tick);
       }
       function answer(ok, late) {
-        cancelAnimationFrame(raf); U.keys([]);
+        cancelAnimationFrame(raf); clock.hide(); U.keys([]);
         if (ok) right++;
         cue(ok ? "good" : "bad");
         host.querySelectorAll(".replies button").forEach((b) => { b.disabled = true; });

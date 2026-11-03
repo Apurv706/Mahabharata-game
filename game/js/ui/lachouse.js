@@ -199,8 +199,8 @@
       const prog = LINES.map(() => 0), cutDone = LINES.map(() => false);
       let chosen = 0, holding = false, seen = 0, over = false, lampX = 50, lampDir = 1, lastT = 0, elapsed = 0;
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="laccellar"><svg viewBox="0 0 100 100" role="img" aria-label="' + U.esc(K.tr("The cellar, seen from above")) + '"></svg></div>' +
-        '<div class="timer"><i></i></div><p class="game-note" aria-live="polite"></p><div class="btnrow fuse-btns"></div>';
-      const svg = host.querySelector("svg"), score = host.querySelector(".score"), note = host.querySelector(".game-note"), bar = host.querySelector(".timer i"), row = host.querySelector(".btnrow");
+        '<p class="game-note" aria-live="polite"></p><div class="btnrow fuse-btns"></div>';
+      const svg = host.querySelector("svg"), score = host.querySelector(".score"), note = host.querySelector(".game-note"), clock = U.countdown(host), row = host.querySelector(".btnrow");
       const say = (txt, v) => { note.textContent = K.tr(txt, v); };
       const lit = () => Math.abs(lampX - 50) < 22; // the lamp's light falls across the middle of the cellar, where the lines run
       function draw() {
@@ -240,7 +240,7 @@
       const stop = U.loop((s) => {
         if (over) return;
         const dt = s - lastT; lastT = s; elapsed = s;
-        bar.style.width = clamp(100 - (s / total) * 100, 0, 100) + "%";
+        clock.set(total - s, total);
         if (s >= total) return end();
         // The guard's lamp sweeps the cellar, slower for a calmer hand on the plan.
         lampX += lampDir * dt * 22; if (lampX > 96 || lampX < 4) lampDir = -lampDir;

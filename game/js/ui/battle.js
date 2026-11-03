@@ -37,6 +37,9 @@
     // ui/fightmodes.js) is played so only with motion on; otherwise, and under the tests, as a plain hold.
     const enc = K.ENCOUNTERS[encId], kind = enc && K.val(enc.kind);
     C.liveMode = kind && !K.headless && U.motion() && U.fightMode && U.fightMode.has(kind) ? kind : null;
+    if (tour) tour.end(true);
+    briefFor = U.fightBriefWanted(encId) && !C.liveMode ? encId : null; // a fight played live has the test's own rules card
+    { const old = document.querySelector(".fbrief-wrap"); if (old) old.remove(); }
     const B = C.start(encId, onEnd);
     C.liveMode = null;
     if (!B.mode) drums.start();
@@ -724,6 +727,9 @@
     U.renderLedger();
     // The moves' panel can change height from turn to turn (a tool appears, a card wraps): keep the painting's ground under the fighters.
     settleGround();
+    // Before the first blow: the card that says how this fight goes; or the tour of the screen, going on.
+    if (briefFor === enc.id && C.state() === B) drawBrief(B);
+    else if (tour) tour.refresh();
   };
   // For a moment after each draw, watch the fighters' feet: whenever they are not where the painting was
   // last fitted (Safari lays the page out later than Chrome, and fonts and images arrive late), fit again.
@@ -743,6 +749,201 @@
     };
     requestAnimationFrame(tick);
   }
+
+  // ---------- Before a fight: how it is won, and what you can do ----------
+  // A card over the fight before the first blow: one line on how this kind of fight is won and lost,
+  // and the moves it offers, each with its sign and a few words; one Fight button. The first time a
+  // kind of fight comes in a life it is shown whole; after that, one line across the top of the field
+  // that goes by itself. Before the first whole fight of a life, after the card, the screen's parts
+  // are pointed out one at a time (the tour, below). Not for the dream, a bout or the practice
+  // ground, and never under the tests or the bots (K.headless, jsdom): they go straight to the fight.
+  const NO_BRIEF = (enc) => !enc || !!enc.dream || !!enc.bout || /^x_/.test(enc.id || "");
+  U.fightBriefSkipped = (encId) => NO_BRIEF(K.ENCOUNTERS[encId]);
+  U.fightBriefWanted = (encId) => !K.headless && !/jsdom/i.test(navigator.userAgent || "") && !NO_BRIEF(K.ENCOUNTERS[encId]);
+  const ICON = (d) => '<svg viewBox="0 0 24 24" aria-hidden="true">' + d + "</svg>";
+  const FB_ICONS = {
+    strike: ICON('<path d="M4 20l5-5M7 13l4 4M9 15L20 4v3L11 16"/>'),
+    guard: ICON('<path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z"/>'),
+    herbs: ICON('<path d="M5 19c0-8 6-13 14-14-1 8-6 14-14 14zM5 19l7-7"/>'),
+    call: ICON('<path d="M4 10v4h3l6 4V6L7 10zM16 9c1.5 1.5 1.5 4.5 0 6M18.5 6.5c3 3 3 8 0 11"/>'),
+    astra: ICON('<circle cx="12" cy="12" r="3.5"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.8 2.8M16.2 16.2L19 19M19 5l-2.8 2.8M7.8 16.2L5 19"/>'),
+    special: ICON('<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>'),
+    orders: ICON('<path d="M6 21V4M6 4h11l-2 4 2 4H6"/>'),
+    cover: ICON('<path d="M3 20h18M5 20v-6h14v6M9 14v6M15 14v6M3 10l9-5 9 5"/>'),
+    lay: ICON('<path d="M3 18h18M6 14l12-6M12 21v-3"/>'),
+    lanes: ICON('<path d="M12 21V9M12 9l-5-5M12 9l5-5M4 4h3M17 4h3"/>'),
+    spare: ICON('<path d="M7 11V5.5a1.5 1.5 0 013 0V11M10 10V4.5a1.5 1.5 0 013 0V10M13 10V5.5a1.5 1.5 0 013 0V13c0 4-2.5 7-6 7-2.5 0-4-1.5-5.5-4L3 12.5a1.5 1.5 0 012.5-1.5L7 13"/>'),
+    flee: ICON('<path d="M10 6l-6 6 6 6M4 12h11a5 5 0 010 10"/>'),
+    block: ICON('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>'),
+    steer: ICON('<path d="M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4"/>'),
+    shoot: ICON('<path d="M7 3c8 4 8 14 0 18"/><path d="M7 3v18"/><path d="M3 12h17m-3-3 3 3-3 3"/>'),
+    duck: ICON('<path d="M6 9l6 6 6-6M4 20h16"/>'),
+    hold: ICON('<path d="M8 13V6a1.5 1.5 0 013 0v6M11 11V4.5a1.5 1.5 0 013 0V11M14 11V6a1.5 1.5 0 013 0v7c0 4-2.5 7-6 7-3 0-5-2-6-5l-1-3"/>')
+  };
+  const MODE_NAME = { duel: "A duel", melee: "Against several", hold: "A hold", rounds: "Last the rounds", escort: "An escort", breakthrough: "A break-through", weather: "No striking back",
+    chariot: "A chariot duel", range: "An archery duel", mace: "A mace duel", carry: "Carry him out" };
+  U.fightBriefMode = function (B) {
+    const enc = B.enc;
+    if (B.mode) return B.mode;
+    if (B.rule && MODE_NAME[B.kind]) return B.kind;
+    if (enc.hold) return "hold";
+    if (enc.rounds) return "rounds";
+    return B.units.filter((u) => u.side === "enemy").length === 1 ? "duel" : "melee";
+  };
+  // How this fight is won and lost, in one line (translated).
+  U.fightBriefGoal = function (B) {
+    const enc = B.enc, mode = U.fightBriefMode(B), n = enc.hold || enc.rounds || 0;
+    const foe = B.units.find((u) => u.side === "enemy");
+    const lower = (s) => (K.lang === "en" ? s.replace(/^The /, "the ") : s);
+    switch (mode) {
+      case "duel": return K.tr("Bring {foe} down. If you fall first, you lose.", { foe: foe ? K.text(foe.src || foe.name) : "" });
+      case "melee": return K.tr("Bring them all down. If you fall first, you lose.");
+      case "hold": return K.tr("Stand for {n} rounds. You need not win, only not fall.", { n });
+      case "rounds": return K.tr("Last {n} rounds, or bring them all down first.", { n });
+      case "escort": return K.tr("Keep {who} whole for {n} rounds. If it falls, you lose.", { who: lower(K.tr(enc.escort || "")), n });
+      case "breakthrough": return K.tr("Get {m} lengths through in {n} rounds. Each round, choose your way.", { m: enc.reach, n });
+      case "weather": return enc.layDown ? K.tr("You cannot strike back. Lay down your weapons before it reaches you.") : K.tr("You cannot strike back. Guard, take cover, and live through {n} rounds.", { n });
+      default: return "";
+    }
+  };
+  // What you can do in it: [icon, name, a few words] (translated), from what the fight offers.
+  const ORDERS = (id) => { const ab = K.ABILITIES[id]; return !!ab && (ab.needsAlly || ab.target === "allies"); };
+  const isAstraId = (id) => id === "astra" || !!(K.ASTRAS && K.ASTRAS[id]);
+  U.fightBriefActions = function (B) {
+    const out = [], mode = U.fightBriefMode(B);
+    const add = (icon, name, words) => out.push([icon, K.tr(name), K.tr(words)]);
+    if (mode === "chariot") { add("steer", "Steer", "Change lanes; ram his car"); add("shoot", "Shoot", "When you are level with him"); return out; }
+    if (mode === "range") { add("shoot", "Release", "As he crosses your line"); add("duck", "Duck", "Press again as his arrow flies"); return out; }
+    if (mode === "mace") { add("strike", "Strike", "As the ring meets the mark"); add("guard", "Hold back", "Let the red rings pass"); return out; }
+    if (mode === "carry") { add("hold", "Carry", "Hold to take his weight"); add("duck", "Let go", "When you stagger"); return out; }
+    const rows = C.available().filter((r) => !r.idle && !r.why);
+    const ids = rows.map((r) => r.id), seen = new Set();
+    const words = { strike: "Hit the one you target", guard: "Halve the next blow", herbs: "Heal yourself or a friend", cover: "The next blow misses you", lay_down: "Kneel; it passes over you" };
+    rows.forEach((r) => {
+      if (r.id === "call" || seen.has(r.id)) return;
+      if (/^lane\d$/.test(r.id)) { if (!seen.has("lanes")) { seen.add("lanes"); add("lanes", "Choose your way", "Left, centre or right"); } return; }
+      if (isAstraId(r.id)) { if (!seen.has("astra")) { seen.add("astra"); add("astra", "Invoke astra", "A divine weapon, once a battle"); } return; }
+      if (words[r.id]) { seen.add(r.id); out.push([r.id === "lay_down" ? "lay" : r.id, r.name, K.tr(words[r.id])]); return; }
+    });
+    const orders = rows.filter((r) => ORDERS(r.id)), special = rows.filter((r) => !words[r.id] && !ORDERS(r.id) && !isAstraId(r.id) && r.id !== "call" && !/^lane\d$/.test(r.id));
+    if (orders.length) out.push(["orders", K.tr("Orders"), orders.map((r) => r.name).join(", ")]);
+    if (special.length) out.push(["special", K.tr("Your path's moves"), special.map((r) => r.name).join(", ")]);
+    if (B.stepMode) add("block", "Block or dodge", "Tap in time as a blow comes");
+    if (ids.includes("call")) add("call", "Call for help", "Once: a friend may come");
+    if (B.enc.spare) add("spare", "Spare", "Let a beaten foe live");
+    if (C.canFlee()) add("flee", "Withdraw", C.fleeBreaks().length ? "Leave the fight; it breaks a vow" : "Leave the fight, at a cost");
+    return out;
+  };
+  const actionsHtml = (B) => '<ul class="fb-acts">' + U.fightBriefActions(B).map(([ic, name, w]) => '<li><span class="fb-ic">' + FB_ICONS[ic] + "</span><b>" + U.esc(name) + "</b><small>" + U.esc(w) + "</small></li>").join("") + "</ul>";
+  // For a fight played live (ui/fightmodes.js): the moves, for the test's own rules card.
+  U.fightBriefLive = function (B) {
+    if (!U.fightBriefWanted(B.enc.id)) return null;
+    const mode = U.fightBriefMode(B), S = K.S, first = !(S.briefed || []).includes(mode);
+    if (first) S.briefed = (S.briefed || []).concat(mode);
+    return () => '<div class="fbrief inline"><p class="fb-mode">' + U.tr(MODE_NAME[mode]) + "</p>" + actionsHtml(B) + "</div>";
+  };
+  let briefFor = null, tour = null;
+  function drawBrief(B) {
+    const S = K.S, mode = U.fightBriefMode(B);
+    if (!B._brief) B._brief = { full: !(S.briefed || []).includes(mode), mode };
+    if (!(S.briefed || []).includes(mode)) S.briefed = (S.briefed || []).concat(mode);
+    const leaf = U.$("leaf"), key = "fbrief:" + B.bid, again = U.pageAgain(key);
+    U.pageShown(key);
+    const old = document.querySelector(".fbrief-wrap"); if (old) old.remove();
+    const goal = U.fightBriefGoal(B);
+    if (!B._brief.full) {
+      // A kind met before: one line across the top of the field, gone by itself; the fight is on.
+      briefFor = null;
+      const arena = U.$("arena") || leaf;
+      const line = U.el('<p class="fb-line' + (again ? " still" : "") + '" aria-live="polite"><b>' + U.tr(MODE_NAME[mode]) + "</b>" + (goal ? " · " + U.esc(goal) : "") + "</p>");
+      arena.appendChild(line);
+      setTimeout(() => line.remove(), 4200);
+      return;
+    }
+    const card = U.el('<div class="fbrief-wrap' + (again ? " still" : "") + '" role="dialog" aria-modal="true" aria-labelledby="fb-title"><div class="fbrief">' +
+      '<p class="fb-tag">' + U.tr(B.enc.lethal ? "Battle · you can die here" : "A fight") + "</p>" +
+      '<h2 id="fb-title">' + U.t(K.val(B.enc.title)) + '</h2><p class="fb-mode">' + U.tr(MODE_NAME[mode]) + "</p>" +
+      (goal ? '<p class="fb-goal">' + U.esc(goal) + "</p>" : "") +
+      '<p class="fb-lbl">' + U.tr("What you can do") + "</p>" + actionsHtml(B) + '<div class="btnrow"></div></div></div>');
+    const go = () => {
+      if (briefFor !== B.enc.id) return;
+      briefFor = null; card.remove();
+      if (!S.fightTour && C.state() === B && !B.over) { S.fightTour = 1; return startTour(B); }
+      U.renderBattle(C.state() || B);
+    };
+    const btn = U.button("cta fb-go", U.tr("Fight"), go);
+    card.querySelector(".btnrow").appendChild(btn);
+    document.body.appendChild(card);
+    U.keys([go]);
+    setTimeout(() => { if (btn.isConnected) btn.focus({ preventScroll: true }); }, again ? 0 : 300);
+  }
+
+  // ---------- The first fight of a life: the screen, part by part ----------
+  // Each part of the fight's screen that this fight has, lit in turn with a line beside it, about two
+  // seconds each; a tap goes on, Skip ends it. With reduced motion the light jumps, it does not slide.
+  function tourSteps(B) {
+    const q = (s) => { const el = document.querySelector(s); return el && el.offsetParent !== null ? el : null; };
+    const steps = [];
+    const add = (el, text) => { if (el) steps.push({ el, text }); };
+    if (B.kind !== "weather") add(q("#battle-body .sides .side:last-child .unit.enemy:not(.down)") ? q("#battle-body .sides .side:last-child") : null, C.canMark && C.canMark() ? "Tap a foe's card, or his figure, to mark him for your soldiers." : "Tap a foe's card, or his figure, to make him your target.");
+    add(q("#battle-body .sides .side"), "Your side. The bar is health: if yours runs out, you fall.");
+    add(q("#battle-body .holdline"), "How many rounds you must stand.");
+    add(q("#battle-actions .actions"), "Your moves. Choose one each turn, or press its number.");
+    const orders = [...document.querySelectorAll("#battle-actions .act[data-move]")].find((b) => ORDERS(b.dataset.move) && !b.disabled);
+    add(orders, "Orders to the soldiers beside you.");
+    add([...document.querySelectorAll("#battle-actions .act[data-move]")].find((b) => isAstraId(b.dataset.move) || b.dataset.move === "astra-pick"), "Your divine weapon. Once a battle.");
+    add(q("#battle-actions .call-help"), "Shout for a friend. Once a battle.");
+    add([...document.querySelectorAll("#battle-actions .battle-tools .ghost:not(.call-help)")].find((b) => b.offsetParent), "Withdraw: leave the fight. It has a cost.");
+    return steps;
+  }
+  function startTour(B) {
+    U.renderBattle(B);
+    const steps = tourSteps(B);
+    if (!steps.length) return;
+    const still = !U.motion();
+    const el = U.el('<div class="ftour' + (still ? " still" : "") + '" role="dialog" aria-modal="true" aria-label="' + U.esc(K.tr("How to fight")) + '"><div class="ft-hole"></div>' +
+      '<div class="ft-cap" aria-live="polite"><span class="ft-n"></span><p></p><span class="ft-tap"></span></div><button type="button" class="ghost ft-skip"></button></div>');
+    document.body.appendChild(el);
+    const hole = el.querySelector(".ft-hole"), cap = el.querySelector(".ft-cap"), skip = el.querySelector(".ft-skip");
+    let i = -1, timer = null;
+    const end = (quiet) => { if (!tour) return; clearTimeout(timer); tour = null; el.remove(); window.removeEventListener("keydown", key, true); if (quiet !== true) U.renderBattle(C.state() || B); };
+    const place = () => {
+      const st = steps[i]; if (!st || !st.el.isConnected) return;
+      const r = st.el.getBoundingClientRect(), W = innerWidth, H = innerHeight, pad = 6;
+      const top = Math.max(4, r.top - pad), left = Math.max(4, r.left - pad), right = Math.min(W - 4, r.right + pad), bottom = Math.min(H - 4, r.bottom + pad);
+      Object.assign(hole.style, { top: top + "px", left: left + "px", width: right - left + "px", height: bottom - top + "px" });
+      // The line goes below the lit part when there is room, else above it; never past the edges.
+      const ch = cap.offsetHeight || 90, cw = Math.min(W - 32, 360);
+      const y = bottom + 12 + ch <= H - 8 ? bottom + 12 : Math.max(8, top - 12 - ch);
+      const x = Math.min(Math.max(16, (left + right) / 2 - cw / 2), W - 16 - cw);
+      Object.assign(cap.style, { top: y + "px", left: x + "px", width: cw + "px" });
+    };
+    const show = () => {
+      const st = steps[i];
+      cap.querySelector(".ft-n").textContent = K.tr("{n} of {m}", { n: i + 1, m: steps.length });
+      cap.querySelector("p").textContent = K.tr(st.text);
+      cap.querySelector(".ft-tap").textContent = K.tr("Tap to go on");
+      skip.textContent = K.tr("Skip");
+      try { st.el.scrollIntoView({ block: "nearest", behavior: "auto" }); } catch (e) { /* old browsers */ }
+      place();
+    };
+    const next = () => {
+      clearTimeout(timer);
+      i++;
+      if (i >= steps.length) return end();
+      show();
+      const wait = () => { timer = setTimeout(() => (U.paused() ? wait() : next()), 1900); };
+      wait();
+    };
+    const key = (e) => { if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); end(); } else if ([" ", "Enter", "ArrowRight"].includes(e.key) || /^[1-9]$/.test(e.key)) { e.preventDefault(); e.stopPropagation(); next(); } };
+    el.addEventListener("click", (e) => { if (e.target === skip) return end(); next(); });
+    window.addEventListener("keydown", key, true);
+    U.keys([]);
+    // Redrawn underneath (a language switch): find the parts again and say the line in the new language.
+    tour = { refresh() { U.keys([]); const fresh = tourSteps(B); steps.forEach((s, k) => { const f = fresh.find((x) => x.text === s.text); if (f) steps[k].el = f.el; }); if (i >= 0) show(); }, end };
+    next();
+  }
+  window.addEventListener("resize", () => { if (tour) tour.refresh(); });
 
   K.on("combat", (B) => U.renderBattle(B));
 })(window.K = window.K || {});

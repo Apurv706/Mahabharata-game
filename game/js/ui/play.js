@@ -707,9 +707,11 @@
         if (flashT > 0) { ctx.fillStyle = "rgba(200,40,20," + flashT * 0.5 + ")"; ctx.fillRect(0, 0, cv.width, cv.height); }
       }
       draw(0); tally(0);
+      const clock = U.countdown(host);
       const stop = U.loop((s) => {
         const dt = Math.min(0.05, s - last); last = s;
         if (over) return;
+        clock.set(LIMIT - s, LIMIT);
         timer += dt; spreadT += dt; flashT = Math.max(0, flashT - dt);
         if (timer >= step) { timer = 0; tick(); }
         if (spreadT >= (t.spread || 3.2)) { spreadT = 0; spread(); }
@@ -784,9 +786,11 @@
       row.appendChild(U.pressButton("⟳", () => turn(1)));
       const off = keyset({ ArrowUp: () => pick(sel - 1), ArrowDown: () => pick(sel + 1), ArrowLeft: () => turn(-1), ArrowRight: () => turn(1), a: () => turn(-1), d: () => turn(1), " ": () => turn(1) });
       draw(); tally(0);
+      const clock = mode === "last" ? null : U.countdown(host); // the last stand is held as long as you can: no time to beat
       const stop = U.loop((s) => {
         const dt = Math.min(0.05, s - last); last = s;
         if (over) return;
+        if (clock) clock.set(LIMIT - s, LIMIT);
         drift += dt;
         if (drift >= driftEvery) {
           drift = 0;
@@ -839,8 +843,8 @@
       const filled = marks.map(() => null);
       let phase = "look", unit = 0, wrong = 0, probe = 0, probesHit = 0, t0 = 0, flank = null, over = false;
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="formfield"><svg viewBox="-100 -100 200 200" role="img" aria-label="' + U.esc(K.tr("The field, seen from above")) + '"></svg></div>' +
-        '<div class="timer"><i></i></div><p class="game-note" aria-live="polite"></p><div class="btnrow form-btns"></div>';
-      const svg = host.querySelector("svg"), score = host.querySelector(".score"), note = host.querySelector(".game-note"), bar = host.querySelector(".timer i"), row = host.querySelector(".btnrow");
+        '<p class="game-note" aria-live="polite"></p><div class="btnrow form-btns"></div>';
+      const svg = host.querySelector("svg"), score = host.querySelector(".score"), note = host.querySelector(".game-note"), clock = U.countdown(host), row = host.querySelector(".btnrow");
       const icon = (u, x, y, cls) => '<g class="unit ' + u + (cls ? " " + cls : "") + '" transform="translate(' + x + " " + y + ')">' + UNIT_ART[u] + "</g>";
       function draw() {
         let s = '<path class="enemy-line" d="M-90 -92 H90"/>';
@@ -909,9 +913,10 @@
       const stop = U.loop(() => {
         if (over) return;
         const el = (U.clock() - t0) / 1000;
-        if (phase === "look") { bar.style.width = Math.max(0, 1 - el / look) * 100 + "%"; if (el >= look) { phase = "place"; nextUnit(); } }
-        else if (phase === "place") { bar.style.width = Math.max(0, 1 - el / per) * 100 + "%"; if (el >= per) { say("Too slow."); settle(-1, true); } }
-        else if (flank && flank.state === "coming") { bar.style.width = Math.max(0, 1 - el / react) * 100 + "%"; if (el >= react) endProbe(false); }
+        if (phase === "look") { clock.set(look - el, look); if (el >= look) { phase = "place"; nextUnit(); } }
+        else if (phase === "place") { clock.set(per - el, per); if (el >= per) { say("Too slow."); settle(-1, true); } }
+        else if (flank && flank.state === "coming") { clock.set(react - el, react); if (el >= react) endProbe(false); }
+        else clock.hide();
       }, host);
       return () => { stop(); off(); };
     });

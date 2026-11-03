@@ -219,6 +219,28 @@ const PAGE = {
     if (leaf.getBoundingClientRect().bottom > H + 1) out.push("fight page runs off the bottom");
     return out;
   },
+  // Before a fight (ui/battle.js): the card fits the screen, its Fight button in reach.
+  brief(o) {
+    const out = [], W = innerWidth, H = innerHeight;
+    const card = document.querySelector(".fbrief-wrap .fbrief"), go = document.querySelector(".fb-go");
+    if (!card) return ["no briefing before the fight"];
+    const r = card.getBoundingClientRect();
+    if (r.left < 0 || r.right > W + 1) out.push("briefing card runs off the side");
+    if (!go) out.push("no Fight button");
+    else { const b = go.getBoundingClientRect(); if (b.bottom > H - (o.sab || 0) + 1 || b.top < 0) out.push("Fight button off screen"); if (b.height < 40) out.push("Fight button shorter than a tap target"); }
+    if (!document.querySelector(".fb-acts li")) out.push("no moves on the briefing");
+    return out;
+  },
+  // The first fight's tour: the lit part and its line are on screen, Skip in reach.
+  tour(o) {
+    const out = [], W = innerWidth, H = innerHeight;
+    const cap = document.querySelector(".ftour .ft-cap"), skip = document.querySelector(".ftour .ft-skip");
+    if (!cap) return ["no tour of the fight screen"];
+    const r = cap.getBoundingClientRect();
+    if (r.left < 0 || r.right > W + 1 || r.top < 0 || r.bottom > H + 1) out.push("tour caption off screen");
+    if (!skip || skip.getBoundingClientRect().height < 40) out.push("no Skip button big enough to tap");
+    return out;
+  },
   painting(o) {
     const out = [];
     const bd = document.getElementById("backdrop");
@@ -380,6 +402,11 @@ async function goTest(page, game, trial) {
   const start = await page.$(".trial .cta");
   if (start) { await start.click(); await page.waitForTimeout(900); }
 }
+// The card before a fight, and the first fight's tour after it: through both, to the fight.
+async function passBrief(page) {
+  const go = await page.$(".fb-go"); if (go) { await go.click(); await page.waitForTimeout(400); }
+  const skip = await page.$(".ft-skip"); if (skip) { await skip.click(); await page.waitForTimeout(400); }
+}
 const TESTS = [
   ["aim", { stage: "stage_training_ground", cast: ["drona"] }], ["push", {}], ["steady", {}], ["sneak", {}], ["notice", {}],
   ["drill", { set: "mudra", stage: "stage_training_ground", cast: ["balarama"] }], ["rhythm", { stage: "stage_smithy", cast: ["charu"], sound: "clang" }],
@@ -529,10 +556,15 @@ async function runDevice(browser, base, o, report) {
   // A fight.
   await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 44, act: 6, side: "pandava" }); K.go("a6_capture"); K.UI.startBattle("e_guard", () => {}); }, LIFE);
   await page.waitForTimeout(900);
+  await check("fight briefing", ["brief"]);
+  await page.click(".fb-go"); await page.waitForTimeout(500);
+  await check("fight: first-fight tour", ["tour"]);
+  await page.click(".ft-skip"); await page.waitForTimeout(400);
   await check("fight", ["battle"]);
   // A fight holding two divine weapons: one "Invoke astra" card, and the chooser behind it.
   await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 44, act: 6, side: "pandava", astras: [{ id: "agneya", from: "fire_altar" }, { id: "varuna", from: "lake_sage" }], tapas: 9 }); K.go("a6_capture"); K.UI.startBattle("e_guard", () => {}); }, LIFE);
   await page.waitForTimeout(900);
+  await passBrief(page);
   await check("fight: two astras", ["battle"]);
   {
     const cards = await page.$$eval("#battle .bmove, #battle button", (b) => b.map((x) => x.textContent));
@@ -551,10 +583,12 @@ async function runDevice(browser, base, o, report) {
   // A fight on a borrowed test-stage painting (the sparring trial): the fighters stand on its ground.
   await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 17, act: 2 }); K.go("a2_spar"); K.UI.startBattle("e_spar", () => {}); }, LIFE);
   await page.waitForTimeout(900);
+  report.push({ browser: browser._name, device: label, screen: "no briefing before a bout", problems: (await page.$(".fbrief-wrap")) ? ["a briefing card before the sparring bout"] : [] });
   await check("fight: sparring", ["battle"]);
   // A holding fight (content/command.js): the champion's own painting, the countdown in the log.
   await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 44, act: 6, side: "pandava" }); K.S.flags.push("role_command", "role_division"); K.go("a6_day16"); K.UI.startBattle("hold_karna", () => {}); }, LIFE);
   await page.waitForTimeout(900);
+  await passBrief(page);
   await check("fight: holding", ["battle"]);
 
   // The practice ground (ui/practice.js). Beside a second chance, the offer; from the menu between
@@ -612,6 +646,7 @@ async function runDevice(browser, base, o, report) {
   await fresh(page, url, o);
   await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 24, act: 3, friend: "charu" }); K.S.bonds.charu = 7; K.go("a3_lac"); K.UI.startBattle("e_bandits", () => {}); }, LIFE);
   await page.waitForTimeout(900);
+  await passBrief(page);
   {
     const r = await page.evaluate(() => { const b = document.querySelector(".call-help"); if (!b) return { no: true }; const rb = b.getBoundingClientRect(); b.click(); return { note: !!b.querySelector(".call-note"), on: rb.bottom <= innerHeight + 1 && rb.top >= 0 }; });
     await page.waitForTimeout(900);

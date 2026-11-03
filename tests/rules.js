@@ -1092,4 +1092,27 @@ require(G + "content/war_fights.js");
   ok(stars({ aim: 4, might: 4, grace: 2, wisdom: 2, command: 1 }) === "archer:1,mace:1", "two attributes level at the top: one star on each weapon");
   ok(stars({ aim: 3, might: 3, grace: 3, wisdom: 3, command: 3 }) === "", "all attributes level: no stars");
 }
+// 102. The card before a fight (ui/battle.js): never for the dream or a training bout, never under the
+// tests; for any other fight it says how it is won and what you can do.
+{
+  const fs = require("fs"), path = require("path"), { JSDOM, VirtualConsole } = require("jsdom");
+  const GAME = path.join(__dirname, "..", "game"), html = fs.readFileSync(path.join(GAME, "index.html"), "utf8");
+  const dom = new JSDOM(html.replace(/<script src="[^"]+"><\/script>/g, ""), { runScripts: "outside-only", pretendToBeVisual: true, url: "https://localhost/", virtualConsole: new VirtualConsole() });
+  const w = dom.window; w.HTMLElement.prototype.scrollIntoView = () => {};
+  for (const m of html.matchAll(/<script src="([^"]+)"><\/script>/g)) w.eval(fs.readFileSync(path.join(GAME, m[1]), "utf8"));
+  const WK = w.K, UI = WK.UI;
+  ok(UI.fightBriefSkipped("e_dream") && UI.fightBriefSkipped("e_spar") && !UI.fightBriefSkipped("e_bandits") && !UI.fightBriefSkipped("e_guard"), "no fight briefing for the dream fight or the sparring bout; one for a real fight");
+  ok(!UI.fightBriefWanted("e_bandits"), "the fight briefing is skipped under the tests (jsdom)");
+  WK.headless = true;
+  WK.S = Object.assign(WK.newLife(), { name: "T", origin: "panchala", pronoun: "she", age: 15, act: 2, teacher: "drona" });
+  WK.go("a0_dream"); UI.startBattle("e_dream", () => {});
+  const dreamCard = !!w.document.querySelector(".fbrief-wrap, .ftour");
+  Object.assign(WK.S, { age: 17 }); WK.go("a2_spar"); UI.startBattle("e_spar", () => {});
+  ok(!dreamCard && !w.document.querySelector(".fbrief-wrap, .ftour") && w.document.querySelector("#battle-actions .act"), "the dream fight and the sparring bout open straight on the fight, with no card or tour");
+  Object.assign(WK.S, { age: 24, act: 3 }); WK.go("a3_lac"); UI.startBattle("e_bandits", () => {});
+  const B = WK.Combat.state();
+  ok(UI.fightBriefMode(B) === "melee" && /Bring them all down/.test(UI.fightBriefGoal(B)) && UI.fightBriefActions(B).some((a) => a[0] === "strike") && !w.document.querySelector(".fbrief-wrap"), "a real fight under the tests: no card on screen, but its mode, goal and moves are known");
+  WK.Combat.end && WK.Combat.end();
+  w.close();
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);
