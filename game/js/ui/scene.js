@@ -15,6 +15,8 @@
     astra: SV + '<path d="M3 21l7-7M14 10l7-7M16.5 3H21v4.5"/><path d="M10.2 13.8 12 12M12.5 10.5l1.5-.5M3 21l2.5-.5L4 19"/><path d="M11 8.5l1.5 1.5M8.5 11l1.5 1.5" stroke-width="1.2"/></svg>'
   };
 
+  const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.4l-6.1 3.4 1.4-6.8-5.1-4.7 6.9-.8z"/></svg>';
+
   function header(sc) {
     const S = K.S;
     // The prologue is a dream of the war, years ahead: no age, so the childhood that follows reads as now.
@@ -46,10 +48,14 @@
     stopLamp();
     if (U.stageFx) U.stageFx.stop();
     if (sc.ending) return U.renderEnding(sc);
-    // The prologue opens on the child it is dreamt by: supper at home, bed, and the dream rising.
-    if (sc.sleepIntro && sleepFor !== K.visit && U.beatsOn()) { sleepFor = K.visit; return U.sleepIntro(() => U.renderScene(sc)); }
     const S = K.S;
-    if (sc.war && lastConch !== sc.id && K.Sound) K.Sound.play("conch");
+    // A page already shown (ui/dom.js U.pageAgain), or the same choice come back to after a closed
+    // way, is there whole at once: no quill, no title card, and no conch or place music again.
+    const pageKey = "scene:" + sc.id;
+    const again = U.pageAgain(pageKey, true) || !!(S.loopThen && S.loopThen.scene === sc.id);
+    // The prologue opens on the child it is dreamt by: supper at home, bed, and the dream rising.
+    if (sc.sleepIntro && !again && sleepFor !== K.visit && U.beatsOn()) { sleepFor = K.visit; return U.sleepIntro(() => U.renderScene(sc)); }
+    if (sc.war && !again && lastConch !== sc.id && K.Sound) K.Sound.play("conch");
     // The music follows the stakes: the war, the dice hall and timed moments are tense.
     // The music follows the stage: the war plays the battle anthem; the dice game, the exile years and
     // high-stakes moments the fusion piece; everything else the heroic theme.
@@ -62,10 +68,10 @@
     // own travel line, or what lies ahead.
     const moved = K.travel ? K.travel(sc) : null;
     // Arriving somewhere new: the place's own short piece (audio.js), once per arrival.
-    if (!moved && S.at && S.at !== lastPlace && K.Sound && K.Sound.place) { lastPlace = S.at; K.Sound.place(S.origin === "suta" && S.at === "anga" ? "suta" : S.at); }
+    if (!moved && S.at && S.at !== lastPlace && K.Sound && K.Sound.place) { lastPlace = S.at; if (!again) K.Sound.place(S.origin === "suta" && S.at === "anga" ? "suta" : S.at); }
     if (moved && U.journeyPage) {
       if (K.headless) U.mapOf(S);
-      else {
+      else if (!again) { // Continue onto a scene already seen does not walk the road to it again
         const place = K.val(sc.place);
         const why = K.val(sc.travel) || (K.homePlace && place === K.homePlace(S) ? ["You go home to {place}.", { place }] : ["Ahead: {what}", { what: K.val(sc.title) || "" }]);
         return U.journeyPage(moved[0], moved[1], why, () => U.renderScene(sc));
@@ -75,7 +81,7 @@
     // Each new scene opens in beats: an act card when a new act begins, the scene's title card, the
     // painting alone for a moment, and only then the page. Once per scene, never on a redraw.
     U.beatStop();
-    if (beatSeen !== sc.id && U.beatsOn()) {
+    if (beatSeen !== sc.id && !again && U.beatsOn()) {
       beatSeen = sc.id;
       // The prologue (a dream of the war) has no act card; Act I's card comes when the childhood begins.
       const newAct = !sc.prologue && actSeen !== S.act;
@@ -109,8 +115,11 @@
       const signs = marks.filter((m) => !(m[0] === "vow" && img === m[3])).map((m) => m[0] === "vow" ? U.thumb(m[3], "emblem mark", m[1]).replace("<i ", '<i title="' + U.esc(m[2]) + '" ')
         : m[0] === "breakvow" ? U.thumb(m[3], "emblem mark breakvow", m[1]).replace("<i ", '<i title="' + U.esc(m[1]) + '" ')
         : '<i class="mark ' + m[0] + '" role="img" aria-label="' + U.esc(m[1]) + '" title="' + U.esc(m[1]) + '">' + MARK_SVG[m[0]] + "</i>").join("");
-      const cls = "choice" + (grid ? " tile" : "") + (img ? " has-img" : "") + (crossed ? " crossed" : "") + (fx ? " has-fx" : "") + (signs ? " has-marks" : "");
-      const b = U.button(cls, '<span class="k">' + (i + 1) + "</span>" + (img ? U.thumb(img, grid ? "emblem" : undefined) : "") + '<span class="t">' + U.t(K.val(c.t)) + "</span>" +
+      // On a picture grid, small gold stars at the picture's corner on what suits you best (c.stars, 1 to 3).
+      const nStars = grid && ok ? Math.min(3, K.val(c.stars) | 0) : 0;
+      const stars = nStars ? '<span class="stars s' + nStars + '" role="img" aria-label="' + U.tr("Suits you best") + '" title="' + U.tr("Suits you best") + '">' + STAR.repeat(nStars) + "</span>" : "";
+      const cls = "choice" + (grid ? " tile" : "") + (img ? " has-img" : "") + (crossed ? " crossed" : "") + (fx ? " has-fx" : "") + (signs ? " has-marks" : "") + (stars ? " has-stars" : "");
+      const b = U.button(cls, '<span class="k">' + (i + 1) + "</span>" + (img ? U.thumb(img, grid ? "emblem" : undefined) : "") + stars + '<span class="t">' + U.t(K.val(c.t)) + "</span>" +
         (fx ? '<span class="fx">' + fx + "</span>" : "") + (signs ? '<span class="marks">' + signs + "</span>" : ""), null, "choice-" + c.id);
       if (vowMark) b.title = vowMark[2];
       b.disabled = !ok;
@@ -137,7 +146,7 @@
     if (h1) h1.dataset.hold = 650;
     [...box.children].forEach((b) => { b.dataset.hold = 110; });
     // The scene-setting lines are written out by the quill.
-    story.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
+    if (!again) story.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
     U.keys([]);
     // The page comes up over the whole painting and grows as the story is written (lines and
     // choices not shown yet take no room). The painting holds still behind it; once everything is
@@ -146,13 +155,14 @@
     U.fitBackdrop();
     const acts = box.parentElement;
     acts.dataset.hold = 0;
+    U.pageShown(pageKey);
     U.stage([plate, ...story, acts, ...box.children, U.$("keyhint")], () => {
       U.keys(keys); startLamp(sc, rows);
       // Before a choice that could cost your life or your freedom, the figure trembles.
       if (K.inPeril && rows.some((r) => r.ok && r.c.peril && K.inPeril(r.c))) U.puppetReact("tremble");
       settledFor = sc.id; U.settled = true;
       setTimeout(() => U.fitBackdrop(), U.motion() ? 450 : 0);
-    });
+    }, again);
     U.livePlay();
     if (U.playMoments && K.momentQueue && K.momentQueue.length) U.playMoments();
     // The paintings this scene's choices lead to, loaded while the player reads.
@@ -552,6 +562,8 @@
   function showAfter(sc, c, res, next) {
     // A language switch now must repaint this state, never offer the choices again.
     U.redraw = () => { U.renderScene(sc); showAfter(sc, c, res, next); };
+    // What came of the choice is written once; redrawn (a language switch), it is there at once.
+    const pageKey = "after:" + sc.id + ":" + c.id, again = U.pageAgain(pageKey);
     pickedVisit = K.visit;
     stopLamp();
     U.$("leaf").querySelectorAll(".lamp").forEach((l) => l.remove());
@@ -605,17 +617,19 @@
     parts.push(cont);
     // After a lost fight that was not deadly: the way to the practice ground (ui/practice.js).
     { const pb = res.lostFight && U.practiceAfterFight ? U.practiceAfterFight(res.lostFight) : null; if (pb) { box.appendChild(pb); parts.push(pb); } }
-    parts.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
+    if (!again) parts.forEach((el) => { if (el.tagName === "P" || el.classList.contains("said")) el.classList.add("write"); });
     story.dataset.follow = "1";
     U.toEnd(story, true);
     const won = res.check ? res.check.pass : res.outcome ? res.outcome === "win" : null;
     const D = K.lastDelta || {};
-    if (D.vowTaken) setTimeout(() => U.puppetReact("vow"), 400);
+    if (again) { /* the figure answered the first time */ }
+    else if (D.vowTaken) setTimeout(() => U.puppetReact("vow"), 400);
     // The figure answers what you did: shame for a wrong done, folded hands for respect given.
     else if ((D["duty.conscience"] || 0) <= -2) setTimeout(() => U.puppetReact("shame"), 400);
     else if (won === null && ((D["duty.teacher"] || 0) > 0 || Object.keys(D).some((k) => k.startsWith("bond.") && D[k] >= 2))) setTimeout(() => U.puppetReact("fold"), 400);
     else if (won !== null) setTimeout(() => U.puppetReact(won ? "win" : "lose"), 400);
-    U.stage(parts, () => { U.toEnd(story, true); U.keys([go]); cont.focus({ preventScroll: true }); U.finalTop = null; setTimeout(() => U.fitBackdrop(), U.motion() ? 300 : 0); });
+    U.pageShown(pageKey);
+    U.stage(parts, () => { U.toEnd(story, true); U.keys([go]); cont.focus({ preventScroll: true }); U.finalTop = null; setTimeout(() => U.fitBackdrop(), U.motion() ? 300 : 0); }, again);
     // A milestone just reached (a friend for life, a divine weapon, a vow...) gets its moment now,
     // over the page; the result is waiting underneath.
     if (U.playMoments) U.playMoments();

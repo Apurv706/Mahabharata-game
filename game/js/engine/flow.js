@@ -59,7 +59,10 @@
     // Continue (or a loaded save) returns to the very scene that was saved: its conditions, the scenes
     // that come before it and its event slot were settled when it was first reached, and are not asked again.
     K.visit = (K.visit || 0) + 1; // each arrival at a scene is a new visit (the page allows one choice per visit)
-    const sc = resuming && id === S.scene && S.seen.includes(id) && K.SCENES[id] ? K.SCENES[id] : K.resolveScene(id);
+    const back = !!(resuming && id === S.scene && S.seen.includes(id) && K.SCENES[id]);
+    const sc = back ? K.SCENES[id] : K.resolveScene(id);
+    // A scene returned to this way has been read: its page comes back whole (ui/dom.js U.pageAgain).
+    K.resumed = back ? K.visit : 0;
     const prevScene = S.scene;
     S.scene = sc.id;
     if (sc.act && sc.act > S.act) drift(S, sc.act);

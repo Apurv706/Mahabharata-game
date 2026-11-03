@@ -242,7 +242,9 @@
     U.keys([]);
     const S = K.S, a = P(from), b = P(to), d = leg(a, b);
     const road = S.road || [];
-    const still = !U.motion();
+    // Shown again (a language switch), the walk is already done (ui/dom.js U.pageAgain).
+    const pageKey = "journey:" + from + ">" + to, again = U.pageAgain(pageKey);
+    const still = !U.motion() || again;
     const leaf = U.$("leaf");
     const px = Math.min(760, (leaf && leaf.clientWidth) || window.innerWidth - 32) - 40, g = grow(px);
     const vb = frame([from, to], narrow(px) ? 1.1 : 1.5, 360), z0 = vb[2] / FULL[2], z = z0 * g;
@@ -294,7 +296,7 @@
     };
     place(0);
     if (still) finish(); else { path.style.animation = "none"; path.style.strokeDashoffset = "1"; raf = requestAnimationFrame(tick); }
-    if (K.Sound && K.Sound.play) try { K.Sound.play("step"); } catch (e) { /* no step sound: fine */ }
+    if (K.Sound && K.Sound.play && !again) try { K.Sound.play("step"); } catch (e) { /* no step sound: fine */ }
     let left = false;
     const go = () => { if (left) return; left = true; finish(); done(); };
     // A first press while the figure walks finishes the walk; the next one moves on.
@@ -303,7 +305,8 @@
     U.keys([() => (over ? go() : finish())]);
     U.redraw = () => U.journeyPage(from, to, why, done);
     const ph = leaf.querySelector(".pagehead");
-    U.stage([ph, leaf.querySelector(".jmap"), leaf.querySelector(".j-route"), leaf.querySelector(".j-why"), leaf.querySelector(".text .btnrow")].filter(Boolean));
+    U.pageShown(pageKey);
+    U.stage([ph, leaf.querySelector(".jmap"), leaf.querySelector(".j-route"), leaf.querySelector(".j-why"), leaf.querySelector(".text .btnrow")].filter(Boolean), null, again);
   };
   // A small emblem for running text.
   function emblemBadge(kind) {

@@ -207,8 +207,11 @@
   // until the next act, however often the mood swings back to it.
   const played = new Set();
   let playedFor = null; // a new life hears its music again
+  // The same life loaded again (Continue, a save) is a new object with the same beginning: its pieces
+  // are not played over again.
+  const sameLife = (a, b) => !!(a && b) && a.name === b.name && a.origin === b.origin && a.pronoun === b.pronoun && (a.seen || []).slice(0, 3).join() === (b.seen || []).slice(0, 3).join();
   function playTrack(m) {
-    if (K.S !== playedFor) { if (playedFor) played.clear(); playedFor = K.S; } // the opening and the first scenes share one piece
+    if (K.S !== playedFor) { if (playedFor && !sameLife(playedFor, K.S)) played.clear(); playedFor = K.S; } // the opening and the first scenes share one piece
     if (track && track.mood === m) return;
     fadeTrack();
     const stage = m + ":" + Math.max(1, (K.S && K.S.act) || 1);

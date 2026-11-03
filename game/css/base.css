@@ -379,6 +379,10 @@ body.inscene .ledger { position: fixed; z-index: 40; top: calc(max(8px, var(--sa
 @media (max-width: 720px) { .choices.grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .choices.grid .choice.tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; position: relative; min-height: 0; padding: 10px 8px 9px; }
 .choices.grid .choice.tile .k { position: absolute; top: 6px; left: 10px; }
+/* Stars on the picture of what suits you best: tiny, gold, at the top right corner of the tile. */
+.choices.grid .choice.tile .stars { position: absolute; top: 6px; right: 8px; display: flex; gap: 1px; pointer-events: none; }
+.choices.grid .choice.tile .stars svg { width: 11px; height: 11px; fill: #f2c25a; stroke: #6b4612; stroke-width: 1.2; stroke-linejoin: round; filter: drop-shadow(0 0 2px rgba(255, 196, 90, .55)); }
+@media (max-width: 720px) { .choices.grid .choice.tile .stars { top: 5px; right: 6px; } .choices.grid .choice.tile .stars svg { width: 10px; height: 10px; } }
 .choices.grid .choice.tile .thumb.emblem, .split .actions .choices.grid .choice.tile .thumb.emblem { width: 76px; height: 76px; }
 .leaf .choices.grid .choice.tile .t { font-size: 15.5px; line-height: 1.2; }
 .choices.grid .choice.tile:hover:not(:disabled) { transform: translateY(-2px); }

@@ -56,7 +56,48 @@
     ".bh-wheel{position:absolute;left:0;top:0;transform-origin:50% 50%}.bh-wheel svg{display:block;width:100%;height:100%;transition:filter .8s}" +
     ".bh-wheel.glow svg{filter:drop-shadow(0 0 5px rgba(255,214,128,.9)) drop-shadow(0 0 16px rgba(255,186,90,.5))}" +
     ".bh-stage.shake{animation:bh-shake .28s}@keyframes bh-shake{25%{transform:translate(-4px,2px)}50%{transform:translate(4px,-2px)}75%{transform:translate(-2px,1px)}}" +
-    ".bh-stage .fly-arrow{z-index:4}";
+    ".bh-stage .fly-arrow{z-index:4}" +
+    // Krishna's light: a soft gold and blue aura behind the figure and a ring of light behind the head,
+    // stronger while he holds the wheel; a slow breath in it while things move, still otherwise.
+    ".bh-aura,.bh-nimbus{position:absolute;left:0;top:0;border-radius:50%;pointer-events:none;opacity:.6;transition:opacity 1s ease}" +
+    ".bh-aura{background:radial-gradient(closest-side,rgba(255,246,210,.85),rgba(255,222,140,.6) 34%,rgba(255,206,120,.34) 58%,rgba(140,185,255,.3) 78%,rgba(140,185,255,0))}" +
+    ".bh-nimbus{background:radial-gradient(closest-side,rgba(255,250,225,.9),rgba(255,230,160,.7) 48%,rgba(255,206,110,.6) 64%,rgba(160,200,255,.45) 80%,rgba(160,200,255,0))}" +
+    ".bh-glow-on .bh-aura,.bh-glow-on .bh-nimbus{opacity:1}" +
+    ".bh-a.bh-divine{filter:drop-shadow(0 0 3px rgba(255,230,160,.8)) drop-shadow(0 6px 10px rgba(0,0,0,.45));transition:filter 1s ease}" +
+    ".bh-glow-on .bh-a.bh-divine{filter:drop-shadow(0 0 4px rgba(255,236,170,.95)) drop-shadow(0 0 12px rgba(255,214,128,.6)) drop-shadow(0 6px 10px rgba(0,0,0,.4))}" +
+    ".bh-breath .bh-aura{animation:bh-breath 3.2s ease-in-out infinite}@keyframes bh-breath{50%{filter:brightness(1.18) saturate(1.1)}}" +
+    "@media (prefers-reduced-motion:reduce){.bh-breath .bh-aura{animation:none}.bh-aura,.bh-nimbus{transition:none}}";
+  // His peacock feather, drawn large enough to read: set in the knot of hair on his head joint, in the
+  // puppet's own units, so it turns and leans with his head. It covers the rig's small one.
+  const FEATHER = '<g class="bh-feather">' +
+    '<path d="M57.4 33 Q56.6 20 61.6 9" stroke="#24120a" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M57.4 33 Q56.6 20 61.6 9" stroke="#efe2c0" stroke-width="1" fill="none" stroke-linecap="round"/>' +
+    '<g stroke="#3f8a5a" stroke-width=".55" opacity=".9" fill="none">' +
+    [30, 26.5, 23, 19.5, 16].map((y) => { const x = 57.1 + (33 - y) * 0.16; return '<path d="M' + x.toFixed(1) + " " + y + " l-3.4 -3.2 M" + x.toFixed(1) + " " + y + ' l3.2 -2.6"/>'; }).join("") + "</g>" +
+    '<g transform="rotate(14 62.4 8)">' +
+    '<path d="M62.4 -2.6 C68.6 -1.6 70 7 68.4 12 C67 16.4 64.6 18.4 62.4 18.6 C60.2 18.4 57.8 16.4 56.4 12 C54.8 7 56.2 -1.6 62.4 -2.6 Z" fill="#2c6e4a" stroke="#24120a" stroke-width=".8"/>' +
+    '<g stroke="#5fa86e" stroke-width=".45" opacity=".8">' + [-50, -25, 0, 25, 50, 155, 180, 205].map((a) => { const r = a * Math.PI / 180; return '<path d="M62.4 8 L' + (62.4 + 7.4 * Math.sin(r)).toFixed(1) + " " + (8 - 10.4 * Math.cos(r)).toFixed(1) + '"/>'; }).join("") + "</g>" +
+    '<ellipse cx="62.4" cy="8.6" rx="4.5" ry="6.4" fill="#c9a13a"/><ellipse cx="62.4" cy="9" rx="3.4" ry="4.9" fill="#1f8f8a"/>' +
+    '<ellipse cx="62.4" cy="9.6" rx="2.4" ry="3.5" fill="#1f4fb0"/><ellipse cx="62.4" cy="10.6" rx="1.3" ry="1.9" fill="#0b1d45"/></g></g>';
+  // Krishna on a stage: the feather on his head, and his light behind him, following the figure.
+  function divine(S, o) {
+    const head = o.svg.querySelector(".head"), inner = head && (head.querySelector(":scope > g") || head);
+    if (inner) inner.insertAdjacentHTML("beforeend", FEATHER);
+    o.svg.style.overflow = "visible"; o.el.classList.add("bh-divine");
+    const aura = document.createElement("i"), nimbus = document.createElement("i");
+    aura.className = "bh-aura"; nimbus.className = "bh-nimbus";
+    S.host.insertBefore(nimbus, S.host.firstChild); S.host.insertBefore(aura, S.host.firstChild); // behind every figure
+    if (S.moving) S.host.classList.add("bh-breath");
+    const ar = S.fh * 1.05, nr = S.fh * 0.3;
+    Object.assign(aura.style, { width: ar * 0.82 + "px", height: ar * 1.16 + "px" }); Object.assign(nimbus.style, { width: nr + "px", height: nr + "px" });
+    const put = () => {
+      const b = S.at(o, "pp-body", 0.42), h = S.at(o, "head", 0.55);
+      aura.style.transform = "translate(" + (b.x - ar * 0.41) + "px," + (b.y - ar * 0.58) + "px)";
+      nimbus.style.transform = "translate(" + (h.x - nr / 2) + "px," + (h.y - nr / 2) + "px)";
+    };
+    const loop = () => { if (!S.alive()) return; put(); if (S.moving) requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+    return { strong: (on) => S.host.classList.toggle("bh-glow-on", !!on) };
+  }
   const WHEEL = '<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44" fill="none" stroke="#24120a" stroke-width="11"/><circle cx="50" cy="50" r="44" fill="none" stroke="#8a5a2c" stroke-width="8"/>' +
     '<circle cx="50" cy="50" r="44" fill="none" stroke="#e2b55a" stroke-width="1.2" stroke-dasharray="3 6"/><g stroke="#24120a" stroke-width="5.4">' +
     [0, 30, 60, 90, 120, 150].map((a) => '<path d="M50 50 L' + (50 + 42 * Math.cos(a * Math.PI / 180)).toFixed(1) + " " + (50 + 42 * Math.sin(a * Math.PI / 180)).toFixed(1) + ' M50 50 L' + (50 - 42 * Math.cos(a * Math.PI / 180)).toFixed(1) + " " + (50 - 42 * Math.sin(a * Math.PI / 180)).toFixed(1) + '"/>').join("") +
@@ -146,16 +187,17 @@
     const ar = S.actor(U.puppetFor("arjuna"), S.X(0.15), deck, false, "stand");
     const kr = S.actor(PUPPETS.krishna, S.X(0.27), deck, false, "stand");
     const bh = S.actor(U.puppetFor("bhishma"), S.X(0.82), 0, true, "bowready");
+    const light = divine(S, kr);
     // The wheel lies on the field, broken off some chariot, until he lifts it.
     const ws = fh * 0.42, wheel = document.createElement("div"); wheel.className = "bh-wheel"; wheel.innerHTML = WHEEL;
-    Object.assign(wheel.style, { width: ws + "px", height: ws + "px" }); S.host.appendChild(wheel);
+    Object.assign(wheel.style, { width: ws + "px", height: ws + "px" }); S.host.insertBefore(wheel, kr.el); // behind him, so his head and feather show in front of it
     let wx = S.X(0.44), wy = S.gy - ws * 0.12, wsy = 0.3, spin = 0;
     const putWheel = () => { wheel.style.transform = "translate(" + (wx - ws / 2) + "px," + (wy - ws / 2) + "px) rotate(" + spin + "deg) scaleY(" + wsy + ")"; };
     putWheel();
-    const hand = () => { const a = S.at(kr, "foreF", 0.7), b = S.at(kr, "foreB", 0.7); return { x: (a.x + b.x) / 2, y: Math.min(a.y, b.y) }; };
+    const hand = () => { const a = S.at(kr, "foreF", 0.12), b = S.at(kr, "foreB", 0.12); return { x: (a.x + b.x) / 2, y: Math.min(a.y, b.y) }; };
     if (!S.moving) { // a still: Krishna with the wheel raised, Arjuna's arms about him, the old man's bow lowered
       kr.place(S.X(0.6), 0); ar.place(S.X(0.52), 0); pose(kr, P.raise); pose(ar, P.catch); pose(bh, P.lower);
-      wheel.classList.add("glow"); requestAnimationFrame(() => { const h = hand(); wx = h.x; wy = h.y - ws * 0.25; wsy = 1; putWheel(); });
+      wheel.classList.add("glow"); light.strong(true); requestAnimationFrame(() => { const h = hand(); wx = h.x; wy = h.y - ws * 0.36; wsy = 1; putWheel(); });
       return;
     }
     pose(ar, P.halfhearted, 300, 0.6); pose(kr, P.reins, 300, 0.6);
@@ -177,11 +219,11 @@
     // He lifts the wheel above his head; it catches a little light.
     const w0 = { x: wx, y: wy };
     pose(kr, P.raise, 420, 0.6);
-    await S.tween(420, (t) => { const h = hand(); wx = w0.x + (h.x - w0.x) * t; wy = w0.y + (h.y - ws * 0.25 - w0.y) * t; wsy = 0.3 + 0.7 * t; putWheel(); });
-    wheel.classList.add("glow");
+    await S.tween(420, (t) => { const h = hand(); wx = w0.x + (h.x - w0.x) * t; wy = w0.y + (h.y - ws * 0.36 - w0.y) * t; wsy = 0.3 + 0.7 * t; putWheel(); });
+    wheel.classList.add("glow"); light.strong(true);
     await S.wait(160); if (!S.alive()) return;
     // He runs at the old man. The old man lowers his bow, and opens his hands.
-    const follow = () => { const h = hand(); wx = h.x; wy = h.y - ws * 0.25; putWheel(); };
+    const follow = () => { const h = hand(); wx = h.x; wy = h.y - ws * 0.36; putWheel(); };
     let step = 0; const legs = setInterval(() => { if (!S.alive()) return clearInterval(legs); pose(kr, step++ % 2 ? P.run2 : P.run1, 900, 0.55); }, 170);
     const kx0 = kr.x, kx1 = S.X(0.59);
     setTimeout(() => { if (S.alive()) { pose(bh, P.lower, 260, 0.75); bh.rig.kick({ head: 120 }); } }, 380);
@@ -203,7 +245,7 @@
     const tr = setInterval(() => { if (!S.alive()) return clearInterval(tr); follow(); }, 16);
     await S.wait(1100); if (!S.alive()) return clearInterval(tr);
     // He lowers the wheel. Arjuna kneels at his feet and swears.
-    pose(kr, P.wheelDown, 300, 0.6); wheel.classList.remove("glow");
+    pose(kr, P.wheelDown, 300, 0.6); wheel.classList.remove("glow"); light.strong(false);
     await S.wait(500); pose(ar, P.swear, 380, 0.6);
     await S.wait(1300); clearInterval(tr);
   }
