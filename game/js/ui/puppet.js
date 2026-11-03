@@ -1,6 +1,8 @@
-/* The shadow puppet: you, as a leather puppet in the style of tholu bommalata, drawn in code.
-   One jointed figure (head, arms, forearms, thighs, shins) seen in profile, cut from coloured,
-   translucent leather pricked with holes, held up on thin rods. It is built from the life:
+/* The shadow puppet: you, as a leather puppet in the style of tholu bommalata, drawn in code as a
+   master craftsman would cut it (PRD §18.14). One jointed figure (head, arms, forearms, thighs,
+   shins) seen in profile, cut from opaque coloured leather with a firm dark edge: curved, tapered
+   limbs on thread-tied joint discs, rows of punched holes, a printed border and scalloped hem on the
+   cloth, beads and gold, held up on a thin rod. It is built from the life:
    age (child, youth, adult, elder), pronoun, birthplace (colours and headgear), temperament
    (bearing), heirloom, path (what the grown-up carries), wounds, chains, and death.
    Poses are joint angles set by a class on the figure (pose-aim, pose-push, pose-walk...), so
@@ -87,19 +89,44 @@
     return Object.assign({ stage: p.peer && S ? K.puppetStage(S.age || 10) : "adult" }, p);
   };
 
-  // Leather is pricked with small holes; one shared pattern for every puppet on the page.
-  function ensureDefs() {
-    if (document.getElementById("pp-defs")) return;
-    const d = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    d.setAttribute("id", "pp-defs"); d.setAttribute("aria-hidden", "true");
-    d.style.cssText = "position:absolute;width:0;height:0;overflow:hidden";
-    d.innerHTML = '<defs><pattern id="pp-dots" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r="0.75" fill="#fff3d0" opacity="0.55"/></pattern>' +
-      '<pattern id="pp-weave" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 3h6" stroke="#fff3d0" stroke-width="0.6" opacity="0.35"/></pattern></defs>';
-    document.body.appendChild(d);
+  // Master leather (PRD §18.14): each piece is cut with a firm dark edge, and the craftsman punches
+  // holes in rows only where he would put them (hems, crowns, armlets, the dhoti's edge), never as a
+  // grid over every part. A row of holes is one dashed stroke with round caps, so it follows any
+  // curve and costs one element. Light leather shows its holes dark, dark leather shows them light.
+  const EDGE = "#1d0f08";
+  const OUT = ' stroke="' + EDGE + '" stroke-width="1.35" stroke-linejoin="round"';
+  const OUT_F = ' stroke="' + EDGE + '" stroke-width="0.8" stroke-linejoin="round"'; // fine pieces: jewellery
+  const light = (c) => { const m = /^#([0-9a-f]{6})$/i.exec(c || ""); if (!m) return false; const n = parseInt(m[1], 16); return (0.3 * (n >> 16) + 0.59 * ((n >> 8) & 255) + 0.11 * (n & 255)) > 150; };
+  const holeRow = (d, on, gap, w) => '<path d="' + d + '" fill="none" stroke="' + (light(on) ? "#3a1e0c" : "#fff3d0") + '" stroke-opacity="' + (light(on) ? 0.6 : 0.72) + '" stroke-width="' + (w || 1.15) + '" stroke-dasharray="0 ' + (gap || 2.8) + '" stroke-linecap="round"/>';
+  // A string of beads: a dark edge under each bead, then the bead.
+  const beads = (d, c, w, gap) => '<path d="' + d + '" fill="none" stroke="' + EDGE + '" stroke-width="' + (w + 0.9) + '" stroke-dasharray="0 ' + gap + '" stroke-linecap="round"/><path d="' + d + '" fill="none" stroke="' + c + '" stroke-width="' + w + '" stroke-dasharray="0 ' + gap + '" stroke-linecap="round"/>';
+  // A joint: the two pieces overlap on a leather disc tied with a thread knot.
+  // The knot and its two loose ends are one path: a small ring, filled, and the ends trailing from it.
+  const disc = (x, y, r, c) => '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="' + c + '" stroke="' + EDGE + '" stroke-width="0.9"/>' +
+    '<path d="M' + (x - 1.15) + " " + y + " a1.15 1.15 0 1 0 2.3 0 a1.15 1.15 0 1 0 -2.3 0 M" + (x + 0.5) + " " + (y + 1) + " l1.1 1.7 M" + (x - 0.5) + " " + (y + 1) + ' l-0.9 1.9" fill="#f2e2b8" stroke="' + EDGE + '" stroke-width="0.5" stroke-linecap="round"/>';
+  const f2 = (v) => +v.toFixed(2);
+  // A hem, as a craftsman finishes it: a row of holes above, a printed band (a zigzag with dots in the
+  // trim colour between two trim lines), and a scalloped edge below. The band runs from the top edge
+  // (x from tx0 to tx1 at y0) to the hem (bx0 to bx1 at y1), both sagging by s in the middle.
+  // o.plain: the far leg's hem, mostly hidden, keeps only its scallops and band lines (fewer pieces).
+  function hemSvg(tx0, tx1, y0, bx0, bx1, y1, s, trim, cloth, n, plain) {
+    const P = (t, u) => { const xa = tx0 + (tx1 - tx0) * t, xb = bx0 + (bx1 - bx0) * t, sag = 4 * s * t * (1 - t); return [f2(xa + (xb - xa) * u), f2(y0 + (y1 - y0) * u + sag)]; };
+    const pts = (u, k) => { const a = []; for (let i = 0; i <= k; i++) a.push(P(i / k, u)); return a; };
+    const top = pts(0, 8), bot = pts(1, 8);
+    const band = "M" + top.map((p) => p.join(" ")).join(" L") + " L" + bot.slice().reverse().map((p) => p.join(" ")).join(" L") + " Z";
+    let zig = "", dots = "";
+    for (let i = 0; i <= 2 * n; i++) { const p = P(i / (2 * n), i % 2 ? 0.24 : 0.74); zig += (i ? " L" : "M") + p.join(" "); if (i % 2) { const q = P(i / (2 * n), 0.8); dots += "M" + q.join(" ") + "h0"; } }
+    let sc = "M" + bot[0].join(" ");
+    const m = n + 2, hb = pts(1, m);
+    for (let i = 1; i <= m; i++) { const a = hb[i - 1], b = hb[i]; sc += " Q" + f2((a[0] + b[0]) / 2) + " " + f2((a[1] + b[1]) / 2 + 3.4) + " " + b.join(" "); }
+    sc += " L" + bot.slice().reverse().map((p) => p.join(" ")).join(" L") + " Z";
+    const above = pts(-0.42, 8);
+    return '<path d="' + sc + '" fill="' + trim + '" stroke="' + EDGE + '" stroke-width="0.85" stroke-linejoin="round"/>' +
+      (plain ? "" : '<path d="' + band + '" fill="' + EDGE + '" fill-opacity="0.16"/>') +
+      // the band's two lines, the zigzag and its dots: one stroke in the trim colour
+      '<path d="M' + top.map((p) => p.join(" ")).join(" L") + " M" + bot.map((p) => p.join(" ")).join(" L") + (plain ? "" : " " + zig + " " + dots) + '" fill="none" stroke="' + trim + '" stroke-width="1.1" stroke-linecap="round"/>' +
+      (plain ? "" : holeRow("M" + above.map((p) => p.join(" ")).join(" L"), cloth, 2.7, 1.05));
   }
-
-  const OUT = ' stroke="#24120a" stroke-width="1.1" stroke-linejoin="round"';
-  const holes = (d) => '<path d="' + d + '" fill="url(#pp-dots)"/>';
   // The things a puppet carries, drawn near the front hand (58,126).
   // Weapons and tools are drawn resting in a hanging hand, pointing up along the arm. When the arm
   // is raised or reaching (a strike, a block, a cheer), CSS turns them about the hand so they carry
@@ -122,7 +149,7 @@
         '<path d="M58 44 L56.4 38.5 L58 33 L59.6 38.5 Z" fill="' + GOLD + '"' + OUT + '/>' +
         '<path d="M58 43 C66.5 43 70 51.5 69.5 59 C69 67.5 63.5 73 58 73 C52.5 73 47 67.5 46.5 59 C46 51.5 49.5 43 58 43 Z" fill="' + GOLD + '"' + OUT + '/>' +
         '<path d="M58 43 Q50.5 58 58 73 M58 43 Q65.5 58 58 73 M52 46 Q46.5 58 52 71 M64 46 Q69.5 58 64 71" fill="none" stroke="#7a5418" stroke-width="0.9"/>' +
-        '<path d="M47 59 Q58 63 69 59" fill="none" stroke="' + trim + '" stroke-width="1.8"/>' + holes("M58 43 C66.5 43 70 51.5 69.5 59 C69 67.5 63.5 73 58 73 C52.5 73 47 67.5 46.5 59 C46 51.5 49.5 43 58 43 Z") +
+        '<path d="M47 59 Q58 63 69 59" fill="none" stroke="' + trim + '" stroke-width="1.8"/>' + holeRow("M49 52.4 Q58 55.4 67 52.4", GOLD, 2.5, 1) + holeRow("M49 65.6 Q58 68.6 67 65.6", GOLD, 2.5, 1) +
         '<rect x="54.2" y="72" width="7.6" height="4.4" rx="1" fill="' + GOLD + '"' + OUT + '/>' +
         (o.studs ? [52, 58, 64, 55, 61].map((x, i) => '<circle cx="' + x + '" cy="' + [52, 50, 52, 64, 64][i] + '" r="2" fill="' + o.studs[i % o.studs.length] + '" stroke="#24120a" stroke-width=".7"/>').join("") : "") + "</g>";
       // A khadga: broad blade swelling towards a curved point, a cross-guard, a grip and a pommel.
@@ -166,16 +193,24 @@
     const metal = o.white ? "#efe6cf" : GOLD;
     const fanD = "M52 46 Q36 46 33 30 Q40 34 46 32 Q38 22 41 10 Q48 22 54 30 Q50 20 54 12 Q57 24 57 34 Z";
     const gems = (o.broad ? [[56, 38], [62, 34], [68, 38]] : [[62, 40], [62, 46 - 27 * tall], [56.5, 41], [67.5, 41]]).map(([x, y], i) => '<circle cx="' + x + '" cy="' + y + '" r="' + (i ? 1.5 : 2.4) + '" fill="' + (Array.isArray(gem) ? gem[i % gem.length] : gem) + '" stroke="#24120a" stroke-width=".7"/>').join("");
-    return '<path d="' + fanD + '" fill="' + metal + '"' + OUT + "/>" + holes(fanD) +
+    const rib = o.white ? "#a8956a" : "#7a5418", tc = o.trim || "#b2432a";
+    const fan = '<path d="' + fanD + '" fill="' + metal + '"' + OUT + "/>" +
+      '<path d="M51 44 Q41 42 37 33 M51.5 40 Q45 30 43.5 15 M54.6 36 Q54 26 54.6 16" fill="none" stroke="' + rib + '" stroke-width="0.9"/>' +
+      holeRow("M49 42.2 Q42.4 39.6 39.6 34", metal, 2.4, 1) + holeRow("M49.8 37.4 Q46 29 45.4 20", metal, 2.4, 1);
+    // The tiers, each outlined in the trim colour with a row of holes in it.
+    const tiers = o.broad ? '<path d="M50 34 h24" stroke="' + tc + '" stroke-width="1.5"/>' + holeRow("M51.6 31 Q62 26.4 72.4 31", metal, 2.4, 1) + holeRow("M51.2 39 H72.8", metal, 2.6, 1)
+      : '<path d="M51.9 37 h20.2 M55.5 ' + f2(y1) + " h13 M59 " + f2(y2) + ' h6" stroke="' + tc + '" stroke-width="1.5"/>' +
+        holeRow("M53.6 " + f2((y1 + 37) / 2) + " H70.4", metal, 2.5, 1) + holeRow("M59.6 " + f2(y1 - 2.1) + " H64.6", metal, 2.4, 1);
+    return fan +
       (o.broad ? '<path d="M50 34 L48 27 L53 30 L56 22 L59 27 L62 18 L65 27 L68 22 L71 30 L76 27 L74 34" fill="' + metal + '"' + OUT + "/>" : "") +
-      '<path d="' + body + '" fill="' + metal + '"' + OUT + "/>" + holes(body) +
+      '<path d="' + body + '" fill="' + metal + '"' + OUT + "/>" + tiers +
       '<path d="M50.6 43 Q62 39 73.4 43" fill="none" stroke="' + (o.trim || "#b2432a") + '" stroke-width="2"/>' + gems +
       (o.broad ? "" : '<circle cx="62" cy="' + (top - 3) + '" r="2.8" fill="' + metal + '"' + OUT + "/>") +
       '<path d="M50.5 45 Q62 38.5 74.5 44 L74 47 Q62 41.5 51 48 Z" fill="' + metal + '"' + OUT + "/>";
   }
   // A leather helmet with a spike and a neck flap, for soldiers; a horsehair crest on it for horsemen and champions.
   const HELMET = "M48 51 Q46 31 63 30 Q79 31 77 47 L73 47 Q63 41 53 53 Z";
-  const helmetSvg = (t) => '<path d="' + HELMET + '" fill="#7a5a3a"' + OUT + "/>" + holes(HELMET) +
+  const helmetSvg = (t) => '<path d="' + HELMET + '" fill="#7a5a3a"' + OUT + "/>" + holeRow("M51 46.4 Q50.6 34.4 63 33.4 Q74.4 34 74.6 43.4", "#7a5a3a", 2.6) +
     '<path d="M50 41 Q63 32 77 44" fill="none" stroke="' + t + '" stroke-width="2.2"/><path d="M63 30 L63 22 M60 23 h6" stroke="#24120a" stroke-width="1.6" stroke-linecap="round"/><path d="M48 48 L43 64 L52 61 Z" fill="#6b4a2c"' + OUT + "/>";
   const TURBAN = "M49 48 Q48 30 63 28 Q78 30 77 45 Q63 38 49 48 Z";
   function headgearSvg(kind, trim, cloth, hair, elder, spec = {}) {
@@ -186,10 +221,10 @@
       // A tall tiered crown, with a jewel at the front and a fan of ornament behind the ear.
       // A stepped temple crown, as the leather puppets of the south wear it.
       case "kirita": return '<path d="M52 45 Q46 42 47.5 35 Q51 40 55 41 Z" fill="' + GOLD + '"' + OUT + "/>" +
-        '<path d="M53 43 L54 36 L56 36 L57 30 L59 30 L60 25 Q62 21 64 25 L65 30 L67 30 L68 36 L70 36 L71 43 Z" fill="' + GOLD + '"' + OUT + "/>" + holes("M53 43 L54 36 L56 36 L57 30 L59 30 L60 25 Q62 21 64 25 L65 30 L67 30 L68 36 L70 36 L71 43 Z") +
+        '<path d="M53 43 L54 36 L56 36 L57 30 L59 30 L60 25 Q62 21 64 25 L65 30 L67 30 L68 36 L70 36 L71 43 Z" fill="' + GOLD + '"' + OUT + "/>" + holeRow("M55.4 41 H68.6", GOLD, 2.4, 1) + holeRow("M58 35.4 H66", GOLD, 2.4, 1) +
         '<path d="M55 38.5 L69 38.5 M57 32.5 L67 32.5" stroke="' + trim + '" stroke-width="1.3" fill="none"/><circle cx="62" cy="35.5" r="1.5" fill="' + trim + '"/><circle cx="62" cy="21" r="2.2" fill="' + GOLD + '"' + OUT + "/>" + goldFillet + '<circle cx="70" cy="44" r="1.7" fill="' + trim + '"/>';
       // A smaller crown for younger princes and lesser kings.
-      case "mukuta": return '<path d="M54 43 L56 32 Q62 24 68 32 L70 43 Z" fill="' + GOLD + '"' + OUT + "/>" + holes("M54 43 L56 32 Q62 24 68 32 L70 43 Z") + '<path d="M56 37 Q62 33 68 37" stroke="' + trim + '" stroke-width="1.3" fill="none"/><circle cx="62" cy="24.5" r="2" fill="' + GOLD + '"' + OUT + "/>" + goldFillet;
+      case "mukuta": return '<path d="M54 43 L56 32 Q62 24 68 32 L70 43 Z" fill="' + GOLD + '"' + OUT + "/>" + holeRow("M56 40.6 H68", GOLD, 2.4, 1) + '<path d="M56 37 Q62 33 68 37" stroke="' + trim + '" stroke-width="1.3" fill="none"/><circle cx="62" cy="24.5" r="2" fill="' + GOLD + '"' + OUT + "/>" + goldFillet;
       // A top knot tied with a coloured fillet.
       // Elders wear the knot bare: a sage's matted hair, with a string of rudraksha.
       case "jata": return KNOT(hair) + (elder ? '<path d="M52.5 36 Q57 31.5 61.5 36" stroke="#6b3a1c" stroke-width="1.4" stroke-dasharray="0.1 2" stroke-linecap="round" fill="none"/>' : '<path d="M52.5 36 Q57 32 61.5 36" stroke="' + trim + '" stroke-width="1.6" fill="none"/>' + fillet);
@@ -202,7 +237,7 @@
       // A bandit's head scarf, its ends trailing behind.
       case "scarf": return '<path d="M50 47 Q52 36 63 35 Q74 36 76 44 L75 48 Q63 42 51 50 Z" fill="' + hat + '"' + OUT + '/><path d="M51 49 L39 58 L43 51 L36 55 L46 46 Z" fill="' + hat + '"' + OUT + '/><circle cx="51" cy="47" r="2.6" fill="' + hat + '"' + OUT + "/>";
       // A palace guard's tall wrapped turban.
-      case "turban": return '<path d="' + TURBAN + '" fill="' + hat + '"' + OUT + "/>" + holes(TURBAN) + '<path d="M50 43 Q62 32 76 40 M50 37 Q62 28 74 34" fill="none" stroke="' + ht + '" stroke-width="1.4"/><path d="M63 28 Q66 22 70 24 Q66 26 65 29 Z" fill="' + ht + '"' + OUT + "/>";
+      case "turban": return '<path d="' + TURBAN + '" fill="' + hat + '"' + OUT + "/>" + holeRow("M51.4 40.6 Q62 30.4 75.4 37", hat, 2.6) + '<path d="M50 43 Q62 32 76 40 M50 37 Q62 28 74 34" fill="none" stroke="' + ht + '" stroke-width="1.4"/><path d="M63 28 Q66 22 70 24 Q66 26 65 29 Z" fill="' + ht + '"' + OUT + "/>";
       case "helmet": return helmetSvg(ht);
       case "crest": return helmetSvg(ht) + '<path d="M62 25 Q50 10 36 18 Q46 18 50 28 Q42 24 38 30 Q52 26 60 31 Z" fill="' + hat + '"' + OUT + "/>";
       // An archer's close cap with one white feather.
@@ -228,19 +263,19 @@
   const SCALE = '<path d="M48 72 Q60 64 72 72 L71 106 Q60 112 49 106 Z" fill="' + GOLD + '"' + OUT + '/><g fill="none" stroke="#7a5418" stroke-width=".9"><path d="M50 78 q3 3 6 0 q3 3 6 0 q3 3 6 0"/><path d="M50 85 q3 3 6 0 q3 3 6 0 q3 3 6 0"/><path d="M50 92 q3 3 6 0 q3 3 6 0 q3 3 6 0"/><path d="M50 99 q3 3 6 0 q3 3 6 0 q3 3 6 0"/></g><path d="M44 72 Q48 64 56 68 L54 78 Q47 78 44 72 Z" fill="' + GOLD + '"' + OUT + "/>";
   // A round hide shield with a gold boss, on the back forearm.
   const shieldSvg = (r, t) => '<circle cx="58" cy="112" r="' + r + '" fill="#8a5a2c"' + OUT + '/><circle cx="58" cy="112" r="' + (r - 3.5) + '" fill="none" stroke="' + t + '" stroke-width="2"/><circle cx="58" cy="112" r="4" fill="' + GOLD + '"' + OUT + "/>" +
-    holes("M" + (58 - r) + " 112 a" + r + " " + r + " 0 1 0 " + 2 * r + " 0 a" + r + " " + r + " 0 1 0 " + -2 * r + " 0");
+    holeRow("M" + (58 - r + 6.5) + " 112 a" + (r - 6.5) + " " + (r - 6.5) + " 0 1 0 " + 2 * (r - 6.5) + " 0 a" + (r - 6.5) + " " + (r - 6.5) + " 0 1 0 " + -2 * (r - 6.5) + " 0", "#8a5a2c", 3);
 
   // Things that are not people, cut from the same leather: a cart, an elephant, and the Narayana
   // weapon as a light in the sky. They have no joints, so they keep their CSS poses (no rig).
   const THING = {
     cart: [200, 270, '<path d="M150 150 L198 136" stroke="#5a3418" stroke-width="5" stroke-linecap="round"/>' +
-      '<path d="M24 104 Q90 40 158 104 Z" fill="#c9a24e"' + OUT + '/>' + holes("M24 104 Q90 40 158 104 Z") + '<path d="M40 104 Q90 58 142 104" fill="none" stroke="#8a3a2a" stroke-width="1.6"/>' +
+      '<path d="M24 104 Q90 40 158 104 Z" fill="#c9a24e"' + OUT + '/>' + holeRow("M36 98 Q90 50 146 98", "#c9a24e", 4.2, 1.6) + holeRow("M60 100 Q90 70 122 100", "#c9a24e", 4.2, 1.6) + '<path d="M40 104 Q90 58 142 104" fill="none" stroke="#8a3a2a" stroke-width="1.6"/>' +
       '<path d="M26 102 L26 132 M60 102 L60 132 M94 102 L94 132 M128 102 L128 132 M156 102 L156 132 M20 102 L162 102" stroke="#6b4422" stroke-width="3.4"/>' +
-      '<rect x="18" y="128" width="146" height="22" rx="2" fill="#8a5a2c"' + OUT + '/>' + holes("M18 128 h146 v22 h-146 Z") +
+      '<rect x="18" y="128" width="146" height="22" rx="2" fill="#8a5a2c"' + OUT + '/>' + holeRow("M24 133.5 H158 M24 144.5 H158", "#8a5a2c", 4.4, 1.6) +
       '<g fill="none" stroke="#3a2412"><circle cx="82" cy="160" r="36" stroke-width="7"/><path d="M82 124 V196 M46 160 H118 M57 135 L107 185 M107 135 L57 185" stroke-width="3"/></g><circle cx="82" cy="160" r="7" fill="' + GOLD + '"' + OUT + "/>"],
     elephant: [240, 250, '<path d="M32 98 Q14 124 22 146" fill="none" stroke="#24120a" stroke-width="3"/>' +
       '<g style="filter:brightness(0.68)"><path d="M58 140 L80 140 L78 196 L60 196 Z M150 140 L170 140 L168 196 L152 196 Z" fill="#7d7062"' + OUT + "/></g>" +
-      '<path d="M28 130 Q22 70 96 62 Q162 56 186 86 Q198 104 192 132 L184 150 L40 152 Z" fill="#8f8172"' + OUT + "/>" + holes("M28 130 Q22 70 96 62 Q162 56 186 86 Q198 104 192 132 L184 150 L40 152 Z") +
+      '<path d="M28 130 Q22 70 96 62 Q162 56 186 86 Q198 104 192 132 L184 150 L40 152 Z" fill="#8f8172"' + OUT + "/>" + holeRow("M36 132 Q100 144 184 130", "#8f8172", 4.6, 1.7) +
       '<path d="M56 68 L150 62 L156 122 Q105 134 52 122 Z" fill="#a3302a"' + OUT + '/><path d="M54 112 Q105 124 154 112" fill="none" stroke="' + GOLD + '" stroke-width="3" stroke-dasharray="1 5" stroke-linecap="round"/><path d="M56 68 L150 62" stroke="' + GOLD + '" stroke-width="3"/>' +
       '<path d="M72 64 L72 38 L130 34 L130 62 Z" fill="' + GOLD + '"' + OUT + '/><path d="M66 40 Q101 14 136 36 Z" fill="#a3302a"' + OUT + "/>" +
       '<path d="M36 140 L60 140 L58 198 L38 198 Z M138 140 L160 140 L158 198 L140 198 Z" fill="#8f8172"' + OUT + "/>" +
@@ -263,7 +298,6 @@
 
   U.puppet = function (spec, o = {}) {
     if (!spec) return "";
-    ensureDefs();
     if (spec.thing && THING[spec.thing]) return U.thingSvg(spec.thing, o);
     const [skin, cloth, trim] = spec.palette || PALETTE.none;
     const she = spec.pronoun === "she", they = spec.pronoun === "they";
@@ -281,44 +315,70 @@
     const stance = spec.stance && /^[a-z]+$/.test(spec.stance) ? spec.stance : "";
     const clsx = ["pp", "pose-" + pose, "st-" + stage, bear, stance ? "sx sx-" + stance : "", spec.glow ? "glow" : "", spec.limp ? "limp" : "", spec.sling ? "sling" : "", spec.chained ? "chained" : "", spec.dead ? "dead" : "", o.flip ? "flip" : "", o.cls || ""].filter(Boolean).join(" ");
     const h = o.h || 120;
-    // Clothing: a dhoti to the knee, a long sari, or a shawl over a dhoti; armour for Karna.
-    const skirt = she ? "M48 106 L72 106 L85 190 L37 190 Z" : "M48.5 108 L71.5 108 L80 153 L40 153 Z";
-    const hem = she ? "M37 190 L41 185 L45 190 L49 185 L53 190 L57 185 L61 190 L65 185 L69 190 L73 185 L77 190 L81 185 L85 190" : "M40 153 L44 148 L48 153 L52 148 L56 153 L60 148 L64 153 L68 148 L72 153 L76 148 L80 153";
-    const torso = "M44 71 Q60 61 76 71 L72 96 L68 116 L52 116 L48 96 Z";
+    // Every piece is cut round its own joints: the joint pivots (screens.css, puppet-anim.js) are
+    // shoulder 58,73; elbow 58,98; hip 60,117; knee 60,152; and the hand holds things at 58,126. Each
+    // piece ends in a half circle about its pivot, the same size as the piece it meets, and a disc
+    // tied with a thread knot covers the overlap, so no pose can open a gap at a joint.
+    // Clothing: a dhoti to the knee (its front falls with each thigh, as on the leather puppets), or a
+    // long sari; a shawl over a dhoti; armour for Karna.
+    const torn = gear("torn");
+    const panels = !she && !torn; // the dhoti's legs, cut with the thighs
+    const skirt = she ? "M48 106 L72 106 Q78.6 146 84.8 185.4 Q61 189 37.2 185.4 Q41.4 146 48 106 Z"
+      : "M48.6 106.6 L71.4 106.6 Q75.2 127 78.4 148.4 Q60 151.6 41.6 148.4 Q44.8 127 48.6 106.6 Z";
+    const skirtHem = she ? hemSvg(38.2, 83.8, 179, 37.2, 84.8, 185.4, 0.9, trim, cloth, 9) : torn ? "" : hemSvg(42.4, 77.6, 143.4, 41.6, 78.4, 148.4, 0.8, trim, cloth, 7);
+    const torso = "M45 72 Q52 64.6 61 64.6 Q70 64.8 75.6 71.4 Q75.6 80 73 89 Q70.4 98 68.8 108 L68.4 116 L51.6 116 L51.2 108 Q48.6 97 47 88 Q44.6 80 45 72 Z";
     // The far arm and leg: solid leather in shadow, never see-through (see-through limbs read as ghosts).
     const back = 'style="filter:brightness(0.68)"';
-    const thigh = () => '<path d="M53 116 L67 116 L65.5 152 L54.5 152 Z" fill="' + skin + '"' + OUT + "/>";
-    const shin = '<path d="M54.5 152 L65.5 152 L64 186 L56 186 Z" fill="' + skin + '"' + OUT + '/><path d="M55 186 L65 186 L78 191 L55 193 Z" fill="' + skin + '"' + OUT + '/><path d="M56 183h8" stroke="' + trim + '" stroke-width="1.6"/>';
-    const upper = '<path d="M52 71 L64 71 L62.5 98 L53.5 98 Z" fill="' + skin + '"' + OUT + "/>";
-    const fore = '<path d="M53.5 98 L62.5 98 L61 122 L55 122 Z" fill="' + skin + '"' + OUT + '/><circle cx="58" cy="125.5" r="4.6" fill="' + skin + '"' + OUT + '/><path d="M54.5 116h7" stroke="' + trim + '" stroke-width="1.6"/>' +
-      (she ? '<path d="M54.6 113h7.2M54.8 110.5h7" stroke="' + trim + '" stroke-width="1.1"/>' : "");
-    const neck = '<path d="M55.5 58 L64.5 58 L63.5 71 L56.5 71 Z" fill="' + skin + '"' + OUT + "/>";
+    // Curved, tapered limbs: the calf and forearm swell, the knee, ankle and wrist narrow.
+    const thighSkin = '<path d="M52.8 117 A7.2 7.2 0 0 1 67.2 117 C67.6 128 66.6 141 65 152 A5 5 0 0 1 55 152 C54.2 141 52.4 128 52.8 117 Z" fill="' + skin + '"' + OUT + "/>";
+    // The dhoti's front over the thigh: pleated, with its own printed hem and scallops, tied on at the hip.
+    const thighCloth = (far) => panels ? '<path d="M51.4 117 A8.6 8.6 0 0 1 68.6 117 C69.6 127 70.6 137 71.2 146.4 Q60.4 149.6 49.6 146.4 C50 137 50.6 127 51.4 117 Z" fill="' + cloth + '"' + OUT + "/>" +
+      '<path d="M58.6 121 Q58 133 57.4 142 M62.6 121 Q63.6 133 64.6 142" fill="none" stroke="' + EDGE + '" stroke-width="0.7" stroke-opacity="0.38"/>' +
+      hemSvg(50.2, 70.6, 141.6, 49.6, 71.2, 146.4, 1.6, trim, cloth, 4, far) + (far ? "" : disc(60, 117, 4.4, cloth)) : "";
+    const shin = '<path d="M55 152 A5 5 0 0 1 65 152 C65.4 161 63.8 173 62.8 184 L57.2 184 C56.4 177 53.4 165 55 152 Z" fill="' + skin + '"' + OUT + "/>" +
+      '<path d="M57 182 L63 182 Q64.6 186.2 70 187.4 Q78.6 189 79.2 191.4 Q78.4 193.4 72 193.4 L56.6 193.4 Q55.4 187.6 57 182 Z" fill="' + skin + '"' + OUT + "/>" +
+      // a gold anklet with a fringe of bells
+      '<path d="M56.6 179.2 L63.4 179.2 L63.2 182.4 L56.8 182.4 Z" fill="' + GOLD + '"' + OUT_F + "/>" + '<path d="M57.4 184 H63" stroke="' + GOLD + '" stroke-width="1.5" stroke-dasharray="0 1.9" stroke-linecap="round"/>' +
+      disc(60, 152, 3.7, skin);
+    const leg = (cls, far) => '<g class="j ' + cls + '"' + (far ? " " + back : "") + ">" + thighSkin + '<g class="j ' + cls.replace("leg", "shin") + '">' + shin + "</g>" + thighCloth(far) + "</g>";
+    const upper = '<path d="M52 73 A6 6 0 0 1 64 73 C64.8 80 63.6 90 62.4 98 A4.4 4.4 0 0 1 53.6 98 C52.4 90 51.4 80 52 73 Z" fill="' + skin + '"' + OUT + "/>";
+    // A gold armlet with a raised point and a row of holes.
+    const armlet = '<path d="M51.6 79.4 Q58 78.2 64.6 79.4 L64.3 83.6 Q58 82.4 51.8 83.6 Z M59.6 79 L62 75.4 L64.2 79.2 Z" fill="' + GOLD + '"' + OUT_F + "/>" + holeRow("M53 81.5 Q58 80.4 63.4 81.5", GOLD, 2.1, 0.95);
+    // The forearm, a gold bracelet (more bangles for a woman), and a full hand with the thumb forward.
+    const fore = '<path d="M53.6 98 A4.4 4.4 0 0 1 62.4 98 C63.4 104 62.2 114 61 121.4 L55 121.4 C54 114 52.8 104 53.6 98 Z" fill="' + skin + '"' + OUT + "/>" +
+      '<path d="M55 120.4 Q52.4 122.2 52.6 126.4 Q53 131.8 58.2 132.2 Q62.8 132.2 63.6 128 Q64 126.2 63.2 125 L65.6 123.2 Q66.6 121.4 64.8 120.8 Q63 120.6 61.2 122 L61 120.4 Z" fill="' + skin + '"' + OUT + "/>" +
+      '<path d="M55.2 127.6 Q58.4 129.2 62.2 127.4" fill="none" stroke="' + EDGE + '" stroke-width="0.6" stroke-opacity="0.7"/>' +
+      '<path d="M54.6 116 L61.6 116 L61.3 119.6 L54.9 119.6 Z" fill="' + GOLD + '"' + OUT_F + "/>" +
+      (she ? '<path d="M54.4 112.6 L62 112.6 M54.3 110.4 L62.2 110.4" stroke="' + trim + '" stroke-width="1.3"/>' : "");
+    const elbow = disc(58, 98, 3.6, skin), shoulder = disc(58, 73, 4.4, skin);
+    const neck = '<path d="M56 56 L64.2 56 L64.8 66.6 Q60 68.4 55.4 66.6 Z" fill="' + skin + '"' + OUT + "/>";
     // No rods on the hands: drawn in the forearm's frame, a hand rod swung out ahead of every raised
     // or reaching arm like a stick. The body's main rod is enough to say "puppet".
     const rod = "";
-    const armlet = '<path d="M52.8 80h11" stroke="' + trim + '" stroke-width="2.4"/>';
     // In chains while imprisoned; afterwards, the broken iron still on one wrist.
     const manacle = spec.chained ? '<rect x="54" y="117" width="8" height="4" fill="#5d5d5d"' + OUT + "/>" : "";
     const cuff = spec.cuffed ? '<rect x="53.5" y="114" width="9" height="3.6" fill="#6a6a6a"' + OUT + '/><path d="M62.5 115.8 l3 1.6" stroke="#6a6a6a" stroke-width="1.4"/>' : "";
-    // The face in profile: brow, long nose, the large almond eye of a puppet; a tilak on the brow,
-    // large round earrings, a curled moustache on grown men, a bun with flowers and a nose ring on women.
+    // The face in profile: brow, long nose, the large almond eye of a puppet with its line of kohl; a
+    // tilak on the brow, large round earrings, a curled moustache on grown men, a bun with flowers and a
+    // nose ring on women.
     const hair = stage === "elder" ? "#d4ccbc" : "#1d1410";
     const face = "M62 40 C70 40 75 45 75.5 50 L80 54 L75.5 56 C75 61 71 64 64 64 C55 64 50 58 50 51 C50 45 55 40 62 40 Z";
     const head =
       (she ? '<path d="M48 55 Q42 74 45 94" stroke="' + hair + '" stroke-width="3.4" fill="none" stroke-linecap="round"/>' : "") +
-      '<path d="' + face + '" fill="' + skin + '"' + OUT + "/>" + holes(face) +
+      '<path d="' + face + '" fill="' + skin + '"' + OUT + "/>" +
       HAIR(hair) +
       (she ? '<circle cx="49" cy="48" r="6.6" fill="' + hair + '"' + OUT + '/><path d="M44 44 Q49 40 54 44" stroke="#f3ead2" stroke-width="1.8" stroke-dasharray="1.2 1.6" fill="none"/>' : "") +
-      '<path d="M64 49 Q68 46.5 72 49 Q68 52 64 49 Z" fill="#fff3d6" stroke="#24120a" stroke-width="0.7"/><circle cx="68.6" cy="49.1" r="1.25" fill="#24120a"/>' +
-      '<path d="M63.5 45.5 Q68 43.5 73 46" stroke="#24120a" stroke-width="0.9" fill="none"/>' +
-      '<path d="M73.6 41.8 L74.3 45.6" stroke="#c0281e" stroke-width="1.3" stroke-linecap="round"/>' +
-      (spec.eye ? '<path d="M62 44 L76 53" stroke="#24120a" stroke-width="2.4"/><ellipse cx="68.5" cy="49" rx="4" ry="3.2" fill="#2a1a12"/>' : "") +
+      '<path d="M62.4 49.3 Q67.8 45.4 73.6 48.7 Q68.2 52.6 62.4 49.3 Z" fill="#fff3d6" stroke="' + EDGE + '" stroke-width="0.8"/><circle cx="68.6" cy="49" r="1.65" fill="' + EDGE + '"/>' +
+      '<path d="M62.4 49.3 L59.8 48.3" stroke="' + EDGE + '" stroke-width="0.8" stroke-linecap="round"/>' +
+      '<path d="M62.2 45.3 Q68 42.4 74 45.6" stroke="' + EDGE + '" stroke-width="1.05" fill="none" stroke-linecap="round"/>' +
+      '<path d="M73.6 41.4 L74.3 45" stroke="#c0281e" stroke-width="1.3" stroke-linecap="round"/>' +
+      (spec.eye ? '<path d="M61 43.4 L76 53.4" stroke="' + EDGE + '" stroke-width="2.4"/><ellipse cx="68.2" cy="49" rx="5.2" ry="3.6" fill="#2a1a12"/>' : "") +
       (!she && grown && !spec.beard ? '<path d="M71 58.2 Q74.5 56.6 77.4 58.4 Q78.6 60.4 76.6 60.6 Q76.8 59.2 74.6 59.2 Q72.8 59.4 71 58.2 Z" fill="' + hair + '"/>' : "") +
       // The lower jaw is a separate piece on a hinge (the beard rides on it), so the puppet can speak.
       '<g class="jaw"><path d="M56 59 Q63 67 73 60 L73.5 62 Q63 71 55.5 61 Z" fill="' + skin + '"' + OUT + "/>" +
       (spec.beard ? '<path d="M58 60 Q63 76 71 63 Q72.5 60 72 58 Q66 64 58 60 Z" fill="' + hair + '"' + OUT + "/>" : "") + (BEARD[spec.beard] || "") + "</g>" +
       (she ? '<circle cx="78.6" cy="57.2" r="1.7" fill="none" stroke="' + trim + '" stroke-width="0.9"/>' : "") +
-      (stage !== "child" ? '<circle cx="56.5" cy="58.5" r="2.9" fill="' + trim + '"' + OUT + '/><circle cx="56.5" cy="58.5" r="1.1" fill="' + cloth + '"/>' : "") +
+      (stage !== "child" ? '<circle cx="56.5" cy="58.5" r="3.1" fill="' + GOLD + '"' + OUT_F + '/><circle cx="56.5" cy="58.5" r="1.3" fill="' + trim + '"/>' : "") +
       headgearSvg(she ? (spec.headgear === "kirita" || spec.headgear === "mukuta" ? spec.headgear : null) : spec.headgear || (they ? "band" : "jata"), trim, cloth, hair, stage === "elder", spec) +
       (gear("earrings") ? EARRING : "") + (gear("browgem") ? BROWGEM : "");
     // Behind everything: Arjuna's second quiver, once he carries the Gandiva.
@@ -326,24 +386,29 @@
     // On the back arm: a round hide shield, or a horseman's small one.
     const backHand = gear("shield") ? shieldSvg(19, trim) : gear("buckler") ? shieldSvg(13, trim) : "";
     // Over the body: a leather cuirass, gold scale armour, a guard's sash, a torn hem, a water-pot at the hip.
-    const bodyGear = (gear("torn") ? '<path d="M40 151 L43 160 L46 152 L49 163 L53 152 L56 158 L60 151 L63 162 L67 152 L71 159 L74 151 L78 157 L80 151 Z" fill="' + cloth + '"' + OUT + '/><path d="M48 112 L72 112" stroke="#3a2412" stroke-width="2.4"/>' : "") +
+    const bodyGear = (torn ? '<path d="M41.6 146 L43 158 L46 150 L49 161 L53 150 L56 156 L60 149 L63 160 L67 150 L71 157 L74 149 L78.4 155 L78.4 146 Z" fill="' + cloth + '"' + OUT + '/><path d="M48 112 L72 112" stroke="#3a2412" stroke-width="2.4"/>' : "") +
       (gear("sash") ? '<path d="M50 72 L70 106" stroke="' + (spec.hat || trim) + '" stroke-width="3"/>' : "") +
-      (gear("cuirass") ? '<path d="M50 74 Q60 68 70 74 L69 104 Q60 108 51 104 Z" fill="#7a5a3a"' + OUT + '/><path d="M52 84h16M52 94h16" stroke="' + trim + '" stroke-width="1.2"/>' : "") +
+      (gear("cuirass") ? '<path d="M50 74 Q60 68 70 74 L69 104 Q60 108 51 104 Z" fill="#7a5a3a"' + OUT + '/><path d="M52 84h16M52 94h16" stroke="' + trim + '" stroke-width="1.2"/>' + holeRow("M52.6 89 H67.4", "#7a5a3a", 2.6) : "") +
       (gear("scale") ? SCALE : "") + (gear("waterpot") ? KAMANDALU : "");
     const backItem = (spec.heir === "bow" && spec.item !== "bow" ? '<path d="M46 74 Q34 98 46 122" fill="none" stroke="#5a3418" stroke-width="2.4"/><path d="M46 74 L46 122" stroke="#efe2c0" stroke-width="0.6"/>' : "") +
       // An archer's quiver over the shoulder; a healer's satchel at the hip.
       (spec.item === "bow" ? '<path d="M44 76 L52 74 L50 104 L44 105 Z" fill="#7a4a24"' + OUT + '/><path d="M46 76 L45 66 M48.5 75.5 L48 65 M51 75 L51 64" stroke="#efe2c0" stroke-width="1.2"/><path d="M45 66l1.6-3 1.4 3M47.5 65l1.6-3 1.4 3M50 64l1.6-3 1.4 3" fill="#b2432a" stroke="none"/>' : "") +
       (spec.item === "bowl" ? '<path d="M70 104 L80 104 L81 116 L69 116 Z" fill="#8a6a3a"' + OUT + '/><path d="M70 104 Q75 100 80 104" fill="none" stroke="#5a3418" stroke-width="1.4"/><path d="M50 73 L76 104" stroke="#5a3418" stroke-width="1.2"/>' : "");
-    // The dhoti's pleats fall from the waist, with the end of the waist-sash hanging in front.
-    const pleats = she ? '<path d="M58 110 L54 188 M62 110 L63 188 M66 110 L72 188" stroke="' + trim + '" stroke-width="0.9" opacity="0.55"/>'
-      : '<path d="M58 110 L55 151 M61.5 110 L61 151 M65 110 L67 151" stroke="' + trim + '" stroke-width="0.9" opacity="0.6"/><path d="M66 108 L71 130 L66.5 128 L64 109 Z" fill="' + trim + '"' + OUT + "/>";
-    const belt = pleats + '<path d="M49 108 L71 108" stroke="' + trim + '" stroke-width="3"/>' +
+    // The pleats fall from the waist (a sari's in a darker fold down the front), under a sash with a
+    // row of holes; the end of the sash hangs in front.
+    const pleats = she ? '<path d="M60.4 110 L67 110 L75.4 179 L60.4 180.4 Z" fill="' + EDGE + '" fill-opacity="0.13"/><path d="M62.6 111 L64.2 179.4 M65 110.6 L70.2 179" fill="none" stroke="' + EDGE + '" stroke-width="0.7" stroke-opacity="0.38"/>'
+      : panels ? "" : '<path d="M58 110 L55.6 146 M61.5 110 L61 147 M65 110 L67 146" fill="none" stroke="' + EDGE + '" stroke-width="0.7" stroke-opacity="0.38"/>';
+    const sashEnd = '<path d="M64.6 109.4 L68.6 109 L73.2 132.4 L70.4 129.8 L68.2 133.8 Z" fill="' + trim + '"' + OUT_F + "/>" + holeRow("M67 111.6 L70.6 128", trim, 2.4, 0.9);
+    const belt = pleats + '<path d="M48.4 104.4 Q60 106.6 71.6 104.4 L71.8 110 Q60 112.2 48.2 110 Z" fill="' + trim + '"' + OUT_F + "/>" + holeRow("M49.6 107.3 Q60 109.5 70.6 107.3", trim, 2.6, 1) +
       (spec.heir === "manuscript" ? '<rect x="62" y="104" width="9" height="5" rx="2" fill="#efe2c0"' + OUT + "/>" : "") +
       (spec.heir === "debt" ? '<path d="M53 110 q-4 6 0 9 q4 -3 0 -9 Z" fill="#8a6a3a"' + OUT + '/><path d="M51 111 l4 0" stroke="#24120a" stroke-width="0.8"/>' : "");
-    const chest = '<path d="M49 74 Q60 86 71 74" stroke="' + trim + '" stroke-width="2" fill="none"/><path d="M51 77 Q60 91 69 77" stroke="' + trim + '" stroke-width="1.6" fill="none" stroke-dasharray="0.1 2.6" stroke-linecap="round"/>' +
+    // Necklaces drawn as strings of beads: a collar of large gold beads, a longer chain with a stone.
+    // In profile they hang from the back of the neck down onto the chest, in front of the arm's shoulder.
+    const chest = beads("M60.4 66.4 C62.4 75.4 66.8 79.6 72.6 78.6 C74 74.6 71 69.6 66.6 66.8", GOLD, 2.2, 2.85) +
+      (stage !== "child" ? beads("M61.4 67.4 C63.2 80.4 67.4 87.6 72.4 86.6", GOLD, 1.35, 2.15) + '<path d="M72.4 86.4 L74.2 89.4 L72.2 92.4 L70.4 89.4 Z" fill="' + trim + '"' + OUT_F + "/>" : "") +
       (!she && stage !== "child" ? '<path d="M50 72 L68 107" stroke="#f3ead2" stroke-width="0.9" opacity="0.85"/>' : "") +
-      // The end of the sari drawn up across the body and over the shoulder.
-      (she ? '<path d="M71 106 L50 73 L57 70 L75 101 Z" fill="' + cloth + '"' + OUT + '/><path d="M71 106 L50 73" stroke="' + trim + '" stroke-width="1.4"/>' : "") +
+      // The end of the sari drawn up across the body and over the shoulder, its edge printed and pricked.
+      (she ? '<path d="M71 106 L50 73 L57 70 L75 101 Z" fill="' + cloth + '"' + OUT + '/><path d="M71 106 L50 73" stroke="' + trim + '" stroke-width="1.6"/>' + holeRow("M72.6 101.6 L55.8 72.6", cloth, 2.5, 1) : "") +
       (spec.heir === "amulet" ? '<circle cx="60" cy="81" r="2.6" fill="' + trim + '"' + OUT + "/>" + (spec.cracked ? '<path d="M58.6 79.2 L61 81 L59.6 82.8" stroke="#24120a" stroke-width="0.7" fill="none"/>' : "") : "") +
       (spec.armour ? '<path d="M52 72 Q60 66 68 72 L67 100 Q60 104 53 100 Z" fill="' + trim + '" opacity="0.9"' + OUT + '/><path d="M54 80h12M54 88h12M55 96h10" stroke="#a37a2a" stroke-width="0.8"/>' : "") +
       // A scar: a patch of darker leather stitched over the wound, as puppet makers mend a tear.
@@ -357,18 +422,19 @@
       (stance ? ' data-stance="' + stance + '"' : "") + (o.label ? ' role="img" aria-label="' + U.esc(o.label) + '"' : ' aria-hidden="true"') + ">" +
       '<g class="pp-all">' +
       // The puppeteer's main rod, faintly, from the body down out of sight.
-      (pose === "dead" ? "" : '<path class="rod main-rod" d="M60 112 L60 240" stroke="#1d0f08" stroke-width="1.1" opacity="0.45"/>') +
+      (pose === "dead" ? "" : '<path class="rod main-rod" d="M60 112 L60 240" stroke="' + EDGE + '" stroke-width="1.1" opacity="0.45"/>') +
       '<g class="pp-body">' + behind +
         // Back limbs, a shade darker, behind the body.
-        '<g class="j legB" ' + back + ">" + thigh() + '<g class="j shinB">' + shin + "</g></g>" +
-        '<g class="j armB" ' + back + ">" + upper + '<g class="j foreB">' + fore + manacle + rod + backHand + "</g></g>" +
+        leg("legB", true) +
+        '<g class="j armB" ' + back + ">" + upper + '<g class="j foreB">' + fore + elbow + manacle + rod + backHand + "</g></g>" +
         backItem +
-        neck + '<path d="' + torso + '" fill="' + skin + '"' + OUT + "/>" + holes(torso) + chest +
-        '<path d="' + skirt + '" fill="' + cloth + '"' + OUT + "/>" + holes(skirt) +
-        '<path d="' + skirt + '" fill="url(#pp-weave)"/>' + bodyGear + '<path d="' + hem + '" fill="none" stroke="' + trim + '" stroke-width="1.5"/>' + belt +
+        // Without the dhoti's legs (a sari, a bandit's rag), the near leg is cut behind the cloth.
+        (panels ? "" : leg("legF")) +
+        neck + '<path d="' + torso + '" fill="' + skin + '"' + OUT + "/>" + chest +
+        '<path d="' + skirt + '" fill="' + cloth + '"' + OUT + "/>" + skirtHem + bodyGear + belt +
         '<g class="j head"><g transform="translate(62 64) scale(' + headScale + ') translate(-62 -64)">' + head + "</g></g>" +
-        '<g class="j legF">' + thigh() + '<g class="j shinF">' + shin + "</g></g>" +
-        '<g class="j armF">' + upper + armlet + '<g class="j foreF">' + fore + manacle + cuff + (spec.item ? '<g class="it' + (WIELD.has(spec.item) ? " it-w" : "") + '">' + itemSvg(spec.item, trim, { tips: gear("gandiva") && grown, studs: spec.studs }) + "</g>" : "") + rod +
+        (panels ? leg("legF") : "") + sashEnd +
+        '<g class="j armF">' + upper + armlet + shoulder + '<g class="j foreF">' + fore + elbow + manacle + cuff + (spec.item ? '<g class="it' + (WIELD.has(spec.item) ? " it-w" : "") + '">' + itemSvg(spec.item, trim, { tips: gear("gandiva") && grown, studs: spec.studs }) + "</g>" : "") + rod +
           (gear("bracer") ? '<path d="M54 108 L62 108 L61.5 118 L54.6 118 Z" fill="#5a3418"' + OUT + "/>" : "") + "</g></g>" +
         (spec.sling ? '<path d="M50 76 Q58 112 68 76" fill="none" stroke="#efe2c0" stroke-width="3" opacity="0.9"/>' : "") +
       "</g></g></svg>";
