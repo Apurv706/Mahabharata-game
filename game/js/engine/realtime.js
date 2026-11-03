@@ -71,6 +71,11 @@
   RT.on = () => RT.dev() && (RT.force || RT.mode() === "realtime");
   RT.wanted = (encId) => RT.on() && RT.isRealtime(encId);
 
+  // A turn-based war day fought beside your company: you choose your place in the line (K.Combat.setPlace).
+  // Behind the developer switch with the rest of §18.15.
+  C.placesWanted = (enc, B) => RT.dev() && !RT.isRealtime(enc) && !!enc.lethal && !enc.dream && !(K.val(enc.kind) && K.FIGHT_KINDS && K.FIGHT_KINDS[K.val(enc.kind)]) &&
+    B.units.some((u) => u.side === "ally" && u.plural && !u.person);
+
   // The skill each path brings to a live fight (from its turn-based moves).
   RT.SKILL = { archer: "aimed", mace: "quake", charioteer: "ridedown", strategist: "command", healer: "salve", spy: "vanish", bard: "song" };
   RT.RECHARGE = { aimed: 7, quake: 11, ridedown: 10, command: 9, salve: 13, vanish: 10, song: 13 };

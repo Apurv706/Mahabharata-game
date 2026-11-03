@@ -117,6 +117,7 @@
       if (u.side === "ally" && B.mark && t.uid === B.mark) dmg += (B.markBonus || 0) * mult;
       if (def === "block") { dmg *= 0.45; B.lastDef = "block"; }
       if (def === "miss") { dmg *= o.heavy ? 1.15 : 1; B.lastDef = "miss"; }
+      if (isP(u) && B.place) dmg *= PLACES[B.place].dmg(t); // your place in the line (C.setPlace)
       if (u.status.inspired) dmg *= 1.3;
       if (u.status.weakened) dmg *= 0.7;
       if (u.status.cursed) dmg *= 0.5;
@@ -172,6 +173,7 @@
       B.kind = kind; B.rule = FK && FK.turn ? FK : null; B.mode = FK && FK.live && C.liveMode === kind ? kind : null;
       if (B.rule && B.rule.start) B.rule.start(B); }
     B.habit = []; // what you have done lately: enemies learn from it
+    if (C.placesWanted && C.placesWanted(enc, B)) B.place = "middle"; // a war day with your company: your place in the line
     if (S.boons.includes("healing_hands") && (S.items.herbs || 0) < 2) S.items.herbs = 2;
     B.pulled = {};
     // The screen asks for step mode (each blow aimed at you met in time); with timed moments off the
@@ -209,7 +211,7 @@
       const foes = foesOf(u);
       const taunt = foes.find((f) => f.status.taunt);
       if (taunt) return taunt;
-      if (u.side === "enemy") { const p = foes.find((f) => f.side === "player"); return p && K.rng() < 0.65 ? p : K.pick(foes); }
+      if (u.side === "enemy") { const p = foes.find((f) => f.side === "player"); return p && K.rng() < (B.place ? PLACES[B.place].odds : 0.65) ? p : K.pick(foes); }
       // Those beside you go for the enemy you marked (a leader's order), while it stands; else the weakest.
       const marked = B.mark && foes.find((f) => f.uid === B.mark);
       if (marked) return marked;
@@ -436,6 +438,29 @@
     enemyTurn(n.u, def);
     if (!over() && !B.queue.length) { B.queue = null; roundEnd(); }
     K.emit("combat", B);
+  };
+
+  // ---------- Your place in the line (PRD §18.15, war days with a company; behind the developer switch) ----------
+  // Front: the enemy comes at you more, and your blows land harder. Middle: as before. Flank: fewer blows
+  // come at you, and you reach the archers better than the men in front. Before the first move it is
+  // chosen freely; later, changing place costs the round. Off (B.place unset) unless C.placesWanted says so.
+  const PLACES = {
+    front: { odds: 0.8, dmg: () => 1.15, say: "You push through to the front of the line." },
+    middle: { odds: 0.65, dmg: () => 1, say: "You take your place in the middle of the line." },
+    flank: { odds: 0.45, dmg: (t) => (t && t.abilities && t.abilities.includes("arrows") ? 1.25 : 0.9), say: "You work your way out to the flank." }
+  };
+  C.PLACES = PLACES;
+  C.place = () => (B && B.place) || null;
+  C.setPlace = function (place) {
+    if (!B || B.over || !B.place || !PLACES[place] || B.place === place || C.foesPending()) return false;
+    const free = B.round === 1 && !B.habit.length;
+    B.place = place;
+    api.tell(PLACES[place].say);
+    if (free) { planAll(); K.emit("combat", B); return true; } // before round 1: chosen freely, the coming blows re-aimed
+    B.habit.push({ id: "place" });
+    if (!over()) others(); // later: it costs the round
+    K.emit("combat", B);
+    return true;
   };
 
   // ---------- A leader's mark ----------

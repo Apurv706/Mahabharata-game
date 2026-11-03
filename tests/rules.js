@@ -1260,6 +1260,18 @@ require(G + "content/war_fights.js");
     const f = B.units.find((u) => u.side === "enemy"); f.rt.entered = true; f.rt.x = p.rt.x + 0.03; f.rt.lane = 2; const at = p.rt.lane;
     RT.step(R, { row: 2 - at }); for (let i = 0; i < 30; i++) { f.rt.x = p.rt.x + 0.03; f.rt.lane = 2; RT.step(R, {}); }
     ok(p.rt.lane === at, "you cannot step into a row where a foe stands right beside you"); C.settle("win"); C.end(); }
+  // A turn-based war day beside your company: choose your place in the line; later, changing it costs the round.
+  { K.seed(31); const S = life(); S.flags.push("role_command");
+    const B = C.start("e_day16"); const p = C.player();
+    ok(B.place === "middle" && C.setPlace("front") && B.place === "front" && B.round === 1, "a war day with your company: your place in the line, chosen freely before the first round");
+    const on = (place) => { B.place = place; let n = 0; const e = B.units.find((u) => u.side === "enemy"); for (let i = 0; i < 400; i++) { const it = C.core.targetsFor(e, K.ABILITIES.strike); if (it === p) n++; } return n / 400; };
+    const front = on("front"), mid = on("middle"), flank = on("flank"); B.place = "front";
+    ok(front > mid && mid > flank, "the front draws more of the blows than the middle, the flank fewer (" + [front, mid, flank].map((x) => Math.round(x * 100) + "%").join(" / ") + ")");
+    C.act("strike", null); const r0 = B.round;
+    ok(C.setPlace("flank") && B.round === r0 + 1 && B.place === "flank", "changing place later costs the round");
+    C.settle("win"); C.end();
+    RT.force = false; K.seed(31); life().flags.push("role_command"); const B2 = C.start("e_day16");
+    ok(!B2.place && !C.setPlace("front"), "with the developer switch off, no place in the line: the war day is as before"); C.settle("win"); C.end(); RT.force = true; }
   RT.force = false;
 }
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);
