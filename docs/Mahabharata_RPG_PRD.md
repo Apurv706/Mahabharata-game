@@ -735,7 +735,15 @@ Proposed and built on 2 November, and on the public site the same day after the 
 
 **Not taken from Lumina:** its 3D pixel-art world, moving camera and tilt-shift look; keyboard-and-mouse-only controls; its scale of engineering.
 
-**Open points before building:** a length in seconds for every effect that lasts rounds today (about 4 s a round to start); controls for withdraw and spare in real time; how astras pause for their moment in real time and which real-time fights have a champion to answer them; one skill for each of the seven paths; what "Your soldiers" do in a real-time war fight; a phone layout test for all the controls; speed of master-leather figures at full frame rate; `tests/balance.js` running out of memory above about 200 lives; Hindi and screen-fit checks for the new screens.
+**Decided 3 November, after review:**
+- *Time:* every effect that lasts rounds today (call for help, burning, stun, sleep) lasts about 4 seconds a round in real time.
+- *Divine weapons:* invoking one freezes the fight, the screen blinks, and the weapon's full-screen moment plays; a champion who can answer it does so with a counter-weapon (the clash), and ordinary foes take the blow.
+- *A skill for each path,* from its turn-based moves: archer, *Aimed shot* (an arrow down the lane, long reach); mace fighter, *Ground-shaker* (hits all around and knocks down); charioteer, *Ride them down* (a dash through the foes in front, knocking them down); strategist, *Command* (your friends and soldiers strike your foe together); healer, *Herbal salve* (heals you and friends near you over a few seconds); spy, *Vanish into the dust* (unseen for a moment; the next strike lands double); bard, *Battle song* (friends and soldiers quicker and stronger for a few seconds).
+- *Your soldiers* in a real-time war fight take an order from a button at the top right, as in the test page: defend, all-out, or stay out.
+- *Phone controls:* a layout test page comes first.
+- *Speed:* the master-leather figures were measured in a three-a-side fight on a phone at 4× CPU slowdown: about 31 frames a second, the same as before.
+
+**Still open:** withdraw and spare in real time. Both exist today: "Withdraw from the fight" on most war fights (it breaks the vow never to retreat), and sparing a beaten foe (at 30% strength, asleep or bound; conscience +1, and some stories turn on it) in 41 fights. Proposed: keep both, as controls that appear only when allowed: Withdraw at the top right, Spare as a tap on the beaten foe. Also still to do: `tests/balance.js` runs out of memory above about 200 lives; Hindi and screen-fit checks for the new screens.
 
 **Cost and order.** After the returning-page fix and master leather (both being built 3 November): the real-time engine (about 2 weeks), converting the real-time fights (about 1 week), the turn-based additions (about 1 week), then balance passes for both together with the race's whip and contact.
 
