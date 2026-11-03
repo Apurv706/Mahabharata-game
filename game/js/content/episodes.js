@@ -85,7 +85,7 @@
     win: { fx: { bond: { charu: 2 }, attr: { wisdom: 1 }, flag: "answered_for_charu", memory: ["charu", "I drank first at the lake. You answered for me."], journal: "At the lake in the forest Charu drank first and fell. You answered the voice for both of you." },
       text: "\"Drink,\" says the voice. Charu sits up on the bank, coughing up lake water, and asks what you are staring at." },
     lose: { fx: { die: "charu", duty: { conscience: -1 }, journal: "At the lake in the forest Charu drank first and fell, and your answers could not bring Charu back." },
-      text: "Your last answer is wrong, and the voice is gone. The lake is only a lake. Charu does not move again." } };
+      text: "Your last answer is wrong, and the voice is gone. Charu does not move again." } };
 
   const FALSE_NAME = [
     { line: "\"You hold that bow like a soldier, not a groom. Where did a groom learn that?\"", replies: ["\"Horses kick, my lord. One learns to hold things firmly.\"", "\"I was a soldier once.\"", "\"I hold it as I was taught.\""] },
@@ -106,8 +106,8 @@
       rules: "Cross the hall to Draupadi and back along the pillars while the lamp sweeps the floor.",
       stakes: ["She is in the kitchens, among the women, when the screaming starts.", "Kichaka's lamp finds you, and you have to run before you reach her."] },
     win: { fx: { bond: { draupadi: 2, bhima: 1 }, duty: { conscience: 1 }, flag: "helped_draupadi_hall", journal: "In the hidden year you got Draupadi out of Kichaka's way the night Bhima was waiting for him." },
-      text: "She is sitting among the kitchen women with her head covered when the screaming starts in the dancing hall. She does not look up. Her hands are perfectly still." },
-    lose: { fx: { bond: { bhima: -1 }, flag: "hall_seen" }, text: "The lamp finds you, and you run. Bhima does the rest alone, as he would have anyway. In the morning he looks at you and says nothing." } };
+      text: "When the screaming starts in the dancing hall, she is sitting among the kitchen women with her head covered. Her hands are perfectly still." },
+    lose: { fx: { bond: { bhima: -1 }, flag: "hall_seen" }, text: "The lamp finds you, and you run. Bhima does the rest alone." } };
 
   const CARTS = { id: "carts", t: "Cut the carts loose", game: "sneak", hint: "A test of stealth",
     trial: { attr: "grace", skill: "stealth", stage: "stage_supply_camp_night", trips: 2, spots: 2, watch: "soldier", verb: "Move",
@@ -176,7 +176,7 @@
           win: { fx: { bond: { ugra: 2 }, flag: "ugra_tournament_won", rep: { common: 1 } }, text: "Ugra goes down in the dust, gets up, and laughs so loud the horses shy. \"Again at the next fair,\" he says." },
           lose: { fx: { bond: { ugra: 1 }, flag: "ugra_tournament_lost" }, text: "You come up out of the horse trough to find Ugra holding out a hand. \"Again at the next fair,\" he says." } },
         { id: "talk", t: "Talk to him", fx: { bond: { ugra: 1 }, attr: { wisdom: 1 } },
-          text: "\"Holding horses,\" he says. \"And watching. Someone has to see how the princes fight, for when we have to fight them.\" He says it lightly. He does not mean it lightly." },
+          text: "\"Holding horses,\" he says. \"And watching how the princes fight, for when we have to fight them.\"" },
         { id: "ignore", t: "Walk past", fx: { bond: { ugra: -1 }, flag: "ugra_slighted" }, text: "You feel his eyes on your back all the way to the stands." }
       ]
     },
@@ -189,12 +189,12 @@
         ["\"Tell me what {friend} says when the court is not listening,\" he says. \"For the kingdom's sake.\"", null]],
       choices: [
         { id: "obey", t: "Spy on your friend", fx: (S) => ({ duty: { teacher: 2, conscience: -2 }, bond: { vidura: 1, [S.friend]: -1 }, flag: "spied_on_friend", memory: [S.friend, "Someone told Vidura things I said only to you. I never asked who."] }),
-          text: "You carry Vidura what you hear, a little at a time. {friend} never finds out. You find that you cannot look at {friend} for very long." },
+          text: "You carry Vidura what you hear, a little at a time. {friend} never finds out." },
         { id: "half", t: "Agree, and tell him nothing", check: { attr: "wisdom", skill: "statecraft", dc: 8,
           pass: { fx: { duty: { conscience: 1 } }, text: "You bring Vidura gossip the whole court knows. He listens gravely, and after a month stops asking, and you are fairly sure he always knew." },
-          fail: { fx: { duty: { teacher: -2 }, bond: { vidura: -1 } }, text: "Vidura sees through it in a week. \"If you would not do it, you should have said so,\" he says, and it is the only time he is ever cold with you." } }, hint: "A test of wits" },
+          fail: { fx: { duty: { teacher: -2 }, bond: { vidura: -1 } }, text: "Vidura sees through it in a week. \"If you would not do it, you should have said so.\"" } }, hint: "A test of wits" },
         { id: "refuse", t: "Refuse him", fx: { duty: { teacher: -1, conscience: 2 }, bond: { vidura: 1 }, flag: "refused_vidura" },
-          text: "Vidura is quiet for a long moment. \"Good,\" he says at last. \"I hoped you would say that. Forget I asked.\" You never quite do." }
+          text: "Vidura is quiet for a long moment. \"Good. I hoped you would say that.\"" }
       ]
     },
     {
@@ -206,7 +206,7 @@
       choices: [
         { id: "swear", t: "Swear it", tags: ["lie"], fx: { duty: { teacher: 2, conscience: -2 }, rep: { pandava: -1 }, flag: "swore_for_throne" }, text: "You swear it. An hour later you watch what the throne does, and the oath sits in your mouth like a stone." },
         { id: "evade", t: "Say you will tell what you see", fx: { duty: { teacher: -1, conscience: 1 } }, text: "\"That is what I am afraid of,\" Kripa says, and goes to his seat." },
-        { id: "refuse", t: "Refuse. A throne can be wrong", fx: { duty: { teacher: -2, conscience: 2 }, rep: { kuru: -1 }, flag: "refused_kripa" }, text: "Kripa looks at you as if you had struck him. \"Then you have learned nothing from me,\" he says. You think you have learned the one thing that matters." }
+        { id: "refuse", t: "Refuse. A throne can be wrong", fx: { duty: { teacher: -2, conscience: 2 }, rep: { kuru: -1 }, flag: "refused_kripa" }, text: "Kripa looks at you as if you had struck him. \"Then you have learned nothing from me.\"" }
       ]
     },
     {
@@ -220,7 +220,7 @@
         { id: "promise", t: "Promise", fx: { duty: { teacher: 2 }, flag: "promised_peace" }, hint: "Fight anyway, and it is broken",
           text: (S) => (S.teacher === "balarama" ? "Balarama grips your shoulder. \"Then there is one of you I will not have to mourn.\"" : "You burn the leaf, as Mauni would want, and keep the words.") },
         { id: "refuse", t: "Say you will go where duty takes you", fx: { duty: { teacher: -2, conscience: 1 } },
-          text: (S) => (S.teacher === "balarama" ? "Balarama nods slowly. \"Then at least be the one who comes back,\" he says, and walks on toward the river." : "You send the boy back with no answer. Mauni will understand the silence. He always did.") }
+          text: (S) => (S.teacher === "balarama" ? "Balarama nods slowly. \"Then at least be the one who comes back,\" he says, and walks on toward the river." : "You send the boy back with no answer. Mauni will understand the silence.") }
       ]
     },
     // ---------- Threads: the secret you carry ----------
@@ -231,11 +231,11 @@
       body: ["You know whose son Karna is. The war is coming. Who do you tell?"],
       choices: [
         { id: "duryodhana", t: "Tell Duryodhana", req: { bond: ["duryodhana", 4] }, locked: "Duryodhana would need to listen to you.", fx: { flag: ["secret_told", "told_duryodhana_secret"], bond: { duryodhana: 1, karna: -3 }, duty: { conscience: -2 }, memory: ["karna", "You told Duryodhana what I was before you told me."] },
-          text: "Duryodhana is silent for a long time. \"It changes nothing,\" he says at last. \"He is my friend.\" But he looks at Karna differently after that, and Karna, who notices everything, notices." },
+          text: "\"It changes nothing,\" Duryodhana says at last. \"He is my friend.\" But he looks at Karna differently after that." },
         { id: "yudhishthira", t: "Tell Yudhishthira", req: { bond: ["yudhishthira", 3] }, locked: "Yudhishthira would need to know you.", fx: { flag: ["secret_told", "told_yudhishthira_secret"], bond: { yudhishthira: 2, krishna: -1 }, duty: { conscience: 1 } },
-          text: "Yudhishthira weeps, and then asks you to tell no one else, and then goes to Krishna, who already knows, and who tells him what Kunti herself will tell Karna at the river. Nothing changes. Everything in Yudhishthira's face has." },
+          text: "Yudhishthira weeps and goes to Krishna, who already knows. Nothing changes, except Yudhishthira's face." },
         { id: "kunti", t: "Tell Kunti you know", fx: { flag: ["secret_told", "told_kunti_secret"], rep: { pandava: 1 }, attr: { wisdom: 1 } },
-          text: "Kunti does not ask how you know. \"Then you know what I am going to the river to do,\" she says. \"Pray that I am braver than I was.\"" },
+          text: "Kunti does not ask how you know. \"Pray that I am braver at the river than I was.\"" },
         { id: "keep", t: "Keep it", fx: { flag: "secret_told", duty: { conscience: 1 } }, text: "You keep it, as you have for twenty-seven years. Karna will hear it from the two people who should tell him." }
       ]
     },
@@ -246,7 +246,7 @@
       title: "Ugra's letter",
       body: ["A letter from Ugra: if the war puts him on the other side, he will not look for you."],
       choices: [
-        { id: "write", t: "Write back", fx: { bond: { ugra: 1 }, flag: "wrote_to_ugra" }, text: "You write back about the fair. You do not mention the war. He will have understood." },
+        { id: "write", t: "Write back", fx: { bond: { ugra: 1 }, flag: "wrote_to_ugra" }, text: "You write back about the fair and do not mention the war. He will have understood." },
         { id: "burn", t: "Burn it", fx: { flag: "burned_ugra_letter" }, text: "You burn it, and remember every word anyway." }
       ],
       enter: { flag: "ugra_across" }
@@ -262,7 +262,7 @@
         { id: "promise", t: "Promise to look the other way", fx: (S) => ({ bond: { [S.sibling]: 2 }, flag: "sibling_promise", keepsake: "amulet", memory: [S.sibling, "We promised to look the other way on the field, and I gave you my amulet to remember it."] }),
           text: (S) => ["{who} takes off the copper amulet {who} has worn since you were children and ties it on your wrist. Neither of you says anything else.", sibP(S)] },
         { id: "argue", t: "Argue to change their side", check: { attr: "wisdom", skill: "statecraft", dc: 9,
-          pass: { fx: (S) => ({ bond: { [S.sibling]: 1 }, flag: "sibling_same_side", memory: [S.sibling, "You talked all night, and in the morning I came with you."] }), text: (S) => ["At dawn {who} puts the other side's colours in the fire. \"If we die, we die together, then,\" {who} says. \"Our mother will be furious.\"", sibP(S)] },
+          pass: { fx: (S) => ({ bond: { [S.sibling]: 1 }, flag: "sibling_same_side", memory: [S.sibling, "You talked all night, and in the morning I came with you."] }), text: (S) => ["At dawn {who} puts the other side's colours in the fire. \"If we die, we die together, then.\"", sibP(S)] },
           fail: { fx: (S) => ({ bond: { [S.sibling]: -2 }, flag: "sibling_quarrel" }), text: (S) => ["{who} leaves before dawn without saying goodbye. You tell yourself there will be time afterwards.", sibP(S)] } }, hint: "A test of wits" },
         { id: "silent", t: "Say nothing", fx: {}, text: "You sit up together until the lamp goes out. In the morning you leave by different gates." }
       ]
@@ -273,7 +273,7 @@
       art: art("stage_forest_storm"), place: "The Kamyaka forest", caption: "The sky goes black at noon",
       title: "The storm",
       body: ["A flood is coming down the ravine, and the children are far from shelter."],
-      choices: [STORM, { id: "climb", t: "Climb a tree and wait", fx: { duty: { family: -1 } }, text: "You spend the night in the branches with two children clinging to you. In the morning the camp is a riverbed. Three people are missing, and found." }]
+      choices: [STORM, { id: "climb", t: "Climb a tree and wait", fx: { duty: { family: -1 } }, text: "You spend the night in the branches with two children clinging to you. In the morning the camp is a riverbed." }]
     },
     // ---------- Episodes: Charu drinks first ----------
     {
@@ -296,8 +296,8 @@
         // draw his own wrong conclusions. Their word, once an act, carries it without a test.
         { id: "truth", t: "Answer only with true things", req: { vow: "never_lie" }, locked: "", hint: "Keeps your vow",
           check: { attr: "wisdom", skill: "statecraft", dc: 8,
-            pass: { fx: { skill: { statecraft: 1 }, flag: ["kept_false_name", "truth_to_steward"], duty: { conscience: 1 } }, text: "\"Where did you learn to hold a bow?\" \"From a hard teacher, my lord.\" Every word is true. The steward hears a groom with a past, nods, and goes to bother the cooks." },
-            fail: { fx: { rep: { kuru: -1 }, flag: "name_suspected" }, text: "Every word you say is true, and the steward hears every one of them. He says nothing more and writes something down. A rider leaves for Hastinapura that evening." } } },
+            pass: { fx: { skill: { statecraft: 1 }, flag: ["kept_false_name", "truth_to_steward"], duty: { conscience: 1 } }, text: "\"From a hard teacher, my lord,\" you tell the steward, which is true. He hears a groom with a past and goes to bother the cooks." },
+            fail: { fx: { rep: { kuru: -1 }, flag: "name_suspected" }, text: "The steward hears every true word you say and writes something down. A rider leaves for Hastinapura that evening." } } },
         { id: "leave", t: "Leave the household", fx: { rep: { common: -1 }, flag: "left_virata" }, text: "You take work in the town instead, and hear the rest of the year as rumour." }]
     },
     {
@@ -307,7 +307,7 @@
       witness: ["Bhima will meet Kichaka, who torments Draupadi, in the dancing hall at midnight."],
       body: ["Bhima asks you to get Draupadi out of the hall first."],
       choices: [DANCE_HALL, { id: "no", t: "Stay out of it", fx: { bond: { bhima: -1 } }, text: "Bhima does it alone, as he would have anyway. In the morning there is a thing in the dancing hall that used to be a man." }],
-      after: ["Bhima kills Kichaka in the dark, and leaves what is left for the court to find. The dancers say a Gandharva did it. Nobody believes the dancers, and nobody says so."]
+      after: ["Bhima kills Kichaka in the dark, and the dancers say a Gandharva did it."]
     },
     // ---------- Episodes: the war ----------
     {
@@ -337,7 +337,7 @@
       choices: [
         { id: "reply", t: "Write back", fx: (S) => { const f = friendAcross(S) || (S.flags.includes("sibling_other_side_set") ? S.sibling : "ugra"); return { bond: { [f]: 1 }, keepsake: "letter", flag: "replied_letter" }; }, text: "You write three lines and send the boy back with them. The letter you fold small and keep against your skin." },
         { id: "silent", t: "Send nothing", fx: (S) => { const f = friendAcross(S) || (S.flags.includes("sibling_other_side_set") ? S.sibling : "ugra"); return { bond: { [f]: -1 } }; }, text: "The boy waits a long time before he understands, and goes." },
-        { id: "burn", t: "Burn it unread", fx: { duty: { court: 1, conscience: -1 } }, text: "You put it in the lamp without opening it. You tell yourself it was the right thing. You do not sleep." }
+        { id: "burn", t: "Burn it unread", fx: { duty: { court: 1, conscience: -1 } }, text: "You put it in the lamp without opening it. You do not sleep." }
       ]
     },
     {
@@ -362,7 +362,7 @@
       choices: [
         Object.assign({}, RIVER, { fx: { flag: ["orders_delivered", "carried_false_orders"], duty: { court: 2, conscience: -2 }, journal: "On the night of the thirteenth day you carried false orders across the river, and in the morning the enemy's line was in the wrong place." } }),
         { id: "burn", t: "Burn it, and lie", fx: { flag: ["orders_burned", "refused_false_orders"], duty: { conscience: 2, court: -1 }, memory: ["all", "You would not carry a lie across the river, even in a war."] },
-          text: "You burn it in the lamp and tell the captain the river was watched. He studies your face and does not call you a liar. In the morning the line goes in honestly, and knows it." }
+          text: "You burn it and tell the captain the river was watched. In the morning the line goes in honestly." }
       ]
     },
     {
@@ -376,7 +376,7 @@
       },
       choices: [
         { id: "cross", t: "Wade across and speak", fx: (S) => { const f = friendAcross(S) || (S.flags.includes("sibling_other_side_set") ? S.sibling : "ugra"); return { bond: { [f]: 2 }, flag: "truce_spoke", memory: [f, "You waded across the river at dusk to speak to me, in the middle of the war."] }; },
-          text: "You talk about nothing: the water, the mosquitoes, a horse. Neither of you mentions tomorrow. When the horns sound you wade back without looking round." },
+          text: "You talk about nothing: the water, the mosquitoes, a horse. When the horns sound you wade back without looking round." },
         { id: "raise", t: "Raise a hand, and no more", fx: (S) => { const f = friendAcross(S) || (S.flags.includes("sibling_other_side_set") ? S.sibling : "ugra"); return { bond: { [f]: 1 } }; }, text: "A hand raised, a hand raised back. It will have to do." },
         { id: "away", t: "Turn away before you are seen", fx: { duty: { conscience: -1 } }, text: "You fill your skin upstream and do not look back." }
       ]
@@ -402,11 +402,11 @@
         S.flags.includes("sibling_promise") ? { memory: "You promised to look the other way. The amulet is on your wrist." } : S.flags.includes("sibling_quarrel") ? { memory: "The last thing between you was a quarrel, and a gate closing before dawn." } : null],
       choices: [
         { id: "spare", t: "Turn away", fx: (S) => ({ bond: { [S.sibling]: 2 }, duty: { court: -1, conscience: 1 }, flag: "spared_sibling", memory: [S.sibling, "On the seventeenth day you turned your chariot away from mine."] }),
-          text: (S) => ["{who} lowers the spear a heartbeat after you do. The press carries you apart. You will both deny it afterwards.", sibP(S)] },
+          text: (S) => ["{who} lowers the spear a heartbeat after you do, and the press carries you apart.", sibP(S)] },
         { id: "strike", t: "Strike first", fx: (S) => ({ die: S.sibling, duty: { court: 1, conscience: -3, family: -3 }, flag: "killed_sibling", journal: "On the seventeenth day you struck first, and it was your own sibling." }),
-          text: (S) => ["It is quick. {who} looks surprised, and then looks like nothing at all. You do not remember the rest of the day.", sibP(S)] },
+          text: (S) => ["It is quick. {who} looks surprised, and then looks like nothing at all.", sibP(S)] },
         { id: "avoid", t: "Turn, and do not look", fx: (S) => ({ flag: "avoided_sibling" }), resolve: (S) => (K.rng() < 0.5 ? { die: S.sibling, journal: "You turned away from your sibling on the seventeenth day. Someone else did not." } : null),
-          text: (S) => (S.dead.includes(S.sibling) ? ["You turn away. That evening they bring you {who}'s amulet. Someone else did not turn.", sibP(S)] : ["You turn away, and the press closes between you. {who} lives through the day. So do you.", sibP(S)]) }
+          text: (S) => (S.dead.includes(S.sibling) ? ["You turn away. That evening they bring you {who}'s amulet.", sibP(S)] : ["You turn away, and the press closes between you. {who} lives through the day, and so do you.", sibP(S)]) }
       ]
     },
     {
@@ -417,7 +417,7 @@
       choices: [
         { id: "fight", t: "Fight him", combat: "e_ep_ugra" },
         { id: "mercy", t: "Tell him to go home", check: { attr: "command", skill: "statecraft", dc: 8,
-          pass: { fx: { bond: { ugra: 2 }, flag: "sent_ugra_home", duty: { conscience: 1 } }, text: "Ugra looks at you for a long time. Then he turns his levies round and walks them off the field, and does not come back. He is the only captain on either side who goes home that day with all his men." },
+          pass: { fx: { bond: { ugra: 2 }, flag: "sent_ugra_home", duty: { conscience: 1 } }, text: "Ugra turns his levies round and walks them off the field. He is the only captain who goes home that day with all his men." },
           fail: { fx: { bond: { ugra: 1 } }, text: "\"I have a hundred men behind me,\" he says, \"and they have fathers.\" He goes past you into the smoke, and you let him." } }, hint: "A test of command" }
       ]
     },
@@ -428,7 +428,7 @@
       title: "The ruined quarter",
       body: ["The quarter below the walls burned in the war, and the king has no men to rebuild it."],
       choices: [
-        { id: "work", t: "Work on the roofs yourself", fx: { rep: { common: 2 }, duty: { family: -1 }, flag: "rebuilt_quarter", journal: "After the war you rebuilt the roofs of the burned quarter with your own hands." }, text: "By the rains the quarter has roofs. People call the lane you worked on by your name, and will for a generation, long after they have forgotten why." },
+        { id: "work", t: "Work on the roofs yourself", fx: { rep: { common: 2 }, duty: { family: -1 }, flag: "rebuilt_quarter", journal: "After the war you rebuilt the roofs of the burned quarter with your own hands." }, text: "By the rains the quarter has roofs. People call the lane you worked on by your name." },
         { id: "organise", t: "Organise the rebuilding", check: { attr: "command", skill: "statecraft", dc: 8,
           pass: { fx: { rep: { common: 1, pandava: 1 }, attr: { command: 1 }, flag: "rebuilt_quarter" }, text: "It takes a season of arguing and the quarter is rebuilt before the rains. Nobody thanks you, which is how you know it was done properly." },
           fail: { fx: { rep: { common: -1 } }, text: "The treasury has no timber, the carpenters have gone home to their own ruined villages, and the rains come first." } }, hint: "A test of command" },
@@ -442,7 +442,7 @@
       body: (S) => ["The city sends lamps down the river for the dead.",
         ["Yours: {list}.", { list: K.list(S.dead.filter((w) => K.PEOPLE[w]).map((w) => K.tr(K.PEOPLE[w].name))) }, true]],
       choices: [
-        { id: "forgive", t: "A lamp for your dead and their killers", fx: { duty: { conscience: 2 }, attr: { wisdom: 1 }, rep: { sages: 1 }, flag: "forgave_at_river" }, text: "Two lamps. The second is harder to let go of than the first. It goes out around the bend, like the other one." },
+        { id: "forgive", t: "A lamp for your dead and their killers", fx: { duty: { conscience: 2 }, attr: { wisdom: 1 }, rep: { sages: 1 }, flag: "forgave_at_river" }, text: "Two lamps. The second is harder to let go of than the first." },
         { id: "own", t: "Lamps for your own only", fx: { duty: { family: 2 } }, text: "You send them out one by one, saying each name. The river takes them." },
         { id: "none", t: "Stay on the bank", fx: { duty: { conscience: -1 } }, text: "You watch the lamps go. Someone else lights one for yours." }
       ]
@@ -452,7 +452,7 @@
       art: art("scene_own_student"), place: (S) => K.homePlace(S), caption: "A child with a stick, waiting at your door",
       title: "A student of your own",
       body: ["A child from the lane waits at your door every morning with a stick for a spear."],
-      choices: (S) => [studentTest(S), { id: "no", t: "Send the child away", fx: { duty: { conscience: -1 } }, text: "The child comes back the next morning anyway. You close the door. The morning after, the stick is leaning against it, and the child is gone." }]
+      choices: (S) => [studentTest(S), { id: "no", t: "Send the child away", fx: { duty: { conscience: -1 } }, text: "You close the door on the child. The next morning the stick is leaning against it, and the child is gone." }]
     },
     {
       id: "ep_pilgrimage", act: 7, age: 45, away: true, when: (S) => S.alive, skipTo: "a7_final", next: "a7_final",
@@ -461,8 +461,8 @@
       body: ["The old king, the queen and Kunti walk to the holy places, and ask you to come."],
       choices: [
         { id: "walk", t: "Walk the whole way", fx: { attr: { wisdom: 1 }, rep: { sages: 1 }, flag: "walked_with_elders", journal: "After the war you walked the holy places with Dhritarashtra, Gandhari and Kunti." },
-          text: "Dhritarashtra asks you every evening how many of his sons you killed. Gandhari asks you nothing at all. Kunti, on the last night, asks whether you ever met Karna, and you tell her the truth, and she holds your hand until the fire goes out." },
-        { id: "part", t: "Walk one day", fx: { duty: { family: 1 } }, text: "At the first shrine you turn back. Kunti raises a hand. You think she understands." },
+          text: "Gandhari asks you nothing at all. On the last night Kunti asks whether you ever met Karna, and holds your hand until the fire goes out." },
+        { id: "part", t: "Walk one day", fx: { duty: { family: 1 } }, text: "At the first shrine you turn back. Kunti raises a hand." },
         { id: "no", t: "Let them go without you", fx: {} }
       ]
     },
@@ -473,7 +473,7 @@
       title: "What you kept",
       body: (S) => ["You kept a few small things through all of it.", ["On the cloth: {list}.", { list: K.list((S.keepsakes || []).map((k) => K.tr(K.KEEPSAKES[k].name))) }, true]],
       choices: (S) => [
-        hasKeep(S, "letter") ? { id: "letter", t: "Read the letter from across the lines one last time, and put it in the fire", fx: { duty: { conscience: 1 }, flag: "burned_letter_after" }, text: "You know it by heart. The fire takes the paper. The words stay where they were." } : null,
+        hasKeep(S, "letter") ? { id: "letter", t: "Read the letter from across the lines one last time, and put it in the fire", fx: { duty: { conscience: 1 }, flag: "burned_letter_after" }, text: "The fire takes the paper. You know it by heart." } : null,
         hasKeep(S, "amulet") && S.sibling && S.dead.includes(S.sibling) ? { id: "amulet_pyre", t: "Take the amulet to the river and send it after your sibling", fx: { duty: { family: 2 }, flag: "amulet_to_river" }, text: "The copper disc sinks at once. You stand there until your feet are numb." } : null,
         hasKeep(S, "amulet") && S.sibling && !S.dead.includes(S.sibling) ? { id: "amulet_back", t: "Give the amulet back, and say what it meant", fx: (S2) => ({ bond: { [S2.sibling]: 2 }, flag: "amulet_returned" }), text: (S2) => ["{who} ties it back on and says nothing, and you sit together until the fire is out.", sibP(S2)] } : null,
         hasKeep(S, "hammer") ? { id: "hammer", t: "Hang Kesava's hammer over your own door", fx: { duty: { family: 1 }, bond: { charu: 1 }, flag: "hung_hammer" }, text: "It hangs there for the rest of your life, and your children's." } : null,
@@ -533,7 +533,7 @@
     enemies: [K.foe("Ugra, the miller's son", 6, { abilities: ["strike", "heavy"], person: "ugra", hp: 90, atk: 11 }), K.foe("Ugra's levies", 3, { plural: true, abilities: ["strike", "arrows"] })],
     intro: "Ugra comes on the way he did at the fair, head down, and his levies behind him.",
     win: { fx: { die: "ugra", duty: { conscience: -1 }, journal: "On the seventeenth day you fought Ugra, the miller's son, and he did not get up." }, text: "He goes down the way he never did at the fair, and this time he does not laugh, and does not get up." },
-    spare: { fx: { bond: { ugra: 3 }, flag: "spared_ugra", duty: { conscience: 1 }, journal: "On the seventeenth day you had Ugra, the miller's son, at your mercy, and let him go." }, text: "He is on his knees in the mud. \"Go home to your mill,\" you say. He looks at you a long time, and goes." },
+    spare: { fx: { bond: { ugra: 3 }, flag: "spared_ugra", duty: { conscience: 1 }, journal: "On the seventeenth day you had Ugra, the miller's son, at your mercy, and let him go." }, text: "\"Go home to your mill,\" you say. He looks at you a long time, and goes." },
     lose: { deathText: "{They} fell on the seventeenth day to Ugra, the miller's son, whom {they} first fought at a spring fair." }
   });
 

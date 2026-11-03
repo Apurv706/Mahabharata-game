@@ -100,7 +100,7 @@
     if (v && has(S, "vasu_in_camp")) return "You walk out of the line. Nobody stops you. The whole field watches you cross. That night Vasu finds his way over from the Kaurava camp and does not ask why.";
     if (v && has(S, "vasu_away")) return "You walk out of the line. Nobody stops you. You pass the division Vasu went to last night, and he does not look at you.";
     if (has(S, "role_healer") || has(S, "role_bard")) return "You leave the tents and walk out onto the empty ground. Nobody stops you. The whole field watches you cross, and the Pandava line opens a gap for you and closes behind you.";
-    return "You walk out of the line. Nobody stops you. The whole field watches you cross, and the Pandava line opens a gap for you and closes behind you.";
+    return "You walk out of the line, and nobody stops you. The Pandava line opens for you and closes behind you.";
   };
 
   K.scenes([
@@ -128,12 +128,12 @@
             bonus: (S2) => (has(S2, "sibling_promise") ? 1 : 0) + ((S2.bonds[S2.sibling] ?? 0) >= 8 ? 1 : 0) - (has(S2, "sibling_quarrel") ? 1 : 0),
             pass: { fx: (S2) => ({ set: { calledAcross: S2.sibling }, unflag: "sibling_other_side_set", flag: ["called_across", "called_across_came"], bond: { [S2.sibling]: 2 },
                 memory: [S2.sibling, "You called me across on the first morning, and I came."], journal: { src: "On the first morning of the war you called {who} across the field, and {who} came.", p: { who: sibName(S2) } } }),
-              text: (S2) => ["{who} stands very still for a long moment. Then {who} hands the spear to the next soldier, walks out of the Kaurava line, and does not look back until you are side by side.", { who: sibName(S2) }] },
+              text: (S2) => ["{who} hands the spear to the next soldier and walks out of the Kaurava line to stand beside you.", { who: sibName(S2) }] },
             fail: { fx: (S2) => ({ flag: "called_across", bond: { [S2.sibling]: 1 }, memory: [S2.sibling, "You called me across on the first morning. I could not come, and I have not forgotten that you asked."] }),
-              text: (S2) => ["{who} hears you. Everyone hears you. {who} raises a hand, lowers it, and stays where {who} is.", { who: sibName(S2) }] } } } : null,
+              text: (S2) => ["{who} raises a hand, lowers it, and stays where {who} is.", { who: sibName(S2) }] } } } : null,
         friendK(S) ? { id: "call_friend", t: ["Call across the field to {who}", { who: K.PEOPLE[S.friend].name }], hint: "He will not come. He will remember",
           fx: { flag: "called_friend_across", memory: [S.friend, "You called me across on the first morning, as if I were Yuyutsu."] },
-          text: S.friend === "karna" ? "Karna hears you. Everyone hears you. He lifts his bow to you, once, and does not move." : "Duryodhana hears you. Everyone hears you. He laughs once, and turns his chariot away." } : null,
+          text: S.friend === "karna" ? "Karna lifts his bow to you, once, and does not move." : "Duryodhana laughs once and turns his chariot away." } : null,
         { id: "welcome", t: "Make room for Yuyutsu beside you", fx: { duty: { conscience: 1 }, flag: "welcomed_yuyutsu" }, text: "He takes the place, thanks you, and says nothing else all morning. He keeps looking back at his brothers' banners." },
         { id: "still", t: "Go back to your place", fx: { duty: { court: 1 } }, text: "You take your place. The conches begin." }
       ].filter(Boolean))
@@ -182,7 +182,7 @@
       choices: (S) => [
         { id: "explain", t: "Tell him why", hint: "A test of wits",
           check: { attr: "wisdom", skill: "statecraft", dc: 10,
-            pass: { fx: (S2) => proved(S2, "spared"), text: "\"He will go home and tell them that the one who crossed could have killed him and did not,\" you say. \"Let them think about that the night before they fight us.\" Dhrishtadyumna is quiet a while. Then he sends the guard away." },
+            pass: { fx: (S2) => proved(S2, "spared"), text: "\"He will tell them that the one who crossed could have killed him and did not,\" you say. Dhrishtadyumna sends the guard away." },
             fail: { fx: { flag: "suspicion_deepened" }, text: "Every reason you give sounds like one a spy would give. Dhrishtadyumna hears you out, and leaves the guard where he is." } } },
         { id: "silent", t: "Say nothing", fx: { flag: "suspicion_deepened" }, text: "He waits. Then he goes, and the guard stays." }
       ]
@@ -201,10 +201,10 @@
             stakes: ["Yudhishthira believes you.", "Yudhishthira cannot tell, and the guard stays at your tent."] },
           win: { fx: (S) => { const bond = {}; for (const w of KAURAVA) if (S.bonds[w] != null && !S.dead.includes(w)) bond[w] = -1;
               return Object.assign(proved(S, "truth"), { bond, duty: { conscience: -1 }, journal: "Before Yudhishthira you told the truth about the Kaurava array. The next morning men died where you said they would be." }); },
-            text: "Yudhishthira hears you to the end. \"That is true,\" he says, \"and it cost you something to say.\" The next morning Bhima's men are waiting where you said, and many of the men you marched with do not go home." },
+            text: "\"That is true,\" Yudhishthira says, \"and it cost you something to say.\" The next morning Bhima's men are waiting where you said." },
           lose: { fx: { flag: "truth_doubted" }, text: "You tell the truth, and it comes out wrong, too quick and then too slow. Yudhishthira looks at you a long time and says he cannot tell." } },
         { id: "refuse", t: "Refuse", fx: { duty: { conscience: 1 }, flag: "refused_to_inform" },
-          text: "\"I crossed to fight beside you,\" you say, \"not to sell them.\" Bhima laughs. Yudhishthira does not. The guard stays." }
+          text: "\"I crossed to fight beside you,\" you say, \"not to sell them.\" The guard stays." }
       ]
     },
     {
@@ -220,10 +220,10 @@
             rules: "Before the lamp burns down, say what you saw of the man. Two right of three.",
             stakes: ["The man is found.", "Nobody is found, and the camp keeps its eyes on you."] },
           win: { fx: (S) => Object.assign(proved(S, "spy"), { journal: "In the Pandava camp you found the spy everyone took you for: a groom who had been Shakuni's man for ten years." }),
-            text: "They find him at dawn among the grooms, as you described him, with the copied array folded in the bottom of his bucket. He has been Shakuni's man for ten years. Dhrishtadyumna takes the guard off your tent himself." },
+            text: "They find him at dawn among the grooms, with the copied array in his bucket. Dhrishtadyumna takes the guard off your tent himself." },
           lose: { fx: SUSPECTED, text: "Nobody is found, and neither is the copied array. From now on there is always a Panchala spearman two paces behind you." } },
         { id: "wait", t: "Say nothing", fx: SUSPECTED,
-          text: "The guard answers for you, badly. Nobody is found. From now on there is always a Panchala spearman two paces behind you." }
+          text: "Nobody is found. From now on a Panchala spearman is always two paces behind you." }
       ]
     }
   ]);
@@ -239,12 +239,12 @@
       ? [K.foe("Ugra, the miller's son", 6, { abilities: ["strike", "heavy"], person: "ugra", hp: 80, atk: 10 })]
       : [K.foe("Kanaka", 5, { abilities: ["strike", "heavy", "guard"] })]),
     win: { fx: (S) => ({ die: duelFoe(S), flag: ["won_crossing_duel"].concat(proved(S, "duel").flag), unflag: proved(S, "duel").unflag, journal: { src: "On the second morning of the war your old side sent {who} to bring you back. You killed him between the lines, with both armies watching.", p: { who: foeName(S) } } }),
-      text: (S) => (duelFoe(S) === "ugra" ? "Ugra goes down in the open ground, the way he never did at the fair, and does not get up. A shout goes up behind you from the Pandava line. It is the first one that has been for you."
-        : "Kanaka goes down in the dust between the lines and does not get up. A shout goes up behind you from the Pandava line. It is the first one that has been for you.") },
+      text: (S) => (duelFoe(S) === "ugra" ? "Ugra goes down in the open ground and does not get up. Behind you the Pandava line shouts, the first time for you."
+        : "Kanaka goes down between the lines and does not get up. Behind you the Pandava line shouts, the first time for you.") },
     spare: { fx: (S) => ({ flag: "spared_crossing_duel", duty: { conscience: 1 }, bond: duelFoe(S) === "ugra" ? { ugra: 2 } : {}, journal: { src: "On the second morning of the war you beat {who}, whom your old side sent after you, and let him walk home.", p: { who: foeName(S) } } }),
-      text: "He is on his knees in the dust. You step back and let him go. He walks back across the field, and by evening both camps know that you could have killed him and did not." },
+      text: "You step back and let him go. By evening both camps know that you could have killed him and did not." },
     lose: { fx: { flag: "lost_crossing_duel" }, deathText: "{They} crossed the field at Yuyutsu's call, and fell between the lines on the second morning, with both armies watching.",
-      text: (S) => (S.alive ? "You go down in the dust between the lines. Hands drag you back to the Pandava line by your belt. You wake in a tent that is not yours yet, with a new scar." : null) }
+      text: (S) => (S.alive ? "You go down between the lines, and hands drag you back to the Pandava line. You wake in a tent that is not yours yet." : null) }
   });
   K.encounter({
     id: "cross_e_called", title: "Riders from the other side", art: "fight_between_lines", caption: "The second morning", lethal: true, curse: true,

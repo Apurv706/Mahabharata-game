@@ -85,7 +85,7 @@
         { id: "ride", t: "Ride with Satyaki", combat: "e_kb_ride", fx: { flag: "kb_rode" }, hint: "Ride well, and he arrives fresher" },
         { id: "stay", t: "Stay and guard Yudhishthira",
           fx: { flag: "kb_stayed_king", duty: { court: 1 }, bond: { satyaki: -2, yudhishthira: 1 }, memory: ["satyaki", "You stayed behind with the king the day I rode for Arjuna."], journal: "On the fourteenth day you stayed to guard Yudhishthira when Satyaki rode through the Kaurava army." },
-          text: "Satyaki looks at you once, and rides. You stand at Yudhishthira's wheel all day. By evening the whole army knows what happened to Satyaki when he got through." }
+          text: "Satyaki rides alone, and you stand at Yudhishthira's wheel all day. By evening the army knows what happened to Satyaki when he got through." }
       ]
     },
     {
@@ -121,7 +121,7 @@
       choices: (S) => {
         if (S.side === "kaurava") return [
           { id: "carry", t: "Carry his body back to his men", fx: { rep: { kuru: 1 }, duty: { court: 1 }, flag: "kb_carried_body", memory: ["all", "You came for Bhurishravas, and carried him back to his own lines."], journal: "On the fourteenth day you came too late to save Bhurishravas, and carried him back to his own lines." },
-            text: "You and two of his men carry him back to the Kuru lines on a broken chariot board. His men walk beside you the whole way and say nothing. They will remember who came." },
+            text: "You and two of his men carry him back to the Kuru lines on a broken chariot board. They will remember who came." },
           { id: "leave", t: "Leave him", fx: { flag: "kb_left_body" }, text: "You leave him in the dust with his arrows. Someone else will carry him." }
         ];
         const st = strongest(S);
@@ -132,11 +132,11 @@
               pass: { fx: { flag: "kb_stayed_a_breath" }, text: "For a breath Satyaki stops, and Bhurishravas finishes his prayer. Then Satyaki strikes." },
               fail: { text: "Satyaki goes past you as if you were not there. The sword comes down." } }) },
           { id: "arms", t: "Hold him for Satyaki", tags: ["strike_unarmed"], fx: { duty: { conscience: -2 }, bond: { satyaki: 3 }, flag: "kb_held_arms", journal: "On the fourteenth day you held Bhurishravas's arm while Satyaki killed him at his prayer." },
-            text: "You take his one arm and hold it. He does not fight you. He opens his eyes once to see who it is, and closes them again. Satyaki strikes." },
+            text: "You hold his one arm, and he does not fight you. Satyaki strikes." },
           { id: "away", t: "Look away", fx: { flag: "kb_looked_away" }, text: "You look at the ground. You hear it anyway." }
         ];
       },
-      after: ["Both armies shout at once, that it was murder and that it was war. Satyaki says he swore long ago to kill any man who struck him while he lay on the ground."],
+      after: ["Satyaki says he swore long ago to kill any man who struck him on the ground."],
       next: "a6_day14"
     },
     // The night of day 15, at the council or around the fire: both camps argue about two deaths on two
@@ -169,8 +169,8 @@
           { id: "adharma", t: "Neither was dharma",
             fx: S.side === "kaurava" ? { duty: { conscience: 1 }, rep: { sages: 1, kuru: -1 }, flag: "kb_said_adharma" }
               : { duty: { conscience: 1 }, rep: { sages: 1 }, bond: Object.assign({}, d14 ? { satyaki: -1 } : {}, d15 ? { dhrishtadyumna: -1 } : {}), flag: "kb_said_adharma" },
-            text: S.side === "kaurava" ? "\"Bhurishravas dragged a fallen man by the hair, and Drona led the wheel that killed a boy,\" you say. \"None of it was dharma.\" His men look at you for a long time."
-              : "\"A man at prayer, and an old man tricked into laying down his bow,\" you say. \"None of it was dharma.\" Somebody gets up and leaves the fire." },
+            text: S.side === "kaurava" ? "\"Bhurishravas dragged a fallen man by the hair, and Drona led the wheel that killed a boy. None of it was dharma.\""
+              : "\"A man at prayer, and an old man tricked into laying down his bow. None of it was dharma.\" Somebody leaves the fire." },
           S.side === "kaurava"
             ? { id: "murder", t: "They were murdered, and the Pandavas will answer for it", fx: { duty: { court: 1 }, rep: { kuru: 1 }, flag: "kb_said_murder" }, text: "His men beat their spear-butts on the ground. By morning the whole army is saying it." }
             : { id: "war", t: "They had no claim to mercy", fx: { duty: { court: 1 }, bond: Object.assign({}, d14 ? { satyaki: 1 } : {}, d15 ? { dhrishtadyumna: 1 } : {}), flag: "kb_said_war" }, text: "A few of them nod at you. Nobody else says anything for a while." },
@@ -205,7 +205,7 @@
           text: "You lay him down behind your own line. His charioteer's boy is there, and covers his face with the edge of his own cloth." },
         // A failure costs a wound, never the body: you still bring him back.
         lose: { fx: (S) => ({ flag: "kf_carried_king", injury: "arm", journal: { src: "On the fifteenth day you carried {who} from the field under Drona's arrows, and took an arrow doing it.", p: { who: KP(S).who } } }),
-          text: "The arrow goes into your shoulder, and you go down under him. You get up. You bring him the rest of the way with one arm." } }],
+          text: "An arrow goes into your shoulder, and you go down under him. You bring him the rest of the way with one arm." } }],
       next: "a6_day15"
     },
     // The cry, before the half-truth: Bhima's elephant is dead, and the whole Pandava line is told to
@@ -225,8 +225,8 @@
         { id: "cry", t: "Shout it: Ashwatthama is dead", tags: ["lie"],
           fx: { flag: ["spread_the_lie", "kf_cried"], bond: { dhrishtadyumna: 2 }, rep: { pandava: 1 }, duty: pupil(S) ? { conscience: -2, teacher: -4 } : { conscience: -2 },
             journal: pupil(S) ? "On the fifteenth day you shouted that Ashwatthama was dead, at your own teacher, and saw his face when he heard it." : "On the fifteenth day you helped spread the half-truth that killed Drona." },
-          text: pupil(S) ? "You shout it with the rest. Across the field Drona's head turns toward the sound, and for a moment you see his face. You will see it for the rest of your life."
-            : "You shout it until your throat is raw, and the man beside you shouts it, and the whole line. Dhrishtadyumna rides past and strikes your shield with his sword, once, for joy." },
+          text: pupil(S) ? "You shout it with the rest. Across the field Drona's head turns toward the sound, and you will see his face for the rest of your life."
+            : "You shout it with the whole line until your throat is raw. Dhrishtadyumna rides past and strikes your shield with his sword, for joy." },
         { id: "silent", t: "Stay silent", fx: pupil(S) ? { duty: { conscience: 1 }, flag: ["refused_lie", "kf_silent"], memory: ["dhrishtadyumna", "You would not shout it when your teacher was the one to hear it."] }
             : { duty: { conscience: 1 }, flag: ["refused_lie", "kf_silent"], memory: ["bhima", "You would not shout it with the rest of us."] },
           text: pupil(S) ? "You keep your mouth shut. Dhrishtadyumna sees it as he rides past, and looks at you the way he looks at Drona's men."
@@ -256,7 +256,7 @@
               spareText: "His sword opens you from shoulder to hip. You wake in the healers' tents with a scar you will carry all your life.",
               deathText: "{They} stepped between Dhrishtadyumna's sword and Drona, {their} teacher, on the fifteenth day." },
             check: { attr: "might", skill: "mace", dc: 9,
-              pass: { fx: { bond: { ashwatthama: 2 }, memory: ["ashwatthama", "You stood between my father and the sword."] }, text: "You are in his way, and then you are not: a shoulder, the flat of the sword, and you are in the dust and he is past you. You hear it from the ground." },
+              pass: { fx: { bond: { ashwatthama: 2 }, memory: ["ashwatthama", "You stood between my father and the sword."] }, text: "A shoulder, the flat of the sword, and you are in the dust and he is past you. You hear it from the ground." },
               fail: { fx: { injury: "arm" }, text: "His sword opens your arm to the bone, and he is past you before you hit the ground." } } },
           { id: "let", t: "Let it happen", fx: { duty: { teacher: -2, conscience: -1 }, flag: "kf_let_it_happen" }, text: "You do not move. Afterwards you cannot say why, and nobody asks." }
         ];
@@ -272,14 +272,14 @@
           { id: "stop", t: st.attr === "might" ? "Catch Dhrishtadyumna's arm" : "Call out to Dhrishtadyumna to let the old man be",
             fx: { duty: p ? { conscience: 2, teacher: 2 } : { conscience: 2 }, bond: { dhrishtadyumna: -2 }, flag: "kf_tried_stop_d", journal: "On the fifteenth day you tried to stop Dhrishtadyumna's sword when Drona sat unarmed." },
             check: Object.assign({ dc: 9 }, st, has(S, "kb_held_arms") ? {
-              pass: { fx: { flag: "kf_saw_drona_go" }, text: "\"Yesterday you held an old man's arm for Satyaki,\" he says. \"Today you want to hold mine?\" He stops for one breath, and in it you see that Drona's face is already empty. Then he pulls free and climbs into the chariot." },
-              fail: { text: "\"Yesterday you held an old man's arm for Satyaki,\" he says, and shakes you off. \"Hold your own.\" He climbs into the chariot." } } : {
-              pass: { fx: { flag: "kf_saw_drona_go" }, text: "He stops for one breath. In that breath you see that the old man's face is already empty, as if he has gone somewhere else. Then Dhrishtadyumna pulls free and climbs into the chariot." },
+              pass: { fx: { flag: "kf_saw_drona_go" }, text: "\"Yesterday you held an old man's arm for Satyaki,\" he says, and stops for one breath. In it you see that Drona's face is already empty, and then he pulls free." },
+              fail: { text: "\"Yesterday you held an old man's arm for Satyaki,\" he says, and shakes you off and climbs into the chariot." } } : {
+              pass: { fx: { flag: "kf_saw_drona_go" }, text: "He stops for one breath, and the old man's face is already empty. Then Dhrishtadyumna pulls free and climbs into the chariot." },
               fail: { text: "He goes past you without turning his head, and climbs into the chariot." } }) },
           { id: "away", t: "Keep away", fx: { flag: "kf_kept_away" }, text: "You turn your horse away. Behind you the shouting changes, and you know it is done." }
         ];
       },
-      after: ["When it is over, Ashwatthama hears how his father died. He swears by everything he knows that the Pandavas will pay."]
+      after: ["Ashwatthama hears how his father died and swears the Pandavas will pay."]
     },
     // That night the king's household asks you to take word home. Going means missing the rest of
     // the night in the camp; the war's road picks up again on the sixteenth day.
@@ -293,7 +293,7 @@
         { id: "home", t: ["Take the ring home to {home}", { home: KP(S).home }], hint: "You will miss the night in camp",
           fx: { duty: { family: 2 }, flag: "kf_took_word", journal: { src: "On the night of the fifteenth day you took {who}'s ring home to the queen in {home}.", p: { who: KP(S).who, home: KP(S).home } } },
           resolve: (S2) => { const list = K.BEFORE.a6_day16 || [], i = list.indexOf("kf_word"); return { set: { missed: (Array.isArray(S2.missed) ? S2.missed : []).concat(list.slice(i + 1).filter((id) => !S2.seen.includes(id))) } }; },
-          text: "You ride through the night with the ring against your chest. The queen takes it from your hand and does not open the cloth. By the time you are back at the lines, the sixteenth day's fighting has begun." },
+          text: "You ride through the night and put the ring in the queen's hand. By the time you are back, the sixteenth day has begun." },
         { id: "stay", t: "Stay with the army", fx: { duty: { court: 1 }, flag: "kf_stayed" }, text: "The steward nods and goes to find a runner. You stay where the king left you." }
       ]
     }
@@ -318,7 +318,7 @@
       { round: 4, text: "Satyaki's horses are lathered and his sword arm is slowing. \"Keep up,\" he says again, and this time he is saying it to himself.",
         run: (B) => B.units.filter((u) => u.person === "satyaki" && u.hp > 0).forEach((u) => B.status(u, "exposed", 1)) }
     ],
-    win: { next: "kb_drag", fx: { flag: "kb_ride_through", bond: { satyaki: 2 }, journal: "On the fourteenth day you rode with Satyaki through the Kaurava army to find Arjuna." }, text: "You break the last line together. Satyaki laughs, out of breath, and strikes your shoulder. \"Not bad,\" he says. Then his horses stumble." },
+    win: { next: "kb_drag", fx: { flag: "kb_ride_through", bond: { satyaki: 2 }, journal: "On the fourteenth day you rode with Satyaki through the Kaurava army to find Arjuna." }, text: "You break the last line together, and Satyaki laughs, out of breath. Then his horses stumble." },
     lose: { next: "kb_drag", fx: { journal: "On the fourteenth day you tried to ride with Satyaki through the Kaurava army, and fell behind." }, text: "They pull you off his wheel. Satyaki goes on alone, and by the time you catch him up he has fought every line twice." }
   });
   K.kbRideCount = (B) => {
@@ -339,8 +339,8 @@
       { round: 5, text: "Bhurishravas fights the old way, without a wasted step, and he is not tired yet.", run: (B) => B.living("player").forEach((u) => B.status(u, "exposed", 1)) }
     ],
     win: { next: "kb_sits", fx: { flag: "kb_held_full", bond: { satyaki: 3 }, journal: "On the fourteenth day you held Bhurishravas off Satyaki until Arjuna's arrow came." }, text: "You are still standing over Satyaki when " + ARM },
-    lose: { next: "kb_sits", fx: (S) => ({ flag: "kb_held_short", bond: { satyaki: Math.floor(held(S) / 2) } }), text: "You go down in the dust beside Satyaki. Bhurishravas lifts his sword over him again, and " + ARM },
-    flee: { tags: ["retreat"], next: "kb_sits", fx: (S) => ({ flag: "kb_fell_back", bond: { satyaki: Math.floor(held(S) / 2) - 1 } }), text: "You fall back. Bhurishravas turns to Satyaki again and lifts his sword, and " + ARM }
+    lose: { next: "kb_sits", fx: (S) => ({ flag: "kb_held_short", bond: { satyaki: Math.floor(held(S) / 2) } }), text: "You go down beside Satyaki. As Bhurishravas lifts his sword again, " + ARM },
+    flee: { tags: ["retreat"], next: "kb_sits", fx: (S) => ({ flag: "kb_fell_back", bond: { satyaki: Math.floor(held(S) / 2) - 1 } }), text: "You fall back. As Bhurishravas lifts his sword over Satyaki, " + ARM }
   });
   K.encounter({
     id: "e_kb_guard", title: "Satyaki's Yadava guard", art: "fight_war_field", caption: "Five rounds to get through", hold: 5, hard: true, lethal: false, curse: true,

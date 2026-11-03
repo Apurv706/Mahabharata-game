@@ -76,12 +76,12 @@
     text: "Two mantras, one for the morning and one for the night. The old sage makes you say them until he is satisfied, which takes four days." });
   push("a5_forest_boon", { id: "rite", t: "Ask them to lift your curse", req: { tapas: 6, cursed: true }, locked: "Needs a curse to lift, and 6 tapas.",
     fx: { tapas: -6, liftCurse: true }, hint: "Costs 6 tapas",
-    text: "Seven nights of fire and fasting. On the last morning the oldest sage pours water over your head and says the thing that was waiting for you is waiting no longer." });
+    text: "After seven nights of fire and fasting, the oldest sage pours water over your head. What was waiting for you waits no longer." });
   // The vanishing comes from the Gandharvas (the ambush in the exile years), or from a naga.
   const gand = K.ENCOUNTERS.e_gandharva;
   if (gand) {
     gand.spare = { fx: { astraGrant: { id: "sammohana", from: "gandharva" }, boon: "antardhana", rep: { sages: 1 }, journal: "You spared a beaten Gandharva, and he taught you the mantra of sleep and the art of vanishing." },
-      text: "The Gandharva you have beaten lowers his sword and laughs. \"Arjuna spared Chitraratha once, and was given a gift for it,\" he says. \"Here is yours.\" He teaches you two things before dawn: the mantra that puts a host to sleep, and the trick of not being where you are looked for." };
+      text: "The Gandharva laughs and teaches you two things before dawn: the mantra that puts a host to sleep, and how not to be where you are looked for." };
   }
   // Soma at the Rajasuya: its own small scene before the sacrifice, for those with the merit to be offered it.
   K.scene({ id: "w_soma", act: 3, age: 29, away: true, when: (S) => (S.tapas || 0) >= 2 && !S.flags.includes("drank_soma"), enter: { flag: "soma_offered" }, next: "a3_rajasuya", skipTo: "a3_rajasuya",
@@ -102,7 +102,7 @@
       // Tied by a living spouse, or by the parent who raised you (a grandparent is long gone by the war), or by the camp's old women.
       { id: "sutra", t: (S) => (S.spouse && !S.dead.includes(S.spouse) ? ["Let {spouse} tie the raksha sutra on your wrist", null] : S.kin && !K.kinElder(S) ? ["Let {kin} tie the raksha sutra on your wrist", { kin: S.kin }] : "Have the raksha sutra tied"),
         fx: { boon: "raksha", charge: { raksha: 1 }, flag: "has_raksha", duty: { family: 1 } }, hint: "Once, outside battle, it turns a death into a wound",
-        text: "A red and yellow thread, tied with a prayer you half hear. It is only a thread. You do not take it off." },
+        text: "A red and yellow thread, tied with a prayer you half hear. You do not take it off." },
       { id: "bless", t: (S) => (S.teacher && S.teacher !== "self" ? ["Go to {teacher} for a blessing", null] : "Ask the elders' blessing"),
         fx: (S) => ({ set: { blessed: S.log.length + 4, blessedBy: "An elder's blessing is on you." }, duty: { teacher: 1 } }), hint: "+1 to every test for the next day",
         text: "A hand on your head, a few words. You walk back to your tent lighter than you went." },
@@ -123,7 +123,7 @@
       tally: "Flame kept: {c}% · {s} seconds of storm left", wonLine: "The storm passes. The flame is still there, and so are you.", nearLine: "The flame gutters, and comes back, and gutters. Not yet.", lostLine: "The wind takes the flame, and the season with it.",
       rules: "Hold to shield the flame from the gusts; let go when the wind drops.",
       stakes: ["On the last night, a voice in the fire gives you the Agneyastra.", "The flame goes out. You come down the hill with nothing but a cough."] },
-    win: { fx: { astraGrant: { id: "agneya", from: "fire_altar" }, tapas: 1 }, text: "On the last night a voice speaks out of the coals, and gives you the mantra of fire, and one condition: never against someone who cannot fight back." },
+    win: { fx: { astraGrant: { id: "agneya", from: "fire_altar" }, tapas: 1 }, text: "On the last night a voice in the coals gives you the mantra of fire. Never against someone who cannot fight back." },
     lose: { fx: { attr: { wisdom: 1 } }, text: "The flame goes out on the fortieth night. You come down the hill thinner, with no weapon and a little more patience." } };
   K.scene(quest({ astra: "agneya", then: "a5_jayadratha", scene: {
     id: "w_fire", age: 34, place: "A bare hill above the hermitages", art: art("stage_fire_altar"), caption: "An altar in the rain", title: "The fire altar",
@@ -135,7 +135,7 @@
     trial: { attr: "might", skill: "stealth", stage: art("stage_deep_lake"), dives: 3, need: 2, verb: "Dive",
       rules: "Hold to dive, let go to rise. Reach the glow before your breath runs out. Two of three dives.",
       stakes: ["The sage gives you the Varunastra for it.", "The lake keeps the vessel, and nearly keeps you."] },
-    win: { fx: { astraGrant: { id: "varuna", from: "lake_sage" }, tapas: 1 }, text: "You come up with the vessel the second time, half-drowned. The sage takes it without a word, then gives you one: the mantra of water, on the condition that you never lie about where it came from." },
+    win: { fx: { astraGrant: { id: "varuna", from: "lake_sage" }, tapas: 1 }, text: "You come up with the vessel the second time, half-drowned. The sage gives you the mantra of water: never lie about where it came from." },
     lose: { fx: {}, text: "The current is stronger than you. The vessel stays on the lake bed, and the sage goes on sitting by the water as if you had never come." } };
   K.scene(quest({ astra: "varuna", then: "a5_matsya", scene: {
     id: "w_dive", age: 42, place: "A deep lake in the hills", art: art("stage_deep_lake"), caption: "Still water over deep water", title: "The sage's offering",
@@ -148,9 +148,9 @@
       tally: "Climbed: {d}% · Falls: {h} of {l}", bump: "Your foot goes through the crust, and the mountain takes a little more of you.", help: "Step aside from the rocks and the ice: up and down, or the buttons.", helpSide: "Step left and right around the rocks and the ice.",
       rules: "Climb through the falling rocks. Three falls and you turn back.",
       stakes: ["The hermit of the heights gives you the Vayavyastra. Nearly there, a sanjivani root on a ledge.", "You turn back below the snow line, frostbitten."] },
-    win: { fx: { astraGrant: { id: "vayavya", from: "hermitage" }, tapas: 1 }, text: "The hermit is very old and very amused that anyone came. He teaches you the mantra of wind over three days, and makes you promise one thing: never to turn your back on a fight you chose." },
+    win: { fx: { astraGrant: { id: "vayavya", from: "hermitage" }, tapas: 1 }, text: "The old hermit teaches you the mantra of wind over three days. Never turn your back on a fight you chose." },
     // Short of the hermitage, a ledge where the sanjivani root grows (§18.8: "a dangerous climb").
-    close: { fx: { boon: "sanjivani", charge: { sanjivani: 1 }, journal: "Short of the hermitage, on a ledge in the snow, you dug up a sanjivani root and wore it home on a cord." }, text: "You do not reach the hermitage. But on the last ledge, where you stop to breathe, a root glows faintly under the snow, the way the old songs say the sanjivani does. You dig it out with your knife, and wear it on a cord." },
+    close: { fx: { boon: "sanjivani", charge: { sanjivani: 1 }, journal: "Short of the hermitage, on a ledge in the snow, you dug up a sanjivani root and wore it home on a cord." }, text: "You do not reach the hermitage, but on the last ledge you dig a glowing root out of the snow: the sanjivani." },
     lose: { fx: {}, text: "Below the snow line your feet stop obeying you. You come down, and the hermitage stays where it is, above the clouds." } };
   K.scene(quest({ astra: "vayavya", then: "a5_matsya", scene: {
     id: "w_climb", age: 42, place: "The foot of the high mountains", art: art("stage_mountain_path"), caption: "A path into the snow", title: "The hermit of the heights",
@@ -167,7 +167,7 @@
     trial: { attr: "wisdom", skill: "lore", stage: art("stage_gandharva_grove"), rounds: RIDDLES,
       rules: "Answer the Gandharva's riddles before the lamp burns down. Two right of three.",
       stakes: ["He gives you the mantra of sleep, laughing.", "He lets you drink anyway, and keeps the mantra."] },
-    win: { fx: { astraGrant: { id: "sammohana", from: "gandharva" }, tapas: 1 }, text: "He drops out of the tree, delighted. \"No one has answered me in a hundred years. Here: the mantra that puts a host to sleep. Never against one who is asleep already, or unarmed, or I will come and take it back.\"" },
+    win: { fx: { astraGrant: { id: "sammohana", from: "gandharva" }, tapas: 1 }, text: "He drops out of the tree, delighted, and gives you the mantra that puts a host to sleep. Never against the sleeping or the unarmed." },
     lose: { fx: {}, text: "\"Drink,\" he says, bored. \"You are no worse than the last hundred.\"" } };
   K.scene(quest({ astra: "sammohana", then: "a5_vikarna", scene: {
     id: "w_riddle", age: 36, place: "A pool at the edge of the Dvaita forest", art: art("stage_gandharva_grove"), caption: "A voice in the branches", title: "The Gandharva at the pool",
@@ -180,7 +180,7 @@
       tally: "The wound closing: {c}% · {s} seconds", wonLine: "The bleeding stops. The naga lets out a long breath that is almost a word.", nearLine: "Nearly. The wound keeps opening.", lostLine: "The naga pulls away from you and slides into the river, trailing blood.",
       rules: "Hold to press the wound; let go when he pulls away.",
       stakes: ["He gives you the serpent-noose for it.", "He goes back into the river without a word."] },
-    win: { fx: { astraGrant: { id: "nagapasha", from: "naga" }, tapas: 1, rep: { common: 1 } }, text: "Before he goes back into the water he teaches you the mantra of the serpent-noose, which binds and does not kill, on one condition: never against someone who cannot fight back." },
+    win: { fx: { astraGrant: { id: "nagapasha", from: "naga" }, tapas: 1, rep: { common: 1 } }, text: "He teaches you the mantra of the serpent-noose, which binds and does not kill. Never against someone who cannot fight back." },
     lose: { fx: {}, text: "He goes into the river, and the water closes over him, and you do not know whether he lived." } };
   K.scene(quest({ astra: "nagapasha", then: "a5_forge", scene: {
     id: "w_naga", age: 35, place: "The riverbank below the village", art: art("stage_naga_bank"), caption: "A stranger on the bank", title: "The wounded naga",
@@ -190,12 +190,12 @@
   // Other ways: a year serving a sage; a stolen temple offering; the shrine of light on the mountain.
   push("a5_forest_boon", { id: "year", t: "Serve the sage a whole year", req: { rep: ["sages", 4], noAstra: "vayavya" }, locked: "The sages do not know you yet.",
     fx: { tapas: 3, astraGrant: { id: "vayavya", from: "hermitage" }, rep: { pandava: -1 }, flag: "served_a_year", journal: "You served a sage for a year in the exile, and he gave you the mantra of the wind." },
-    hint: "A year of your life: tapas +3, and a divine weapon", text: "A year of water carried and silence kept. On the last day the sage gives you the mantra of the wind, and tells you never to turn your back on a fight you chose." });
+    hint: "A year of your life: tapas +3, and a divine weapon", text: "After a year of silence the sage gives you the mantra of the wind. Never turn your back on a fight you chose." });
   const OFFERING = { t: "Steal it back by night", game: "sneak", hint: "A test of stealth",
     trial: { attr: "grace", skill: "stealth", stage: art("scene_temple_offering"),
       rules: "Cross the robber's house, in and out. Do not be seen twice.",
       stakes: ["The temple gets its lamp back, and its priest gives you a charmed shield.", "You are caught, and beaten, and let go as a fool."] },
-    win: { fx: { boon: "charm_shield", tapas: 2, rep: { common: 1, sages: 1 } }, text: "The lamp is back on its chain by dawn. The old priest gives you a shield that hung in the temple longer than anyone remembers. \"It turns the first blow,\" he says. \"After that you are on your own.\"" },
+    win: { fx: { boon: "charm_shield", tapas: 2, rep: { common: 1, sages: 1 } }, text: "By dawn the lamp is back on its chain, and the old priest gives you the temple's shield. \"It turns the first blow.\"" },
     lose: { fx: { injury: "scar" }, text: "A torch finds you on the stair. They beat you and throw you out, and keep the lamp." } };
   K.scene(Object.assign({ act: 5, away: true, when: (S) => S.act === 5 && !S.boons.includes("charm_shield") && !S.flags.includes("offering_tried"), enter: { flag: "offering_tried" }, next: "a5_matsya", skipTo: "a5_matsya" }, {
     id: "w_offering", age: 42, place: "A village temple on the road to Matsya", art: art("scene_temple_offering"), caption: "An empty hook over the altar", title: "The stolen offering",
@@ -207,8 +207,8 @@
       rules: "Hold to keep still in the light as the cold and the fear push you.",
       stakes: ["Something is given to you: a weapon, or a kavacha against one death in the war.", "You come down, and never tell anyone what you saw."] },
     win: { resolve: (S) => (S.rep.sages >= 6 ? { charge: { kavacha: 1 }, boon: "kavacha", tapas: 2 } : { astraGrant: { id: "vayavya", from: "mountain" }, tapas: 2 }), fx: { flag: "stood_in_the_light" },
-      text: "When you can see again you are kneeling in the snow and something is yours that was not yours before. You will not lie about what happened here. You could not if you tried." },
-    lose: { fx: { attr: { wisdom: 1 } }, text: "You come down the mountain and do not speak for three days. Something was there. It did not stay." } };
+      text: "You kneel in the snow, and something is yours that was not before. You will not lie about what happened here." },
+    lose: { fx: { attr: { wisdom: 1 } }, text: "You come down the mountain and do not speak for three days. Something was there, and it did not stay." } };
   K.scene(Object.assign({ act: 5, away: true, when: (S) => S.act === 5 && S.exile === "forest" && S.rep.sages >= 4 && !S.flags.includes("mountain_tried"), enter: { flag: "mountain_tried" }, next: "a5_yaksha", skipTo: "a5_yaksha" }, {
     id: "w_mountain", age: 36, place: "High in the mountains", art: art("stage_shiva_mountain"), caption: "A light where no lamp is", title: "The light on the mountain",
     body: ["On the mountain a light stands at dusk, with no lamp in it. Those who stand in it are sometimes given something."],

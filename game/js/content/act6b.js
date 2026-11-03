@@ -42,10 +42,10 @@
         { id: "refuse", t: "Refuse to repeat it", req: { side: "pandava" }, fx: { duty: { conscience: 1 }, flag: "refused_lie" } },
         { id: "warn", t: "Tell Drona his son is alive", req: { any: [{ side: "kaurava" }, { teacher: "drona" }] },
           fx: (S) => ({ duty: { teacher: S.teacher === "drona" ? 3 : 1, court: S.side === "pandava" ? -3 : 1 }, memory: ["drona", "You rode to tell him the truth."], journal: "On the fifteenth day you tried to tell Drona his son was alive." }),
-          text: "You reach his chariot and shout it. He looks past you, toward Yudhishthira, the one man he trusts not to lie. He does not hear you." },
+          text: "You reach his chariot and shout it. He looks past you toward Yudhishthira, and does not hear you." },
         { id: "tend", t: "Stay with the wounded", fx: { rep: { common: 1 } } }
       ],
-      after: ["When it is over, Ashwatthama hears how his father died. He swears by everything he knows that the Pandavas will pay."],
+      after: ["Ashwatthama hears how his father died and swears the Pandavas will pay."],
       next: "a6_day16"
     },
     {
@@ -84,9 +84,7 @@
         { id: "watch", t: "Watch, and remember", fx: { flag: "watched_karna" } }
       ],
       after: (S) => [
-        "Arjuna's arrow takes Karna's life. People say a light left his body and rose into the sun.",
-        S.bonds.karna >= 7 ? { memory: "His last look was for the sky, not for you. You tell yourself that is all right." } : null,
-        "Only after the war does Kunti tell her sons that Karna was their eldest brother."
+        "Arjuna's arrow takes Karna's life.",
       ],
       next: "a6_day18"
     },
@@ -112,10 +110,10 @@
         K.lakeLines ? K.lakeLines.dying(S) : null], // what you did at the lake before the duel (content/war_lake.js)
       choices: [
         { id: "comfort", t: "Sit with him", fx: { bond: { duryodhana: 2 }, memory: ["duryodhana", "You sat with him at the end."], journal: "You sat with Duryodhana by the lake as he lay dying." } },
-        { id: "truth", t: "Tell him what he did", fx: { duty: { conscience: 2 }, bond: { duryodhana: -2 } }, text: "\"I lived as a king,\" he says. \"I am dying as one. Which of them can say that?\"" },
+        { id: "truth", t: "Tell him what he did", fx: { duty: { conscience: 2 }, bond: { duryodhana: -2 } }, text: "\"I lived as a king, and I am dying as one,\" he says. \"Which of them can say that?\"" },
         { id: "leave", t: "Leave him to the night", fx: {} }
       ],
-      after: ["Before midnight, Ashwatthama comes to the lake. Duryodhana makes him commander of an army of three: Ashwatthama, Kripa and Kritavarma."],
+      after: ["Before midnight Duryodhana makes Ashwatthama commander of an army of three."],
       next: "a6_raid"
     },
     {
@@ -135,20 +133,20 @@
           peril: { kind: "death", art: "scene_raid", caption: "Fire in the sleeping camp", text: "Your shout brings someone, but not the help you wanted. Ashwatthama finds you in the smoke.",
             deathText: "{They} tried to wake the sleeping camp on the last night, and Ashwatthama reached {them} first." },
           check: { attr: "command", skill: "statecraft", dc: 8, bonus: (S) => (S.boons.includes("foresight") ? 2 : 0),
-            pass: { fx: { rep: { pandava: 2, common: 2 }, flag: "woke_camp", journal: "On the night of the raid your shouting woke enough of the camp to save many lives." }, text: "Your voice carries. Tents empty into the dark. Many who should have died that night live." },
+            pass: { fx: { rep: { pandava: 2, common: 2 }, flag: "woke_camp", journal: "On the night of the raid your shouting woke enough of the camp to save many lives." }, text: "Your voice carries, and tents empty into the dark. Many who should have died that night live." },
             fail: { resolve: null, fx: { flag: "raid_failed_wake" }, text: "The smoke takes your voice. Too few hear you." } } },
         { id: "gate", t: "Fight Ashwatthama at the gate", req: { not: { side: "kaurava" } }, combat: "e_raid" },
         { id: "nishada", t: "Whistle for the Nishada archers", req: (S) => S.side !== "kaurava" && (S.flags.includes("helped_ekalavya") || S.flags.includes("stood_with_ekalavya")),
           resolve: (S) => (vasuAt(S, "vasu_in_camp") || vasuAt(S, "vasu_with_you") ? { flag: "saved_vasu_raid", bond: { vasu: 1 } } : {}),
           fx: { flag: ["woke_camp", "nishada_came"], rep: { common: 2 }, journal: "On the night of the raid, the Nishada archers came out of the dark when you whistled." },
-          text: "They come out of the trees without a sound. They know the whistle: Ekalavya taught it to them, long ago, and told them who had bound his hand. Their arrows hold the gate long enough for half the camp to run." },
+          text: "Ekalavya's people come out of the trees at the whistle he taught them. Their arrows hold the gate long enough for half the camp to run." },
         { id: "join", t: "Go with Ashwatthama", req: { side: "kaurava" }, tags: ["strike_unarmed"],
           fx: { duty: { conscience: -5 }, rep: { sages: -3, common: -2 }, flag: "joined_raid", journal: "You went into the sleeping Pandava camp with Ashwatthama." } },
         { id: "refuse", t: "Refuse him", req: { side: "kaurava" }, fx: { duty: { conscience: 2 }, flag: "refused_ashwatthama" }, text: "\"Then go home,\" he says, \"and live with that.\"" },
         { id: "stop", t: "Try to stop him", req: { side: "kaurava" }, combat: "e_ash" }
       ],
       after: (S) => [
-        "Ashwatthama kills Dhrishtadyumna, Shikhandi and all five of Draupadi's sons in their sleep, and sets the camp on fire. Of the eighteen armies, a handful of people are left alive.",
+        "Ashwatthama kills Dhrishtadyumna, Shikhandi and Draupadi's five sons in their sleep.",
         K.vasuLostInRaid(S) ? { curse: "You find Vasu at dawn, in what is left of his tent." } : null
       ],
       next: "a7_field"
@@ -164,7 +162,7 @@
   });
   war("e_jaya", "Guarding Jayadratha", [K.foe("Pandava chariot-warrior", 5, { abilities: ["strike", "heavy", "arrows"] }), K.foe("Pandava footsoldier", 4)], { art: "war_day14",
     caption: "Day fourteen",
-    win: { fx: { rep: { kuru: 2 } }, text: "You hold your ground all afternoon. It does not matter. The sun is still up." },
+    win: { fx: { rep: { kuru: 2 } }, text: "You hold your ground all afternoon, and the sun is still up." },
     lose: { deathText: "You fell on the fourteenth day, guarding Jayadratha." },
     flee: { text: "You fall back toward Jayadratha's hiding place." }, spare: { fx: { duty: { conscience: 1 } }, text: "You let him go." }
   });
@@ -200,7 +198,7 @@
   });
   war("e_ash", "Standing in Ashwatthama's way", [{ name: "Ashwatthama", hp: 115, atk: 12, def: 3, abilities: ["strike", "heavy", "arrows"] }], { hard: true, art: "scene_raid",
     caption: "The road to the sleeping camp", allies: [], spare: false, events: ["moon"],
-    win: { fx: { duty: { conscience: 3 }, flag: "fought_ashwatthama", journal: "You tried to stop Ashwatthama on the road to the sleeping camp." }, text: "He staggers, and then goes around you. You cannot stop him. You slowed him down." },
+    win: { fx: { duty: { conscience: 3 }, flag: "fought_ashwatthama", journal: "You tried to stop Ashwatthama on the road to the sleeping camp." }, text: "He staggers, then goes around you. You could not stop him, but you slowed him down." },
     lose: { deathText: "You died on the road, trying to stop Ashwatthama from reaching the sleeping camp." },
     flee: { text: "You let him go." }
   });

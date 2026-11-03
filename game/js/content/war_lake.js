@@ -78,7 +78,7 @@
       stakes: ["You bring him to his mother's people.", "The arrows pin you down until the nagas come for him themselves."] },
     win: { fx: { flag: "naga_regard", bond: { arjuna: 1 }, memory: ["ulupi", "You carried my son to the river under the Kaurava arrows."], journal: "On the eighth day you carried Iravan's body across the field to the river, where his mother's people took him." },
       next: "wl_iravan_river", text: "You reach the shallows with him in the last of the light." },
-    lose: { fx: {}, text: "Fire-arrows pin you behind a broken chariot until full dark. When you reach the river at last, the nagas take him out of your arms without a word, and do not look at you." } };
+    lose: { fx: {}, text: "Fire-arrows pin you down until full dark. When you reach the river, the nagas take him from your arms and do not look at you." } };
 
   // ---------- The lake (day 18) ----------
   const dFriend = (S) => S.friend === "duryodhana" || (S.bonds.duryodhana || 0) >= 5;
@@ -109,13 +109,13 @@
   };
   twin({
     id: "e_lake_hold", title: "The water's edge", art: "fight_lake_reeds_night", caption: "Fire-baskets on the bank", lethal: false, curse: true, hold: 5,
-    holdText: "The torches turn back into the reeds. The scouts have seen enough.", allies: [ASH, KRIPA, KRITA], spare: false, flee: { tags: ["retreat"], fx: { flag: ["lake_fled", "lake_ash_cold"] }, text: "You fall back into the reeds. When it is over Ashwatthama finds you there. \"I saw,\" is all he says." },
+    holdText: "The torches turn back into the reeds. The scouts have seen enough.", allies: [ASH, KRIPA, KRITA], spare: false, flee: { tags: ["retreat"], fx: { flag: ["lake_fled", "lake_ash_cold"] }, text: "You fall back into the reeds. When it is over Ashwatthama finds you there: \"I saw.\"" },
     callHelp: reedsHelp, enemies: [K.foe("Pandava scout", 4), K.foe("Pandava scout", 4), K.foe("Panchala archer", 4, { abilities: ["strike", "arrows"] })],
     intro: "The torches come on through the reeds. Ashwatthama draws his sword. \"Until they turn back,\" he says. \"Not one step nearer the water.\"",
     beats: [{ round: 3, text: "Kritavarma kicks over a fire-basket, and the reeds between you and the scouts go up in flame.", run: (B) => B.living("enemy").forEach((u) => B.status(u, "weakened", 2)) }],
     win: { fx: { flag: ["lake_held", "lake_ash_trust"], journal: "On the last night you held the water's edge at Dvaipayana beside Ashwatthama, Kripa and Kritavarma." },
-      text: "Ashwatthama wipes his sword on the reeds and looks at you for a long moment. \"Four of us held the water tonight,\" he says. \"I will remember who.\"" },
-    lose: { fx: { flag: ["lake_fell", "lake_ash_cold"], injury: "scar" }, text: "You go down in the mud. When you can see again the scouts are gone, and Ashwatthama is standing over you. Then he turns and goes back to the water." }
+      text: "Ashwatthama wipes his sword on the reeds. \"Four of us held the water tonight. I will remember who.\"" },
+    lose: { fx: { flag: ["lake_fell", "lake_ash_cold"], injury: "scar" }, text: "You go down in the mud. When you can see again the scouts are gone, and Ashwatthama is going back to the water." }
   }, "{They} fell in the reeds at Dvaipayana on the last night, holding the water's edge beside Ashwatthama, Kripa and Kritavarma.");
   const hero = (u, atk) => Object.assign({}, u, { hp: 600, atk, hero: true });
   twin({
@@ -129,7 +129,7 @@
       { round: 3, text: "A cloud slides across the moon. In the sudden dark he loses you for a breath.", run: (B) => B.living("player").forEach((u) => B.status(u, "evade", 1)) }
     ],
     win: { fx: { flag: "lake_held", journal: "On the last night you stood against Ashwatthama, Kripa and Kritavarma in the reeds, and got away with what you saw." }, text: "You get away through the reeds with what you saw." },
-    lose: { fx: { flag: ["lake_fell", "lake_spared"], injury: "scar" }, text: "Ashwatthama's sword is at your throat when Kripa catches his arm. \"Not tonight,\" Kripa says. They leave you in the mud." }
+    lose: { fx: { flag: ["lake_fell", "lake_spared"], injury: "scar" }, text: "Ashwatthama's sword is at your throat when Kripa catches his arm. \"Not tonight.\"" }
   }, "{They} went into the reeds at Dvaipayana as a scout on the last night, and Ashwatthama found {them} there.");
 
   // Warning him, for a Pandava: seen by a hunter or not. Out of your depth and seen, Bhima's men hold
@@ -137,14 +137,14 @@
   const WARNED = { bond: { duryodhana: 3 }, flag: "lake_warned", memory: ["duryodhana", "You told me to run. I would not, and you stayed to see it."], journal: "On the last day you knelt at the lake and told Duryodhana to run. He would not." };
   const TOLD = { rep: { pandava: 2 }, flag: "lake_told", memory: ["duryodhana", "You stood on the bank with them when they called me out of the water."], journal: "On the last day you found where Duryodhana lay hidden in the lake, and told the Pandavas." };
   const TELL = { t: "Tell the Pandavas", locked: "The hunters were there before you.",
-    text: "Yudhishthira hears you out and sends for his brothers. The hunters come in with the same news while the chariots are being yoked, and are paid anyway." };
-  const WARN_TEXT = "The still water shivers, and his voice comes up through it, slow and thick. \"I have run as far as I am going to,\" he says. \"When they come, I will come up and fight. Stand on the bank and watch. I want one friend to see it.\"";
+    text: "Yudhishthira hears you out and sends for his brothers. The hunters come in with the same news, and are paid anyway." };
+  const WARN_TEXT = "His voice comes up through the water: \"When they come, I will come up and fight. I want one friend to see it.\"";
   // Seen: Pandava reputation -3 either way; out of your depth (the odds under even), Bhima's men also
   // hold you until the duel is over (the peril above), and you do not see it.
   const WARN_CHECK = { attr: "grace", skill: "stealth", dc: 8,
     pass: { fx: { flag: "saw_duel" }, text: WARN_TEXT } };
   WARN_CHECK.fail = { fx: (S) => ({ rep: { pandava: -3 }, flag: K.checkOdds(WARN_CHECK, S) < 0.5 ? "lake_warn_seen" : ["lake_warn_seen", "saw_duel"] }), text: () => WARN_SEEN };
-  const WARN_SEEN = "His voice comes up through the still water, slow and thick: he has run as far as he is going to, and when they come he will come up and fight. Getting up from the water, you see a hunter in the reeds, watching you. Before the moon is down the Pandava camp knows what you did.";
+  const WARN_SEEN = "He says he will come up and fight when they come. A hunter in the reeds has seen you, and by moonset the Pandava camp knows.";
 
   K.scenes([
     // ---------- Iravan ----------
@@ -235,7 +235,7 @@
           check: WARN_CHECK }
       ],
       after: (S) => [
-        "The hunters bring the Pandavas to the lake. Yudhishthira stands on the bank and taunts Duryodhana until he rises out of the water with his mace, and Bhima steps forward to meet him.",
+        "Yudhishthira taunts Duryodhana up out of the lake, and Bhima steps forward to meet him.",
         // His last words: said here, unless you will sit with him after the duel (act6b.js a6_duryodhana says it there).
         has(S, "lake_told") && !K.test(K.SCENES.a6_duryodhana.when, S) ? { memory: "He comes up out of the water and sees you on the bank among them. Dying, he says your name with theirs." } : null,
         has(S, "lake_warned") && has(S, "saw_duel") ? { memory: "Before the first blow he looks along the bank, and finds you there, as he asked." } : null

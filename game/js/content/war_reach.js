@@ -113,7 +113,7 @@
       fight: "A young Yadava, Satyaki, puts his back to yours and grins.",
       kings: "A young Yadava, Satyaki, blocks your way for a moment, grins, and tells you his name before he goes to the brahmins.",
       watch: "A young Yadava, Satyaki, stands beside you and tells you his name. Then he goes in to help the brahmins.",
-      pass: "Two kings sheathe their swords and walk out with you. A young Yadava, Satyaki, walks out with you too and tells you his name. Fewer men are hurt that day because of it.",
+      pass: "Two kings sheathe their swords and walk out with you. So does a young Yadava, Satyaki, who tells you his name.",
       fail: "Nobody listens to you. A young Yadava, Satyaki, pulls you back as the fighting starts, and tells you his name."
     };
     for (const c of sw.choices || []) {

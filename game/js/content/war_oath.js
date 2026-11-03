@@ -44,7 +44,7 @@
     enemies: [K.foe("Arjuna", 10, { abilities: ["strike", "arrows", "aimed"], hero: true, person: "arjuna", hp: 900, atk }), K.foe("Pandava chariot-warrior", 5, { abilities: ["strike", "arrows"] })],
     flee: { tags: WITHDRAW, fx: { flag: "oath_withdrew" }, text: "You pull out of the arrows. The sworn men around you see it, and none of them says a word." },
     lose: { fx: (S) => (S.storyMode ? { flag: "oath_carried_off", journal: "Arjuna's arrows brought you down, and your men carried you off the field. You never stepped back, and the oath held." } : null),
-      text: (S) => (S.alive ? "An arrow takes you under the collarbone, and your men carry you off the field. You never stepped back. The oath holds." : null),
+      text: (S) => (S.alive ? "An arrow takes you under the collarbone, and your men carry you off. You never stepped back, and the oath holds." : null),
       deathText: day }
   }, extra));
   arjunaHold("oath_arjuna_12", "{They} swore the Samshaptakas' oath on the eleventh night, and fell in front of Arjuna's chariot on the twelfth day, as {they} had sworn.", 7, 11, {
@@ -52,14 +52,14 @@
     intro: "Arjuna's chariot comes down on the sworn men like a hawk on a field of quail. No one has stood in front of it and stayed. You swore you would.",
     holdText: "A rider reaches Arjuna's chariot from the north: the king is in danger. Krishna turns the white horses away. You are still standing.",
     win: { fx: { flag: "oath_held_12", rep: { kuru: 1 }, journal: "On the twelfth day you stood in front of Arjuna's chariot, as you had sworn, until it turned away." },
-      text: "He goes north at a gallop, and the sworn men cheer as if they had won. You know better. He will be back." }
+      text: "He goes north at a gallop, and the sworn men cheer as if they had won. He will be back." }
   });
   arjunaHold("oath_arjuna_16", "{They} swore the Samshaptakas' oath on the eleventh night, and fell in front of Arjuna's chariot on the sixteenth day, as {they} had sworn.", 7, 12, {
     title: "The white horses, again", caption: "Seven rounds",
     intro: "There are fewer of you this time, and he comes straight for the banners he remembers.",
     holdText: "Ashwatthama's conch sounds to the north, and Arjuna turns to answer it. You are still standing.",
     win: { fx: { flag: "oath_held_16", rep: { kuru: 1 }, journal: "On the sixteenth day you stood in front of Arjuna's chariot again, and held." },
-      text: "The chariot wheels away north. Around you the sworn men count who is left. It does not take long." }
+      text: "The chariot wheels away north. Around you the sworn men count who is left, and it does not take long." }
   });
   // Pandava side: Drona at Yudhishthira's chariot, when the crescent breaks.
   K.encounter({
@@ -72,7 +72,7 @@
       { round: 5, text: "Behind you the king's charioteer has the horses turned. A little longer.", run: (B) => B.living("friends").forEach((u) => B.status(u, "guard", 1)) }],
     win: { fx: { flag: "king_held_12", bond: { yudhishthira: 2 }, rep: { pandava: 1 }, journal: "On the twelfth day, when the crescent broke, you held Drona off Yudhishthira's chariot until the king was away." },
       text: "Yudhishthira looks back once as his chariot goes. At dusk Arjuna comes back from the south, and finds his brother alive." },
-    lose: { fx: { flag: "king_guard_broke", injury: "scar" }, text: "The guard around the chariot breaks. The king's charioteer whips the horses through the last gap, and Yudhishthira gets away with Drona's arrows behind him." }
+    lose: { fx: { flag: "king_guard_broke", injury: "scar" }, text: "The guard around the chariot breaks, and Yudhishthira gets away through the last gap with Drona's arrows behind him." }
   });
   Object.assign(K.COMMAND_FIGHT_BG, { oath_arjuna_12: "fight_arjuna_chariot", oath_arjuna_16: "fight_arjuna_chariot", oath_king_hold: "fight_war_chariot" });
 
@@ -95,7 +95,7 @@
       choices: [
         { id: "swear", t: "Swear with them", fx: { vowTake: "samshaptaka", tapas: 3, flag: "samshaptaka", journal: "On the eleventh night of the war you swore the Samshaptakas' oath: to fight Arjuna until he fell or you did." },
           resolve: (S) => (S.friend === "arjuna" ? { bond: { arjuna: -2 } } : null), hint: (S) => (K.vowsHeld(S) >= K.MAX_VOWS ? "A fourth vow, allowed for this war only" : null),
-          text: "You say the words after Susharma and pour the water, and someone hangs a garland of grass around your neck. It weighs nothing. You feel it all night." },
+          text: "You say the words after Susharma, and someone hangs a garland of grass around your neck. It weighs nothing, and you feel it all night." },
         { id: "watch", t: "Keep your own oaths", text: "You watch them swear. When the fire burns low you go back to your own tent, and do not sleep much." }
       ]
     },
@@ -132,7 +132,7 @@
             fail: { fx: { flag: "crescent_broke" }, next: "oath_king", text: "The horn folds under the eagle's charge, and you are thrown clear. When you get up, Drona's chariots are through." } } }
       ],
       after: (S) => (S.flags.includes("crescent_broke") ? null
-        : ["Further along the crescent Drona breaks through where Satyajit stands guard, and kills him. The king is got away in time. At dusk Arjuna comes back from the south. On the way he has killed old Bhagadatta and his great elephant."])
+        : ["Further along the crescent Drona kills Satyajit, but the king is got away in time."])
     },
     {
       id: "oath_king", act: 6, age: 44, war: true, away: true, art: "fight_war_chariot", place: "Kurukshetra · day 12", caption: "Drona through the gap", title: "The king's chariot",

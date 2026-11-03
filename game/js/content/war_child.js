@@ -80,7 +80,7 @@
   };
   const eveChoice = (id, side, t) => ({ id, t, req: { side }, fx: { flag: "child_cmd_" + id, moment: { kind: "child_eve", who: "vasu" }, bond: { vasu: 1 },
       memory: ["vasu", "You tied a red thread on my wrist the night before the war."], journal: { src: "On the eve of the war you tied a thread on Vasu's wrist and sent him to {cmd}'s division.", p: { cmd: CMD[id] } } },
-    text: ["You tie a red thread on his wrist, the way one was tied on yours. He holds still for it. At first light he walks to {cmd}'s banners and does not look back until the last moment, and then he does.", { cmd: CMD[id] }] });
+    text: ["You tie a red thread on his wrist. At first light he walks to {cmd}'s banners, and at the last moment he looks back.", { cmd: CMD[id] }] });
 
   // On his day, his line beside yours. He goes down in the third round: drag him out, or call, and a friend
   // who comes stands over him. Read when the fight ends (K.childFightEnd), from the units themselves.
@@ -111,7 +111,7 @@
       : [K.foe("Drona's chariot-warrior", 4, { abilities: ["strike", "heavy", "arrows"] }), K.foe("Kaurava spearmen", 3, { plural: true })]),
     intro: "Vasu's shield is a hand's breadth from yours. He does not look at you. He is trying very hard not to.",
     beats: [{ round: 3, text: "A chariot comes straight at Vasu's shield-wall. He goes down under the wheels and does not get up.", run: (B) => { const v = vasuUnit(B); if (v && v.hp > 0) v.hp = 0; } }],
-    win: { fx: { flag: "child_line_held", bond: { vasu: 1 }, memory: ["vasu", "You held the line beside mine, the day they drove for the king."] }, text: "When the conches sound, both lines are where they were at dawn. Vasu finds you in the dusk and stands beside you for a while without speaking." },
+    win: { fx: { flag: "child_line_held", bond: { vasu: 1 }, memory: ["vasu", "You held the line beside mine, the day they drove for the king."] }, text: "When the conches sound, both lines are where they were at dawn. Vasu finds you in the dusk and stands beside you." },
     lose: { fx: { flag: "child_line_broken" }, text: "The line breaks. In the dust you lose sight of Vasu's shield, and do not find it again until dark." },
     flee: { fx: { flag: "child_line_left" }, text: "You pull back. His line holds without you, somehow, and he never asks why." }
   });
@@ -136,7 +136,7 @@
       choices: [
         { id: "write", t: "Write back tonight", fx: { bond: { vasu: 1 } }, text: "You write more than you mean to, and cross most of it out, and send the rest." },
         { id: "go", t: "Go and see him", fx: { bond: { vasu: 2 }, duty: { court: -1 }, memory: ["vasu", "You walked across the camp in the dark to see me, after the ninth day."] },
-          text: "He is asleep when you find him, with his sandals still on. You sit by him for an hour and go back before he wakes. Someone tells him in the morning." }
+          text: "He is asleep with his sandals still on. You sit by him for an hour and go back before he wakes." }
       ]
     },
     {
@@ -228,7 +228,7 @@
   });
   Object.assign(K.COMMAND_FIGHT_BG, { wc_e_ghost: "fight_night_torches", wc_e_reach: "fight_night_torches" });
 
-  const THROW = "The spear goes up into the dark like a second sun and finds Ghatotkacha. He falls, and as he falls he makes himself vast, and comes down on the Kaurava host like a hill. Karna stands in his chariot with empty hands.";
+  const THROW = "The spear finds Ghatotkacha, and he falls on the Kaurava host like a hill.";
   const urge = (id, t, fx, text) => ({ id, t, fx: Object.assign({ moment: { kind: "shakti", from: "kaurava" } }, fx, { flag: [id === "silent" ? "shakti_silent" : "shakti_urged_" + id].concat(fx.flag || []) }), text });
   K.scenes([
     {
@@ -278,7 +278,7 @@
       choices: [
         { id: "sit", t: "Sit beside Bhima", fx: { bond: { bhima: 2 }, flag: "sat_with_bhima", memory: ["bhima", "You sat with me the night my son fell."] },
           text: "He does not look at you. After a long time he puts his hand on your shoulder, and leaves it there until it is light." },
-        { id: "tell", t: "Tell him his son saved Arjuna", fx: { bond: { bhima: 1 } }, text: "\"I know,\" Bhima says. \"Krishna told me. He was dancing.\" He does not look up." },
+        { id: "tell", t: "Tell him his son saved Arjuna", fx: { bond: { bhima: 1 } }, text: "\"I know,\" Bhima says without looking up. \"Krishna told me. He was dancing.\"" },
         { id: "line", t: "Go back to the line", fx: { duty: { court: 1 } } }
       ]
     }

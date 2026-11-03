@@ -32,8 +32,8 @@
       rules: low ? "Hit the wooden bird on the highest branch. Three arrows; all three must hit." : "Hit the wooden bird on the highest branch. Two hits of three.",
       stakes: ["Drona takes you, grudgingly, and the whole court hears of it.", "Drona turns away. You will have to choose another teacher."] },
     win: { fx: Object.assign({}, DRONA_TAKES, { journal: "You passed Drona's test at the gate, though your family was not of the court, and he took you as a student." }),
-      text: "The last arrow takes the bird off its branch. Drona nods once. \"Tomorrow, before dawn,\" he says. The princes stare." },
-    lose: { fx: { flag: "drona_refused" }, text: "Your arrows fall short and wide. Drona has already turned away. \"Find another teacher,\" he says, not unkindly.", next: "a2_teacher" } });
+      text: "The last arrow takes the bird off its branch. \"Tomorrow, before dawn,\" Drona says." },
+    lose: { fx: { flag: "drona_refused" }, text: "Your arrows fall short and wide. \"Find another teacher,\" Drona says, not unkindly.", next: "a2_teacher" } });
 
   K.scenes([
     {
@@ -54,7 +54,7 @@
         { id: "kripa_ask", img: "teacher_kripa", t: "Ask Kripa to take you", req: { not: { any: [{ origin: COURTISH }, { rep: ["kuru", 5] }] }, noFlag: "kripa_refused" },
           check: { attr: "command", skill: "statecraft", dc: 7,
             pass: { fx: { set: { teacher: "kripa" }, duty: { teacher: 3, court: 2 }, skill: { mace: 1, archery: 1 }, journal: "Kripa took you into his school, though your family was not of the court." }, text: "Kripa questions you for an hour, then sets you to sweep the practice ground. That means yes." },
-            fail: { fx: { flag: "kripa_refused" }, text: "Kripa hears you out politely. \"Come back when the court knows your name,\" he says. You will have to choose another teacher.", next: "a2_teacher" } } },
+            fail: { fx: { flag: "kripa_refused" }, text: "\"Come back when the court knows your name,\" Kripa says. You will have to choose another teacher.", next: "a2_teacher" } } },
         { id: "balarama", img: "teacher_balarama", t: "Balarama, master of the mace", req: { any: [{ origin: "mathura" }, { flag: "balarama_noticed" }] }, locked: "Yadavas, or those he has seen fight",
           fx: { set: { teacher: "balarama" }, duty: { teacher: 4 }, skill: { mace: 2 }, rep: { yadava: 2 }, journal: "Balarama agreed to teach you the mace." }, hint: "He will ask you to stay out of the war" },
         { id: "hermit", img: "teacher_mauni", t: "Mauni, the forest hermit",
@@ -63,8 +63,8 @@
           fx: { set: { teacher: "vidura" }, duty: { teacher: 3, conscience: 1 }, skill: { statecraft: 2, stealth: 1 }, bond: { vidura: 2 }, journal: "You joined Vidura's circle." }, hint: "He will judge your choices" },
         { id: "vidura_ask", img: "teacher_vidura", t: "Ask Vidura to take you", req: { not: { origin: ["hastinapura", "anga", "gandhara"] }, noFlag: "vidura_refused" },
           check: { attr: "wisdom", skill: "statecraft", dc: 7,
-            pass: { fx: { set: { teacher: "vidura" }, duty: { teacher: 3, conscience: 1 }, skill: { statecraft: 2, stealth: 1 }, bond: { vidura: 2 }, journal: "Vidura let you into his circle, though you were not born to the court." }, text: "Vidura asks what you noticed on your way to his door. You tell him: the guard who was not where he should be, the merchant who was. He nods slowly." },
-            fail: { fx: { flag: "vidura_refused" }, text: "Vidura asks what you noticed on your way to his door. You did not notice anything. \"Then you are not ready,\" he says, kindly. You will have to choose another teacher.", next: "a2_teacher" } } },
+            pass: { fx: { set: { teacher: "vidura" }, duty: { teacher: 3, conscience: 1 }, skill: { statecraft: 2, stealth: 1 }, bond: { vidura: 2 }, journal: "Vidura let you into his circle, though you were not born to the court." }, text: "Vidura asks what you noticed on your way to his door. You tell him of the guard who was not at his post, and he nods slowly." },
+            fail: { fx: { flag: "vidura_refused" }, text: "Vidura asks what you noticed on your way to his door, and you noticed nothing. You will have to choose another teacher.", next: "a2_teacher" } } },
         { id: "self", img: "teacher_self", t: "Teach yourself", fx: { set: { teacher: "self" }, skill: { archery: 1 }, attr: { aim: 1 }, flag: "self_taught", journal: "You taught yourself, alone, by night." }, hint: "No debt, no protector" }
       ],
       next: "a2_path"
@@ -95,8 +95,8 @@
         { id: "silent", t: "Keep silent", fx: { duty: { conscience: -1, teacher: 1 } } },
         { id: "tend", t: "Bind Ekalavya's hand",
           check: { attr: "wisdom", skill: "healing", dc: 7,
-            pass: { fx: { rep: { common: 2 }, duty: { conscience: 1 }, flag: "helped_ekalavya", journal: "You bound Ekalavya's hand. He thanked you and said he would learn to shoot with two fingers." }, text: "The wound is clean when you leave. Ekalavya says he will learn to draw a bow with two fingers. You believe him." },
-            fail: { fx: { duty: { conscience: 1 }, flag: "helped_ekalavya" }, text: "You do what you can. It is not much. He thanks you anyway." } } },
+            pass: { fx: { rep: { common: 2 }, duty: { conscience: 1 }, flag: "helped_ekalavya", journal: "You bound Ekalavya's hand. He thanked you and said he would learn to shoot with two fingers." }, text: "The wound is clean when you leave. Ekalavya says he will learn to draw a bow with two fingers." },
+            fail: { fx: { duty: { conscience: 1 }, flag: "helped_ekalavya" }, text: "You do what you can, which is not much. He thanks you anyway." } } },
         { id: "kin", t: "Stay with Ekalavya", req: { origin: "nishada" }, fx: { duty: { conscience: 3 }, rep: { common: 2, kuru: -2 }, flag: "stood_with_ekalavya", memory: ["all", "You chose your own people over the princes' hunt."] } }
       ],
       next: "s_youth"
@@ -130,7 +130,7 @@
         { id: "silent", t: "Watch", fx: { duty: { conscience: -1 }, bond: { karna: -1 }, flag: "silent_at_tournament", memory: ["karna", "You were in the stands, and you said nothing."] } },
         { id: "leave", t: "Leave the arena", fx: { rep: { kuru: -1 }, bond: { karna: 1 }, flag: "left_arena" }, hint: "Opens a hidden thread" }
       ],
-      after: ["Duryodhana makes Karna king of Anga on the spot. When old Adhiratha comes forward to embrace his son, Bhima laughs at the charioteer's boy who would be king. The sun sets before the duel can begin."],
+      after: ["Duryodhana makes Karna king of Anga on the spot."],
       next: "a2_drupada"
     },
     {
@@ -151,16 +151,15 @@
         { id: "defend", t: "Defend Panchala's border villages", req: { origin: "panchala", not: { teacher: "drona" } }, combat: "e_border" },
         { id: "warn", t: "Warn the villages", req: { not: { teacher: "drona" } },
           peril: { kind: "prison", by: "Kaurava outriders", place: "A cell below the palace, Hastinapura",
-            text: "Kaurava outriders ride you down on the road. This time they do not send you home. They tie your hands to a saddle and take you back to Hastinapura, to wait on the elders' pleasure.",
+            text: "Kaurava outriders ride you down on the road. This time they tie your hands to a saddle and take you back to Hastinapura.",
             journal: "Kaurava outriders caught you warning Panchala's villages, and locked you away." },
           check: { attr: "grace", skill: "stealth", dc: 7,
             pass: { fx: { rep: { panchala: 2, common: 1, kuru: -1 }, flag: "warned_panchala" }, text: "The villages empty before the army arrives. No one there dies that day." },
-            fail: { fx: { rep: { kuru: -2 }, lose: { what: "heirloom", at: "outriders" } }, text: (S) => (S.heirloomLost && S.heirloomLost.at === "outriders" ? "Kaurava outriders catch you on the road and send you home bruised. One of them keeps your {heirloom!}, laughing. Your name is noted." : "Kaurava outriders catch you on the road and send you home bruised. Your name is noted.") } } },
+            fail: { fx: { rep: { kuru: -2 }, lose: { what: "heirloom", at: "outriders" } }, text: (S) => (S.heirloomLost && S.heirloomLost.at === "outriders" ? "Kaurava outriders send you home bruised, and one of them keeps your {heirloom!}. Your name is noted." : "Kaurava outriders catch you on the road and send you home bruised. Your name is noted.") } } },
         { id: "watch", t: "Stay out of it", fx: {} }
       ],
       after: [
-        "Arjuna takes Drupada prisoner and lays him at Drona's feet. Drona keeps half of Panchala and gives the rest back, as a friend would.",
-        "Drupada goes home and performs a great sacrifice. From the fire come a son born to kill Drona, and a daughter, Draupadi, who people say will bring the Kurus to ruin."
+        "Arjuna lays Drupada captive at Drona's feet, and Drona keeps half of Panchala."
       ],
       next: "a2_vow"
     },

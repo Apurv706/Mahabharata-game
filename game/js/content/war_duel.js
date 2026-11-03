@@ -55,12 +55,12 @@
       { round: 4, text: "Vrishasena's bow is cut in his hand. He takes up another.", run: atSon(0.2) },
       { round: 6, text: "Over the noise you hear Karna shouting his son's name from across the field.", run: (B) => B.living("player").forEach((u) => B.status(u, "inspired", 1)) }
     ],
-    win: { fx: { flag: "kd_stood", bond: { karna: 2 }, memory: ["karna", "You stood at my son's wheel until the end."], journal: "On the seventeenth day you rode at Vrishasena's wheel against Arjuna's arrows until the end." }, text: "You are still at his wheel when Arjuna's arrow finds Vrishasena's throat, and he falls against his own wheel. Across the field, Karna sees it happen." },
+    win: { fx: { flag: "kd_stood", bond: { karna: 2 }, memory: ["karna", "You stood at my son's wheel until the end."], journal: "On the seventeenth day you rode at Vrishasena's wheel against Arjuna's arrows until the end." }, text: "You are still at his wheel when Arjuna's arrow finds Vrishasena's throat. Across the field, Karna sees it happen." },
     lose: { fx: (S) => ((S.kdHeld || 0) >= 4 ? { flag: "kd_stood", bond: { karna: 2 }, memory: ["karna", "You stood at my son's wheel until you could not stand."], journal: "On the seventeenth day you stood at Vrishasena's wheel until you went down." } : { flag: "kd_fell_short" }),
-      text: "You go down beside the wheel. Arjuna's arrow finds Vrishasena's throat, and he falls against his own wheel. Across the field, Karna sees it happen." },
+      text: "You go down beside the wheel, and Arjuna's arrow finds Vrishasena's throat. Across the field, Karna sees it happen." },
     flee: { fx: (S) => ((S.kdHeld || 0) >= 4 ? { flag: "kd_stood", bond: { karna: 2 }, memory: ["karna", "You stood at my son's wheel longer than anyone."] } : { flag: "kd_withdrew", bond: { karna: -2 }, journal: "On the seventeenth day you pulled back from Vrishasena's wheel, and Karna saw it." }),
-      text: (S) => ((S.kdHeld || 0) >= 4 ? "You pull back at last, when there is nothing left to hold. Arjuna's arrow finds Vrishasena's throat, and he falls against his own wheel. Across the field, Karna sees it happen."
-        : "You pull back out of the arrows. Arjuna's arrow finds Vrishasena's throat, and he falls against his own wheel. Across the field, Karna sees it happen, and sees who rode away.") }
+      text: (S) => ((S.kdHeld || 0) >= 4 ? "You pull back when there is nothing left to hold, and Arjuna's arrow finds Vrishasena's throat. Across the field, Karna sees it happen."
+        : "You pull back, and Arjuna's arrow finds Vrishasena's throat. Across the field, Karna sees it, and sees who rode away.") }
   });
 
   // Overhead, the champions' weapons meet, each a counter-weapon clash drawn in code (ui/fx.js).
@@ -91,9 +91,9 @@
       { round: 4, text: "Karna looses the serpent. Krishna drives the horses to their knees, and it takes Arjuna's crown instead of his head.", run: (B) => { clash("nagapasha")(); B.living("friends").forEach((u) => B.status(u, "inspired", 1)); } }
     ],
     win: { fx: { flag: "kd_guard_held", bond: { arjuna: 1 }, journal: "On the seventeenth day you held Arjuna's left wheel beside Yudhamanyu and Uttamaujas through the whole duel." },
-      text: "Yudhamanyu claps you on the shoulder with a bloody hand. Neither prince is badly hurt. Out on the open ground, Karna is climbing down from his chariot." },
-    lose: { fx: BROKEN, text: "You go down, and for a round Arjuna's flank is open. Two Kaurava arrows ring off his armour before Uttamaujas closes the gap, and takes a cut doing it." },
-    flee: { fx: BROKEN, text: "You pull back from the wheel. For a round the flank is open, and you take an arrow in the side getting clear. Uttamaujas closes the gap, and bleeds for it." }
+      text: "Neither prince is badly hurt. Out on the open ground, Karna is climbing down from his chariot." },
+    lose: { fx: BROKEN, text: "You go down, and Arjuna's flank is open for a round. Uttamaujas closes the gap and takes a cut doing it." },
+    flee: { fx: BROKEN, text: "You pull back from the wheel and take an arrow in the side getting clear. Uttamaujas closes the gap, and bleeds for it." }
   });
   Object.assign(K.COMMAND_FIGHT_BG = K.COMMAND_FIGHT_BG || {}, { kd_e_son: "scene_duel_ground", kd_e_wheel: "scene_duel_ground" });
 

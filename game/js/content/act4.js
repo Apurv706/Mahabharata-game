@@ -14,7 +14,7 @@
       ],
       choices: [
         { id: "warn", t: "Warn Yudhishthira", req: { flag: "knows_dice_plot" }, fx: { bond: { yudhishthira: 1 }, rep: { pandava: 1 }, flag: ["warned_yudhishthira", "at_dice"] },
-          text: "He thanks you, and takes your hand, and goes anyway. \"If I am called, I must play,\" he says. You go with him.", next: "a4_hands" },
+          text: "He thanks you and goes anyway. \"If I am called, I must play.\"", next: "a4_hands" },
         { id: "go", t: "Go to the hall", fx: { flag: "at_dice" }, next: "a4_hands" },
         { id: "stay", t: "Stay away", fx: { flag: "absent_dice", journal: "You stayed away from the dice game." }, next: "a4_household" }
       ],
@@ -34,7 +34,7 @@
           fx: { duty: { conscience: 3, court: -2 }, rep: { pandava: 2, kuru: -2 }, bond: { draupadi: 2, yudhishthira: 1, dushasana: -4 }, flag: ["objected_dice", "enemy_dushasana"], memory: ["dushasana", "You spoke against him in the hall."], journal: "In the dice hall you answered Draupadi's question out loud. Dushasana marked you." } },
         { id: "between", t: "Step between Dushasana and Draupadi",
           peril: { kind: "prison", by: "Duryodhana's guards", place: "The cells below the assembly hall", then: "a4_aftermath",
-            text: "Dushasana's guards drag you out of the hall. Duryodhana does not even look round. \"Below,\" he says, \"until they learn the king's peace.\"",
+            text: "Dushasana's guards drag you out of the hall. \"Below,\" Duryodhana says, \"until they learn the king's peace.\"",
             journal: "You stepped between Dushasana and Draupadi, and Duryodhana had you locked away." },
           check: { attr: "might", skill: "mace", dc: 9,
             pass: { fx: { duty: { conscience: 3, court: -3 }, rep: { pandava: 3, kuru: -3 }, bond: { draupadi: 2, bhima: 2, dushasana: -5 }, flag: ["stood_between", "enemy_dushasana"], journal: "You held Dushasana's wrist in the dice hall, for one breath, before the guards pulled you off." }, text: "You catch Dushasana's wrist and hold it for one long breath before the guards drag you back. The hall saw it." },
@@ -60,8 +60,7 @@
         { id: "away", t: "Look away", fx: { duty: { conscience: -1 } } }
       ],
       after: [
-        "Frightened by the omens, Dhritarashtra offers Draupadi boons. She asks only for her husbands' freedom, and their weapons.",
-        "Then Yudhishthira is called back for one more game. The loser will go into exile for twelve years, and a thirteenth year in hiding. He loses."
+        "Yudhishthira loses one more game, and the Pandavas go into exile for thirteen years."
       ],
       next: "a4_aftermath"
     },

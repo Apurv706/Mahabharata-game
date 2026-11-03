@@ -206,7 +206,7 @@
     enemies: [K.foe("The Narayana weapon", 10, { hero: true, hp: 999, atk: 5, abilities: ["arrows", "heavy"] })],
     beats: twist(2, "Krishna's voice carries over the whole field: put down your weapons, get down from your chariots, and it will pass you by.", fire(2)),
     win: { fx: { journal: "On the fifteenth day you laid down your weapons when the Narayana weapon came, and it passed over you." },
-      text: "You kneel in the dust. The fire goes over you like wind over grass. When you look up, Krishna and Arjuna are dragging Bhima down from his chariot, still shouting." },
+      text: "You kneel, and the fire goes over you like wind over grass. Krishna and Arjuna are dragging Bhima down from his chariot." },
     lose: { fx: { injury: "scar" }, text: "You stand against it, and it finds you. Someone pulls you down into the dust by your belt, and the fire passes over you both." } });
   side({ id: "fs_d16_range", kind: (S) => K.fightKind(S, 16, "range"), title: "An archer across the field", art: "war_day16", caption: "Shoot it out",
     intro: (S) => pick2(S, "One of Karna's archers has been shooting at your line from his chariot all morning. Shoot it out with him.", "One of Arjuna's archers has been shooting at your line from his chariot all morning. Shoot it out with him."),

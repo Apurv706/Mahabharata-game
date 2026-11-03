@@ -33,17 +33,17 @@
     mathura: {
       body: "The house looks over the Yamuna ghats.",
       choices: [
-        { id: "uncle", t: "Your uncle Satyaka, a river trader", fx: kin("Satyaka", { skill: { statecraft: 1 } }), text: "He takes you to the ghats and teaches you to bargain in three dialects, badly. \"Smile first,\" he says. \"Then name the price.\"" },
+        { id: "uncle", t: "Your uncle Satyaka, a river trader", fx: kin("Satyaka", { skill: { statecraft: 1 } }), text: "He takes you to the ghats and teaches you to bargain. \"Smile first. Then name the price.\"" },
         { id: "grandmother", t: "Grandmother Lavanya, a singer", fx: kin("Lavanya", { skill: { lore: 1 } }), text: "She knows the name of every Yadava chief for twenty generations, and a song for most of them. You learn half the songs by heart." },
-        { id: "cousin", t: "Your cousin Megha, a swimmer", fx: kin("Megha", { attr: { might: 1 } }), text: "Megha teaches you to swim against the current until your arms burn, and to let the river carry you when it is stronger than you. You never reach the far bank. Megha does, twice." }
+        { id: "cousin", t: "Your cousin Megha, a swimmer", fx: kin("Megha", { attr: { might: 1 } }), text: "Megha teaches you to swim against the current, and to let the river carry you when it is stronger than you." }
       ]
     },
     anga: {
       body: "Your family has served in the Anga guard for four generations.",
       choices: [
-        { id: "father", t: "Your father Virasena, a captain of the guard", fx: kin("Virasena", { skill: { mace: 1 } }), text: "He drills you every morning in the courtyard, with a stick for a mace. \"A guard does not need to win,\" he says. \"A guard needs to still be standing.\"" },
+        { id: "father", t: "Your father Virasena, a captain of the guard", fx: kin("Virasena", { skill: { mace: 1 } }), text: "He drills you every morning with a stick for a mace. \"A guard needs to still be standing.\"" },
         { id: "grandmother", t: "Grandmother Champavati, of the river shrine", fx: kin("Champavati", { attr: { wisdom: 1 } }), text: "She lights the lamps at dusk and lets you help. She says the river has seen every king of Anga come and go, and will see the next ones too." },
-        { id: "uncle", t: "Your uncle Hastika, a mahout", fx: kin("Hastika", { skill: { chariot: 1 } }), text: "Megharaja lets you sit on her neck. Hastika teaches you the words an elephant answers to, and how to be patient with something much bigger than you." }
+        { id: "uncle", t: "Your uncle Hastika, a mahout", fx: kin("Hastika", { skill: { chariot: 1 } }), text: "Megharaja lets you sit on her neck, and Hastika teaches you the words an elephant answers to." }
       ]
     },
     suta: {
@@ -66,7 +66,7 @@
       body: "Caravans from the far west pass your mountain town all summer.",
       choices: [
         { id: "grandfather", t: "Grandfather Ashvaka, a horse tamer", fx: kin("Ashvaka", { skill: { chariot: 1 } }), text: "He tells you never to break a horse, only to persuade it. You spend a whole summer persuading one pony, and it works." },
-        { id: "greataunt", t: "Your great-aunt Pushkala, a singer", fx: kin("Pushkala", { skill: { lore: 1 } }), text: "Travellers stop at her door to hear her sing. You learn that every people has a story about a great war, and that the stories are always sad." },
+        { id: "greataunt", t: "Your great-aunt Pushkala, a singer", fx: kin("Pushkala", { skill: { lore: 1 } }), text: "From her songs you learn that every people has a story about a great war, and that the stories are always sad." },
         { id: "mother", t: "Your mother Uttama, a weaver", fx: kin("Uttama", { attr: { wisdom: 1 } }), text: "She teaches you patience, one thread at a time. A whole shawl, she says, is only a thousand small decisions." }
       ]
     }
@@ -92,10 +92,10 @@
       body: "At King Drupada's spring archery games, the children shoot at a straw deer.",
       choices: [
         { id: "shoot", t: "Enter the children's contest", check: { attr: "aim", skill: "archery", dc: 6,
-          pass: { fx: { skill: { archery: 1 }, rep: { panchala: 1 }, flag: "won_kampilya" }, text: "Your arrow takes the straw deer through the neck. A royal servant gives you a wooden bow painted red. You sleep with it." },
-          fail: { fx: {}, text: "Your arrow goes into the river. The crowd laughs kindly. You practise every day for the rest of the year." } } },
+          pass: { fx: { skill: { archery: 1 }, rep: { panchala: 1 }, flag: "won_kampilya" }, text: "Your arrow takes the straw deer through the neck. A royal servant gives you a wooden bow painted red." },
+          fail: { fx: {}, text: "Your arrow goes into the river, and the crowd laughs kindly. You practise every day for the rest of the year." } } },
         { id: "stall", t: "Help at the arrow stall", fx: { duty: { family: 1 }, skill: { statecraft: 1 } }, text: "You sell more arrows than your mother expected. Archers like to buy from a child who knows what the fletching is for." },
-        { id: "veterans", t: "Listen to the old soldiers", fx: { skill: { lore: 1 } }, text: "They argue about Bhishma, about Parashurama who taught him, and about a poor brahmin called Drona who studied beside King Drupada when they were boys. Everyone agrees about Bhishma." }
+        { id: "veterans", t: "Listen to the old soldiers", fx: { skill: { lore: 1 } }, text: "They argue about Bhishma, and about a poor brahmin called Drona who studied beside King Drupada as a boy." }
       ]
     },
     matsya: {
@@ -104,7 +104,7 @@
       choices: [
         { id: "race", t: "Run a calf in the race", check: { attr: "grace", skill: "chariot", dc: 6,
           pass: { fx: { attr: { grace: 1 }, rep: { common: 1 }, flag: "won_calf_race" }, text: "Your calf wins by a nose. A royal steward comes over to look at it, and asks your father who trained it." },
-          fail: { fx: {}, text: "Your calf stops halfway to eat a garland. Everyone remembers it for years. So do you." } } },
+          fail: { fx: {}, text: "Your calf stops halfway to eat a garland, and everyone remembers it for years." } } },
         { id: "lame", t: "Help with a lame calf", fx: { skill: { healing: 1 }, duty: { conscience: 1 } }, text: "By the evening the calf is standing. Your grandmother says nothing, but she lets you carry her bag home." },
         { id: "song", t: "Lead the herding song", fx: { skill: { lore: 1 }, rep: { common: 1 } }, text: "Your voice cracks on the high part. The cattle come home anyway, and the old herders nod at you." }
       ]
@@ -124,7 +124,7 @@
       title: "The elephant day at Champa", art: "custom_anga",
       body: "Once a year Anga's painted elephants walk through Champa to the river.",
       choices: [
-        { id: "ride", t: "Ride your uncle's elephant", fx: { skill: { chariot: 1 }, flag: "rode_elephant" }, text: "From up there you can see the whole city, the river and the forests beyond. It looks small. You do not feel small." },
+        { id: "ride", t: "Ride your uncle's elephant", fx: { skill: { chariot: 1 }, flag: "rode_elephant" }, text: "From up there the whole city looks small. You do not feel small." },
         { id: "flowers", t: "Carry flowers to the shrine", fx: { rep: { sages: 1 }, duty: { conscience: 1 } }, text: "She lets you set the first lamp on the water. It does not go out, which she says is a good sign." },
         { id: "wrestle", t: "Wrestle the guards' children", fx: { skill: { mace: 1 } }, text: "You lose twice and win once. The one you beat becomes your friend for the summer." }
       ]
@@ -157,7 +157,7 @@
           pass: { fx: { attr: { grace: 1 }, flag: "won_pony_race" }, text: "Your pony knows the way better than you do, and you let it. You win by a length." },
           fail: { fx: {}, text: "The pony stops dead at the river and you go over its head. You get up, laughing, and ride it across." } } },
         { id: "caravan", t: "Trade with the caravans", fx: { skill: { statecraft: 1 } }, text: "You come away with a silver coin with a stranger's face on it, and a few words of a language no one at home speaks." },
-        { id: "songs", t: "Sit with your singing great-aunt", fx: { skill: { lore: 1 }, attr: { wisdom: 1 } }, text: "One traveller weeps at her song and gives her a ring. She gives it to you. \"Songs are worth more than rings,\" she says, \"but keep it anyway.\"" }
+        { id: "songs", t: "Sit with your singing great-aunt", fx: { skill: { lore: 1 }, attr: { wisdom: 1 } }, text: "A traveller gives her a ring for her song, and she gives it to you. \"Songs are worth more than rings.\"" }
       ]
     }
   };

@@ -29,7 +29,7 @@
       rules: "Drive the old warrior down the road without a wheel touching anything.",
       stakes: ["He climbs down and says: tomorrow, at first light.", "He climbs down and says nothing. One more run at dawn."] },
     retryStakes: ["He climbs down and says: tomorrow, at first light.", "He finds another driver, and you take your place in the front line."],
-    win: { fx: { flag: "role_chariot", skill: { chariot: 1 }, journal: "On the eve of the war an old warrior rode with you once behind the lines, and chose you as his driver." }, text: "You bring the chariot to a stop at the end of the road. He climbs down, slowly. \"First light,\" he says." },
+    win: { fx: { flag: "role_chariot", skill: { chariot: 1 }, journal: "On the eve of the war an old warrior rode with you once behind the lines, and chose you as his driver." }, text: "You bring the chariot to a stop at the end of the road. \"First light,\" he says." },
     lose: { fx: {}, text: "A wheel clips a cart, and the old warrior nearly goes over the rail. He climbs down without a word." },
     retryLose: { penalty: 1, fx: { flag: ["role_front", "driver_refused"], journal: "On the eve of the war you were not chosen as a driver. You fought in the front line." }, text: "He finds another driver before the conches sound. You take a spear and find a place in the front line." } };
   const COMMAND = { t: "Command a company", req: { side: ["pandava", "kaurava"], any: [{ path: "strategist" }, { attr: ["command", 4] }] },
@@ -41,7 +41,7 @@
       stakes: ["A company of your own, under your banner.", "The company goes to someone else. One more chance at dawn."] },
     retryStakes: ["A company of your own, under your banner.", "The company goes to someone else, and you take your place in the front line."],
     win: { fx: { flag: "role_command", attr: { command: 1 }, journal: "On the eve of the war you set your company in the commander's array, and he gave it to you." },
-      text: (S) => (S.side === "kaurava" ? "Bhishma watches the last unit find its mark and nods once. \"Take them,\" he says. \"Bring back as many as you can.\"" : "Dhrishtadyumna watches the last unit find its mark. \"Good,\" he says. \"They are yours. Keep them alive.\"") },
+      text: (S) => (S.side === "kaurava" ? "Bhishma watches the last unit find its mark. \"Take them. Bring back as many as you can.\"" : "Dhrishtadyumna watches the last unit find its mark. \"They are yours. Keep them alive.\"") },
     lose: { fx: {}, text: "The commander watches your company stumble into place, says nothing, and turns his horse away." },
     retryLose: { penalty: 1, fx: { flag: ["role_front", "command_refused"], journal: "On the eve of the war the commander gave your company to someone else. You fought in the front line." },
       text: "The company goes to another officer. You take a spear and a place in the front line, with everyone else." } };
@@ -88,7 +88,7 @@
           rules: "The Kaurava chariots push the rings out of line. Turn them back, as long as you can.",
           stakes: ["There is no winning this. Hold as long as you can.", "There is no winning this. Hold as long as you can."] },
         win: { fx: { flag: "held_ring_open" } }, close: { fx: { flag: "held_ring_open" } }, lose: { fx: { flag: "held_ring_open" } } }],
-      after: ["The ring closes. Many warriors surround Abhimanyu at once. That night Arjuna swears to kill Jayadratha before the next sunset, or walk into fire."],
+      after: ["The ring closes on Abhimanyu, and that night Arjuna swears to kill Jayadratha by sunset or walk into fire."],
       next: "a6_fall_in_wheel"
     },
     {
@@ -98,7 +98,7 @@
       choices: [{ id: "fall", t: (S) => (S.storyMode ? "Hold on to the last" : "Fall beside him"),
         fx: (S) => (S.storyMode ? { injury: "scar", flag: "dragged_from_wheel", journal: "You fell in the heart of the wheel beside Abhimanyu, and woke in the healers' tents. Someone had dragged you out." }
           : { die: true, flag: "died_with_abhimanyu", deathText: "{They} fell beside Abhimanyu in the heart of the wheel, on the thirteenth day, holding the ring open to the last." }),
-        text: (S) => (S.storyMode ? "Something strikes you from behind, and the world goes dark. You wake in the healers' tents. Someone dragged you out of the wheel. No one will say who."
+        text: (S) => (S.storyMode ? "Something strikes you from behind. You wake in the healers' tents, and no one will say who dragged you out."
           : S.boons.includes("astra") ? "The astra you were given is spent, and its light is gone. There is only the boy at your back, and the wheel in his hands, and then nothing."
           : "There is only the boy at your back, and the wheel in his hands, and then nothing.") }],
       next: "a6_day14"
@@ -112,11 +112,11 @@
         { id: "obey", t: "Do as Drona says", tags: ["strike_unarmed"], fx: { duty: { court: 2, conscience: -4 }, flag: "cut_abhimanyu_bow", memory: ["all", "You were one of those who cut Abhimanyu's bow from behind."], journal: "On the thirteenth day you obeyed Drona and helped cut Abhimanyu's bow from behind." },
           text: "Karna's arrow cuts the bowstring; yours finds a horse. Abhimanyu turns, and sees you." },
         { id: "refuse", t: "Refuse, out loud", fx: { duty: { conscience: 3, court: -3 }, rep: { kuru: -2 }, flag: "refused_bow_order", journal: "On the thirteenth day you refused Drona's order to cut Abhimanyu's bow from behind." },
-          text: "\"Not from behind,\" you say. Drona does not even look at you. Someone else does it." },
+          text: "\"Not from behind,\" you say. Drona does not look at you, and someone else does it." },
         { id: "miss", t: "Draw, and miss on purpose", fx: { duty: { conscience: 1 }, flag: "missed_on_purpose", journal: "On the thirteenth day you were ordered to shoot Abhimanyu's horses, and missed on purpose." },
-          text: "Your arrow goes wide. No one notices but you. It changes nothing. You still think about it when you are old." }
+          text: "Your arrow goes wide, and no one notices but you. You still think about it when you are old." }
       ],
-      after: ["Abhimanyu fights until his bow is broken, then with his sword, then with a chariot wheel. Many warriors surround him at once, and he falls. That night Arjuna swears to kill Jayadratha before the next sunset, or walk into fire."],
+      after: ["Abhimanyu falls, and that night Arjuna swears to kill Jayadratha by sunset or walk into fire."],
       next: "a6_day14"
     },
     {
@@ -129,7 +129,7 @@
       ],
       choices: [
         { id: "with", t: "Keep him beside you", req: fighting, fx: { flag: "vasu_with_you", bond: { vasu: 1 } } },
-        { id: "camp", t: "Order him to stay in camp", fx: { flag: "vasu_in_camp", bond: { vasu: -1 }, duty: { family: 1 } }, text: "He argues, then sulks, then obeys. The camp is behind the lines. It should be safe." },
+        { id: "camp", t: "Order him to stay in camp", fx: { flag: "vasu_in_camp", bond: { vasu: -1 }, duty: { family: 1 } }, text: "He argues, then obeys. The camp is behind the lines and should be safe." },
         { id: "away", t: "Let him join another company", req: fighting, fx: { flag: "vasu_away", attr: { wisdom: 1 } } }
       ],
       next: "a6_day1"
@@ -223,7 +223,7 @@
         { id: "carry", t: "Carry a wounded boy out", req: { side: "kaurava" }, tags: ["retreat"], fx: { duty: { family: 1, court: -1, conscience: 1 }, flag: "carried_wounded" } },
         { id: "tend", t: "Work the tents", req: { side: "neutral" }, fx: { rep: { common: 1 }, flag: "tended_d13" } }
       ],
-      after: ["Abhimanyu fights until his bow is broken, then with his sword, then with a chariot wheel. Many warriors surround him at once, and he falls. That night Arjuna swears to kill Jayadratha before the next sunset, or walk into fire."],
+      after: ["Abhimanyu falls, and that night Arjuna swears to kill Jayadratha by sunset or walk into fire."],
       next: "a6_day14"
     },
     {
@@ -240,7 +240,7 @@
           resolve: (S) => (S.curses.some((c) => !c.fired) ? { fireCurse: "any", injury: "eye", flag: "curse_fired_wheel", journal: "Your curse struck in the wheel. You lost an eye fighting your way out." } : { injury: "arm", journal: "You fought your way out of the wheel with a ruined arm." }),
           text: "You turn the chariot and drive at the weakest part of the wall. You come out the other side bleeding, alone, and alive." }
       ],
-      after: ["Abhimanyu fights until his bow is broken, then with his sword, then with a chariot wheel. Many warriors surround him at once, and he falls. That night Arjuna swears to kill Jayadratha before the next sunset, or walk into fire."],
+      after: ["Abhimanyu falls, and that night Arjuna swears to kill Jayadratha by sunset or walk into fire."],
       next: "a6_day14"
     }
   ]);
@@ -301,7 +301,7 @@
     caption: "Days one to nine", events: (S) => [S.side === "kaurava" ? "bhishma_k" : "bhishma_p"],
     win: { fx: { duty: { court: 1 }, rep: { common: 1 }, journal: "You survived the first nine days of the war." }, text: "When the conches sound at sunset, you are still standing." },
     lose: { deathText: "You fell in the first days of the war, when Bhishma was still unstoppable." },
-    flee: { fx: { duty: { court: -1 } }, text: "You fall back with the broken line. No one blames you. You blame yourself." },
+    flee: { fx: { duty: { court: -1 } }, text: "You fall back with the broken line. No one blames you but yourself." },
     spare: { fx: { duty: { conscience: 1 } }, text: "You let a wounded enemy crawl away. Someone else will kill him, or no one will." }
   });
   war("e_guard", "Guarding the king", [K.foe("Kaurava chariot-warrior", 4, { abilities: ["strike", "heavy", "arrows"] }), K.foe("Kaurava horseman", 3)], { art: "war_capture",

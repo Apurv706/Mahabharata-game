@@ -773,7 +773,7 @@ const sceneNext = () => { K.go("a6_day1"); return S.scene; };
 crossNow({ storyMode: true }, ["role_command"]);
 ok(!K.rankOf(S) && S.flags.includes("role_front") && S.flags.includes("company_left"), "crossing: the company is lost, and you fight as a spearman");
 r = K.combatOutcome("cross_e_duel", "lose", "a6_day1");
-ok(S.alive && S.injuries.includes("scar") && !K.rankOf(S) && S.flags.includes("suspected_spy") && /dust between the lines/.test(r.text), "story mode: dragged back with a scar; still suspected, no rank");
+ok(S.alive && S.injuries.includes("scar") && !K.rankOf(S) && S.flags.includes("suspected_spy") && /down between the lines/.test(r.text), "story mode: dragged back with a scar; still suspected, no rank");
 K.combatOutcome("e_day1", "win", "a6_bhishma");
 ok(S.flags.includes("crossed_untrusted") && /do not know you/.test(String(K.warHelp(S).text)), "a deadly fight won is not proof: the call for help stays closed");
 S.seen.push("cross_watched", "cross_duel");

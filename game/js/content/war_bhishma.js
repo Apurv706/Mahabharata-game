@@ -361,7 +361,7 @@
       choices: [
         { id: "tent", t: "Go to the grandsire's tent tonight", req: close,
           fx: { flag: "bh_heard_shikhandi", bond: { bhishma: 1 }, journal: "On the ninth night you went with the Pandava brothers to Bhishma's tent, and heard him tell them how he could be brought down." },
-          text: "The brothers go unarmed, and he is glad to see them. \"I will not raise my bow against Shikhandi, who was born a woman,\" he says. \"Put him in front of Arjuna. Then come and take me.\"" },
+          text: "\"I will not raise my bow against Shikhandi, who was born a woman,\" he tells the brothers. \"Put him in front of Arjuna.\"" },
         { id: "fires", t: "Stay at the fires", text: "Late in the night word goes round the fires that the brothers have gone to the grandsire's tent, unarmed." }
       ]
     },
@@ -372,10 +372,10 @@
       body: ["Krishna, sworn not to fight, runs at Bhishma with a chariot wheel."],
       choices: [
         { id: "step", t: "Step in front of the old man", fx: { flag: "bh_stepped_in", bond: { bhishma: 1 }, rep: { kuru: 1 } },
-          text: "You put yourself between them. Bhishma's hand on your shoulder moves you aside, the way he would move a child. \"Not you,\" he says. \"Let him come.\"" },
+          text: "You put yourself between them, and Bhishma moves you aside like a child. \"Not you. Let him come.\"" },
         { id: "back", t: "Stand back, as he does", fx: { flag: "bh_stood_back" }, text: "He lowers his bow, and so do you. He opens his hands to the man running at him." }
       ],
-      after: ["Arjuna catches Krishna from behind and drags him back by the tenth step. Bhishma raises his bow again, and the day goes on."]
+      after: ["Arjuna drags Krishna back by the tenth step, and the day goes on."]
     },
     // ---------- Day 10: the barrage (after Shikhandi's charge) ----------
     {
@@ -388,8 +388,8 @@
       choices: [
         { id: "go", t: (S) => (S.side === "kaurava" ? "Fight your way to him" : "Go to him"), fx: { flag: "bh_went_to_him", bond: { bhishma: 1 }, memory: ["bhishma", "You were one of the first to reach him when he fell."] },
           text: (S) => (S.side === "kaurava"
-            ? "You cannot reach him until the arrows stop. Then you are the first of his guard to kneel by him. His head hangs. He asks for a pillow, and waves away the silk ones they bring. Arjuna sets three arrows in the earth under his head. \"That is a pillow,\" the old man says."
-            : "You reach him while the arrows are still falling. His head hangs. He asks for a pillow, and waves away the silk ones they bring. Arjuna sets three arrows in the earth under his head. \"That is a pillow,\" the old man says.") },
+            ? "You are the first of his guard to kneel by him. He asks for a pillow, and Arjuna sets three arrows under his head."
+            : "You reach him while the arrows are still falling. He asks for a pillow, and Arjuna sets three arrows under his head.") },
         { id: "hold", t: "Hold the line", fx: { flag: "bh_held_line", duty: { court: 1 } }, text: "The fighting goes on around him until dark, as if he were not there." },
         { id: "away", t: "Look away", fx: { flag: "bh_looked_away", duty: { conscience: 1 } }, text: "You look at the ground until the shouting changes. When you look up, he is lying on the arrows." }
       ]

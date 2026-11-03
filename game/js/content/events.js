@@ -19,9 +19,9 @@
         { id: "milk", t: "Lure it out with milk",
           check: { attr: "grace", skill: "stealth", dc: 6,
             pass: { fx: { rep: { common: 1 }, attr: { grace: 1 }, flag: "led_the_cobra" }, text: "It drinks, and considers you for a long moment, and flows away into the millet. The women sing your name at the well for a week." },
-            fail: { fx: { lose: "herbs" }, text: "It rears and strikes at your hand as you run. It was a dry bite, the healer says, but the family's herbs go on it all the same. Your uncle uses the stick." } } },
+            fail: { fx: { lose: "herbs" }, text: "It strikes at your hand as you run. A dry bite, the healer says, but the family's herbs go on it all the same." } } },
         { id: "charmer", t: "Fetch the snake-charmer", fx: { duty: { family: 1 }, skill: { lore: 1 } },
-          text: "It takes all day. He charges a copper, sings it into a basket, and lets it go in the forest. On the way home he teaches you the song." },
+          text: "He sings it into a basket and lets it go in the forest. On the way home he teaches you the song." },
         { id: "stick", t: "Hand your uncle the stick", fx: { attr: { might: 1 }, duty: { conscience: -1 } },
           text: "It is quick. Your grandmother does not speak to either of you until the next full moon." }
       ],
@@ -39,7 +39,7 @@
             pass: { fx: { skill: { lore: 1 }, attr: { wisdom: 1 } }, text: "He teaches you one verse, and the trick of remembering a hundred more by hanging each one on a door of a house you know." },
             fail: { fx: {}, text: "He laughs, kindly. \"Come back when your voice breaks.\"" } } },
         { id: "pockets", t: "Pick the audience's pockets", fx: { skill: { stealth: 1 }, duty: { conscience: -1 }, rep: { common: -1 } },
-          text: "You come home with three coppers and a ring. The bard saw you. He said nothing, and sang a little louder." }
+          text: "You come home with three coppers and a ring. The bard saw you, and only sang a little louder." }
       ],
       next: "a1_poison"
     },
@@ -52,8 +52,8 @@
       choices: [
         { id: "gentle", t: "Try to gentle the grey mare",
           check: { attr: "grace", skill: "chariot", dc: 7,
-            pass: { fx: { skill: { chariot: 1 }, rep: { common: 1 }, flag: "grey_mare", journal: "At the horse fair you gentled a grey mare no one else could touch." }, text: "It takes a whole day of standing still. By evening she eats from your hand. The traders sell her to you for the price of a meal, which is a joke and a compliment at once." },
-            fail: { fx: { lose: "herbs" }, text: "She throws you into the fence. The traders help you up, rub your bruises with your own herbs, and tell you better riders than you have tried." } } },
+            pass: { fx: { skill: { chariot: 1 }, rep: { common: 1 }, flag: "grey_mare", journal: "At the horse fair you gentled a grey mare no one else could touch." }, text: "By evening she eats from your hand. The traders sell her to you for the price of a meal." },
+            fail: { fx: { lose: "herbs" }, text: "She throws you into the fence. The traders rub your bruises with your own herbs." } } },
         { id: "haggle", t: "Haggle for a sound horse", fx: { skill: { statecraft: 1 }, duty: { family: 1 } },
           text: "You beat the price down by a third and come home leading a bay gelding with kind eyes. Your father pretends not to be impressed." },
         { id: "watch", t: "Watch how the traders lie", fx: { attr: { wisdom: 1 } },
@@ -70,7 +70,7 @@
       choices: [
         { id: "bind", t: "Bind the wound",
           check: { attr: "wisdom", skill: "healing", dc: 7,
-            pass: { fx: { skill: { healing: 1 }, rep: { sages: 1 }, flag: "saved_doe" }, text: "She lies still under your hands, then stands, and is gone. An old woman gathering wood saw it all. She says the forest will remember." },
+            pass: { fx: { skill: { healing: 1 }, rep: { sages: 1 }, flag: "saved_doe" }, text: "She lies still under your hands, then stands and is gone. An old woman gathering wood says the forest will remember." },
             fail: { fx: { duty: { conscience: 1 } }, text: "You do what you can. She dies with her head in your lap." } } },
         { id: "hide", t: "Hide her trail", fx: { skill: { stealth: 1 }, rep: { kuru: -1 } },
           text: "You drag a branch across the blood. The horns go past, and fade." },
@@ -91,7 +91,7 @@
         { id: "potters", t: "Give your oil to the poor lane", fx: { rep: { common: 2 }, duty: { conscience: 1 } },
           text: "The potters' lane is the brightest in the city that night. Nobody knows why, except the potters." },
         { id: "dice", t: "Play dice with the nobles", fx: { rep: { kuru: 1 }, skill: { statecraft: 1 }, flag: "gambled_lamps" },
-          text: "You lose a little and win a little, and learn who at court owes what to whom. It is the custom, they tell you: the gods play dice on this night too." }
+          text: "You lose a little and win a little, and learn who at court owes what to whom." }
       ],
       next: "a3_rajasuya"
     },
@@ -121,9 +121,9 @@
       ],
       choices: [
         { id: "word", t: "\"Your word\"", fx: { rep: { sages: 1 }, attr: { wisdom: 1 }, item: { herbs: 2 } },
-          text: "He opens his eyes. \"Yes,\" he says, and gives you two bundles of roots. \"For the war,\" he says. \"You will need them.\"" },
-        { id: "gift", t: "\"A gift\"", fx: {}, text: "\"A gift can be taken back,\" he says. \"Ask any king.\" He closes his eyes again." },
-        { id: "life", t: "\"A life\"", fx: { flag: "riddle_life" }, text: "\"Lives are given back all the time,\" he says. \"Ask the river.\" He closes his eyes again, and smiles." },
+          text: "\"Yes,\" he says, and gives you two bundles of roots. \"For the war. You will need them.\"" },
+        { id: "gift", t: "\"A gift\"", fx: {}, text: "\"A gift can be taken back,\" he says. \"Ask any king.\"" },
+        { id: "life", t: "\"A life\"", fx: { flag: "riddle_life" }, text: "\"Lives are given back all the time,\" he says, smiling. \"Ask the river.\"" },
         { id: "walk", t: "Walk on", fx: {} }
       ],
       next: "a5_forest_boon"
@@ -135,7 +135,7 @@
       choices: [
         { id: "fight", t: "Draw your weapon", combat: "e_bandits" },
         { id: "feed", t: "Give them your food", fx: { duty: { conscience: 2 } },
-          text: "The one in front weeps. Their village is two days east. The king's men took its grain, for the war everyone says is coming." },
+          text: "The one in front weeps. The king's men took their village's grain, for the war everyone says is coming." },
         { id: "hire", t: "Hire them",
           check: { attr: "command", skill: "statecraft", dc: 8,
             pass: { fx: { rep: { common: 2 }, attr: { command: 1 }, flag: "hired_bandits", journal: "On the road you turned five starving bandits into the most loyal workers you ever had." }, text: "They have nothing to lose. A year later they are the most loyal people you know." },
@@ -150,7 +150,7 @@
       body: ["{teacher} is very ill and asking for students."],
       choices: [
         { id: "go", t: "Go and nurse {teacher}", fx: { duty: { teacher: 2 }, skill: { healing: 1 } },
-          text: "You sit up through eleven nights. On the twelfth the fever breaks, and {teacher} looks at you and says, \"Still here?\" That is all. It is enough." },
+          text: "You sit up through eleven nights. On the twelfth the fever breaks, and {teacher} looks at you and says, \"Still here?\"" },
         { id: "send", t: "Send a physician", fx: { duty: { teacher: 1 } },
           text: "The physician comes back with a message: thank you, and come yourself next time." },
         { id: "stay", t: "Send your regrets", fx: { duty: { teacher: -1 } } }
@@ -169,7 +169,7 @@
           : { memory: ["At the bottom, in another hand you know at once: {kin} asks to see you before {kin} is too old to know your face.", { kin: S.kin }] }],
       choices: [
         { id: "go", t: "Go home for the rains", fx: { duty: { family: 2, court: -1 } },
-          text: "The roof gets mended. Your father tells the same three stories every night. You do not mind." },
+          text: "The roof gets mended. Your father tells the same three stories every night." },
         { id: "write", t: "Send money and a long letter", fx: { duty: { family: 1 } } },
         { id: "here", t: "Write that your place is here", fx: { duty: { family: -1, court: 1 } } }
       ],

@@ -20,13 +20,13 @@
           ["\"Say he was with you,\" {friend} whispers. \"Everyone knows you never lie.\"", null]],
       choices: [
         { id: "lie", t: "Swear what your friend asks", tags: ["lie"], fx: (S) => ({ bond: { [S.friend]: 2 }, duty: { conscience: -1 } }),
-          text: "You say it, in a clear voice, and the court believes you. Your friend squeezes your arm afterwards. You do not feel the squeeze for long." },
+          text: "You say it in a clear voice, and the court believes you. Your friend squeezes your arm afterwards." },
         { id: "truth", t: "Tell only what you saw", check: { attr: "wisdom", skill: "statecraft", dc: 8,
-          pass: { fx: { duty: { conscience: 1 } }, text: "You tell the truth, all of it that you saw, and nothing more. The court is satisfied. Your friend's name is never spoken." },
-          fail: { fx: (S) => ({ bond: { [S.friend]: -1 } }), text: "You tell the truth, and the court asks one more question than you hoped. Your friend's name comes out. You did not say it, but you were there when it was said." } },
+          pass: { fx: { duty: { conscience: 1 } }, text: "You tell the truth of what you saw, and nothing more. Your friend's name is never spoken." },
+          fail: { fx: (S) => ({ bond: { [S.friend]: -1 } }), text: "You tell the truth, and the court asks one more question than you hoped. Your friend's name comes out." } },
           hint: "Honest persuasion" },
         { id: "refuse", t: "Refuse to lie", fx: (S) => ({ bond: Object.assign({ [S.friend]: -2 }, S.friend === "duryodhana" ? { vidura: 1 } : { yudhishthira: 1 }), duty: { conscience: 1 } }),
-          text: (S) => S.friend === "duryodhana" ? "Duryodhana stares at you, then laughs without any warmth and walks away. That evening Vidura sends for you, and says nothing about it, and pours you a cup of water himself." : "{friend} lets go of your arm. Later, Yudhishthira finds you on the steps and sits beside you for a while, without saying why." }
+          text: (S) => S.friend === "duryodhana" ? "Duryodhana laughs without any warmth and walks away. That evening Vidura pours you a cup of water himself." : "{friend} lets go of your arm. Later, Yudhishthira finds you on the steps and sits beside you for a while, without saying why." }
       ]
     },
     // Never to retreat: your friend is down, and the only way out is back.
@@ -38,13 +38,13 @@
         ["\"Carry me back to the trees,\" {friend} gasps. You swore never to fall back.", null]],
       choices: [
         { id: "carry", t: "Carry your friend back", tags: ["retreat"], fx: (S) => ({ bond: { [S.friend]: 2 }, memory: [S.friend, "You carried me out of the river crossing, and broke your vow to do it."] }),
-          text: "You get {friend} over your shoulder and run. At the trees you turn, and hold, and the raiders give up before dark. Your vow is broken, and your friend is alive." },
+          text: "You get {friend} over your shoulder and run. Your vow is broken, and your friend is alive." },
         { id: "hold", t: "Hold, and shout for help", check: { attr: "might", skill: "mace", dc: 8,
-          pass: { fx: { attr: { command: 1 } }, text: "You stand in the water and do not move, and others drag {friend} back to the trees. When the raiders break, you are still standing in the river." },
-          fail: { fx: (S) => ({ bond: { [S.friend]: -2 }, injury: "leg" }), text: "You hold, and it costs you: a raider's axe across the leg. Someone gets {friend} to the trees, late. {friend} does not look at you when they bring you in." } },
+          pass: { fx: { attr: { command: 1 } }, text: "You stand in the water and do not move, and others drag {friend} back to the trees." },
+          fail: { fx: (S) => ({ bond: { [S.friend]: -2 }, injury: "leg" }), text: "You hold, and a raider's axe takes you across the leg. Someone gets {friend} to the trees, late." } },
           hint: "A test of might" },
         { id: "stand", t: "Fight over your friend", fx: (S) => ({ bond: { [S.friend]: -1 }, duty: { conscience: 1 } }),
-          text: "You stand over {friend} until the raiders run out of courage. \"You would have let me bleed for your vow,\" {friend} says afterwards, and is not entirely joking." }
+          text: "You stand over {friend} until the raiders run. \"You would have let me bleed for your vow,\" {friend} says afterwards." }
       ]
     },
     // Never to strike the unarmed: your friend wants a captive silenced.
@@ -56,12 +56,12 @@
         ["\"It has to be done,\" {friend} says, \"and it has to be you.\"", null]],
       choices: [
         { id: "strike", t: "Do it", tags: ["strike_unarmed"], fx: (S) => ({ bond: { [S.friend]: 1 }, duty: { conscience: -3 }, memory: [S.friend, "You did the thing no one else would do, at the edge of the camp."] }),
-          text: "It is quick. It is not clean. You wash your hands in the river for a long time, and they do not feel washed." },
+          text: "It is quick, and it is not clean. Your hands do not feel washed for a long time." },
         { id: "free", t: "Let him go", fx: (S) => ({ bond: { [S.friend]: -2 }, rep: { common: 1 }, duty: { conscience: 1 } }),
-          text: "The boy runs. You break camp before dawn and move everyone to the far side of the hills. {friend} does not speak to you for three days." },
+          text: "The boy runs, and you move everyone over the hills before dawn. {friend} does not speak to you for three days." },
         { id: "keep", t: "Keep him bound", check: { attr: "grace", skill: "stealth", dc: 7,
-          pass: { fx: { duty: { conscience: 1 } }, text: "For a month he walks bound in the middle of the column, and when you let him go at last there is nothing left to tell. He thanks you, which you did not expect." },
-          fail: { fx: (S) => ({ bond: { [S.friend]: -1 } }), text: "On the fourth night he slips his rope and is gone. You break camp in the dark. {friend} looks at you and does not speak to you for the rest of the march." } },
+          pass: { fx: { duty: { conscience: 1 } }, text: "For a month he walks bound in the column, and when you let him go there is nothing left to tell. He thanks you." },
+          fail: { fx: (S) => ({ bond: { [S.friend]: -1 } }), text: "On the fourth night he slips his rope and is gone. {friend} does not speak to you for the rest of the march." } },
           hint: "A test of stealth" }
       ]
     },
@@ -76,11 +76,11 @@
         { id: "loose", t: "Loose at Karna", tags: ["strike_karna"], fx: (S) => ({ bond: { [S.friend]: 1 } }),
           text: "Your arrow takes him in the shoulder. He turns in the water and looks straight at you, and you will see that look for the rest of your life." },
         { id: "banner", t: "Shoot his banner instead", check: { attr: "aim", skill: "archery", dc: 8,
-          pass: { fx: { duty: { conscience: 1 } }, text: "The elephant-rope banner falls into the river. Karna's men lose heart, and the raid turns back. {friend} grumbles that it was a waste of a good shot, and buys you a drink that night." },
+          pass: { fx: { duty: { conscience: 1 } }, text: "The elephant-rope banner falls into the river, and Karna's raid turns back. {friend} buys you a drink that night." },
           fail: { fx: (S) => ({ bond: { [S.friend]: -1 } }), text: "Your arrow goes wide of the banner, and the chariot lurches out of the ford and away. {friend} says nothing, loudly." } },
           hint: "A test of aim" },
         { id: "lower", t: "Lower your bow", fx: (S) => ({ bond: { [S.friend]: -1, karna: 1 } }),
-          text: "You lower your bow. Karna's chariot heaves out of the water, and as it passes he sees you, and nods once. {friend} stares at you as if you were a stranger." }
+          text: "You lower your bow, and Karna nods to you once as his chariot passes. {friend} stares at you as if you were a stranger." }
       ]
     },
     // The way back from a broken vow: one heavy penance in a life.
@@ -93,7 +93,7 @@
         "He tells you what it costs: a season of fasting and silence, sleeping on the ground, while the world goes to war without you for a while. It will not mend the vow. It may lift the shame."],
       choices: [
         { id: "atone", t: "Do the penance", fx: (S) => ({ penance: S.penanceVow }),
-          text: "You come down out of the hills thinner, quieter, and lighter in some way you could not explain. People look at you differently. Some of them, at least." },
+          text: "You come down out of the hills thinner, quieter and somehow lighter. Some people look at you differently." },
         { id: "not", t: "Go back down", text: "You go back down the hill. The sage does not seem surprised." }
       ]
     },
@@ -108,8 +108,8 @@
       choices: [
         { id: "go", t: (S) => ["Ride over and find {who}", { who: K.PEOPLE[S.mendWho].name }], check: { attr: "wisdom", dc: 8, bonus: (S) => (S.penanceDone ? 1 : 0),
           pass: { fx: (S) => { const w = S.mendWho; return { reconcile: w, flag: "mend_tried_" + w, memory: [w, "You rode half a day to find me before the war. I had been hoping you would."] }; },
-            text: "You find the camp at dusk. Neither of you says sorry. Neither of you has to. By the time the fire burns down you are laughing about something stupid from when you were ten." },
-          fail: { fx: (S) => ({ flag: "mend_tried_" + S.mendWho }), text: "You find the camp at dusk. You are given water and a place by the fire, and a polite good night. No one asks you to stay." } },
+            text: "You find the camp at dusk, and neither of you says sorry. By the time the fire burns down you are laughing together." },
+          fail: { fx: (S) => ({ flag: "mend_tried_" + S.mendWho }), text: "You find the camp at dusk and are given a place by the fire. No one asks you to stay." } },
           hint: "Doing penance first would help" },
         { id: "no", t: "Let it be", fx: (S) => ({ flag: "mend_tried_" + S.mendWho }), text: "You ride on toward the war. You think about it more than you expected to." }
       ]

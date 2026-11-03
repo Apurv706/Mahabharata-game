@@ -30,7 +30,7 @@
       stakes: ["The line holds, and the day's fighting goes your way.", "The line breaks, and the day's fighting finds you with the enemy already through."] },
     win: { fx: { duty: { court: 1 }, attr: { command: 1 }, flag: "line_held_" + day, journal: "You set your division in the array and held the line to the end of the day." }, text: "When the conches sound at dusk the line is where it was at dawn. The commander says nothing, which from him is praise." },
     close: { fx: { flag: "line_held_" + day }, text: "The line bends and holds, and holds, and at dusk it is still a line." },
-    lose: { fx: { flag: ["line_broken", "line_broke_" + day], duty: { court: -1 } }, text: "The line breaks in the middle of the afternoon. What is left of your division fights its way back to the camp in pieces, and the enemy is already through." }
+    lose: { fx: { flag: ["line_broken", "line_broke_" + day], duty: { court: -1 } }, text: "The line breaks in the afternoon. What is left of your division fights its way back to the camp in pieces." }
   });
 
   // ---------- The holding fights ----------
@@ -96,7 +96,7 @@
         "\"Three companies. From tomorrow the array is yours to set.\""],
       choices: [
         { id: "accept", t: "Accept the division", fx: { flag: "role_division", duty: { court: 1 }, attr: { command: 1 }, journal: "After nine days of the war you were given a division: three companies, and the array on your stretch of the line to set." }, text: "He gives you the banner himself. It is heavier than it looks." },
-        { id: "decline", t: "Stay with your company", fx: { duty: { family: 1 }, bond: { charu: 1 } }, text: "\"Your company, then,\" he says. \"Keep them alive.\" You intend to." }
+        { id: "decline", t: "Stay with your company", fx: { duty: { family: 1 }, bond: { charu: 1 } }, text: "\"Your company, then,\" he says. \"Keep them alive.\"" }
       ]
     },
     {
@@ -141,7 +141,7 @@
         { id: "back", t: "Fall back with the wounded", fx: { injury: "scar", journal: "Your company broke in front of the enemy's champion. You fell back with the wounded, and carried the mark of it." }, text: "You get the ones who can walk to the rear. You are one of them, barely." },
         { id: "rally", t: "Try to rally the scattered men", check: { attr: "command", skill: "statecraft", dc: 9,
           peril: () => ({ kind: "prison", by: "the enemy's soldiers", place: "A prisoners' pen behind the enemy's lines", text: "You are still shouting for the banner when the enemy's second rank reaches you. They take you alive, which is more than they do for most.", journal: "Rallying a broken division, you were taken by the enemy." }),
-          pass: { fx: { flag: "rallied_broken", attr: { command: 1 }, journal: "Your company broke, and you rallied what was left of it under the banner before dusk." }, text: "Forty men. Then sixty. By dusk there is something that can be called a company again, standing around a torn banner." },
+          pass: { fx: { flag: "rallied_broken", attr: { command: 1 }, journal: "Your company broke, and you rallied what was left of it under the banner before dusk." }, text: "Forty men, then sixty. By dusk you have a company again, standing around a torn banner." },
           fail: { fx: { injury: "arm" }, text: "Nobody hears you. A spear finds your arm while you are still shouting." } }, hint: "A test of command" },
         { id: "stay", t: "Stay with the men who stayed", fx: { die: true, deathText: "{They} stayed with the men who stayed, when the line broke in front of the enemy's champion, and fell with them.", flag: "stayed_with_the_line" }, hint: "The end of your story" }
       ],
@@ -156,7 +156,7 @@
       choices: [
         { id: "chariot", t: "Facing their chariots", fx: { flag: ["council_flank", "council_flank_chariot"], duty: { court: 1 } }, text: "\"The chariots, then,\" the commander says, and writes nothing down, because he does not need to." },
         { id: "division", t: "Facing their divisions", fx: { flag: ["council_flank", "council_flank_division"], duty: { court: 1 } }, text: "\"The divisions, then.\" Someone at the far end of the tent lets out a breath he had been holding." },
-        { id: "truce", t: "Argue for a truce at dusk", fx: { flag: "council_truce", duty: { conscience: 1 }, rep: { common: 1 } }, text: "There is a silence. Then the oldest man at the council says that his father's war had such truces, and the matter is agreed before anyone can argue." }
+        { id: "truce", t: "Argue for a truce at dusk", fx: { flag: "council_truce", duty: { conscience: 1 }, rep: { common: 1 } }, text: "The oldest man at the council says his father's war had such truces, and the matter is agreed." }
       ]
     },
     {
@@ -165,8 +165,8 @@
       body: (S) => [S.side === "kaurava" ? "Drona is dead. Ashwatthama wants the Narayana weapon loosed on the Pandava army tonight." : "Drona is dead by a half-truth. Bhima wants Karna next, by any means.",
         "The council turns to you."],
       choices: [
-        { id: "mercy", t: (S) => (S.side === "kaurava" ? "Counsel against the weapon" : "Fight Karna fairly"), fx: { flag: "council_mercy", duty: { conscience: 2 }, rep: { sages: 1 } }, text: "You say it. Some of them hate you for it. One or two will remember it when they are old." },
-        { id: "war", t: "End the war soonest", fx: { duty: { court: 2, conscience: -1 } }, text: "You say it. The commander nods. It is what he wanted to hear." },
+        { id: "mercy", t: (S) => (S.side === "kaurava" ? "Counsel against the weapon" : "Fight Karna fairly"), fx: { flag: "council_mercy", duty: { conscience: 2 }, rep: { sages: 1 } }, text: "You say it. Some of them hate you for it; one or two will remember it when they are old." },
+        { id: "war", t: "End the war soonest", fx: { duty: { court: 2, conscience: -1 } }, text: "You say it. The commander nods; it is what he wanted to hear." },
         { id: "silent", t: "Say nothing", fx: { duty: { conscience: -1 } }, text: "You say nothing. You think about it often, afterwards." }
       ]
     },
@@ -178,7 +178,7 @@
       choices: [
         { id: "all", t: "Throw everything at it", fx: { flag: "council_all", duty: { court: 1 } }, text: "\"Everything,\" you say. The commander counts the word." },
         { id: "whole", t: "Keep the army whole", fx: { flag: "council_whole", attr: { wisdom: 1 } }, text: "\"Whole,\" you say. Across the tent, an old man you have never spoken to nods at you." },
-        { id: "raid", t: (S) => (S.side === "kaurava" ? "Warn against a night attack" : "Warn against striking Karna unarmed"), fx: { flag: "council_raid", duty: { conscience: 2 } }, text: "You say it out loud, into the lamplight. No one answers. Later, you will know whether anyone heard." }
+        { id: "raid", t: (S) => (S.side === "kaurava" ? "Warn against a night attack" : "Warn against striking Karna unarmed"), fx: { flag: "council_raid", duty: { conscience: 2 } }, text: "You say it out loud, into the lamplight. No one answers." }
       ]
     }
   ]);

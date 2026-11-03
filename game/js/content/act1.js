@@ -42,11 +42,11 @@
       retryStakes: ["Arjuna becomes your closest friend.", "Arjuna gives up on you, and you must choose another friend. It counts as two failures, and it will weigh on every archery test to come."],
       crossWhy: "Arjuna stopped offering after you missed his lamp twice.",
       win: { fx: { set: { friend: "arjuna" }, bond: { arjuna: 3 }, setBond: { charu: 4 }, flag: "hit_the_lamp", memory: ["arjuna", "You hit his swinging lamp in the dark when you were ten."], journal: "Arjuna became your closest friend. You earned it with a bow." },
-        text: "Arjuna looks at the flame, then at you. \"Again tomorrow,\" he says. \"And the day after.\" From then on, you practise together." },
-      close: { fx: { bond: { arjuna: 1 }, flag: "second_arjuna" }, text: "One arrow finds the flame. \"Not bad,\" Arjuna says, and means it. He sets the lamp swinging again." },
+        text: "Arjuna looks at the flame, then at you. From then on, you practise together." },
+      close: { fx: { bond: { arjuna: 1 }, flag: "second_arjuna" }, text: "One arrow finds the flame. \"Not bad,\" Arjuna says, and sets the lamp swinging again." },
       lose: { fx: { flag: "second_arjuna" }, text: "Three arrows vanish into the dark. Arjuna laughs, not unkindly, and shows you how to hold the bow." },
       retryLose: { penalty: 1, fx: { set: { friend: "charu" }, setBond: { charu: 7 }, bond: { arjuna: -2 }, flag: "missed_lamp_twice", memory: ["arjuna", "You missed his lamp twice. He stopped offering."] },
-        text: "You miss again. Arjuna lowers his bow and turns back to the lamp. He does not offer again." },
+        text: "You miss again. Arjuna turns back to the lamp and does not offer again." },
       line: "Arjuna sets the lamp swinging again and holds out his bow. \"Once more,\" he says. \"Then I go in to eat.\""
     },
     bhima: {
@@ -60,7 +60,7 @@
         text: "Bhima comes up spluttering and roaring with laughter. \"Again!\" he shouts, and from that day you are hardly ever apart." },
       lose: { fx: { bond: { bhima: 1 }, flag: "second_bhima" }, text: "You go into the river three times. Bhima hauls you out each time, delighted." },
       retryLose: { penalty: 1, fx: { set: { friend: "charu" }, setBond: { charu: 7 }, bond: { bhima: -2 }, flag: "thrown_by_bhima_twice", memory: ["bhima", "He threw you in the river twice. He calls you \"little fish\" now."] },
-        text: "Into the river again. Bhima pats your head and calls you \"little fish\". The name sticks for years." },
+        text: "Into the river again. Bhima pats your head and calls you \"little fish\", and the name sticks." },
       line: "Bhima wades back into the shallows and beckons. \"Once more,\" he says. \"I was not ready.\" He was."
     },
     duryo: {
@@ -76,8 +76,8 @@
       retryStakes: ["Duryodhana becomes your closest friend.", "The brothers will never let you forget it, and you must choose another friend. It counts as two failures, and it will weigh on every test of statecraft to come."],
       crossWhy: "You backed down twice in front of Duryodhana's brothers.",
       win: { fx: { set: { friend: "duryodhana" }, bond: { duryodhana: 3 }, setBond: { charu: 4 }, flag: "stood_your_ground", memory: ["duryodhana", "You stood your ground in front of his brothers when you were ten."], journal: "Duryodhana became your closest friend. You stood your ground to earn it." },
-        text: "Duryodhana laughs and throws an arm around your shoulders. \"This one is mine,\" he tells his brothers. Nobody argues." },
-      lose: { fx: { flag: "second_duryo" }, text: "The brothers laugh. Duryodhana does not laugh. He looks at you and waits." },
+        text: "Duryodhana throws an arm around your shoulders. \"This one is mine,\" he tells his brothers." },
+      lose: { fx: { flag: "second_duryo" }, text: "The brothers laugh. Duryodhana does not; he looks at you and waits." },
       retryLose: { penalty: 1, fx: { set: { friend: "charu" }, setBond: { charu: 7 }, bond: { duryodhana: -2 }, rep: { kuru: -1 }, flag: "backed_down_twice", memory: ["duryodhana", "You backed down in front of his brothers twice."] },
         text: "Again the words will not come. Dushasana tells the story at every feast for a year, and the court laughs with him." },
       line: "Dushasana is already walking back toward you, grinning. Duryodhana raises a hand. \"Let them try again,\" he says. \"Once.\""
@@ -91,8 +91,8 @@
       retryStakes: ["Karna becomes your closest friend.", "Karna stops asking, and you must choose another friend. It counts as two failures, and it will weigh on every chariot test to come."],
       crossWhy: "Twice Karna asked for your help with a horse, and twice it beat you.",
       win: { fx: { set: { friend: "karna" }, bond: { karna: 3 }, setBond: { charu: 4 }, flag: "calmed_the_horse", memory: ["karna", "You calmed a maddened horse beside him when you were ten."], journal: "Karna became your closest friend. You calmed a horse together to earn it." },
-        text: "The horse drops its head into your hands. Karna lets out a long breath. \"You have the touch,\" he says. \"Most people only have the whip.\"" },
-      close: { fx: { bond: { karna: 1 }, flag: "second_karna" }, text: "The horse is quieter, but it pulls free at the last moment. Karna catches the rope. \"Nearly,\" he says." },
+        text: "The horse drops its head into your hands. \"You have the touch,\" Karna says. \"Most people only have the whip.\"" },
+      close: { fx: { bond: { karna: 1 }, flag: "second_karna" }, text: "The horse pulls free at the last moment, and Karna catches the rope. \"Nearly.\"" },
       lose: { fx: { flag: "second_karna" }, text: "The horse tears free, and Karna is dragged half across the yard before he catches it again." },
       retryLose: { penalty: 1, fx: { set: { friend: "charu" }, setBond: { charu: 7 }, bond: { karna: -2 }, flag: "horse_beat_you_twice", memory: ["karna", "Twice he asked for your help with a horse, and twice it beat you."] },
         text: "The horse throws you into the straw. Karna gets it in hand alone, as he always has, and does not ask you again." },
@@ -108,7 +108,7 @@
       back: retry ? { scene: "a1_friend", unflag: Object.values(SECOND), why: f.crossWhy } : undefined };
   };
   const UGRA_WIN = { fx: { rep: { common: 1 }, bond: { charu: 1 }, flag: ["beat_ugra", "balarama_noticed"], journal: "You beat Ugra in the ring at the spring fair. A giant of a man with a plough on his shoulder asked your name." },
-    text: "Ugra hits the sand, and the crowd roars. He lets go of Charu and leaves the ring without a word. At the edge of the crowd a giant of a man with a plough on his shoulder asks your name." };
+    text: "Ugra hits the sand and lets go of Charu. At the edge of the crowd a giant of a man with a plough on his shoulder asks your name." };
   const ugraTrial = (retry) => ({ attr: "might", skill: "mace", foe: "Ugra", stage: "fight_fair_ring", cast: ["ugra"], bpm: 84, verb: "Throw",
     help: "Strike as each beat reaches the ring: every beat is Ugra shifting his weight.",
     tally: "Holds broken: {h} · Missed: {m} · {left} to go", clean: "He staggers!", okLine: "He gives ground.", soon: "Too soon. He reads you.", late: "Too late. He shoves you back.",
@@ -157,7 +157,7 @@
         { id: "drills", t: "Copy the soldiers' drills", fx: { skill: { mace: 1 }, attr: { might: 1 } },
           text: "You march behind them with a stick for a spear until the old sergeant gives up chasing you off and starts correcting your grip instead." },
         { id: "stories", t: "Listen to the storyteller", fx: { skill: { lore: 1 }, attr: { wisdom: 1 }, flag: "loved_stories" },
-          text: "Every evening you are the last child left by his fire. By the time you are seven you can tell his stories back to him, and he pretends not to know the endings." },
+          text: "By the time you are seven you can tell his stories back to him. He pretends not to know the endings." },
         { id: "wild", t: "Run wild", fx: { skill: { stealth: 1 }, attr: { grace: 1 } },
           text: "You learn which branches hold, where the deer drink, and how to come home after dark without anyone hearing the door." },
         { id: "home", t: "Help at home", fx: { skill: { healing: 1 }, duty: { family: 1 }, attr: { wisdom: 1 } },
@@ -178,7 +178,7 @@
           trial: { practice: true, attr: "aim", icon: "fruit", verb: "Throw", shots: 3, need: 1, easy: 0.12, speed: 0.95, stage: "stage_mango_yard", cast: ["cousin"],
             rules: "The fruit sways on its branch. Throw as it crosses your line. One hit is enough." },
           win: { fx: { flag: "first_throw" }, text: (S) => (S.origin === "gandhara" ? "The apricot drops into the grass. It is the best thing you have ever eaten, and you tell everyone so, loudly." : "The mango drops into the grass. It is the best thing you have ever eaten, and you tell everyone so, loudly.") },
-          lose: { fx: {}, text: "Three pebbles, three misses. Your cousin knocks one down with her first throw and gives it to you anyway. \"Again tomorrow,\" she says." } }
+          lose: { fx: {}, text: "Three pebbles, three misses. Your cousin knocks one down and gives it to you anyway." } }
       ],
       next: "a1_roots"
     },
@@ -220,11 +220,11 @@
       ],
       choices: [
         { id: "fight", t: "Go for Ugra", fx: { flag: ["met_charu", "knows_ugra", "fought_ugra_young"], setBond: { charu: 3 }, attr: { might: 1 }, memory: ["charu", "You went for Ugra at the river steps when you were seven, and Charu hit him with your wet washing."] },
-          text: "You hit him exactly once before he sits on you. The child from the river climbs out and hits him with your wet washing, hard. Ugra lets you both go, laughing, and looks at your faces for a long time, as if he is learning them." },
+          text: "You hit him once, and the child from the river hits him with your wet washing. Ugra lets you both go, laughing, and learns your faces." },
         { id: "help", t: "Jump in and help the stranger", fx: { flag: ["met_charu", "knows_ugra"], setBond: { charu: 4 }, attr: { grace: 1 }, memory: ["charu", "You went into the river after your washing together when you were seven."] },
-          text: "Between you, you get it all back but one cloth. The stranger is Charu, the blacksmith's child from the end of your lane, and says the cloth was ugly anyway. You walk home dripping. Behind you, Ugra is still laughing." },
+          text: "Between you, you get it all back but one cloth. The stranger is Charu, the blacksmith's child from the end of your lane." },
         { id: "words", t: "Threaten Ugra", fx: { flag: ["met_charu", "knows_ugra", "warned_ugra_young"], setBond: { charu: 2 }, attr: { wisdom: 1 } },
-          text: "\"Tell him,\" Ugra says, and laughs. But he does not touch you again that day. The child in the river brings your washing up the steps, cloth by cloth, and gives you a look you cannot read." }
+          text: "\"Tell him,\" Ugra says, and laughs, but he does not touch you again that day. The child in the river brings your washing up the steps." }
       ],
       next: "a1_princes"
     },
@@ -238,18 +238,18 @@
       choices: [
         { id: "bhima", t: "Play on Bhima's side", game: "sneak", hint: "A game of tag", trial: TAG.bhima,
           win: { fx: { bond: { bhima: 2, duryodhana: -1 }, flag: ["played_bhima", "tagged_duryodhana"], memory: ["duryodhana", "You tagged him by the lotus pond when you were eight, and Bhima threw him in."] },
-            text: "You touch Duryodhana's shoulder before he hears you. Bhima roars with delight, throws him in the pond and swings you up onto his shoulders. From up there you see Duryodhana climb out alone, dripping, and look straight at you." },
+            text: "You tag Duryodhana before he hears you, and Bhima throws him in the pond. He climbs out alone and looks straight at you." },
           lose: { fx: { bond: { bhima: 1 }, flag: "played_bhima" },
-            text: "Duryodhana spins round and tags you, and his brothers cheer as if they had won a war. Bhima's side wins anyway, of course. Bhima tells you that you were very nearly sneaky." } },
+            text: "Duryodhana spins round and tags you, and his brothers cheer. Bhima's side wins anyway." } },
         { id: "duryo", t: "Join Duryodhana", game: "sneak", hint: "A game of tag", trial: TAG.duryo,
           win: { fx: { bond: { duryodhana: 3, bhima: -1 }, flag: ["played_duryodhana", "escaped_bhima"], memory: ["duryodhana", "You were the only one Bhima could not catch, the day of the lotus pond."] },
-            text: "Bhima throws every one of your side into the pond except you. You reach the far wall and touch it, and Duryodhana, dripping, laughs out loud for the first time all day. \"One of us,\" he says. \"One of us he could not catch.\"" },
+            text: "You are the only one on your side Bhima cannot catch. Duryodhana, dripping, laughs for the first time all day." },
           lose: { fx: { bond: { duryodhana: 2, bhima: -1 }, flag: ["played_duryodhana", "ducked_by_bhima"] },
-            text: "Bhima catches you by the ankle, throws you in with the others and holds you under until you gasp. He means it as play. Duryodhana stays to fish your sandal out of the water. \"Next time,\" he says. \"Next time we win.\"" } },
+            text: "Bhima throws you in with the others and holds you under until you gasp. Duryodhana fishes your sandal out: \"Next time we win.\"" } },
         { id: "arjuna", t: "Watch Arjuna practise", fx: { bond: { arjuna: 1 }, skill: { archery: 1 }, flag: "watched_arjuna" },
-          text: "Behind the stables Arjuna shoots at a knot in a tree, again and again, long after the others have gone in. He lets you try once. You miss. He shows you how to breathe out before you let go." },
+          text: "Behind the stables Arjuna lets you try his bow once. You miss, and he shows you how to breathe out before you let go." },
         { id: "karna", t: "Help Karna with the horses", req: { origin: ["suta", "anga"] }, locked: "", fx: { bond: { karna: 2 }, skill: { chariot: 1 }, flag: "met_karna_young" },
-          text: "Karna works without a word until the grey mare nips your shoulder. Then he laughs, and shows you where she likes to be scratched. Nobody from the palace comes looking for either of you." }
+          text: "Karna works without a word until the grey mare nips your shoulder. Then he laughs and shows you where she likes to be scratched." }
       ],
       next: "a1_sage"
     },
@@ -259,11 +259,11 @@
       body: ["An old sage by the road holds out his empty water pot."],
       choices: [
         { id: "give", t: "Give him water and food", fx: { rep: { sages: 2 }, duty: { conscience: 1 }, flag: "kind_to_sage" },
-          text: "He drinks, and puts his hand on your head. \"Eighteen days,\" he says, as if you should understand. \"Keep your feet for eighteen days.\" He walks on. You feel watched over for days." },
+          text: "He drinks and puts his hand on your head. \"Keep your feet for eighteen days.\"" },
         { id: "mock", t: "Mock him", fx: { curse: "sage", rep: { sages: -2 }, journal: "You mocked a sage on the road. He said you would remember it on the field where eighteen armies die." },
-          text: "He looks at you for a long moment. \"You will remember this,\" he says quietly, \"on the field where eighteen armies die, when you most need your strength.\" You are cursed, and you do not know what field he means." },
+          text: "\"You will remember this,\" he says quietly, \"on the field where eighteen armies die.\" You are cursed." },
         { id: "pass", t: "Walk past", fx: {},
-          text: "Behind you he says something to the empty road. It sounds like \"eighteen\". When you look back, he is gone." }
+          text: "Behind you he says something like \"eighteen\" to the empty road. When you look back, he is gone." }
       ],
       next: "a1_friend"
     },
@@ -313,16 +313,16 @@
       ],
       choices: [
         { id: "tell", t: "Tell Vidura what you saw", fx: { duty: { conscience: 2 }, bond: { duryodhana: -3, vidura: 2 }, rep: { pandava: 1 }, memory: ["duryodhana", "You told Vidura what his men did at the river."] },
-          text: "Vidura listens without surprise. \"Say this to no one else,\" he tells you. \"Not yet.\"" },
+          text: "Vidura listens without surprise. \"Say this to no one else. Not yet.\"" },
         { id: "search", t: "Search the riverbank",
           check: { attr: "grace", skill: "stealth", dc: 7,
-            pass: { fx: { bond: { bhima: 2 }, flag: "found_vines" }, text: "Downstream you find cut vines on a sandbar, and footprints leading out of the water, not in. Whatever happened to Bhima, he walked out alive." },
+            pass: { fx: { bond: { bhima: 2 }, flag: "found_vines" }, text: "Downstream you find footprints leading out of the water, not in. Bhima walked out alive." },
             fail: { fx: { bond: { duryodhana: -1 } }, text: "Duryodhana's men find you on the bank. They send you home with a warning and a split lip." } } },
         { id: "silent", t: "Say nothing", fx: { duty: { conscience: -1 }, bond: { duryodhana: 1 }, memory: ["duryodhana", "You saw, and kept quiet."] } },
         { id: "ask", t: "Ask Duryodhana to confess", req: { friend: "duryodhana" }, locked: "", fx: { bond: { duryodhana: -1 }, duty: { conscience: 1 } },
-          text: "He laughs, then stops laughing. \"You of all people,\" he says, and walks away. He does not speak to you for a month." }
+          text: "\"You of all people,\" he says, and walks away. He does not speak to you for a month." }
       ],
-      after: ["Eight days later Bhima walks back into the palace, stronger than before. He says the serpents beneath the river drew out the poison and gave him the strength of a thousand elephants. No one is punished. Everyone remembers."],
+      after: ["Eight days later Bhima walks back into the palace, healed by the serpents beneath the river."],
       next: "a1_pasha"
     },
     {
@@ -334,9 +334,9 @@
       choices: [
         { id: "play", t: "Play him for a copper", game: "pasha", hint: "Dice, best of three",
           win: { fx: { item: { herbs: 1 }, flag: ["learned_pasha", "beat_haridatta"], journal: "You beat old Haridatta at dice at the spring fair." },
-            text: "Haridatta laughs, pays you with a bundle of healing herbs from the next stall, and tells you never to play a stranger. \"The dice are honest,\" he says. \"Men are not.\"" },
+            text: "Haridatta laughs and pays you in healing herbs. \"The dice are honest. Men are not.\"" },
           lose: { fx: { flag: "learned_pasha" },
-            text: "Haridatta keeps your copper and pats your head. \"Remember the faces,\" he says. \"One, two, five, six. Someone who knows the dice knows when they lie.\"" } },
+            text: "Haridatta keeps your copper. \"One, two, five, six. Someone who knows the dice knows when they lie.\"" } },
         { id: "watch", t: "Watch the men play", fx: { skill: { lore: 1 } },
           text: "The players talk while they throw. A king called Nala, they say, once lost his kingdom at dice, and his wife, and very nearly himself." },
         { id: "walk", t: "Go to the wrestling ground", fx: {} }
@@ -358,7 +358,7 @@
           win: UGRA_WIN, close: { fx: {}, text: "Ugra goes to one knee, and gets up again. Charu is still in his grip.", next: "a1_rematch" }, lose: { fx: {}, text: "Ugra throws you out of the ring. Charu is still in his grip.", next: "a1_rematch" } },
         { id: "talk", t: "Shame him",
           check: { attr: "command", skill: "lore", dc: 7,
-            pass: { fx: { rep: { common: 1 }, flag: "shamed_ugra" }, text: "You turn the crowd's laughter on him. Ugra drops what he took and stalks off. He looks back once, at you." },
+            pass: { fx: { rep: { common: 1 }, flag: "shamed_ugra" }, text: "You turn the crowd's laughter on him. Ugra drops what he took and stalks off, looking back once at you." },
             fail: { fx: {}, text: "The crowd laughs at you instead. Ugra keeps his prize." } } },
         { id: "leave", t: "Walk away", fx: { duty: { conscience: -1 } } }
       ],
@@ -372,8 +372,8 @@
         { id: "again", t: "Get up and ask for another bout", game: "rhythm", hint: "Your second chance", trial: ugraTrial(true), win: UGRA_WIN,
           back: { scene: "a1_wrestle", why: "Ugra threw you twice. You will not get into that ring again." },
           lose: { penalty: 1, fx: { rep: { common: -1 }, flag: ["lost_to_ugra", "ugra_twice"], memory: ["charu", "You got up and fought Ugra twice for Charu. You lost twice. Charu never forgot either part."] },
-            text: "He throws you again, harder. The crowd goes quiet. Ugra lets Charu go anyway, bored, and Charu helps you home." } },
-        { id: "down", t: "Stay down", fx: { flag: "lost_to_ugra" }, text: "You stay down. Ugra lets Charu go anyway, bored. On the way home neither of you says anything." }
+            text: "He throws you again, harder. Ugra lets Charu go anyway, bored, and Charu helps you home." } },
+        { id: "down", t: "Stay down", fx: { flag: "lost_to_ugra" }, text: "You stay down. Ugra lets Charu go anyway, bored." }
       ],
       next: "a2_teacher"
     }
@@ -395,7 +395,7 @@
     intro: "The crowd makes a ring. Ugra grins and spits on his palms.",
     enemies: [K.foe("Ugra, the miller's son", 1, { hp: 26, atk: 4 })],
     win: { fx: { rep: { common: 1 }, bond: { charu: 1 }, flag: ["beat_ugra", "balarama_noticed"], journal: "You beat Ugra in the ring at the spring fair. A giant of a man with a plough on his shoulder asked your name." },
-      text: "Ugra stays down. In the crowd, a huge man with a plough over his shoulder laughs and asks your name. People say afterwards that it was Balarama of the Yadavas." },
-    lose: { fx: { duty: { conscience: 1 }, flag: "lost_to_ugra" }, text: "You lose, badly. But you stood up to him, and everyone saw. Ugra most of all." }
+      text: "Ugra stays down. A huge man with a plough over his shoulder laughs and asks your name: Balarama of the Yadavas." },
+    lose: { fx: { duty: { conscience: 1 }, flag: "lost_to_ugra" }, text: "You lose, badly. But you stood up to him, and everyone saw." }
   });
 })(window.K = window.K || {});

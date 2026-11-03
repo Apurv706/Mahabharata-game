@@ -17,7 +17,7 @@
       ],
       choices: [
         { id: "pyres", t: "Build pyres for both sides", fx: { rep: { common: 2 }, duty: { conscience: 1 } },
-          text: "You carry wood for three days. Nobody asks which side the dead fought for. The smoke goes up the same." },
+          text: "You carry wood for three days. Nobody asks which side the dead fought for." },
         { id: "mourn", t: "Sit with your own dead", fx: { duty: { family: 1 }, attr: { wisdom: 1 } },
           text: "You sit by them until the women come with water and white cloth. When you finally stand, something in you stays sitting there." },
         { id: "hunt", t: "Swear vengeance on Ashwatthama", req: (S) => S.side !== "kaurava" && K.vowsHeld(S) < K.MAX_VOWS && !S.vows.some((v) => v.id === "vengeance" && !v.released), // the same test vowTake uses
@@ -32,13 +32,13 @@
       body: ["He pauses, and looks at you."],
       choices: [
         { id: "rule", t: "Ask how a king should rule", fx: { skill: { statecraft: 1 }, attr: { command: 1 } } },
-        { id: "grief", t: "Ask how to carry grief", fx: { attr: { wisdom: 1 }, duty: { family: 1 } }, text: "\"Like water,\" he says. \"You cannot put it down. You can learn to walk with it.\"" },
+        { id: "grief", t: "Ask how to carry grief", fx: { attr: { wisdom: 1 }, duty: { family: 1 } }, text: "\"Like water,\" he says. \"You cannot put it down, but you can learn to walk with it.\"" },
         { id: "vow", t: "Ask how to live with a broken vow", req: (S) => S.vows.some((v) => v.broken && !v.released), fx: { duty: { conscience: 2 } }, text: "\"Keep the next promise,\" he says. \"That is all any of us can do.\"" },
         { id: "listen", t: "Ask nothing. Just listen", fx: { skill: { lore: 1 } } },
         { id: "dream", t: "Ask about the life you dream of", req: { flag: "reborn" }, fx: { attr: { wisdom: 1 }, duty: { conscience: 1 }, unflag: "karmic_debt" },
-          text: "\"Amba came back to me as Shikhandi, to finish what she began,\" he says. \"Perhaps you came back to finish something too.\" He waits. \"Did you?\"" }
+          text: "\"Amba came back to me as Shikhandi, to finish what she began,\" he says. \"Did you come back to finish something too?\"" }
       ],
-      after: ["When the sun turns north, Bhishma dies. Yudhishthira is crowned king of Hastinapura, and reigns over an empty kingdom."],
+      after: ["When the sun turns north, Bhishma dies, and Yudhishthira is crowned king."],
       next: "a7_question"
     },
     {
@@ -53,8 +53,8 @@
           text: "It takes most of what you have. He counts it twice, and thanks you, and you see that he did not expect it." },
         { id: "forgive", t: "Ask him to forgive it",
           check: { attr: "wisdom", skill: "statecraft", dc: 8,
-            pass: { fx: { duty: { conscience: 1 }, unflag: "debt_refused", flag: "debt_forgiven" }, text: "He listens to the end. Then he tears the note in half himself. \"Everyone is owed something this year,\" he says. \"Nobody is getting paid.\"" },
-            fail: { fx: {}, text: "\"My grandfather forgave nothing,\" he says. \"Neither do I.\" He keeps the note." } } },
+            pass: { fx: { duty: { conscience: 1 }, unflag: "debt_refused", flag: "debt_forgiven" }, text: "He listens to the end, then tears the note in half himself. \"Everyone is owed something this year.\"" },
+            fail: { fx: {}, text: "\"My grandfather forgave nothing, and neither do I.\" He keeps the note." } } },
         { id: "tear", t: "Tear it up again", fx: { rep: { common: -1 }, duty: { conscience: -1 }, flag: "debt_torn_twice" },
           text: "He watches the pieces fall. \"My son will come,\" he says, and goes." }
       ],

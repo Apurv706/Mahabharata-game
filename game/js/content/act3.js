@@ -10,7 +10,7 @@
       stakes: ["The tunnel grows by a night's digging, and the Pandavas will owe you.", "You have to stop for the night. The miner will try again tomorrow, with or without you."] },
     retryStakes: ["The tunnel grows by a night's digging, and the Pandavas will owe you.", "A guard sees you, and Purochana starts asking questions. It counts as two failures, and it will weigh on every stealth test to come; if your stealth is low, the guard may not stop at questions."],
     win: { fx: { bond: { yudhishthira: 2, bhima: 1 }, rep: { pandava: 2 }, flag: ["helped_tunnel", "act3_tested"], journal: "You helped dig the tunnel under the house at Varnavata." }, text: "Night after night you carry baskets of earth into the dark. No one sees you." },
-    lose: { fx: { flag: "act3_tested" }, text: "A torch swings your way. You drop the basket and crawl back into the dark. \"Tomorrow night,\" the miner whispers." },
+    lose: { fx: { flag: "act3_tested" }, text: "A torch swings your way, and you crawl back into the dark. \"Tomorrow night,\" the miner whispers." },
     peril: { kind: "death", art: "scene_lac", caption: "The garden of the lac house, at night", text: "The guard does not shout. He takes you for a thief in the dark, and he does not ask questions.",
       deathText: "{They} carried earth out of the tunnel at Varnavata by night, and one of Purochana's guards took {them} for a thief." },
     retryLose: { penalty: 1, fx: { rep: { kuru: -2 }, flag: ["seen_at_tunnel", "tunnel_twice"] }, text: "One of Purochana's guards sees a figure near the house at night. He does not see your face, but he will keep looking." } };
@@ -27,7 +27,7 @@
       body: ["Drona asks, in front of the court, who trained you. Mauni made you promise never to say."],
       choices: [
         { id: "tell", t: "Tell the truth", fx: { duty: { teacher: -3, court: 1 }, rep: { kuru: 1 }, curse: "hermit", flag: "betrayed_hermit", journal: "You told the court who taught you, and broke your promise to Mauni." },
-          text: "Drona nods, satisfied. That night a boy brings you three words from the forest: \"At the worst hour.\" You are cursed." },
+          text: "Drona nods, satisfied. That night a boy brings you three words from the forest, \"At the worst hour\", and you are cursed." },
         { id: "lie", t: "Say you taught yourself", tags: ["lie"], fx: { duty: { teacher: 1, conscience: -1 } } },
         { id: "refuse", t: "Refuse to answer", fx: { rep: { kuru: -2 }, duty: { teacher: 2, court: -2 }, memory: ["drona", "You refused him in open court."] } }
       ],
@@ -58,7 +58,7 @@
       choices: [
         Object.assign(K.testChoice("a3_lac", "dig", TUNNEL), { locked: "Only Vidura's people know about the tunnel." }),
         { id: "warn", t: "Warn the Nishada woman and her sons", fx: (S) => ({ duty: { conscience: 2 }, flag: "tried_nishada", memory: ["all", "You tried to wake the family who died at Varnavata."], rep: S.origin === "nishada" ? { common: 2 } : {} }),
-          text: "They drank deep at Kunti's feast and do not wake, however hard you shake them. You sit down beside them in the dark, meaning to try again in a little while." },
+          text: "They drank deep at Kunti's feast and do not wake, however hard you shake them." },
         { id: "tell", t: "Tell Duryodhana people are talking", req: { friend: "duryodhana" }, fx: { bond: { duryodhana: 2 }, duty: { court: 1, conscience: -2 }, flag: "warned_duryodhana" } },
         { id: "stay", t: "Keep away from the house", fx: {} }
       ],
@@ -89,7 +89,7 @@
           close: { fx: { flag: ["cut_fuses", "bhima_debt"] }, text: "One line parts before the lamp comes back for good. It will have to be enough." },
           lose: { fx: {}, text: "The lamp finds you twice, and the second time the guard does not look away. You go up the stairs with the lines whole." } },
         { id: "warn", t: "Warn Yudhishthira it is tonight", fx: { flag: ["warned_pandavas", "bhima_debt"], bond: { yudhishthira: 2, bhima: 1 }, rep: { kuru: -1 }, duty: { conscience: 1 } },
-          text: "Yudhishthira listens without surprise. \"Vidura told me in a riddle,\" he says. \"You have told me in plain words. We will not forget either.\"" },
+          text: "Yudhishthira listens without surprise. \"Vidura told me in a riddle. You have told me in plain words.\"" },
         { id: "silent", t: "Say nothing", fx: { duty: { family: 1, conscience: -2 }, memory: ["all", "You knew what the house at Varnavata was for, and said nothing."] },
           text: "You go to bed with the smell of resin in your clothes, and do not sleep." }
       ],
@@ -114,19 +114,19 @@
             stakes: ["You reach the tunnel, and whoever you carried comes with you.", "The fire catches you in the house. There is no second chance tonight."] },
           win: { fx: (S) => Object.assign({ flag: ["escaped_lac"], duty: { conscience: 1 }, journal: "You got out of the burning house at Varnavata through the tunnel." },
               S.lacCarried ? { flag: ["escaped_lac", "carried_out_lac"], rep: { common: 1 }, duty: { conscience: 2 }, memory: ["all", "You carried someone out of the house of lac."] } : {}),
-            text: (S) => (S.lacCarried ? "The tunnel mouth is cold and black and smells of earth. You put the one you carried down at the bottom of the shaft, and only then feel your hands shaking." : "You drop into the tunnel mouth as the storeroom roof comes down behind you. The dark smells of earth, and of nothing burning.") },
+            text: (S) => (S.lacCarried ? "You put the one you carried down at the bottom of the shaft, and only then feel your hands shaking." : "You drop into the tunnel mouth as the storeroom roof comes down behind you. The dark smells of earth, and of nothing burning.") },
           close: { fx: { flag: ["escaped_lac", "lac_late"], injury: "scar", journal: "You came through the flames at Varnavata, and not everyone you carried came with you." },
-            text: "You come through the last room with your sleeve alight. Whoever was on your back is not there when you drop into the dark, and you cannot go back." },
+            text: "You come through the last room with your sleeve alight. Whoever was on your back is not there when you drop into the dark." },
           lose: { fx: (S) => (S.storyMode ? { injury: "scar", flag: ["lac_burnt"], journal: "The fire caught you in the house at Varnavata. Someone dragged you out, burnt." }
               : { die: true, flag: ["died_in_fire"], deathText: "{They} died in the house of lac at Varnavata, on the night everyone believes the Pandavas died.", set: { deathAt: { art: "end_fire", caption: "The house at Varnavata, at dawn", act: 3 } } }),
             text: (S) => (S.storyMode ? "The smoke takes your legs before the fire does. The next thing you know is cold air, and someone's hands under your arms, and your own skin." : "The smoke takes your legs before the fire does. The last thing you hear is the roof.") } },
         { id: "stay", t: "Keep shaking the sleepers", req: { flag: "tried_nishada" }, locked: "", hint: "They will not wake",
           fx: (S) => (S.storyMode ? { injury: "scar", flag: ["lac_burnt"], duty: { conscience: 1 } } : { die: true, flag: ["died_in_fire"], duty: { conscience: 1 }, deathText: "{They} would not leave the Nishada woman and her sons in the house of lac, and died beside them.", set: { deathAt: { art: "end_fire", caption: "The house at Varnavata, at dawn", act: 3 } } }),
-          text: (S) => (S.storyMode ? "They do not wake. You are still shaking the youngest when the smoke takes you, and still holding him when someone drags you out by the collar." : "They do not wake. You are still shaking the youngest when the smoke takes you.") },
+          text: (S) => (S.storyMode ? "They do not wake. You are still holding the youngest when someone drags you out by the collar." : "They do not wake. You are still shaking the youngest when the smoke takes you.") },
         { id: "back", t: "Stay back with the crowd", req: (S) => !INSIDE(S), locked: "", fx: { memory: ["all", "You watched the house of lac burn from the lane."] },
           text: "You stand in the lane with everyone else and watch the roof fall in. Nobody comes out." }
       ],
-      after: ["In the ashes they find six bodies: a Nishada woman and her five sons. Everyone believes they are Kunti and the Pandavas. In Hastinapura, Dhritarashtra weeps, and Duryodhana weeps louder."],
+      after: ["In the ashes they find six bodies, and everyone believes the Pandavas are dead."],
       next: "a3_kampilya"
     },
     // Going to Kampilya is a choice. Those who go may try the great bow; those who stay have the
@@ -161,7 +161,7 @@
         { id: "kings", t: "Side with the kings", fx: { bond: { duryodhana: 1, arjuna: -1 }, rep: { kuru: 1, panchala: -1 } } },
         { id: "watch", t: "Watch", fx: {} }
       ],
-      after: ["The brahmins were Arjuna and Bhima in disguise. The Pandavas are alive. Draupadi becomes the wife of all five brothers, as their mother's word and Draupadi's own fate decree, and the news reaches Hastinapura like thunder."],
+      after: ["The brahmins were Arjuna and Bhima in disguise, and Draupadi becomes the wife of all five brothers."],
       next: "a3_court"
     },
     // For those who stayed at home: the same story, told by travellers.
@@ -193,7 +193,7 @@
         { id: "hastinapura", t: "Serve Hastinapura", fx: { rep: { kuru: 2 }, bond: { duryodhana: 1 }, journal: "You pledged yourself to the court at Hastinapura." }, resolve: pledge("hastinapura") },
         { id: "indraprastha", t: "Serve Indraprastha", fx: { rep: { pandava: 2 }, bond: { yudhishthira: 1 }, journal: "You went to Indraprastha to serve Yudhishthira." }, resolve: pledge("indraprastha") },
         { id: "home", t: "Go home", fx: { rep: { common: 1 }, duty: { family: 1 }, journal: "You went home to serve your own people." }, resolve: (S) => pledge(K.HOME_COURT[S.origin])(S),
-          text: (S) => (S.origin === "mathura" ? "Your people are no longer in Mathura. Krishna killed Kamsa, and when Jarasandha's armies kept coming, the Yadavas moved to a new city by the western sea: Dwaraka. You follow them there." : null) },
+          text: (S) => (S.origin === "mathura" ? "Your people have left Mathura for Dwaraka, a new city by the western sea. You follow them there." : null) },
         { id: "none", t: "Serve no king", fx: { set: { court: "none" }, rep: { common: 1 }, journal: "You chose to serve no king." }, resolve: (S) => ({ duty: { court: 1 - S.duty.court } }) }
       ],
       next: "a3_courttest"
@@ -232,7 +232,7 @@
             fail: { fx: { rep: { kuru: -1 } }, text: "A guard moves you along before you hear anything useful." } } },
         { id: "away", t: "Look away", fx: { duty: { conscience: 1 } } }
       ],
-      after: ["Duryodhana goes home and tells his uncle Shakuni he would rather die than live with this. Shakuni tells him there is no need for either."],
+      after: ["At home, Shakuni tells Duryodhana there is a way to take it all from them."],
       next: "a4_invite"
     }
   ]);
