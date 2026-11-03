@@ -232,7 +232,7 @@
         { id: "silent", t: "Stay silent", fx: pupil(S) ? { duty: { conscience: 1 }, flag: ["refused_lie", "kf_silent"], memory: ["dhrishtadyumna", "You would not shout it when your teacher was the one to hear it."] }
             : { duty: { conscience: 1 }, flag: ["refused_lie", "kf_silent"], memory: ["bhima", "You would not shout it with the rest of us."] },
           text: pupil(S) ? "You keep your mouth shut. Dhrishtadyumna sees it as he rides past, and looks at you the way he looks at Drona's men."
-            : "You keep your mouth shut while the whole line shouts. Bhima sees it from the top of the dead elephant. He says nothing, and he does not forget." }
+            : "You keep your mouth shut while the whole line shouts. Bhima sees it from the top of the dead elephant, and he does not forget it." }
       ]
     },
     // The moment Dhrishtadyumna goes for Drona, after the half-truth (a6_day15).

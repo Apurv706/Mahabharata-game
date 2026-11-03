@@ -262,7 +262,7 @@
       text: (S) => ["The last rider turns his horse and goes. {who} is breathing hard beside you, and laughing.", { who: sibName(S) }] },
     spare: { fx: (S) => ({ bond: { [S.sibling]: 1 }, duty: { conscience: 1 }, flag: "kept_called_across" }), text: "You let the captain ride back to tell them. Nobody else comes." },
     lose: { deathText: "{They} called {their} own kin across the field on the first morning, and fell the next day keeping them there.",
-      text: (S) => (S.alive ? "You go down under the horses. When you wake, you are in the healers' tent, and your sibling is sitting beside you." : null) }
+      text: (S) => (S.alive ? ["You go down under the horses. When you wake, you are in the healers' tent, and {who} is sitting beside you.", { who: sibName(S) }] : null) }
   });
   // Their paintings, tall on upright screens (ui/battle.js reads this map).
   Object.assign(K.COMMAND_FIGHT_BG = K.COMMAND_FIGHT_BG || {}, { cross_e_duel: "fight_between_lines", cross_e_called: "fight_between_lines" });

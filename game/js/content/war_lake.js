@@ -115,7 +115,7 @@
     beats: [{ round: 3, text: "Kritavarma kicks over a fire-basket, and the reeds between you and the scouts go up in flame.", run: (B) => B.living("enemy").forEach((u) => B.status(u, "weakened", 2)) }],
     win: { fx: { flag: ["lake_held", "lake_ash_trust"], journal: "On the last night you held the water's edge at Dvaipayana beside Ashwatthama, Kripa and Kritavarma." },
       text: "Ashwatthama wipes his sword on the reeds and looks at you for a long moment. \"Four of us held the water tonight,\" he says. \"I will remember who.\"" },
-    lose: { fx: { flag: ["lake_fell", "lake_ash_cold"], injury: "scar" }, text: "You go down in the mud. When you can see again the scouts are gone, and Ashwatthama is standing over you. He says nothing, and goes back to the water." }
+    lose: { fx: { flag: ["lake_fell", "lake_ash_cold"], injury: "scar" }, text: "You go down in the mud. When you can see again the scouts are gone, and Ashwatthama is standing over you. Then he turns and goes back to the water." }
   }, "{They} fell in the reeds at Dvaipayana on the last night, holding the water's edge beside Ashwatthama, Kripa and Kritavarma.");
   const hero = (u, atk) => Object.assign({}, u, { hp: 600, atk, hero: true });
   twin({

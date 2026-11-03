@@ -42,7 +42,7 @@
   const arjunaHold = (id, day /* the death line */, hold, atk, extra) => K.encounter(Object.assign({}, K.ENCOUNTERS.hold_arjuna, {
     id, hold, lethal: true, injury: "scar",
     enemies: [K.foe("Arjuna", 10, { abilities: ["strike", "arrows", "aimed"], hero: true, person: "arjuna", hp: 900, atk }), K.foe("Pandava chariot-warrior", 5, { abilities: ["strike", "arrows"] })],
-    flee: { tags: WITHDRAW, fx: { flag: "oath_withdrew" }, text: "You pull out of the arrows. The sworn men around you see it. Nobody says anything. Nobody has to." },
+    flee: { tags: WITHDRAW, fx: { flag: "oath_withdrew" }, text: "You pull out of the arrows. The sworn men around you see it, and none of them says a word." },
     lose: { fx: (S) => (S.storyMode ? { flag: "oath_carried_off", journal: "Arjuna's arrows brought you down, and your men carried you off the field. You never stepped back, and the oath held." } : null),
       text: (S) => (S.alive ? "An arrow takes you under the collarbone, and your men carry you off the field. You never stepped back. The oath holds." : null),
       deathText: day }

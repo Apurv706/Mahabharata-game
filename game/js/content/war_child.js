@@ -111,7 +111,7 @@
       : [K.foe("Drona's chariot-warrior", 4, { abilities: ["strike", "heavy", "arrows"] }), K.foe("Kaurava spearmen", 3, { plural: true })]),
     intro: "Vasu's shield is a hand's breadth from yours. He does not look at you. He is trying very hard not to.",
     beats: [{ round: 3, text: "A chariot comes straight at Vasu's shield-wall. He goes down under the wheels and does not get up.", run: (B) => { const v = vasuUnit(B); if (v && v.hp > 0) v.hp = 0; } }],
-    win: { fx: { flag: "child_line_held", bond: { vasu: 1 }, memory: ["vasu", "You held the line beside mine, the day they drove for the king."] }, text: "When the conches sound, both lines are where they were at dawn. Vasu finds you in the dusk and says nothing, and does not need to." },
+    win: { fx: { flag: "child_line_held", bond: { vasu: 1 }, memory: ["vasu", "You held the line beside mine, the day they drove for the king."] }, text: "When the conches sound, both lines are where they were at dawn. Vasu finds you in the dusk and stands beside you for a while without speaking." },
     lose: { fx: { flag: "child_line_broken" }, text: "The line breaks. In the dust you lose sight of Vasu's shield, and do not find it again until dark." },
     flee: { fx: { flag: "child_line_left" }, text: "You pull back. His line holds without you, somehow, and he never asks why." }
   });
@@ -209,7 +209,7 @@
     // The call brings Karna, who is near.
     callHelp: (S) => ({ unit: K.UNITS.karna(S), stay: 2, text: "You shout for Karna. His chariot comes out of the dark, and his arrows go up into the shape and do not come down.", run: () => K.apply({ flag: "called_karna_night" }) }),
     beats: [{ round: 2, text: "Every torch on your side gutters at once. Something laughs, very high up.", run: (B) => B.living("friends").forEach((u) => B.status(u, "weakened", 1)) },
-      { round: 4, text: "The shape is everywhere and nowhere. Your blows pass through it, and its mace does not.", run: (B) => { const p = B.living("player")[0]; if (p) B.status(p, "exposed", 2); } }],
+      { round: 4, text: "You cannot tell where the shape is. Your blows pass through it, and its mace does not.", run: (B) => { const p = B.living("player")[0]; if (p) B.status(p, "exposed", 2); } }],
     win: { fx: { flag: "ghost_held" }, text: "The host draws back into the dark to gather itself. The line on either side of you is gone." },
     lose: { fx: { flag: "ghost_broken" }, text: "The host goes over your stretch of the line. You come to on the ground among the dead, still alive." },
     flee: { fx: { flag: "ghost_fled" }, text: "You fall back toward Karna's chariot with everyone else." }
@@ -220,7 +220,7 @@
     roundsText: "You cut through the last of Karna's guard, a spear's length from his wheel.",
     intro: "Between you and Karna's chariot: his guard, and a hundred torches moving.",
     enemies: [K.foe("Karna's chariot-guard", 4, { abilities: ["strike", "guard", "heavy"] }), K.foe("Kaurava torch-bearers", 3, { plural: true })],
-    beats: [{ round: 3, text: "Ahead, Duryodhana's chariot is alongside Karna's. Duryodhana is not shouting. He is begging.", run: () => {} },
+    beats: [{ round: 3, text: "Ahead, Duryodhana's chariot is alongside Karna's, and Duryodhana is begging him.", run: () => {} },
       { round: 5, text: "Karna stands up in his chariot with something in his hand brighter than every torch on the field.", run: () => {} }],
     win: { fx: { flag: ["reached_karna", "shakti_tried_stop"], bond: { bhima: 1 }, memory: ["bhima", "You fought through the dark to Karna's chariot to stop the spear, the night my son fell."] }, text: "You are a spear's length from Karna's wheel when his arm comes back." },
     lose: { fx: { flag: "shakti_tried_stop", memory: ["bhima", "You tried to reach Karna's chariot before he threw, the night my son fell."] }, text: "The guard throws you back into the press. Over their heads you see Karna's arm come back." },
@@ -238,7 +238,7 @@
         K.tieLine(S, K.tieShakti(S), { company: "Your company was posted beside Karna's chariot for the night.", general: "This morning you chose the ground near Karna's chariot. Tonight it is where the dark comes." }),
         "Karna's chariot is behind your stretch of the line. The shape is coming toward it."],
       choices: [
-        { id: "stand", t: "Stand against the shape and its host", combat: "wc_e_ghost", hint: "It cannot be beaten, only stood against" },
+        { id: "stand", t: "Stand against the shape and its host", combat: "wc_e_ghost", hint: "It cannot be beaten. Hold out" },
         { id: "run", t: "Run for Karna's chariot", fx: {}, text: "You run back through the dark toward the one bow on your side the rakshasas are afraid of." }
       ]
     },
@@ -246,7 +246,7 @@
       id: "wc_shakti_call", act: 6, age: 44, war: true, away: true, next: "a6_day15",
       art: "fight_night_torches", place: "Kurukshetra · the night of day 14", caption: "Karna's chariot", title: "The spear kept for Arjuna",
       body: (S) => [has(S, "called_karna_night") ? "Karna's chariot is beside you now, and his quiver is nearly empty." : "You reach Karna's chariot as his quiver runs low.",
-        "Duryodhana's chariot comes out of the dark with its rail torn away. He does not shout at Karna. He begs him: use the spear Indra gave you, the one you have kept for Arjuna, or there will be no army left by morning.",
+        "Duryodhana's chariot comes out of the dark with its rail torn away. He begs Karna: use the spear Indra gave you, the one you have kept for Arjuna, or there will be no army left by morning.",
         "Karna looks up at the dark, and then at you."],
       choices: [
         urge("keep", "Tell him to keep the spear for Arjuna", { bond: { duryodhana: -1 }, memory: ["karna", "You told me to keep the spear for Arjuna. You were right."] },
