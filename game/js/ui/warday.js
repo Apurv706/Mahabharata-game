@@ -126,7 +126,7 @@
     document.body.classList.add("in-rt", "intest");
     V.el = el; V.stage = el.querySelector("#rt-stage"); V.world = el.querySelector("#rt-world"); V.tags = el.querySelector(".tags");
     const bg = U.FIGHT_BG && U.FIGHT_BG[enc.id];
-    V.art = [U.artUrl(bg || K.val(enc.stage) || K.val(enc.art)), bg ? U.artUrl(bg + "_tall") : null]; // the fight's own field, wide and tall
+    V.art = [U.artUrl(bg || K.val(enc.stage) || K.val(enc.art)), U.fightTall(bg)]; // the fight's own field, wide and tall (where a tall one is painted)
     V.figs = new Map();
     el.querySelectorAll("[data-wact]").forEach((b) => b.addEventListener("click", (e) => { e.preventDefault(); if (b.dataset.wact === "company") toggleSheet("company"); else toggleSheet("aid"); }));
     el.querySelectorAll("[data-place]").forEach((b) => b.addEventListener("click", () => choosePlace(b.dataset.place)));

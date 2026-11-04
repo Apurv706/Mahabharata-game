@@ -123,6 +123,9 @@
   };
   Object.assign(FIGHT_BG, K.COMMAND_FIGHT_BG || {}); // the holding fights (content/command.js)
   U.FIGHT_BG = FIGHT_BG;
+  // The tall painting of a fight's background, for upright screens: the fight and stage paintings have one; a story
+  // painting standing in for a fight's ground (Karna's-day duel on scene_duel_ground) is painted wide only.
+  U.fightTall = (bg) => (!bg ? null : U.tallOf(bg) ? U.artUrl(U.tallOf(bg)) : /^(fight|stage)_/.test(bg) ? U.artUrl(bg + "_tall") : null);
   U.battleSpecFor = (u) => specFor(u); // who each fighter is drawn as (tests/weapons.js)
   // A fighter's figure; the fallen lie forward (toward the middle of the stage), their weapon on the ground beside them.
   const figure = (u) => U.puppet(specFor(u), { h: 150, flip: u.side === "enemy", pose: u.hp <= 0 ? "dead" : liveFigures() ? "live" : u.side === "player" ? "brace" : "stand", fwd: true, label: u.side === "player" ? K.tr("You") : null });

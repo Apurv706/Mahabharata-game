@@ -114,7 +114,7 @@
     document.body.classList.add("in-rt");
     V.el = el; V.stage = el.querySelector("#rt-stage"); V.world = el.querySelector("#rt-world"); V.tags = el.querySelector(".tags");
     const bg = U.FIGHT_BG && U.FIGHT_BG[enc.id];
-    V.art = [U.artUrl(K.val(enc.stage) || K.val(enc.art)), bg ? U.artUrl(bg + "_tall") : null];
+    V.art = [U.artUrl(K.val(enc.stage) || K.val(enc.art)), U.fightTall(bg)];
     el.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", (e) => { e.preventDefault(); act(b.dataset.act); }));
     el.querySelectorAll("[data-hold]").forEach((b) => {
       const k = b.dataset.hold;
