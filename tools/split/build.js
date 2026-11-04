@@ -20,7 +20,7 @@ const P1 = /^(act1|roots|act2|act3|act4)$/, P2 = /^(act5|act6a|act6b|command|act
 const content = fs.readdirSync(path.join(G, "js/content")).map((f) => [f.replace(/\.js$/, ""), read("js/content/" + f)]);
 // Shown on the title screen, the character sheet or anywhere in a life: both parts.
 const title = read("js/ui/screens.js");
-const always = (k) => /^(p_|path_|vow_|temper_|heir_|teacher_|diya)/.test(k) || title.includes('"' + k + '"') || /^end_(death|cut_short)$/.test(k);
+const always = (k) => /^(p_|path_|vow_|temper_|heir_|teacher_|diya|home_)/.test(k) || title.includes('"' + k + '"') || /^end_(death|cut_short)$/.test(k);
 function parts(f) {
   if (!isAsset(f)) return [1, 2];
   if (f.startsWith("music/")) return [1, 2];
