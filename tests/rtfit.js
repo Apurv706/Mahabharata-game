@@ -42,6 +42,15 @@ function measure(open) {
     if (Math.abs(R(st).top - V.stageTop) > 0.5) out.push(open + " menu moved the stage");
     if (!panel.querySelector(".flame")) out.push(open + " menu without its diya");
     if (panel.scrollHeight > panel.clientHeight + 1) out.push(open + " menu content does not fit");
+    // "Resume ▶" at the right end of the panel, inside it, a full touch target on phones
+    const rb = panel.querySelector(".resume"), rr = rb && R(rb);
+    if (!rb || !rr.width) out.push(open + " menu without Resume");
+    else {
+      if (rr.left < pr.left - 0.5 || rr.right > pr.right + 0.5 || rr.top < pr.top - 0.5 || rr.bottom > pr.bottom + 0.5) out.push(open + " Resume spills out of the menu");
+      for (const o of panel.querySelectorAll("button:not(.resume)")) { const q = R(o); if (q.width && q.right > rr.left + 0.5 && q.bottom > rr.top && q.top < rr.bottom) out.push(open + " Resume not at the right end"); }
+      if (innerWidth < 820 && (rr.height < 43.5 || rr.width < 43.5)) out.push(open + " Resume under 44 px");
+      for (const o of panel.querySelectorAll("button")) if (o.offsetWidth && o.scrollWidth > o.clientWidth + 1) out.push(open + " label cut: " + o.textContent.trim());
+    }
   }
   if (innerWidth < 820) for (const b of V.el.querySelectorAll(".ctl button, .hud button")) { const r = R(b); if (r.width && (r.width < 43.5 || r.height < 43.5)) out.push("touch target under 44 px: " + (b.className || b.dataset.act)); }
   return { problems: out, ratio: Math.round(ratio * 100) };
@@ -66,6 +75,8 @@ srv.listen(0, async () => {
       await pg.evaluate((o) => { document.querySelector('#rt [data-act="' + o + '"]').click(); }, open); await pg.waitForTimeout(250);
       res.push(await pg.evaluate(measure, open));
       if (SHOTS && enc === "e_border") await pg.screenshot({ path: path.join(SHOTS, (dev.name + "_" + lang + "_" + enc + "_" + open).replace(/\W+/g, "_") + ".png") });
+      // tapping Resume closes the menu and the fight goes on
+      res.push(await pg.evaluate((o) => { const V = K.UI.rtScreen(), b = V.el.querySelector("." + o + "-sheet .resume"); if (!b) return { problems: [] }; b.click(); const p = []; if (!V.el.querySelector("." + o + "-sheet").hidden || V.sheet || V.paused) p.push(o + " Resume did not close the menu and resume"); return { problems: p }; }, open));
       await pg.keyboard.press("Escape").catch(() => {}); await pg.evaluate(() => { const V = K.UI.rtScreen(); V.el.querySelectorAll(".sheet").forEach((s) => (s.hidden = true)); V.sheet = null; V.paused = true; });
     }
     const probs = [...new Set(res.flatMap((r) => r.problems).concat(errs.map((e) => "script error: " + e)))];

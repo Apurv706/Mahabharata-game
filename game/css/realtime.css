@@ -553,3 +553,13 @@ html.calm #rt .stage.bigshake { animation: none; }
 #rt .actor.beaten { pointer-events: auto; }
 #rt .world .fly-arrow:not([style*="transform"]) { visibility: hidden; }
 #rt .sheet.pause-sheet { position: absolute; }
+/* "Resume ▶" at the right end of the Orders and Aid panels, inside the controls' height (chips shrink to make room) */
+#rt .sheet.compact .resume { min-height: 44px; min-width: 0; padding: 2px 8px; border-radius: 8px; border: 1px solid var(--gold-line); background: var(--raised); color: var(--data); font: 700 12px/1.1 var(--text); white-space: nowrap; justify-self: end; align-self: center; }
+#rt .aid-sheet.compact .resume { margin-left: auto; flex: 0 0 auto; display: flex; align-items: center; }
+#rt .orders-sheet.compact.matched.m-rt { grid-template-columns: auto minmax(0, 1fr) auto !important; }
+#rt .orders-sheet.compact.matched.m-rt .chips button { padding: 1px 1px; font-size: 11px; letter-spacing: -0.1px; }
+#rt .orders-sheet.compact.matched.m-rt .grp { min-width: 46px; padding: 2px 4px; }
+#rt .orders-sheet.compact.matched.m-rt { gap: 0 4px; }
+#rt .orders-sheet.compact.matched.m-rt .resume { padding: 2px 5px; font-size: 11.5px; }
+#rt .aid-sheet.compact.matched button[data-aid] { flex: 1 1 0; min-width: 0; }
+@media (max-width: 370px) { #rt .orders-sheet.compact.matched.m-rt .chips button { font-size: 10.5px; } #rt .orders-sheet.compact.matched.m-rt .resume { font-size: 11px; padding: 2px 4px; } #rt .orders-sheet.compact.matched.m-rt .grp { min-width: 44px; } }

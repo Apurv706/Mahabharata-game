@@ -274,7 +274,7 @@
       show(so ? "so" : "fr"); g.onclick = () => { if (both) show(g.dataset.k === "so" ? "fr" : "so"); };
       el.querySelectorAll("[data-so]").forEach((b) => (b.onclick = () => { R.orders.soldiers = b.dataset.so; V.queue.orders = Object.assign(V.queue.orders || {}, { soldiers: b.dataset.so }); el.querySelectorAll("[data-so]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); so.querySelector(".desc1").textContent = K.tr(SO[b.dataset.so][1]); }));
       el.querySelectorAll("[data-fr]").forEach((b) => (b.onclick = () => { R.orders.friend = b.dataset.fr; V.queue.orders = Object.assign(V.queue.orders || {}, { friend: b.dataset.fr }); el.querySelectorAll("[data-fr]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); fr.querySelector(".desc1").textContent = K.tr(FR[b.dataset.fr][1]); }));
-      el.classList.add("compact"); placeDrop(el, $(".hb.orders")); dropTimer(el);
+      resumeBtn(el); el.classList.add("compact"); placeDrop(el, $(".hb.orders")); dropTimer(el);
     } else if (kind === "aid") {
       const el = $(".aid-sheet"), ast = RT.astras(), aReady = ast.find((x) => !x.why);
       const it = (k, label, note, off, key) => '<button type="button" data-aid="' + k + '"' + (off ? ' disabled aria-disabled="true"' : "") + "><b>" + U.esc(label) + "</b><small>" + U.esc(note) + "</small><kbd>" + key + "</kbd></button>";
@@ -282,10 +282,10 @@
         it("astra", K.tr(aReady ? aReady.name : "Divine weapon"), aReady ? K.tr("Divine weapon") : ast[0] ? (B_used(ast) ? K.tr("used") : ast[0].why || "") : K.tr("not given"), !aReady, "U") +
         (p.abilities.includes("call") ? it("call", K.tr("Call for help"), RT.can(R, "call") ? K.tr("once a fight") : K.tr("called"), !RT.can(R, "call"), "C") : "");
       el.querySelectorAll("[data-aid]").forEach((b) => (b.onclick = () => { closeSheet(); act(b.dataset.aid); }));
-      el.classList.add("compact"); placeDrop(el, $(".hb.aid")); dropTimer(el);
+      resumeBtn(el); el.classList.add("compact"); placeDrop(el, $(".hb.aid")); dropTimer(el);
     } else {
       const el = $(".pause-sheet");
-      if (kind === "pause") el.innerHTML = "<h2>" + T("Paused") + '</h2><div class="p-main opts one"><button type="button" class="go" data-close>' + T("Resume") + "</button>" +
+      if (kind === "pause") el.innerHTML = "<h2>" + T("Paused") + '</h2><div class="p-main opts one"><button type="button" class="go" data-close>' + T("Resume ▶") + "</button>" +
         (C.canFlee() ? '<button type="button" class="danger" data-w>' + T("Withdraw from the fight") + "</button>" + (C.fleeBreaks().length ? '<p class="note">' + T("It breaks your vow never to retreat.") + "</p>" : "") : "") +
         '<ul class="keys pkeys">' + T(KEYS_ALL).split(" · ").map((x) => "<li>" + U.esc(x) + "</li>").join("") + "</ul></div>";
       else if (kind === "confirm") el.innerHTML = '<div class="p-confirm opts one"><h3 class="sure">' + T("Are you sure?") + '</h3><p class="desc">' + T("Withdrawing breaks your vow never to retreat.") + '</p><button type="button" class="go" data-close>' + T("Stay and fight") + '</button><button type="button" class="danger" data-yes>' + T("Yes, withdraw") + "</button></div>";
@@ -298,6 +298,11 @@
       const ab = el.querySelector("[data-accept]"); if (ab) ab.onclick = () => { closeSheet(); RT.accept(V.R); finishSoon(); };
       const f = el.querySelector("button"); if (f && !U.calm()) f.focus({ preventScroll: true });
     }
+  }
+  // Orders and Aid end in a compact "Resume ▶": it closes the panel and the fight goes on (tap outside and the diya still do too).
+  function resumeBtn(el) {
+    el.insertAdjacentHTML("beforeend", '<button type="button" class="resume" data-resume>' + T("Resume ▶") + "</button>");
+    el.querySelector("[data-resume]").onclick = () => closeSheet();
   }
   const B_used = (ast) => ast.some((x) => x.why === K.tr("Used this battle"));
   // The panel takes exactly the controls' place (phones, touch screens); on a laptop, a corner under its button.
