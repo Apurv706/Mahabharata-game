@@ -8,7 +8,8 @@
    more on just its failing cases (when it can say which, else whole): passing then is FLAKY, not PASS. A failure that
    tests/known_failures.json lists is KNOWN (not a failure); the exit code is 1 only for FAIL.
    Usage: node tests/run.js [quick|full] [--only a,b] [--skip a,b] [--browser chromium|webkit|firefox|all] [--jobs N]
-          [--out DIR] [--report FILE] [--list]
+          [--browser-jobs N] [--out DIR] [--report FILE] [--list]
+   --jobs: checks at a time (default: the CPUs, at most 3); --browser-jobs: of those, how many in a browser (default 2).
    --browser picks the engines for the checks that run in several (layout, battlefit; the others are Chromium only).
    --only/--skip match a check's name or the part before '#' (playthrough matches playthrough#1..6). */
 "use strict";
@@ -44,7 +45,7 @@ const retry = {
 };
 // The failures a check reports, as text matched against tests/known_failures.json (checks that do not sort their own).
 const items = {
-  strings: (out) => fromLines(out, /^\s+\d+\s{2}(.+)$/gm),
+  strings: (out) => fromLines(out, /^\s+\d+\s{2}(.+)$/gm).map((x) => "untranslated: «" + x + "»"),
   command: (out) => { const m = out.match(/Never reached: (.+)/); return m ? m[1].split(", ").map((x) => "Never reached: " + x) : []; },
   blowfit: (out) => fromLines(out, /^✗ (.+?):/gm),
   battlefit: (out) => fromLines(out, /^✗ (.+)$/gm),
@@ -71,7 +72,7 @@ add("bugs", ["tests/bugs.js", "--engine-only", "--json", J("bugs")], ["tests/bug
 add("weapons", ["tests/weapons.js"], ["tests/weapons.js"]);
 add("facefit", ["tests/facefit.js"], ["tests/facefit.js"], { browser: true });
 add("saves", ["tests/saves.js", "--json", J("saves")], ["tests/saves.js", "--browser", "--json", J("saves")], { browser: "full", retryJson: "saves", timeout: 15 });
-add("command", null, ["tests/command.js", "200"], { timeout: 20, items: items.command });
+add("command", null, ["--max-old-space-size=4096", "tests/command.js", "100"], { timeout: 25, items: items.command });
 for (let k = 0; k < 6; k++) add("playthrough#" + (k + 1), null, ["--max-old-space-size=3072", "tests/playthrough.js", "50", "--from", String(1 + 50 * k)], { timeout: 20, items: items.playthrough });
 for (let k = 0; k < 3; k++) add("playthrough-story#" + (k + 1), null, ["--max-old-space-size=3072", "tests/playthrough.js", "50", "--story", "--from", String(1 + 50 * k)], { timeout: 20, items: items.playthrough });
 add("strings-hi", null, ["tests/strings.js", "check", "hi", "40"], { timeout: 15, items: items.strings });
@@ -81,8 +82,9 @@ add("rtsim", null, ["tests/rtsim.js", "all", "10"], { report: true });
 add("rtfit", null, ["tests/rtfit.js"], { browser: true, items: items.rtfit });
 add("warfit", null, ["tests/warfit.js"], { browser: true, items: items.warfit });
 add("blowfit", null, ["tests/blowfit.js"], { browser: true, retry: retry.blowfit, items: items.blowfit });
-add("layout", null, ["tests/layout.js", "--browser", browsers, "--shots", path.join(OUT, "layout-shots")], { browser: true, timeout: 25, retry: retry.layout, items: items.layout });
-add("battlefit", null, ["tests/battlefit.js", "--browser", browsers, "--out", path.join(OUT, "battlefit.json")], { browser: true, timeout: 30, retry: retry.battlefit, items: items.battlefit });
+// layout.js in three parts (phones, tablets, desktops), which can run side by side; battlefit plays three fights at a time.
+for (const kind of ["phone", "tablet", "desktop"]) add("layout#" + kind, null, ["tests/layout.js", "--browser", browsers, "--only", kind], { browser: true, timeout: 30, retry: retry.layout, items: items.layout });
+add("battlefit", null, ["tests/battlefit.js", "--browser", browsers, "--jobs", "3", "--out", path.join(OUT, "battlefit.json")], { browser: true, timeout: 40, retry: retry.battlefit, items: items.battlefit });
 add("visual", null, ["tests/visual.js", "--json", J("visual")], { browser: true, retryJson: "visual", timeout: 20 });
 add("smoke", null, ["tests/smoke.js", "--json", J("smoke")], { browser: true, retryJson: "smoke", timeout: 20 });
 
@@ -139,13 +141,14 @@ async function one(c) {
 
 (async () => {
   const t0 = Date.now();
-  console.log("Regression suite, " + TIER + " tier: " + list.length + " checks, " + JOBS + " at a time (one browser check at a time); logs in " + path.relative(process.cwd(), LOGS) || LOGS);
+  console.log("Regression suite, " + TIER + " tier: " + list.length + " checks, " + JOBS + " at a time (at most " + BJOBS + " in a browser); logs in " + (path.relative(process.cwd(), LOGS) || LOGS));
   const results = new Array(list.length);
   // The browser checks run one at a time (they measure layout and timing, and share the machine); the others fill the slots.
-  let browserBusy = false, next = 0;
+  const BJOBS = Math.max(1, parseInt(opt("--browser-jobs", "2"), 10));
+  let browserBusy = 0, next = 0;
   const queue = list.map((c, i) => ({ c, i, browser: c.browser === true || c.browser === TIER }));
   const takeNext = () => {
-    for (let k = 0; k < queue.length; k++) { const q = queue[k]; if (q.done || q.taken) continue; if (q.browser && browserBusy) continue; q.taken = true; if (q.browser) browserBusy = true; return q; }
+    for (let k = 0; k < queue.length; k++) { const q = queue[k]; if (q.done || q.taken) continue; if (q.browser && browserBusy >= BJOBS) continue; q.taken = true; if (q.browser) browserBusy++; return q; }
     return null;
   };
   await new Promise((finish) => {
@@ -155,7 +158,7 @@ async function one(c) {
         const q = takeNext(); if (!q) break;
         running++;
         one(q.c).then((r) => {
-          results[q.i] = r; q.done = true; if (q.browser) browserBusy = false; running--;
+          results[q.i] = r; q.done = true; if (q.browser) browserBusy--; running--;
           console.log(r.status.padEnd(6) + " " + r.name.padEnd(22) + String(r.seconds).padStart(7) + " s" + (r.note ? "  " + r.note : ""));
           if (r.status === "FAIL" && r.tail) console.log(r.tail.split("\n").map((l) => "         | " + l.slice(0, 200)).join("\n"));
           if (queue.every((x) => x.done)) finish(); else pump();

@@ -1,0 +1,78 @@
+# The regression suite (tests/run.js, tests/README.md).
+#   quick: every push and pull request (about 2 minutes on the runner): engine rules and random lives, content integrity,
+#          golden lives, balance bands on a small sample, the engine bug checks, one light browser check.
+#   full:  nightly and by hand (Actions > Regression > Run workflow): everything, in Chromium (the browser can be chosen
+#          when run by hand: chromium, webkit, firefox or all, for the checks that run in several).
+# Scheduled runs only fire from the repository's default branch (main): the nightly full tier starts once this file is
+# on main. Until then, run it by hand on any branch.
+# Reports (JSON), logs and the images of any visual difference are uploaded as artifacts.
+name: Regression
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "17 21 * * *" # nightly, 02:47 in India
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: "quick or full"
+        default: full
+        type: choice
+        options: [quick, full]
+      browser:
+        description: "browser engines for layout and battlefit"
+        default: chromium
+        type: choice
+        options: [chromium, webkit, firefox, all]
+concurrency:
+  group: regression-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  quick:
+    if: github.event_name == 'push' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.tier == 'quick')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm i --no-save playwright@1.63.0
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/run.js quick --out regress-out
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: regression-quick
+          path: regress-out
+          retention-days: 14
+  full:
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.tier != 'quick')
+    runs-on: ubuntu-24.04 # webkit needs 24.04 packages
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm i --no-save playwright@1.63.0
+      - name: Browsers
+        run: |
+          B="${{ inputs.browser || 'chromium' }}"
+          if [ "$B" = all ]; then npx playwright install --with-deps chromium webkit firefox; elif [ "$B" = chromium ]; then npx playwright install --with-deps chromium; else npx playwright install --with-deps chromium "$B"; fi
+      - run: node tests/run.js full --browser "${{ inputs.browser || 'chromium' }}" --out regress-out
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: regression-full
+          path: |
+            regress-out/report-full.json
+            regress-out/logs
+            regress-out/json
+            regress-out/visual
+            regress-out/battlefit.json
+          retention-days: 14
