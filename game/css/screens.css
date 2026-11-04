@@ -348,7 +348,7 @@ html.calm .bmap .m-ring, html.calm .journey { animation: none; }
 .trial-stats { margin: 0; font-size: 14px; color: var(--muted); }
 .trial .score { margin: 0; font-size: 15px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .trial .game-note { margin: 0; min-height: 1.4em; font-size: 16px; color: var(--ink); }
-.trial-press { min-height: 68px; min-width: min(280px, 100%); font-size: 21px; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+.trial-press { min-height: 68px; min-width: min(280px, 100%); font-size: 21px; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 .trial .btnrow { justify-content: center; }
 
 /* Aim: the target swings across a range; your line is the centre. */

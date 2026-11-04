@@ -5,6 +5,10 @@
 #rt { --hb: 0px; --bh: 58px; --pad: 8px; --gap: 8px; --side: 288px; --hp: #7fcfa6; --foe: #ff8a6e; --enemy: #ff7a3c; --scrim: rgba(26, 12, 9, 0.76); }
 #rt { height: 100%; margin: 0; overflow: hidden; }
 #rt { background: var(--ground) url("buti.svg") 0 0 / 88px 88px repeat; color: var(--ink); font: 16px/1.3 var(--text); -webkit-user-select: none; user-select: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; }
+/* No text selection, look-up bubble, copy menu or image callout when a control or the stage is held (iPhone long-press; hold-to-move and hold-to-Block). */
+#rt, #rt * { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+#rt img { -webkit-user-drag: none; }
+body.in-rt { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; overscroll-behavior: none; }
 html[lang="hi"] #rt { line-height: 1.4; }
 #rt button { font: inherit; color: inherit; cursor: pointer; margin: 0; }
 #rt :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }

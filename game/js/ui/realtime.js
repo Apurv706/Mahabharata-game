@@ -122,7 +122,15 @@
       const off = () => { if (!V) return; V.held[k] = false; b.classList.remove("held"); };
       b.addEventListener("pointerdown", on); b.addEventListener("pointerup", off); b.addEventListener("pointerleave", off); b.addEventListener("pointercancel", off);
       b.addEventListener("contextmenu", (e) => e.preventDefault());
+      // iPhone: a held touch would otherwise start a text selection or the look-up bubble.
+      b.addEventListener("touchstart", (e) => { if (e.cancelable) e.preventDefault(); on(e); }, { passive: false });
+      b.addEventListener("touchend", off); b.addEventListener("touchcancel", off);
     });
+    el.addEventListener("selectstart", (e) => e.preventDefault());
+    // A text field still focused from an earlier screen (the name on the character page, a save code) keeps the
+    // phone's keyboard bar and its autofill suggestions up over the fight: let it go.
+    const fe = document.activeElement;
+    if (fe && fe !== document.body && fe.matches && fe.matches("input, textarea, [contenteditable]")) fe.blur();
     // Mouse on a laptop: click the ground to walk, a foe to strike; right- or Shift-click rolls. Touch: a swipe changes row.
     V.stage.addEventListener("contextmenu", (e) => e.preventDefault());
     V.stage.addEventListener("pointerdown", (e) => {

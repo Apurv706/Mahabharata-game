@@ -121,6 +121,8 @@
       '<div class="sheet orders-sheet company-sheet" role="dialog" aria-label="' + esc(T("Company")) + '" hidden></div>' +
       '<div class="sheet aid-sheet dropdown" role="dialog" aria-label="' + esc(T("Aid")) + '" hidden></div></div>');
     document.body.appendChild(el);
+    el.addEventListener("selectstart", (e) => e.preventDefault()); // no text selection or look-up bubble on a held touch
+    { const fe = document.activeElement; if (fe && fe !== document.body && fe.matches && fe.matches("input, textarea, [contenteditable]")) fe.blur(); } // no keyboard bar left up from an earlier field
     document.body.classList.add("in-rt", "intest");
     V.el = el; V.stage = el.querySelector("#rt-stage"); V.world = el.querySelector("#rt-world"); V.tags = el.querySelector(".tags");
     const bg = U.FIGHT_BG && U.FIGHT_BG[enc.id];
