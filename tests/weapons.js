@@ -89,6 +89,8 @@ for (const side of ["pandava", "kaurava"]) {
       const spec = U.battleSpecFor({ side: sd, name: K.fmt ? K.fmt(d.name) : d.name, src: d.name, person: d.person || null }) || {};
       if (spec.thing) { rows.push("fight " + id + " · " + src + " → (a " + spec.thing + ")"); continue; }
       const held = spec.item || null;
+      // In a real-time fight he strikes with what he is drawn holding (RT.weaponOf: its reach, its blows; a bow only shoots).
+      if (K.RT && K.RT.isRealtime(e) && sd === "enemy") { const rw = K.RT.weaponOf({ side: sd, src: d.name, name: K.fmt ? K.fmt(d.name) : d.name, person: d.person || null }); if (held && rw !== held && !(held === "whip")) bad.push("fight " + id + " · " + src + ": drawn with " + fmt(held) + ", strikes in real time with " + rw); }
       const who = (d.person || "") + Object.keys(NAME_OF).find((k) => new RegExp("^(?:" + NAME_OF[k] + ")(?!'s)\\b").test(src));
       const named = Object.keys(NAME_OF).find((k) => d.person === k || new RegExp("^(?:" + NAME_OF[k] + ")(?!'s)\\b").test(src));
       if (named) check("fight " + id, src, held, CANON[named], "his own weapon");

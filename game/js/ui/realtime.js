@@ -37,17 +37,17 @@
     mace: '<svg viewBox="0 0 100 24" aria-hidden="true"><path d="M4 12 H70" stroke="#6b4422" stroke-width="4" stroke-linecap="round"/><ellipse cx="82" cy="12" rx="15" ry="10" fill="#d9a53a" stroke="#1d0f08" stroke-width="1.2"/></svg>',
     sword: '<svg viewBox="0 0 100 12" aria-hidden="true"><path d="M4 6 H20" stroke="#5a3418" stroke-width="4" stroke-linecap="round"/><path d="M20 3 L92 5 L98 6 L92 7 L20 9 Z" fill="#dcd7c8" stroke="#1d0f08" stroke-width="1"/></svg>'
   };
-  // Each unit as a puppet (a short form of ui/battle.js's specFor, which is private to that screen).
+  // Each unit as a puppet: you with the weapon you fight with (K.fightItem: a sword for the driver and the commander, the bow
+  // for the archer, no swap mid-fight) and your small shield on the mace and sword paths; everyone else as ui/battle.js draws
+  // him (one rule for every screen: tests/weapons.js holds RT.weaponOf to it).
   function specFor(u) {
-    if (u.side === "player") { const sp = K.puppetSpec(K.S); return C.hasShield && C.hasShield() ? Object.assign({}, sp, { gear: (sp.gear || []).filter((g) => g !== "shield").concat("buckler") }) : sp; } // a small shield on the mace and sword paths
+    if (u.side === "player") {
+      const sp = Object.assign({}, K.puppetSpec(K.S), { item: K.fightItem(K.S) });
+      if (C.hasShield && C.hasShield()) sp.gear = (sp.gear || []).filter((g) => g !== "shield").concat("buckler");
+      return sp;
+    }
+    if (U.battleSpecFor) return U.battleSpecFor(u);
     if (u.person && K.PUPPETS && K.PUPPETS[u.person]) return U.puppetFor(u.person);
-    const n = String(u.src || u.name);
-    if (/archer|chariot/i.test(n)) return { pronoun: "he", palette: ["#9e6a40", "#5d3b2a", "#9f8250"], headgear: "capfeather", hat: "#5d3b2a", gear: ["bracer"], item: "bow", stance: "archer", stage: "adult" };
-    if (/Gandharva/.test(n)) return { pronoun: "he", palette: ["#9fb07a", "#2f5a3a", "#d9c27a"], headgear: "feather", item: "spear", stage: "adult" };
-    if (/Ashwatthama/.test(n)) return { pronoun: "he", palette: ["#c9905a", "#3a2a3a", "#c9a24e"], headgear: "crown", crown: { gem: "#8a5aa0", tall: 0.95, trim: "#3a2a3a" }, gear: ["browgem"], item: "bow", stance: "hero", stage: "adult", size: 1.1 };
-    if (/Ugra/.test(n)) return U.puppetFor("ugra");
-    if (/club|raider|bandit/i.test(n)) return { pronoun: "he", palette: ["#9c6a42", "#6b5a3a", "#a8875a"], headgear: "scarf", hat: "#7a4a2a", gear: ["torn"], item: "club", stance: "stoop", stage: "adult", size: 0.9 };
-    if (/guard|bodyguard|captain|sentry/i.test(n)) return U.puppetFor("guard");
     return U.puppetFor("soldier");
   }
 
