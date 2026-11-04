@@ -422,6 +422,9 @@
       const tallKey = (t.stageTall && U.tallOf && U.tallOf(t.stageTall)) || (U.tallOf && U.tallOf(stage)); // a war painting is seen side on; upright, the course runs over one seen from above
       const vertical = !!(host.closest(".trial.immersive") && U.upright() && tallKey);
       let rivalEl = null, ME = null, RV = null;
+      // Upright, the rival runs ahead of you up the course or drops behind you down it, but always stays
+      // on it, at its top or foot when far ahead or far behind (his lead is on the bar below).
+      const rivalTop = (diff) => "clamp(4px, " + clamp(70 - diff * 6, -30, 130).toFixed(2) + "%, calc(100% - 104px))";
       if (vertical) {
         track.classList.add("vertical");
         track.style.backgroundImage = "url('" + U.artUrl(tallKey) + "')";
@@ -580,7 +583,7 @@
           const sp = still ? 0 : (v / base) * 3;
           drawChariot(ME, still ? 0 : dt, sp, s);
           if (RV) {
-            if (vertical) { rivalEl.style.left = RV.x + "%"; rivalEl.style.top = clamp(70 - diff * 6, -30, 130) + "%"; }
+            if (vertical) { rivalEl.style.left = RV.x + "%"; rivalEl.style.top = rivalTop(diff); }
             else { rivalEl.style.top = across(RV.x) + "%"; rivalEl.style.left = clamp(geo.meLeft + (geo.len - geo.rlen) / 2 + diff * 0.47 * geo.len, -2 * geo.len, geo.w + geo.len).toFixed(1) + "px"; }
             drawChariot(RV, still ? 0 : dt, still ? 0 : (o.rivalV * (R.rSlow > 0 ? 0.5 : 1) / base) * 3, s);
           }
@@ -597,7 +600,7 @@
             speedTag.hidden = !(R.boost > 0);
           }
           if (bowBtn) { bowBtn.classList.toggle("ready", R.bowCool <= 0 && R.inReach()); bowBtn.setAttribute("aria-disabled", String(R.bowCool > 0)); }
-        } else if (rivalEl) rivalEl.style.top = clamp(70 - diff * 6, -30, 130) + "%";
+        } else if (rivalEl) rivalEl.style.top = rivalTop(diff);
         pm.style.left = clamp(R.dist, 0, 100) + "%"; if (pr) pr.style.left = clamp(R.rival, 0, 100) + "%";
         tally();
         if (t.report) t.report(R); // a fight played as a race follows it (ui/fightmodes.js)

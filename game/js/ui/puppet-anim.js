@@ -9,8 +9,9 @@
    rig.set(pose, stiffness, damping, snap)  aim every joint at a pose from POSES
    rig.home()                               back to its own resting pose
    rig.kick({ joint: velocity })            a push on some joints (an impact)
-   rig.fallDown(floor, dir)                 the joints go slack and it topples about its feet, backward (dir 1: forward) (to the
-                                            ground, or held at floor degrees: Bhishma on the arrows)
+   rig.fallDown(floor, dir, onRest)         the joints go slack and it topples about its feet, backward (dir 1: forward) (to the
+                                            ground, or held at floor degrees: Bhishma on the arrows), letting go of its
+                                            weapon, which drops and lies beside it; onRest once it lies still
    U.rigFreeze(ms)                          hold every live figure still for a moment (hit-stop)
    U.rigs.clear()                           forget every figure (a new screen)
 
@@ -90,14 +91,7 @@
     this.g = {}; for (const k of JOINTS) this.g[k] = svg.querySelector("." + k);
     this.body = svg.querySelector(".pp-body"); this.itemEl = svg.querySelector(".it-w");
     this.bow = null;
-    const b = svg.querySelector(".it:not(.it-w)"), str = b && b.querySelector('path[d="M50 86 L50 166"]');
-    if (str) {
-      this.bow = b; this.string = str;
-      str.setAttribute("stroke-width", "1.1"); str.setAttribute("fill", "none");
-      b.style.transformBox = "view-box"; b.style.transformOrigin = "60.5px 126px";
-      b.insertAdjacentHTML("beforeend", '<g class="nock" opacity="0"><path d="M50 126 L80 126" stroke="#e6c98c" stroke-width="2.2"/><path d="M50 126 L80 126" stroke="#24120a" stroke-width=".5" opacity=".6"/><path d="M80 122.6 L87 126 L80 129.4 Z" fill="#dcd7c8" stroke="#24120a" stroke-width=".6"/><path d="M50 126 l-4 -3 M50 126 l-4 3" stroke="#c8402c" stroke-width="1.6"/></g>');
-      this.nock = b.querySelector(".nock");
-    }
+    this.takeBow(svg.querySelector(".it:not(.it-w)"));
     this.x = {}; this.v = {}; this.t = {};
     for (const k of KEYS) { this.x[k] = 0; this.v[k] = 0; this.t[k] = 0; }
     this.k = 480; this.z = 0.5; this.fall = 0; this.fallV = 0; this.falling = false; this.tremble = 0; this.pinned = 0;
@@ -105,6 +99,45 @@
     this.set(this.baseName, 480, 0.5, true);
     live.add(this); wake();
   }
+  // A bow in the hand: its string drawn back by "draw", an arrow nocked on it.
+  Rig.prototype.takeBow = function (b) {
+    const str = b && b.querySelector('path[d="M50 86 L50 166"]');
+    if (!str) return false;
+    this.bow = b; this.string = str;
+    str.setAttribute("stroke-width", "1.1"); str.setAttribute("fill", "none");
+    b.style.transformBox = "view-box"; b.style.transformOrigin = "60.5px 126px";
+    b.insertAdjacentHTML("beforeend", '<g class="nock" opacity="0"><path d="M50 126 L80 126" stroke="#e6c98c" stroke-width="2.2"/><path d="M50 126 L80 126" stroke="#24120a" stroke-width=".5" opacity=".6"/><path d="M80 122.6 L87 126 L80 129.4 Z" fill="#dcd7c8" stroke="#24120a" stroke-width=".6"/><path d="M50 126 l-4 -3 M50 126 l-4 3" stroke="#c8402c" stroke-width="1.6"/></g>');
+    this.nock = b.querySelector(".nock");
+    return true;
+  };
+  // For one move, the weapon that move is made with: a spearman who looses arrows takes up a bow, an
+  // archer who swings a heavy blow draws a sword; his own is put by (hidden) and taken back at home().
+  Rig.prototype.wield = function (kind) {
+    const fore = this.svg.querySelector(".pp-body .foreF");
+    if (!fore || !U.itemSvg || this.dropped) return this;
+    const own = fore.querySelector(":scope > .it:not(.it-tmp)"), now = this.tmp ? this.tmp.dataset.k : own ? own.dataset.k : null;
+    if (now === kind) return this;
+    this.unwield();
+    if (own && own.dataset.k === kind) { this.apply(); return this; } // his own weapon is the one: it is simply taken back
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    const wieldCls = { mace: 1, sword: 1, spear: 1, dagger: 1, club: 1 }[kind] ? " it-w" : "";
+    g.setAttribute("class", "it it-tmp" + wieldCls); g.dataset.k = kind;
+    g.innerHTML = U.itemSvg(kind);
+    if (own) { own.style.display = "none"; fore.insertBefore(g, own); } else fore.appendChild(g);
+    this.tmp = g; this.ownItem = own; this.ownBow = this.bow; this.ownItemEl = this.itemEl;
+    this.bow = null; this.itemEl = null;
+    if (kind === "bow") this.takeBow(g); else this.itemEl = wieldCls ? g : null;
+    this.apply();
+    return this;
+  };
+  Rig.prototype.unwield = function () {
+    if (!this.tmp) return this;
+    this.tmp.remove(); this.tmp = null;
+    if (this.ownItem) this.ownItem.style.display = "";
+    this.bow = this.ownBow; this.itemEl = this.ownItemEl;
+    if (this.bow) this.nock = this.bow.querySelector(".nock");
+    return this;
+  };
   Rig.prototype.set = function (name, k, z, snap) {
     const p = POSES[name] || POSES.stand;
     for (const key of KEYS) if (key !== "dx") this.t[key] = p[key] || 0;
@@ -113,10 +146,65 @@
     this.pose = name; wake();
     return this;
   };
-  Rig.prototype.home = function (k) { return this.set(this.baseName, k || 520, 0.42); };
+  Rig.prototype.home = function (k) { this.unwield(); return this.set(this.baseName, k || 520, 0.42); };
   Rig.prototype.base = function (name) { if (POSES[name]) this.baseName = name; return this; };
   Rig.prototype.kick = function (o) { for (const k in o) this.v[k] += o[k]; wake(); return this; };
-  Rig.prototype.fallDown = function (floor, dir) { this.set("slack"); this.falling = true; this.fallV = 140; this.floor = floor || -86; this.fdir = dir || -1; wake(); return this; };
+  Rig.prototype.fallDown = function (floor, dir, onRest) {
+    this.set("slack"); this.falling = true; this.fallV = 140; this.floor = floor || -86; this.fdir = dir || -1; this.onRest = onRest || null;
+    // A blow's push dies with the fall: it topples from where it stands, not on along the push.
+    this.v.rot = 0; this.v.tx = 0; this.v.dx = 0; this.t.dx = 0;
+    if (!floor || floor <= -80) this.letGo();
+    wake(); return this;
+  };
+  // Falling, the figure lets go of what it holds: the weapon (and a shield) leave the hand where they
+  // are, drop to the ground turning over, bounce once and lie flat beside the body, where a fresh
+  // drawing of the fallen figure (puppet.js, pose "dead") lays them too.
+  Rig.prototype.letGo = function () {
+    const all = this.svg.querySelector(".pp-all");
+    if (!all || this.drops || !all.getCTM || !U.itemLie) return;
+    this.unwield(); this.dropped = true; // what falls is his own weapon, not one taken up for a move
+    this.drops = [];
+    let inv; try { inv = all.getCTM().inverse(); } catch (e) { return; }
+    for (const it of this.svg.querySelectorAll(".pp-body .it[data-k]:not(.it-tmp), .pp-body .it-s")) {
+      const shield = it.classList.contains("it-s");
+      const to = shield ? U.shieldLie(+it.dataset.r || 13, this.fdir) : U.itemLie(it.dataset.k, this.fdir);
+      if (!to) continue;
+      let m; try { m = inv.multiply(it.getCTM()); } catch (e) { continue; }
+      // Where its centre is now, and how it is turned.
+      const from = { x: m.a * to.cx + m.c * to.cy + m.e, y: m.b * to.cx + m.d * to.cy + m.f, a: Math.atan2(m.b, m.a) * 180 / Math.PI };
+      const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      g.setAttribute("class", "it-down dropping" + (shield ? " it-s-down" : ""));
+      all.appendChild(g); g.appendChild(it);
+      it.style.transform = "none"; it.style.transformOrigin = ""; it.style.transformBox = "";
+      if (it === this.itemEl) this.itemEl = null;
+      if (it === this.bow) { this.bow = null; if (this.nock) this.nock.setAttribute("opacity", 0); }
+      // The nearest turn that lays it flat the right way round.
+      const a1 = to.a + 360 * Math.round((from.a - to.a) / 360);
+      this.drops.push({ g, to, from, a1, t: 0 });
+    }
+    if (!this.drops.length) this.drops = null;
+  };
+  const DROP = 0.5, SETTLE = 0.34;
+  Rig.prototype.stepDrops = function (dt) {
+    let busy = false;
+    for (const d of this.drops) {
+      if (d.t >= DROP + SETTLE) continue;
+      d.t = Math.min(DROP + SETTLE, d.t + dt); busy = true;
+      const to = d.to, x1 = to.cx + to.tx, y1 = to.cy + to.ty;
+      let x, y, a, sy;
+      if (d.t < DROP) { // falling under its weight, turning over as it goes
+        const u = d.t / DROP;
+        x = d.from.x + (x1 - d.from.x) * (1 - (1 - u) * (1 - u)); y = d.from.y + (y1 - d.from.y) * u * u;
+        const v = Math.min(1, u / 0.6); // it turns over high, before it reaches the ground: no end digs into it
+        a = d.from.a + (d.a1 - d.from.a) * (1 - Math.pow(1 - v, 3)); sy = 1 + (to.sy - 1) * v;
+      } else { // a small bounce and a rock, then flat
+        const v = (d.t - DROP) / SETTLE;
+        x = x1; y = y1 - Math.sin(v * Math.PI) * 5 * (1 - v); a = d.a1 + Math.sin(v * Math.PI * 2) * 5 * (1 - v); sy = to.sy;
+      }
+      d.g.setAttribute("transform", U.lieTransform({ cx: to.cx, cy: to.cy, tx: x - to.cx, ty: y - to.cy, a, sy }));
+    }
+    return busy;
+  };
   Rig.prototype.stop = function () { live.delete(this); };
   Rig.prototype.step = function (dt, time) {
     const c = 2 * this.z * Math.sqrt(this.k);
@@ -136,16 +224,18 @@
       this.v[k] += (-kk * (this.x[k] - tgt) - cc * this.v[k]) * dt; this.x[k] += this.v[k] * dt;
     }
     if (this.pinned) { this.x.legF = -18; this.x.shinF = 6; } // the pinned foot stays where the arrow holds it
+    if (this.drops) this.stepDrops(dt);
     if (this.falling) { // toppling about the feet, faster as it goes, a small bounce on the ground
       this.fallV += 2800 * Math.sin((Math.abs(this.fall) + 9) * Math.PI / 180) * dt; this.fall -= this.fallV * dt;
       const fl = this.floor || -86;
-      if (this.fall < fl) { this.fall = fl; this.fallV = -this.fallV * 0.22; if (Math.abs(this.fallV) < 8) this.fallV = 0; }
+      if (this.fall < fl) { this.fall = fl; this.fallV = -this.fallV * 0.22; if (Math.abs(this.fallV) < 8) { this.fallV = 0; if (this.onRest) { const f = this.onRest; this.onRest = null; setTimeout(f, 0); } } }
     }
     this.apply();
   };
   Rig.prototype.apply = function () {
     const x = this.x, fall = this.fall * -(this.fdir || -1), th = (x.rot + fall) * Math.PI / 180;
-    const ptx = fall ? 74 * Math.sin(th) : 0, pty = fall ? 74 - 74 * Math.cos(th) : 0;
+    // (lying, it rests on its side on the ground, not sunk into it: lifted by the body's half depth)
+    const ptx = fall ? 74 * Math.sin(th) : 0, pty = fall ? 74 - 74 * Math.cos(th) - 8 * Math.abs(Math.sin(fall * Math.PI / 180)) : 0;
     if (this.body) this.body.style.transform = "translate(" + (x.tx + ptx).toFixed(2) + "px," + (x.ty + pty).toFixed(2) + "px) rotate(" + (x.rot + fall).toFixed(2) + "deg)";
     for (const k in this.g) if (this.g[k]) this.g[k].style.transform = "rotate(" + x[k].toFixed(2) + "deg)";
     if (this.itemEl) this.itemEl.style.transform = "rotate(" + x.item.toFixed(2) + "deg)";
@@ -178,22 +268,31 @@
   U.RIG_POSES = POSES;
   U.wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
-  // A leather arrow flying from a to b (points inside host) along an arc; resolves on arrival with
-  // the arrow element (kept when stay is set, e.g. pinned in the ground).
+  // A leather arrow flying from a to b (points inside host; b may be a function, followed each frame)
+  // along an arc; resolves on arrival with the arrow element (kept when stay is set, e.g. pinned in the ground).
   const ARROW = '<svg viewBox="0 0 100 14" preserveAspectRatio="none"><path d="M0 1 L16 7 L0 13 L5 7 Z M7 1 L21 7 L7 13 L11 7 Z" fill="#c8402c" stroke="#24120a" stroke-width="1"/><rect x="9" y="5.2" width="77" height="3.6" rx="1" fill="#e6c98c" stroke="#24120a" stroke-width="1"/><path d="M84 3 L99 7 L84 11 L87 7 Z" fill="#dcd7c8" stroke="#24120a" stroke-width="1"/></svg>';
-  U.flyArrow = function (host, a, b, arc, ms, stay, len) {
+  // meta: who looses it at whom ({ from, to, kind }), kept on the arrow for the screen-fit check.
+  U.flyArrow = function (host, a, b, arc, ms, stay, len, meta) {
     return new Promise((res) => {
       const el = document.createElement("div"); el.className = "fly-arrow"; el.innerHTML = ARROW;
+      if (meta) for (const k in meta) el.dataset[k] = meta[k];
       if (len) { el.style.width = len + "px"; el.style.height = Math.max(5, len * 0.17) + "px"; }
       host.appendChild(el);
-      const w = el.offsetWidth, h = el.offsetHeight, t0 = performance.now();
-      const at = (t) => ({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t - arc * 4 * t * (1 - t) });
+      const w = el.offsetWidth, h = el.offsetHeight;
+      let t0 = 0; // its clock starts on the first frame it is drawn in, so it is first seen at the bow, never half way
+      // b may be a function: where the target is now, each frame (it does not hold still to be hit).
+      const to = typeof b === "function" ? b : () => b;
+      // a too: a function is followed for the first fifth of the flight (the bow, as the arrow leaves it).
+      let A = typeof a === "function" ? null : a;
+      const at = (t) => { const e = to(); return { x: A.x + (e.x - A.x) * t, y: A.y + (e.y - A.y) * t - arc * 4 * t * (1 - t) }; };
       const f = (now) => {
+        if (!t0) t0 = now;
+        if (typeof a === "function" && (!A || (now - t0) < ms * 0.2)) A = a(); // leaving the bow, it leaves from where the bow is (the archer still moving)
         const t = reduced() ? 1 : Math.min(1, (now - t0) / ms), p = at(t), q = at(Math.min(1, t + 0.02)), p0 = at(Math.max(0, t - 0.02));
         const ang = Math.atan2(q.y - p0.y, q.x - p0.x);
         el.style.transform = "translate(" + (p.x - w) + "px," + (p.y - h / 2) + "px) rotate(" + ang + "rad)";
         if (t < 1 && el.isConnected) requestAnimationFrame(f);
-        else { if (!stay) el.remove(); res(el); }
+        else { el.dispatchEvent(new CustomEvent("arrowland", { bubbles: true })); if (!stay) el.remove(); res(el); } // (heard by the screen-fit check, before it goes)
       };
       requestAnimationFrame(f);
     });

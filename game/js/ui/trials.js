@@ -515,7 +515,11 @@
       const dt = Math.min(0.033, last ? (nowMs - last) / 1000 : 0.016); last = nowMs;
       const k = u();
       if (face === "drill") {
-        const target = S.score * 24 * k;
+        // Ground given and taken, but never so much that a figure is pushed off the screen.
+        let target = S.score * 24 * k;
+        const ends = [meEl, ...foeEls].map((el) => el.getBoundingClientRect());
+        const lo = Math.min(...ends.map((q) => q.left)) - S.shove, hi = Math.max(...ends.map((q) => q.right)) - S.shove;
+        target = clamp(target, Math.min(0, 10 - lo), Math.max(0, innerWidth - 10 - hi));
         if (moving) { S.shoveV += (-90 * (S.shove - target) - 2 * 0.55 * Math.sqrt(90) * S.shoveV) * dt; S.shove += S.shoveV * dt; } else S.shove = target;
         cast.style.setProperty("--shove", S.shove.toFixed(1) + "px");
       }
