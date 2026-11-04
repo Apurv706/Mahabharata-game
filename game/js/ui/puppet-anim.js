@@ -105,7 +105,9 @@
     if (!str) return false;
     this.bow = b; this.string = str;
     str.setAttribute("stroke-width", "1.1"); str.setAttribute("fill", "none");
-    b.style.transformBox = "view-box"; b.style.transformOrigin = "60.5px 126px";
+    // Turned upright by an SVG transform about the grip (not a CSS transform with transform-box, which WebKit
+    // can pivot elsewhere and so fling the bow up beside the head).
+    b.style.transformBox = ""; b.style.transformOrigin = ""; b.style.transform = "";
     b.insertAdjacentHTML("beforeend", '<g class="nock" opacity="0"><path d="M50 126 L80 126" stroke="#e6c98c" stroke-width="2.2"/><path d="M50 126 L80 126" stroke="#24120a" stroke-width=".5" opacity=".6"/><path d="M80 122.6 L87 126 L80 129.4 Z" fill="#dcd7c8" stroke="#24120a" stroke-width=".6"/><path d="M50 126 l-4 -3 M50 126 l-4 3" stroke="#c8402c" stroke-width="1.6"/></g>');
     this.nock = b.querySelector(".nock");
     return true;
@@ -123,7 +125,7 @@
     const wieldCls = { mace: 1, sword: 1, spear: 1, dagger: 1, club: 1 }[kind] ? " it-w" : "";
     g.setAttribute("class", "it it-tmp" + wieldCls); g.dataset.k = kind;
     g.innerHTML = U.itemSvg(kind);
-    if (own) { own.style.display = "none"; fore.insertBefore(g, own); } else fore.appendChild(g);
+    if (own) { own.style.display = "none"; own.removeAttribute("transform"); fore.insertBefore(g, own); } else fore.appendChild(g); // the weapon put by is not drawn at all while another is out
     this.tmp = g; this.ownItem = own; this.ownBow = this.bow; this.ownItemEl = this.itemEl;
     this.bow = null; this.itemEl = null;
     if (kind === "bow") this.takeBow(g); else this.itemEl = wieldCls ? g : null;
@@ -175,7 +177,7 @@
       const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
       g.setAttribute("class", "it-down dropping" + (shield ? " it-s-down" : ""));
       all.appendChild(g); g.appendChild(it);
-      it.style.transform = "none"; it.style.transformOrigin = ""; it.style.transformBox = "";
+      it.style.transform = "none"; it.style.transformOrigin = ""; it.style.transformBox = ""; it.removeAttribute("transform");
       if (it === this.itemEl) this.itemEl = null;
       if (it === this.bow) { this.bow = null; if (this.nock) this.nock.setAttribute("opacity", 0); }
       // The nearest turn that lays it flat the right way round.
@@ -241,7 +243,7 @@
     if (this.itemEl) this.itemEl.style.transform = "rotate(" + x.item.toFixed(2) + "deg)";
     if (this.bow) {
       const up = -(x.rot + fall + x.armF + x.foreF) + x.tilt; // undo the arm's turn: the bow stays upright
-      this.bow.style.transform = "rotate(" + up.toFixed(2) + "deg)";
+      this.bow.setAttribute("transform", "rotate(" + up.toFixed(2) + " 60.5 126)");
       const d = Math.max(-4, x.draw * 30); // the string's nocking point, pulled back
       this.string.setAttribute("d", "M50 86 L" + (50 - d).toFixed(2) + " 126 L50 166");
       this.nock.setAttribute("transform", "translate(" + (-Math.max(0, d)).toFixed(2) + " 0)");

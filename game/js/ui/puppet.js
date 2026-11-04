@@ -439,7 +439,7 @@
       (gear("sash") ? '<path d="M50 72 L70 106" stroke="' + (spec.hat || trim) + '" stroke-width="3"/>' : "") +
       (gear("cuirass") ? '<path d="M50 74 Q60 68 70 74 L69 104 Q60 108 51 104 Z" fill="#7a5a3a"' + OUT + '/><path d="M52 84h16M52 94h16" stroke="' + trim + '" stroke-width="1.2"/>' + holeRow("M52.6 89 H67.4", "#7a5a3a", 2.6) : "") +
       (gear("scale") ? SCALE : "") + (gear("waterpot") ? KAMANDALU : "");
-    const backItem = (spec.heir === "bow" && spec.item !== "bow" ? '<path d="M46 74 Q34 98 46 122" fill="none" stroke="#5a3418" stroke-width="2.4"/><path d="M46 74 L46 122" stroke="#efe2c0" stroke-width="0.6"/>' : "") +
+    const backItem = (spec.heir === "bow" && spec.item !== "bow" ? '<g class="it-back"><path d="M46 74 Q34 98 46 122" fill="none" stroke="#5a3418" stroke-width="2.4"/><path d="M46 74 L46 122" stroke="#efe2c0" stroke-width="0.6"/></g>' : "") +
       // An archer's quiver over the shoulder; a healer's satchel at the hip.
       (spec.item === "bow" ? '<path d="M44 76 L52 74 L50 104 L44 105 Z" fill="#7a4a24"' + OUT + '/><path d="M46 76 L45 66 M48.5 75.5 L48 65 M51 75 L51 64" stroke="#efe2c0" stroke-width="1.2"/><path d="M45 66l1.6-3 1.4 3M47.5 65l1.6-3 1.4 3M50 64l1.6-3 1.4 3" fill="#b2432a" stroke="none"/>' : "") +
       (spec.item === "bowl" ? '<path d="M70 104 L80 104 L81 116 L69 116 Z" fill="#8a6a3a"' + OUT + '/><path d="M70 104 Q75 100 80 104" fill="none" stroke="#5a3418" stroke-width="1.4"/><path d="M50 73 L76 104" stroke="#5a3418" stroke-width="1.2"/>' : "");

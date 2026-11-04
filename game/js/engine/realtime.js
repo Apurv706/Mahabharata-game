@@ -89,6 +89,8 @@
   // Shields on the turns (C.SHIELD_PATHS, the shield wall, your company's raised shields, a foe's shield turning a blow)
   // and packs (three or more foes come two at a time): the new war-day screen's rules (off only under the test-only oldFights override).
   C.shieldsWanted = (enc) => plainTurns(enc);
+  // Sparing a kneeling foe takes him out of the fight and the fight goes on (combat.js C.spare), on the new screens.
+  C.spareGoesOn = () => !RT.old();
   C.packsWanted = (enc, B) => plainTurns(enc) && B.units.filter((u) => u.side === "enemy").length >= 3;
 
   // The skill each path brings to a live fight (from its turn-based moves).
@@ -98,7 +100,7 @@
   const RANGED = new Set(["arrows", "aimed", "pin", "volley"]);
   const HEAVY = new Set(["heavy", "crush", "breaker", "aimed"]);
 
-  const living = (B, side) => B.units.filter((u) => u.hp > 0 && (side === "friends" ? u.side !== "enemy" : u.side === side));
+  const living = (B, side) => B.units.filter((u) => u.hp > 0 && !u.spared && (side === "friends" ? u.side !== "enemy" : u.side === side));
   const held = (u) => !!(u.status.stun || u.status.asleep || u.status.bound);
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const sign = (v) => (v < 0 ? -1 : 1);
@@ -248,7 +250,7 @@
       }
     }
     if (a.withdraw && C.canFlee()) { C.flee(); return; }
-    if (a.spare) { const t = RT.spareable(R).find((e) => e.uid === a.spare); if (t) { C.spare(t.uid); return; } }
+    if (a.spare) { const t = RT.spareable(R).find((e) => e.uid === a.spare); if (t) { if (t.rt.atk) cancel(R, t); C.spare(t.uid); R.fx.push({ k: "spared", uid: t.uid }); return; } }
     if (held(p) || R.frozen > 0) return;
     if (a.call && RT.can(R, "call")) { C.core.use(p, "call", null); R.fx.push({ k: "call" }); }
     if (a.astra) {

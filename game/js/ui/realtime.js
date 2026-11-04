@@ -49,6 +49,18 @@
 
   let V = null; // the screen's state while a fight is on
   U.rtScreen = () => V; // for the fit checks and screenshots
+  // A foe kneeling and asking for mercy (C.spareable): "Mercy!" over him, an open hand, and the "Spare" hint when
+  // he can be spared now (in reach, or on the turns); "Spared" once he is (the fight goes on). Shared with ui/warday.js.
+  // state: "ask" (tap to spare), "far" (step closer), "spared", or "" (none).
+  U.pleaTag = function (el, state, onSpare) {
+    let t = el.querySelector(":scope > .plea");
+    if ((t ? t.dataset.s : "") === state) return;
+    if (!state) { if (t) t.remove(); return; }
+    if (!t) { t = document.createElement("span"); t.className = "plea"; el.appendChild(t); t.addEventListener("pointerdown", (e) => { e.stopPropagation(); }); t.addEventListener("click", (e) => { e.stopPropagation(); if (t.dataset.s === "ask" && t._spare) t._spare(); }); }
+    t._spare = onSpare; t.dataset.s = state;
+    t.innerHTML = state === "spared" ? "<b>" + U.esc(U.tr("Spared")) + "</b>" : '<b>' + U.esc(U.tr("Mercy!")) + "</b>" + (state === "ask" ? '<i role="button">' + U.esc(U.tr("Spare")) + "</i>" : "");
+    t.setAttribute("aria-label", state === "spared" ? U.tr("Spared") : U.tr("Mercy!") + (state === "ask" ? " " + U.tr("Spare") : ""));
+  };
 
   U.startRealtime = function (encId, onEnd) {
     if (V) stop();
@@ -135,7 +147,7 @@
     const G = V.G; if (!G) return null;
     let best = null, bd = 1e9;
     V.actors.forEach((a) => {
-      const u = a.u; if (u.side !== "enemy" || u.hp <= 0 || !u.rt || !u.rt.entered || a.x == null) return;
+      const u = a.u; if (u.side !== "enemy" || u.hp <= 0 || u.spared || !u.rt || !u.rt.entered || a.x == null) return;
       const hw = Math.max(a.bw * 0.7, 22), foot = G.H - a.gy, d = Math.abs(px - a.x);
       if (d <= hw && py >= foot - a.fh * 1.05 && py <= foot + 10 && d < bd) { bd = d; best = u.uid; }
     });
@@ -438,6 +450,7 @@
     const R = V.R, B = R.B, G = V.G; if (!G) return;
     const p = C.player();
     if (Math.floor(R.t / 10) !== V.tagTick && V.actors.size) { V.tagTick = Math.floor(R.t / 10); nameTagsAll(2); } // at the start and every 10 s, for 2 s
+    const pleading = C.spareable(), inReach = RT.spareable(R); // a kneeling foe asks for mercy (C.spare)
     for (const u of B.units) {
       if (!u.rt) continue;
       const a = actorFor(u);
@@ -462,6 +475,7 @@
         if (up !== !!a.shieldUp) { a.shieldUp = up; if (up) pose(a, "guard", 900, 0.55); else home(a, 250); a.el.classList.toggle("shield-up", up); }
       }
       a.el.classList.toggle("beaten", !!u.rt.beaten);
+      if (u.side === "enemy") U.pleaTag(a.el, u.spared ? "spared" : u.hp > 0 && pleading.includes(u) ? (inReach.includes(u) ? "ask" : "far") : "", () => { V.queue.spare = u.uid; });
       const m = a.el.querySelector(".mini b"); if (m) m.style.width = Math.max(0, u.hp / u.maxHp * 100) + "%";
     }
     V.actors.forEach((a, uid) => { if (!B.units.includes(a.u)) { if (a.tag) a.tag.remove(); a.el.style.transition = "opacity .6s"; a.el.style.opacity = "0"; setTimeout(() => a.el.remove(), 600); V.actors.delete(uid); } });
@@ -537,6 +551,7 @@
         if (f.heavy) nameTag(a, 1.2);
         if (K.Sound) K.Sound.play("hit");
         break; }
+      case "spared": { const a = A(f.uid); if (a) { pose(a, "kneel", 600, 0.6); a.el.classList.add("beaten", "spared"); } toast(K.tr("Spared. The fight goes on.")); break; }
       case "brace": { const a = A(f.uid); if (a && a.u.hp > 0) { pose(a, "guard", 900, 0.55); U.guardFlash(a.svg, 1300); if (!a.shieldUp) home(a, 1200); } break; } // braces for your next blow
       case "heal": { const a = A(f.uid); if (a) pop(a, "+", "heal"); break; }
       case "spark": { // a blow taken on a shield: sparks fly from it, and it is raised for a moment

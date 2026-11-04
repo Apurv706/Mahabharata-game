@@ -197,7 +197,23 @@ function pageHelpers() {
     rec.end = tipOf(n);
     rec.body = el ? boxOf(el.querySelector("svg.pp"), true) : null;
   }, true);
-  window.__fit = { actors, watch, overlaps, boxOf };
+  // A weapon put by or carried on the back (Rig.wield hides the one put by; a slung bow is thin, at the back):
+  // never drawn beside the weapon in hand, never more than 60% of the figure high, never above the head.
+  function stowed() {
+    const out = [];
+    for (const svg of document.querySelectorAll(".actor svg.pp")) {
+      const head = svg.querySelector(".head"), body = svg.querySelector(".pp-body");
+      if (!head || !body || svg.classList.contains("dead")) continue;
+      const hb = head.getBoundingClientRect(), fh = svg.getBoundingClientRect().height, who = (svg.closest(".actor") || {}).dataset || {};
+      if (!fh || !hb.height) continue;
+      const vis = (g) => { for (let n = g; n && n !== svg; n = n.parentNode) { const cs = getComputedStyle(n); if (cs.display === "none" || cs.visibility === "hidden" || +cs.opacity === 0) return false; } return true; };
+      const items = [...body.querySelectorAll(".it")].filter(vis);
+      if (items.some((g) => g.classList.contains("it-tmp")) && items.length > 1) out.push((who.uid || "?") + ": a weapon put by is drawn beside the one in hand (" + items.map((g) => g.dataset.k).join(", ") + ")");
+      for (const g of [...body.querySelectorAll(".it-back")].filter(vis)) { const b = g.getBoundingClientRect(); if (b.height > fh * 0.6 || b.top < hb.top - 2) out.push((who.uid || "?") + ": a weapon on the back drawn " + Math.round(b.height / fh * 100) + "% of the figure high" + (b.top < hb.top - 2 ? ", above the head" : "")); }
+    }
+    return out;
+  }
+  window.__fit = { actors, watch, overlaps, boxOf, stowed };
 }
 
 // ---------- Driving a fight ----------
@@ -207,7 +223,8 @@ const EARLY = { e_dream: [9, 1], e_ugra: [15, 2], e_spar: [17, 2], e_panchala: [
 function setup(id, side, path) {
   const S = K.S = K.newLife({ name: "Asha" });
   const [age, act] = window.__EARLY[id] || [44, 6];
-  Object.assign(S, { origin: "panchala", pronoun: "she", heirloom: "amulet", temperament: "bold", teacher: "drona", path: path || "mace", age, act, side: side || "pandava", at: "hastinapura" });
+  Object.assign(S, { origin: "panchala", pronoun: "she", heirloom: "bow", // the old bow slung on the back (puppet.js .it-back), held to the stowed-weapon check
+    temperament: "bold", teacher: "drona", path: path || "mace", age, act, side: side || "pandava", at: "hastinapura" });
   S.briefed = window.__MODES.slice(); S.fightTour = 1; S.storyMode = true;
   S.flags.push("role_command");
   try { K.go(act >= 6 ? "a6_capture" : "a2_trial"); } catch (e) { /* the scene is only a frame for the fight */ }
@@ -230,6 +247,7 @@ async function runFight(page, id, o, rec, shot) {
     if (r.last) {
       for (const a of r.last.list) if (!a.down && a.side !== "prop" && (!a.box || a.op < 0.2)) probs.push(a.uid + " (" + a.side + ") cannot be seen" + (a.box ? " (opacity " + a.op.toFixed(2) + ")" : " (no size)"));
       const ov = await ev((s) => window.__fit.overlaps(s), r.last);
+      for (const w of await ev(() => window.__fit.stowed())) probs.push(w);
       for (const v of ov) if (v.share > OVERLAP) probs.push(v.a + " and " + v.b + " (" + v.sides + ") overlap: " + Math.round(v.share * 100) + "% of " + v.a + " hidden behind " + v.b + " (" + v.boxes + ")");
     }
     // The arrows loosed in this moment.
@@ -314,6 +332,10 @@ async function runFight(page, id, o, rec, shot) {
     await ev(() => { const B = K.Combat.state(); if (B && !B.over) B.units.filter((u) => u.side === "enemy" && u.hp > 0).forEach((u) => { u.hp = u.maxHp; }); });
     await act({ ids: [shot], heal: true }); await look("archer: " + shot, 1300);
   }
+  // A heavy blow as an archer: a sword drawn for it (Rig.wield), the bow put by and not drawn at all.
+  if (await ev(() => { const B = K.Combat.state(), p = K.Combat.player(); if (!B || B.over || B.mode || !p) return false; if (!p.abilities.includes("heavy")) p.abilities.push("heavy"); p.cds.heavy = 0; return true; })) {
+    await act({ ids: ["heavy"], heal: true }); await look("archer: a sword drawn", 900);
+  }
   for (let i = 0; i < 14; i++) {
     const over = await ev(() => { const B = K.Combat.state(); if (!B || B.over) return true; const p = K.Combat.player(); p.hp = 1; p.def = 0; B.units.filter((u) => u.side === "enemy" && u.hp > 0).forEach((u) => { u.hp = u.maxHp; u.atk = 999; }); B.units.filter((u) => u.side === "ally").forEach((u) => { u.status.taunt = 0; delete u.status.taunt; }); return false; });
     if (over) break;
@@ -336,7 +358,7 @@ async function runCombo(pw, bname, d, base, fights, report) {
     await page.goto(base + "/");
     await page.waitForFunction(() => window.K && K.UI && K.UI.renderScene);
     await page.addStyleTag({ content: `:root{--sat:${d.sat}px!important;--sab:${d.sab}px!important}` });
-    await page.evaluate(([early, modes, setupSrc]) => { localStorage.clear(); K.prefs({ gradual: true, beats: false, sound: false, timed: false, living: false }); window.__EARLY = early; window.__MODES = modes; window.__setup = eval("(" + setupSrc + ")"); }, [EARLY, MODES, setup.toString()]);
+    await page.evaluate(([early, modes, setupSrc]) => { localStorage.clear(); K.prefs({ oldFights: true, gradual: true, beats: false, sound: false, timed: false, living: false }); window.__EARLY = early; window.__MODES = modes; window.__setup = eval("(" + setupSrc + ")"); }, [EARLY, MODES, setup.toString()]);
     await page.evaluate("(" + pageHelpers.toString() + ")()");
     while (queue.length) {
       const id = queue.shift(), rec = [];

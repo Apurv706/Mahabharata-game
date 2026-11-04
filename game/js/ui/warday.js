@@ -185,7 +185,7 @@
   }
   function bodies() {
     const B = V.B, out = { friend: [], foe: [] };
-    const friends = B.units.filter((u) => u.side !== "enemy" && !u.still), foes = B.units.filter((u) => u.side === "enemy" && !u.away && !u.still);
+    const friends = B.units.filter((u) => u.side !== "enemy" && !u.still), foes = B.units.filter((u) => u.side === "enemy" && (!u.away || u.spared) && !u.still); // a spared foe kneels where he was
     const persons = friends.filter((u) => !isP(u) && !isCompany(u)), comp = friends.filter(isCompany);
     const nF = 1 + persons.length + comp.length;
     const per = (u) => (nF + comp.length <= 4 ? 2 : 1);
@@ -596,7 +596,7 @@
   }
   const figsFriends = () => [...V.figs.values()].filter((f) => f.side === "friend" && !f.dead);
   function pose(f, p, k, z) { if (!f) return; if (f.rig) f.rig.set(p, k || 900, z == null ? 0.5 : z); else f.svg.setAttribute("class", f.svg.getAttribute("class").replace(/\bpose-\S+/, "pose-" + ({ windup: "strike", ready: "brace", bowready: "brace", draw: "aim", drawUp: "aim", looseUp: "loose", guard: "block", fall: "dead" }[p] || p))); }
-  function home(f, ms) { setTimeout(() => { if (!V || !f || f.dead) return; if (f.walled) return; if (f.rig) f.rig.set(f.base, 520, 0.42); else pose(f, isP(f.u) ? "brace" : "stand"); }, ms || 0); }
+  function home(f, ms) { setTimeout(() => { if (!V || !f || f.dead) return; if (f.walled) return; if (f.mercy) return pose(f, "kneel", 600, 0.6); if (f.rig) f.rig.set(f.base, 520, 0.42); else pose(f, isP(f.u) ? "brace" : "stand"); }, ms || 0); }
   function pop(f, text, cls) {
     const el = document.createElement("span"); el.className = "pop " + (cls || ""); el.textContent = text;
     el.style.left = f.x + "px"; el.style.bottom = (f.gy + f.fh * 1.08) + "px"; V.world.appendChild(el);
@@ -647,6 +647,13 @@
     while (V.logAt < B.log.length) { const e = B.log[V.logAt++]; if (e && (e.raw || e.ev)) toast(C.line(e)); }
     B.units.forEach((u) => { V.hp[u.uid] = u.hp; });
     V.figs.forEach((f) => { if (!f.dead && aliveBodies(f.u) === 0) falls(f.u); });
+    // A foe kneeling and asking for mercy (C.pleads): "Mercy!" and the Spare hint over him (a tap spares him); spared, he kneels on.
+    V.figs.forEach((f) => {
+      if (f.side !== "foe" || f.dead) return;
+      const u = f.u, st = u.spared ? "spared" : C.pleads(u) ? "ask" : "";
+      if (st !== (f.mercy || "")) { f.mercy = st; f.el.classList.toggle("beaten", !!st); f.el.classList.toggle("spared", st === "spared"); if (st) pose(f, "kneel", 600, 0.6); else home(f, 0); }
+      U.pleaTag(f.el, st, () => move("spare", u.uid));
+    });
     // The shield wall stays up for the round.
     const walled = B.units.some((u) => u.side !== "enemy" && u.status.wall && u.hp > 0);
     figsFriends().forEach((f) => { if (walled && !f.walled) { f.walled = true; pose(f, "guard", 700, 0.6); } else if (!walled && f.walled) { f.walled = false; home(f, 0); } });

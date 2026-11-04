@@ -650,3 +650,12 @@ html.calm #rt.war .stage.champ .wd-flash { opacity: 0; }
 #rt .ax.k-generic .ax-wave { background: radial-gradient(ellipse at 60% 100%, rgba(255, 255, 255, 0.95), rgba(255, 240, 200, 0.85) 30%, rgba(255, 210, 130, 0.55) 55%, rgba(200, 160, 90, 0) 75%); }
 #rt .scorch.k-varuna { background: radial-gradient(closest-side, rgba(30, 50, 90, 0.6), rgba(60, 110, 180, 0.3) 60%, rgba(0, 0, 0, 0)); }
 #rt .scorch.k-sammohana { background: radial-gradient(closest-side, rgba(70, 30, 110, 0.55), rgba(120, 60, 170, 0.25) 60%, rgba(0, 0, 0, 0)); }
+
+/* A foe kneeling and asking for mercy (U.pleaTag): "Mercy!" with an open hand over him, and the Spare hint to tap. */
+#rt .actor .plea { position: absolute; left: 0; bottom: calc(var(--fh) * 0.8); transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px; z-index: 6; pointer-events: auto; white-space: nowrap; }
+#rt .actor .plea b { font: 700 15px/1.1 var(--text); color: #fff4d6; background: rgba(40, 22, 10, 0.82); border: 1px solid rgba(255, 220, 150, 0.7); border-radius: 12px; padding: 4px 9px; text-shadow: 0 1px 2px #000; }
+#rt .actor .plea i { font: 700 14px/1 var(--text); font-style: normal; color: #1d0f08; background: #f2c25a; border-radius: 999px; padding: 8px 14px; min-height: 30px; box-sizing: border-box; display: inline-flex; align-items: center; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5); cursor: pointer; }
+#rt .actor .plea i::before { content: "\270B\FE0E"; margin-right: 6px; }
+#rt .actor .plea[data-s="spared"] b { background: rgba(30, 50, 30, 0.8); border-color: rgba(170, 220, 160, 0.7); }
+#rt .actor.spared svg.pp { filter: grayscale(0.4) brightness(0.85) drop-shadow(0 4px 4px rgba(0, 0, 0, 0.6)); opacity: 0.9; }
+#rt .actor.face-l .plea { transform: translateX(-50%); }

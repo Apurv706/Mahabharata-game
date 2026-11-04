@@ -313,7 +313,7 @@
     if (u.side === "enemy" && ab.target === "enemy" && p && (p.hp / p.maxHp < 0.4 || (recent.length && recent[recent.length - 1].id === "herbs")) && K.rng() < 0.85) t = p;
     return { id, uid: t ? t.uid : null };
   }
-  function planAll() { for (const e of B.units) { if (e.side === "enemy" && e.hp > 0) e.intent = decide(e); else delete e.intent; } }
+  function planAll() { for (const e of B.units) { if (e.side === "enemy" && e.hp > 0 && !e.spared && !C.pleads(e)) e.intent = decide(e); else delete e.intent; } }
   function aiTurn(u) {
     const it = u.intent;
     delete u.intent;
@@ -375,6 +375,13 @@
   function finish(outcome) {
     B.over = outcome;
     const p = C.player();
+    // Foes spared while the fight went on (C.spare): the spare branch's fx once if the fight was won, and each one
+    // counts for the vow never to strike the unarmed (K.combatOutcome counts the one of a "spare" ending).
+    if (B.spared && (outcome === "win" || outcome === "spare")) {
+      if (outcome === "win" && B.enc.spare && B.enc.spare.fx) K.apply(B.enc.spare.fx);
+      const extra = B.spared - (outcome === "spare" ? 1 : 0);
+      if (extra > 0 && K.hasVow && K.hasVow("spare_unarmed", K.S)) K.S.spared = (K.S.spared || 0) + extra;
+    }
     if (K.friendAfter) K.friendAfter(B);
     // A fight won on your last legs can leave a mark for life: any wound in a deadly fight, a scar in
     // any other.
@@ -438,7 +445,9 @@
     B.defNow = null;
   }
   // The enemies who move this round: in a break-through, only the one in the lane you took.
-  const acting = () => living("enemy").filter((u) => !(B.rule && B.rule.skip && B.rule.skip(B, u)));
+  // A foe who kneels and asks for mercy (C.pleads, on the new screens) fights no more, as in real time.
+  C.pleads = (u) => !!(B && u && u.side === "enemy" && u.hp > 0 && !u.spared && B.enc.spare && C.spareGoesOn && C.spareGoesOn(B) && (u.hp <= u.maxHp * 0.3 || u.status.asleep || u.status.bound));
+  const acting = () => living("enemy").filter((u) => !(B.rule && B.rule.skip && B.rule.skip(B, u)) && !C.pleads(u));
   function roundEnd() {
     endRound();
     if (over()) return;
@@ -462,7 +471,7 @@
     if (!B || B.over || !B.queue) return null;
     while (B.queue.length) {
       const u = B.units.find((x) => x.uid === B.queue[0]);
-      if (u && u.hp > 0) return { u, threat: C.threat(u) };
+      if (u && u.hp > 0 && !u.spared && !C.pleads(u)) return { u, threat: C.threat(u) };
       B.queue.shift();
     }
     return null;
@@ -572,11 +581,21 @@
   };
   // A foe asleep under the Sammohana or bound in the Nagapasha can be spared whole: capture, not a kill.
   C.spareable = () => (B && B.enc.spare && !B.over ? living("enemy").filter((e) => e.hp <= e.maxHp * 0.3 || e.status.asleep || e.status.bound) : []);
+  // Only a foe who kneels and asks for it (C.spareable: beaten to 30% or less, or asleep or bound, in a fight where
+  // sparing is allowed); the screens draw him kneeling, pleading, with the "Spare" hint. On the new screens
+  // (C.spareGoesOn, engine/realtime.js) the fight goes on: the spared foe kneels out of it (u.spared, u.away) and
+  // the others fight on; it ends when every foe is down or spared: all spared, the fight's "spare" branch; any
+  // killed, "win", with the spare branch's fx applied once (finish). Each spared foe counts for the vow never to
+  // strike the unarmed. On the old screen (the test-only oldFights override) sparing one ends the fight, as before.
   C.spare = function (uid) {
     const t = C.spareable().find((e) => e.uid === uid);
-    if (!t) return;
+    if (!t) return false;
     api.tell("You lower your weapon and let {t} go.", { t });
-    finish("spare");
+    if (!(C.spareGoesOn && C.spareGoesOn(B))) { finish("spare"); return true; }
+    t.spared = true; t.away = true; t.status = {}; B.spared = (B.spared || 0) + 1;
+    if (living("enemy").length || nextPack()) { K.emit("combat", B); return true; }
+    finish(B.units.some((u) => u.side === "enemy" && u.hp <= 0) ? "win" : "spare");
+    return true;
   };
   // A fight played live by the screen (B.mode) ends here: its outcome, and how many rounds it stood for.
   C.settle = function (outcome, rounds) {

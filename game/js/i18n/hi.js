@@ -4648,6 +4648,8 @@
     "You reached the tunnel with {c} carried out.": "तुम {c} लोगों को उठाकर सुरंग तक पहुँचे।",
     "The light falls on you. You freeze, and lose your place on the line.": "रोशनी तुम पर पड़ती है। तुम ठिठक जाते हो, और लकीर पर अपनी जगह खो देते हो।",
     "You cut {c} of {n} oil lines before you had to go.": "जाने से पहले तुमने {n} में से {c} तेल की लकीरें काटीं।",
+    "Mercy!": "दया!",
+    "Spared. The fight goes on.": "छोड़ दिया। लड़ाई जारी है।",
     "Move by either die. A ladder's virtue saves you from one snake. First to thirty-six wins.": "किसी भी एक पासे से चलो। सीढ़ी का गुण तुम्हें एक साँप से बचाता है। जो पहले छत्तीस पर पहुँचे, वह जीते।",
     "Move by either die. A ladder's virtue saves you from one snake. Reach the top first.": "किसी भी एक पासे से चलो। सीढ़ी का गुण तुम्हें एक साँप से बचाता है। सबसे पहले ऊपर पहुँचो।",
     "Look where both dice land before you choose. A karma square swaps you with the other player.": "चुनने से पहले देखो कि दोनों पासे कहाँ उतरते हैं। कर्म का खाना तुम्हारी और दूसरे खिलाड़ी की जगह बदल देता है।",
