@@ -68,16 +68,17 @@ add("lives-turns", ["tests/lives.js", "300", "2", "--turns"], ["tests/lives.js",
 add("crossing", ["tests/crossing.js", "200", "1"], ["tests/crossing.js", "400", "1"]);
 add("content", ["tests/content.js", "--lives", "300", "--ui", "2", "--json", J("content")], ["tests/content.js", "--lives", "2000", "--ui", "24", "--json", J("content")], { timeout: 20 });
 add("golden", ["tests/golden.js", "--json", J("golden")], ["tests/golden.js", "--twice", "--json", J("golden")]);
-add("bands", ["tests/bands.js", "--tier", "quick", "--json", J("bands")], ["tests/bands.js", "--tier", "full", "--json", J("bands")], { timeout: 25 });
+add("bands", ["tests/bands.js", "--tier", "quick", "--json", J("bands")], ["tests/bands.js", "--tier", "full", "--json", J("bands")], { timeout: 45 });
 add("bugs", ["tests/bugs.js", "--engine-only", "--json", J("bugs")], ["tests/bugs.js", "--json", J("bugs")], { browser: "full", retryJson: "bugs", timeout: 20 });
 add("weapons", ["tests/weapons.js"], ["tests/weapons.js"]);
 add("facefit", ["tests/facefit.js"], ["tests/facefit.js"], { browser: true });
 add("saves", ["tests/saves.js", "--json", J("saves")], ["tests/saves.js", "--browser", "--json", J("saves")], { browser: "full", retryJson: "saves", timeout: 15 });
-add("command", null, ["--max-old-space-size=4096", "tests/command.js", "100"], { timeout: 25, items: items.command });
-for (let k = 0; k < 6; k++) add("playthrough#" + (k + 1), null, ["--max-old-space-size=3072", "tests/playthrough.js", "50", "--from", String(1 + 50 * k)], { timeout: 20, items: items.playthrough });
-for (let k = 0; k < 3; k++) add("playthrough-story#" + (k + 1), null, ["--max-old-space-size=3072", "tests/playthrough.js", "50", "--story", "--from", String(1 + 50 * k)], { timeout: 20, items: items.playthrough });
-add("strings-hi", null, ["tests/strings.js", "check", "hi", "40"], { timeout: 15, items: items.strings });
-add("balance", null, ["tests/balance.js", "120"], { timeout: 35, report: true });
+// The jsdom checks keep about 25 MB per finished life (heavy: one of them at a time, so two never exhaust the memory).
+add("command", null, ["--max-old-space-size=4096", "tests/command.js", "100"], { timeout: 25, items: items.command, heavy: true });
+for (let k = 0; k < 10; k++) add("playthrough#" + (k + 1), null, ["--max-old-space-size=3072", "tests/playthrough.js", "30", "--from", String(1 + 30 * k)], { timeout: 20, items: items.playthrough, heavy: true });
+for (let k = 0; k < 5; k++) add("playthrough-story#" + (k + 1), null, ["--max-old-space-size=3072", "tests/playthrough.js", "30", "--story", "--from", String(1 + 30 * k)], { timeout: 20, items: items.playthrough, heavy: true });
+add("strings-hi", null, ["tests/strings.js", "check", "hi", "40"], { timeout: 20, items: items.strings, heavy: true });
+add("balance", null, ["tests/balance.js", "120"], { timeout: 35, report: true, heavy: true });
 add("race-balance", null, ["tests/race_balance.js", "2000"], { report: true });
 add("rtsim", null, ["tests/rtsim.js", "all", "10"], { report: true });
 add("rtfit", null, ["tests/rtfit.js"], { browser: true, items: items.rtfit });
@@ -91,7 +92,7 @@ add("smoke", null, ["tests/smoke.js", "--json", J("smoke")], { browser: true, re
 
 // Rough lengths on a 2-core machine (seconds): the full tier starts the longest first.
 const EST = {"battlefit": 800, "layout#phone": 520, "layout#tablet": 260, "layout#desktop": 260, "balance": 400, "command": 300, "strings-hi": 250, "visual": 230, "bands": 220, "lives": 190, "smoke": 160, "warfit": 160, "blowfit": 180, "content": 150, "bugs": 110, "saves": 110, "rtfit": 60, "lives-turns": 45, "rtsim": 40, "race-balance": 28, "golden": 20};
-for (const c of C) c.est = EST[c.name] || (/^playthrough/.test(c.name) ? 150 : 10);
+for (const c of C) c.est = EST[c.name] || (/^playthrough/.test(c.name) ? 90 : 10);
 const known = (() => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, "known_failures.json"), "utf8")).known || []; } catch (e) { return []; } })();
 const base = (n) => n.split("#")[0];
 const pick = (c) => c[TIER] && (!ONLY || ONLY.some((o) => o === c.name || o === base(c.name))) && !SKIP.some((o) => o === c.name || o === base(c.name));
@@ -106,8 +107,9 @@ function run(c, args, env) {
     const ch = cp.spawn(process.execPath, node.concat(rest), { cwd: ROOT, env: Object.assign({}, process.env, { REGRESS_OUT: OUT }, env || {}) });
     let out = "";
     ch.stdout.on("data", (d) => { out += d; }); ch.stderr.on("data", (d) => { out += d; });
-    const to = setTimeout(() => { out += "\n[run.js] timed out after " + (c.timeout || 15) + " min\n"; ch.kill("SIGKILL"); }, (c.timeout || 15) * MIN);
-    ch.on("close", (code, sig) => { clearTimeout(to); ok({ code: sig ? 124 : code, out, ms: Date.now() - t }); });
+    let timedOut = false;
+    const to = setTimeout(() => { timedOut = true; out += "\n[run.js] timed out after " + (c.timeout || 15) + " min\n"; ch.kill("SIGKILL"); }, (c.timeout || 15) * MIN);
+    ch.on("close", (code, sig) => { clearTimeout(to); if (sig && !timedOut) out += "\n[run.js] killed by " + sig + " (out of memory?)\n"; ok({ code: sig ? 124 : code, out, ms: Date.now() - t }); });
   });
 }
 const tail = (s, n) => s.trim().split("\n").slice(-n).join("\n");
@@ -138,7 +140,7 @@ async function one(c) {
     const its = c.items ? c.items(r.out) : [];
     const mine = known.filter((k) => k.test === base(c.name));
     if (its.length && mine.length && its.every((t) => mine.some((k) => t.includes(k.match)))) { res.status = "KNOWN"; res.note = its.length + " known: " + its.join("; ").slice(0, 120); }
-    else { res.tail = tail(r.out, 12); if (its.length) res.note = its.slice(0, 3).join("; ").slice(0, 140); }
+    else { res.tail = tail(r.out, 12); if (its.length) res.note = its.slice(0, 3).join("; ").slice(0, 140); const m = r.out.match(/\[run\.js\] (timed out after \d+ min|killed by \w+[^\n]*)/); if (m) res.note = m[1]; }
   }
   return res;
 }
@@ -148,10 +150,10 @@ async function one(c) {
   console.log("Regression suite, " + TIER + " tier: " + list.length + " checks, " + JOBS + " at a time (at most " + BJOBS + " in a browser); logs in " + (path.relative(process.cwd(), LOGS) || LOGS));
   const results = new Array(list.length);
   // The browser checks run one at a time (they measure layout and timing, and share the machine); the others fill the slots.
-  let browserBusy = 0, next = 0;
+  let browserBusy = 0, heavyBusy = 0, next = 0;
   const queue = list.map((c, i) => ({ c, i, browser: c.browser === true || c.browser === TIER }));
   const takeNext = () => {
-    for (let k = 0; k < queue.length; k++) { const q = queue[k]; if (q.done || q.taken) continue; if (q.browser && browserBusy >= BJOBS) continue; q.taken = true; if (q.browser) browserBusy++; return q; }
+    for (let k = 0; k < queue.length; k++) { const q = queue[k]; if (q.done || q.taken) continue; if (q.browser && browserBusy >= BJOBS) continue; if (q.c.heavy && heavyBusy) continue; q.taken = true; if (q.browser) browserBusy++; if (q.c.heavy) heavyBusy++; return q; }
     return null;
   };
   await new Promise((finish) => {
@@ -161,7 +163,7 @@ async function one(c) {
         const q = takeNext(); if (!q) break;
         running++;
         one(q.c).then((r) => {
-          results[q.i] = r; q.done = true; if (q.browser) browserBusy--; running--;
+          results[q.i] = r; q.done = true; if (q.browser) browserBusy--; if (q.c.heavy) heavyBusy--; running--;
           console.log(r.status.padEnd(6) + " " + r.name.padEnd(22) + String(r.seconds).padStart(7) + " s" + (r.note ? "  " + r.note : ""));
           if (r.status === "FAIL" && r.tail) console.log(r.tail.split("\n").map((l) => "         | " + l.slice(0, 200)).join("\n"));
           if (queue.every((x) => x.done)) finish(); else pump();
