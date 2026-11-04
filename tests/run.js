@@ -89,10 +89,13 @@ add("battlefit", null, ["tests/battlefit.js", "--browser", browsers, "--jobs", "
 add("visual", null, ["tests/visual.js", "--json", J("visual")], { browser: true, retryJson: "visual", timeout: 20 });
 add("smoke", null, ["tests/smoke.js", "--json", J("smoke")], { browser: true, retryJson: "smoke", timeout: 20 });
 
+// Rough lengths on a 2-core machine (seconds): the full tier starts the longest first.
+const EST = {"battlefit": 800, "layout#phone": 520, "layout#tablet": 260, "layout#desktop": 260, "balance": 400, "command": 300, "strings-hi": 250, "visual": 230, "bands": 220, "lives": 190, "smoke": 160, "warfit": 160, "blowfit": 180, "content": 150, "bugs": 110, "saves": 110, "rtfit": 60, "lives-turns": 45, "rtsim": 40, "race-balance": 28, "golden": 20};
+for (const c of C) c.est = EST[c.name] || (/^playthrough/.test(c.name) ? 150 : 10);
 const known = (() => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, "known_failures.json"), "utf8")).known || []; } catch (e) { return []; } })();
 const base = (n) => n.split("#")[0];
 const pick = (c) => c[TIER] && (!ONLY || ONLY.some((o) => o === c.name || o === base(c.name))) && !SKIP.some((o) => o === c.name || o === base(c.name));
-const list = C.filter(pick);
+const list = C.filter(pick).sort((a, b) => (TIER === "full" ? b.est - a.est : 0));
 if (argv.includes("--list")) { for (const c of C) console.log((c.quick ? "Q" : " ") + (c.full ? "F" : " ") + (c.browser ? " B " : "   ") + c.name.padEnd(22) + "node " + (c[TIER] || c.full || c.quick).join(" ")); process.exit(0); }
 let pwOk = true; try { require.resolve("playwright"); } catch (e) { pwOk = ["/usr/local/lib/node_modules_global/playwright", "/opt/npm-tools/node_modules/playwright"].some((p) => fs.existsSync(p)); }
 
