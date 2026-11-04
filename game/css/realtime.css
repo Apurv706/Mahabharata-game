@@ -563,3 +563,69 @@ html.calm #rt .stage.bigshake { animation: none; }
 #rt .orders-sheet.compact.matched.m-rt .resume { padding: 2px 5px; font-size: 11.5px; }
 #rt .aid-sheet.compact.matched button[data-aid] { flex: 1 1 0; min-width: 0; }
 @media (max-width: 370px) { #rt .orders-sheet.compact.matched.m-rt .chips button { font-size: 10.5px; } #rt .orders-sheet.compact.matched.m-rt .resume { font-size: 11px; padding: 2px 4px; } #rt .orders-sheet.compact.matched.m-rt .grp { min-width: 44px; } }
+/* ---------- The turn-based war day in the game (ui/warday.js; PRD §18.15 stage 2) ---------- */
+#rt.screen.war.upright { grid-template-rows: minmax(0, 1fr) auto; }
+#rt.war .wctl { gap: 6px; }
+#rt.war .moves { display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); grid-auto-rows: 44px; gap: 6px; }
+#rt.upright.war .moves { display: grid; }
+#rt.upright.war .moves button { flex: none; width: auto; height: 44px; }
+#rt.war .moves button { min-width: 0; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; text-align: left; gap: 0; padding: 3px 9px; }
+#rt.war .moves button b, #rt.war .moves button small { display: block; max-width: 100%; overflow: hidden; }
+#rt.war .moves button:disabled { opacity: 0.45; }
+#rt.war .moves.busy button { opacity: 0.55; pointer-events: none; }
+#rt.wide.war .moves { grid-auto-rows: 44px; }
+#rt.wide.war .moves button { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; gap: 0 9px; align-content: center; }
+#rt.wide.war .moves button kbd { grid-row: span 2; align-self: center; }
+#rt.war .summary { text-align: center; min-height: 1.3em; }
+#rt.war .wctl.reading .moves, #rt.war .wctl.picking .moves { display: none; }
+#rt.war .wd-read { display: none; }
+#rt.war .wctl.reading .wd-read { display: grid; gap: 4px; }
+#rt.war .wd-read p { margin: 0; text-align: center; font: 600 13px/1.25 var(--text); color: var(--ink); }
+#rt.war .wd-read .rd-note { min-height: 1.25em; color: var(--data); }
+#rt.war .wd-read.good .rd-note { color: var(--hp); } #rt.war .wd-read.bad .rd-note { color: var(--foe); }
+#rt.war .wd-read .rd-row { display: grid; grid-template-columns: 44px repeat(4, minmax(0, 1fr)); gap: 6px; align-items: stretch; }
+#rt.war .wd-read button { min-height: 44px; border-radius: 12px; border: 1px solid var(--gold-line); background: var(--raised); color: var(--ink); font: 700 13px/1.1 var(--text); padding: 2px 4px; }
+#rt.war .wd-read button[data-rd="block"] { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+#rt.war .rd-ring { position: relative; width: 44px; height: 44px; }
+#rt.war .rd-ring .mark { position: absolute; left: 50%; top: 50%; width: 14px; height: 14px; transform: translate(-50%, -50%); border-radius: 50%; border: 2px solid var(--data); }
+#rt.war .rd-ring .ring { position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%); border-radius: 50%; border: 3px solid var(--foe); }
+#rt.war .placepick button { min-height: 44px; }
+#rt.war .placepick .pp-opts button small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+#rt.war .wlane { position: absolute; z-index: 3; height: 0; border-top: 2px dashed rgba(255, 150, 90, 0.95); transform-origin: 0 0; pointer-events: none; filter: drop-shadow(0 0 3px rgba(255, 110, 50, 0.7)); }
+#rt.war .intent.calm { border-color: var(--gold-line); color: var(--muted); padding: 2px 5px; }
+#rt.war .actor.ally .mini b, #rt.war .actor.me .mini b { background: var(--hp); }
+#rt.war .actor .mini { display: block; }
+#rt.war .actor.dead .mini { display: none; }
+#rt.war .actor { transition: left 0.45s ease; }
+#rt.war .hb.wpill small { white-space: nowrap; }
+#rt.war .hb.wpill .word { white-space: nowrap; }
+#rt.war .company-sheet .chips.three button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; }
+#rt.war .company-sheet .chips.three button b { font: 700 12.5px/1.05 var(--text); }
+#rt.war .company-sheet .chips.three button small { font: 500 9.5px/1.1 var(--text); opacity: 0.85; white-space: nowrap; }
+#rt.war .company-sheet .chips.three button[aria-pressed="true"] small { color: #4a2e10; opacity: 1; }
+#rt.war .company-sheet .chips { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+#rt.war .company-sheet .wdline { display: flex; align-items: center; flex-wrap: wrap; }
+#rt.war .company-sheet .textbtn { background: none; border: 0; color: #ffb39e; text-decoration: underline; text-underline-offset: 3px; min-height: 32px; }
+#rt.war .company-sheet .note1 { color: var(--muted); }
+#rt.war .aid-sheet.compact.matched { display: flex; flex-wrap: wrap; align-content: center; }
+#rt.war .aid-sheet.compact.matched button[data-aid] { flex: 1 1 30%; min-height: 44px; }
+/* A champion comes on: a white flash, the edges dark, his name. */
+#rt.war .wd-vig, #rt.war .wd-flash { position: absolute; inset: 0; z-index: 13; pointer-events: none; opacity: 0; }
+#rt.war .wd-vig { background: radial-gradient(ellipse at 50% 55%, rgba(8, 3, 2, 0) 40%, rgba(8, 3, 2, 0.85)); transition: opacity 0.5s; }
+#rt.war .wd-flash { background: #fffaf0; }
+#rt.war .stage.champ .wd-vig { opacity: 1; }
+#rt.war .stage.champ .wd-flash { animation: wd-flash 0.6s ease-out both; }
+@keyframes wd-flash { 0% { opacity: 0.9; } 100% { opacity: 0; } }
+#rt.war .wd-champ { position: absolute; left: 12px; right: 12px; top: 26%; z-index: 14; display: grid; justify-items: center; gap: 4px; text-align: center; pointer-events: none; opacity: 0; }
+#rt.war .stage.champ .wd-champ { animation: wd-champ 2.2s ease both; }
+@keyframes wd-champ { 0% { opacity: 0; transform: translateY(8px) scale(0.96); } 15% { opacity: 1; transform: none; } 80% { opacity: 1; } 100% { opacity: 0; } }
+#rt.war .wd-champ b { font: 700 clamp(30px, 8vw, 54px)/1.15 var(--display); color: #fff3d6; text-shadow: 0 3px 12px rgba(0, 0, 0, 0.9), 0 0 22px rgba(255, 170, 80, 0.55); }
+html[lang="hi"] #rt.war .wd-champ b { line-height: 1.35; }
+#rt.war .wd-champ small { font: 600 15px/1.2 var(--text); color: var(--data); text-shadow: 0 2px 6px #000; }
+html.calm #rt.war .stage.champ .wd-flash, html.calm #rt.war .stage.champ .wd-champ { animation: none; opacity: 1; }
+html.calm #rt.war .stage.champ .wd-flash { opacity: 0; }
+#rt.war .wd-fbline { position: absolute; left: 50%; top: 40%; transform: translateX(-50%); z-index: 15; margin: 0; max-width: calc(100% - 24px); }
+#rt.war .fbrief-wrap, #rt.war .ftour { z-index: 80; }
+@media (max-width: 370px) { #rt.upright.war .moves button small { display: none; } #rt.war .wd-read button { font-size: 12px; } }
+#rt.wide.war .moves { grid-template-columns: repeat(var(--cols, 5), minmax(0, 1fr)); }
+#rt.war .gmark.area { border: 2px dashed rgba(255, 150, 90, 0.9); background: rgba(255, 110, 50, 0.12); box-shadow: none; border-radius: 40px; }

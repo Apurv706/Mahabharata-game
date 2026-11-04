@@ -34,7 +34,7 @@
   };
   // Each unit as a puppet (a short form of ui/battle.js's specFor, which is private to that screen).
   function specFor(u) {
-    if (u.side === "player") return K.puppetSpec(K.S);
+    if (u.side === "player") { const sp = K.puppetSpec(K.S); return C.hasShield && C.hasShield() ? Object.assign({}, sp, { gear: (sp.gear || []).filter((g) => g !== "shield").concat("buckler") }) : sp; } // a small shield on a sword path
     if (u.person && K.PUPPETS && K.PUPPETS[u.person]) return U.puppetFor(u.person);
     const n = String(u.src || u.name);
     if (/archer|chariot/i.test(n)) return { pronoun: "he", palette: ["#9e6a40", "#5d3b2a", "#9f8250"], headgear: "capfeather", hat: "#5d3b2a", gear: ["bracer"], item: "bow", stance: "archer", stage: "adult" };
@@ -413,6 +413,11 @@
         a.atk = u.rt.atk;
       }
       a.el.classList.toggle("unseen", u.side === "player" && (R.unseen > 0 || R.roll > 0));
+      // Your soldiers on Defend raise their shields while a blow is marked on them (PRD §18.15).
+      if (u.side === "ally" && u.plural && !u.person && !u.called && u.hp > 0) {
+        const up = R.orders.soldiers === "defend" && B.units.some((e) => e.side === "enemy" && e.hp > 0 && e.rt && e.rt.atk && e.rt.atk.on === u.uid);
+        if (up !== !!a.shieldUp) { a.shieldUp = up; if (up) pose(a, "guard", 900, 0.55); else home(a, 250); a.el.classList.toggle("shield-up", up); }
+      }
       a.el.classList.toggle("beaten", !!u.rt.beaten);
       const m = a.el.querySelector(".mini b"); if (m) m.style.width = Math.max(0, u.hp / u.maxHp * 100) + "%";
     }
@@ -489,6 +494,13 @@
         if (K.Sound) K.Sound.play("hit");
         break; }
       case "heal": { const a = A(f.uid); if (a) pop(a, "+", "heal"); break; }
+      case "spark": { // a blow taken on a shield: sparks fly from it, and it is raised for a moment
+        const a = A(f.uid); if (!a) break;
+        const wr = V.world.getBoundingClientRect(), sh = a.svg.querySelector(".it-s") || a.svg.querySelector(".pp-body"), r = sh.getBoundingClientRect();
+        if (U.flingBits) U.flingBits(V.world, "spark", { x: r.left + r.width / 2 - wr.left, y: r.top + r.height / 2 - wr.top }, 9, 16, null, true);
+        if (a.u.side !== "player" || !f.glance) { pose(a, "guard", 900, 0.55); if (!a.shieldUp) home(a, 500); }
+        if (K.Sound) K.Sound.play("clang");
+        break; }
       case "miss": { const a = A(f.uid); if (a) pop(a, K.tr("Missed"), "miss"); break; }
       case "perfect": toast(K.tr("Perfect roll")); break;
       case "fall": { const a = A(f.uid); if (a) fell(a); break; }
