@@ -878,16 +878,17 @@
         rig.k = k; rig.z = z;
         if (snap) { for (const key in rig.x) { rig.x[key] = rig.t[key]; rig.v[key] = 0; } rig.apply(); }
       };
-      // You: a crouched creep with high knees and the arms out for balance (f runs with the steps);
+      // You: a crouched creep with high knees and the arms out for balance (f runs with the steps), the body kept upright
+      // (owner, 4 November: the puppet has no waist, so a lean tips the whole figure forward like a plank);
       // frozen low, looking up at the guard; running back upright with long strides.
       const hold = basket ? [-172, -14] : [-64, -24]; // the back hand steadies the basket, or is out for balance
       const creep = (f) => { const sn = Math.sin(f), cs = Math.cos(f);
-        return { ty: 13 + Math.abs(sn) * 2, rot: 19, head: -8, legF: -40 + 24 * sn, shinF: 50 + 28 * Math.max(0, Math.sin(f + 1.2)), legB: 24 - 24 * sn, shinB: 44 + 28 * Math.max(0, -Math.sin(f + 1.2)),
+        return { ty: 13 + Math.abs(sn) * 2, rot: 5, head: 2, legF: -46 + 24 * sn, shinF: 50 + 28 * Math.max(0, Math.sin(f + 1.2)), legB: 24 - 24 * sn, shinB: 44 + 28 * Math.max(0, -Math.sin(f + 1.2)),
           armF: -46 + 10 * cs, foreF: -34, armB: hold[0], foreB: hold[1] }; };
-      const still = { ty: 18, rot: 12, head: -16, legF: -56, shinF: 76, legB: 20, shinB: 66, armF: -52, foreF: -40, armB: hold[0], foreB: hold[1] };
+      const still = { ty: 18, rot: 4, head: -8, legF: -62, shinF: 80, legB: 24, shinB: 70, armF: -52, foreF: -40, armB: hold[0], foreB: hold[1] };
       const start = Object.assign({}, still, { head: -24, rot: 4, ty: 6 });
       const run = (f) => { const sn = Math.sin(f);
-        return { rot: 14, ty: Math.abs(sn) * 3, head: -4, legF: -10 + 40 * sn, shinF: 20 + 50 * Math.max(0, -sn), legB: -10 - 40 * sn, shinB: 20 + 50 * Math.max(0, sn), armF: 40 * sn - 30, foreF: -60, armB: -40 * sn - 30, foreB: -60 }; };
+        return { rot: 4, ty: Math.abs(sn) * 3, head: 0, legF: -10 + 40 * sn, shinF: 20 + 50 * Math.max(0, -sn), legB: -10 - 40 * sn, shinB: 20 + 50 * Math.max(0, sn), armF: 40 * sn - 30, foreF: -60, armB: -40 * sn - 30, foreB: -60 }; };
       // The guard: a stride with the torch held up in front; stopping to look over the yard; the
       // tell (he lifts the torch high and leans back: about to turn); striding at you, torch thrust out.
       // By day the watcher swings his arms as he walks and shades his eyes to look.
@@ -895,7 +896,7 @@
         return { ty: -Math.abs(sn) * 1.4, legF: 22 * sn, shinF: 16 * Math.max(0, -sn), legB: -22 * sn, shinB: 16 * Math.max(0, sn), armF: day ? 16 * sn : -118, foreF: day ? -18 : -32, armB: -14 * sn, foreB: -18, head: 2 }; };
       const gstand = day ? { armF: -140, foreF: -96, armB: -4, foreB: -14, head: 4 } : { armF: -104, foreF: -30, armB: -4, foreB: -14, head: 10 };
       const gtell = { rot: -6, armF: -166, foreF: -8, armB: -20, foreB: -40, head: -16 };
-      const gchase = (f) => Object.assign(gwalk(f * 1.6), { rot: 9, armF: -96, foreF: -4, head: 6 });
+      const gchase = (f) => Object.assign(gwalk(f * 1.6), { rot: 4, armF: -96, foreF: -4, head: 6 });
       if (mrig) steer(mrig, still, 600, 0.6, true);
       if (grig) steer(grig, gwalk(0), 600, 0.6, true);
       const setPose = (el, p) => { if (el) el.setAttribute("class", el.getAttribute("class").replace(/pose-\S+/, "pose-" + p)); };

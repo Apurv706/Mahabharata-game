@@ -597,6 +597,11 @@
     const standing = figsOf(u).filter((f) => !f.dead), alive = aliveBodies(u);
     while (standing.length > alive) {
       const f = standing.pop();
+      if (isP(f.u) && K.loseLived(V.B.enc.id)) { // beaten but alive (owner, 4 November): you slump where you stand
+        f.dead = true; f.el.classList.add("slumped"); if (f.tag) f.tag.classList.remove("on");
+        if (f.rig) f.rig.set("defeated", 260, 0.62); else pose(f, "kneel");
+        continue;
+      }
       f.dead = true; f.el.classList.add("dead"); f.el.style.zIndex = "4"; if (f.tag) f.tag.classList.remove("on");
       if (f.rig) f.rig.fallDown(-86, f.side === "foe" ? -1 : 1); else pose(f, "fall");
       dropWeapon(f);
@@ -774,13 +779,31 @@
     if (U.stopDrums) U.stopDrums();
     const enc = B.enc;
     if (B.over === "flee") { const f = firstFig(B.units[0].uid); if (f && f.rig) { f.face = -f.face; f.el.classList.toggle("face-l", f.face < 0); } }
-    const msg = { win: K.val(enc.winLine) || "The fight is won.", lose: K.val(enc.loseLine) || (enc.lethal && !K.S.storyMode ? "You have fallen." : "You are beaten."), flee: "You leave the fight behind.", spare: "You let them live." }[B.over];
+    const lived = B.over === "lose" && K.loseLived(enc.id); // beaten but alive: the foes leave, and what is written held
+    const msg = lived ? "You fought with all you had. What is written was not yours to stop." : { win: K.val(enc.winLine) || "The fight is won.", lose: K.val(enc.loseLine) || (enc.lethal && !K.S.storyMode ? "You have fallen." : "You are beaten."), flee: "You leave the fight behind.", spare: "You let them live." }[B.over];
     if (K.Sound && B.over === "lose" && enc.lethal && !K.S.storyMode) K.Sound.play("fall");
     if (K.Sound && B.over === "win") setTimeout(() => K.Sound && K.Sound.play("gong"), 300);
     const card = U.el('<div class="endcard" role="dialog"><div class="in"><h2>' + esc(T(B.over === "win" ? "The day is held" : B.over === "lose" ? "You are beaten" : B.over === "spare" ? "Spared" : "Withdrawn")) + "</h2><p>" + U.t(msg) + '</p><button type="button" class="go">' + esc(T("Continue")) + "</button></div></div>");
     const go = () => { if (!V) return; const cb = V.onEnd, done = C.end(); stop(); if (cb) cb(done ? done.over : B.over); };
     card.querySelector("button").addEventListener("click", go);
-    setTimeout(() => { if (!V) return; V.stage.appendChild(card); card.querySelector("button").focus({ preventScroll: true }); }, U.motion() ? 900 : 100);
+    const show = () => { if (!V) return; V.stage.appendChild(card); card.querySelector("button").focus({ preventScroll: true }); };
+    if (lived) leaveField(show); else setTimeout(show, U.motion() ? 900 : 100);
+  }
+  // The foes still standing turn and walk off the field (owner, 4 November), then the card.
+  function leaveField(then) {
+    const me = V.figs.size ? [...V.figs.values()].find((f) => isP(f.u)) : null;
+    if (me && !me.el.classList.contains("slumped")) { me.el.classList.add("slumped"); if (me.rig) me.rig.set("defeated", 260, 0.62); else pose(me, "kneel"); }
+    const calm = !U.motion() || U.calm(), walk = calm ? 0 : 2200, sw = V.stage.getBoundingClientRect().width;
+    const foes = [...V.figs.values()].filter((f) => f.side === "foe" && !f.dead);
+    if (!foes.length || calm) { foes.forEach((f) => { f.el.style.visibility = "hidden"; }); setTimeout(then, calm ? 150 : 400); return; }
+    foes.forEach((f, i) => {
+      if (f.tap) f.tap.hidden = true; if (f.chip) f.chip.hidden = true; if (f.tag) f.tag.classList.remove("on");
+      f.el.classList.remove("windup"); f.face = 1; f.el.classList.toggle("face-l", false);
+      const anim = f.el.animate([{ transform: "translateX(0)" }, { transform: "translateX(" + Math.round(sw * 0.75) + "px)" }], { duration: walk, delay: i * 120, easing: "linear", fill: "forwards" });
+      let ph = 0; const t = setInterval(() => { if (!V || !f.rig) return clearInterval(t); ph ^= 1; f.rig.set(ph ? "stepA" : "stepB", 700, 0.5); }, 230);
+      anim.onfinish = () => { clearInterval(t); f.el.style.visibility = "hidden"; };
+    });
+    setTimeout(then, walk + 300);
   }
 
   // ---------- Company ▾ and Aid ▾ ----------

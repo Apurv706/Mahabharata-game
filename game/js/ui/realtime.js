@@ -356,6 +356,7 @@
   const KEY = { KeyJ: "strike", KeyK: "roll", Space: "roll", KeyL: "skill", KeyH: "herbs", KeyC: "call", KeyU: "astra", KeyO: "orders", KeyP: "pause", Escape: "pause", KeyE: "spare" };
   function onKey(e) {
     if (!V) return;
+    if (V.written) { if (e.code === "Enter" || e.code === "Space" || e.code === "KeyJ") V.written(e); else { e.preventDefault(); e.stopPropagation(); } return; }
     if (V.briefing) { // the rules card or the walkthrough is up: its own keys, nothing reaches the fight
       e.preventDefault(); e.stopPropagation();
       if (e.repeat) return;
@@ -519,11 +520,60 @@
     draw();
     if (R.over && !V.ending) {
       if (R.over === "retry") { if (V.sheet !== "retry") sheet("retry"); }
+      else if (R.over === "lose" && K.loseLived(V.encId)) defeated();
       else finishSoon();
     }
     V.raf = requestAnimationFrame(loop);
   }
   function retry() { V.R = RT.retry(V.R); V.actors.forEach((a) => { a.el.remove(); if (a.tag) a.tag.remove(); if (a.weaponEl) a.weaponEl.remove(); }); $$(".scorch, .ax", V.el).forEach((e) => e.remove()); V.ax = null; V.actors.clear(); if (U.rigs) U.rigs.clear(); V.logAt = V.R.B.log.length; toast(K.tr("One more time.")); }
+  // Beaten, but the story goes on (owner, 4 November): you slump where you stand, the foes turn and walk off the field, and a
+  // line says you tried and what is written held. A tap (Enter or Space) goes on.
+  function slumped(a) {
+    a.el.classList.add("slumped"); a.el.classList.remove("windup", "shield-up"); a.shieldUp = false;
+    if (a.tag) a.tag.classList.remove("on");
+    if (a.rig) { a.rig.t.dx = 0; a.rig.t.dy = 0; a.rig.set("defeated", 260, 0.62); } else pose(a, "kneel");
+  }
+  function defeated() {
+    if (V.ending) return; V.ending = true;
+    const R = V.R, p = C.player(), me = V.actors.get(p.uid), calm = U.calm(), walk = calm ? 0 : 1800;
+    if (me && !me.el.classList.contains("slumped")) slumped(me);
+    const foes = R.B.units.filter((u) => u.side === "enemy" && u.hp > 0 && u.rt);
+    foes.forEach((u, i) => {
+      const dir = u.rt.x >= p.rt.x ? 1 : -1, a = V.actors.get(u.uid);
+      u.rt.atk = null; u.rt.face = dir; u.leave = { x0: u.rt.x, to: dir > 0 ? 1.3 : -0.3, delay: i * 150 };
+      if (a) { a.el.classList.remove("windup", "beaten"); if (a.tag) a.tag.classList.remove("on"); U.pleaTag(a.el, "", null); }
+    });
+    const t0 = performance.now();
+    const tick = (now) => {
+      if (!V || V.R !== R) return;
+      const el = now - t0;
+      foes.forEach((u) => {
+        const l = u.leave, a = V.actors.get(u.uid), k = calm ? 1 : clamp((el - l.delay) / (walk - 300), 0, 1);
+        u.rt.x = l.x0 + (l.to - l.x0) * k * k * (3 - 2 * k) * 0.25 + (l.to - l.x0) * k * 0.75; // eases in, then strides off
+        if (a && a.rig && !calm && k > 0 && k < 1) { const ph = Math.floor(el / 230) % 2; if (a.stepPh !== ph) { a.stepPh = ph; a.rig.set(ph ? "stepA" : "stepB", 700, 0.5); } }
+      });
+      if (el < walk) { requestAnimationFrame(tick); return; }
+      foes.forEach((u) => { const a = V.actors.get(u.uid); if (a) a.el.style.visibility = "hidden"; });
+      setTimeout(written, calm ? 150 : 350);
+    };
+    requestAnimationFrame(tick);
+  }
+  function written() {
+    if (!V || V.written) return;
+    const card = U.el('<div class="written" role="status"><p>' + U.esc(T("You fought with all you had. What is written was not yours to stop.")) + '</p>' +
+      '<button type="button" class="go">' + U.esc(T("Continue")) + " ▶</button></div>");
+    V.stage.appendChild(card);
+    const go = (e) => {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      if (!V || !V.written) return; V.written = null;
+      const cb = V.onEnd, done = C.end();
+      stop();
+      if (cb) cb(done ? done.over : "lose");
+    };
+    V.written = go;
+    card.addEventListener("click", go);
+    setTimeout(() => { const b = card.querySelector(".go"); if (b && document.contains(b)) b.focus({ preventScroll: true }); }, 50);
+  }
   function finishSoon() {
     if (V.ending) return; V.ending = true;
     setTimeout(() => {
@@ -669,7 +719,7 @@
       case "perfect": toast(K.tr("Perfect roll")); break;
       case "perfectblock": { toast(K.tr("Perfect block")); const a = A(f.uid); if (a && a.u.hp > 0) { setTimeout(() => { if (V && a.u.hp > 0) { pose(a, "strain", 700, 0.45); if (a.rig) a.rig.kick({ rot: 160 * (a.u.rt ? -a.u.rt.face : 1), tx: 20 }); home(a, 900); } }, 120); } break; } // the one who struck staggers back off the shield
       case "winded": if (blocker()) toast(K.tr("Winded")); break;
-      case "fall": { const a = A(f.uid); if (a) fell(a); break; }
+      case "fall": { const a = A(f.uid); if (a) { if (a.u.side === "player" && K.loseLived(V.encId)) slumped(a); else fell(a); } break; }
       case "shot": { // the arrow leaves the bow (measured from the live figure) and flies down its lane
         const a = A(f.uid), s = f.shot; if (!a) break;
         const wr = V.world.getBoundingClientRect(), hand = a.svg.querySelector(".foreF") || a.svg, hr = hand.getBoundingClientRect();

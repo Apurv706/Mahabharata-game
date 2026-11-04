@@ -63,13 +63,18 @@
     aim: { rot: -2, armF: -84, foreF: -6, armB: -86, foreB: 150 },
     hold: { rot: 6, armF: -66, foreF: -24, armB: -58, foreB: -30, item: 180 },
     push: { rot: 14, armF: -72, foreF: -18, armB: -66, foreB: -22, legF: -26, shinF: 18, legB: 20, shinB: 6, item: 180 },
-    sneak: { ty: 12, rot: 20, legF: -42, shinF: 52, legB: 26, shinB: 44, armF: -40, foreF: -40, item: 180 },
+    sneak: { ty: 12, rot: 6, head: 2, legF: -48, shinF: 58, legB: 28, shinB: 50, armF: -40, foreF: -40, item: 180 }, // upright: the crouch is in the knees
     think: { head: 10, armF: -28, foreF: -140, item: 180 },
     speak: { head: -4, armF: -58, foreF: -30, item: 180 },
     cheer: { rot: -4, armF: -166, foreF: -10, armB: -150, item: 180 },
     slump: { rot: 11, ty: 3, head: 26, armF: 4, armB: 2 },
     fold: { armF: -38, foreF: -118, armB: -30, foreB: -120, item: 180 },
-    walk: { armF: 8, foreF: -16, armB: -6 }
+    walk: { armF: 8, foreF: -16, armB: -6 },
+    // Beaten but alive: down on one knee, head bowed, arms hanging, the weapon lowered (owner, 4 November).
+    defeated: { rot: 5, ty: 30, head: 40, legF: -84, shinF: 98, legB: 6, shinB: 100, armF: 14, foreF: 4, armB: 8, foreB: 6, item: 165 },
+    // Walking away: two strides, the weapon carried low.
+    stepA: { rot: 3, legF: -24, shinF: 12, legB: 20, shinB: 8, armF: 16, foreF: -10, armB: -14, item: 150 },
+    stepB: { rot: 3, legF: 18, shinF: 6, legB: -22, shinB: 14, armF: -10, foreF: -16, armB: 14, item: 150 }
   };
   const KEYS = ["rot", "tx", "ty", "head", "armF", "foreF", "armB", "foreB", "legF", "shinF", "legB", "shinB", "item", "draw", "tilt", "dx", "dy"];
   const JOINTS = ["head", "armF", "foreF", "armB", "foreB", "legF", "shinF", "legB", "shinB"];

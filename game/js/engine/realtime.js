@@ -32,19 +32,22 @@
   // The tunables (tests/balance.js measures them; PARAMS env in the tests can override).
   RT.P = {
     story: 8,          // seconds per round of a fight's story: beats, the field event, holds and "rounds"
-    hpFoe: 6.5,        // health is scaled up so a fight lasts its 30-60 s (blows are as in the turns)
-    hpFriend: 1.15,    // you act several times as often as any foe: your own health is scaled far less
-    atkFoe: 1,
+    // Easier (owner, 4 November: "fights are too hard now"): foes' health 6.5 -> 5.75 and blows x0.8, your health 1.15 -> 1.25, a
+    // longer rest between their blows, wider perfect-roll and perfect-block windows, and Block lets less through and tires
+    // you less. The bot then wins 86% of real-time fights (63% before; 68% on the turns; seed 11, 1500 lives).
+    hpFoe: 5.75,       // health is scaled up so a fight lasts its 30-60 s (blows are as in the turns)
+    hpFriend: 1.25,    // you act several times as often as any foe: your own health is scaled far less
+    atkFoe: 0.8,
     hpAlly: null,      // those beside you act as often as foes: scaled as foes (null) unless set
     spacing: 0.45,
     archerGap: 0.55,   // an archer looses oftener than a swordsman swings (0.7 until archers only shot, 4 November)     // a second foe's blow never lands within this of the first (two at once, but readable)
-    gap: [1.5, 2.8],   // a foe's rest between blows, seconds
+    gap: [1.75, 3.1],   // a foe's rest between blows, seconds
     windup: 0.6,       // a plain blow's wind-up (never below 0.3)
     heavyWind: 0.95,
     track: 0.8, lock: 0.35, // an arrow: the lane follows, then locks
     breathMax: 100, rollCost: 32, rollMin: 32, breathRegen: 20,
     roll: 0.42,        // a roll's length (all of it unhurtable)
-    perfect: 0.16,     // a roll begun this close before a blow lands is perfect: the foes slow
+    perfect: 0.2,     // a roll begun this close before a blow lands is perfect: the foes slow
     retryHp: 0.8,      // a second try starts a little hurt
     botReact: [0.2, 0.42], botMiss: [0.25, 0.55], // the bot's reading, from grace (good to poor)
     botLead: [0.06, 0.34], // how long before a blow lands the bot raises its shield (a perfect block only when late enough)
@@ -55,8 +58,8 @@
     // (a heavy blow more, a shield-breaker more still); held, it drains breath, and each blow taken on it more; winded, it
     // drops and cannot be raised again until the breath is back to rollMin. Raised just before a blow lands (blockPerfect)
     // it is a perfect block: nothing gets through and the one who struck staggers.
-    blockThrough: 0.15, blockHeavy: 0.35, blockBreaker: 0.55, blockMin: 12, blockDrain: 7, blockHit: 10, blockHitHeavy: 18,
-    blockPerfect: 0.12, blockStag: 1.0, blockWalk: 0.4,
+    blockThrough: 0.11, blockHeavy: 0.35, blockBreaker: 0.55, blockMin: 12, blockDrain: 5.5, blockHit: 10, blockHitHeavy: 18,
+    blockPerfect: 0.16, blockStag: 1.0, blockWalk: 0.4,
     blockRows: 1.2,    // a blow from your row or the next is met; one from two rows off comes in from the side
     // The mace (owner, 4 November: heavy and slow): foes' mace blows wind up longer (an overhead smash, then a side sweep
     // that pushes you back), a little harder to keep their weight about the same.
