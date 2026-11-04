@@ -3,15 +3,15 @@
    crashes, dead ends, content problems and the spread of endings.
    Usage: npm install && npm test            (default 300 lives)
           node tests/playthrough.js 1000 --story
-          RT=1 node tests/playthrough.js 20   (or --rt): the real-time fights (PRD §18.15) played by
-          engine/realtime.js's bot, which spares a beaten foe now and then */
+          By default the real-time fights (PRD §18.15) are played by engine/realtime.js's bot, which
+          spares a beaten foe now and then; RT=0 node tests/playthrough.js 20 (or --turns) plays every fight on the turns */
 const fs = require("fs");
 const path = require("path");
 const { JSDOM, VirtualConsole } = require("jsdom");
 
 const N = parseInt(process.argv[2] || "300", 10);
 const STORY = process.argv.includes("--story");
-const RTM = process.env.RT === "1" || process.argv.includes("--rt");
+const RTM = process.env.RT !== "0" && !process.argv.includes("--turns"); // real-time by default (RT=0 or --turns: every fight on the turns)
 const GAME = path.join(__dirname, "..", "game");
 const html = fs.readFileSync(path.join(GAME, "index.html"), "utf8");
 const scripts = [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map((m) => m[1]);
@@ -34,7 +34,7 @@ function boot(seed) {
   for (const src of scripts) w.eval(fs.readFileSync(path.join(GAME, src), "utf8"));
   w.K.headless = true;
   w.K.seed(seed);
-  if (RTM) { w.K.RT.force = true; w.K.UI.rtBotOptions = { spare: 0.3 }; }
+  w.K.RT.force = RTM; if (RTM) w.K.UI.rtBotOptions = { spare: 0.3 };
   return { w, d: w.document, errors, jsErrors };
 }
 

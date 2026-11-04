@@ -1110,7 +1110,7 @@ require(G + "content/war_fights.js");
   const WK = w.K, UI = WK.UI;
   ok(UI.fightBriefSkipped("e_dream") && UI.fightBriefSkipped("e_spar") && !UI.fightBriefSkipped("e_bandits") && !UI.fightBriefSkipped("e_guard"), "no fight briefing for the dream fight or the sparring bout; one for a real fight");
   ok(!UI.fightBriefWanted("e_bandits"), "the fight briefing is skipped under the tests (jsdom)");
-  WK.headless = true;
+  WK.headless = true; WK.RT.force = false; // the turn-based screen's card (a real-time fight under the tests is played by the bot at once)
   WK.S = Object.assign(WK.newLife(), { name: "T", origin: "panchala", pronoun: "she", age: 15, act: 2, teacher: "drona" });
   WK.go("a0_dream"); UI.startBattle("e_dream", () => {});
   const dreamCard = !!w.document.querySelector(".fbrief-wrap, .ftour");
@@ -1172,7 +1172,11 @@ require(G + "content/war_fights.js");
   ["content/war_fights"].forEach((f) => require(G + f + ".js"));
   const RT = K.RT, C = K.Combat;
   const life = (o) => { const S = fresh(Object.assign({ path: "mace", act: 6, age: 30, side: "pandava" }, o || {})); S.attrs.might = 4; S.attrs.grace = 4; S.skills.mace = 3; S.items.herbs = 2; return S; };
-  ok(!RT.on() && !RT.wanted("e_bandits"), "the real-time fights are off unless the developer switch is on (players keep the turn-based fights)");
+  { const realStore = K.store, mem = {}; K.store = { get: (k) => (k in mem ? mem[k] : null), set: (k, v) => { mem[k] = v; return true; }, del: (k) => { delete mem[k]; }, ok: () => true };
+    ok(RT.force == null && !RT.old() && RT.on() && RT.wanted("e_bandits") && !RT.wanted("e_day1") && C.shieldsWanted(K.ENCOUNTERS.e_day1), "the real-time fights are on for every player by default, and the war day's turn-based rules too");
+    K.prefs({ fights: "turns" }); ok(!RT.on() && !RT.wanted("e_bandits"), "Fights: turn-based in the menu puts every fight on the turns");
+    K.prefs({ fights: "realtime", oldFights: true }); ok(!RT.on() && !RT.wanted("e_bandits") && !C.shieldsWanted(K.ENCOUNTERS.e_day1), "the test-only oldFights override brings back the old turn-based fights and rules");
+    K.store = realStore; RT.force = false; ok(!RT.on(), "RT.force = false (RT=0 in the headless tests) plays every fight on the turns"); }
   RT.force = true;
   ok(RT.wanted("e_bandits") && RT.wanted("cross_e_duel") && RT.wanted("fs_sk_mace") && !RT.wanted("e_day1") && !RT.wanted("e_dream") && !RT.wanted("e_wheel") && !RT.wanted("fs_sk_range"), "which fights are real-time: the list in §18.15 and the mace duel; the line, the wheel, the dream and the archery duel stay");
   // Determinism: the same seed, the same fight → the same outcome and the same final state.
@@ -1288,8 +1292,9 @@ require(G + "content/war_fights.js");
     C.act("strike", null); const r0 = B.round;
     ok(C.setPlace("flank") && B.round === r0 + 1 && B.place === "flank", "changing place later costs the round");
     C.settle("win"); C.end();
-    RT.force = false; K.seed(31); life().flags.push("role_command"); const B2 = C.start("e_day16");
-    ok(!B2.place && !C.setPlace("front"), "with the developer switch off, no place in the line: the war day is as before"); C.settle("win"); C.end(); RT.force = true; }
+    const realStore = K.store, mem = {}; K.store = { get: (k) => (k in mem ? mem[k] : null), set: (k, v) => { mem[k] = v; return true; }, del: (k) => { delete mem[k]; }, ok: () => true }; K.prefs({ oldFights: true });
+    K.seed(31); life().flags.push("role_command"); const B2 = C.start("e_day16");
+    ok(!B2.place && !C.setPlace("front"), "under the test-only oldFights override, no place in the line: the war day is as before"); C.settle("win"); C.end(); K.store = realStore; }
   // Shields (PRD §18.15): a shield wall halves every blow on your side for the round and raises their shields; your
   // company raises its shields against a blow marked on them; the player carries one only where the path suits it.
   { K.seed(33); life({ path: "archer" }).flags.push("role_command"); C.stepNext = true;

@@ -69,26 +69,25 @@
     if (enc.realtime === false) return false;
     return RT.IDS.has(enc.id) || enc.realtime === true || K.val(enc.kind) === "mace"; // the mace duel of the side battles
   };
-  // Real-time play is behind a developer switch until the screens are approved: K.prefs().rtDev, or
-  // ?rt=1 in the address. Tests turn it on with RT.force (RT=1). The player's own switch, "Fights:
-  // real-time / turn-based" (K.prefs().fights), is real-time by default.
-  RT.force = false;
-  RT.dev = () => {
-    if (RT.force) return true;
-    try { if (typeof location !== "undefined" && /[?&]rt=1\b/.test(location.search || "")) return true; } catch (e) { /* no location */ }
-    return !!(K.prefs && K.prefs().rtDev);
-  };
+  // Real-time fights are on for every player (owner, 4 November). The player's switch, "Fights: real-time /
+  // turn-based" (K.prefs().fights, in the menu), is real-time by default; turn-based puts every fight on the
+  // new war-day screen (ui/warday.js). Tests: RT.force = true plays every real-time fight in real time whatever
+  // the switch says, false plays every fight on the turns, null (the default) follows the switch.
+  // Test-only override: K.prefs({ oldFights: true }) brings back the old turn-based screen and rules for every
+  // fight (no real time, no war-day screen, no places, shields or packs) -- tests/battlefit.js uses it. It is
+  // not in the menu.
+  RT.force = null;
+  RT.old = () => !!(K.prefs && K.prefs().oldFights);
   RT.mode = () => (K.prefs && K.prefs().fights === "turns" ? "turns" : "realtime");
-  RT.on = () => RT.dev() && (RT.force || RT.mode() === "realtime");
+  RT.on = () => !RT.old() && (RT.force === true || (RT.force !== false && RT.mode() === "realtime"));
   RT.wanted = (encId) => RT.on() && RT.isRealtime(encId);
 
   // A turn-based war day fought beside your company: you choose your place in the line (K.Combat.setPlace).
-  // Behind the developer switch with the rest of §18.15.
   // (Holding fights too: any turn-based fight with your company beside you, not only the deadly war days.)
-  const plainTurns = (enc) => RT.dev() && !RT.isRealtime(enc) && !enc.dream && !(K.val(enc.kind) && K.FIGHT_KINDS && K.FIGHT_KINDS[K.val(enc.kind)]);
+  const plainTurns = (enc) => !RT.old() && !RT.isRealtime(enc) && !enc.dream && !(K.val(enc.kind) && K.FIGHT_KINDS && K.FIGHT_KINDS[K.val(enc.kind)]);
   C.placesWanted = (enc, B) => plainTurns(enc) && B.units.some((u) => u.side === "ally" && u.plural && !u.person);
   // Shields on the turns (C.SHIELD_PATHS, the shield wall, your company's raised shields, a foe's shield turning a blow)
-  // and packs (three or more foes come two at a time): the new war-day screen's rules, behind the same switch.
+  // and packs (three or more foes come two at a time): the new war-day screen's rules (off only under the test-only oldFights override).
   C.shieldsWanted = (enc) => plainTurns(enc);
   C.packsWanted = (enc, B) => plainTurns(enc) && B.units.filter((u) => u.side === "enemy").length >= 3;
 

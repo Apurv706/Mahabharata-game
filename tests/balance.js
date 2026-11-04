@@ -1,14 +1,14 @@
 /* Combat balance: plays many lives with a careful player (guards against heavy blows, heals when
    hurt, uses specials, meets blows as an attentive player would) and reports how often each fight is
    won. Target (Rebuild decisions §6): about 60-70% in an even fight, about 40% in a hard one.
-   With RT=1 (or --rt) the real-time fights (PRD §18.15, engine/realtime.js) are played by its bot,
-   and their fight lengths in simulated seconds are reported too.
-   Usage: node tests/balance.js [lives] [--rt] */
+   By default the real-time fights (PRD §18.15, engine/realtime.js) are played by its bot, and their
+   fight lengths in simulated seconds are reported too; RT=0 (or --turns) plays every fight on the turns.
+   Usage: node tests/balance.js [lives] [--turns] */
 const fs = require("fs");
 const path = require("path");
 const { JSDOM, VirtualConsole } = require("jsdom");
 const N = parseInt(process.argv[2] || "120", 10);
-const RTM = process.env.RT === "1" || process.argv.includes("--rt");
+const RTM = process.env.RT !== "0" && !process.argv.includes("--turns"); // real-time by default (RT=0 or --turns: every fight on the turns)
 const rtTimes = {}; // real-time fights: id -> [seconds...]
 const GAME = path.join(__dirname, "..", "game");
 const html = fs.readFileSync(path.join(GAME, "index.html"), "utf8");
@@ -23,7 +23,7 @@ function life(seed) {
   let s = seed >>> 0; w.Math.random = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
   for (const src of scripts) w.eval(fs.readFileSync(path.join(GAME, src), "utf8"));
   const K = w.K; K.headless = true; K.seed(seed);
-  if (RTM) { K.RT.force = true; if (process.env.PARAMS) Object.assign(K.RT.P, JSON.parse(process.env.PARAMS)); }
+  K.RT.force = RTM; if (RTM) { if (process.env.PARAMS) Object.assign(K.RT.P, JSON.parse(process.env.PARAMS)); }
   K.Combat.humanDefense = { counter: 0.12, block: 0.5 };
   if (process.env.TOUGH) { const [h, a] = process.env.TOUGH.split(","); K.Combat.TOUGH = { hp: +h, atk: +a }; }
   if (process.env.HARD) { const [h, a] = process.env.HARD.split(","); K.Combat.HARD = { hp: +h, atk: +a }; }

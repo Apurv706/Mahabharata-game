@@ -1,5 +1,5 @@
-/* Real-time fights (PRD §18.15), the screen, behind the developer switch (K.prefs().rtDev or ?rt=1;
-   engine/realtime.js RT.dev). With the switch off every fight is the turn-based screen of ui/battle.js.
+/* Real-time fights (PRD §18.15), the screen: the fights of engine/realtime.js RT.IDS, unless the menu's "Fights"
+   is turn-based (RT.wanted). Every other fight goes on to ui/warday.js and ui/battle.js.
    A copy of the approved layout page (scratchpad rtlayout/page.js + page.css, 3 November): the same DOM
    (.screen.rt > .stage with .hud, .kstrip, .toast; .ctl with ◀ ▶ | Skill, Roll, Strike; compact sheets),
    the same geometry (the field the stage's width on a phone, a band of 9.5 bodies on a laptop; the front

@@ -108,8 +108,8 @@
       '<div class="seg" role="radiogroup" aria-label="' + U.tr("Scene titles") + '">' +
       ["full", "short"].map((v) => '<button type="button" role="radio" data-titles="' + v + '" aria-checked="' + ((prefs.titles || "full") === v) + '">' + U.tr(v === "full" ? "Full" : "Short") + "</button>").join("") + "</div></div>" +
       '<label class="toggle"><input type="checkbox" id="m-living"' + (prefs.living !== false ? " checked" : "") + "><span>" + U.tr("Living paintings") + "<small>" + U.tr("Some paintings move for a few seconds. Each uses about 1 MB of data.") + "</small></span></label>" +
-      // Fights: real-time / turn-based (PRD §18.15). Shown only behind the developer switch until the real-time screens are approved.
-      (K.RT && K.RT.dev() ? '<div class="seg-row"><span>' + U.tr("Fights") + "<small>" + U.tr("Real-time: you move, strike and roll as the fight happens. Turn-based: every fight in turns, as before.") + "</small></span>" +
+      // Fights: real-time / turn-based (PRD §18.15), for every player.
+      (K.RT ? '<div class="seg-row"><span>' + U.tr("Fights") + "<small>" + U.tr("Real-time: you move, strike and roll as the fight happens. Turn-based: every fight in turns, as before.") + "</small></span>" +
         '<div class="seg" role="radiogroup" aria-label="' + U.tr("Fights") + '">' +
         ["realtime", "turns"].map((v) => '<button type="button" role="radio" data-fights="' + v + '" aria-checked="' + (K.RT.mode() === v) + '">' + U.tr(v === "turns" ? "Turn-based" : "Real-time") + "</button>").join("") + "</div></div>" : "") +
       '<label class="toggle"><input type="checkbox" id="m-assist"' + (U.assist() ? " checked" : "") + "><span>" + U.tr("Meet blows for me") + "<small>" + U.tr("In fights, blows aimed at you are met for you, on kinder odds. On by itself in story mode.") + "</small></span></label>" +

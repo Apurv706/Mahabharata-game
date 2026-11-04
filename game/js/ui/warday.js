@@ -1,6 +1,6 @@
-/* The new war-day screen for turn-based fights (PRD §18.15, stage 2), behind the developer switch with the rest of
-   §18.15 (K.prefs().rtDev or ?rt=1; engine/realtime.js RT.dev). With the switch off every turn-based fight is
-   ui/battle.js's screen as before. Laid out as the approved layout page (scratchpad rtlayout, the "war day"):
+/* The new war-day screen for turn-based fights (PRD §18.15, stage 2): every fight not played in real time (with the
+   menu's "Fights: turn-based", every fight). Only the test-only override K.prefs({ oldFights: true }) (engine/
+   realtime.js RT.old) brings back ui/battle.js's screen. Laid out as the approved layout page (scratchpad rtlayout, the "war day"):
    both lines across the lower ground, each stepping back in staggered rows; a chip over every foe with the coming
    blow; orange rings under the marked (a red "×2" pill for two blows), an arrow's lane as a thin dashed line, a
    sweep under the whole line; green bars on your side, red on the foes'; compact move cards (Strike, Shield wall,
@@ -29,7 +29,7 @@
   U.warScreen = () => V; // for the fit checks and screenshots
 
   // ---------- Which fights ----------
-  U.warWanted = (encId) => !!(RT && RT.dev() && !RT.wanted(encId) && !K.headless && !/jsdom/i.test(navigator.userAgent || ""));
+  U.warWanted = (encId) => !!(RT && !RT.old() && !RT.wanted(encId) && !K.headless && !/jsdom/i.test(navigator.userAgent || ""));
   U.startBattle = function (encId, onEnd) {
     if (V) stop();
     want = U.warWanted(encId) ? { encId, onEnd } : null;

@@ -6,9 +6,10 @@
    - no text shows an unfilled {token};
    - nobody fights on both sides of the same battle, and a friend called for help is not already there;
    - nothing throws, and every life ends.
-   With RT=1 (or --rt) a real-time fight (PRD §18.15) is played by engine/realtime.js's bot for its
-   outcome instead of a random one, and each is checked to end with a proper outcome.
-   Usage: node tests/lives.js [lives=400] [seed=1] [--rt] */
+   By default a real-time fight (PRD §18.15) is played by engine/realtime.js's bot for its outcome
+   instead of a random one, and each is checked to end with a proper outcome; RT=0 (or --turns) gives
+   every fight a random outcome as on the turns.
+   Usage: node tests/lives.js [lives=400] [seed=1] [--turns] */
 const fs = require("fs");
 const path = require("path");
 const G = path.join(__dirname, "..", "game");
@@ -20,8 +21,8 @@ for (const src of [...html.matchAll(/<script src="([^"]+)"><\/script>/g)].map((m
 K.UI = { esc: (s) => s };
 (0, eval)(fs.readFileSync(path.join(G, "js/ui/map.js"), "utf8")); // K.locOf, used by the homeland helpers
 K.save = () => true;
-const RTM = process.env.RT === "1" || process.argv.includes("--rt");
-if (RTM) K.RT.force = true;
+const RTM = process.env.RT !== "0" && !process.argv.includes("--turns"); // real-time by default (RT=0 or --turns: every fight on the turns)
+K.RT.force = RTM;
 let rtFights = 0;
 const rtStats = {}, tbStats = {};
 if (RTM && process.env.PARAMS) Object.assign(K.RT.P, JSON.parse(process.env.PARAMS));
