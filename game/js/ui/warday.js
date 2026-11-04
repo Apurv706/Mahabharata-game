@@ -443,7 +443,7 @@
     void B;
   }
   function aid(k) {
-    if (!canMove()) return;
+    if (!canMove()) { toast(K.tr("Not now")); return; } // the foes' turn, or the read: Aid waits for your move (a tap is never lost silently)
     closeSheet();
     ensureTarget();
     if (k === "herbs") { if (!C.act("herbs", B0().units[0].uid)) toast(K.tr((K.S.items.herbs || 0) > 0 ? "Not now" : "No herbs left")); return; }
