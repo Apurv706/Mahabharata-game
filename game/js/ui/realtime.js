@@ -8,7 +8,7 @@
    height, with a burning diya that closes them after 6 s; a tap outside closes them; the fight waits.
    Keys: A/D or ←/→ move, W/S or ↑/↓ change row, J strike, K or Space roll, L skill, H herbs, C call, U
    divine weapon, O orders, P or Esc pause, E spare. Mouse (laptops): click the ground to walk, a foe to
-   strike; right- or Shift-click rolls. Under the tests (K.headless, jsdom) the bot plays it at once. */
+   strike; right- or Shift-click rolls (a shield-carrier holds K, Space or the right button to Block). Under the tests (K.headless, jsdom) the bot plays it at once. */
 (function (K) {
   "use strict";
   const U = K.UI, C = K.Combat, RT = K.RT;
@@ -27,6 +27,10 @@
   const FLAME = '<span class="flame" aria-hidden="true"><svg viewBox="0 0 24 24"><circle class="fr-bg" cx="12" cy="12" r="10.5"/><circle class="fr" cx="12" cy="12" r="10.5" pathLength="100"/><path class="fl" d="M12 4.5 C15 8.5 16.2 11 15.2 14 C14.6 16.2 13.2 17.2 12 17.2 C10.8 17.2 9.4 16.2 8.8 14 C7.8 11 9 8.5 12 4.5 Z"/><path class="lamp" d="M6.5 17 Q12 21.5 17.5 17 Z"/></svg></span>';
   const SKILL_NAME = { aimed: "Aimed shot", quake: "Ground-shaker", ridedown: "Ride them down", command: "Command", salve: "Herbal salve", vanish: "Vanish into the dust", song: "Battle song" };
   const KEYS_ALL = "A / D move · W / S change row · J strike · K or Space roll · L skill · H herbs · C call · U divine weapon · O orders · P pause · E spare";
+  // A shield-carrier (C.hasShield: the mace, the sword paths) blocks where the others roll (owner, 4 November).
+  const KEYS_BLOCK = "A / D move · W / S change row · J strike · hold K or Space to block · L skill · H herbs · C call · U divine weapon · O orders · P pause · E spare";
+  const blocker = () => !!(V && V.R && V.R.blocker);
+  const mace = () => !!(V && V.R && RT.comboOf(V.R).length === 2);
   const WEAPON = {
     spear: '<svg viewBox="0 0 100 12" aria-hidden="true"><path d="M3 6 H80" stroke="#5a3418" stroke-width="3" stroke-linecap="round"/><path d="M79 2 L98 6 L79 10 Z" fill="#dcd7c8" stroke="#1d0f08" stroke-width="1"/></svg>',
     bow: '<svg viewBox="0 0 100 24" aria-hidden="true"><path d="M4 20 Q50 -10 96 20" fill="none" stroke="#5a3418" stroke-width="3.4" stroke-linecap="round"/><path d="M4 20 L96 20" stroke="#efe2c0" stroke-width="1"/></svg>',
@@ -35,7 +39,7 @@
   };
   // Each unit as a puppet (a short form of ui/battle.js's specFor, which is private to that screen).
   function specFor(u) {
-    if (u.side === "player") { const sp = K.puppetSpec(K.S); return C.hasShield && C.hasShield() ? Object.assign({}, sp, { gear: (sp.gear || []).filter((g) => g !== "shield").concat("buckler") }) : sp; } // a small shield on a sword path
+    if (u.side === "player") { const sp = K.puppetSpec(K.S); return C.hasShield && C.hasShield() ? Object.assign({}, sp, { gear: (sp.gear || []).filter((g) => g !== "shield").concat("buckler") }) : sp; } // a small shield on the mace and sword paths
     if (u.person && K.PUPPETS && K.PUPPETS[u.person]) return U.puppetFor(u.person);
     const n = String(u.src || u.name);
     if (/archer|chariot/i.test(n)) return { pronoun: "he", palette: ["#9e6a40", "#5d3b2a", "#9f8250"], headgear: "capfeather", hat: "#5d3b2a", gear: ["bracer"], item: "bow", stance: "archer", stage: "adult" };
@@ -95,13 +99,14 @@
           '<button type="button" class="hb withdraw" data-act="withdraw">' + T("Withdraw") + "</button>" +
           '<button type="button" class="hb pause" data-act="pause" aria-label="' + T("Pause") + '" title="' + T("Pause") + '">' + PAUSE + "</button>" +
           '</div><button type="button" class="hb aid" data-act="aid" aria-haspopup="dialog">' + T("Aid") + " ▾</button></div></div>" +
-        '<div class="kstrip" aria-hidden="true"><span class="ks-skill"><svg class="ring" viewBox="0 0 40 40"><circle class="bg" cx="20" cy="20" r="16"/><circle class="fg" cx="20" cy="20" r="16" stroke-dasharray="100.5" stroke-dashoffset="0"/></svg>' + skill + ' <kbd>L</kbd></span><span class="ks-herbs">' + T("Herbs") + ' <b id="ksherbs"></b> <kbd>H</kbd></span><span class="ks-keys">' + T("J strike · K roll · L skill · H herbs · W/S row · P pause") + "</span></div>" +
+        '<div class="kstrip" aria-hidden="true"><span class="ks-skill"><svg class="ring" viewBox="0 0 40 40"><circle class="bg" cx="20" cy="20" r="16"/><circle class="fg" cx="20" cy="20" r="16" stroke-dasharray="100.5" stroke-dashoffset="0"/></svg>' + skill + ' <kbd>L</kbd></span><span class="ks-herbs">' + T("Herbs") + ' <b id="ksherbs"></b> <kbd>H</kbd></span><span class="ks-keys">' + T(R.blocker ? "J strike · K block · L skill · H herbs · W/S row · P pause" : "J strike · K roll · L skill · H herbs · W/S row · P pause") + "</span></div>" +
         '<div class="banner off" role="status"></div><div class="toast off" role="status"></div></div>' +
       '<div class="ctl" id="rt-ctl"><div class="pad"><button type="button" class="mv" data-hold="l" aria-label="' + T("Move left") + '">◀' + kb("A") + '</button><button type="button" class="mv" data-hold="r" aria-label="' + T("Move right") + '">▶' + kb("D") + "</button></div>" +
-        '<ul class="keys">' + T(KEYS_ALL).split(" · ").map((x) => "<li>" + U.esc(x) + "</li>").join("") + "</ul>" +
+        '<ul class="keys">' + T(R.blocker ? KEYS_BLOCK : KEYS_ALL).split(" · ").map((x) => "<li>" + U.esc(x) + "</li>").join("") + "</ul>" +
         '<div class="acts"><button type="button" class="skill" data-act="skill"' + (R.skill ? "" : " disabled") + '><svg class="ring" viewBox="0 0 40 40" aria-hidden="true"><circle class="bg" cx="20" cy="20" r="18"/><circle class="fg" cx="20" cy="20" r="18" stroke-dasharray="113.1" stroke-dashoffset="0"/></svg><span>' + skill + "</span>" + kb("L") + "</button>" +
-          '<button type="button" class="roll" data-act="roll">' + T("Roll") + kb("K") + "</button>" +
-          '<button type="button" class="strike" data-act="strike">' + T("Strike") + "<small>" + T("×3 combo") + "</small>" + kb("J") + "</button></div></div>" +
+          (R.blocker ? '<button type="button" class="roll block" data-hold="block" aria-label="' + T("Block") + '">' + T("Block") + kb("K") + "</button>"
+            : '<button type="button" class="roll" data-act="roll">' + T("Roll") + kb("K") + "</button>") +
+          '<button type="button" class="strike" data-act="strike">' + T("Strike") + "<small>" + T(RT.comboOf(R).length === 2 ? "×2 combo" : "×3 combo") + "</small>" + kb("J") + "</button></div></div>" +
       '<div class="sheet orders-sheet" role="dialog" aria-label="' + T("Orders") + '" hidden></div>' +
       '<div class="sheet aid-sheet dropdown" role="dialog" aria-label="' + T("Aid") + '" hidden></div>' +
       '<div class="sheet pause-sheet" role="dialog" aria-label="' + T("Paused") + '" hidden></div></div>');
@@ -126,6 +131,7 @@
       if (e.pointerType === "touch" && !V.touched) { V.touched = true; layout(); } // a touch on a laptop's screen: the corner controls
       if (e.pointerType !== "mouse") { V.swipe = { x: e.clientX, y: e.clientY, t: performance.now() }; return; }
       const p = C.player();
+      if ((e.button === 2 || e.shiftKey) && V.R.blocker) { V.held.block = true; V.mouseBlock = true; return; } // held while the button is
       if (e.button === 2 || e.shiftKey) { V.queue.roll = true; V.queue.rollDir = x >= p.rt.x ? 1 : -1; return; }
       if (e.button !== 0) return;
       const foe = foeAt(e.clientX - r.left, e.clientY - r.top);
@@ -133,6 +139,7 @@
       V.walk = { x, foe };
     });
     V.stage.addEventListener("pointerup", (e) => {
+      if (V.mouseBlock) { V.mouseBlock = false; V.held.block = false; }
       const sw = V.swipe; V.swipe = null;
       if (!sw || performance.now() - sw.t > 600) return;
       const dx = e.clientX - sw.x, dy = e.clientY - sw.y;
@@ -220,6 +227,7 @@
   function pose(a, p, k, z) { if (!a) return; if (a.rig) a.rig.set(p, k || 900, z == null ? 0.5 : z); else a.svg.setAttribute("class", a.svg.getAttribute("class").replace(/\bpose-\S+/, "pose-" + ({ windup: "strike", ready: "brace", bowready: "brace", draw: "aim", duck: "duck", kneel: "kneel", loose: "loose" }[p] || p))); }
   function home(a, ms) { setTimeout(() => { if (!V || !a.u) return; if (a.swing && performance.now() - a.swing.t0 < 300) return; // a new blow begun meanwhile keeps its swing
     if (a.rig) { a.rig.t.dx = 0; a.rig.t.dy = 0; if (a.armed) { a.rig.unwield(); a.armed = false; } }
+    if (a.u.side === "player" && V.R.block && a.u.hp > 0) { pose(a, "shieldUp", 1500, 0.6); return; } // the shield stays up while held
     if (a.u.rt && a.u.rt.beaten && a.u.hp > 0) pose(a, "kneel", 600, 0.6); else if (a.rig && a.u.hp > 0) a.rig.set(a.base, 520, 0.42); else if (!a.rig && a.u.hp > 0) pose(a, a.u.side === "player" ? "brace" : "stand"); }, ms || 0); }
   // ---------- Blows that land (owner, 4 November: room for the weapons; the blow falls on the body or the weapon) ----------
   // A swing ends with the weapon's tip on the one struck: U.aimBlow (puppet-anim.js) turns the arm about the shoulder
@@ -239,14 +247,16 @@
     if (!up) return null;
     return t.svg.querySelector(".pp-body .it-s") ? "shield" : t.svg.querySelector(".pp-body .foreF .it-w") ? "weapon" : null;
   }
-  function swing(a, t, guard) {
+  // arc: a mace's smash or sweep (U.MACE_ARCS): the blow ends in its own pose and falls where it falls (shoulders, ribs).
+  function swing(a, t, guard, arc) {
     if (!a || a.u.hp <= 0) return;
     const now = performance.now(), again = a.swing && now - a.swing.t0 < IMPACT + 60; // the blow already in the air, re-aimed at whom it strikes
+    const A = arc && U.MACE_ARCS ? U.MACE_ARCS[arc] : null;
     armFor(a);
-    a.swing = { t0: again ? a.swing.t0 : now, on: t ? t.u.uid : null, aim: null };
-    if (a.rig && t && t.u.hp > 0 && t !== a) a.swing.aim = U.aimBlow(a.rig, t.svg, { guard, k: 1700, z: 0.55 });
-    if (!a.swing.aim) pose(a, "strike", 1600, 0.55);
-    home(a, 460);
+    a.swing = { t0: again ? a.swing.t0 : now, on: t ? t.u.uid : null, aim: null, arc };
+    if (a.rig && t && t.u.hp > 0 && t !== a) a.swing.aim = U.aimBlow(a.rig, t.svg, { guard, k: A ? 1500 : 1700, z: 0.55, pose: A ? A.end : undefined, at: A ? A.at : undefined });
+    if (!a.swing.aim) pose(a, A ? A.end : "strike", 1600, 0.55);
+    home(a, A ? 560 : 460);
   }
   function landHit(f) { // a melee blow: the struck one reacts when the weapon reaches it
     const a = V.actors.get(f.uid), by = f.by != null && V.actors.get(f.by);
@@ -254,7 +264,7 @@
     if (!f.melee || !by || by === a) return struck(a, f, null);
     by.swingOn = null;
     const guard = guardOf(a);
-    swing(by, a, guard);
+    swing(by, a, guard, f.arc);
     const sw = by.swing, wait = Math.max(0, sw.t0 + IMPACT - performance.now());
     setTimeout(() => {
       if (!V || !a.el.isConnected) return;
@@ -266,7 +276,7 @@
       (V.impacts = V.impacts || []).push({ by: bu.uid, on: au.uid, res, guard, apart: bu.rt && au.rt ? Math.abs(bu.rt.x - au.rt.x) : null, reach: bu.rt && bu.rt.reach, rows: bu.rt && au.rt ? Math.abs(bu.rt.lane - au.rt.lane) : 0, t: V.R.t });
       if (V.impacts.length > 60) V.impacts.shift();
       struck(a, f, pt);
-      home(by, (f.heavy ? 80 : 50) + 170);
+      home(by, (f.heavy ? 80 : 50) + (f.arc ? 300 : 170)); // a mace's follow-through is held a little longer
     }, wait);
   }
   function struck(a, f, pt) {
@@ -347,6 +357,7 @@
     }
     if (e.code === "KeyA" || e.code === "ArrowLeft") { V.held.l = true; e.preventDefault(); e.stopPropagation(); return; }
     if (e.code === "KeyD" || e.code === "ArrowRight") { V.held.r = true; e.preventDefault(); e.stopPropagation(); return; }
+    if ((e.code === "KeyK" || e.code === "Space") && blocker()) { V.held.block = true; e.preventDefault(); e.stopPropagation(); if (V.sheet) closeSheet(); return; } // held up while held
     if (e.code === "KeyW" || e.code === "ArrowUp" || e.code === "KeyS" || e.code === "ArrowDown") { e.preventDefault(); e.stopPropagation(); if (!e.repeat && !V.sheet) V.queue.row = e.code === "KeyW" || e.code === "ArrowUp" ? 1 : -1; return; }
     const a = KEY[e.code];
     if (!a) return;
@@ -355,7 +366,7 @@
     if (V.sheet && (a === "pause" || a === "orders")) return closeSheet();
     act(a);
   }
-  function onKeyUp(e) { if (!V) return; if (e.code === "KeyA" || e.code === "ArrowLeft") V.held.l = false; if (e.code === "KeyD" || e.code === "ArrowRight") V.held.r = false; }
+  function onKeyUp(e) { if (!V) return; if (e.code === "KeyA" || e.code === "ArrowLeft") V.held.l = false; if (e.code === "KeyD" || e.code === "ArrowRight") V.held.r = false; if (e.code === "KeyK" || e.code === "Space") V.held.block = false; }
   function act(a) {
     if (!V) return;
     const R = V.R;
@@ -484,7 +495,9 @@
       else if (Math.abs(d) > 0.01 && !(p.rt.x <= RT.EDGE + 1e-6 && d < 0) && !(p.rt.x >= 1 - RT.EDGE - 1e-6 && d > 0)) move = d > 0 ? 1 : -1;
       else V.walk = null;
     }
-    return Object.assign({ move }, q);
+    if (V.held.block && V.R.blocker && !RT.can(V.R, "block") && V.R.winded && !V.windTold) { V.windTold = true; toast(K.tr("Winded")); }
+    if (!V.held.block) V.windTold = false;
+    return Object.assign({ move, block: !!V.held.block }, q);
   }
   function loop(now) {
     if (!V) return;
@@ -542,11 +555,16 @@
       if (u.rt.atk && u.side === "enemy" && !a.warned) a.warned = u.rt.atk;
       a.el.classList.toggle("windup", !!u.rt.atk && u.side === "enemy" && a.warned === u.rt.atk);
       if (u.rt.atk !== a.atk) {
-        if (u.rt.atk) { pose(a, u.rt.atk.ranged ? "draw" : "windup", 700, 0.5); const t = V.actors.get(u.rt.atk.on); if (t) nameTag(t, 1.5); }
-        else if (a.atk && !a.atk.ranged && u.hp > 0) { if (a.atk.area || a.atk.id === "salve") { pose(a, "strike", 1600, 0.55); home(a, 380); } else a.swingOn = a.atk.on; }
+        if (u.rt.atk) { pose(a, u.rt.atk.ranged ? "draw" : u.rt.atk.arc && U.MACE_ARCS ? U.MACE_ARCS[u.rt.atk.arc].up : "windup", u.rt.atk.arc ? 500 : 700, 0.5); const t = V.actors.get(u.rt.atk.on); if (t) nameTag(t, 1.5); }
+        else if (a.atk && !a.atk.ranged && u.hp > 0) { if (a.atk.area || a.atk.id === "salve") { pose(a, "strike", 1600, 0.55); home(a, 380); } else { a.swingOn = a.atk.on; a.swingArc = a.atk.arc || null; } }
         a.atk = u.rt.atk;
       }
       a.el.classList.toggle("unseen", u.side === "player" && (R.unseen > 0 || R.roll > 0));
+      // Your shield, up while you hold Block.
+      if (u.side === "player" && R.blocker && u.hp > 0 && !!R.block !== !!a.shieldUp) {
+        a.shieldUp = !!R.block; a.el.classList.toggle("shield-up", a.shieldUp);
+        if (a.shieldUp) { if (a.rig) { a.rig.t.dx = 0; a.rig.t.dy = 0; } pose(a, "shieldUp", 1500, 0.6); } else home(a, 0);
+      }
       // Your soldiers on Defend raise their shields while a blow is marked on them (PRD §18.15).
       if (u.side === "ally" && u.plural && !u.person && !u.called && u.hp > 0) {
         const up = R.orders.soldiers === "defend" && B.units.some((e) => e.side === "enemy" && e.hp > 0 && e.rt && e.rt.atk && e.rt.atk.on === u.uid);
@@ -560,7 +578,7 @@
     for (const f of R.fx) fx(f);
     R.fx.length = 0;
     // A blow that struck no one (dodged, a whiff) still swings at whom it was meant for.
-    V.actors.forEach((a) => { if (a.swingOn !== undefined && a.swingOn !== null) { const t = V.actors.get(a.swingOn); a.swingOn = null; swing(a, t, guardOf(t)); } });
+    V.actors.forEach((a) => { if (a.swingOn !== undefined && a.swingOn !== null) { const t = V.actors.get(a.swingOn); a.swingOn = null; swing(a, t, guardOf(t), a.swingArc); a.swingArc = null; } });
     if (V.ax) axTick();
     marks();
     const w = (id, v) => { const e = V.el.querySelector("#" + id); if (e) e.style.width = clamp(v, 0, 100) + "%"; };
@@ -574,7 +592,8 @@
       sk.querySelector(".ring .fg").style.strokeDashoffset = (113.1 * (1 - f)).toFixed(1); sk.classList.toggle("ready", R.skillCd <= 0);
       ks.querySelector(".fg").style.strokeDashoffset = (100.5 * (1 - f)).toFixed(1); ks.classList.toggle("ready", R.skillCd <= 0); }
     $("#ksherbs").textContent = String(K.S.items.herbs || 0);
-    $(".acts .roll").classList.toggle("off", R.breath < RT.P.rollMin);
+    $(".acts .roll").classList.toggle("off", R.blocker ? !R.block && !RT.can(R, "block") : R.breath < RT.P.rollMin);
+    if (R.blocker) $(".acts .roll").classList.toggle("held", !!R.block);
     $(".hb.withdraw").hidden = !C.canFlee();
     $(".edgefx.l").classList.toggle("on", !!R.pushing && p.rt.face < 0);
     $(".edgefx.r").classList.toggle("on", !!R.pushing && p.rt.face > 0);
@@ -618,7 +637,11 @@
     const R = V.R, p = C.player(), me = V.actors.get(p.uid);
     const A = (uid) => V.actors.get(uid);
     switch (f.k) {
-      case "blow": if (f.n === 2) { pose(me, "windup", 1700, 0.55); setTimeout(() => { if (V && me) swing(me, inFront(p), null); }, 120); } else swing(me, inFront(p), null); if (K.Sound) K.Sound.play("tap"); break;
+      case "blow": if (f.arc && U.MACE_ARCS) { // a mace: the long wind-up, then the swing so the weapon arrives as the blow lands
+          pose(me, U.MACE_ARCS[f.arc].up, 1300, 0.55);
+          setTimeout(() => { if (V && me && !V.R.block) swing(me, inFront(p), null, f.arc); }, Math.max(0, f.land * 1000 - IMPACT));
+          if (K.Sound) K.Sound.play("tap"); break; }
+        if (f.n === 2) { pose(me, "windup", 1700, 0.55); setTimeout(() => { if (V && me) swing(me, inFront(p), null); }, 120); } else swing(me, inFront(p), null); if (K.Sound) K.Sound.play("tap"); break;
       case "roll": pose(me, "duck", 1400, 0.6); home(me, 400); break;
       case "kneel": pose(me, "kneel", 600, 0.6); home(me, 1100); break;
       case "skill": pose(me, R.skill === "aimed" ? "loose" : R.skill === "salve" ? "kneel" : R.skill === "song" || R.skill === "command" ? "cheer" : "strike", 900, 0.55); home(me, 500);
@@ -630,10 +653,13 @@
       case "spark": { // a blow taken on a shield: it is raised to meet it, and the sparks fly where the blow lands on it
         const a = A(f.uid); if (!a) break;
         a.sparkAt = performance.now();
+        if (a.u.side === "player" && R.block) break; // already behind the raised shield
         if (a.u.side !== "player" || !f.glance) { pose(a, "guard", 1400, 0.55); if (!a.shieldUp) home(a, 500); }
         break; }
       case "miss": { const a = A(f.uid); if (a) pop(a, K.tr("Missed"), "miss"); break; }
       case "perfect": toast(K.tr("Perfect roll")); break;
+      case "perfectblock": { toast(K.tr("Perfect block")); const a = A(f.uid); if (a && a.u.hp > 0) { setTimeout(() => { if (V && a.u.hp > 0) { pose(a, "strain", 700, 0.45); if (a.rig) a.rig.kick({ rot: 160 * (a.u.rt ? -a.u.rt.face : 1), tx: 20 }); home(a, 900); } }, 120); } break; } // the one who struck staggers back off the shield
+      case "winded": if (blocker()) toast(K.tr("Winded")); break;
       case "fall": { const a = A(f.uid); if (a) fell(a); break; }
       case "shot": { // the arrow leaves the bow (measured from the live figure) and flies down its lane
         const a = A(f.uid), s = f.shot; if (!a) break;
@@ -660,7 +686,7 @@
   }
 
   // ---------- Before the fight: the rules card and the walkthrough (as ui/warday.js brief() and tour()) ----------
-  const RT_ICONS = { move: "M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4", strike: "M4 20l5-5M7 13l4 4M9 15L20 4v3L11 16", roll: "M12 4a8 8 0 108 8M20 4v5h-5", skill: "M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z",
+  const RT_ICONS = { block: "M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z", move: "M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4", strike: "M4 20l5-5M7 13l4 4M9 15L20 4v3L11 16", roll: "M12 4a8 8 0 108 8M20 4v5h-5", skill: "M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z",
     orders: "M6 21V4M6 4h11l-2 4 2 4H6", aid: "M5 19c0-8 6-13 14-14-1 8-6 14-14 14zM5 19l7-7", spare: "M7 11V5.5a1.5 1.5 0 013 0V11", flee: "M10 6l-6 6 6 6M4 12h11", pause: "M8 5v14M16 5v14" };
   const keysOnly = () => V.el.classList.contains("wide") && !V.el.classList.contains("touch");
   function brief() {
@@ -676,8 +702,10 @@
     const k = keysOnly(), list = [];
     const add = (ic, name, words) => list.push([ic, name, words]);
     add("move", T("Move"), T(k ? "A / D to walk; W / S to change row" : "Hold ◀ ▶ to walk; swipe up or down to change row"));
-    add("strike", T("Strike"), T(k ? "J, or click a foe; three in a row for a combo" : "Three in a row for a combo"));
-    add("roll", T("Roll"), T(k ? "K or Space, through a marked blow; it costs breath" : "Through a marked blow; it costs breath"));
+    if (mace()) add("strike", T("Strike"), T(k ? "J, or click a foe: an overhead smash, then a side sweep" : "An overhead smash, then a side sweep"));
+    else add("strike", T("Strike"), T(k ? "J, or click a foe; three in a row for a combo" : "Three in a row for a combo"));
+    if (R.blocker) add("block", T("Block"), T(k ? "Hold K or Space to raise your shield; it costs breath" : "Hold to raise your shield; it costs breath"));
+    else add("roll", T("Roll"), T(k ? "K or Space, through a marked blow; it costs breath" : "Through a marked blow; it costs breath"));
     if (R.skill) add("skill", T(SKILL_NAME[R.skill]), T("Your path's skill; its ring fills as it gets ready"));
     if (B.units.some((u) => u.side === "ally" && u.hp > 0 && !u.still)) add("orders", T("Orders"), T("How those beside you fight"));
     add("aid", T("Aid"), T("Herbs, a divine weapon, a call for help"));
@@ -702,8 +730,10 @@
     const R = V.R, k = keysOnly(), has = (sel) => !!V.el.querySelector(sel);
     const steps = [
       [k ? ".kstrip .ks-keys" : ".pad", k ? "Press A or D, or click the ground, to walk. You can pass your own people, never a foe." : "Hold ◀ ▶ to walk. You can pass your own people, never a foe."],
-      [k ? ".kstrip .ks-keys" : ".acts .strike", k ? "Press J, or click a foe, to strike. The third in a row knocks him back." : "Strike three times for a combo. The third blow knocks a foe back."],
-      [k ? ".kstrip .ks-keys" : ".acts .roll", k ? "A blow is marked on the ground. Press K or Space (or right-click) to roll through it before the mark fills. Each roll costs breath." : "A blow is marked on the ground. Roll through it before the mark fills to its rim. Each roll costs breath."],
+      mace() ? [k ? ".kstrip .ks-keys" : ".acts .strike", k ? "Press J, or click a foe, to strike: an overhead smash, then a side sweep that knocks him back." : "Strike: an overhead smash, then a side sweep that knocks a foe back."]
+        : [k ? ".kstrip .ks-keys" : ".acts .strike", k ? "Press J, or click a foe, to strike. The third in a row knocks him back." : "Strike three times for a combo. The third blow knocks a foe back."],
+      R.blocker ? [k ? ".kstrip .ks-keys" : ".acts .roll", k ? "A blow is marked on the ground. Hold K or Space (or the right mouse button) to raise your shield before the mark fills. Raised just in time, it staggers him. Holding it costs breath." : "A blow is marked on the ground. Hold Block to raise your shield before the mark fills to its rim. Raised just in time, it staggers him. Holding it costs breath."]
+        : [k ? ".kstrip .ks-keys" : ".acts .roll", k ? "A blow is marked on the ground. Press K or Space (or right-click) to roll through it before the mark fills. Each roll costs breath." : "A blow is marked on the ground. Roll through it before the mark fills to its rim. Each roll costs breath."],
       R.skill ? [k ? ".kstrip .ks-skill" : ".acts .skill", k ? "L is your path's skill. The ring in the strip fills as it gets ready." : "Your path's skill. The ring fills as it gets ready again."] : null,
       [null, k ? "W or S (or ↑ ↓) steps to another row." : "Swipe up or down on the stage to step to another row."],
       has(".hb.orders") ? [".hb.orders", "Orders tell those beside you how to fight."] : null,

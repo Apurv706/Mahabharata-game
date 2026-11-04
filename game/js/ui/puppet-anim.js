@@ -38,6 +38,16 @@
     looseLow: { rot: 6, head: 6, armF: -62, foreF: -6, armB: -40, foreB: -10, legF: -16, legB: 16, shinB: 8, tilt: 18 },
     guard: { rot: -8, ty: 6, head: 4, armF: -112, foreF: -70, armB: -60, foreB: -50, legF: -24, shinF: 14, legB: 22, shinB: 14, item: 180 },
     block: { rot: -6, armF: -112, foreF: -70, item: 180 },
+    // The shield held up (Block, owner 4 November): the back arm brings the shield round in front of the chest, the weapon
+    // held back and low behind it, the knees bent.
+    shieldUp: { rot: -4, ty: 5, head: 6, armB: -78, foreB: -38, armF: 24, foreF: -64, legF: -24, shinF: 14, legB: 22, shinB: 14, item: 180 },
+    // The mace's two blows (owner, 4 November: heavy and slow): the overhead smash wound up over the shoulder, the weight
+    // behind the head, and brought down onto the head and shoulders; the side sweep wound back low behind the hip and
+    // swung through at the ribs.
+    smashUp: { rot: -18, tx: -6, ty: 2, head: -6, armF: -148, foreF: -104, armB: -40, foreB: -30, legF: -22, shinF: 6, legB: 20, shinB: 12, item: 204 },
+    smash: { rot: 20, tx: 11, ty: 4, head: 10, armF: -56, foreF: -4, armB: 16, foreB: -10, legF: -36, shinF: 18, legB: 26, shinB: 6, item: 180 },
+    sweepBack: { rot: -18, tx: -8, ty: 3, head: -4, armF: 95, foreF: -10, armB: -50, foreB: -40, legF: -24, shinF: 8, legB: 24, shinB: 12, item: 100 },
+    sweep: { rot: 12, tx: 12, ty: 2, head: 4, armF: -84, foreF: -2, armB: 30, foreB: -12, legF: -32, shinF: 14, legB: 28, shinB: 6, item: 180 },
     kneel: { ty: 26, head: 14, legF: -84, shinF: 96, legB: 8, shinB: 98, armF: -36, foreF: -84, armB: -30, foreB: -70 },
     strain: { rot: -14, head: -10, armF: -30, foreF: -40, armB: 30, foreB: -20, legB: 28, shinB: 10 },
     slack: { armF: 70, foreF: 30, armB: 40, foreB: 20, head: 22, legF: -14, shinF: 18, legB: 8, shinB: 10, item: 120 },
@@ -324,9 +334,11 @@
     const al0 = Math.atan2(a.y - S.y, a.x - S.x), be0 = Lw ? Math.atan2(T.y - a.y, T.x - a.x) - al0 : 0;
     const B = what.box;
     // Where on it: the chest; a shield at its middle; a parrying weapon halfway along its blade.
+    // (o.at: "high", a smash, on the shoulders; "mid", a sweep, at the ribs.)
+    const atY = o.at === "high" ? 0.08 : o.at === "mid" ? 0.5 : 0.3;
     const P = what.kind === "weapon" ? fw({ x: what.tip.x + (mid(B).x - what.tip.x) * 0.35, y: what.tip.y + (mid(B).y - what.tip.y) * 0.35 })
-      : what.kind === "shield" ? fw({ x: f > 0 ? B.left + B.width * 0.4 : B.right - B.width * 0.4, y: B.top + B.height * 0.45 })
-      : fw({ x: f > 0 ? B.left + B.width * 0.38 : B.right - B.width * 0.38, y: B.top + B.height * 0.3 });
+      : what.kind === "shield" ? fw({ x: f > 0 ? B.left + B.width * 0.4 : B.right - B.width * 0.4, y: B.top + B.height * (o.at === "high" ? 0.3 : 0.45) })
+      : fw({ x: f > 0 ? B.left + B.width * 0.38 : B.right - B.width * 0.38, y: B.top + B.height * atY });
     const Lmax = (La + Lw) * 0.985, Lmin = Lw ? Math.max(Math.abs(La - Lw) * 1.08, La * 0.35) : La;
     // A target in another row, lower or higher than the weapon can reach: the blow steps toward its row (dy, screen px).
     let vy = P.y - S.y; vy = Math.abs(vy) > Lmax * 0.8 ? vy - Math.sign(vy) * Lmax * 0.8 : 0; S.y += vy;
@@ -376,6 +388,9 @@
     (U.impacts = U.impacts || []).push(res); if (U.impacts.length > 40) U.impacts.shift();
     return res;
   };
+  // The mace's two blows, for every screen that draws one (ui/realtime.js, ui/warday.js): the wind-up pose, the pose the
+  // blow ends in (aimed by U.aimBlow), and where on the body it falls.
+  U.MACE_ARCS = { smash: { up: "smashUp", end: "smash", at: "high" }, sweep: { up: "sweepBack", end: "sweep", at: "mid" } };
   U.rigs = { clear() { live.clear(); }, size: () => live.size, thaw() { frozen = 0; } };
   U.RIG_POSES = POSES;
   U.wait = (ms) => new Promise((r) => setTimeout(r, ms));
