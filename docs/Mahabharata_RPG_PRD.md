@@ -3,7 +3,7 @@
 
 | | |
 |---|---|
-| **Status** | Draft v0.7 (browser edition as it is on 3 November, §16; remaining tasks, §17; storylines, weapons, magic and the puppet, all built, §18; changes from the 29 October playtest, §18.11; moments, the practice ground and vows that matter, §18.12; the war storylines, §18.13; the puppet's look, master leather, §18.14; battles, real-time and turn-based, §18.15; less to read, §18.16) |
+| **Status** | Draft v0.7 (browser edition as it is on 3 November, §16; remaining tasks, §17; storylines, weapons, magic and the puppet, all built, §18; changes from the 29 October playtest, §18.11; moments, the practice ground and vows that matter, §18.12; the war storylines, §18.13; the puppet's look, master leather, §18.14; battles, real-time and turn-based, built 3–4 November, §18.15; less to read, §18.16) |
 | **Last updated** | November 3, 2026 |
 | **Owner** | [Founder / Creative Director] |
 | **Doc type** | Living PRD; sections marked **[OPEN]** still need decisions |
@@ -412,7 +412,7 @@ Turn-based fights with puppets on a painted stage, timed block and dodge, adapti
 - **Fights of other kinds** in the war's side battles: escort, break through, weather it, chariot duel, archery at range, mace duel, carry the wounded (§18.13) [67]. Hold fights show the round count during the fight [68].
 - 70 encounters; 21 fight backgrounds, each 16:9 for wide screens with a 9:16 version for upright ones, and the test stages.
 - **Balance** (`tests/balance.js`, careful player): the target is about 60–70% won in an even fight and about 40% in a hard one. In October even fights were won about 63% of the time and hard fights about 41%. A short run on 3 November (60 lives) gave about 85% and 56%, above the target; to be looked at again (§17).
-- To be changed by §18.15: ordinary fights in real time, war days turn-based with marked blows, company orders and packs; not built yet.
+- Changed by §18.15 (built 3–4 November): ordinary fights in real time, war days turn-based with marked blows, company orders and packs.
 
 ### 16.6 Living paintings
 25 Runway clips (7 key moments, 6 endings, 12 key scenes) play in place of their paintings, silently, once, resting on the last frame; on phones at full width during the scene's opening, on desktops full-screen. MP4 (H.264) only, about 0.2 to 1.4 MB each and 20 MB in all; the VP9 WebM copies were dropped on 31 October so that the published game stays within its file limit. Menu switch; off with reduced motion or data saver. The burning house also has fire drawn in code (embers and a flickering glow), which plays where a phone will not play clips, such as iPhone Low Power Mode [35]. No more clips will be made (decided 29 October); all other motion is drawn in code.
@@ -480,7 +480,7 @@ The private play page holds at most 512 files, fewer than the game now has, so i
 
 ## 18. Storylines added (proposed 29 October; built 29 October to 2 November)
 
-Ideas to deepen a life, all inside the canon lock (§4): the epic's events happen as written, so Karna, Duryodhana and the Pandavas cannot die early at the player's hand, and the lac house still burns. The tension comes from what the player risks inside those fixed events. The pictures each needs are in `docs/Art_Brief_New_Storylines.pdf`; all have arrived. Every proposal in §18.1 to §18.9 is built (31 October, Change List 26–31), each described under its "As built" note. §18.13 adds the war storylines (2 November), §18.14 the puppet's new look (decided 3 November), §18.15 the battle mix (decided 3 November) and §18.16 the reading cut (2 November).
+Ideas to deepen a life, all inside the canon lock (§4): the epic's events happen as written, so Karna, Duryodhana and the Pandavas cannot die early at the player's hand, and the lac house still burns. The tension comes from what the player risks inside those fixed events. The pictures each needs are in `docs/Art_Brief_New_Storylines.pdf`; all have arrived. Every proposal in §18.1 to §18.9 is built (31 October, Change List 26–31), each described under its "As built" note. §18.13 adds the war storylines (2 November), §18.14 the puppet's new look (decided 3 November), §18.15 the battle mix (decided 3 November, built 3–4 November) and §18.16 the reading cut (2 November).
 
 ### 18.1 Friends who come to help (build first)
 - In a fight, a friend with a high bond (about 7 or more) can step in at a turning point: "Bhima comes through the gate." Once per fight, as an ally unit with their own way of fighting: Bhima takes the blows, Arjuna strikes from range, Karna is fierce and unpredictable, Charu has no armour.
@@ -704,49 +704,49 @@ Proposed and built on 2 November, and on the public site the same day after the 
 
 **Cost and risk.** About a week, all in code (`ui/puppet.js` and the puppet section of `css/screens.css`); no new paintings and no new AI art. Every body part is redrawn, so every pose (about 30), every test stage and every fight must be checked again. The joint origins in CSS must match the new parts exactly; a screen check should confirm that no limb separates at its joint in any pose. Figures carry more detail, so drawing cost per frame rises a little: check the frame rate on a mid-range phone in a three-a-side fight.
 
-### 18.15 Battles: real-time fights and turn-based war days (decided 3 November; not built)
+### 18.15 Battles: real-time fights and turn-based war days (decided 3 November; built 3–4 November)
 
-**Decision (3 November, owner):** after reviewing *Lumina* (a Claude-built 2.5D action RPG on three.js) and playing two test pages, fights become a mix. **Ordinary fights play in real time** on the painting (the "Forest Road Fight" / "Bandits on the road" test page). **The great war days stay turn-based** (the "Hold the Line" test page), with Lumina's craft added. Not to be built until the owner says so; the full decision is in the project doc `PRD_18.15_Battles.md`.
+**Decision (3 November, owner):** after reviewing *Lumina* (a Claude-built 2.5D action RPG on three.js) and playing two test pages, fights become a mix. **Ordinary fights play in real time** on the painting (the "Bandits on the road" test page). **The great war days stay turn-based** (the "Hold the Line" test page), with Lumina's craft added. **Switched on 4 November:** real-time is the default for every player; the old screen is kept only as a test override. The full decision, with every grooming answer, is in the project doc `PRD_18.15_Battles.md`.
 
 **Which fights are which.** A fight is turn-based when the player stands in a line with a company, or holds against one of the epic's champions while the epic's beats arrive round by round. Every other fight is real-time.
 - *Real-time:* the fights before the war (`e_ugra`, `e_spar`, `e_bandits`, `e_kings`, `e_panchala`, `e_border`, `e_gandharva`, `e_sudatta`, `e_jayadratha`, `e_cattle`, `e_cattle_k`); war skirmishes and duels (`e_guard`, `e_hunt`, `e_gate`, `e_road`, `e_jaya`, `e_dushasana`, `e_night`, `e_ep_carts`, `e_ep_ugra`); the night raid (`e_raid`, `e_ash`, for its survival-horror feel); Yuyutsu's two day-2 fights (`cross_e_duel`, `cross_e_called`); the mace duel of the side battles; practice-ground sparring.
 - *Turn-based:* the line on a war day (`e_day1`, `e_day16`, `e_day18`); the holding fights (`hold_*`, `e_ep_bhishma`); the wheel (`e_wheel`, `e_last_stand`, `e_ring`); army battles; every holding fight of the war storylines; your child's line and the reach to Karna; the opening dream (`e_dream`).
-- *Stay as built (2 November):* the archery duel, the chariot duel and the carry keep their own controls; escort, break-through and weather-it stay turn-based; day 17 stays the chariot-controlled hold.
+- *Stay as built:* the archery duel, the chariot duel, the carry and the carts fight keep their own controls; escort, break-through and weather-it stay turn-based; day 17 stays the chariot-controlled hold.
 
-**Real-time fights.** The painting fills the stage, figures side-on on its ground, controls below, status bars top left (health, breath, friends), the fight's name and pack count top right.
-- *Controls* (touch upright; keys on desktop): move ◀ ▶; strike, a three-blow combo whose third blow knocks back; roll, a short dodge that costs breath (winded below a minimum; attacks never stop for want of breath); one skill from the path with a recharge (archer's quick shot, mace fighter's ground strike, healer's salve, and one each for the other paths); herbs.
+**Real-time fights.** The painting fills the stage; figures stand side-on over two or three depth rows on a field about 9½ body-widths wide (phones draw figures smaller rather than show less). Status bars top left; Orders, *Aid ▾* (herbs, the divine weapon, call for help) and Pause top right; controls below.
+- *Controls* (touch upright; keys on a laptop, where clicking a foe also strikes): move ◀ ▶, walking past your own side; **Strike** by weapon (a three-blow combo whose third blow knocks back; two heavy, slow blows for the mace, an overhead smash then a side sweep; three shots for the bow, point-blank too); **Block** for every shield-carrier (mace, sword, spear, the charioteer on foot: hold to raise the shield, frontal blows mostly stopped, drains breath, a perfect block staggers) or **Roll** for archers and dagger paths (a short dodge that costs breath); one path skill with a recharge (Aimed shot, Ground-shaker, Ride them down, Command, Herbal salve, Vanish into the dust, Battle song).
 - *Every enemy blow is readable:* a wind-up of at least about 0.3 s with the attacker flashing orange; a mark on the ground that fills to its rim exactly as the blow lands; an arrow's lane that tracks you, then locks white before release. A perfect roll slows the enemies for a moment. Orange-red for enemy blows, gold for yours, green for healing.
-- *Fair numbers:* at most two foes attack at once; a foe winds up only while fully on screen; foes off screen get an arrow at the edge.
-- *The edge:* you stay at least a fifth of the field, or two body-widths, from either side; dust thickens as you push against it.
-- *Hits have weight:* hit-freeze, knockback, flash, leather flakes, a shake on heavy blows, a slack-limbed fall.
-- *Friends:* call for help stays exactly as today (once a fight, for a few rounds); in real time the friend fights on a tactics preset (balanced, guard me, all-out, hold back) for the same span, then leaves.
-- *Packs:* larger fights come in packs, with a running count.
+- *Fair numbers:* at most two foes attack at once; a foe winds up only while fully on screen.
+- *The edge:* you stay a tenth of the field from either side; dust thickens as you push against it.
+- *Reach and contact:* each weapon has its own reach in body-widths (spear 2.25, mace 1.95, sword 1.65, club 1.45, hammer 1.3, dagger 1.25, fist 0.8); a blow lands on the body, a raised shield or a crossing blade, with sparks on metal. Archers always shoot and never draw a sword; every ordinary foe carries the weapon he is named for.
+- *Hits have weight:* hit-freeze, knockback, flash, leather flakes, a shake on heavy blows, a slack-limbed fall toward the middle of the stage, the weapon resting beside the body.
+- *Friends:* call for help stays as today; in real time the friend fights on a tactics preset (balanced, guard me, all-out, hold back) for the same span. Your soldiers take an order (defend, all-out, stay out). Both sit in one *Orders* menu.
+- *Packs:* larger fights come in packs, with a running count and a banner.
+- *Divine weapons:* the fight freezes, the screen blinks, the weapon's moment plays, then its element sweeps the field with a white-hot flash, a heavy shake and a ring-shaped pulse (about 2 s); a champion who can answer it does so with a counter-weapon.
+- *Sparing:* only a foe below 5% of his health, kneeling and asking ("Mercy!" / "दया!"), or one asleep under Sammohana or bound by Nagapasha, can be spared (✋ *Spare*, or E). The fight goes on; if every foe is spared the fight takes its spare branch, otherwise it is a win with the spare's effect given once.
+- *Time:* effects that last rounds last about 4 seconds a round.
 
-**Turn-based war days.** The current fights, with Lumina's additions:
-- *You see the round before you choose:* each foe's coming blow and damage over its head; the blow marked on the ground under its target (an arrow's lane drawn, a champion's sweep marking the whole line); a summary line ("Marked on you this round: 2 blows, 16 in all"); no more than two blows marked on you a round.
-- *Your moves:* Strike (tap a foe), Shield wall (halves every blow on the line this round), Rally (your company heals a little and strikes harder next round), beside path moves, astras and call for help. *Step aside* was dropped (it repeated the timed read).
-- *Standing orders for your company,* replacing the leader's mark: hold the line, guard me, press, fall back.
-- *Packs on a schedule,* and a champion's arrival as a short moment (white flash, darkened edges, a title, the line raising its shields).
-- *Depth on an upright phone:* each line stands front to back, the front figure lowest and largest, so six figures and their marks fit.
+**Turn-based war days.** Staged after the owner's *Hold the Line* page:
+- *You see the round before you choose:* each foe's coming blow and damage over its head; the blow marked on the ground under its target (×2 for two); an arrow's lane drawn; a champion's sweep shown as a ring under every one of your side; a summary line; no more than two blows marked on you a round.
+- *Your moves:* Strike (tap a foe), Shield wall (halves every blow on the line this round), Rally (your company heals a little and strikes harder next round), path moves; *Aid ▾* as in real time. *Step aside* was dropped.
+- *Company menu* (the gold button, opening below it): standing orders (hold the line, guard me, press, fall back) and *Change place* (front, middle, flank; the first pick costs no round). No Pause: the day waits for your move.
+- *Packs on a schedule;* the champion's pack comes last unless the story brings him early, and arrives as a short moment (white flash, darkened edges, a title, the line raising its shields). The two lines keep a fixed gap.
 
-**What stays the same.** Outcomes (canon, peril, story mode, scars, capture, call for help, astras and their counter-weapon clashes, vows and their watchers); the current balance (kept, by decision; to be measured again properly before the switch); every fight resolves without a screen (a fixed-step bot plays real-time fights to a reproducible result for the tests); the turn-based war days keep the timed read of a blow, and in real-time fights rolling and moving replace jump, duck and sidestep.
+**Losing and retrying.** *Try again* once a battle, at 80% health, with once-a-battle items left used; a second loss counts as today. Deadly tests outside fights (the lac-house escape) get one retry at the cost of a scar or a point of grace. Endings (16) are full-screen.
 
-**Accessibility.** A menu switch, *Fights: real-time / turn-based*, plays every fight turn-based (decided). Story mode and the assist setting roll out of marked blows automatically; reduced motion turns off the shake, the slow-motion tint and the champion's flash; touch buttons at least 58 px, one side of the screen per thumb.
+**What stays the same.** Outcomes (canon, peril, story mode, scars, capture, call for help, astras and their counter-weapon clashes, vows and their watchers). Every fight resolves without a screen: a fixed-step bot (60 steps a second) plays real-time fights to a reproducible result, and the tests play real-time by default. In real-time fights blocking, rolling and moving replace jump, duck and sidestep; the war days keep the timed read.
+
+**Balance (4 November).** Only the outliers were tuned (owner). Bot win rates, real-time against turn-based: `e_road` 51 / 55%, `e_jaya` 42 / 42%, `e_gandharva` 78 / 76%, `e_kings` 94 / 95%, `cross_e_duel` 33 / 28%, `e_raid` 44 / 43%; overall 63 / 69%. To be re-checked after the weapon changes. An easy / hard toggle may come later.
+
+**Accessibility.** *Fights: real-time / turn-based* in the in-life Menu plays every fight on the war-day screen. Story mode and the assist setting defend against marked blows automatically. *Calm motion* (a menu switch; motion is on by default) turns off the shake, the slow-motion tint and the champion's flash. Phone buttons about 44 px, labels 13–14 px, one side of the screen per thumb; the keyboard alone plays every fight on a laptop.
+
+**Screens.** Phone layout from the *Fight Layout Test* page (variant B, refined). Resume ▶ heads every paused menu. A real-time rules card and a skippable tour of the controls come before the first full fight. Name tags sit at the waist, above the figures. Weapons at rest never cover a face. Checked on iPhone SE, iPhone 15, Pro Max, two Android sizes and five laptop sizes, in English and Hindi, in Chromium; Safari still to check on a real iPhone.
 
 **Not taken from Lumina:** its 3D pixel-art world, moving camera and tilt-shift look; keyboard-and-mouse-only controls; its scale of engineering.
 
-**Decided 3 November, after review:**
-- *Time:* every effect that lasts rounds today (call for help, burning, stun, sleep) lasts about 4 seconds a round in real time.
-- *Divine weapons:* invoking one freezes the fight, the screen blinks, and the weapon's full-screen moment plays; a champion who can answer it does so with a counter-weapon (the clash), and ordinary foes take the blow.
-- *A skill for each path,* from its turn-based moves: archer, *Aimed shot* (an arrow down the lane, long reach); mace fighter, *Ground-shaker* (hits all around and knocks down); charioteer, *Ride them down* (a dash through the foes in front, knocking them down); strategist, *Command* (your friends and soldiers strike your foe together); healer, *Herbal salve* (heals you and friends near you over a few seconds); spy, *Vanish into the dust* (unseen for a moment; the next strike lands double); bard, *Battle song* (friends and soldiers quicker and stronger for a few seconds).
-- *Your soldiers* in a real-time war fight take an order from a button at the top right, as in the test page: defend, all-out, or stay out.
-- *Phone controls:* a layout test page comes first.
-- *Speed:* the master-leather figures were measured in a three-a-side fight on a phone at 4× CPU slowdown: about 31 frames a second, the same as before.
-- *Withdraw and spare* (both in the game today: "Withdraw from the fight" on most war fights, which breaks the vow never to retreat; sparing a beaten foe at 30% strength, asleep or bound, in 41 fights, conscience +1) stay in real time as controls that appear only when allowed: Withdraw at the top right, Spare as a tap on the beaten foe.
+**Built with the battles.** Act checkpoints (every act start saved, without limit; the Book of Lives keeps its deaths; Part One hands over to Part Two); text kept clear of the iPhone notch and Dynamic Island; homeland paintings loaded in both parts.
 
-**Still to do before building:** `tests/balance.js` runs out of memory above about 200 lives; Hindi and screen-fit checks for the new screens.
-
-**Cost and order.** After the returning-page fix and master leather (both being built 3 November): the real-time engine (about 2 weeks), converting the real-time fights (about 1 week), the turn-based additions (about 1 week), then balance passes for both together with the race's whip and contact.
+**Status (4 November).** Engine, fight conversions, war-day additions and six-fight tuning built. Being built: Block, the heavy mace, archers always shooting, and a review of every weapon type. Waiting for the owner's approval before GitHub main.
 
 ### 18.16 Less to read (decided and built 2 November)
 The owner's decisions of 2 November on how much a player has to read [69, 70]:
