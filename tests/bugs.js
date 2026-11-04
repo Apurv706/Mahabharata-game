@@ -163,6 +163,21 @@ engine("fall-to-middle", "6c4ba9d", "the fallen fall toward the middle of the st
   return bad;
 });
 
+engine("lose-lived-rule", "42873f9", "K.loseLived: beaten but alive for a fight that is not deadly and for any fight in story mode; not for a deadly fight outside story mode, practice or the dream", () => {
+  const K = E(), bad = [];
+  if (typeof K.loseLived !== "function") return ["K.loseLived is missing"];
+  const lethal = Object.values(K.ENCOUNTERS).find((e) => e.lethal && !e.dream && !(K.val((e.lose || {}).fx, life()) || {}).die), plain = K.ENCOUNTERS.e_bandits;
+  if (plain.lethal) bad.push("e_bandits is deadly now: pick another plain fight");
+  let S = life({ storyMode: false });
+  if (!K.loseLived("e_bandits", S)) bad.push("a fight that is not deadly: not beaten-but-alive");
+  if (K.loseLived(lethal.id, S)) bad.push("a deadly fight (" + lethal.id + ") outside story mode: beaten-but-alive");
+  S = life({ storyMode: true });
+  if (!K.loseLived(lethal.id, S)) bad.push("a deadly fight (" + lethal.id + ") in story mode: not beaten-but-alive");
+  if (K.loseLived("x_practice", S)) bad.push("practice counts as beaten-but-alive");
+  const dream = Object.values(K.ENCOUNTERS).find((e) => e.dream); if (dream && K.loseLived(dream.id, S)) bad.push("the dream counts as beaten-but-alive");
+  return bad;
+});
+
 // ======================= Browser cases =======================
 let PW = null, BROWSER = null, SRV = null;
 const DEV = { "iPhone 15": () => Object.assign({}, PW.devices["iPhone 15"]), "iPhone SE": () => Object.assign({}, PW.devices["iPhone SE"]), laptop: () => ({ viewport: { width: 1440, height: 900 } }) };
@@ -476,6 +491,60 @@ browser("fight-gives-way", "0684976", "a fight still on screen gives way to a ne
   if (n.rt !== 1) bad.push(n.rt + " fight screens on the page");
   if (n.live) bad.push("the real-time screen is still running under the war-day screen");
   if (!n.war) bad.push("the war-day screen did not open");
+  await close(); return bad.concat(errs);
+});
+
+const WRITTEN = "You fought with all you had. What is written was not yours to stop.";
+browser("lose-lived-rt", "42873f9", "a real-time loss in story mode: you slump, the foes walk off, the .written card says what is written held, and Continue ends the fight as a loss", async () => {
+  const { pg, errs, close } = await open({ device: "iPhone 15" });
+  await fight(pg, "e_bandits", { act: 5, age: 38, storyMode: true });
+  await pg.evaluate(() => { const p = K.Combat.player(); p.hp = 0; });
+  const card = await pg.waitForSelector("#rt .written", { timeout: 8000 }).catch(() => null);
+  const bad = [];
+  if (!card) { await close(); return ["no .written card after a loss in story mode"].concat(errs); }
+  const r = await pg.evaluate(() => ({ text: document.querySelector("#rt .written p").textContent, slumped: !!document.querySelector("#rt .slumped"), foes: [...K.UI.rtScreen().actors.values()].filter((a) => a.u.side === "enemy" && a.u.hp > 0).map((a) => a.el.style.visibility) }));
+  if (r.text !== WRITTEN) bad.push("the card says " + JSON.stringify(r.text));
+  if (!r.slumped) bad.push("you are not drawn slumped");
+  if (r.foes.some((v) => v !== "hidden")) bad.push("the foes did not walk off: " + r.foes.join(","));
+  await pg.tap("#rt .written .go");
+  await pg.waitForTimeout(500);
+  const ended = await pg.evaluate(() => window.__ended);
+  if (ended !== "lose") bad.push("Continue ended the fight as " + JSON.stringify(ended) + ", not a loss");
+  await close(); return bad.concat(errs);
+});
+browser("lose-lived-warday", "42873f9", "on the war day, a loss that is lived through (story mode) ends on the card that says what is written held", async () => {
+  const { pg, errs, close } = await open({ device: "iPhone 15" });
+  await fight(pg, "e_day16", { path: "archer", storyMode: true });
+  const place = await pg.$("#rt [data-place]"); if (place) { await place.tap(); await pg.waitForTimeout(600); }
+  await pg.evaluate(() => { const B = K.Combat.state(); K.Combat.player().hp = 0; K.Combat.settle("lose"); K.UI.renderBattle(B); });
+  const card = await pg.waitForSelector("#rt .endcard", { timeout: 8000 }).catch(() => null);
+  const bad = [];
+  if (!card) bad.push("no end card after the loss");
+  else { const t = await pg.evaluate(() => document.querySelector("#rt .endcard").textContent); if (!t.includes(WRITTEN)) bad.push("the end card says " + JSON.stringify(t.slice(0, 120))); }
+  await close(); return bad.concat(errs);
+});
+browser("stealth-upright", "42873f9", "stealth: the sneak pose and the creep in the stealth test stay upright (the body turned 8 degrees at most; was 19-20, a plank-like lean)", async () => {
+  const { pg, errs, close } = await open({ device: "iPhone 15" });
+  const bad = [];
+  const pose = await pg.evaluate(() => {
+    const U = K.UI, host = document.createElement("div"); host.style.cssText = "position:fixed;left:0;top:0;width:393px;height:300px;z-index:99999"; document.body.appendChild(host);
+    host.innerHTML = '<div class="act">' + U.puppet(K.puppetSpec(Object.assign(K.newLife(), { name: "T", age: 12, act: 1, origin: "panchala" })), { h: 160, pose: "live" }) + "</div>";
+    const rig = U.rig(host.querySelector("svg"), host.firstChild, "sneak"); if (!rig) return null;
+    rig.set("sneak", 600, 0.6, true); const rot = rig.t.rot; rig.stop(); host.remove(); return rot;
+  });
+  if (pose == null) bad.push("no live rig for the sneak pose"); else if (Math.abs(pose) > 8) bad.push("the sneak pose turns the body " + pose + " degrees");
+  // The tag game by the princes' garden (a1_princes, a test of stealth on its painting): creep, freeze, and sample the body's turn.
+  await pg.evaluate(() => { const S = (K.S = Object.assign(K.newLife(), { name: "Ira", pronoun: "she", origin: "hastinapura", temperament: "bold", heirloom: "bow", age: 8, act: 1 })); S.seen.push("a1_princes"); S.scene = "a1_princes"; K.seed(2); K.resume(S); });
+  await pg.waitForTimeout(1500);
+  const ch = await pg.$("#choice-bhima"); if (!ch) { await close(); return bad.concat(["no tag-game choice on a1_princes"]); }
+  await ch.click(); await pg.waitForTimeout(1500);
+  for (let i = 0; i < 6 && !(await pg.$(".sneakway .me .pp-body")); i++) { const b = await pg.$(".trial button.cta:not([disabled]), .trial [data-go]"); if (b) await b.click().catch(() => {}); await pg.waitForTimeout(700); }
+  const rots = [];
+  const sample = async (ms) => { for (let t = 0; t < ms; t += 100) { rots.push(await pg.evaluate(() => { const b = document.querySelector(".sneakway .me .pp-body"); const m = b && /rotate\((-?[\d.]+)deg\)/.exec(b.style.transform || ""); return m ? +m[1] : null; })); await pg.waitForTimeout(100); } };
+  await pg.keyboard.down(" "); await sample(2200); await pg.keyboard.up(" "); await sample(800);
+  const got = rots.filter((x) => x != null);
+  if (got.length < 10) bad.push("the stealth test's figure was not seen creeping (" + got.length + " samples)");
+  else if (Math.max(...got.map(Math.abs)) > 8) bad.push("the stealth creep turns the body up to " + Math.max(...got.map(Math.abs)).toFixed(1) + " degrees");
   await close(); return bad.concat(errs);
 });
 
