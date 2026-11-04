@@ -1,4 +1,4 @@
-/* Title screen, character creation and the ending screen. */
+/* Title screen and character creation (the ending screen is in ui/ending.js). */
 (function (K) {
   "use strict";
   const U = K.UI;
@@ -63,6 +63,8 @@
     row.appendChild(U.button("ghost", U.tr("Load a save code"), load));
     keys.push(load);
     if (K.lives().length) { row.appendChild(U.button("ghost", U.tr("Book of Lives"), U.openLives, "btn-lives")); keys.push(U.openLives); }
+    // The start of each act the current (or last) life reached (ui/ending.js).
+    if (U.openActs && U.actsKept && U.actsKept(null)) { row.appendChild(U.button("ghost", U.tr("Start again from an act"), U.openActs, "btn-acts")); keys.push(U.openActs); }
     U.keys(keys);
     // The introduction is written in, like every other page.
     // Shown again (a language switch), it is there whole at once (ui/dom.js U.pageAgain).
@@ -218,58 +220,5 @@
     K.go(K.FIRST_SCENE);
   };
 
-  // ---------- Ending ----------
-  let endingShown = null;
-  // Endings whose painting is given a living effect in code (no clip was made for them).
-  const ENDING_FX = { end_fire: "smoke" };
-  U.renderEnding = function (sc) {
-    // A moment reached in the life's last scene (a farewell, a vow answered) is still shown, first.
-    if (U.playMoments && K.momentQueue && K.momentQueue.length && U.playMoments(() => U.renderEnding(sc))) return;
-    // Every ending plays its painting full-screen first, under the ending's name: a living painting
-    // runs its clip; one without a clip gets the full title card (with its smoke, for the burnt house).
-    // An ending already shown (a language switch, Continue onto it) is there whole at once (ui/dom.js U.pageAgain).
-    const pageKey = "ending:" + sc.id, again = U.pageAgain(pageKey, true);
-    if (endingShown !== sc.id && !again && U.beatsOn && U.beatsOn() && U.sceneBeats && K.composeEnding) {
-      const e0 = K.composeEnding(K.S);
-      endingShown = sc.id;
-      if (e0 && e0.art) {
-        const clip = U.hasVideo(e0.art) && U.living();
-        U.setNav(true);
-        return U.sceneBeats(sc, { art: e0.art, fx: ENDING_FX[e0.art], title: K.val(e0.title), full: !clip, tag: "yours", tagText: K.tr("Your ending") }, () => U.renderEnding(sc));
-      }
-    }
-    const S = K.S;
-    U.redraw = () => U.renderEnding(sc);
-    if (K.Sound) K.Sound.mood("calm");
-    const e = sc.ending(S);
-    S.ending = e.title;
-    K.recordLife(S, e);
-    U.setNav(true);
-    U.where("<b>" + U.tr("The end of a life") + "</b><span>" + U.tr(S.alive ? "Age {n}" : "Fell at {n}", { n: S.age }) + "</span>");
-    const leaf = U.$("leaf");
-    leaf.innerHTML = U.plate({ art: e.art, caption: e.caption, tag: "yours", tagText: K.tr("Your ending"), heading: e.title, pose: S.alive ? "stand" : "dead", big: true }) +
-      '<div class="text">' +
-      '<div class="telling">' + e.telling.map((l) => "<p>" + U.t(l) + "</p>").join("") + "</div>" +
-      (e.fates && e.fates.length ? '<div class="fates"><span class="lbl">' + U.tr("What became of them") + "</span>" + e.fates.map((l) => "<p>" + U.t(l) + "</p>").join("") + "</div>" : "") +
-      '<p class="record-line">' + U.tr("Your record: {w} fights won, {l} lost · {p} of {t} tests passed · {g} games won", { w: K.record(S).won, l: K.record(S).lost, p: K.record(S).passed, t: K.record(S).passed + K.record(S).failed, g: K.record(S).gamesWon }) + "</p>" +
-      (S.road && S.road.length > 1 && U.mapOf ? '<div class="end-map"><span class="lbl">' + U.tr("Your road") + "</span>" + U.mapOf(S, { px: Math.min(700, window.innerWidth - 40) }) + "</div>" : "") +
-      '<div class="btnrow"><button class="cta" id="again" type="button">' + U.tr("Live another life") + '</button><button class="ghost" id="readj" type="button">' + U.tr("Read your journal") + "</button></div></div>";
-    setTimeout(() => { U.fitBackdrop(); U.livePlay(); }, 0);
-    if (U.storyFx && ENDING_FX[e.art]) U.storyFx(ENDING_FX[e.art], e.art);
-    const liveAgain = () => { K.deleteSlot("auto"); U.renderCreate(); };
-    if (U.fitEmblems) U.fitEmblems(leaf);
-    U.$("again").addEventListener("click", liveAgain);
-    U.$("readj").addEventListener("click", () => U.openJournal());
-    U.renderLedger();
-    U.scrollTop();
-    // The bards' telling arrives line by line.
-    const plate = leaf.querySelector(".pagehead,.plate"); if (plate) plate.dataset.hold = 1400;
-    const h1 = null;
-    const lines = [...leaf.querySelectorAll(".telling p")];
-    if (!again) lines.forEach((l) => l.classList.add("write"));
-    const fates = leaf.querySelector(".fates");
-    U.keys([]);
-    U.pageShown(pageKey);
-    U.stage([plate, ...lines, fates, ...(fates ? fates.children : []), leaf.querySelector(".text .btnrow")], () => U.keys([liveAgain]), again);
-  };
+  // The ending screen is in ui/ending.js.
 })(window.K = window.K || {});
