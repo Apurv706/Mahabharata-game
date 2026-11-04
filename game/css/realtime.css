@@ -563,7 +563,7 @@ html.calm #rt .stage.bigshake { animation: none; }
 #rt .orders-sheet.compact.matched.m-rt { gap: 0 4px; }
 #rt .orders-sheet.compact.matched.m-rt .resume { padding: 2px 5px; font-size: 11.5px; }
 #rt .aid-sheet.compact.matched button[data-aid] { flex: 1 1 0; min-width: 0; }
-@media (max-width: 370px) { #rt .orders-sheet.compact.matched.m-rt .chips button { font-size: 11.5px; } #rt .orders-sheet.compact.matched.m-rt .resume { font-size: 11px; padding: 2px 4px; } #rt .orders-sheet.compact.matched.m-rt .grp { min-width: 44px; } }
+@media (max-width: 380px) { #rt .orders-sheet.compact.matched.m-rt .chips button { font-size: 11px; } } @media (max-width: 370px) { #rt .orders-sheet.compact.matched.m-rt .chips button { font-size: 10.5px; } #rt .orders-sheet.compact.matched.m-rt .resume { font-size: 11px; padding: 2px 4px; } #rt .orders-sheet.compact.matched.m-rt .grp { min-width: 44px; } }
 /* ---------- The turn-based war day in the game (ui/warday.js; PRD §18.15 stage 2) ---------- */
 #rt.screen.war.upright { grid-template-rows: minmax(0, 1fr) auto; }
 #rt.war .wctl { gap: 6px; }

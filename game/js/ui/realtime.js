@@ -686,7 +686,7 @@
     X.hit = true;
     const calm = U.calm();
     X.el.insertAdjacentHTML("beforeend", '<i class="ax-white"></i><i class="ax-ring"></i>');
-    X.el.querySelector(".ax-white").animate(calm ? [{ opacity: 0 }, { opacity: 0.35, offset: 0.3 }, { opacity: 0 }] : [{ opacity: 0 }, { opacity: 0.95, offset: 0.15 }, { opacity: 0 }], { duration: calm ? 600 : 420, easing: "ease-out" });
+    if (!calm) X.el.querySelector(".ax-white").animate([{ opacity: 0 }, { opacity: 0.95, offset: 0.15 }, { opacity: 0 }], { duration: 420, easing: "ease-out" }); // calm: astraFx's one soft flash is all
     if (!calm) {
       const cx = struck.length ? struck.reduce((n, a) => n + a.x, 0) / struck.length : G.W * 0.7, cy = G.H - G.gl - G.ph * 0.3, ring = X.el.querySelector(".ax-ring");
       Object.assign(ring.style, { left: cx + "px", top: cy + "px", width: G.ph * 0.6 + "px", height: G.ph * 0.6 + "px" });
