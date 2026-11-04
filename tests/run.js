@@ -33,6 +33,7 @@ fs.mkdirSync(LOGS, { recursive: true });
 const J = (name) => path.join(OUT, "json", name + ".json");
 fs.mkdirSync(path.join(OUT, "json"), { recursive: true });
 const MIN = 60 * 1000;
+const BJOBS = Math.max(1, parseInt(opt("--browser-jobs", "2"), 10));
 
 // ---------- Retrying a browser check's failing cases ----------
 // Each returns the arguments for a run of just the failing cases, or null to run the whole check again.
@@ -144,7 +145,6 @@ async function one(c) {
   console.log("Regression suite, " + TIER + " tier: " + list.length + " checks, " + JOBS + " at a time (at most " + BJOBS + " in a browser); logs in " + (path.relative(process.cwd(), LOGS) || LOGS));
   const results = new Array(list.length);
   // The browser checks run one at a time (they measure layout and timing, and share the machine); the others fill the slots.
-  const BJOBS = Math.max(1, parseInt(opt("--browser-jobs", "2"), 10));
   let browserBusy = 0, next = 0;
   const queue = list.map((c, i) => ({ c, i, browser: c.browser === true || c.browser === TIER }));
   const takeNext = () => {
