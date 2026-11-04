@@ -1251,7 +1251,7 @@ require(G + "content/war_fights.js");
     const B = C.start("e_guard"); const R = RT.begin(B); RT.step(R, {}); RT.step(R, { withdraw: true });
     ok(R.over === "flee" && B.over === "flee" && S.vows.find((v) => v.id === "never_retreat").broken && S.flags.includes("company_shaken"), "Withdraw in real time ends the fight as a withdrawal and breaks the vow never to retreat, as on the turns");
     C.end();
-    K.seed(16); life(); const B2 = C.start("e_ep_carts"); const R2 = RT.begin(B2); const e = B2.units.find((u) => u.side === "enemy"); e.hp = Math.round(e.maxHp * 0.2);
+    K.seed(16); life(); const B2 = C.start("e_ep_carts"); const R2 = RT.begin(B2); const e = B2.units.find((u) => u.side === "enemy"); e.hp = Math.max(1, Math.floor(e.maxHp * 0.04));
     B2.units.filter((u) => u.side === "enemy" && u !== e).forEach((u) => { u.rt.x = 0.97; u.rt.cool = 99; });
     e.rt.x = C.player().rt.x + RT.BODY; e.rt.entered = true; e.rt.cool = 99; RT.step(R2, {}); RT.step(R2, { spare: e.uid });
     const other = B2.units.find((u) => u.side === "enemy" && u !== e);
@@ -1261,21 +1261,25 @@ require(G + "content/war_fights.js");
     C.end();
     // Every foe spared: the encounter's spare branch.
     K.seed(18); life(); const B3 = C.start("e_ep_carts"); const R3 = RT.begin(B3); RT.step(R3, {});
-    const foes3 = B3.units.filter((u) => u.side === "enemy"); foes3.forEach((u) => { u.hp = Math.round(u.maxHp * 0.2); u.rt.entered = true; u.rt.cool = 99; });
+    const foes3 = B3.units.filter((u) => u.side === "enemy"); foes3.forEach((u) => { u.hp = Math.max(1, Math.floor(u.maxHp * 0.04)); u.rt.entered = true; u.rt.cool = 99; });
     foes3.forEach((u) => { u.rt.x = C.player().rt.x + RT.BODY; RT.step(R3, { spare: u.uid }); });
     ok(R3.over === "spare" && B3.over === "spare" && B3.spared === 2, "every foe spared: the fight ends spared (" + R3.over + ", " + B3.spared + " spared)");
     C.end();
     const o = K.combatOutcome("e_ep_carts", "spare", "x"); ok(o.text === K.ENCOUNTERS.e_ep_carts.spare.text, "and the spare branch's text and effects follow, as on the turns");
-    // Only a foe who kneels and asks: a weakened foe still standing cannot be spared; at 30% or less he kneels (beaten) and pleads.
+    // Only a foe who kneels and asks: a weakened foe still standing cannot be spared (at half, or a fifth, of his health);
+    // at 5% or less he kneels (beaten) and pleads (owner, 4 November: not at 30%).
     K.seed(19); life(); const B4 = C.start("e_ep_carts"); const R4 = RT.begin(B4); const f4 = B4.units.find((u) => u.side === "enemy"); f4.rt.entered = true; f4.rt.x = C.player().rt.x + RT.BODY; f4.rt.cool = 99;
-    f4.hp = Math.round(f4.maxHp * 0.5); RT.step(R4, {}); const weak = C.spareable().includes(f4) || C.pleads(f4) || !!f4.rt.beaten;
+    f4.hp = Math.round(f4.maxHp * 0.5); RT.step(R4, {}); let weak = C.spareable().includes(f4) || C.pleads(f4) || !!f4.rt.beaten;
+    f4.hp = Math.round(f4.maxHp * 0.2); RT.step(R4, {}); weak = weak || C.spareable().includes(f4) || C.pleads(f4) || !!f4.rt.beaten;
     RT.step(R4, { spare: f4.uid }); const weakSpared = !!f4.spared;
-    f4.hp = Math.round(f4.maxHp * 0.25); RT.step(R4, {});
-    ok(!weak && !weakSpared && C.pleads(f4) && f4.rt.beaten && RT.spareable(R4).includes(f4), "a foe at half health fights on and cannot be spared; beaten to a quarter he kneels and asks for mercy, and can be");
+    f4.hp = Math.max(1, Math.floor(f4.maxHp * 0.04)); RT.step(R4, {});
+    ok(!weak && !weakSpared && C.pleads(f4) && f4.rt.beaten && RT.spareable(R4).includes(f4), "a foe at half or a fifth of his health fights on and cannot be spared; beaten to 5% he kneels and asks for mercy, and can be");
+    const f5 = B4.units.find((u) => u.side === "enemy" && u !== f4);
+    if (f5) { f5.hp = f5.maxHp; f5.status.asleep = 2; ok(C.pleads(f5) && C.spareable().includes(f5), "a foe asleep under the Sammohana (or bound) can still be spared whole"); delete f5.status.asleep; }
     C.end();
     // On the turns (the war-day screen): a kneeling foe makes no move, and the Spare move is offered only for him.
     RT.force = false; K.seed(20); life(); const B5 = C.start("e_ep_carts"); const [g1, g2] = B5.units.filter((u) => u.side === "enemy");
-    g1.hp = Math.round(g1.maxHp * 0.2); C.act("strike", g2.uid);
+    g1.hp = Math.max(1, Math.floor(g1.maxHp * 0.04)); C.act("strike", g2.uid);
     const acted = B5.log.some((l) => l.u && l.u.uid === g1.uid && l.key && /strike|hit|lunge|swing/i.test(l.key));
     ok(C.pleads(g1) && !C.pleads(g2) && C.spareable().length === 1 && C.spareable()[0] === g1 && !g1.intent, "on the turns a kneeling foe pleads and makes no move; only he can be spared");
     C.spare(g1.uid); ok(!B5.over && g1.spared && g2.hp > 0, "on the turns too, sparing him lets the fight go on"); g2.hp = 0; C.act("strike", null);

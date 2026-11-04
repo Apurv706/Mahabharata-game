@@ -626,8 +626,8 @@
       if (u.x <= 0.93) u.entered = true;
       return;
     }
-    // Beaten (in a fight where a foe may be spared): he kneels in the back row and fights no more.
-    if (B.enc.spare && e.hp <= e.maxHp * 0.3) { if (!u.beaten) { u.beaten = true; if (u.atk) cancel(R, e); R.fx.push({ k: "beaten", uid: e.uid }); } toRow(e, 2, dt); u.x = clamp(keepApart(R, e, u.x, dt, living(B, "enemy")), 0.07, 0.93); return; }
+    // Beaten (in a fight where a foe may be spared): at 5% of his health (C.PLEAD) he kneels in the back row and fights no more.
+    if (B.enc.spare && e.hp <= e.maxHp * C.PLEAD) { if (!u.beaten) { u.beaten = true; if (u.atk) cancel(R, e); R.fx.push({ k: "beaten", uid: e.uid }); } toRow(e, 2, dt); u.x = clamp(keepApart(R, e, u.x, dt, living(B, "enemy")), 0.07, 0.93); return; }
     if (u.atk) {
       const a = u.atk, t = B.units.find((x) => x.uid === a.on);
       if (a.ranged && !a.locked) { if (t && t.hp > 0) a.lane = t.rt.x; if (a.land - R.t <= RT.P.lock) a.locked = true; }

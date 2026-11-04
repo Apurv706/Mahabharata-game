@@ -445,8 +445,13 @@
     B.defNow = null;
   }
   // The enemies who move this round: in a break-through, only the one in the lane you took.
-  // A foe who kneels and asks for mercy (C.pleads, on the new screens) fights no more, as in real time.
-  C.pleads = (u) => !!(B && u && u.side === "enemy" && u.hp > 0 && !u.spared && B.enc.spare && C.spareGoesOn && C.spareGoesOn(B) && (u.hp <= u.maxHp * 0.3 || u.status.asleep || u.status.bound));
+  // A foe who kneels and asks for mercy (C.pleads, on the new screens) fights no more, as in real time. He kneels only
+  // when all but beaten (C.PLEAD: 5% of his health; owner, 4 November: at 30% sparing made the fights too easy), or
+  // asleep under the Sammohana or bound in the Nagapasha (those weapons make a foe one to spare). The old screen
+  // (oldFights) keeps its 30%.
+  C.PLEAD = 0.05;
+  const pleadAt = () => (C.spareGoesOn && C.spareGoesOn(B) ? C.PLEAD : 0.3);
+  C.pleads = (u) => !!(B && u && u.side === "enemy" && u.hp > 0 && !u.spared && B.enc.spare && C.spareGoesOn && C.spareGoesOn(B) && (u.hp <= u.maxHp * C.PLEAD || u.status.asleep || u.status.bound));
   const acting = () => living("enemy").filter((u) => !(B.rule && B.rule.skip && B.rule.skip(B, u)) && !C.pleads(u));
   function roundEnd() {
     endRound();
@@ -580,8 +585,8 @@
     finish("flee");
   };
   // A foe asleep under the Sammohana or bound in the Nagapasha can be spared whole: capture, not a kill.
-  C.spareable = () => (B && B.enc.spare && !B.over ? living("enemy").filter((e) => e.hp <= e.maxHp * 0.3 || e.status.asleep || e.status.bound) : []);
-  // Only a foe who kneels and asks for it (C.spareable: beaten to 30% or less, or asleep or bound, in a fight where
+  C.spareable = () => (B && B.enc.spare && !B.over ? living("enemy").filter((e) => e.hp <= e.maxHp * pleadAt() || e.status.asleep || e.status.bound) : []);
+  // Only a foe who kneels and asks for it (C.spareable: beaten to 5% or less (30% on the old screen), or asleep or bound, in a fight where
   // sparing is allowed); the screens draw him kneeling, pleading, with the "Spare" hint. On the new screens
   // (C.spareGoesOn, engine/realtime.js) the fight goes on: the spared foe kneels out of it (u.spared, u.away) and
   // the others fight on; it ends when every foe is down or spared: all spared, the fight's "spare" branch; any
