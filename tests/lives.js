@@ -24,7 +24,7 @@ K.save = () => true;
 const RTM = process.env.RT !== "0" && !process.argv.includes("--turns"); // real-time by default (RT=0 or --turns: every fight on the turns)
 K.RT.force = RTM;
 let rtFights = 0;
-const rtStats = {}, tbStats = {};
+const rtStats = {}, tbStats = {}, rtPath = {};
 if (RTM && process.env.PARAMS) Object.assign(K.RT.P, JSON.parse(process.env.PARAMS));
 if (RTM && process.env.TUNE) K.RT.TUNE = JSON.parse(require("fs").readFileSync(process.env.TUNE, "utf8"));
 
@@ -101,7 +101,7 @@ for (let i = 0; i < N; i++) {
         C.end(); K.S = JSON.parse(keep);
       }
       if (RTM && K.RT.isRealtime(enc)) {
-        try { out = K.RT.autoplay(res.combat, { spare: process.env.RTSTATS ? 0 : 0.3 }); rtFights++; const L = K.RT.log[K.RT.log.length - 1]; const st = (rtStats[L.id] = rtStats[L.id] || { w: 0, n: 0, t: [], tries: 0 }); st.n++; if (out === "win" || out === "spare") st.w++; if ((out === "win" || out === "spare") && L.tries === 1) st.w1 = (st.w1 || 0) + 1; st.t.push(L.t); if (L.tries > 1) st.tries++; } catch (e) { add("throws", res.combat + " real-time: " + e.stack.split("\n").slice(0, 3).join(" | ")); break; }
+        try { out = K.RT.autoplay(res.combat, { spare: process.env.RTSTATS ? 0 : 0.3 }); rtFights++; const L = K.RT.log[K.RT.log.length - 1]; const st = (rtStats[L.id] = rtStats[L.id] || { w: 0, n: 0, t: [], tries: 0 }); st.n++; { const pp = (rtPath[K.S.path] = rtPath[K.S.path] || [0, 0]); pp[1]++; if (out === "win" || out === "spare") pp[0]++; } if (out === "win" || out === "spare") st.w++; if ((out === "win" || out === "spare") && L.tries === 1) st.w1 = (st.w1 || 0) + 1; st.t.push(L.t); if (L.tries > 1) st.tries++; } catch (e) { add("throws", res.combat + " real-time: " + e.stack.split("\n").slice(0, 3).join(" | ")); break; }
         if (!["win", "lose", "flee", "spare"].includes(out)) add("real-time fight without an outcome", res.combat + ": " + out);
         if (K.RT.last && K.RT.last.capped) add("real-time fight ran out of time", res.combat);
       }
@@ -113,6 +113,7 @@ for (let i = 0; i < N; i++) {
     try { K.go(next); } catch (e) { add("throws", sc.id + ":" + c.id + " -> " + next + ": " + e.message); break; }
   }
 }
+if (RTM && process.env.RTSTATS && Object.keys(rtPath).length) console.log("  real-time by path: " + Object.entries(rtPath).sort().map(([k, v]) => k + " " + Math.round(v[0] / v[1] * 100) + "%").join(", "));
 if (RTM && process.env.RTJSON) require("fs").writeFileSync(process.env.RTJSON, JSON.stringify({ rt: rtStats, tb: tbStats }));
 if (RTM && process.env.RTSTATS) {
   let w = 0, n = 0, T = [];

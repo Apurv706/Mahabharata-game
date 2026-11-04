@@ -1210,6 +1210,54 @@ require(G + "content/war_fights.js");
     K.seed(4); life(); const B = C.start("t_rt_pack"); const R = RT.begin(B); let max = 0; const c0 = RT.count(R), p0 = RT.packs(R);
     while (!R.over) { RT.step(R, RT.bot(R)); max = Math.max(max, RT.attacking(R)); }
     ok(c0 === 4 && p0.of === 2 && max <= 2, "a fight of four comes in two packs, with a running count; never more than two attack at once"); C.end(); }
+  // Block (owner, 4 November): a shield-carrier holds up the shield where the others roll.
+  { const rig = (path, seed) => { K.seed(seed); life({ path }); const B = C.start("e_guard"); const R = RT.begin(B); const p = C.player();
+      const foes = B.units.filter((u) => u.side === "enemy"); const e = foes[0]; foes.slice(1).forEach((u) => { u.rt.x = 0.97; u.rt.cool = 99; u.rt.entered = false; u.rt.wave = 1; });
+      p.rt.x = 0.4; p.rt.lane = 0; p.rt.face = 1; e.rt.x = 0.4 + e.rt.reach * 0.9; e.rt.lane = 0; e.rt.entered = true; e.rt.cool = 99; e.rt.face = -1; return { B, R, p, e }; };
+    const strike = (o, act, early, heavy) => { const { R, p, e } = o; e.rt.atk = { id: "strike", on: p.uid, t0: R.t, land: R.t + 0.6, heavy: !!heavy }; e.rt.cool = 99; const hp = p.hp, br = R.breath;
+      for (let i = 0; i < 50; i++) { RT.step(R, i >= early ? act : {}); if (!e.rt.atk && i > 37) break; } return { d: hp - p.hp, br: br - R.breath, stag: e.rt.stag }; };
+    const A = rig("mace", 61), plain = strike(A, {}, 0); C.settle("win"); C.end();
+    const Bk = rig("mace", 61), held = strike(Bk, { block: true }, 0); const blocks = Bk.R.stats.blocked; C.settle("win"); C.end();
+    ok(plain.d > 0 && held.d < plain.d * 0.5 && blocks === 1, "Block: a frontal blow on the raised shield is mostly stopped (" + plain.d + " → " + held.d + ")");
+    ok(held.br > 0 && Bk.R.block, "Block: the shield held up drains breath, and a blow taken on it more (" + held.br.toFixed(1) + " breath)");
+    const Bh = rig("mace", 61); Bh.e.rt.x = 0.4 - Bh.e.rt.reach * 0.9; Bh.e.rt.face = 1; const behind = strike(Bh, { block: true }, 0); C.settle("win"); C.end();
+    ok(behind.d >= plain.d * 0.7 || Bh.p.rt.face === -1 && behind.d < plain.d, "Block: the shield turns to meet a blow from behind, or it is not stopped");
+    const Pf = rig("mace", 61), perfect = strike(Pf, { block: true }, 30); C.settle("win"); C.end();
+    ok(perfect.d === 0 && perfect.stag > 0.3 && Pf.R.stats.perfectBlocks === 1, "Block: raised just as the mark fills, a perfect block: nothing gets through and the striker staggers (" + perfect.stag.toFixed(2) + " s)");
+    const W = rig("mace", 61); W.R.breath = RT.P.blockMin + 1; for (let i = 0; i < 60 * 3; i++) RT.step(W.R, { block: true });
+    ok(!W.R.block && W.R.winded && !RT.can(W.R, "block"), "Block: out of breath, the shield drops and cannot be raised until the breath comes back"); C.settle("win"); C.end();
+    const S = rig("mace", 61); S.R.combo = 0; RT.step(S.R, { block: true }); RT.step(S.R, { block: true, strike: true }); const noBlow = !S.p.rt.blow && S.R.stats.blows === 0;
+    const x0 = S.p.rt.x; for (let i = 0; i < 30; i++) RT.step(S.R, { block: true, move: -1 }); const slowDx = Math.abs(S.p.rt.x - x0); C.settle("win"); C.end();
+    ok(noBlow && slowDx > 0 && slowDx < S.p.rt.speed * 0.5 * 0.6, "Block: no blow with the shield up; you walk behind it slowly");
+    const Ar = rig("archer", 62); ok(!Ar.R.blocker && RT.can(Ar.R, "roll") && !RT.can(Ar.R, "block"), "the archer still rolls (no shield)"); RT.step(Ar.R, { block: true, roll: true, rollDir: -1 }); ok(Ar.R.roll > 0 && !Ar.R.block, "the archer's K rolls"); C.settle("win"); C.end();
+    for (const pth of ["healer", "spy", "bard"]) { const D = rig(pth, 63); ok(!D.R.blocker && RT.can(D.R, "roll"), "the " + pth + " still rolls"); C.settle("win"); C.end(); }
+    const Ch = rig("charioteer", 64); ok(Ch.R.blocker && !RT.can(Ch.R, "roll") && RT.can(Ch.R, "block"), "the charioteer on foot blocks instead of rolling"); C.settle("win"); C.end();
+    // The mace: two big blows, an overhead smash then a side sweep, each with a long wind-up; about the old weight a second.
+    const M = rig("mace", 65); const seq = [];
+    for (let i = 0; i < 200 && seq.length < 4; i++) { RT.step(M.R, { strike: true }); for (const f of M.R.fx) if (f.k === "blow") seq.push(f); M.R.fx.length = 0; }
+    const list = RT.comboOf(M.R), dps = (c) => c.reduce((s, b) => s + b.m, 0) / c.reduce((s, b) => s + b.len, 0); C.settle("win"); C.end();
+    ok(list.length === 2 && seq.map((f) => f.arc).join(",") === "smash,sweep,smash,sweep" && list.every((b) => b.land >= 0.3) && list[1].knock > 0, "the mace strikes in two big blows, an overhead smash then a side sweep that knocks back (" + seq.map((f) => f.arc).join(",") + ")");
+    const Sw = rig("charioteer", 66); const old = RT.comboOf(Sw.R); C.settle("win"); C.end();
+    ok(old.length === 3 && Math.abs(dps(list) - dps(old)) / dps(old) < 0.1, "the mace's weight a second stays within a tenth of the three quick blows' (" + dps(list).toFixed(2) + " vs " + dps(old).toFixed(2) + ")");
+    // A foe's mace: the smash and the sweep in turn, wound up longer.
+    K.seed(67); life(); const B5 = C.start("fs_sk_mace"); const R5 = RT.begin(B5); const arcs = [];
+    for (let i = 0; i < 60 * 40 && !R5.over && arcs.length < 2; i++) { RT.step(R5, RT.bot(R5)); for (const e of B5.units) if (e.side === "enemy" && e.rt && e.rt.atk && e.rt.atk.arc && !arcs.some((a) => a.a === e.rt.atk)) arcs.push({ a: e.rt.atk, w: e.rt.atk.land - e.rt.atk.t0 }); }
+    ok(arcs.length === 2 && arcs[0].a.arc !== arcs[1].a.arc && arcs.every((a) => a.w >= RT.P.maceSweep - 1e-6), "a foe's mace: an overhead smash and a side sweep in turn, each wound up at least " + RT.P.maceSweep + " s (" + arcs.map((a) => a.a.arc + " " + a.w.toFixed(2)).join(", ") + ")");
+    R5.B.over || C.settle("win"); C.end(); }
+  // Archers fight as archers (owner, 4 November): your Strike looses arrows at any range (a half step back when a foe is on
+  // top of you), never a sword; a foe archer only shoots.
+  { K.seed(71); life({ path: "archer" }); const B = C.start("e_jayadratha"); const R = RT.begin(B); const p = C.player();
+    const e = B.units.find((u) => u.side === "enemy" && !u.rt.archer), ar = B.units.find((u) => u.side === "enemy" && u.rt.archer);
+    const shots = [], foeMoves = new Set(); let blows = 0;
+    B.units.filter((u) => u.side === "enemy").forEach((u) => { u.rt.entered = true; });
+    e.rt.x = p.rt.x + 0.5 * RT.BODY; e.rt.lane = p.rt.lane; e.rt.cool = 99; p.rt.face = 1; const x0 = p.rt.x;
+    RT.step(R, { strike: true }); for (const f of R.fx) { if (f.k === "shot" && f.uid === p.uid) shots.push(f.shot); if (f.k === "blow") blows++; }
+    const stepped = p.rt.x < x0;
+    for (let i = 0; i < 60 * 40 && !R.over; i++) { p.hp = p.maxHp; RT.step(R, RT.bot(R)); for (const f of R.fx) { if (f.k === "shot" && f.uid === p.uid) shots.push(f.shot); if (f.k === "blow") blows++; } R.fx.length = 0; for (const u of B.units) if (u.rt && u.rt.archer && u.rt.atk) foeMoves.add(u.rt.atk.id); }
+    ok(p.rt.weapon === "bow" && blows === 0 && shots.filter((s) => s.id === "arrows").length >= 6 && shots.filter((s) => s.id === "arrows").every((s) => s.m > 0) && shots.some((s) => s.knock > 0), "the archer's Strike looses arrows (a three-shot combo, the third knocking back), never a sword blow (" + shots.length + " arrows, " + blows + " blows)");
+    ok(stepped && shots[0] && shots[0].on === e.uid, "a foe right on top of the archer: half a step back, and the arrow at him");
+    ok(ar && ar.rt.weapon === "bow" && foeMoves.size > 0 && [...foeMoves].every((id) => ["arrows", "aimed", "pin", "volley"].includes(id)), "a foe archer only shoots, near or far (" + [...foeMoves].join(",") + ")");
+    R.B.over || C.settle("win"); C.end(); }
   // Your side never blocks you; a blow marked on a friend lands on you when you step into its path.
   { K.seed(11); life(); const B = C.start("e_kings"); const R = RT.begin(B);
     const p = C.player(), bh = B.units.find((u) => u.side === "ally"), foe = B.units.find((u) => u.side === "enemy");
@@ -1338,7 +1386,7 @@ require(G + "content/war_fights.js");
     const raised = blow(co, () => { B.plan = { by: e.uid, uid: co.uid }; }); B.plan = null;
     ok(raised < plainCo && B.lastShield && B.lastShield.kind === "raised", "your company raises its shields against a blow marked on them (" + plainCo + " → " + raised + ")");
     C.settle("win"); C.end();
-    ok(C.hasShield({ path: "charioteer" }) && C.hasShield({ path: "strategist" }) && !C.hasShield({ path: "archer" }) && !C.hasShield({ path: "mace" }) && !C.hasShield({ path: "healer" }), "the player carries a shield only on a sword path (charioteer, strategist), not an archer, a mace fighter or a short blade");
+    ok(C.hasShield({ path: "charioteer" }) && C.hasShield({ path: "strategist" }) && C.hasShield({ path: "mace" }) && !C.hasShield({ path: "archer" }) && !C.hasShield({ path: "healer" }) && !C.hasShield({ path: "spy" }) && !C.hasShield({ path: "bard" }), "the player carries a shield on the mace and sword paths (mace, charioteer, strategist), not an archer or a short blade");
     K.seed(34); life({ path: "charioteer" }); const R1 = RT.begin(C.start("e_guard")); const s1 = R1.shield; C.settle("win"); C.end();
     K.seed(34); life({ path: "archer" }); const R2 = RT.begin(C.start("e_guard")); const s2 = R2.shield; C.settle("win"); C.end();
     ok(s1 && !s2, "real time: the charioteer fights with a shield, the archer without");
@@ -1356,7 +1404,7 @@ require(G + "content/war_fights.js");
   // Your soldiers follow their orders and pass you (you never block your own side; another row is no obstacle):
   // all-out walks past you up to a foe and strikes; defend stays by you and strikes what comes in reach; stay out stays behind.
   { const run = (order) => { K.seed(41); life(); const B = C.start("e_guard"); const R = RT.begin(B); R.orders.soldiers = order;
-      const so = B.units.find((u) => u.side === "ally" && u.plural), p = C.player(); let dealt = 0, ahead = -9, far = 0;
+      const so = B.units.find((u) => u.side === "ally" && u.plural), p = C.player(); let dealt = 0, ahead = -9, far = 0; p.rt.x = 0.15; // (you stand back: the foes, a sword and a bow, come no nearer than their reach)
       const hit = B.hit; B.hit = function (u, t, m, o) { const d = hit.call(B, u, t, m, o); if (u === so) dealt += d; return d; };
       for (let i = 0; i < 60 * 20 && !R.over; i++) { p.hp = p.maxHp; RT.step(R, {}); if (so.hp > 0) { ahead = Math.max(ahead, so.rt.x - p.rt.x); far = Math.max(far, Math.abs(so.rt.x - p.rt.x)); } }
       C.settle("win"); C.end(); return { dealt, ahead, far: far / RT.BODY }; };

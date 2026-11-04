@@ -11,6 +11,8 @@
      - you hold the weapon of your path, and in a fight the weapon the fight is fought with (a mace duel
        the mace, an archery or chariot duel the bow, a carry nothing; a blade for a path that is not a
        weapon; a sword in the prologue's dream);
+     - you carry a small shield in a fight on the mace and sword paths (mace, charioteer, strategist), none on the
+       archer's or the short blades' (healer, spy, bard);
      - a move matches what is held: arrows from a bow, a heavy blow with a blade or mace. A fighter who
        makes a move with another weapon takes it up for the move (puppet-anim.js Rig.wield); those are
        listed, not failed, when the game does that.
@@ -87,6 +89,8 @@ for (const side of ["pandava", "kaurava"]) {
       const spec = U.battleSpecFor({ side: sd, name: K.fmt ? K.fmt(d.name) : d.name, src: d.name, person: d.person || null }) || {};
       if (spec.thing) { rows.push("fight " + id + " · " + src + " → (a " + spec.thing + ")"); continue; }
       const held = spec.item || null;
+      // In a real-time fight he strikes with what he is drawn holding (RT.weaponOf: its reach, its blows; a bow only shoots).
+      if (K.RT && K.RT.isRealtime(e) && sd === "enemy") { const rw = K.RT.weaponOf({ side: sd, src: d.name, name: K.fmt ? K.fmt(d.name) : d.name, person: d.person || null }); if (held && rw !== held && !(held === "whip")) bad.push("fight " + id + " · " + src + ": drawn with " + fmt(held) + ", strikes in real time with " + rw); }
       const who = (d.person || "") + Object.keys(NAME_OF).find((k) => new RegExp("^(?:" + NAME_OF[k] + ")(?!'s)\\b").test(src));
       const named = Object.keys(NAME_OF).find((k) => d.person === k || new RegExp("^(?:" + NAME_OF[k] + ")(?!'s)\\b").test(src));
       if (named) check("fight " + id, src, held, CANON[named], "his own weapon");
@@ -118,6 +122,16 @@ for (const p of Object.keys(K.PATHS)) {
       if (BLOW.has(ab) && !["mace", "sword", "club"].includes(held)) bad.push("you (" + p + ") · " + ab + " with " + fmt(held));
     }
   }
+}
+// 5. Your shield (owner, 4 November): the mace and sword paths carry a small one in a fight (and block with it in real
+// time); the archer and the short blades (healer, spy, bard) do not.
+const SHIELDED = new Set(["mace", "charioteer", "strategist"]);
+for (const p of Object.keys(K.PATHS)) {
+  K.S = K.newLife(); Object.assign(K.S, { name: "T", age: 30, act: 5, path: p });
+  const spec = U.battleSpecFor ? U.battleSpecFor({ side: "player" }) || {} : {};
+  const has = (spec.gear || []).includes("buckler") || (spec.gear || []).includes("shield");
+  rows.push("you (" + p + ") · shield → " + (has ? "yes" : "no"));
+  if (has !== SHIELDED.has(p) || !!(K.Combat.hasShield && K.Combat.hasShield()) !== SHIELDED.has(p)) bad.push("you (" + p + ") · " + (SHIELDED.has(p) ? "should carry a shield in a fight" : "should carry no shield"));
 }
 // The prologue's dream: grown, with a sword.
 { K.S = K.newLife(); Object.assign(K.S, { name: "T", age: 6, act: 1, scene: "a0_dream" }); check("you (the dream)", "in the dream fight", K.fightItem ? K.fightItem(K.S, "dream") : (U.battleSpecFor({ side: "player" }) || {}).item || null, "sword"); }

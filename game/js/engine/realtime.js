@@ -13,7 +13,7 @@
    "combat" event), followed by K.combatOutcome as for any fight. Only time is new.
 
    One fight at a time: RT.begin(B) → R; RT.step(R, act) advances one step with one input
-   { move: -1|0|1, strike, roll, rollDir, skill, herbs, astra: id, call, orders: { friend, soldiers },
+   { move: -1|0|1, strike, roll, rollDir, block (held), skill, herbs, astra: id, call, orders: { friend, soldiers },
      withdraw, spare: uid } (the screen and the bot drive it alike); R.over is "win" | "lose" | "flee"
    | "spare" when it has ended, or "retry" when a deadly fight was lost the first time (RT.retry).
    RT.autoplay(encId) plays a whole fight with the bot (tests/headless): the outcome, as the turns give.
@@ -37,7 +37,7 @@
     atkFoe: 1,
     hpAlly: null,      // those beside you act as often as foes: scaled as foes (null) unless set
     spacing: 0.45,
-    archerGap: 0.7,    // an archer looses oftener than a swordsman swings     // a second foe's blow never lands within this of the first (two at once, but readable)
+    archerGap: 0.55,   // an archer looses oftener than a swordsman swings (0.7 until archers only shot, 4 November)     // a second foe's blow never lands within this of the first (two at once, but readable)
     gap: [1.5, 2.8],   // a foe's rest between blows, seconds
     windup: 0.6,       // a plain blow's wind-up (never below 0.3)
     heavyWind: 0.95,
@@ -47,8 +47,20 @@
     perfect: 0.16,     // a roll begun this close before a blow lands is perfect: the foes slow
     retryHp: 0.8,      // a second try starts a little hurt
     botReact: [0.2, 0.42], botMiss: [0.25, 0.55], // the bot's reading, from grace (good to poor)
+    botLead: [0.06, 0.34], // how long before a blow lands the bot raises its shield (a perfect block only when late enough)
     glance: 0.15,      // shields (PRD §18.15): how often a shield-bearer facing you turns your blow, half spent
     shieldSoldiers: 0.6, shieldYou: 0.85, // your soldiers on Defend, a blow marked on them; you, a frontal blow, with a shield
+    // Block (owner, 4 November): a shield-carrier (C.hasShield: the mace, the sword paths) holds up the shield where the others
+    // roll. Raised, a blow from the front in your row or the next (or an arrow from the front) is stopped: this much gets through
+    // (a heavy blow more, a shield-breaker more still); held, it drains breath, and each blow taken on it more; winded, it
+    // drops and cannot be raised again until the breath is back to rollMin. Raised just before a blow lands (blockPerfect)
+    // it is a perfect block: nothing gets through and the one who struck staggers.
+    blockThrough: 0.15, blockHeavy: 0.35, blockBreaker: 0.55, blockMin: 12, blockDrain: 7, blockHit: 10, blockHitHeavy: 18,
+    blockPerfect: 0.12, blockStag: 1.0, blockWalk: 0.4,
+    blockRows: 1.2,    // a blow from your row or the next is met; one from two rows off comes in from the side
+    // The mace (owner, 4 November: heavy and slow): foes' mace blows wind up longer (an overhead smash, then a side sweep
+    // that pushes you back), a little harder to keep their weight about the same.
+    maceSmash: 0.8, maceSweep: 0.7, maceHit: 1.1, maceShove: 0.3,
     cap: 240           // a fight that has run this long is stopped (it never should)
   };
   // Per-fight tuning: RT.TUNE[encId] = { hp, atk } multiplies that fight's foes' health and blows. Only the
@@ -64,7 +76,11 @@
     e_gandharva: { hp: 1.0, atk: 1.0 },
     e_jaya: { hp: 0.81, atk: 0.81 },
     e_kings: { hp: 0.64, atk: 0.64 },
-    e_road: { hp: 0.75, atk: 0.75 }
+    e_road: { hp: 0.9, atk: 0.9 },
+    // With Block, the heavy mace and archers that only shoot (later on 4 November): the road fight (e_road, 0.75 -> 0.9: 67%
+    // vs 46% on the turns at 0.75), and the two mace duels, whose champion now swings a mace (0.8: back to where they were).
+    fs_sk_mace: { hp: 0.8, atk: 0.8 },
+    fs_d18_mace: { hp: 0.8, atk: 0.8 }
   };
   // The fights played in real time (PRD §18.15 "Which fights are which"); every other fight stays on the turns.
   RT.IDS = new Set(["e_ugra", "e_spar", "e_bandits", "e_kings", "e_panchala", "e_border", "e_gandharva", "e_sudatta", "e_jayadratha", "e_cattle", "e_cattle_k",
@@ -120,30 +136,41 @@
   // The field is 9.5 body widths, but a figure on an upright phone is drawn about 1.8 of them wide (1 on a laptop): the
   // screen gives the fight its scale (RT.setScale, held to 1.2-1.8; 1.4 without a screen, as the balance runs), so the
   // figures stand where their weapons reach on every screen.
-  RT.REACH = { spear: 2.25, mace: 1.95, sword: 1.65, club: 1.45, hammer: 1.3, dagger: 1.25, fist: 0.8 };
+  // A bow's REACH is only where its bearer stands to a foe (as a sword's): its arrows fly much further (RT.SHOOT).
+  RT.REACH = { spear: 2.25, mace: 1.95, sword: 1.65, bow: 1.65, staff: 1.6, club: 1.45, hammer: 1.3, dagger: 1.25, fist: 0.8 };
+  RT.SHOOT = 0.62; // how far your arrows fly (a fraction of the field)
   RT.SCALE = 1.4;
   const reachOf = (R, w) => RT.REACH[w] * BODY * (R.scale || RT.SCALE);
   RT.setScale = function (R, k) {
     R.scale = Math.max(1.2, Math.min(1.8, k || RT.SCALE));
     for (const u of R.B.units) if (u.rt && u.rt.weapon) u.rt.reach = reachOf(R, u.rt.weapon);
   };
-  const PATH_WEAPON = { archer: "sword", mace: "mace", charioteer: "sword", strategist: "sword", healer: "dagger", spy: "dagger", bard: "dagger" };
+  // An archer fights with the bow, at any range (owner, 4 November: "archers fight as archers"; no sword drawn).
+  const PATH_WEAPON = { archer: "bow", mace: "mace", charioteer: "sword", strategist: "sword", healer: "dagger", spy: "dagger", bard: "dagger" };
   const PERSON_WEAPON = { bhima: "mace", duryodhana: "mace", dushasana: "mace", shalya: "mace", balarama: "mace", ghatotkacha: "club", ugra: "club", charu: "hammer",
     satyaki: "sword", dhrishtadyumna: "sword", nakula: "sword", sahadeva: "sword", yudhishthira: "spear", guard: "spear", soldier: "spear" };
   RT.weaponOf = function (u) {
     if (u.side === "player") return PATH_WEAPON[K.S && K.S.path] || "sword";
     if (u.person) return PERSON_WEAPON[u.person] || "sword";
+    // As the figure is drawn (ui/battle.js specFor; tests/weapons.js holds the two together).
     const n = String(u.src || u.name);
-    if (/archer|chariot/i.test(n) || /Ashwatthama/.test(n)) return "sword";
-    if (/Ugra|club|raider|bandit/i.test(n)) return "club";
-    return "spear"; // a guard, a Gandharva, a soldier: the spear
+    if (/charioteer/i.test(n)) return "sword";
+    if (/Ashwatthama/.test(n)) return "bow";
+    if (/Gandharva/.test(n)) return "spear";
+    if (/champion|dented helmet|\bmace\b/i.test(n)) return "mace"; // a mace champion
+    if (/archer|chariot/i.test(n)) return "bow";
+    if (/horseman|rider|veteran/i.test(n)) return "sword";
+    if (/^Ugra(?!'s)/.test(n) || /club|raider|bandit/i.test(n)) return "club"; // (Ugra's levies are soldiers)
+    if (/cowherd|villager/i.test(n)) return "staff";
+    return "spear"; // a guard, a soldier: the spear
   };
   function profile(u) {
     const n = String(u.src || u.name);
     const ab = u.abilities || [];
     const ranged = ab.some((a) => RANGED.has(a));
     const archer = ranged && (/archer|chariot\b|chariot-|torch|bow/i.test(n) || !ab.some((a) => MELEE.has(a)));
-    const weapon = RT.weaponOf(u);
+    let weapon = RT.weaponOf(u);
+    if (archer) weapon = "bow"; else if (weapon === "bow") weapon = "sword"; // an archer only shoots; a bowman's name with no bow work: a sword
     return {
       archer, ranged, weapon,
       reach: 0, // set by initUnit (the screen's scale)
@@ -190,8 +217,8 @@
 
   RT.begin = function (B, opts = {}) {
     const R = { B, scale: opts.scale || RT.SCALE, t: 0, n: 0, seen: 0, sideSeen: {}, over: null, tries: opts.tries || 0, marks: [], fx: [], slow: 0, round: 1, doT: ROUND,
-      orders: { friend: "balanced", soldiers: "defend" }, breath: RT.P.breathMax, combo: 0, comboT: -9, buffer: false, roll: 0, rollT: -9, rollDir: 1,
-      kneel: 0, skillCd: 0, salve: null, unseen: 0, double: false, haste: 0, frozen: 0, assist: !!opts.assist, stats: { blows: 0, hits: 0, rolls: 0, dodged: 0, perfect: 0, maxAtk: 0 },
+      orders: { friend: "balanced", soldiers: "defend" }, breath: RT.P.breathMax, combo: 0, comboT: -9, buffer: false, roll: 0, rollT: -9, rollDir: 1, block: false, blockT: -9, winded: false,
+      kneel: 0, skillCd: 0, salve: null, unseen: 0, double: false, haste: 0, frozen: 0, assist: !!opts.assist, stats: { blows: 0, hits: 0, rolls: 0, dodged: 0, perfect: 0, maxAtk: 0, blocks: 0, blocked: 0, perfectBlocks: 0 },
       skill: null, shots: [], shotN: 0 };
     B.rt = R;
     B.units.forEach((u) => initUnit(R, u));
@@ -199,6 +226,7 @@
     const p = C.player();
     if (opts.hp) p.hp = Math.max(1, Math.round(p.maxHp * opts.hp));
     R.shield = !!(C.hasShield && C.hasShield());
+    R.blocker = R.shield; // a shield-carrier blocks (RT.P.block*) where the others roll
     const id = RT.SKILL[K.S.path];
     R.skill = id && p.abilities.includes(id) ? id : null;
     // Wrap the fight's status call so every effect that lasts rounds lasts about 4 s a round here.
@@ -261,7 +289,8 @@
     const p = C.player();
     if (!p || R.over || p.hp <= 0) return false;
     switch (what) {
-      case "roll": return R.roll <= 0 && R.kneel <= 0 && R.breath >= RT.P.rollMin && !held(p);
+      case "roll": return !R.blocker && R.roll <= 0 && R.kneel <= 0 && R.breath >= RT.P.rollMin && !held(p);
+      case "block": return R.blocker && (R.block || (R.roll <= 0 && R.kneel <= 0 && !R.winded && R.breath >= RT.P.blockMin)) && !held(p) && R.frozen <= 0;
       case "skill": return !!R.skill && R.skillCd <= 0 && R.kneel <= 0 && !held(p);
       case "herbs": return R.kneel <= 0 && (R.herbCd || 0) <= 0 && p.abilities.includes("herbs") && (K.S.items.herbs || 0) > 0 && p.hp < p.maxHp;
       case "call": return p.abilities.includes("call") && ready("call");
@@ -285,6 +314,9 @@
       }
     }
     if (a.withdraw && C.canFlee()) { C.flee(); return; }
+    // Block: held up while the input holds it (and breath lasts); lowered when let go.
+    if (R.block && (!a.block || !RT.can(R, "block"))) lowerShield(R);
+    else if (!R.block && a.block && RT.can(R, "block")) raiseShield(R);
     if (a.spare) { const t = RT.spareable(R).find((e) => e.uid === a.spare); if (t) { if (t.rt.atk) cancel(R, t); C.spare(t.uid); R.fx.push({ k: "spared", uid: t.uid }); return; } }
     if (held(p) || R.frozen > 0) return;
     if (a.call && RT.can(R, "call")) { C.core.use(p, "call", null); R.fx.push({ k: "call" }); }
@@ -315,22 +347,63 @@
       p.rt.busy = 0; R.buffer = false; R.combo = 0; R.kneel = 0;
       R.fx.push({ k: "roll" });
     }
-    if (a.herbs && RT.can(R, "herbs") && R.roll <= 0) { R.kneel = 1.1; p.rt.busy = 0; R.buffer = false; R.fx.push({ k: "kneel" }); }
-    if (a.skill && RT.can(R, "skill") && R.roll <= 0 && p.rt.busy <= 0.05) skill(R);
-    if (a.strike && R.roll <= 0 && R.kneel <= 0) {
+    if (a.herbs && RT.can(R, "herbs") && R.roll <= 0 && !R.block) { R.kneel = 1.1; p.rt.busy = 0; R.buffer = false; R.fx.push({ k: "kneel" }); }
+    if (a.skill && RT.can(R, "skill") && R.roll <= 0 && !R.block && p.rt.busy <= 0.05) skill(R);
+    if (a.strike && R.roll <= 0 && R.kneel <= 0 && !R.block) { // no blow with the shield up
       if (p.rt.busy > 0) R.buffer = true; // a press during a blow is kept for the next
       else blow(R);
     }
   }
-  const COMBO = [{ m: 0.62, land: 0.13, len: 0.34 }, { m: 0.62, land: 0.13, len: 0.34 }, { m: 1.05, land: 0.2, len: 0.62, heavy: true }];
+  // Your blows: three quick ones, the third heavy and knocking back; with the mace (owner, 4 November: heavy and slow) two
+  // big ones, each with a long wind-up: an overhead smash (over the shoulder, down onto the head and shoulders; it
+  // staggers) and a side sweep that knocks back. About the same weight a second either way (2.29 in 1.30 s; 2.3 in 1.36 s).
+  // (A blade's blows land a little after the press, so their wind-up reads: 0.22 s, the thrust 0.3 s; the same weight a second.)
+  const COMBO = [{ m: 0.62, land: 0.22, len: 0.34 }, { m: 0.62, land: 0.22, len: 0.34 }, { m: 1.05, land: 0.3, len: 0.62, heavy: true, knock: 0.4 }];
+  const MACE_COMBO = [{ m: 1.3, land: 0.4, len: 0.72, heavy: true, arc: "smash", stag: 0.5 }, { m: 1.0, land: 0.34, len: 0.64, heavy: true, arc: "sweep", knock: 0.6 }];
+  // An archer's Strike looses arrows from the bow: quick, quick, and a heavier third that knocks back.
+  const BOW_COMBO = [{ m: 0.62, land: 0.16, len: 0.36, shot: true }, { m: 0.62, land: 0.16, len: 0.36, shot: true }, { m: 1.05, land: 0.26, len: 0.6, heavy: true, knock: 0.4, shot: true }];
+  RT.comboOf = (R) => { const w = C.player() && C.player().rt && C.player().rt.weapon; return w === "mace" ? MACE_COMBO : w === "bow" ? BOW_COMBO : COMBO; };
   function blow(R) {
-    const p = C.player();
-    if (R.t - R.comboT > 0.55) R.combo = 0;
-    const c = COMBO[R.combo];
+    const p = C.player(), list = RT.comboOf(R);
+    if (R.t - R.comboT > 0.55 || R.combo >= list.length) R.combo = 0;
+    const c = list[R.combo];
     const f = nearestFoe(R, p.rt.x); if (f) p.rt.face = sign(f.rt.x - p.rt.x);
+    if (c.shot) return bowShot(R, c, list);
     p.rt.busy = c.len; p.rt.blow = { c, at: R.t + c.land, n: R.combo };
-    R.combo = (R.combo + 1) % 3; R.comboT = R.t + c.len;
-    R.fx.push({ k: "blow", n: p.rt.blow.n });
+    R.combo = (R.combo + 1) % list.length; R.comboT = R.t + c.len;
+    R.fx.push({ k: "blow", n: p.rt.blow.n, arc: c.arc || null, land: c.land, last: R.combo === 0 });
+  }
+  // An arrow of the combo: down the lane at the first foe in front within RT.SHOOT (a foe right on top of you: half a step
+  // back first, then the shot).
+  function bowShot(R, c, list) {
+    const p = C.player(), face = p.rt.face;
+    const near = foesNear(R, p.rt.x, face, 0.7 * BODY)[0];
+    if (near && Math.abs(near.rt.x - p.rt.x) < 0.7 * BODY) { p.rt.x = clamp(p.rt.x - face * 0.5 * BODY, EDGE, 1 - EDGE); R.fx.push({ k: "stepback" }); }
+    const t = foesNear(R, p.rt.x, face, RT.SHOOT)[0];
+    const lane = t ? t.rt.x : clamp(p.rt.x + face * RT.SHOOT, 0, 1);
+    const t0 = R.t + c.land;
+    const shot = { by: p.uid, side: "player", id: "arrows", m: c.m, knock: c.knock || 0, on: t ? t.uid : null, lane, from: p.rt.x, t0, arrive: t0 + Math.max(0.06, Math.abs(lane - p.rt.x) / (ARROW_SPEED * 1.4)), heavy: !!c.heavy, n: ++R.shotN, combo: R.combo };
+    p.rt.busy = c.len; R.shots.push(shot); R.stats.blows++;
+    R.combo = (R.combo + 1) % list.length; R.comboT = R.t + c.len;
+    R.fx.push({ k: "shot", uid: p.uid, shot });
+  }
+  // The shield: raised to face the blow coming soonest (else the nearest foe), lowered when let go or winded.
+  function raiseShield(R) {
+    const p = C.player();
+    R.block = true; R.blockT = R.t; R.stats.blocks++;
+    p.rt.blow = null; p.rt.busy = 0; R.buffer = false; R.combo = 0;
+    faceThreat(R);
+    R.fx.push({ k: "shield", up: true });
+  }
+  function lowerShield(R, winded) {
+    R.block = false;
+    if (winded) { R.winded = true; R.fx.push({ k: "winded" }); }
+    R.fx.push({ k: "shield", up: false });
+  }
+  function faceThreat(R) {
+    const p = C.player(), th = RT.threats(R)[0], f = th ? null : nearestFoe(R, p.rt.x);
+    if (th && Math.abs(th.from - p.rt.x) > 1e-4) p.rt.face = sign(th.from - p.rt.x);
+    else if (f) p.rt.face = sign(f.rt.x - p.rt.x);
   }
   function landBlow(R) {
     const B = R.B, p = C.player(), b = p.rt.blow;
@@ -344,8 +417,9 @@
     if (t.shield && t.rt.face === -p.rt.face && K.rng() < RT.P.glance) { m *= 0.5; R.fx.push({ k: "spark", uid: t.uid, glance: true }); }
     const d = B.hit(p, t, m);
     R.stats.hits++;
-    hitFx(R, t, d, b.c.heavy, p, true);
-    if (b.c.heavy && t.hp > 0) knock(R, t, p.rt.face, 0.4 * BODY, false);
+    hitFx(R, t, d, b.c.heavy, p, true, b.c.arc);
+    if (b.c.knock && t.hp > 0) knock(R, t, p.rt.face, b.c.knock * BODY, false);
+    if (b.c.stag && t.hp > 0 && !t.rt.atk) t.rt.stag = Math.max(t.rt.stag, b.c.stag);
     t.rt.hits.push(R.t);
   }
   // Knocked back: a foe winding up keeps its blow (it lunges after you); knocked down, it loses it.
@@ -366,7 +440,7 @@
   }
   // Which way a figure falls: toward the middle of the field (never out of the stage).
   RT.fallDir = (u) => (u.rt && u.rt.x > 0.5 ? -1 : 1);
-  function hitFx(R, t, d, heavy, by, melee) { R.fx.push({ k: "hit", uid: t.uid, n: d, heavy: !!heavy, by: by ? by.uid : null, melee: !!melee }); }
+  function hitFx(R, t, d, heavy, by, melee, arc) { R.fx.push({ k: "hit", uid: t.uid, n: d, heavy: !!heavy, by: by ? by.uid : null, melee: !!melee, arc: arc || null }); }
   function skill(R) {
     const B = R.B, p = C.player(), id = R.skill, ab = K.ABILITIES[id];
     R.skillCd = RT.RECHARGE[id] || 10;
@@ -429,7 +503,13 @@
     if (R.roll > 0) {
       R.roll -= dt;
       p.rt.x = clamp(p.rt.x + R.rollDir * (1.7 * BODY / P.roll) * dt, EDGE, 1 - EDGE); // a roll can pass a foe
-    } else R.breath = Math.min(P.breathMax, R.breath + P.breathRegen * dt);
+    } else if (R.block) { // the shield held up drains breath; out of breath, it drops
+      R.breath -= P.blockDrain * dt;
+      if (R.breath <= 0) { R.breath = 0; lowerShield(R, true); }
+    } else {
+      R.breath = Math.min(P.breathMax, R.breath + P.breathRegen * dt);
+      if (R.winded && R.breath >= P.rollMin) R.winded = false;
+    }
     if (R.unseen > 0) R.unseen -= dt;
     if (R.rowTo != null) { const d = R.rowTo - p.rt.lane; p.rt.lane += sign(d) * Math.min(Math.abs(d), dt / 0.25); if (Math.abs(R.rowTo - p.rt.lane) < 1e-6) { p.rt.lane = R.rowTo; R.rowTo = null; } }
     if (R.skillCd > 0) R.skillCd -= dt;
@@ -454,7 +534,7 @@
     if (held(p) || R.roll > 0) return;
     const mv = a.move || 0;
     if (mv && p.rt.busy <= 0) {
-      let x = p.rt.x + mv * p.rt.speed * dt;
+      let x = p.rt.x + mv * p.rt.speed * (R.block ? P.blockWalk : 1) * dt; // behind the shield, slowly
       // Foes block your way; your own side never does.
       for (const e of living(B, "enemy")) {
         if (!e.rt.entered || rowGap(e, p) > 0.5) continue; // only a foe in your row stands in your way
@@ -463,11 +543,12 @@
         if (mv < 0 && p.rt.x >= e.rt.x && x < e.rt.x + gap) x = Math.min(p.rt.x, e.rt.x + gap);
       }
       p.rt.x = clamp(x, EDGE, 1 - EDGE);
-      p.rt.face = mv;
+      if (R.block) faceThreat(R); else p.rt.face = mv; // the shield stays toward the foe as you step
       R.pushing = (p.rt.x <= EDGE + 1e-6 && mv < 0) || (p.rt.x >= 1 - EDGE - 1e-6 && mv > 0);
     } else {
       R.pushing = false;
-      if (p.rt.busy <= 0) { const f = nearestFoe(R, p.rt.x); if (f) p.rt.face = sign(f.rt.x - p.rt.x); }
+      if (R.block) faceThreat(R);
+      else if (p.rt.busy <= 0) { const f = nearestFoe(R, p.rt.x); if (f) p.rt.face = sign(f.rt.x - p.rt.x); }
     }
   }
 
@@ -493,6 +574,7 @@
     const far = dist(e, t) > e.rt.reach * 1.3;
     if (ok("quake") && K.rng() < 0.25 && dist(e, t) <= quakeR(e)) return "quake";
     const rangedIds = ab.filter((id) => RANGED.has(id) && ok(id));
+    if (e.rt.archer) return rangedIds.find((id) => id !== "arrows" && K.rng() < 0.3) || (ab.includes("arrows") ? "arrows" : rangedIds[0] || ab.find((id) => RANGED.has(id))); // an archer only shoots, near or far
     const close = dist(e, t) <= e.rt.reach + LUNGE * 0.5;
     if (rangedIds.length && !(close && ab.some((id) => MELEE.has(id))) && (e.rt.archer || (far && K.rng() < 0.6))) return rangedIds.find((id) => id !== "arrows" && K.rng() < 0.3) || (ok("arrows") ? "arrows" : rangedIds[0]);
     if ((ok("guard") || ok("brace")) && e.rt.hits.filter((h) => R.t - h < 2).length >= 2 && K.rng() < 0.4) return ok("brace") ? "brace" : "guard";
@@ -503,7 +585,7 @@
   function startAttack(R, e, t) {
     const id = chooseMove(R, e, t), ab = K.ABILITIES[id];
     if (!ab) return;
-    if (MELEE.has(id) && dist(e, t) > e.rt.reach + LUNGE) { e.rt.cool = 0.2; e.rt.close = true; return; } // too far for a blow: close in first
+    if (MELEE.has(id) && dist(e, t) > hitReach(e)) { e.rt.cool = 0.2; e.rt.close = true; return; } // too far for a blow: close in first
     if (ab.target === "self" || ab.target === "ally" || ab.target === "allies") { // a brace, a war cry: at once
       ab.use(R.B, e, ab.target === "self" ? e : ab.target === "ally" ? e : living(R.B, "enemy"));
       if (id === "brace" || id === "guard") R.fx.push({ k: "brace", uid: e.uid });
@@ -512,9 +594,12 @@
       return;
     }
     const P = RT.P, ranged = RANGED.has(id), area = id === "quake";
-    const wind = ranged ? P.track + P.lock : HEAVY.has(id) || area ? P.heavyWind : e.rt.windup;
+    let wind = ranged ? P.track + P.lock : HEAVY.has(id) || area ? P.heavyWind : e.rt.windup;
+    // A mace-bearer's blows: an overhead smash and a side sweep in turn, each wound up long.
+    const arc = !ranged && !area && MELEE.has(id) && e.rt.weapon === "mace" ? ((e.rt.arcN = (e.rt.arcN || 0) + 1) % 2 ? "smash" : "sweep") : null;
+    if (arc) wind = Math.max(wind, arc === "smash" ? P.maceSmash : P.maceSweep);
     e.rt.face = sign(t.rt.x - e.rt.x);
-    e.rt.atk = { id, on: t.uid, t0: R.t, land: R.t + Math.max(0.3, wind), ranged, area, lane: t.rt.x, locked: false, heavy: HEAVY.has(id) || area };
+    e.rt.atk = { id, on: t.uid, t0: R.t, land: R.t + Math.max(0.3, wind), ranged, area, lane: t.rt.x, locked: false, heavy: HEAVY.has(id) || area || arc === "smash", arc };
     R.stats.maxAtk = Math.max(R.stats.maxAtk, RT.attacking(R));
   }
   // Where a blow will land, for the screen and the rules: [x0, x1] on the ground.
@@ -523,7 +608,7 @@
     const fill = clamp((R.t - a.t0) / (a.land - a.t0), 0, 1);
     if (a.ranged) return { x0: a.lane - BODY * 0.5, x1: a.lane + BODY * 0.5, fill, lane: true, locked: a.locked, on: a.on, from: e.rt.x };
     if (a.area) return { x0: e.rt.x - quakeR(e), x1: e.rt.x + quakeR(e), fill, on: a.on, area: true, row: e.rt.lane };
-    const x1 = e.rt.x + e.rt.face * (e.rt.reach + LUNGE); // the blow carries a step forward
+    const x1 = e.rt.x + e.rt.face * hitReach(e); // the blow carries a step forward
     return { x0: Math.min(e.rt.x, x1), x1: Math.max(e.rt.x, x1), fill, on: a.on, row: e.rt.lane };
   };
   function inside(m, u) {
@@ -534,6 +619,10 @@
   // arrives (you, if you stepped into it for a friend). The screen draws it from the bow to that unit.
   const ARROW_SPEED = 1.7;
   const LUNGE = 0.45 * BODY; // field widths a second
+  // How far a foe's blow carries: his weapon's reach and a step; and never short of where he may stand to you (a short weapon
+  // against your long one: he may come no nearer than your reach, so his step in is that much longer; on a phone's scale a
+  // club could otherwise never reach a mace).
+  function hitReach(e) { const p = C.player(); return Math.max(e.rt.reach + LUNGE, p && p.rt ? standOff(p, e) + 0.3 * BODY : 0); }
   function loose(R, e, a) {
     const flight = Math.max(0.12, Math.abs(a.lane - e.rt.x) / ARROW_SPEED);
     const shot = { by: e.uid, side: e.side, id: a.id, on: a.on, lane: a.lane, from: e.rt.x, t0: R.t, arrive: R.t + flight, heavy: a.heavy, n: ++R.shotN, at0: a.t0 };
@@ -556,6 +645,11 @@
     const t = ts[0];
     R.fx.push({ k: "arrive", shot: s, uid: t ? t.uid : null });
     if (!t) return;
+    if (s.m) { // an arrow of your Strike combo: a plain hit, the third knocking him back
+      const d = B.hit(p, t, s.m); R.stats.hits++; hitFx(R, t, d, s.heavy); t.rt.hits.push(R.t);
+      if (s.knock && t.hp > 0) knock(R, t, sign(t.rt.x - p.rt.x), s.knock * BODY, false);
+      return;
+    }
     const d = K.ABILITIES[s.id].use(B, p, t) || 0; hitFx(R, t, d, true);
   }
   function landAttack(R, e) {
@@ -572,6 +666,7 @@
     const B = R.B, ab = K.ABILITIES[a.id], p = C.player();
     const fr = living(B, "friends").filter((f) => !f.still || f.side !== "player");
     const meIn = p.hp > 0 && inside(m, p);
+    let blocked = false, perfectBlock = false;
     const dodge = () => {
       R.stats.dodged++;
       B.tell("You dodge {a}'s blow.", { a: e });
@@ -597,18 +692,33 @@
     if (!t) { R.fx.push({ k: "whiff", uid: e.uid }); return; }
     const before = t.hp;
     // Shields (PRD §18.15): your soldiers on Defend raise theirs against a blow marked on them; you, if you carry one,
-    // take a frontal blow a little lighter. A spark either way.
+    // take a frontal blow a little lighter; raised (Block), a blow from the front in your row or an arrow from the front
+    // is stopped but for RT.P.blockThrough of it (heavier blows more). A spark either way.
     let sh = 1;
-    if (t !== p && isSoldiers(t) && R.orders.soldiers === "defend" && a.on === t.uid) sh = RT.P.shieldSoldiers;
-    else if (t === p && R.shield && sign(e.rt.x - p.rt.x) === p.rt.face) sh = RT.P.shieldYou;
-    if (sh < 1) { R.fx.push({ k: "spark", uid: t.uid }); const atk = e.atk; e.atk = Math.round(atk * sh * 10) / 10; try { doHit(); } finally { e.atk = atk; } }
+    const P = RT.P, frontal = t === p && sign((a.shot ? a.shot.from : e.rt.x) - p.rt.x) === p.rt.face;
+    if (t === p && R.block && frontal && (a.ranged || rowGap(e, p) <= P.blockRows)) {
+      blocked = true; R.stats.blocked++;
+      perfectBlock = R.t - R.blockT <= P.blockPerfect + STEP;
+      const breaker = a.id === "breaker";
+      sh = perfectBlock ? 0 : breaker ? P.blockBreaker : a.heavy ? P.blockHeavy : P.blockThrough;
+      R.breath -= (perfectBlock ? 0.5 : 1) * (a.heavy || breaker ? P.blockHitHeavy : P.blockHit) * (breaker ? 1.5 : 1);
+      if (perfectBlock) { R.stats.perfectBlocks++; if (!a.ranged) { e.rt.stag = Math.max(e.rt.stag, P.blockStag); e.rt.rec = 0; } R.fx.push({ k: "perfectblock", uid: e.uid }); }
+      if (R.breath <= 0) { R.breath = 0; lowerShield(R, true); }
+    } else if (t !== p && isSoldiers(t) && R.orders.soldiers === "defend" && a.on === t.uid) sh = P.shieldSoldiers;
+    else if (t === p && R.shield && frontal) sh = P.shieldYou;
+    if (a.arc) sh *= P.maceHit; // a mace blow: slower, a little harder
+    if (blocked || sh < (a.arc ? P.maceHit : 1)) R.fx.push({ k: "spark", uid: t.uid, block: blocked });
+    if (sh <= 0) { /* a perfect block: nothing gets through */ }
+    else if (sh !== 1) { const atk = e.atk; e.atk = Math.round(atk * sh * 10) / 10; try { doHit(); } finally { e.atk = atk; } }
     else doHit();
     function doHit() {
       if (a.id === "arrows") B.hit(e, t, 1, { verb: "Arrows rain on {t} for {n}." });
       else ab.use(B, e, ab.target === "enemies" ? [t] : t);
     }
-    hitFx(R, t, before - t.hp, a.heavy, e, !a.ranged);
-    if (t === p && before > t.hp) { R.kneel = 0; R.salveStop = true; if (a.heavy) { p.rt.busy = Math.max(p.rt.busy, 0.25); p.rt.blow = null; } }
+    hitFx(R, t, before - t.hp, a.heavy, e, !a.ranged, a.arc);
+    if (t === p && before > t.hp) { R.kneel = 0; R.salveStop = true; if (a.heavy && !blocked) { p.rt.busy = Math.max(p.rt.busy, 0.25); p.rt.blow = null; } }
+    // A mace's side sweep shoves the one struck back (a step less behind a raised shield).
+    if (a.arc === "sweep" && t.hp > 0 && !perfectBlock) { const dir = sign(t.rt.x - e.rt.x), dx = P.maceShove * BODY * (blocked ? 0.5 : 1); t.rt.x = t === p ? clamp(t.rt.x + dir * dx, EDGE, 1 - EDGE) : clamp(t.rt.x + dir * dx, 0.07, 0.93); }
   }
   function foeStep(R, e, dt) {
     const B = R.B, p = C.player();
@@ -648,7 +758,7 @@
     toRow(e, u.engaged ? tr : backRow(e), dt);
     const want = u.keep && !u.close ? Math.max(u.keep * 0.8, Math.min(u.keep, 0.6)) : u.reach * 0.92;
     const spaced = living(B, "enemy").every((o) => !o.rt.atk || Math.abs(o.rt.atk.land - (R.t + (u.archer ? RT.P.track + RT.P.lock : u.windup))) >= RT.P.spacing);
-    const canAttack = u.cool <= 0 && RT.attacking(R) < 2 && spaced && onField(e) && ad <= (u.ranged && (u.archer || ad > u.reach + LUNGE) ? 0.9 : u.reach + LUNGE * 0.85 - ROWCUT * rowGap(e, t));
+    const canAttack = u.cool <= 0 && RT.attacking(R) < 2 && spaced && onField(e) && ad <= (u.ranged && (u.archer || ad > u.reach + LUNGE) ? 0.9 : hitReach(e) - LUNGE * 0.15 - ROWCUT * rowGap(e, t));
     if (canAttack) { startAttack(R, e, t); if (u.atk) u.close = false; return; }
     // Without a turn to strike, a foe waits at a distance.
     const waitAt = RT.attacking(R) >= 2 && !u.keep ? Math.max(want + BODY, 2.3 * BODY) : want;
@@ -659,7 +769,7 @@
     // Foes keep apart from each other in a row, so each stands clear on the ground.
     if (!u.engaged) x = keepApart(R, e, x, dt, living(B, "enemy").filter((o) => !o.rt.atk && !o.rt.engaged));
     // A foe in your row does not walk through you; nor, coming at you from another row, nearer than where the weapons reach.
-    if (rowGap(e, p) < 0.5 || t === p) {
+    { // (whomever he means to strike: a foe never stands stacked on you from another row either)
       const pg = Math.max(standOff(e, p), standOff(p, e)) - (rowGap(e, p) < 0.5 ? 0 : ROWCUT * rowGap(e, p)); // nor into your weapon's reach
       if (u.x >= p.rt.x && x < p.rt.x + pg) x = Math.max(x, Math.min(u.x + u.speed * 0.6 * dt, p.rt.x + pg)); // (inside it, from another row: he steps back out)
       if (u.x < p.rt.x && x > p.rt.x - pg) x = Math.min(x, Math.max(u.x - u.speed * 0.6 * dt, p.rt.x - pg));
@@ -810,6 +920,8 @@
     // A divine weapon's moment: the fight stands still while it plays (the screen clears R.frozen sooner).
     if (R.frozen > 0) { R.frozen -= STEP; if (act.orders) Object.assign(R.orders, act.orders); if (R.frozen <= 0) astraThrow(R); return R; }
     joined(R);
+    // ... and a shield-carrier raises the shield against them by himself.
+    if (R.assist && R.blocker && !act.block && RT.wantBlock(R, 0.14, 0.3)) act = Object.assign({}, act, { block: true });
     playerAct(R, act);
     joined(R); // a friend who answered the call, or one a beat brought in
     if (B.over) { R.over = B.over; return R; }
@@ -846,6 +958,10 @@
     for (const s of R.shots) if (s.side === "enemy" && Math.abs(p.rt.x - s.lane) <= BODY * 0.65) out.push({ uid: s.by, land: s.arrive, t0: s.at0, from: s.from, lane: true, locked: true, mine: s.on === p.uid, heavy: s.heavy, flying: true });
     return out.sort((a, b) => a.land - b.land);
   };
+  // Is a blow on you near enough to have the shield up for it: landing within lead (to raise it), or within hold (kept up)?
+  RT.wantBlock = function (R, lead, hold, seen) {
+    return RT.threats(R).some((t) => (!seen || seen(t)) && t.land - R.t <= (R.block ? hold : lead) && t.land - R.t > -0.05);
+  };
   function end(R, out) {
     const B = R.B;
     R.lost = out === "lose";
@@ -875,7 +991,7 @@
     if (!R.botState) {
       const g = clamp((K.attr("grace") || 0) / 6, 0, 1);
       const P = RT.P;
-      R.botState = { react: P.botReact[1] - (P.botReact[1] - P.botReact[0]) * g, miss: P.botMiss[1] - (P.botMiss[1] - P.botMiss[0]) * g, read: {}, called: false };
+      R.botState = { react: P.botReact[1] - (P.botReact[1] - P.botReact[0]) * g, miss: P.botMiss[1] - (P.botMiss[1] - P.botMiss[0]) * g, read: {}, lead: {}, called: false };
     }
     const bs = R.botState, a = {};
     const th = RT.threats(R);
@@ -885,6 +1001,11 @@
       if (!bs.read[key]) continue;
       if (R.t - t.t0 < bs.react) continue;
       const left = t.land - R.t;
+      if (R.blocker) { // a shield-carrier raises the shield just before the blow, and holds it until it has landed
+        const lead = bs.lead[key] != null ? bs.lead[key] : (bs.lead[key] = RT.P.botLead[0] + K.rng() * (RT.P.botLead[1] - RT.P.botLead[0])); // how early it gets the shield up for this one
+        if (left <= (R.block ? 0.45 : lead) && RT.can(R, "block")) { a.block = true; return a; }
+        continue;
+      }
       if (left <= 0.2 && RT.can(R, "roll")) {
         // Away from the blow, unless that corners you at the edge: then through the foe, to open ground.
         let dir = sign(p.rt.x - t.from) || -1;

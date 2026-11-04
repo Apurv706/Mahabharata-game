@@ -1,5 +1,5 @@
 /* Blows that land (owner, 4 November: "keep some space for the weapons to strike each other"): in real time, on an
-   iPhone 15 and a 1366x657 laptop, the foes come and fight you and you fight back; at the moment each melee blow lands
+   iPhone 15 and a 1366x657 laptop (FIGHTS: every kind of weapon), the foes come and fight you and you fight back; at the moment each melee blow lands
    the weapon's tip lies within the body it strikes (the torso), or on the shield or the weapon that meets it when the
    one struck is guarding (a weapon held behind the body parries nothing); and two who fight stand at least 0.8 of the striker's reach apart (no side by side; a
    blow across a row reaches a quarter body less).
@@ -12,7 +12,9 @@ const ROOT = path.join(__dirname, "..", "game");
 const SHOTS = (process.argv.indexOf("--shots") > 0 && process.argv[process.argv.indexOf("--shots") + 1]) || "";
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".webp": "image/webp", ".png": "image/png", ".svg": "image/svg+xml", ".jpg": "image/jpeg", ".json": "application/json", ".mp3": "audio/mpeg" };
 const DEVICES = [{ name: "iPhone 15", w: 393, h: 852, mobile: true }, { name: "Laptop 1366x657", w: 1366, h: 657, mobile: false }];
-const FIGHTS = [{ enc: "e_guard", path: "charioteer" }, { enc: "e_bandits", path: "mace" }];
+// Every weapon a blow is struck with (owner, 4 November): your sword (cuts and a thrust) on a sword and a bow-bearer, your mace
+// (smash and sweep) and your dagger (stabs) on clubs, your soldiers' spear thrusts (e_guard), a foe's mace on you.
+const FIGHTS = [{ enc: "e_guard", path: "charioteer" }, { enc: "e_bandits", path: "mace" }, { enc: "e_bandits", path: "healer", noClash: true }, { enc: "fs_sk_mace", path: "charioteer" }].filter((F) => !process.env.FIGHT || process.env.FIGHT.split(",").includes(F.enc + ":" + F.path));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // In the page: keep you standing, and (phase 2) walk you up to the nearest foe and strike, a foe now and then guarding.
 function drive(phase) {
@@ -21,6 +23,8 @@ function drive(phase) {
   window.__drv = setInterval(() => {
     if (!K.UI.rtScreen() || R.over) return clearInterval(window.__drv);
     p.hp = p.maxHp; V.paused = !!window.__hold && !!window.__held;
+    // A shield-carrier raises the shield (Block) as a blow is about to land on him, and lowers it after.
+    if (R.blocker) V.held.block = R.B.units.some((u) => u.side === "enemy" && u.rt && u.rt.atk && !u.rt.atk.ranged && u.rt.atk.on === p.uid && u.rt.atk.land - R.t < 0.25);
     if (phase !== 2 || V.paused) { V.held.l = V.held.r = false; return; }
     const foes = R.B.units.filter((u) => u.side === "enemy" && u.hp > 0 && u.rt && u.rt.entered);
     foes.forEach((u) => { u.hp = Math.max(u.hp, Math.ceil(u.maxHp * 0.5)); }); // the fight goes on for the checks
@@ -59,7 +63,7 @@ srv.listen(0, async () => {
     // Phase 2: you walk up to the nearest foe and strike; now and then he guards.
     await pg.evaluate(drive, 2);
     if (SHOTS) { await hold("clash", 7000); await hold("body", 2500); } else await pg.waitForTimeout(7000);
-    const res = await pg.evaluate((t2) => {
+    const res = await pg.evaluate(([t2, F]) => {
       const V = K.UI.rtScreen(), out = [], p = K.Combat.player(), list = V.impacts || [];
       clearInterval(window.__drv);
       let body = 0, clash = 0, mine = 0, minRatio = 9;
@@ -75,10 +79,10 @@ srv.listen(0, async () => {
         if (engaged && m.apart != null && m.reach) { m.reach -= 0.25 * K.RT.BODY * m.rows; minRatio = Math.min(minRatio, m.apart / m.reach); if (m.apart < 0.8 * m.reach - 1e-6) out.push("side by side: " + who + " " + (m.apart / m.reach).toFixed(2) + " of the reach apart"); }
       }
       if (body < 2) out.push("too few blows on the body (" + body + ")");
-      if (clash < 1) out.push("no blow met a shield or a weapon");
+      if (clash < 1 && !F.noClash) out.push("no blow met a shield or a weapon"); // (clubs and a dagger: no shield, no blade to cross)
       if (mine < 2) out.push("too few of your blows landed (" + mine + ")");
       return { problems: out, body, clash, mine, n: list.length, minRatio: minRatio === 9 ? null : +minRatio.toFixed(2) };
-    }, t2);
+    }, [t2, F]);
     const probs = res.problems.concat(errs.map((e) => "script error: " + e));
     n++; if (probs.length) fails++;
     console.log((probs.length ? "✗ " : "ok ") + tag + ": " + res.n + " blows (" + res.body + " on the body, " + res.clash + " on a shield or a weapon, " + res.mine + " yours), closest " + res.minRatio + " of the reach" + (probs.length ? "\n    " + probs.join("\n    ") : ""));

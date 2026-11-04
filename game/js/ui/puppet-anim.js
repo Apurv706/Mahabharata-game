@@ -5,7 +5,8 @@
    kicked (knocked back), frozen for a beat on contact (hit-stop), made to tremble, pinned by the
    foot, or let fall limb by limb, pivoting on its feet.
 
-   U.rig(svg, actorEl, base) → a Rig (or null with calm motion: the CSS poses are used then).
+   U.rig(svg, actorEl, base, { fight }) → a Rig (or null with calm motion: the CSS poses are used then); out of a fight a
+                                            figure at rest holds its weapon clear of its face
    rig.set(pose, stiffness, damping, snap)  aim every joint at a pose from POSES
    rig.home()                               back to its own resting pose
    rig.kick({ joint: velocity })            a push on some joints (an impact)
@@ -38,6 +39,21 @@
     looseLow: { rot: 6, head: 6, armF: -62, foreF: -6, armB: -40, foreB: -10, legF: -16, legB: 16, shinB: 8, tilt: 18 },
     guard: { rot: -8, ty: 6, head: 4, armF: -112, foreF: -70, armB: -60, foreB: -50, legF: -24, shinF: 14, legB: 22, shinB: 14, item: 180 },
     block: { rot: -6, armF: -112, foreF: -70, item: 180 },
+    // The shield held up (Block, owner 4 November): the back arm brings the shield round in front of the chest, the weapon
+    // held back and low behind it, the knees bent.
+    shieldUp: { rot: -4, ty: 5, head: 6, armB: -50, foreB: -58, armF: 24, foreF: -64, legF: -24, shinF: 14, legB: 22, shinB: 14, item: 180 },
+    // The mace's two blows (owner, 4 November: heavy and slow): the overhead smash wound up over the shoulder, the weight
+    // behind the head, and brought down onto the head and shoulders; the side sweep wound back low behind the hip and
+    // swung through at the ribs.
+    smashUp: { rot: -18, tx: -6, ty: 2, head: -6, armF: -148, foreF: -104, armB: -40, foreB: -30, legF: -22, shinF: 6, legB: 20, shinB: 12, item: 204 },
+    smash: { rot: 20, tx: 11, ty: 4, head: 10, armF: -56, foreF: -4, armB: 16, foreB: -10, legF: -36, shinF: 18, legB: 26, shinB: 6, item: 180 },
+    sweepBack: { rot: -18, tx: -8, ty: 3, head: -4, armF: 95, foreF: -10, armB: -50, foreB: -40, legF: -24, shinF: 8, legB: 24, shinB: 12, item: 100 },
+    sweep: { rot: 12, tx: 12, ty: 2, head: 4, armF: -84, foreF: -2, armB: 30, foreB: -12, legF: -32, shinF: 14, legB: 28, shinB: 6, item: 180 },
+    // A thrust (a spear, a sword's third blow) and a stab (a dagger): drawn back at the hip, then driven straight in, the
+    // weight on the front foot.
+    thrustBack: { rot: -10, tx: -7, ty: 2, head: -4, armF: 62, foreF: -62, armB: -40, foreB: -40, legF: -20, shinF: 6, legB: 22, shinB: 12, item: 90 },
+    stabBack: { rot: -6, tx: -4, ty: 3, head: -2, armF: 50, foreF: -70, armB: -50, foreB: -50, legF: -18, shinF: 8, legB: 18, shinB: 10, item: 90 },
+    thrust: { rot: 14, tx: 13, ty: 2, head: 6, armF: -80, foreF: -6, armB: 24, foreB: -14, legF: -36, shinF: 18, legB: 30, shinB: 6, item: 90 },
     kneel: { ty: 26, head: 14, legF: -84, shinF: 96, legB: 8, shinB: 98, armF: -36, foreF: -84, armB: -30, foreB: -70 },
     strain: { rot: -14, head: -10, armF: -30, foreF: -40, armB: 30, foreB: -20, legB: 28, shinB: 10 },
     slack: { armF: 70, foreF: 30, armB: 40, foreB: 20, head: 22, legF: -14, shinF: 18, legB: 8, shinB: 10, item: 120 },
@@ -86,7 +102,14 @@
   }
   const wake = () => { if (!raf && live.size && typeof requestAnimationFrame === "function") raf = requestAnimationFrame(frame); };
 
-  function Rig(svg, el, base) {
+  // At rest out of a fight nothing held covers the face (owner, 4 November): standing, walking, slumped, turned aside or in
+  // its own stance, a figure holds a mace, a club or a hammer low with its head on the ground and a blade point down
+  // (item 180), a bow upright at its side (the arm hanging; the bow is kept upright in the fist), a spear or a staff upright
+  // beside it. A fight's figures (U.rig(..., { fight: true })) keep their fighting stances.
+  const REST = new Set(["stand", "walk", "slump", "side", "stoop", "square", "archer", "raised", "proud", "hero", "haughty", "broad", "sage"]);
+  const LOW = new Set(["mace", "club", "hammer", "sword", "woodsword", "dagger"]);
+  function Rig(svg, el, base, o) {
+    this.fight = !!(o && o.fight);
     this.svg = svg; this.el = el || svg.parentNode; this.baseName = POSES[base] ? base : "stand";
     this.g = {}; for (const k of JOINTS) this.g[k] = svg.querySelector("." + k);
     this.body = svg.querySelector(".pp-body"); this.itemEl = svg.querySelector(".it-w");
@@ -141,7 +164,13 @@
     return this;
   };
   Rig.prototype.set = function (name, k, z, snap) {
-    const p = POSES[name] || POSES.stand;
+    let p = POSES[name] || POSES.stand;
+    if (!this.fight && REST.has(name)) { // at rest: nothing held over the face
+      const kind = this.itemEl && this.itemEl.dataset.k;
+      if (this.bow && !this.tmp) p = Object.assign({}, p, { armF: 8, foreF: -16, tilt: -18 });
+      else if (kind && /^(spear|staff|plough)$/.test(kind)) p = Object.assign({}, p, { item: -8 - ((p.rot || 0) + (p.armF || 0) + (p.foreF || 0)) - 18 }); // upright, leaning back past the head
+      else if (kind && LOW.has(kind)) p = Object.assign({}, p, { item: 180 });
+    }
     for (const key of KEYS) if (key !== "dx" && key !== "dy") this.t[key] = p[key] || 0;
     if (k) this.k = k; if (z != null) this.z = z;
     if (snap) { for (const key of KEYS) { this.x[key] = this.t[key]; this.v[key] = 0; } this.apply(); }
@@ -254,7 +283,7 @@
 
   // Make a live figure of an SVG drawn with { pose: "live" }. With calm motion, the figure is
   // given back its plain CSS pose instead, and null is returned.
-  U.rig = function (svg, el, base) {
+  U.rig = function (svg, el, base, o) {
     if (!svg) return null;
     if (reduced() || typeof requestAnimationFrame !== "function") {
       svg.setAttribute("class", svg.getAttribute("class").replace(/pose-live\b/, "pose-" + ({ ready: "brace", bowready: "brace" }[base] || base || "stand")));
@@ -263,7 +292,7 @@
     const own = svg.getAttribute("data-stance"); // with calm motion the CSS stand pose shows the stance
     if ((!base || base === "stand") && own && POSES[own]) base = own;
     if (!/\bpose-live\b/.test(svg.getAttribute("class"))) svg.setAttribute("class", svg.getAttribute("class").replace(/\bpose-\S+/, "pose-live"));
-    return new Rig(svg, el, base);
+    return new Rig(svg, el, base, o);
   };
   U.rigFreeze = function (ms) { if (!reduced()) frozen = Math.max(frozen, ms); };
 
@@ -324,21 +353,30 @@
     const al0 = Math.atan2(a.y - S.y, a.x - S.x), be0 = Lw ? Math.atan2(T.y - a.y, T.x - a.x) - al0 : 0;
     const B = what.box;
     // Where on it: the chest; a shield at its middle; a parrying weapon halfway along its blade.
+    // (o.at: "high", a smash, on the shoulders; "mid", a sweep, at the ribs.)
+    const atY = o.at === "high" ? 0.08 : o.at === "mid" ? 0.5 : 0.3;
     const P = what.kind === "weapon" ? fw({ x: what.tip.x + (mid(B).x - what.tip.x) * 0.35, y: what.tip.y + (mid(B).y - what.tip.y) * 0.35 })
-      : what.kind === "shield" ? fw({ x: f > 0 ? B.left + B.width * 0.4 : B.right - B.width * 0.4, y: B.top + B.height * 0.45 })
-      : fw({ x: f > 0 ? B.left + B.width * 0.38 : B.right - B.width * 0.38, y: B.top + B.height * 0.3 });
+      : what.kind === "shield" ? fw({ x: f > 0 ? B.left + B.width * 0.4 : B.right - B.width * 0.4, y: B.top + B.height * (o.at === "high" ? 0.3 : 0.45) })
+      : fw({ x: f > 0 ? B.left + B.width * 0.38 : B.right - B.width * 0.38, y: B.top + B.height * atY });
     const Lmax = (La + Lw) * 0.985, Lmin = Lw ? Math.max(Math.abs(La - Lw) * 1.08, La * 0.35) : La;
     // A target in another row, lower or higher than the weapon can reach: the blow steps toward its row (dy, screen px).
     let vy = P.y - S.y; vy = Math.abs(vy) > Lmax * 0.8 ? vy - Math.sign(vy) * Lmax * 0.8 : 0; S.y += vy;
     const dy = P.y - S.y, need = (L) => P.x - S.x - Math.sqrt(Math.max(0, L * L - dy * dy));
     let d = Math.hypot(P.x - S.x, dy), dx = 0;
     const maxL = o.maxLunge == null ? (La + Lw) * 1.1 : o.maxLunge, back = (La + Lw) * 0.12;
-    if (d > Lmax) dx = Math.min(maxL, need(Lmax)); // too far: a lunge
+    // A thrust: the blade level, driven straight in at the target; the fist a blade's length short of it, the step (or the
+    // lean back) as long as it must be.
+    const Fx = P.x - Lw, dyF = Math.max(-La * 0.95, Math.min(La * 0.95, P.y - S.y));
+    // (a target far above or below, or too near for the blade's length: the point turned to it instead)
+    const lx = Fx - Math.sqrt(Math.max(0, La * La - dyF * dyF)) - S.x, level = o.straight && Lw && Math.abs(P.y - S.y) <= La * 0.95 && lx >= -back * 3 && lx <= maxL;
+    if (level) dx = lx;
+    else if (d > Lmax) dx = Math.min(maxL, need(Lmax)); // too far: a lunge
     else if (d < Lmin) dx = Math.max(-back, need(Lmin)); // too near: a lean back
     const Sx = S.x + dx; d = Math.max(1e-3, Math.hypot(P.x - Sx, dy));
     const phi = Math.atan2(dy, P.x - Sx);
     let al = phi, be = 0;
-    if (Lw && d < La + Lw) {
+    if (level) { al = Math.atan2(dyF, Fx - Sx); be = -al; }
+    else if (Lw && d < La + Lw) {
       const c = (x) => Math.max(-1, Math.min(1, x));
       const sig = Math.acos(c((La * La + d * d - Lw * Lw) / (2 * La * d))), gam = Math.acos(c((La * La + Lw * Lw - d * d) / (2 * La * Lw)));
       // A spear or a dagger thrusts up from below (the arm under the line, the point turned up); a blade, a mace or a club comes down from above.
@@ -375,6 +413,24 @@
     if (!res) return null;
     (U.impacts = U.impacts || []).push(res); if (U.impacts.length > 40) U.impacts.shift();
     return res;
+  };
+  // The mace's two blows, for every screen that draws one (ui/realtime.js, ui/warday.js): the wind-up pose, the pose the
+  // blow ends in (aimed by U.aimBlow), and where on the body it falls.
+  U.MACE_ARCS = { smash: { up: "smashUp", end: "smash", at: "high" }, sweep: { up: "sweepBack", end: "sweep", at: "mid" } };
+  // Every weapon's blows (owner, 4 November): a sword cuts down from a raised wind-up twice and thrusts the third time; a
+  // spear thrusts; a dagger stabs; a club, a hammer or a staff comes down overhead; a fist punches. U.arcFor(weapon, n)
+  // names the arc of a weapon's n-th blow (the mace's own two come from the engine).
+  U.ARCS = Object.assign({ cut: { up: "windup", end: "strike" }, thrust: { up: "thrustBack", end: "thrust", at: "mid", under: true, straight: true },
+    stab: { up: "stabBack", end: "thrust", at: "mid", under: true, straight: true }, punch: { up: "stabBack", end: "thrust", at: "mid", straight: true } }, U.MACE_ARCS);
+  U.arcFor = function (w, n) {
+    n = n || 0;
+    if (w === "sword" || w === "woodsword") return n % 3 === 2 ? "thrust" : "cut";
+    if (w === "spear") return "thrust";
+    if (w === "dagger") return "stab";
+    if (w === "mace") return n % 2 ? "sweep" : "smash";
+    if (w === "club" || w === "hammer" || w === "staff") return "smash";
+    if (w === "fist") return "punch";
+    return "cut";
   };
   U.rigs = { clear() { live.clear(); }, size: () => live.size, thaw() { frozen = 0; } };
   U.RIG_POSES = POSES;

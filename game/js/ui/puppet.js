@@ -359,7 +359,7 @@
     // How someone stands when at rest (a bandit's stoop, a guard square behind his spear): a class for
     // the CSS pose, and data-stance for a live figure (puppet-anim.js). Only a known kind of word.
     const stance = spec.stance && /^[a-z]+$/.test(spec.stance) ? spec.stance : "";
-    const clsx = ["pp", "pose-" + pose, "st-" + stage, bear, stance ? "sx sx-" + stance : "", spec.glow ? "glow" : "", spec.limp ? "limp" : "", spec.sling ? "sling" : "", spec.chained ? "chained" : "", spec.dead ? "dead" : "", o.flip ? "flip" : "", o.cls || ""].filter(Boolean).join(" ");
+    const clsx = ["pp", "pose-" + pose, "st-" + stage, bear, stance ? "sx sx-" + stance : "", spec.item && /^[a-z]+$/.test(spec.item) && pose !== "dead" ? "hold-" + spec.item : "", spec.glow ? "glow" : "", spec.limp ? "limp" : "", spec.sling ? "sling" : "", spec.chained ? "chained" : "", spec.dead ? "dead" : "", o.flip ? "flip" : "", o.cls || ""].filter(Boolean).join(" ");
     const h = o.h || 120;
     // Every piece is cut round its own joints: the joint pivots (screens.css, puppet-anim.js) are
     // shoulder 58,73; elbow 58,98; hip 60,117; knee 60,152; and the hand holds things at 58,126. Each
@@ -411,7 +411,7 @@
     const face = "M62 40 C70 40 75 45 75.5 50 L80 54 L75.5 56 C75 61 71 64 64 64 C55 64 50 58 50 51 C50 45 55 40 62 40 Z";
     const head =
       (she ? '<path d="M48 55 Q42 74 45 94" stroke="' + hair + '" stroke-width="3.4" fill="none" stroke-linecap="round"/>' : "") +
-      '<path d="' + face + '" fill="' + skin + '"' + OUT + "/>" +
+      '<path class="pp-face" d="' + face + '" fill="' + skin + '"' + OUT + "/>" +
       HAIR(hair) +
       (she ? '<circle cx="49" cy="48" r="6.6" fill="' + hair + '"' + OUT + '/><path d="M44 44 Q49 40 54 44" stroke="#f3ead2" stroke-width="1.8" stroke-dasharray="1.2 1.6" fill="none"/>' : "") +
       '<path d="M62.4 49.3 Q67.8 45.4 73.6 48.7 Q68.2 52.6 62.4 49.3 Z" fill="#fff3d6" stroke="' + EDGE + '" stroke-width="0.8"/><circle cx="68.6" cy="49" r="1.65" fill="' + EDGE + '"/>' +

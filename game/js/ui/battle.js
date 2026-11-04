@@ -83,7 +83,11 @@
     common: { pronoun: "he", palette: ["#9c6a42", "#6b5a3a", "#a8875a"], item: "staff", stage: "adult" }
   };
   function specFor(u) {
-    if (u.side === "player") { const B = C.state(); return Object.assign(K.puppetSpec(K.S), { item: K.fightItem(K.S, B ? B.mode || (B.enc.dream ? "dream" : null) : null) }); } // the weapon this fight is fought with
+    if (u.side === "player") { // the weapon this fight is fought with; the small shield on the mace and sword paths, with a mace or a blade in hand
+      const B = C.state(), s = Object.assign(K.puppetSpec(K.S), { item: K.fightItem(K.S, B ? B.mode || (B.enc.dream ? "dream" : null) : null) });
+      if (C.hasShield && C.hasShield() && /^(mace|sword|spear)$/.test(s.item || "")) s.gear = (s.gear || []).filter((g) => g !== "shield").concat("buckler");
+      return s;
+    }
     if (u.person && K.PUPPETS[u.person]) return U.puppetFor(u.person);
     const n = String(u.src || u.name);
     if (/\bcart$/i.test(n)) return { thing: "cart" }; // what is not a person is drawn as what it is
@@ -170,7 +174,7 @@
     for (const u of B.units) {
       const el = actorEl(u.uid), svg = el && el.querySelector(".pp");
       if (!svg || u.hp <= 0 || !/\bpose-live\b/.test(svg.getAttribute("class"))) continue;
-      const r = U.rig(svg, el, isBow(svg) ? "bowready" : (svg.dataset.stance && u.side === "enemy" ? svg.dataset.stance : "ready")); // each kind of enemy stands in its own way
+      const r = U.rig(svg, el, isBow(svg) ? "bowready" : (svg.dataset.stance && u.side === "enemy" ? svg.dataset.stance : "ready"), { fight: true }); // each kind of enemy stands in its own way
       if (!r) continue;
       rigs.set(u.uid, r);
       // A friend who joins the fight comes in from the edge of the stage, saying something.

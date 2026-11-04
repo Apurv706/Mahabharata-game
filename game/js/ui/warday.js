@@ -177,7 +177,7 @@
   function specFor(u) {
     if (isP(u)) {
       const s = Object.assign({}, K.puppetSpec(K.S), { item: K.fightItem(K.S) });
-      if (C.hasShield && C.hasShield()) s.gear = (s.gear || []).filter((g) => g !== "shield").concat("buckler"); // a small shield, on a sword path
+      if (C.hasShield && C.hasShield()) s.gear = (s.gear || []).filter((g) => g !== "shield").concat("buckler"); // a small shield, on the mace and sword paths
       return s;
     }
     if (isCompany(u)) return Object.assign({}, K.PUPPETS.soldier, { stage: "adult" });
@@ -235,7 +235,7 @@
     const f = { key, u, i, side, el, svg, fl: el.querySelector(".fl"), vbW: vb[2], vbH: vb[3], sc: 210 / vb[3], spec, bow, face: foe ? -1 : 1, d: 0, f: 0.5,
       base: bow ? "bowready" : svg.dataset.stance && foe ? svg.dataset.stance : "ready", dead: false,
       name: isP(u) ? K.tr("You") : isCompany(u) ? K.tr("Soldier") : (u.person || u.hero || u.called) ? K.text(u.src || u.name).split(",")[0] : null };
-    f.rig = U.motion() && U.rig ? U.rig(svg, el, f.base) : null;
+    f.rig = U.motion() && U.rig ? U.rig(svg, el, f.base, { fight: true }) : null;
     el.classList.toggle("face-l", f.face < 0);
     if (foe) {
       const t = document.createElement("button"); t.type = "button"; t.className = "tap foe-tap"; t.setAttribute("aria-label", K.text(u.src || u.name));
@@ -541,22 +541,25 @@
     }
     // A blow: wind-up, a step in, contact. Across the gap the swing ends with the weapon's tip on the one struck (on his
     // shield, or crossing his weapon, when he blocks), measured on the live figures (U.aimBlow / U.blowImpact, puppet-anim.js).
-    pose(a, "windup", 600, 0.7);
+    // A mace (owner, 4 November: heavy and slow): an overhead smash and a side sweep in turn (U.MACE_ARCS), each wound up longer.
+    // Every weapon its own blow (U.arcFor: a sword cuts and thrusts, a spear thrusts, a dagger stabs, a club comes down overhead).
+    const item = a.spec && a.spec.item, arc = U.arcFor && item ? U.arcFor(item, a.arcN = (a.arcN || 0) + 1) : null, A = arc ? U.ARCS[arc] : null, slow = arc && U.MACE_ARCS[arc] && item === "mace" ? 160 : 0;
+    pose(a, A ? A.up : "windup", slow ? 520 : 600, 0.7);
     const h0 = hits.find((h) => !(h.def === "dodge" || (h.n === 0 && !h.sh))), t0 = h0 && firstFig(h0.on);
     const guard = h0 && t0 ? (h0.sh && t0.svg.querySelector(".it-s") ? "shield" : h0.def === "block" || h0.def === "counter" ? (t0.svg.querySelector(".it-s") ? "shield" : "weapon") : null) : null;
     let aim = null;
     now(() => {
       if (guard && t0) pose(t0, "guard", 1400, 0.55);
-      aim = a.rig && t0 && !t0.dead ? U.aimBlow(a.rig, t0.svg, { guard, k: 1900, z: 0.5, maxLunge: 1e4 }) : null; // across the gap: the step in is as long as it must be
-      if (!aim) { pose(a, "strike", 1900, 0.5); a.dx = (enemy ? -1 : 1) * 0.035; pos(a); }
-    }, 140);
+      aim = a.rig && t0 && !t0.dead ? U.aimBlow(a.rig, t0.svg, { guard, k: slow ? 1600 : 1900, z: 0.5, maxLunge: 1e4, pose: A ? A.end : undefined, at: A ? A.at : undefined, under: A && A.under != null ? A.under : undefined, straight: A && A.straight }) : null; // across the gap: the step in is as long as it must be
+      if (!aim) { pose(a, A ? A.end : "strike", 1900, 0.5); a.dx = (enemy ? -1 : 1) * 0.035; pos(a); }
+    }, 140 + slow);
     now(() => {
       const res = aim ? U.blowImpact(aim) : null, sr = V.stage.getBoundingClientRect();
       if (res) (V.impacts = V.impacts || []).push({ by: a.u.uid, on: t0.u.uid, res, guard });
       land(hits, heals, res && t0 ? { uid: t0.u.uid, x: res.x - sr.left, y: res.y - sr.top, on: res.on } : null);
-    }, 235);
-    now(() => { a.dx = 0; if (a.rig) { a.rig.t.dx = 0; a.rig.t.dy = 0; } pos(a); home(a, 0); }, 420);
-    return 720;
+    }, 235 + slow);
+    now(() => { a.dx = 0; if (a.rig) { a.rig.t.dx = 0; a.rig.t.dy = 0; } pos(a); home(a, 0); }, 420 + slow * 1.6);
+    return 720 + slow * 1.6;
   }
   // Blows land: the struck flash and are knocked, the number rises; a shield turns it in sparks; the fallen fall.
   function land(hits, heals, at) {
