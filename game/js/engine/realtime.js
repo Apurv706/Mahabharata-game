@@ -76,7 +76,11 @@
     e_gandharva: { hp: 1.0, atk: 1.0 },
     e_jaya: { hp: 0.81, atk: 0.81 },
     e_kings: { hp: 0.64, atk: 0.64 },
-    e_road: { hp: 0.75, atk: 0.75 }
+    e_road: { hp: 0.9, atk: 0.9 },
+    // With Block, the heavy mace and archers that only shoot (later on 4 November): the road fight (e_road, 0.75 -> 0.9: 67%
+    // vs 46% on the turns at 0.75), and the two mace duels, whose champion now swings a mace (0.8: back to where they were).
+    fs_sk_mace: { hp: 0.8, atk: 0.8 },
+    fs_d18_mace: { hp: 0.8, atk: 0.8 }
   };
   // The fights played in real time (PRD §18.15 "Which fights are which"); every other fight stays on the turns.
   RT.IDS = new Set(["e_ugra", "e_spar", "e_bandits", "e_kings", "e_panchala", "e_border", "e_gandharva", "e_sudatta", "e_jayadratha", "e_cattle", "e_cattle_k",
