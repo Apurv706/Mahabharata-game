@@ -532,6 +532,7 @@ html.calm #rt .sheet.compact { animation: none; }
 #rt.war .moves button b { font-size: 13.5px; line-height: 1.15; white-space: nowrap; }
 #rt.war .moves button small { font-size: 11px; line-height: 1.2; white-space: nowrap; }
 #rt .nametag { font-size: 10.5px; padding: 0 6px; }
+#rt .gmark.ring.n-in .n { left: auto; right: 0; transform: translate(85%, -50%); }
 #rt .gmark.ring .n { left: 0; top: 50%; transform: translate(-85%, -50%); padding: 2px 7px; border-radius: 999px; background: rgba(214, 72, 30, 0.95); border: 1.5px solid #ffd2b8; font: 800 13px/1.1 var(--text); color: #fff; text-shadow: none; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6); }
 #rt .sheet.compact.matched.m-war { padding-top: 3px; padding-bottom: 3px; gap: 2px; }
 #rt .sheet.compact.matched.m-war .crow { padding-top: 0; padding-bottom: 0; }

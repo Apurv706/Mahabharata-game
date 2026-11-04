@@ -314,12 +314,9 @@
     const count = {};
     for (const [uid, it] of Object.entries(est)) {
       if (!it.dmg) continue;
-      if (it.area) {
-        const fr = [...V.figs.values()].filter((f) => f.side === "friend" && !f.dead), xs = fr.map((f) => f.x), L = Math.min(...xs) - G.W * 0.07, R = Math.max(...xs) + G.W * 0.07;
-        const m = document.createElement("div"); m.className = "gmark area";
-        const dmax = Math.max(...fr.map((f) => f.d));
-        Object.assign(m.style, { left: L + "px", width: (R - L) + "px", bottom: (G.gl - G.ph * 0.06) + "px", height: (dmax * G.dstep + G.ph * 0.12) + "px" });
-        V.world.appendChild(m); count[B.units[0].uid] = (count[B.units[0].uid] || 0) + 1; continue;
+      if (it.area) { // a blow at the whole line: a ring under every one of your side (no box around part of it)
+        for (const f of V.figs.values()) if (f.side === "friend" && !f.dead) count[f.u.uid] = (count[f.u.uid] || 0) + 1;
+        continue;
       }
       const t = firstFig(it.on[0]); if (!t) continue;
       count[t.u.uid] = (count[t.u.uid] || 0) + 1;
@@ -332,6 +329,7 @@
       const w = t.fh * 0.56 + (count[uid] - 1) * 12, h = t.fh * 0.12;
       Object.assign(m.style, { left: t.x + "px", width: w + "px", height: h + "px", bottom: (t.gy - h / 2) + "px" });
       m.innerHTML = count[uid] > 1 ? '<span class="n">×' + count[uid] + "</span>" : "";
+      if (t.x - w / 2 < 40) m.classList.add("n-in"); // near the left edge: the pill goes on the inner side
       V.world.appendChild(m);
     }
     let blows = 0, dmg = 0;
