@@ -56,13 +56,15 @@
   // (RTSTATS=1 COMPARE=1 node tests/lives.js 3000 <seed>, on fresh seeds); every other fight uses RT.P alone.
   // 4 November: Yuyutsu's day-2 duel (cross_e_duel, 72% -> 43% vs 42-43% on the turns) and the night raid (e_raid,
   // 54% -> 37-39% vs 38-39%), on seeds 11 and 37.
+  // Later on 4 November, with foes kneeling only at 5% (C.PLEAD) and fighting at their weapons' reach: the Gandharva
+  // (1.22 -> 1.0), Jayadratha's road (e_jaya, 1.08 -> 0.81) and the road fight (e_road, 1.11 -> 0.75), on seed 11.
   RT.TUNE = {
     cross_e_duel: { hp: 1.36, atk: 1.36 },
     e_raid: { hp: 1.1, atk: 1.1 },
-    e_gandharva: { hp: 1.22, atk: 1.22 },
-    e_jaya: { hp: 1.08, atk: 1.08 },
+    e_gandharva: { hp: 1.0, atk: 1.0 },
+    e_jaya: { hp: 0.81, atk: 0.81 },
     e_kings: { hp: 0.64, atk: 0.64 },
-    e_road: { hp: 1.11, atk: 1.11 }
+    e_road: { hp: 0.75, atk: 0.75 }
   };
   // The fights played in real time (PRD §18.15 "Which fights are which"); every other fight stays on the turns.
   RT.IDS = new Set(["e_ugra", "e_spar", "e_bandits", "e_kings", "e_panchala", "e_border", "e_gandharva", "e_sudatta", "e_jayadratha", "e_cattle", "e_cattle_k",
