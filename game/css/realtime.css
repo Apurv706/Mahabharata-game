@@ -292,6 +292,11 @@ html[lang="hi"] #rt .endcard h2 { line-height: 1.4; }
 #rt .scorch { position: absolute; z-index: 2; transform: translateX(-50%); border-radius: 50%; pointer-events: none; background: radial-gradient(closest-side, rgba(20, 8, 4, 0.85), rgba(70, 20, 6, 0.55) 60%, rgba(255, 110, 30, 0.25) 85%, rgba(0, 0, 0, 0)); }
 #rt .scorch.strip { transform: none; border-radius: 40%; background: linear-gradient(90deg, rgba(30, 10, 4, 0), rgba(30, 10, 4, 0.5) 15%, rgba(30, 10, 4, 0.45) 85%, rgba(30, 10, 4, 0)); opacity: 0.8; }
 #rt .bit.spark { z-index: 44; }
+/* A blow landing (owner, 4 November): a burst where the weapon meets the body, a cold flash where it meets a shield or a blade. */
+#rt .bit.flake { z-index: 44; }
+#rt .impact { position: absolute; z-index: 45; width: 28px; height: 28px; margin: -14px 0 0 -14px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, #fffbe8 0 18%, rgba(255, 206, 120, 0.85) 34%, rgba(255, 140, 60, 0) 70%); animation: rt-impact 0.28s ease-out forwards; }
+#rt .impact.clash { background: radial-gradient(circle, #ffffff 0 16%, rgba(255, 236, 170, 0.95) 30%, rgba(255, 190, 90, 0) 70%); }
+@keyframes rt-impact { from { transform: scale(0.35); opacity: 1; } 40% { opacity: 1; } to { transform: scale(1.5); opacity: 0; } }
 #rt.war .youtag { position: absolute; left: 0; bottom: calc(var(--fh) * 1.04 + 10px); transform: translateX(-50%); font: 700 14px/1 var(--text); color: var(--ink); text-shadow: 0 1px 3px #000; white-space: nowrap; }
 #rt.war .actor.me .mini { display: block; }
 #rt.war .actor.dead .youtag { display: none; }

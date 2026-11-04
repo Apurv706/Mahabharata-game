@@ -55,7 +55,7 @@
     fold: { armF: -38, foreF: -118, armB: -30, foreB: -120, item: 180 },
     walk: { armF: 8, foreF: -16, armB: -6 }
   };
-  const KEYS = ["rot", "tx", "ty", "head", "armF", "foreF", "armB", "foreB", "legF", "shinF", "legB", "shinB", "item", "draw", "tilt", "dx"];
+  const KEYS = ["rot", "tx", "ty", "head", "armF", "foreF", "armB", "foreB", "legF", "shinF", "legB", "shinB", "item", "draw", "tilt", "dx", "dy"];
   const JOINTS = ["head", "armF", "foreF", "armB", "foreB", "legF", "shinF", "legB", "shinB"];
   // How each kind of figure stands at rest (spec.stance in puppet.js, as data-stance on the figure):
   // the same shapes as the .sx-* rules in screens.css. A live figure whose base pose is "stand"
@@ -142,7 +142,7 @@
   };
   Rig.prototype.set = function (name, k, z, snap) {
     const p = POSES[name] || POSES.stand;
-    for (const key of KEYS) if (key !== "dx") this.t[key] = p[key] || 0;
+    for (const key of KEYS) if (key !== "dx" && key !== "dy") this.t[key] = p[key] || 0;
     if (k) this.k = k; if (z != null) this.z = z;
     if (snap) { for (const key of KEYS) { this.x[key] = this.t[key]; this.v[key] = 0; } this.apply(); }
     this.pose = name; wake();
@@ -154,7 +154,7 @@
   Rig.prototype.fallDown = function (floor, dir, onRest) {
     this.set("slack"); this.falling = true; this.fallV = 140; this.floor = floor || -86; this.fdir = dir || -1; this.onRest = onRest || null;
     // A blow's push dies with the fall: it topples from where it stands, not on along the push.
-    this.v.rot = 0; this.v.tx = 0; this.v.dx = 0; this.t.dx = 0;
+    this.v.rot = 0; this.v.tx = 0; this.v.dx = 0; this.t.dx = 0; this.v.dy = 0; this.t.dy = 0;
     if (!floor || floor <= -80) this.letGo();
     wake(); return this;
   };
@@ -220,7 +220,7 @@
       if (k === "armF" || k === "armB") tgt += shiver;
       let kk, cc;
       if (k === "draw") { kk = this.t.draw ? 260 : 2600; cc = this.t.draw ? 2 * 0.9 * Math.sqrt(260) : 2 * 0.12 * Math.sqrt(2600); } // the string snaps back
-      else if (k === "dx") { kk = 750; cc = 2 * 0.72 * Math.sqrt(750); }
+      else if (k === "dx" || k === "dy") { kk = 750; cc = 2 * 0.72 * Math.sqrt(750); }
       else if (this.falling) { kk = 140; cc = 2 * 0.28 * Math.sqrt(140); }
       else { kk = this.k; cc = c; }
       this.v[k] += (-kk * (this.x[k] - tgt) - cc * this.v[k]) * dt; this.x[k] += this.v[k] * dt;
@@ -249,7 +249,7 @@
       this.nock.setAttribute("transform", "translate(" + (-Math.max(0, d)).toFixed(2) + " 0)");
       this.nock.setAttribute("opacity", this.t.draw > 0.5 ? 1 : 0);
     }
-    if (this.el && this.el.style) this.el.style.translate = Math.abs(x.dx) < 0.05 ? "" : x.dx.toFixed(1) + "px 0";
+    if (this.el && this.el.style) this.el.style.translate = Math.abs(x.dx) < 0.05 && Math.abs(x.dy) < 0.05 ? "" : x.dx.toFixed(1) + "px " + x.dy.toFixed(1) + "px";
   };
 
   // Make a live figure of an SVG drawn with { pose: "live" }. With calm motion, the figure is
@@ -295,61 +295,86 @@
     return r ? { kind: "body", box: r } : null;
   };
   function snapTo(rig, tgt) { for (const k of KEYS) { rig.x[k] = tgt[k] || 0; rig.v[k] = 0; } rig.apply(); }
-  U.aimBlow = function (rig, tsvg, o = {}) {
-    if (!rig || !tsvg || !rig.svg.isConnected || !tsvg.isConnected) return null;
-    const pose = o.pose || "strike", P0 = POSES[pose] || POSES.strike;
+  function fistOf(svg) { // the fist (where the weapon is held), as a mark in the forearm
+    const fore = svg.querySelector(".pp-body .foreF"); if (!fore) return null;
+    let f = fore.querySelector(":scope > .it-fist");
+    if (!f) { f = document.createElementNS("http://www.w3.org/2000/svg", "circle"); f.setAttribute("class", "it-fist"); f.setAttribute("cx", "58"); f.setAttribute("cy", "126"); f.setAttribute("r", "0.6"); f.setAttribute("fill", "none"); f.setAttribute("stroke", "none"); fore.appendChild(f); }
+    const r = rect(f); return r ? mid(r) : null;
+  }
+  // The arm and the weapon as two links (shoulder to fist, fist to tip), solved for a point: far off, the arm and weapon in
+  // one straight line and a lunge to reach; nearer, the weapon comes down onto it from above (the arm raised, the weapon
+  // turned in the fist); with no weapon, the fist alone.
+  function solve(rig, tsvg, o) {
+    const pose = o.pose || "strike", P0 = POSES[pose] || POSES.strike, svg = rig.svg;
     const save = { x: Object.assign({}, rig.x), v: Object.assign({}, rig.v) };
-    // The swing's end, as drawn now, and the same with the arm a quarter turn on: the shoulder is the centre of that turn.
     const end = Object.assign({}, P0, { dx: 0 });
-    snapTo(rig, end); const T0 = U.blowTip(rig.svg);
-    snapTo(rig, Object.assign({}, end, { armF: (end.armF || 0) + 90 })); const T1 = U.blowTip(rig.svg);
-    const torso = rect(rig.svg.querySelector(".pp-torso")) || rect(rig.svg.querySelector(".pp-body"));
+    snapTo(rig, end); const T0 = U.blowTip(svg), F0 = fistOf(svg);
+    snapTo(rig, Object.assign({}, end, { armF: (end.armF || 0) + 90 })); const F1 = fistOf(svg);
+    const torso = rect(svg.querySelector(".pp-torso")) || rect(svg.querySelector(".pp-body"));
     for (const k of KEYS) { rig.x[k] = save.x[k]; rig.v[k] = save.v[k]; } rig.apply();
     const what = U.blowTarget(tsvg, o.guard);
-    if (!T0 || !T1 || !torso || !what) return null;
+    if (!T0 || !F0 || !F1 || !torso || !what) return null;
     const f = T0.x >= torso.left + torso.width / 2 ? 1 : -1; // which way the figure faces, drawn (mirrored or not)
-    // In the figure's own frame (x forward, y down) a turn of the arm is a plain rotation: the shoulder from two of its points.
-    const a = { x: f * T0.x, y: T0.y }, b = { x: f * T1.x, y: T1.y };
+    // In the figure's own frame (x forward, y down) a turn of the arm is a plain rotation: the shoulder from two of the fist's places.
+    const fw = (q) => ({ x: f * q.x, y: q.y }), a = fw(F0), b = fw(F1), T = fw(T0);
     const S = { x: (b.x + a.y + a.x - b.y) / 2, y: (b.x + a.y - a.x + b.y) / 2 };
-    const L = Math.hypot(a.x - S.x, a.y - S.y), a0 = Math.atan2(a.y - S.y, a.x - S.x);
-    const B = what.box, w = B.width, h = B.height;
-    // Where on it: the chest (then the shoulder, the belly, deeper in); a shield at its middle; a weapon along its blade.
-    const pts = what.kind === "body" ? [[0.38, 0.3], [0.3, 0.12], [0.45, 0.55], [0.6, 0.3], [0.6, 0.75], [0.2, 0.85]]
-      : what.kind === "shield" ? [[0.45, 0.45], [0.3, 0.3], [0.3, 0.7]] : [[0.5, 0.5], [0.3, 0.3], [0.7, 0.7]];
-    const maxL = o.maxLunge == null ? L * 1.2 : o.maxLunge, back = L * 0.12;
-    let best = null;
-    pts.forEach(([px, py], i) => {
-      const P = what.kind === "weapon" ? { x: f * (what.tip.x + (mid(B).x - what.tip.x) * px), y: what.tip.y + (mid(B).y - what.tip.y) * py }
-        : { x: f * (f > 0 ? B.left + w * px : B.right - w * px), y: B.top + h * py };
-      const dy = P.y - S.y, hx = Math.abs(dy) < L ? Math.sqrt(L * L - dy * dy) : 0;
-      const dx = P.x - S.x - hx; // forward: a lunge; back: a lean
-      const cost = (dx < -back ? (-back - dx) * 3 : 0) + (dx > maxL ? dx - maxL : 0) + (Math.abs(dy) >= L ? Math.abs(dy) - L : 0) + i * 2;
-      if (!best || cost < best.cost) best = { P, dx, cost };
-    });
-    const dx = Math.max(-back, Math.min(maxL, best.dx));
-    const a1 = Math.atan2(best.P.y - S.y, best.P.x - (S.x + dx));
-    let turn = (a1 - a0) * 180 / Math.PI; turn = ((turn + 540) % 360) - 180;
-    const aim = { rig, tsvg, guard: what.kind, pose, f, dxPx: f * dx, armF: (P0.armF || 0) + turn, at: Date.now() };
-    rig.set(pose, o.k || 1700, o.z == null ? 0.55 : o.z);
-    rig.t.armF = aim.armF; rig.t.dx = aim.dxPx; wake();
+    const La = Math.hypot(a.x - S.x, a.y - S.y), Lw = rig.itemEl ? Math.hypot(T.x - a.x, T.y - a.y) : 0;
+    const al0 = Math.atan2(a.y - S.y, a.x - S.x), be0 = Lw ? Math.atan2(T.y - a.y, T.x - a.x) - al0 : 0;
+    const B = what.box;
+    // Where on it: the chest; a shield at its middle; a parrying weapon halfway along its blade.
+    const P = what.kind === "weapon" ? fw({ x: what.tip.x + (mid(B).x - what.tip.x) * 0.35, y: what.tip.y + (mid(B).y - what.tip.y) * 0.35 })
+      : what.kind === "shield" ? fw({ x: f > 0 ? B.left + B.width * 0.4 : B.right - B.width * 0.4, y: B.top + B.height * 0.45 })
+      : fw({ x: f > 0 ? B.left + B.width * 0.38 : B.right - B.width * 0.38, y: B.top + B.height * 0.3 });
+    const Lmax = (La + Lw) * 0.985, Lmin = Lw ? Math.max(Math.abs(La - Lw) * 1.08, La * 0.35) : La;
+    // A target in another row, lower or higher than the weapon can reach: the blow steps toward its row (dy, screen px).
+    let vy = P.y - S.y; vy = Math.abs(vy) > Lmax * 0.8 ? vy - Math.sign(vy) * Lmax * 0.8 : 0; S.y += vy;
+    const dy = P.y - S.y, need = (L) => P.x - S.x - Math.sqrt(Math.max(0, L * L - dy * dy));
+    let d = Math.hypot(P.x - S.x, dy), dx = 0;
+    const maxL = o.maxLunge == null ? (La + Lw) * 1.1 : o.maxLunge, back = (La + Lw) * 0.12;
+    if (d > Lmax) dx = Math.min(maxL, need(Lmax)); // too far: a lunge
+    else if (d < Lmin) dx = Math.max(-back, need(Lmin)); // too near: a lean back
+    const Sx = S.x + dx; d = Math.max(1e-3, Math.hypot(P.x - Sx, dy));
+    const phi = Math.atan2(dy, P.x - Sx);
+    let al = phi, be = 0;
+    if (Lw && d < La + Lw) {
+      const c = (x) => Math.max(-1, Math.min(1, x));
+      const sig = Math.acos(c((La * La + d * d - Lw * Lw) / (2 * La * d))), gam = Math.acos(c((La * La + Lw * Lw - d * d) / (2 * La * Lw)));
+      // A spear or a dagger thrusts up from below (the arm under the line, the point turned up); a blade, a mace or a club comes down from above.
+      const under = o.under != null ? o.under : rig.itemEl && /^(spear|dagger)$/.test(rig.itemEl.dataset.k || "");
+      if (under) { al = phi + sig; be = gam - Math.PI; } else { al = phi - sig; be = Math.PI - gam; }
+    }
+    const deg = (r) => { const v = r * 180 / Math.PI; return ((v + 540) % 360) - 180; };
+    return { rig, tsvg, guard: what.kind, pose, f, dxPx: f * dx, dyPx: vy, armF: (P0.armF || 0) + deg(al - al0), item: (P0.item || 0) + (Lw ? deg(be - be0) : 0), at: Date.now() };
+  }
+  const endOf = (aim) => Object.assign({}, POSES[aim.pose] || POSES.strike, { armF: aim.armF, item: aim.item, dx: aim.dxPx, dy: aim.dyPx || 0 });
+  function aimAt(rig, aim) { const e = endOf(aim); for (const k of ["armF", "item", "dx", "dy"]) rig.t[k] = e[k]; wake(); }
+  U.aimBlow = function (rig, tsvg, o = {}) {
+    if (!rig || !tsvg || !rig.svg.isConnected || !tsvg.isConnected || rig.falling) return null;
+    const aim = solve(rig, tsvg, o);
+    if (!aim) return null;
+    aim.o = o;
+    rig.set(aim.pose, o.k || 1700, o.z == null ? 0.55 : o.z);
+    aimAt(rig, aim);
     return aim;
   };
+  // At contact: the figure at the end of its swing (aimed again at where the target is now, if it moved), the tip measured on what it strikes.
   U.blowImpact = function (aim) {
-    if (!aim || !aim.rig.svg.isConnected || !aim.tsvg.isConnected) return null;
-    const rig = aim.rig, end = Object.assign({}, POSES[aim.pose] || POSES.strike, { armF: aim.armF, dx: aim.dxPx });
-    if (rig.falling) return null;
-    snapTo(rig, end); rig.t.armF = end.armF; rig.t.dx = end.dx;
-    let T = U.blowTip(rig.svg); const what = U.blowTarget(aim.tsvg, aim.guard === "body" ? null : aim.guard);
-    if (!T || !what) return null;
-    // Whatever moved since the aim (the target stepped, was knocked): the lunge takes up the difference.
-    const B = what.box, inX = T.x >= B.left && T.x <= B.right;
-    if (!inX) { const c = (T.x < B.left ? B.left + Math.min(6, B.width * 0.3) : B.right - Math.min(6, B.width * 0.3)) - T.x; rig.x.dx += c; rig.t.dx = rig.x.dx; rig.apply(); T = U.blowTip(rig.svg); }
-    const inside = T.x >= B.left - 1 && T.x <= B.right + 1 && T.y >= B.top - 1 && T.y <= B.bottom + 1;
-    const res = { x: T.x, y: T.y, on: what.kind, inside, box: { l: B.left, r: B.right, t: B.top, b: B.bottom } };
+    if (!aim || !aim.rig.svg.isConnected || !aim.tsvg.isConnected || aim.rig.falling) return null;
+    const rig = aim.rig, guard = aim.guard === "body" ? null : aim.guard;
+    const test = () => {
+      snapTo(rig, endOf(aim)); aimAt(rig, aim);
+      const T = U.blowTip(rig.svg), w = U.blowTarget(aim.tsvg, guard);
+      if (!T || !w) return null;
+      const B = w.box, pad = w.kind === "body" ? 0 : 3;
+      return { x: T.x, y: T.y, on: w.kind, inside: T.x >= B.left - pad && T.x <= B.right + pad && T.y >= B.top - pad && T.y <= B.bottom + pad, box: { l: B.left, r: B.right, t: B.top, b: B.bottom } };
+    };
+    let res = test();
+    for (let i = 0; i < 3 && res && !res.inside; i++) { const a2 = solve(rig, aim.tsvg, Object.assign({}, aim.o, { guard })); if (!a2) break; Object.assign(aim, { armF: a2.armF, item: a2.item, dxPx: a2.dxPx, dyPx: a2.dyPx }); res = test(); }
+    if (!res) return null;
     (U.impacts = U.impacts || []).push(res); if (U.impacts.length > 40) U.impacts.shift();
     return res;
   };
-  U.rigs = { clear() { live.clear(); }, size: () => live.size };
+  U.rigs = { clear() { live.clear(); }, size: () => live.size, thaw() { frozen = 0; } };
   U.RIG_POSES = POSES;
   U.wait = (ms) => new Promise((r) => setTimeout(r, ms));
 

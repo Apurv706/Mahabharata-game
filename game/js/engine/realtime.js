@@ -647,9 +647,9 @@
     let x = u.x + dx;
     // Foes keep apart from each other in a row, so each stands clear on the ground.
     if (!u.engaged) x = keepApart(R, e, x, dt, living(B, "enemy").filter((o) => !o.rt.atk && !o.rt.engaged));
-    // A foe in your row does not walk through you.
-    if (rowGap(e, p) < 0.5) {
-      const pg = standOff(e, p);
+    // A foe in your row does not walk through you; nor, coming at you from another row, nearer than where the weapons reach.
+    if (rowGap(e, p) < 0.5 || t === p) {
+      const pg = Math.max(standOff(e, p), standOff(p, e)) - (rowGap(e, p) < 0.5 ? 0 : ROWCUT * rowGap(e, p)); // nor into your weapon's reach
       if (u.x >= p.rt.x && x < p.rt.x + pg) x = Math.max(x, Math.min(u.x, p.rt.x + pg));
       if (u.x < p.rt.x && x > p.rt.x - pg) x = Math.min(x, Math.max(u.x, p.rt.x - pg));
     }

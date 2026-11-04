@@ -215,7 +215,79 @@
     a.el.style.setProperty("--fh", a.fh.toFixed(1) + "px");
   }
   function pose(a, p, k, z) { if (!a) return; if (a.rig) a.rig.set(p, k || 900, z == null ? 0.5 : z); else a.svg.setAttribute("class", a.svg.getAttribute("class").replace(/\bpose-\S+/, "pose-" + ({ windup: "strike", ready: "brace", bowready: "brace", draw: "aim", duck: "duck", kneel: "kneel", loose: "loose" }[p] || p))); }
-  function home(a, ms) { setTimeout(() => { if (!V || !a.u) return; if (a.u.rt && a.u.rt.beaten && a.u.hp > 0) pose(a, "kneel", 600, 0.6); else if (a.rig && a.u.hp > 0) a.rig.set(a.base, 520, 0.42); else if (!a.rig && a.u.hp > 0) pose(a, a.u.side === "player" ? "brace" : "stand"); }, ms || 0); }
+  function home(a, ms) { setTimeout(() => { if (!V || !a.u) return; if (a.swing && performance.now() - a.swing.t0 < 300) return; // a new blow begun meanwhile keeps its swing
+    if (a.rig) { a.rig.t.dx = 0; a.rig.t.dy = 0; if (a.armed) { a.rig.unwield(); a.armed = false; } }
+    if (a.u.rt && a.u.rt.beaten && a.u.hp > 0) pose(a, "kneel", 600, 0.6); else if (a.rig && a.u.hp > 0) a.rig.set(a.base, 520, 0.42); else if (!a.rig && a.u.hp > 0) pose(a, a.u.side === "player" ? "brace" : "stand"); }, ms || 0); }
+  // ---------- Blows that land (owner, 4 November: room for the weapons; the blow falls on the body or the weapon) ----------
+  // A swing ends with the weapon's tip on the one struck: U.aimBlow (puppet-anim.js) turns the arm about the shoulder
+  // and sets the lunge, measured on the live figures; at the moment of contact U.blowImpact puts the figure at the end
+  // of the swing and gives the point where the weapon meets the body (or the shield, or the blade that parries it),
+  // and the hit-stop, the flash, the flakes and the sparks are all there.
+  const IMPACT = 95; // ms from the start of a swing to contact
+  const MELEE_KIND = new Set(["mace", "sword", "woodsword", "spear", "dagger", "club", "hammer"]);
+  function armFor(a) { // a bowman (or one with a whip, a scroll, a bowl) strikes with the blade he draws for it
+    const w = a.u.rt && a.u.rt.weapon, own = a.spec && a.spec.item;
+    if (!a.rig || !w || w === "fist" || w === own || MELEE_KIND.has(own)) return;
+    a.rig.wield(w); a.armed = true;
+  }
+  function guardOf(t) {
+    if (!t || !t.svg) return null;
+    const up = t.sparkAt && performance.now() - t.sparkAt < 250 || t.shieldUp || (t.rig && (t.rig.pose === "guard" || t.rig.pose === "block"));
+    if (!up) return null;
+    return t.svg.querySelector(".pp-body .it-s") ? "shield" : t.svg.querySelector(".pp-body .foreF .it-w") ? "weapon" : null;
+  }
+  function swing(a, t, guard) {
+    if (!a || a.u.hp <= 0) return;
+    const now = performance.now(), again = a.swing && now - a.swing.t0 < IMPACT + 60; // the blow already in the air, re-aimed at whom it strikes
+    armFor(a);
+    a.swing = { t0: again ? a.swing.t0 : now, on: t ? t.u.uid : null, aim: null };
+    if (a.rig && t && t.u.hp > 0 && t !== a) a.swing.aim = U.aimBlow(a.rig, t.svg, { guard, k: 1700, z: 0.55 });
+    if (!a.swing.aim) pose(a, "strike", 1600, 0.55);
+    home(a, 460);
+  }
+  function landHit(f) { // a melee blow: the struck one reacts when the weapon reaches it
+    const a = V.actors.get(f.uid), by = f.by != null && V.actors.get(f.by);
+    if (!a) return;
+    if (!f.melee || !by || by === a) return struck(a, f, null);
+    by.swingOn = null;
+    const guard = guardOf(a);
+    swing(by, a, guard);
+    const sw = by.swing, wait = Math.max(0, sw.t0 + IMPACT - performance.now());
+    setTimeout(() => {
+      if (!V || !a.el.isConnected) return;
+      const res = sw.aim && by.swing === sw ? U.blowImpact(sw.aim) : null, wr = V.world.getBoundingClientRect();
+      let pt;
+      if (res) pt = { x: res.x - wr.left, y: res.y - wr.top, on: res.on };
+      else { const r = (a.svg.querySelector(".pp-torso") || a.svg).getBoundingClientRect(); pt = { x: r.left + r.width / 2 - wr.left, y: r.top + r.height * 0.3 - wr.top, on: guard || "body" }; }
+      const bu = by.u, au = a.u; // for the fit checks (tests/blowfit.js): where the tip fell, and how far apart the two stood
+      (V.impacts = V.impacts || []).push({ by: bu.uid, on: au.uid, res, guard, apart: bu.rt && au.rt ? Math.abs(bu.rt.x - au.rt.x) : null, reach: bu.rt && bu.rt.reach, rows: bu.rt && au.rt ? Math.abs(bu.rt.lane - au.rt.lane) : 0, t: V.R.t });
+      if (V.impacts.length > 60) V.impacts.shift();
+      struck(a, f, pt);
+      home(by, (f.heavy ? 80 : 50) + 170);
+    }, wait);
+  }
+  function struck(a, f, pt) {
+    a.el.classList.add("hit"); setTimeout(() => a.el.classList.remove("hit"), 90);
+    if (a.rig) a.rig.kick(a.u.side === "enemy" ? { rot: 220, head: 180 } : { rot: -260, head: -200, armF: 160 });
+    if (f.n) pop(a, String(f.n), a.u.side === "player" ? "me" : a.u.side === "ally" ? "ally" : "");
+    if (U.rigFreeze) U.rigFreeze(f.heavy ? 80 : 50);
+    if (f.heavy || a.u.side === "player") shake(false);
+    if (f.heavy) nameTag(a, 1.2);
+    const clash = pt && pt.on !== "body";
+    if (pt) {
+      const fl = document.createElement("i"); fl.className = "impact" + (clash ? " clash" : ""); fl.style.left = pt.x + "px"; fl.style.top = pt.y + "px";
+      V.world.appendChild(fl); setTimeout(() => fl.remove(), 320);
+      if (U.flingBits) { if (clash) U.flingBits(V.world, "spark", pt, 10, 12, null, true); else U.flingBits(V.world, "flake", pt, 6, Math.max(8, a.bw * 0.2), "#8a3a2a"); }
+    } else if (a.sparkAt && performance.now() - a.sparkAt < 250) sparkAt(a);
+    a.sparkAt = 0;
+    if (K.Sound) K.Sound.play(clash ? "clang" : "hit");
+  }
+  function sparkAt(a) { // sparks from the middle of the shield (an arrow on it)
+    const wr = V.world.getBoundingClientRect(), sh = a.svg.querySelector(".it-s") || a.svg.querySelector(".pp-body"), r = sh.getBoundingClientRect();
+    if (U.flingBits) U.flingBits(V.world, "spark", { x: r.left + r.width / 2 - wr.left, y: r.top + r.height / 2 - wr.top }, 9, 16, null, true);
+  }
+  // The foe a blow of yours is likely to fall on (the engine's own choice comes with the hit).
+  function inFront(p) { let best = null, bd = 9; for (const e of V.R.B.units) { if (e.side !== "enemy" || e.hp <= 0 || !e.rt || !e.rt.entered) continue; const d = (e.rt.x - p.rt.x) * p.rt.face; if (d > -0.03 && d < bd) { bd = d; best = e; } } return best && V.actors.get(best.uid); }
   // Name tags: a small pill at the waist, nudged off the shield; for 2 s at a time.
   // On a layer over every figure (.tags), so no figure in front hides it; placed each frame while it shows.
   function nameTag(a, s) {
@@ -468,7 +540,7 @@
       a.el.classList.toggle("windup", !!u.rt.atk && u.side === "enemy" && a.warned === u.rt.atk);
       if (u.rt.atk !== a.atk) {
         if (u.rt.atk) { pose(a, u.rt.atk.ranged ? "draw" : "windup", 700, 0.5); const t = V.actors.get(u.rt.atk.on); if (t) nameTag(t, 1.5); }
-        else if (a.atk && !a.atk.ranged && u.hp > 0) { pose(a, "strike", 1600, 0.55); home(a, 380); }
+        else if (a.atk && !a.atk.ranged && u.hp > 0) { if (a.atk.area || a.atk.id === "salve") { pose(a, "strike", 1600, 0.55); home(a, 380); } else a.swingOn = a.atk.on; }
         a.atk = u.rt.atk;
       }
       a.el.classList.toggle("unseen", u.side === "player" && (R.unseen > 0 || R.roll > 0));
@@ -484,6 +556,8 @@
     V.actors.forEach((a, uid) => { if (!B.units.includes(a.u)) { if (a.tag) a.tag.remove(); a.el.style.transition = "opacity .6s"; a.el.style.opacity = "0"; setTimeout(() => a.el.remove(), 600); V.actors.delete(uid); } });
     for (const f of R.fx) fx(f);
     R.fx.length = 0;
+    // A blow that struck no one (dodged, a whiff) still swings at whom it was meant for.
+    V.actors.forEach((a) => { if (a.swingOn !== undefined && a.swingOn !== null) { const t = V.actors.get(a.swingOn); a.swingOn = null; swing(a, t, guardOf(t)); } });
     if (V.ax) axTick();
     marks();
     const w = (id, v) => { const e = V.el.querySelector("#" + id); if (e) e.style.width = clamp(v, 0, 100) + "%"; };
@@ -541,28 +615,19 @@
     const R = V.R, p = C.player(), me = V.actors.get(p.uid);
     const A = (uid) => V.actors.get(uid);
     switch (f.k) {
-      case "blow": pose(me, f.n === 2 ? "windup" : "strike", 1700, 0.55); setTimeout(() => pose(me, "strike", 1700, 0.55), f.n === 2 ? 120 : 0); home(me, f.n === 2 ? 520 : 300); if (K.Sound) K.Sound.play("tap"); break;
+      case "blow": if (f.n === 2) { pose(me, "windup", 1700, 0.55); setTimeout(() => { if (V && me) swing(me, inFront(p), null); }, 120); } else swing(me, inFront(p), null); if (K.Sound) K.Sound.play("tap"); break;
       case "roll": pose(me, "duck", 1400, 0.6); home(me, 400); break;
       case "kneel": pose(me, "kneel", 600, 0.6); home(me, 1100); break;
       case "skill": pose(me, R.skill === "aimed" ? "loose" : R.skill === "salve" ? "kneel" : R.skill === "song" || R.skill === "command" ? "cheer" : "strike", 900, 0.55); home(me, 500);
         if (R.skill === "quake") shake(true); toast(K.tr(SKILL_NAME[R.skill])); break;
-      case "hit": { const a = A(f.uid); if (!a) break; a.el.classList.add("hit"); setTimeout(() => a.el.classList.remove("hit"), 90);
-        if (a.rig) a.rig.kick(a.u.side === "enemy" ? { rot: 220, head: 180 } : { rot: -260, head: -200, armF: 160 });
-        if (f.n) pop(a, String(f.n), a.u.side === "player" ? "me" : a.u.side === "ally" ? "ally" : "");
-        if (U.rigFreeze) U.rigFreeze(f.heavy ? 80 : 50);
-        if (f.heavy || a.u.side === "player") shake(false);
-        if (f.heavy) nameTag(a, 1.2);
-        if (K.Sound) K.Sound.play("hit");
-        break; }
+      case "hit": landHit(f); break;
       case "spared": { const a = A(f.uid); if (a) { pose(a, "kneel", 600, 0.6); a.el.classList.add("beaten", "spared"); } toast(K.tr("Spared. The fight goes on.")); break; }
       case "brace": { const a = A(f.uid); if (a && a.u.hp > 0) { pose(a, "guard", 900, 0.55); U.guardFlash(a.svg, 1300); if (!a.shieldUp) home(a, 1200); } break; } // braces for your next blow
       case "heal": { const a = A(f.uid); if (a) pop(a, "+", "heal"); break; }
-      case "spark": { // a blow taken on a shield: sparks fly from it, and it is raised for a moment
+      case "spark": { // a blow taken on a shield: it is raised to meet it, and the sparks fly where the blow lands on it
         const a = A(f.uid); if (!a) break;
-        const wr = V.world.getBoundingClientRect(), sh = a.svg.querySelector(".it-s") || a.svg.querySelector(".pp-body"), r = sh.getBoundingClientRect();
-        if (U.flingBits) U.flingBits(V.world, "spark", { x: r.left + r.width / 2 - wr.left, y: r.top + r.height / 2 - wr.top }, 9, 16, null, true);
-        if (a.u.side !== "player" || !f.glance) { pose(a, "guard", 900, 0.55); if (!a.shieldUp) home(a, 500); }
-        if (K.Sound) K.Sound.play("clang");
+        a.sparkAt = performance.now();
+        if (a.u.side !== "player" || !f.glance) { pose(a, "guard", 1400, 0.55); if (!a.shieldUp) home(a, 500); }
         break; }
       case "miss": { const a = A(f.uid); if (a) pop(a, K.tr("Missed"), "miss"); break; }
       case "perfect": toast(K.tr("Perfect roll")); break;
