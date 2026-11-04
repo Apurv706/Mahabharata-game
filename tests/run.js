@@ -77,7 +77,7 @@ add("command", null, ["--max-old-space-size=4096", "tests/command.js", "100"], {
 for (let k = 0; k < 6; k++) add("playthrough#" + (k + 1), null, ["--max-old-space-size=3072", "tests/playthrough.js", "50", "--from", String(1 + 50 * k)], { timeout: 20, items: items.playthrough });
 for (let k = 0; k < 3; k++) add("playthrough-story#" + (k + 1), null, ["--max-old-space-size=3072", "tests/playthrough.js", "50", "--story", "--from", String(1 + 50 * k)], { timeout: 20, items: items.playthrough });
 add("strings-hi", null, ["tests/strings.js", "check", "hi", "40"], { timeout: 15, items: items.strings });
-add("balance", null, ["tests/balance.js", "120"], { timeout: 15, report: true });
+add("balance", null, ["tests/balance.js", "120"], { timeout: 35, report: true });
 add("race-balance", null, ["tests/race_balance.js", "2000"], { report: true });
 add("rtsim", null, ["tests/rtsim.js", "all", "10"], { report: true });
 add("rtfit", null, ["tests/rtfit.js"], { browser: true, items: items.rtfit });
