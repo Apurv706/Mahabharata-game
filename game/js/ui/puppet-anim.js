@@ -5,7 +5,8 @@
    kicked (knocked back), frozen for a beat on contact (hit-stop), made to tremble, pinned by the
    foot, or let fall limb by limb, pivoting on its feet.
 
-   U.rig(svg, actorEl, base) → a Rig (or null with calm motion: the CSS poses are used then).
+   U.rig(svg, actorEl, base, { fight }) → a Rig (or null with calm motion: the CSS poses are used then); out of a fight a
+                                            figure at rest holds its weapon clear of its face
    rig.set(pose, stiffness, damping, snap)  aim every joint at a pose from POSES
    rig.home()                               back to its own resting pose
    rig.kick({ joint: velocity })            a push on some joints (an impact)
@@ -96,7 +97,14 @@
   }
   const wake = () => { if (!raf && live.size && typeof requestAnimationFrame === "function") raf = requestAnimationFrame(frame); };
 
-  function Rig(svg, el, base) {
+  // At rest out of a fight nothing held covers the face (owner, 4 November): standing, walking, slumped, turned aside or in
+  // its own stance, a figure holds a mace, a club or a hammer low with its head on the ground and a blade point down
+  // (item 180), a bow upright at its side (the arm hanging; the bow is kept upright in the fist), a spear or a staff upright
+  // beside it. A fight's figures (U.rig(..., { fight: true })) keep their fighting stances.
+  const REST = new Set(["stand", "walk", "slump", "side", "stoop", "square", "archer", "raised", "proud", "hero", "haughty", "broad", "sage"]);
+  const LOW = new Set(["mace", "club", "hammer", "sword", "woodsword", "dagger"]);
+  function Rig(svg, el, base, o) {
+    this.fight = !!(o && o.fight);
     this.svg = svg; this.el = el || svg.parentNode; this.baseName = POSES[base] ? base : "stand";
     this.g = {}; for (const k of JOINTS) this.g[k] = svg.querySelector("." + k);
     this.body = svg.querySelector(".pp-body"); this.itemEl = svg.querySelector(".it-w");
@@ -151,7 +159,13 @@
     return this;
   };
   Rig.prototype.set = function (name, k, z, snap) {
-    const p = POSES[name] || POSES.stand;
+    let p = POSES[name] || POSES.stand;
+    if (!this.fight && REST.has(name)) { // at rest: nothing held over the face
+      const kind = this.itemEl && this.itemEl.dataset.k;
+      if (this.bow && !this.tmp) p = Object.assign({}, p, { armF: 8, foreF: -16, tilt: -18 });
+      else if (kind && /^(spear|staff|plough)$/.test(kind)) p = Object.assign({}, p, { item: -8 - ((p.rot || 0) + (p.armF || 0) + (p.foreF || 0)) - 18 }); // upright, leaning back past the head
+      else if (kind && LOW.has(kind)) p = Object.assign({}, p, { item: 180 });
+    }
     for (const key of KEYS) if (key !== "dx" && key !== "dy") this.t[key] = p[key] || 0;
     if (k) this.k = k; if (z != null) this.z = z;
     if (snap) { for (const key of KEYS) { this.x[key] = this.t[key]; this.v[key] = 0; } this.apply(); }
@@ -264,7 +278,7 @@
 
   // Make a live figure of an SVG drawn with { pose: "live" }. With calm motion, the figure is
   // given back its plain CSS pose instead, and null is returned.
-  U.rig = function (svg, el, base) {
+  U.rig = function (svg, el, base, o) {
     if (!svg) return null;
     if (reduced() || typeof requestAnimationFrame !== "function") {
       svg.setAttribute("class", svg.getAttribute("class").replace(/pose-live\b/, "pose-" + ({ ready: "brace", bowready: "brace" }[base] || base || "stand")));
@@ -273,7 +287,7 @@
     const own = svg.getAttribute("data-stance"); // with calm motion the CSS stand pose shows the stance
     if ((!base || base === "stand") && own && POSES[own]) base = own;
     if (!/\bpose-live\b/.test(svg.getAttribute("class"))) svg.setAttribute("class", svg.getAttribute("class").replace(/\bpose-\S+/, "pose-live"));
-    return new Rig(svg, el, base);
+    return new Rig(svg, el, base, o);
   };
   U.rigFreeze = function (ms) { if (!reduced()) frozen = Math.max(frozen, ms); };
 

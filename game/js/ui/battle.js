@@ -174,7 +174,7 @@
     for (const u of B.units) {
       const el = actorEl(u.uid), svg = el && el.querySelector(".pp");
       if (!svg || u.hp <= 0 || !/\bpose-live\b/.test(svg.getAttribute("class"))) continue;
-      const r = U.rig(svg, el, isBow(svg) ? "bowready" : (svg.dataset.stance && u.side === "enemy" ? svg.dataset.stance : "ready")); // each kind of enemy stands in its own way
+      const r = U.rig(svg, el, isBow(svg) ? "bowready" : (svg.dataset.stance && u.side === "enemy" ? svg.dataset.stance : "ready"), { fight: true }); // each kind of enemy stands in its own way
       if (!r) continue;
       rigs.set(u.uid, r);
       // A friend who joins the fight comes in from the edge of the stage, saying something.

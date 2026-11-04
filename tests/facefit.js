@@ -3,7 +3,7 @@
    ground, a sword or a dagger point down at the hip, a spear or a staff upright beside the body, a bow upright at the side,
    a shield low on the back arm. For every figure (each of K.PUPPETS, you on each path) in each pose a figure takes at
    rest, drawn as on a phone, both still (the CSS poses) and live (puppet-anim.js rigs at rest), the box of what is held
-   must not overlap the head's box by more than a few pixels. Fights keep their own poses (not checked here).
+   must not lie more than a few pixels inside the face (its box), measured on the shapes as drawn. Fights keep their own poses (not checked here).
    Usage: node tests/facefit.js [--shots DIR]   (needs Playwright) */
 "use strict";
 const http = require("http"), fs = require("fs"), path = require("path");
@@ -18,7 +18,7 @@ srv.listen(0, async () => {
   await pg.route(/fonts\.(googleapis|gstatic)/, (r) => r.abort());
   await pg.goto("http://localhost:" + srv.address().port + "/index.html"); await pg.waitForTimeout(400);
   const res = await pg.evaluate(async () => {
-    const U = K.UI, POSES = ["stand", "walk", "slump", "side", "speak", "think"], TOL = 3;
+    const U = K.UI, POSES = ["stand", "walk", "slump", "side"], TOL = 3; // (a gesture -- speaking, a hand at the chin -- brings the hand up: not a rest)
     const specs = [];
     for (const id of Object.keys(K.PUPPETS)) specs.push([id, U.puppetFor(id)]);
     for (const p of Object.keys(K.PATHS)) { const S = Object.assign(K.newLife(), { name: "T", age: 30, act: 5, path: p, origin: "panchala" }); specs.push(["you (" + p + ")", K.puppetSpec(S)]); }
@@ -27,10 +27,25 @@ srv.listen(0, async () => {
     const over = (a, c) => Math.min(Math.max(0, Math.min(a.right, c.right) - Math.max(a.left, c.left)), Math.max(0, Math.min(a.bottom, c.bottom) - Math.max(a.top, c.top)));
     const bad = [], seen = { n: 0 };
     const measure = (who, pose, svg) => {
-      const head = box(svg.querySelector(".pp-body .head") || svg.querySelector(".head")); if (!head) return;
+      const head = box(svg.querySelector(".pp-body .pp-face")); if (!head) return; // the face itself (not a crown, a beard or the hair)
+      // What is held, as drawn: points on its shapes (in fill or stroke), each against the face; the deepest one counts.
       for (const [what, sel] of [["weapon", ".pp-body .it"], ["shield", ".pp-body .it-s"]]) {
-        const it = box(svg.querySelector(sel)); if (!it) continue; seen.n++;
-        const o = over(head, it); if (o > TOL) bad.push(who + " · " + pose + ": the " + what + " (" + (svg.querySelector(sel).dataset.k || what) + ") covers the head by " + Math.round(o) + " px");
+        const it = svg.querySelector(sel); if (!it || !box(it)) continue; seen.n++;
+        let deep = 0;
+        for (const sh of it.querySelectorAll("path, circle, ellipse, rect, line, polygon, polyline")) {
+          if (sh.closest(".nock") || getComputedStyle(sh).display === "none" || sh.getAttribute("opacity") === "0") continue;
+          let bb; try { bb = sh.getBBox(); } catch (e) { continue; }
+          const m = sh.getScreenCTM(); if (!m) continue;
+          const st = Math.max(0.5, Math.min(bb.width, bb.height, 6) / 4);
+          for (let x = bb.x; x <= bb.x + bb.width + 1e-6; x += st) for (let y = bb.y; y <= bb.y + bb.height + 1e-6; y += st) {
+            const pt = new DOMPoint(x, y);
+            if (!(sh.isPointInFill(pt) || (sh.getAttribute("stroke") && sh.getAttribute("stroke") !== "none" && sh.isPointInStroke(pt)))) continue;
+            const q = pt.matrixTransform(m);
+            const d = Math.min(q.x - head.left, head.right - q.x, q.y - head.top, head.bottom - q.y);
+            if (d > deep) deep = d;
+          }
+        }
+        if (deep > TOL) bad.push(who + " · " + pose + ": the " + what + " (" + (it.dataset.k || what) + ") lies " + Math.round(deep) + " px into the face");
       }
     };
     for (const [who, spec] of specs) {

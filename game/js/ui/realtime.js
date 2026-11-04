@@ -209,7 +209,7 @@
     const bow = !!svg.querySelector('.it:not(.it-w) path[d="M50 86 L50 166"]');
     a = { u, el, svg, fl: el.querySelector(".fl"), vbW: vb[2], vbH: vb[3], sc: 210 / vb[3], spec, d: u.rt.lane, base: bow ? "bowready" : svg.dataset.stance && foe ? svg.dataset.stance : "ready",
       name: u.side === "player" ? K.tr("You") : (u.side === "ally" && (u.person || u.called)) || (foe && (u.person || u.hero)) ? K.text(u.src || u.name).split(",")[0] : null };
-    a.rig = U.motion() && U.rig ? U.rig(svg, el, a.base) : null;
+    a.rig = U.motion() && U.rig ? U.rig(svg, el, a.base, { fight: true }) : null;
     V.actors.set(u.uid, a);
     size(a);
     return a;

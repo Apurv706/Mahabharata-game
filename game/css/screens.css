@@ -2002,3 +2002,17 @@ html.calm .endscreen, .endscreen.still { transition: none; }
 @media (min-width: 900px) { .es-col { padding-top: calc(var(--vh) * .4); } .actlist { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
 body.ending-on .ledger { display: none; }
 .result .retrynote { color: var(--negative); font-weight: 700; }
+
+/* At rest nothing held covers the face (owner, 4 November): standing (in any stance), walking, slumped or turned aside, a
+   mace, a club or a hammer hangs with its head on the ground and a blade points down; a bow is held upright at the side,
+   the arm hanging; a spear or a staff stands upright beside the body (puppet-anim.js REST does the same for live figures). */
+.pp:is(.pose-stand, .pose-walk, .pose-slump, .pose-side, .pose-tremble) .it-w:is([data-k="mace"], [data-k="club"], [data-k="hammer"], [data-k="sword"], [data-k="woodsword"], [data-k="dagger"]) { transform: rotate(180deg); }
+.pp.hold-bow:is(.pose-stand, .pose-walk) .armF { transform: rotate(8deg); }
+.pp.hold-bow:is(.pose-stand, .pose-walk) .foreF { transform: rotate(-16deg); }
+.pp.hold-bow:is(.pose-stand, .pose-walk, .pose-slump, .pose-side) .it:not(.it-w) { transform-box: view-box; transform-origin: 60.5px 126px; transform: rotate(-18deg); } /* its top leaning back, clear of the face */
+.pp.hold-bow.pose-slump .it:not(.it-w) { transform: rotate(-33deg); }
+.pp.hold-bow.pose-side .it:not(.it-w) { transform: rotate(-42deg); }
+/* A spear or a staff leans back past the head as the body bows (slumped) or turns aside, and as the arm swings in a walk. */
+.pp:is(.hold-spear, .hold-staff, .hold-plough).pose-walk .it-w { transform: rotate(-16deg); }
+.pp:is(.hold-spear, .hold-staff, .hold-plough).pose-slump .it-w { transform: rotate(-24deg); }
+.pp:is(.hold-spear, .hold-staff, .hold-plough).pose-side .it-w { transform: rotate(-34deg); }

@@ -235,7 +235,7 @@
     const f = { key, u, i, side, el, svg, fl: el.querySelector(".fl"), vbW: vb[2], vbH: vb[3], sc: 210 / vb[3], spec, bow, face: foe ? -1 : 1, d: 0, f: 0.5,
       base: bow ? "bowready" : svg.dataset.stance && foe ? svg.dataset.stance : "ready", dead: false,
       name: isP(u) ? K.tr("You") : isCompany(u) ? K.tr("Soldier") : (u.person || u.hero || u.called) ? K.text(u.src || u.name).split(",")[0] : null };
-    f.rig = U.motion() && U.rig ? U.rig(svg, el, f.base) : null;
+    f.rig = U.motion() && U.rig ? U.rig(svg, el, f.base, { fight: true }) : null;
     el.classList.toggle("face-l", f.face < 0);
     if (foe) {
       const t = document.createElement("button"); t.type = "button"; t.className = "tap foe-tap"; t.setAttribute("aria-label", K.text(u.src || u.name));
