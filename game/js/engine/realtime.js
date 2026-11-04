@@ -53,7 +53,7 @@
   // Calibrated 3 November over 7 rounds of 2400-3000 lives (e_ep_carts capped at 2.5: it is lost 4 times in 100 on the turns).
   RT.TUNE = {
     cross_e_called: { hp: 0.95, atk: 0.95 },
-    cross_e_duel: { hp: 1.55, atk: 1.55 },
+    cross_e_duel: { hp: 1.70, atk: 1.70 },
     e_ash: { hp: 1.00, atk: 1.00 },
     e_bandits: { hp: 1.04, atk: 1.04 },
     e_border: { hp: 0.82, atk: 0.82 },
@@ -61,20 +61,20 @@
     e_dushasana: { hp: 1.16, atk: 1.16 },
     e_ep_carts: { hp: 2.50, atk: 2.50 },
     e_ep_ugra: { hp: 1.34, atk: 1.34 },
-    e_gandharva: { hp: 1.25, atk: 1.25 },
+    e_gandharva: { hp: 1.32, atk: 1.32 },
     e_gate: { hp: 0.71, atk: 0.71 },
     e_guard: { hp: 1.15, atk: 1.15 },
     e_hunt: { hp: 1.12, atk: 1.12 },
     e_jaya: { hp: 1.41, atk: 1.41 },
     e_jayadratha: { hp: 1.14, atk: 1.14 },
-    e_kings: { hp: 0.72, atk: 0.72 },
+    e_kings: { hp: 0.64, atk: 0.64 },
     e_panchala: { hp: 0.89, atk: 0.89 },
-    e_raid: { hp: 0.98, atk: 0.98 },
-    e_road: { hp: 1.33, atk: 1.33 },
+    e_raid: { hp: 1.08, atk: 1.08 },
+    e_road: { hp: 1.22, atk: 1.22 },
     e_sudatta: { hp: 0.85, atk: 0.85 },
     e_ugra: { hp: 0.75, atk: 0.75 },
     fs_d18_mace: { hp: 0.59, atk: 0.59 },
-    fs_sk_mace: { hp: 0.70, atk: 0.70 }
+    fs_sk_mace: { hp: 0.62, atk: 0.62 }
   };
   // The fights played in real time (PRD §18.15 "Which fights are which"); every other fight stays on the turns.
   RT.IDS = new Set(["e_ugra", "e_spar", "e_bandits", "e_kings", "e_panchala", "e_border", "e_gandharva", "e_sudatta", "e_jayadratha", "e_cattle", "e_cattle_k",

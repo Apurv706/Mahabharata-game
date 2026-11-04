@@ -118,6 +118,9 @@ if (RTM && process.env.RTSTATS) {
   for (const [id, r] of Object.entries(rtStats).sort()) { w += r.w; n += r.n; T.push(...r.t); const m = r.t.reduce((a, b) => a + b, 0) / r.n; const tb = tbStats[id]; console.log("  " + id.padEnd(16) + String(r.w).padStart(4) + " /" + String(r.n).padStart(4) + "  " + String(Math.round(r.w / r.n * 100)).padStart(3) + "% (first try " + String(Math.round((r.w1 || 0) / r.n * 100)).padStart(3) + "%)  " + m.toFixed(1) + " s  retried " + r.tries + (tb ? "   turns " + Math.round(tb.w / tb.n * 100) + "%" : "")); }
   if (Object.keys(tbStats).length) { let a = 0, b = 0; for (const r of Object.values(tbStats)) { a += r.w; b += r.n; } console.log("  all on the turns: " + Math.round(a / b * 100) + "% won"); }
  const w1 = Object.values(rtStats).reduce((a, r) => a + (r.w1 || 0), 0); let err = 0; for (const [id, r] of Object.entries(rtStats)) if (tbStats[id]) err += r.n * Math.pow((r.w1 || 0) / r.n - tbStats[id].w / tbStats[id].n, 2);
+  const grp = (S) => { const g = { even: [0, 0], hard: [0, 0] }; for (const [id, r] of Object.entries(S)) { const e = K.ENCOUNTERS[id], k = e && e.hard ? "hard" : "even"; g[k][0] += r.w; g[k][1] += r.n; } return g; };
+  const pc = (x) => (x[1] ? Math.round(x[0] / x[1] * 100) + "%" : "none");
+  { const a = grp(rtStats), b = grp(tbStats); console.log("  even fights: real-time " + pc(a.even) + ", turns " + pc(b.even) + " · hard fights: real-time " + pc(a.hard) + ", turns " + pc(b.hard)); }
   console.log("  all real-time: " + Math.round(w / n * 100) + "% won (" + Math.round(w1 / n * 100) + "% at the first try; per-fight gap to the turns " + Math.sqrt(err / n).toFixed(3) + "), mean " + (T.reduce((a, b) => a + b, 0) / T.length).toFixed(1) + " s");
 }
 let bad = 0;
