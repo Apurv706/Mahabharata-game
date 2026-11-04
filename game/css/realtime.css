@@ -629,3 +629,6 @@ html.calm #rt.war .stage.champ .wd-flash { opacity: 0; }
 @media (max-width: 370px) { #rt.upright.war .moves button small { display: none; } #rt.war .wd-read button { font-size: 12px; } }
 #rt.wide.war .moves { grid-template-columns: repeat(var(--cols, 5), minmax(0, 1fr)); }
 #rt.war .gmark.area { border: 2px dashed rgba(255, 150, 90, 0.9); background: rgba(255, 110, 50, 0.12); box-shadow: none; border-radius: 40px; }
+/* rows centred: 3+2 on a phone, never one alone (ui/warday.js sets --cols) */
+#rt.war .moves, #rt.upright.war .moves, #rt.wide.war .moves { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+#rt.war .moves button, #rt.upright.war .moves button { flex: 0 0 calc((100% - (var(--cols, 3) - 1) * 6px) / var(--cols, 3)); height: 44px; }
