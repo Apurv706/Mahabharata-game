@@ -537,6 +537,7 @@
         if (f.heavy) nameTag(a, 1.2);
         if (K.Sound) K.Sound.play("hit");
         break; }
+      case "brace": { const a = A(f.uid); if (a && a.u.hp > 0) { pose(a, "guard", 900, 0.55); U.guardFlash(a.svg, 1300); if (!a.shieldUp) home(a, 1200); } break; } // braces for your next blow
       case "heal": { const a = A(f.uid); if (a) pop(a, "+", "heal"); break; }
       case "spark": { // a blow taken on a shield: sparks fly from it, and it is raised for a moment
         const a = A(f.uid); if (!a) break;

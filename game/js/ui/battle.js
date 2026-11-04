@@ -400,10 +400,7 @@
     else if (!shot && MELEE.has(a.id) && r.bow) r.wield("sword");
     if (a.id === "guard" || a.id === "brace") {
       r.set("guard", 900, 0.55);
-      const ward = document.createElement("div"); ward.className = "ward"; ar.appendChild(ward);
-      const h = point(u.uid, "chest"), size = ar.clientHeight * 0.3;
-      Object.assign(ward.style, { left: (h.x - size * (side > 0 ? 0.25 : 0.75)) + "px", top: (h.y - size * 0.5) + "px", width: size + "px", height: size + "px", transform: "rotate(" + (side > 0 ? 10 : 190) + "deg)" });
-      ward.animate([{ opacity: 0 }, { opacity: 1 }, { opacity: 1 }, { opacity: 0 }], { duration: 1500 }).onfinish = () => ward.remove();
+      U.guardFlash(el.querySelector(".pp"), 1300); // the shield raised with a bright rim (no ring drifting over the stage)
       targets.forEach((t) => hit(t));
       await W(1300); if (rigs.get(u.uid) === r) r.home();
       return 600;

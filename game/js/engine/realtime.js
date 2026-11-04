@@ -469,6 +469,7 @@
     if (MELEE.has(id) && dist(e, t) > e.rt.reach + LUNGE) { e.rt.cool = 0.2; e.rt.close = true; return; } // too far for a blow: close in first
     if (ab.target === "self" || ab.target === "ally" || ab.target === "allies") { // a brace, a war cry: at once
       ab.use(R.B, e, ab.target === "self" ? e : ab.target === "ally" ? e : living(R.B, "enemy"));
+      if (id === "brace" || id === "guard") R.fx.push({ k: "brace", uid: e.uid });
       if (ab.cd) e.rt.cd[id] = ab.cd * ROUND;
       e.rt.cool = r(0.8, 1.4);
       return;

@@ -498,6 +498,31 @@
     return '<span class="ppbadge' + (o.cls ? " " + o.cls : "") + '">' + U.puppet(spec, Object.assign({ h: 86 }, o)) + "</span>";
   };
   // Make the corner figure react to what just happened: stand tall, slump, kneel.
+  // A foe (or anyone) bracing for the next blow: a clear flash on the figure itself (owner, 4 November), in place of
+  // the old see-through ring. The shield on the back forearm gets a bright rim and a glint sweeping across it; with
+  // no shield, the raised forearm glows. Calm motion: the same highlight, still, for as long. The caller sets the
+  // figure's "guard" pose. svg: the puppet's <svg class="pp ...">.
+  U.guardFlash = function (svg, ms) {
+    if (!svg || !svg.querySelector) return;
+    ms = ms || 1300;
+    const sh = svg.querySelector(".it-s"), tgt = sh || svg.querySelector(".foreB");
+    if (!tgt) return;
+    const calm = !!(U.calm && U.calm());
+    svg.querySelectorAll(".gflash").forEach((g) => g.remove());
+    let rim = null;
+    if (sh) {
+      const r = +sh.getAttribute("data-r") || 19, NS = "http://www.w3.org/2000/svg";
+      rim = document.createElementNS(NS, "g"); rim.setAttribute("class", "gflash");
+      rim.innerHTML = '<circle cx="58" cy="112" r="' + (r + 1.5) + '" fill="none" stroke="#fff3c4" stroke-width="3.2"/>' +
+        '<path d="M' + (58 - r * 0.62) + " " + (112 - r * 0.45) + " A" + r * 0.78 + " " + r * 0.78 + " 0 0 1 " + (58 + r * 0.2) + " " + (112 - r * 0.76) + '" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>';
+      sh.appendChild(rim);
+    }
+    tgt.classList.remove("gf-on", "gf-calm"); void svg.getBoundingClientRect();
+    tgt.classList.add(calm ? "gf-calm" : "gf-on");
+    if (rim && !calm && rim.animate) rim.animate([{ opacity: 0 }, { opacity: 1, offset: 0.15 }, { opacity: 0.9, offset: 0.7 }, { opacity: 0 }], { duration: ms, fill: "forwards" });
+    clearTimeout(tgt._gf);
+    tgt._gf = setTimeout(() => { tgt.classList.remove("gf-on", "gf-calm"); if (rim) rim.remove(); }, ms);
+  };
   U.puppetReact = function (kind) {
     const el = document.querySelector(".pagehead .ppbadge svg, .ppbadge svg");
     if (!el) return;

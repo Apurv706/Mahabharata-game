@@ -513,7 +513,7 @@
       toast(K.tr("Shield wall: every blow this round is halved."));
       return 700;
     }
-    if (id === "guard" || id === "brace" || id === "formation" || id === "steady") { pose(a, "guard", 900, 0.55); home(a, 1200); land(hits, heals); return 500; }
+    if (id === "guard" || id === "brace" || id === "formation" || id === "steady") { pose(a, "guard", 900, 0.55); if (id === "guard" || id === "brace") U.guardFlash(a.svg, 1300); home(a, 1200); land(hits, heals); return 500; }
     if (["herbs", "salve", "hymn"].includes(id)) { pose(a, "kneel", 600, 0.6); home(a, 900); now(() => land(hits, heals), 380); return 900; }
     if (["rally_line", "song", "rally", "roar", "command", "expose", "verse", "feint", "vanish", "swerve", "call"].includes(id)) {
       pose(a, id === "command" || id === "verse" ? "speak" : "cheer", 700, 0.5); home(a, 800);

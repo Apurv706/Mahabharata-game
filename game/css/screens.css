@@ -1875,7 +1875,10 @@ html.calm .sleepin.wakeup .wk-kid .pp { animation: none !important; }
 .bit.spark { width: 4px; height: 4px; border-radius: 50%; background: #fff1c2; box-shadow: 0 0 6px 2px rgba(255, 196, 110, .8); }
 .bit.mote { width: 7px; height: 7px; border-radius: 50%; background: radial-gradient(#e9ffe9, #7fcfa6 60%, rgba(127, 207, 166, 0)); }
 .bit.chip { width: 6px; height: 4px; border-radius: 1px; background: #c9a066; }
-.ward { position: absolute; z-index: 4; border-radius: 50%; border: 3px solid rgba(255, 214, 140, .8); border-left-color: transparent; border-bottom-color: transparent; box-shadow: 0 0 14px rgba(255, 196, 110, .6); pointer-events: none; }
+/* A figure bracing for the next blow: a bright rim and glint on the shield, or a glow on the raised forearm (U.guardFlash). */
+.pp .gf-on { animation: gflash 1.3s ease-out both; }
+.pp .gf-calm { filter: drop-shadow(0 0 2.5px #fff1b8) brightness(1.25); }
+@keyframes gflash { 0% { filter: none; } 15% { filter: drop-shadow(0 0 5px #fff6d0) drop-shadow(0 0 2px #ffffff) brightness(1.55); } 70% { filter: drop-shadow(0 0 3px #ffe9a8) brightness(1.25); } 100% { filter: none; } }
 
 /* Fights of another kind (content/war_fights.js, ui/fightmodes.js): the bow in a chariot duel, arrows
    to catch, a feint in a mace duel, an arrow coming back in an archery duel, and the beat of the fight. */
