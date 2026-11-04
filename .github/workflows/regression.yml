@@ -1,5 +1,5 @@
 # The regression suite (tests/run.js, tests/README.md).
-#   quick: every push and pull request (about 2 minutes on the runner): engine rules and random lives, content integrity,
+#   quick: pushes to main and every pull request (under a minute on the runner): engine rules and random lives, content integrity,
 #          golden lives, balance bands on a small sample, the engine bug checks, one light browser check.
 #   full:  nightly and by hand (Actions > Regression > Run workflow): everything, in Chromium (the browser can be chosen
 #          when run by hand: chromium, webkit, firefox or all, for the checks that run in several).
@@ -9,6 +9,7 @@
 name: Regression
 on:
   push:
+    branches: [main] # not on work branches (their baselines move while they are being worked on); they run on their pull request
   pull_request:
   schedule:
     - cron: "17 21 * * *" # nightly, 02:47 in India
