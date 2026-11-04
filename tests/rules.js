@@ -1272,6 +1272,12 @@ require(G + "content/war_fights.js");
     C.settle("win"); C.end();
     RT.force = false; K.seed(31); life().flags.push("role_command"); const B2 = C.start("e_day16");
     ok(!B2.place && !C.setPlace("front"), "with the developer switch off, no place in the line: the war day is as before"); C.settle("win"); C.end(); RT.force = true; }
+  // Friends follow their orders: all-out fights, hold back stays behind you and does not strike.
+  { const run = (order) => { K.seed(41); life(); const B = C.start("e_kings"); const R = RT.begin(B); R.orders.friend = order; const bh = B.units.find((u) => u.side === "ally");
+      let dealt = 0; const hit = B.hit; B.hit = function (u, t, m, o) { const d = hit.call(B, u, t, m, o); if (u === bh) dealt += d; return d; };
+      for (let i = 0; i < 60 * 20 && !R.over; i++) RT.step(R, RT.bot(R)); C.settle("win"); C.end(); return dealt; };
+    const all = run("allout"), hold = run("hold");
+    ok(all > 0 && hold === 0, "a friend on all-out fights (" + all + " dealt in 20 s); on hold back he stays behind you and does not strike"); }
   RT.force = false;
 }
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

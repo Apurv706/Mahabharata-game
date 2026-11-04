@@ -345,7 +345,9 @@
       a.el.style.left = a.x.toFixed(1) + "px"; a.el.style.bottom = a.gy.toFixed(1) + "px";
       a.el.style.zIndex = String(Math.round(30 - u.rt.lane * 8 + (u.side === "player" ? 2 : 0)));
       a.el.classList.toggle("face-l", u.rt.face < 0);
-      a.el.classList.toggle("windup", !!u.rt.atk && u.side === "enemy");
+      // A foe glows only the first time it winds up; after that only its pose and its mark.
+      if (u.rt.atk && u.side === "enemy" && !a.warned) { a.warned = u.rt.atk; }
+      a.el.classList.toggle("windup", !!u.rt.atk && u.side === "enemy" && a.warned === u.rt.atk);
       if (u.rt.atk !== a.atk) { // a blow begins (wind up or draw the bow), or lands (strike)
         if (u.rt.atk) pose(a, u.rt.atk.ranged ? "draw" : "windup", 700, 0.5);
         else if (a.atk && !a.atk.ranged && u.hp > 0) { pose(a, "strike", 1600, 0.55); home(a, 380); }

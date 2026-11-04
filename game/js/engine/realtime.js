@@ -597,7 +597,11 @@
         u.cool = r(1.4, 2.3) * hast * (order === "allout" ? 0.75 : 1); u.rec = 0.3;
         const ab = K.ABILITIES[id];
         if (ab.target === "ally") { ab.use(B, a, t); R.fx.push({ k: "heal", uid: t && t.uid }); }
-        else if (t && Math.abs(t.rt.x - u.x) <= u.reach * 1.25 + LUNGE - ROWCUT * rowGap(a, t)) { const before = t.hp; ab.use(B, a, ab.target === "enemies" ? [t] : t); hitFx(R, t, before - t.hp); }
+        else if (t && Math.abs(t.rt.x - u.x) <= u.reach * 1.25 + LUNGE - ROWCUT * rowGap(a, t)) {
+          const before = t.hp;
+          if (order === "allout" && id === "strike") B.hit(a, t, 1.25); else ab.use(B, a, ab.target === "enemies" ? [t] : t); // all-out hits harder
+          hitFx(R, t, before - t.hp);
+        }
       }
       return;
     }
@@ -605,7 +609,8 @@
     // Where to stand.
     let goal, foe = null;
     const foes = living(B, "enemy").filter((e) => e.rt.entered);
-    if (order === "stay" || order === "hold") goal = clamp(p.rt.x - 1.4 * BODY, 0.05, 0.95);
+    const low = order === "balanced" && a.hp < a.maxHp * 0.35; // balanced: falls back when hurt
+    if (order === "stay" || order === "hold" || low) goal = clamp(p.rt.x - sign(p.rt.face || 1) * (low ? 1.2 : 1.4) * BODY, 0.07, 0.93);
     else {
       if (order === "guard" || order === "defend") foe = foes.filter((e) => dist(e, p) <= 2 * BODY).sort((x, y) => dist(x, p) - dist(y, p))[0] || null;
       else if (order === "allout") foe = foes.sort((x, y) => dist(x, a) - dist(y, a))[0] || null;
@@ -623,7 +628,7 @@
     const hurt = living(B, "friends").find((f) => !f.still && f.hp / f.maxHp < 0.45 && dist(f, a) < 2 * BODY);
     if (u.cool <= 0 && hurt && a.abilities.includes("salve") && !(u.cd.salve > 0)) { u.atk = { id: "salve", on: hurt.uid, land: R.t + 0.5, t0: R.t }; u.cd.salve = 3 * ROUND; return; }
     for (const k of Object.keys(u.cd)) if (u.cd[k] > 0) u.cd[k] -= dt;
-    if (order === "stay" || order === "hold" || !foe || u.cool > 0) return;
+    if (order === "stay" || order === "hold" || low || !foe || u.cool > 0) return;
     if (Math.abs(foe.rt.x - u.x) <= u.reach * 1.05 + LUNGE - ROWCUT * rowGap(a, foe)) {
       const ok = (id) => a.abilities.includes(id) && !(u.cd[id] > 0);
       const id = ok("heavy") && K.rng() < 0.3 ? "heavy" : a.abilities.includes("strike") ? "strike" : a.abilities.find((x) => MELEE.has(x)) || "strike";
