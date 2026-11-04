@@ -25,6 +25,7 @@ if (RTM) K.RT.force = true;
 let rtFights = 0;
 const rtStats = {}, tbStats = {};
 if (RTM && process.env.PARAMS) Object.assign(K.RT.P, JSON.parse(process.env.PARAMS));
+if (RTM && process.env.TUNE) K.RT.TUNE = JSON.parse(require("fs").readFileSync(process.env.TUNE, "utf8"));
 
 const N = parseInt(process.argv[2] || "400", 10), SEED = parseInt(process.argv[3] || "1", 10);
 const problems = new Map();
@@ -111,6 +112,7 @@ for (let i = 0; i < N; i++) {
     try { K.go(next); } catch (e) { add("throws", sc.id + ":" + c.id + " -> " + next + ": " + e.message); break; }
   }
 }
+if (RTM && process.env.RTJSON) require("fs").writeFileSync(process.env.RTJSON, JSON.stringify({ rt: rtStats, tb: tbStats }));
 if (RTM && process.env.RTSTATS) {
   let w = 0, n = 0, T = [];
   for (const [id, r] of Object.entries(rtStats).sort()) { w += r.w; n += r.n; T.push(...r.t); const m = r.t.reduce((a, b) => a + b, 0) / r.n; const tb = tbStats[id]; console.log("  " + id.padEnd(16) + String(r.w).padStart(4) + " /" + String(r.n).padStart(4) + "  " + String(Math.round(r.w / r.n * 100)).padStart(3) + "% (first try " + String(Math.round((r.w1 || 0) / r.n * 100)).padStart(3) + "%)  " + m.toFixed(1) + " s  retried " + r.tries + (tb ? "   turns " + Math.round(tb.w / tb.n * 100) + "%" : "")); }

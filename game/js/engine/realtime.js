@@ -49,6 +49,33 @@
     botReact: [0.2, 0.42], botMiss: [0.25, 0.55], // the bot's reading, from grace (good to poor)
     cap: 240           // a fight that has run this long is stopped (it never should)
   };
+  // Per-fight tuning: foes' health and blows, multiplied (calibrated with RT=1 RTSTATS=1 COMPARE=1 node tests/lives.js).
+  // Calibrated 3 November over 7 rounds of 2400-3000 lives (e_ep_carts capped at 2.5: it is lost 4 times in 100 on the turns).
+  RT.TUNE = {
+    cross_e_called: { hp: 0.95, atk: 0.95 },
+    cross_e_duel: { hp: 1.55, atk: 1.55 },
+    e_ash: { hp: 1.00, atk: 1.00 },
+    e_bandits: { hp: 1.04, atk: 1.04 },
+    e_border: { hp: 0.82, atk: 0.82 },
+    e_cattle: { hp: 1.13, atk: 1.13 },
+    e_dushasana: { hp: 1.16, atk: 1.16 },
+    e_ep_carts: { hp: 2.50, atk: 2.50 },
+    e_ep_ugra: { hp: 1.34, atk: 1.34 },
+    e_gandharva: { hp: 1.25, atk: 1.25 },
+    e_gate: { hp: 0.71, atk: 0.71 },
+    e_guard: { hp: 1.15, atk: 1.15 },
+    e_hunt: { hp: 1.12, atk: 1.12 },
+    e_jaya: { hp: 1.41, atk: 1.41 },
+    e_jayadratha: { hp: 1.14, atk: 1.14 },
+    e_kings: { hp: 0.72, atk: 0.72 },
+    e_panchala: { hp: 0.89, atk: 0.89 },
+    e_raid: { hp: 0.98, atk: 0.98 },
+    e_road: { hp: 1.33, atk: 1.33 },
+    e_sudatta: { hp: 0.85, atk: 0.85 },
+    e_ugra: { hp: 0.75, atk: 0.75 },
+    fs_d18_mace: { hp: 0.59, atk: 0.59 },
+    fs_sk_mace: { hp: 0.70, atk: 0.70 }
+  };
   // The fights played in real time (PRD §18.15 "Which fights are which"); every other fight stays on the turns.
   RT.IDS = new Set(["e_ugra", "e_spar", "e_bandits", "e_kings", "e_panchala", "e_border", "e_gandharva", "e_sudatta", "e_jayadratha", "e_cattle", "e_cattle_k",
     "e_guard", "e_hunt", "e_gate", "e_road", "e_jaya", "e_dushasana", "e_night", "e_ep_carts", "e_ep_ugra", "e_raid", "e_ash", "cross_e_duel", "cross_e_called", "x_practice"]);
@@ -109,7 +136,11 @@
     const B = R.B, foe = u.side === "enemy";
     const k = foe ? RT.P.hpFoe : u.side === "player" ? RT.P.hpFriend : RT.P.hpAlly == null ? RT.P.hpFoe : RT.P.hpAlly;
     u.maxHp = Math.max(1, Math.round(u.maxHp * k)); u.hp = Math.max(0, Math.round(u.hp * k));
-    if (foe) u.atk = Math.round(u.atk * RT.P.atkFoe * 10) / 10; // blows come oftener and are dodged more than on the turns
+    if (foe) { // per-fight tuning (RT.TUNE): each real-time fight won about as often as the same fight on the turns
+      const tune = RT.TUNE[B.enc.id] || {};
+      if (tune.hp) { u.maxHp = Math.max(1, Math.round(u.maxHp * tune.hp)); u.hp = Math.max(0, Math.round(u.hp * tune.hp)); }
+      u.atk = Math.round(u.atk * RT.P.atkFoe * (tune.atk || 1) * 10) / 10; // blows come oftener and are dodged more than on the turns
+    }
     const pr = u.side === "player" ? { reach: 1.2 * BODY, speed: 0.3, windup: 0.12 } : profile(u);
     const i = R.seen++;
     const sideIdx = (R.sideSeen[foe ? "e" : "f"] = (R.sideSeen[foe ? "e" : "f"] || 0) + 1) - 1;
