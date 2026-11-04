@@ -156,6 +156,8 @@
   // on past the fist the way a held weapon does, instead of hanging upside down.
   const WIELD = new Set(["mace", "sword", "woodsword", "spear", "dagger", "hammer", "staff", "plough", "whip", "club"]);
   // o.tips: the Gandiva's gold tips; o.studs: stones (or gold studs) set in a mace's head.
+  // The weapon's striking point (a blade's tip, a mace's head), an invisible mark the fight screens measure live.
+  const TIP = (x, y) => '<circle class="it-tip" cx="' + x + '" cy="' + y + '" r="0.6" fill="none" stroke="none"/>';
   function itemSvg(kind, trim, o = {}) {
     switch (kind) {
       // A recurved bow held at its grip: the belly passes through the hand, the string runs behind the arm.
@@ -174,30 +176,30 @@
         '<path d="M58 43 Q50.5 58 58 73 M58 43 Q65.5 58 58 73 M52 46 Q46.5 58 52 71 M64 46 Q69.5 58 64 71" fill="none" stroke="#7a5418" stroke-width="0.9"/>' +
         '<path d="M47 59 Q58 63 69 59" fill="none" stroke="' + trim + '" stroke-width="1.8"/>' + holeRow("M49 52.4 Q58 55.4 67 52.4", GOLD, 2.5, 1) + holeRow("M49 65.6 Q58 68.6 67 65.6", GOLD, 2.5, 1) +
         '<rect x="54.2" y="72" width="7.6" height="4.4" rx="1" fill="' + GOLD + '"' + OUT + '/>' +
-        (o.studs ? [52, 58, 64, 55, 61].map((x, i) => '<circle cx="' + x + '" cy="' + [52, 50, 52, 64, 64][i] + '" r="2" fill="' + o.studs[i % o.studs.length] + '" stroke="#24120a" stroke-width=".7"/>').join("") : "") + "</g>";
+        (o.studs ? [52, 58, 64, 55, 61].map((x, i) => '<circle cx="' + x + '" cy="' + [52, 50, 52, 64, 64][i] + '" r="2" fill="' + o.studs[i % o.studs.length] + '" stroke="#24120a" stroke-width=".7"/>').join("") : "") + TIP(58, 58) + "</g>";
       // A khadga: broad blade swelling towards a curved point, a cross-guard, a grip and a pommel.
       case "sword": return '<g transform="rotate(16 58 126)">' +
         '<path d="M56.2 119 L55.4 84 Q56 74 62.5 68 Q61.6 78 61 86 L59.8 119 Z" fill="#dcd7c8"' + OUT + '/><path d="M58 117 L57.8 86 Q58.6 78 61 73" fill="none" stroke="#9a9484" stroke-width="0.7"/>' +
-        '<path d="M51.5 119.5 L64.5 119.5 L63 122.5 L53 122.5 Z" fill="' + GOLD + '"' + OUT + '/><rect x="56.4" y="122.5" width="3.2" height="9" fill="#5a3418"' + OUT + '/><circle cx="58" cy="133.5" r="2.4" fill="' + GOLD + '"' + OUT + '/></g>';
+        '<path d="M51.5 119.5 L64.5 119.5 L63 122.5 L53 122.5 Z" fill="' + GOLD + '"' + OUT + '/><rect x="56.4" y="122.5" width="3.2" height="9" fill="#5a3418"' + OUT + '/><circle cx="58" cy="133.5" r="2.4" fill="' + GOLD + '"' + OUT + '/></g>' + TIP(61.6, 71);
       // A practice sword of wood: the same broad blade in teak, a plain cross-piece, a cord-wrapped grip.
       case "woodsword": return '<g transform="rotate(16 58 126)">' +
         '<path d="M56.2 119 L55.4 84 Q56 74 62.5 68 Q61.6 78 61 86 L59.8 119 Z" fill="#b5834a"' + OUT + '/><path d="M58 117 L57.8 86 Q58.6 78 61 73" fill="none" stroke="#7a5228" stroke-width="0.8"/>' +
-        '<path d="M52 119.5 L64 119.5 L64 122.5 L52 122.5 Z" fill="#8a5a2c"' + OUT + '/><rect x="56.4" y="122.5" width="3.2" height="9" fill="#5a3418"' + OUT + '/><path d="M56.4 125h3.2M56.4 128h3.2" stroke="#d9b26a" stroke-width="0.9"/></g>';
+        '<path d="M52 119.5 L64 119.5 L64 122.5 L52 122.5 Z" fill="#8a5a2c"' + OUT + '/><rect x="56.4" y="122.5" width="3.2" height="9" fill="#5a3418"' + OUT + '/><path d="M56.4 125h3.2M56.4 128h3.2" stroke="#d9b26a" stroke-width="0.9"/></g>' + TIP(61.6, 71);
       // A spear: a long shaft, a leaf-shaped head on a collar, and a red tassel below it.
       case "spear": return '<path d="M58 176 L58 64" stroke="#5a3418" stroke-width="2.4" stroke-linecap="round"/>' +
         '<path d="M58 40 Q63.5 52 60.4 63 L55.6 63 Q52.5 52 58 40 Z" fill="#dcd7c8"' + OUT + '/><path d="M58 44 L58 62" stroke="#9a9484" stroke-width="0.7"/>' +
-        '<rect x="55.8" y="62.5" width="4.4" height="3.4" fill="' + GOLD + '"' + OUT + '/><path d="M56.5 66 q-3 5 -1.5 10 M58 66 q-0.5 6 0.5 11 M59.5 66 q2.5 5 1.5 9.5" fill="none" stroke="#b2432a" stroke-width="1.3" stroke-linecap="round"/>';
+        '<rect x="55.8" y="62.5" width="4.4" height="3.4" fill="' + GOLD + '"' + OUT + '/><path d="M56.5 66 q-3 5 -1.5 10 M58 66 q-0.5 6 0.5 11 M59.5 66 q2.5 5 1.5 9.5" fill="none" stroke="#b2432a" stroke-width="1.3" stroke-linecap="round"/>' + TIP(58, 42);
       // A bandit's knotted club, thick at the head.
-      case "club": return '<path d="M56.6 128 L55.4 96 Q53 84 56 74 Q61 66 66 72 Q68 82 62 96 L60 128 Z" fill="#6b4422"' + OUT + '/><circle cx="58" cy="82" r="1.6" fill="#3a2412"/><circle cx="62" cy="88" r="1.4" fill="#3a2412"/><circle cx="57" cy="94" r="1.2" fill="#3a2412"/>';
-      case "plough": return '<path d="M58 165 L58 74" stroke="#6b4422" stroke-width="3"/><path d="M58 74 Q70 66 74 54 L66 60 Z" fill="#cfc7b2"' + OUT + "/>";
-      case "staff": return '<path d="M60 200 L60 100" stroke="#6b4422" stroke-width="2.6" stroke-linecap="round"/>';
+      case "club": return '<path d="M56.6 128 L55.4 96 Q53 84 56 74 Q61 66 66 72 Q68 82 62 96 L60 128 Z" fill="#6b4422"' + OUT + '/><circle cx="58" cy="82" r="1.6" fill="#3a2412"/><circle cx="62" cy="88" r="1.4" fill="#3a2412"/><circle cx="57" cy="94" r="1.2" fill="#3a2412"/>' + TIP(60, 78);
+      case "plough": return '<path d="M58 165 L58 74" stroke="#6b4422" stroke-width="3"/><path d="M58 74 Q70 66 74 54 L66 60 Z" fill="#cfc7b2"' + OUT + "/>" + TIP(70, 60);
+      case "staff": return '<path d="M60 200 L60 100" stroke="#6b4422" stroke-width="2.6" stroke-linecap="round"/>' + TIP(60, 102);
       case "whip": return '<path d="M58 126 L66 98" stroke="#5a3418" stroke-width="2"/><path d="M66 98 Q80 90 76 112 Q72 124 84 120" fill="none" stroke="#3d2412" stroke-width="1"/>';
       case "scroll": return '<rect x="52" y="122" width="14" height="7" rx="3" fill="#efe2c0"' + OUT + "/>";
       case "bowl": return '<path d="M50 124 Q58 134 66 124 Z" fill="#9a6a3a"' + OUT + '/><path d="M54 122c1-3 3-3 4 0M59 121c1-3 3-3 4 0" stroke="#4f7d3a" stroke-width="1" fill="none"/>';
       // A short dagger, its blade forward out of the fist.
-      case "dagger": return '<g transform="rotate(38 58 126)"><path d="M56.6 120 L57.2 102 L58 98 L58.8 102 L59.4 120 Z" fill="#dcd7c8"' + OUT + '/><path d="M53.5 120 L62.5 120 L61.5 122.5 L54.5 122.5 Z" fill="' + GOLD + '"' + OUT + '/><rect x="56.6" y="122.5" width="2.8" height="7" fill="#5a3418"' + OUT + '/></g>';
+      case "dagger": return '<g transform="rotate(38 58 126)"><path d="M56.6 120 L57.2 102 L58 98 L58.8 102 L59.4 120 Z" fill="#dcd7c8"' + OUT + '/><path d="M53.5 120 L62.5 120 L61.5 122.5 L54.5 122.5 Z" fill="' + GOLD + '"' + OUT + '/><rect x="56.6" y="122.5" width="2.8" height="7" fill="#5a3418"' + OUT + "/>" + TIP(58, 99) + "</g>";
       case "lute": return '<path d="M50 136 Q44 126 52 120 L72 100" stroke="#6b4422" stroke-width="2.6" fill="none"/><circle cx="50" cy="132" r="6" fill="#b9873f"' + OUT + "/>";
-      case "hammer": return '<path d="M58 128 L58 100" stroke="#5a3418" stroke-width="2.4"/><rect x="51" y="94" width="14" height="7" fill="#6e6a62"' + OUT + "/>";
+      case "hammer": return '<path d="M58 128 L58 100" stroke="#5a3418" stroke-width="2.4"/><rect x="51" y="94" width="14" height="7" fill="#6e6a62"' + OUT + "/>" + TIP(58, 97);
       case "dice": return '<rect x="55" y="120" width="5" height="12" rx="1" fill="#efe2c0"' + OUT + '/><rect x="61" y="121" width="5" height="12" rx="1" fill="#efe2c0"' + OUT + "/>";
       default: return "";
     }
@@ -482,7 +484,7 @@
         backItem +
         // Without the dhoti's legs (a sari, a bandit's rag), the near leg is cut behind the cloth.
         (panels ? "" : leg("legF")) +
-        neck + '<path d="' + torso + '" fill="' + skin + '"' + OUT + "/>" + chest +
+        neck + '<path class="pp-torso" d="' + torso + '" fill="' + skin + '"' + OUT + "/>" + chest +
         '<path d="' + skirt + '" fill="' + cloth + '"' + OUT + "/>" + skirtHem + bodyGear + belt +
         '<g class="j head"><g transform="translate(62 64) scale(' + headScale + ') translate(-62 -64)">' + head + "</g></g>" +
         (panels ? leg("legF") : "") + sashEnd +

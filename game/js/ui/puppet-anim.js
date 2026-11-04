@@ -266,6 +266,89 @@
     return new Rig(svg, el, base);
   };
   U.rigFreeze = function (ms) { if (!reduced()) frozen = Math.max(frozen, ms); };
+
+  // ---------- A blow that lands (owner, 4 November: "the weapons are not falling on the puppets") ----------
+  // U.aimBlow(rig, target svg, { pose, guard, k, z, maxLunge }) turns the striking arm (about the shoulder,
+  // measured on the live figure) so that at the end of the swing the weapon's tip (.it-tip in puppet.js; the fist
+  // without one) lies on the target's chest, and sets the lunge (dx, screen px) that brings the attacker just far
+  // enough. With guard "shield" the blow is aimed at the target's shield, with "weapon" at its weapon (they cross).
+  // Returns an aim; U.blowImpact(aim) at the moment of contact puts the figure exactly at the end of the swing,
+  // measures the tip against what it strikes (live boxes, so any size, row and facing) and gives the point of contact.
+  const rect = (e) => { const r = e && e.getBoundingClientRect(); return r && (r.width || r.height) ? r : null; };
+  function tipEl(svg) {
+    for (const t of svg.querySelectorAll(".pp-body .foreF .it-tip")) if (rect(t)) return t;
+    const fore = svg.querySelector(".pp-body .foreF"); if (!fore) return null;
+    let f = fore.querySelector(":scope > .it-tip.fist");
+    if (!f) { f = document.createElementNS("http://www.w3.org/2000/svg", "circle"); f.setAttribute("class", "it-tip fist"); f.setAttribute("cx", "58"); f.setAttribute("cy", "124"); f.setAttribute("r", "0.6"); f.setAttribute("fill", "none"); f.setAttribute("stroke", "none"); fore.appendChild(f); }
+    return f;
+  }
+  const mid = (r) => ({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+  U.blowTip = (svg) => { const t = svg && tipEl(svg), r = t && rect(t); return r ? mid(r) : null; };
+  // What a blow on this figure meets: its body (the torso), its shield, or its weapon (a segment, fist to tip).
+  U.blowTarget = function (svg, guard) {
+    if (guard === "shield") { const r = rect(svg.querySelector(".pp-body .it-s")); if (r) return { kind: "shield", box: r }; }
+    if (guard === "weapon") {
+      const t = U.blowTip(svg), it = svg.querySelector(".pp-body .foreF .it-w:not([style*='display: none'])"), r = rect(it);
+      if (t && r) return { kind: "weapon", box: r, tip: t };
+    }
+    const r = rect(svg.querySelector(".pp-torso")) || rect(svg.querySelector(".pp-body"));
+    return r ? { kind: "body", box: r } : null;
+  };
+  function snapTo(rig, tgt) { for (const k of KEYS) { rig.x[k] = tgt[k] || 0; rig.v[k] = 0; } rig.apply(); }
+  U.aimBlow = function (rig, tsvg, o = {}) {
+    if (!rig || !tsvg || !rig.svg.isConnected || !tsvg.isConnected) return null;
+    const pose = o.pose || "strike", P0 = POSES[pose] || POSES.strike;
+    const save = { x: Object.assign({}, rig.x), v: Object.assign({}, rig.v) };
+    // The swing's end, as drawn now, and the same with the arm a quarter turn on: the shoulder is the centre of that turn.
+    const end = Object.assign({}, P0, { dx: 0 });
+    snapTo(rig, end); const T0 = U.blowTip(rig.svg);
+    snapTo(rig, Object.assign({}, end, { armF: (end.armF || 0) + 90 })); const T1 = U.blowTip(rig.svg);
+    const torso = rect(rig.svg.querySelector(".pp-torso")) || rect(rig.svg.querySelector(".pp-body"));
+    for (const k of KEYS) { rig.x[k] = save.x[k]; rig.v[k] = save.v[k]; } rig.apply();
+    const what = U.blowTarget(tsvg, o.guard);
+    if (!T0 || !T1 || !torso || !what) return null;
+    const f = T0.x >= torso.left + torso.width / 2 ? 1 : -1; // which way the figure faces, drawn (mirrored or not)
+    // In the figure's own frame (x forward, y down) a turn of the arm is a plain rotation: the shoulder from two of its points.
+    const a = { x: f * T0.x, y: T0.y }, b = { x: f * T1.x, y: T1.y };
+    const S = { x: (b.x + a.y + a.x - b.y) / 2, y: (b.x + a.y - a.x + b.y) / 2 };
+    const L = Math.hypot(a.x - S.x, a.y - S.y), a0 = Math.atan2(a.y - S.y, a.x - S.x);
+    const B = what.box, w = B.width, h = B.height;
+    // Where on it: the chest (then the shoulder, the belly, deeper in); a shield at its middle; a weapon along its blade.
+    const pts = what.kind === "body" ? [[0.38, 0.3], [0.3, 0.12], [0.45, 0.55], [0.6, 0.3], [0.6, 0.75], [0.2, 0.85]]
+      : what.kind === "shield" ? [[0.45, 0.45], [0.3, 0.3], [0.3, 0.7]] : [[0.5, 0.5], [0.3, 0.3], [0.7, 0.7]];
+    const maxL = o.maxLunge == null ? L * 1.2 : o.maxLunge, back = L * 0.12;
+    let best = null;
+    pts.forEach(([px, py], i) => {
+      const P = what.kind === "weapon" ? { x: f * (what.tip.x + (mid(B).x - what.tip.x) * px), y: what.tip.y + (mid(B).y - what.tip.y) * py }
+        : { x: f * (f > 0 ? B.left + w * px : B.right - w * px), y: B.top + h * py };
+      const dy = P.y - S.y, hx = Math.abs(dy) < L ? Math.sqrt(L * L - dy * dy) : 0;
+      const dx = P.x - S.x - hx; // forward: a lunge; back: a lean
+      const cost = (dx < -back ? (-back - dx) * 3 : 0) + (dx > maxL ? dx - maxL : 0) + (Math.abs(dy) >= L ? Math.abs(dy) - L : 0) + i * 2;
+      if (!best || cost < best.cost) best = { P, dx, cost };
+    });
+    const dx = Math.max(-back, Math.min(maxL, best.dx));
+    const a1 = Math.atan2(best.P.y - S.y, best.P.x - (S.x + dx));
+    let turn = (a1 - a0) * 180 / Math.PI; turn = ((turn + 540) % 360) - 180;
+    const aim = { rig, tsvg, guard: what.kind, pose, f, dxPx: f * dx, armF: (P0.armF || 0) + turn, at: Date.now() };
+    rig.set(pose, o.k || 1700, o.z == null ? 0.55 : o.z);
+    rig.t.armF = aim.armF; rig.t.dx = aim.dxPx; wake();
+    return aim;
+  };
+  U.blowImpact = function (aim) {
+    if (!aim || !aim.rig.svg.isConnected || !aim.tsvg.isConnected) return null;
+    const rig = aim.rig, end = Object.assign({}, POSES[aim.pose] || POSES.strike, { armF: aim.armF, dx: aim.dxPx });
+    if (rig.falling) return null;
+    snapTo(rig, end); rig.t.armF = end.armF; rig.t.dx = end.dx;
+    let T = U.blowTip(rig.svg); const what = U.blowTarget(aim.tsvg, aim.guard === "body" ? null : aim.guard);
+    if (!T || !what) return null;
+    // Whatever moved since the aim (the target stepped, was knocked): the lunge takes up the difference.
+    const B = what.box, inX = T.x >= B.left && T.x <= B.right;
+    if (!inX) { const c = (T.x < B.left ? B.left + Math.min(6, B.width * 0.3) : B.right - Math.min(6, B.width * 0.3)) - T.x; rig.x.dx += c; rig.t.dx = rig.x.dx; rig.apply(); T = U.blowTip(rig.svg); }
+    const inside = T.x >= B.left - 1 && T.x <= B.right + 1 && T.y >= B.top - 1 && T.y <= B.bottom + 1;
+    const res = { x: T.x, y: T.y, on: what.kind, inside, box: { l: B.left, r: B.right, t: B.top, b: B.bottom } };
+    (U.impacts = U.impacts || []).push(res); if (U.impacts.length > 40) U.impacts.shift();
+    return res;
+  };
   U.rigs = { clear() { live.clear(); }, size: () => live.size };
   U.RIG_POSES = POSES;
   U.wait = (ms) => new Promise((r) => setTimeout(r, ms));
