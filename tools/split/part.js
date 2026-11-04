@@ -26,10 +26,52 @@
     "Ready for the war": "युद्ध के लिए तैयार",
     "Someone who has lived to the eve of the war. Choose one to begin on the night before the first day, and play the eighteen days.": "कोई जो युद्ध की पूर्व-संध्या तक जी चुका है। पहले दिन से पहले की रात से शुरू करने और अठारह दिन खेलने के लिए एक चुनें।",
     "With the Pandavas": "पांडवों के साथ", "With the Kauravas": "कौरवों के साथ",
+    "Act {n} is in Part One": "अंक {n} भाग एक में है",
+    "Acts I–IV are played in Part One. Copy this save code, open Part One and choose Load a save code: your life goes back to the start of Act {n}.": "अंक I–IV भाग एक में खेले जाते हैं। यह सेव कोड कॉपी करें, भाग एक खोलें और 'सेव कोड से खोलो' चुनें: आपका जीवन अंक {n} की शुरुआत पर लौट जाएगा।",
+    "in Part One": "भाग एक में",
   };
   const tr = (s, p) => { let t = K.lang === "hi" && HI[s] ? HI[s] : s; for (const k in p || {}) t = t.split("{" + k + "}").join(p[k]); return U.esc(t); };
   const otherLink = (label) => P.other ? '<a class="cta" href="' + U.esc(P.other) + '" target="_blank" rel="noopener">' + tr(label) + "</a>" : "";
   const live = (sc) => sc && !sc.ending && K.S && K.S.alive;
+
+  // Act checkpoints (engine/flow.js): Part One keeps Acts I-IV; Part Two keeps Acts V-VII, and lists the
+  // earlier acts a life brought with it in its code (going back to one hands the life to Part One).
+  K.checkpointOk = (act) => (P.n === 1 ? act < 5 : act >= 5);
+  K.checkpointShown = (act) => P.n === 2 && act < 5;
+  const copyBtn = (btn, ta) => btn.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(ta.value); btn.textContent = K.lang === "hi" ? HI.Copied : "Copied"; }
+    catch (e) { ta.focus(); ta.select(); }
+  });
+  function handOver(title, text, code, label) {
+    if (U.endingClose) U.endingClose();
+    U.closeModal();
+    U.setNav(false);
+    U.where("<b>" + title + "</b>");
+    U.$("leaf").className = "leaf";
+    U.$("leaf").innerHTML = '<div class="text part-hand"><h1>' + title + "</h1><p>" + text + "</p>" +
+      '<textarea id="part-code" readonly spellcheck="false">' + U.esc(code) + "</textarea>" +
+      '<div class="btnrow"><button class="cta" id="part-copy" type="button">' + tr("Copy code") + "</button>" + otherLink(label) +
+      '<button class="ghost" id="part-title" type="button">' + tr("Return to title") + "</button></div></div>";
+    copyBtn(U.$("part-copy"), U.$("part-code"));
+    U.$("part-title").addEventListener("click", () => U.renderTitle());
+  }
+  // Part Two: going back to Act IV or earlier gives the life, as it was at that act's start, to Part One.
+  const back = U.goBackToAct;
+  if (back) U.goBackToAct = function (act) {
+    if (P.n !== 2 || act >= 5) return back.apply(this, arguments);
+    const life = K.checkpointLife(act);
+    if (!life) return back.apply(this, arguments);
+    const n = ["", "I", "II", "III", "IV"][act] || act;
+    handOver(tr("Act {n} is in Part One", { n }), tr("Acts I–IV are played in Part One. Copy this save code, open Part One and choose Load a save code: your life goes back to the start of Act {n}.", { n }),
+      K.exportCode({ life, acts: true, here: true }), "Open Part One");
+  };
+  const buttons = U.actButtons;
+  if (buttons) U.actButtons = function (kept, opts) {
+    const html = buttons.apply(this, arguments);
+    if (P.n !== 2) return html;
+    // the acts held in Part One say so
+    return html.replace(/(data-act="([1-4])"><b>[^<]*<\/b><small>)/g, "$1" + tr("in Part One") + " · ");
+  };
 
   // Part One stops at the threshold of Act V: the life is saved there, and its code carries it over.
   function partEnd() {
@@ -37,7 +79,7 @@
     U.where("<b>" + tr("Part One ends here") + "</b>");
     U.$("leaf").innerHTML = '<div class="text"><h1>' + tr("Part One ends here") + "</h1><p>" +
       tr("Your life goes on in Part Two: the exile years, the war and what comes after. Copy this save code, open Part Two and choose Continue from Part One.") + "</p>" +
-      '<textarea id="part-code" readonly spellcheck="false">' + U.esc(K.exportCode()) + "</textarea>" +
+      '<textarea id="part-code" readonly spellcheck="false">' + U.esc(K.exportCode({ acts: true, here: true })) + "</textarea>" +
       '<div class="btnrow"><button class="cta" id="part-copy" type="button">' + tr("Copy code") + "</button>" + otherLink("Open Part Two") +
       '<button class="ghost" id="part-title" type="button">' + tr("Return to title") + "</button></div></div>";
     U.$("part-copy").addEventListener("click", async () => {
@@ -61,6 +103,8 @@
     return render.apply(this, arguments);
   };
 
+  // A ready-made life begins at the start of its act: that start is kept, to go back to.
+  const begin = (s) => { s.lifeId = K.newLifeId(); K.resume(s); K.checkpoint(K.S); };
   function readyMade() {
     const rows = (P.lives || []).map((l, i) => {
       const o = K.ORIGINS[l.origin], pth = K.PATHS && K.PATHS[l.path];
@@ -68,7 +112,7 @@
     }).join("");
     U.openModal("A ready-made life", '<p class="note">' + tr("Someone who has already lived Acts I–IV. Choose one to begin at the exile years.") + '</p><div class="btnrow part-lives">' + rows + "</div>", () => {
       document.querySelectorAll(".part-lives [data-i]").forEach((b) => b.addEventListener("click", () => {
-        const s = K.importCode(P.lives[+b.dataset.i].code); U.closeModal(); K.resume(s);
+        const s = K.importCode(P.lives[+b.dataset.i].code); U.closeModal(); begin(s);
       }));
     });
   }
@@ -84,7 +128,7 @@
     U.openModal("Ready for the war", '<p class="note">' + tr("Someone who has lived to the eve of the war. Choose one to begin on the night before the first day, and play the eighteen days.") + "</p>" +
       side("pandava", "With the Pandavas") + side("kaurava", "With the Kauravas"), () => {
       document.querySelectorAll(".part-lives [data-w]").forEach((b) => b.addEventListener("click", () => {
-        const s = K.importCode(P.war[+b.dataset.w].code); U.closeModal(); K.resume(s);
+        const s = K.importCode(P.war[+b.dataset.w].code); U.closeModal(); begin(s);
       }));
     });
   }

@@ -162,8 +162,15 @@ ok(!S.flags.includes("bhima_debt"), "silence earns no debt");
 S = fresh({ act: 3, teacher: "vidura" }); K.choose(fuse, fuse.choices.find((x) => x.id === "cut"), "win");
 ok(S.flags.includes("cut_fuses") && S.flags.includes("bhima_debt"), "cutting the oil lines: cut_fuses and bhima_debt");
 const run = fire.choices.find((x) => x.id === "run");
-S = fresh({ act: 3, teacher: "vidura" }); S.flags.push("warned_pandavas"); K.choose(fire, run, "lose");
-ok(!S.alive && S.flags.includes("died_in_fire"), "a failed escape is death, not a second try");
+S = fresh({ act: 3, teacher: "vidura" }); S.flags.push("warned_pandavas"); S.scene = "a3_fire"; S.seen.push("a3_fire");
+{ const r1 = K.choose(fire, run, "lose");
+  ok(S.alive && r1.retry && r1.next === "a3_fire" && S.tryAgain && S.injuries.includes("scar") && !S.flags.includes("died_in_fire"), "a deadly test: the first failed escape is survived, burnt (a scar), with one more try");
+  const rows = K.choiceList(fire);
+  ok(rows.length === 1 && rows[0].c.id === "run" && rows[0].c.again && rows[0].c.t === "Try again" && /does not let go/.test(rows[0].c.trial.stakes[1]), "the scene then offers only \"Try again\", with the last chance's stakes");
+  K.go("a3_fire");
+  ok(K.S.scene === "a3_fire" && K.resumed === K.visit, "the second try comes back to the same scene, as a return (its page whole)");
+  const r2 = K.choose(fire, rows[0].c, "lose");
+  ok(!S.alive && S.flags.includes("died_in_fire") && !r2.retry && !S.tryAgain && r2.next === "end_death", "a deadly test: a second failure is death"); }
 const endF = K.composeEnding(S); ok(endF.title === "The burnt house" && endF.art === "end_fire", "the fire death has its own ending");
 S = fresh({ act: 3, storyMode: true }); S.flags.push("warned_pandavas"); K.choose(fire, run, "lose");
 ok(S.alive && S.flags.includes("lac_burnt"), "story mode: burnt, not killed");
@@ -1304,5 +1311,100 @@ require(G + "content/war_fights.js");
     const all = run("allout"), hold = run("hold");
     ok(all > 0 && hold === 0, "a friend on all-out fights (" + all + " dealt in 20 s); on hold back he stays behind you and does not strike"); }
   RT.force = false;
+}
+// 120. Act checkpoints (engine/flow.js): a copy of the life at the start of every act, kept compactly;
+// going back restores that act's copy, and a death already written stays in the Book of Lives.
+{
+  const mem = {}; global.localStorage = { getItem: (k) => (k in mem ? mem[k] : null), setItem: (k, v) => { mem[k] = String(v); }, removeItem: (k) => { delete mem[k]; } };
+  K.UI = K.UI || {}; if (!K.recordLife) require(G + "ui/lives.js");
+  const pk = (a) => a[Math.floor(K.rng() * a.length)];
+  // A life played at random (as tests/lives.js does) until it ends; returns the acts it started, after the prologue.
+  const play = (seed, story) => {
+    K.seed(seed); const L = (K.S = K.newLife()); K.momentQueue.length = 0;
+    Object.assign(L, { name: "Ira", pronoun: "she", origin: pk(Object.keys(K.ORIGINS)), temperament: pk(Object.keys(K.TEMPERAMENTS)), heirloom: pk(Object.keys(K.HEIRLOOMS)), storyMode: !!story });
+    K.go(K.FIRST_SCENE); const acts = new Set();
+    for (let n = 0; n < 700; n++) {
+      const sc = K.SCENES[K.S.scene]; if (!sc.prologue && !sc.ending) acts.add(K.S.act);
+      if (sc.ending) break;
+      const { c } = pk(K.choiceList(sc).filter((x) => x.ok));
+      const r = c.game ? K.choose(sc, c, pk(["win", "close", "lose"])) : K.choose(sc, c);
+      let next = r.next; if (r.combat) next = K.combatOutcome(r.combat, K.rng() < 0.5 ? "win" : "lose", r.next).next;
+      K.go(K.S.alive ? next : "end_death");
+    }
+    return [...acts].sort();
+  };
+  let seed = 11, acts;
+  for (; seed < 400; seed++) { acts = play(seed); if (!K.S.alive && K.S.act >= 4) break; }
+  const cp = K.checkpoints();
+  ok(!K.S.alive && cp && cp.id === K.S.lifeId && JSON.stringify(cp.acts.map((a) => a.act)) === JSON.stringify(acts), "a checkpoint for every act the life reached (" + acts.join(",") + "), seed " + seed);
+  const stored = mem["kurukshetra.v2.acts"].length, whole = cp.acts.reduce((n, a) => n + JSON.stringify(K.checkpointLife(a.act)).length, 0);
+  ok(stored < whole * 0.7, "kept compactly: " + stored + " characters for " + cp.acts.length + " acts (" + whole + " whole)");
+  const third = K.checkpointLife(3);
+  ok(third && third.act === 3 && K.SCENES[third.scene].act === 3 && third.alive && cp.acts.find((a) => a.act === 3).age === third.age, "the copy of Act III is the life at the start of Act III (" + third.scene + ", age " + third.age + ")");
+  const e = K.composeEnding(K.S); K.recordLife(K.S, e);
+  const deaths = K.lives().filter((r) => !r.alive).length, died = K.S.act;
+  const back = K.backToAct(3);
+  ok(back && K.S === back && K.S.alive && K.S.act === 3 && K.S.scene === third.scene && !K.S.recorded, "going back resumes the copy of the life at the start of Act III");
+  ok(K.lives().length >= 1 && K.lives().filter((r) => !r.alive).length === deaths && K.lives()[0].title === e.title, "the death stays in the Book of Lives as a death (" + e.title + ")");
+  ok(JSON.stringify(K.checkpoints().acts.map((a) => a.act)) === JSON.stringify(acts.filter((a) => a <= 3)) && died > 3, "the acts after it are dropped, to be lived again");
+  ok(JSON.parse(mem["kurukshetra.v2.auto"]).scene === third.scene, "the copy becomes the autosave");
+  // A save code carrying the acts (the split build's crossing) gives them to the browser that reads it.
+  const code = K.exportCode({ acts: true, here: true }); delete mem["kurukshetra.v2.acts"];
+  const s2 = K.importCode(code);
+  ok(s2.cps === undefined && JSON.stringify(K.checkpoints().acts.map((a) => a.act)) === JSON.stringify(acts.filter((a) => a <= 3)) && K.checkpointLife(3).scene === third.scene, "a code with its acts: the acts are kept where it is read");
+  // Unlimited: back again, and again.
+  ok(K.backToAct(1) && K.S.act === 1 && K.backToAct(1) && K.S.act === 1, "going back is unlimited");
+  // The prologue (a dream of the war) is not an act start; waking into Act I is.
+  delete mem["kurukshetra.v2.acts"]; K.S = Object.assign(K.newLife(), { name: "P", origin: "suta" }); K.go(K.FIRST_SCENE);
+  ok(!K.checkpoints(), "no checkpoint in the prologue");
+  delete global.localStorage;
+}
+// 121. Every ending is a full-screen moment (ui/ending.js), shown again whole; a death offers the acts.
+{
+  const fs = require("fs"), path = require("path"), { JSDOM, VirtualConsole } = require("jsdom");
+  const GAME = path.join(__dirname, "..", "game"), html = fs.readFileSync(path.join(GAME, "index.html"), "utf8");
+  const dom = new JSDOM(html.replace(/<script src="[^"]+"><\/script>/g, ""), { runScripts: "outside-only", pretendToBeVisual: true, url: "https://localhost/", virtualConsole: new VirtualConsole() });
+  const w = dom.window; w.HTMLElement.prototype.scrollIntoView = () => {};
+  for (const m of html.matchAll(/<script src="([^"]+)"><\/script>/g)) w.eval(fs.readFileSync(path.join(GAME, m[1]), "utf8"));
+  const WK = w.K; WK.headless = true;
+  const SET = {
+    "The wise elder": { endChoice: "elder" }, Renunciation: { endChoice: "forest" }, "The teller": { endChoice: "teller" }, Vengeance: { endChoice: "vengeance" },
+    "The homecoming": { endChoice: "home" }, "Broken survivor": { endChoice: "home", spouse: "madhavi", child: "vasu", dead: ["madhavi", "vasu"] }, "The wanderer": {},
+    "Glorious death": { alive: false, vows: [{ id: "never_lie", broken: false }] }, "The oath to the death": { alive: false, vows: [{ id: "samshaptaka", broken: false }] },
+    "Fallen at Kurukshetra": { alive: false }, "Into the wheel": { alive: false, flags: ["died_with_abhimanyu"] }, "Against the boy in the wheel": { alive: false, flags: ["fell_to_abhimanyu"] },
+    "A life cut short": { alive: false, act: 3, flags: ["peril_death"], deathAt: { act: 3 } }, "Beside Karna": { alive: false, flags: ["died_with_karna"] }, "The burnt house": { alive: false, act: 3, flags: ["died_in_fire"] },
+    "The one who crossed": { alive: false, flags: ["lost_crossing_duel"] }
+  };
+  const shown = [];
+  for (const en of WK.ENDINGS) {
+    const o = SET[en.title] || {};
+    WK.S = Object.assign(WK.newLife(), { name: "T", origin: "panchala", pronoun: "she", age: 44, act: 7, lifeId: "t" + shown.length, flags: [] }, JSON.parse(JSON.stringify(o)));
+    WK.go(WK.S.alive ? "end_life" : "end_death");
+    const el = w.document.querySelector(".endscreen");
+    const title = el && el.querySelector(".es-title").textContent;
+    if (title === en.title && el.querySelectorAll(".es-line.on").length === el.querySelectorAll(".es-line").length && w.getComputedStyle(el.querySelector(".es-rest")).display !== "none") shown.push(en.title);
+    else console.log("   ending not shown full-screen:", en.title, "got", title);
+  }
+  ok(shown.length === WK.ENDINGS.length && w.document.querySelectorAll(".endscreen").length === 1, "every ending (" + shown.length + " of " + WK.ENDINGS.length + ") renders as the full-screen ending, its title, its lines and its record");
+  const T = WK.endingTouch;
+  ok(T("The burnt house").parts === "embers" && T("The burnt house").smoke && T("Beside Karna").wheel && T("The oath to the death").emblem === "vow_samshaptaka" && T("Glorious death").garland && T("Into the wheel").light === "sunset" && T("The homecoming").light === "morning", "the touches drawn in code: embers and smoke, the sinking wheel, the oath's emblem, the garland, sunset in the wheel, morning for the survivors");
+  // A death with acts kept: Go back to the start of the act it happened in, and the earlier ones.
+  w.localStorage.clear();
+  WK.S = Object.assign(WK.newLife(), { name: "T", origin: "panchala", pronoun: "she", age: 22, act: 3, lifeId: "L1" });
+  WK.go("a3_kampilya"); // stands in for each act's start
+  for (const a of [1, 2, 3]) { WK.S.act = a; WK.S.age = 6 + a * 5; WK.committed = null; WK.checkpoint(WK.S); }
+  Object.assign(WK.S, { alive: false, flags: ["died_in_fire"] });
+  WK.go("end_death");
+  const bs = [...w.document.querySelectorAll(".endscreen .actback")].map((b) => b.dataset.act + ":" + b.querySelector("b").textContent);
+  ok(bs.length === 3 && /^3:Go back to the start of Act III$/.test(bs[0]) && bs[1].startsWith("2:") && bs[2].startsWith("1:"), "the death screen: Go back to the start of Act III, then the earlier acts (" + bs.join(" | ") + ")");
+  WK.UI.redraw();
+  ok(w.document.querySelectorAll(".endscreen").length === 1 && w.document.querySelector(".endscreen.all"), "the ending shown again (a redraw) is there whole, once");
+  w.document.querySelector('.endscreen .actback[data-act="2"]').click();
+  ok(!w.document.querySelector(".endscreen") && WK.S.alive && WK.S.age === 16 && !WK.S.deathAct && WK.lives().some((r) => r.title === "The burnt house" && !r.alive), "Go back: the ending leaves, the life is the copy kept at the start of Act II, the death is in the Book of Lives (" + [!w.document.querySelector(".endscreen"), WK.S.alive, WK.S.age, WK.lives().length] + ")");
+  WK.UI.renderTitle();
+  ok(w.document.querySelector("#btn-acts"), "the title screen offers Start again from an act");
+  w.document.querySelector("#btn-acts").click();
+  ok(w.document.querySelectorAll(".modal .actback").length === 2, "the list: each act reached by the life as it stands");
+  w.close();
 }
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

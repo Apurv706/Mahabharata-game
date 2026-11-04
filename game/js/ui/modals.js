@@ -96,7 +96,8 @@
       '<div class="grid2"><div class="field"><span class="lbl">' + U.tr("Saving") + "</span>" +
       '<p class="note">' + U.tr("The game saves itself at every new scene, in this browser only.") + "</p>" +
       '<div class="btnrow"><button class="cta secondary" id="m-save" type="button">' + U.tr("Save a copy") + "</button>" +
-      (manual ? '<button class="ghost" id="m-load" type="button">' + U.tr("Load copy ({name}, age {n})", { name: manual.name, n: manual.age }) + "</button>" : "") + "</div>" +
+      (manual ? '<button class="ghost" id="m-load" type="button">' + U.tr("Load copy ({name}, age {n})", { name: manual.name, n: manual.age }) + "</button>" : "") +
+      (U.actsKept && U.actsKept(null) ? '<button class="ghost" id="m-acts" type="button">' + U.tr("Start again from an act") + "</button>" : "") + "</div>" +
       '<p class="note" id="m-saved"></p></div>' +
       '<div class="field"><span class="lbl">' + U.tr("Settings") + "</span>" +
       '<label class="toggle"><input type="checkbox" id="m-story"' + (S.storyMode ? " checked" : "") + "><span>" + U.tr("Story mode") + "<small>" + U.tr("You cannot die in battle.") + "</small></span></label>" +
@@ -127,6 +128,7 @@
         else if (pr) { pr.disabled = true; U.$("m-practice-f").appendChild(U.el('<p class="note">' + U.tr(K.PRACTICE.text[U.practising && U.practising() ? "here" : "notNow"]) + "</p>")); }
         U.$("m-save").addEventListener("click", () => { U.$("m-saved").textContent = K.tr(K.save("manual") ? "Saved." : "This browser is not allowing saves. Use the save code instead."); });
         if (manual) U.$("m-load").addEventListener("click", () => { U.closeModal(); K.resume(manual); });
+        if (U.$("m-acts")) U.$("m-acts").addEventListener("click", () => { U.closeModal(); U.openActs(); });
         U.$("m-story").addEventListener("change", (e) => { K.setStoryMode(e.target.checked); });
         U.$("m-gradual").addEventListener("change", (e) => { K.prefs({ gradual: e.target.checked }); });
         // Calm motion applies at once (the html class); the next screen or fight starts still.

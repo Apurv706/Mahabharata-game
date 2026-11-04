@@ -97,7 +97,7 @@
     },
     // The fire. Those inside the house play the escape through the burning rooms to the tunnel;
     // those outside can run in. The epic has written who dies here: a Nishada woman and her five
-    // sons, and Purochana. A failed escape is death, not a second chance.
+    // sons, and Purochana. A failed escape is death: the first failure is survived, burnt, with one more try.
     {
       id: "a3_fire", act: 3, age: 23, canon: true, art: "scene_lac_fire", clip: "scene_lac", fx: "fire", place: "Varnavata", plate: ["#e5872e", "#2a1c1f"], caption: "The house of lac, burning",
       title: "The night of the fire",
@@ -111,7 +111,10 @@
         { id: "run", t: (S) => (INSIDE(S) ? "Get to the tunnel" : "Run in to get people out"), game: "escape",
           trial: { attr: "grace", skill: "stealth", stage: "stage_lac_fire_top", start: (S) => (INSIDE(S) ? (S.flags.includes("tried_nishada") ? "deep" : "hall") : "door"), auto: 0.7,
             rules: "Reach the tunnel in the storeroom before the fire. Hold to force stuck doors.",
-            stakes: ["You reach the tunnel, and whoever you carried comes with you.", "The fire catches you in the house. There is no second chance tonight."] },
+            stakes: ["You reach the tunnel, and whoever you carried comes with you.", "The fire catches you in the house. You may get one more chance, and no more."] },
+          retryStakes: ["You reach the tunnel, and whoever you carried comes with you.", "The fire catches you again, and this time it does not let go."],
+          retryText: "The smoke takes your legs. You come to on the floor with your sleeve burning and the roof still up. You crawl. There is still a way to the storeroom, for a little longer.",
+          retryCost: (S) => (S.injuries.includes("scar") ? { attr: { grace: -1 }, flag: "lac_scorched" } : { injury: "scar", flag: "lac_scorched" }),
           win: { fx: (S) => Object.assign({ flag: ["escaped_lac"], duty: { conscience: 1 }, journal: "You got out of the burning house at Varnavata through the tunnel." },
               S.lacCarried ? { flag: ["escaped_lac", "carried_out_lac"], rep: { common: 1 }, duty: { conscience: 2 }, memory: ["all", "You carried someone out of the house of lac."] } : {}),
             text: (S) => (S.lacCarried ? "You put the one you carried down at the bottom of the shaft, and only then feel your hands shaking." : "You drop into the tunnel mouth as the storeroom roof comes down behind you. The dark smells of earth, and of nothing burning.") },

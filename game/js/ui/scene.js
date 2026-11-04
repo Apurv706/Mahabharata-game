@@ -158,6 +158,8 @@
     U.pageShown(pageKey);
     U.stage([plate, ...story, acts, ...box.children, U.$("keyhint")], () => {
       U.keys(keys); startLamp(sc, rows);
+      // "Try again" after a deadly test failed once: the test starts again at once.
+      if (U.autoTry === sc.id && rows.length === 1 && rows[0].c.again) { U.autoTry = null; keys[0](); return; }
       // Before a choice that could cost your life or your freedom, the figure trembles.
       if (K.inPeril && rows.some((r) => r.ok && r.c.peril && K.inPeril(r.c))) U.puppetReact("tremble");
       settledFor = sc.id; U.settled = true;
@@ -593,7 +595,8 @@
           r ? '<span class="roll">' + U.tr("{label}: rolled {roll}, total {total} against {dc}", { label: r.ch ? K.checkLabel(r.ch) : r.label, roll: r.roll, total: r.total, dc: r.dc }) +
           ' · <b class="' + (r.pass ? "pass" : "fail") + '">' + U.tr(r.pass ? "Success" : "Failure") + "</b></span>" : "") +
         (res.lampOut ? '<p class="aside">' + U.tr("The lamp went out before you chose.") + "</p>" : "") +
-        (res.pre ? "<p>" + U.t(res.pre) + "</p>" : "") + (res.text ? "<p>" + U.t(res.text) + "</p>" : "") + "</div>")));
+        (res.pre ? "<p>" + U.t(res.pre) + "</p>" : "") + (res.text ? "<p>" + U.t(res.text) + "</p>" : "") +
+        (res.retry ? '<p class="aside retrynote">' + U.tr("One more try. Fail again, and this life ends here.") + "</p>" : "") + "</div>")));
     }
     if (res.after && K.S.alive) {
       added.push(story.appendChild(U.el('<div class="witness"><div class="lbl">' + U.tr("And then, as it is written") + "</div>" + U.blocks(res.after) + "</div>")));
@@ -603,11 +606,12 @@
     const go = () => {
       if (went) return; // Continue once
       went = true;
+      if (res.retry) { U.autoTry = sc.id; return K.go(next); }
       const moved = sc.travelAfter && K.S.alive && K.travel ? K.travel(sc, K.S, true) : null;
       if (moved && U.journeyPage && !K.headless) return U.journeyPage(moved[0], moved[1], K.val(sc.travel) || ["Ahead: {what}", { what: "" }], () => K.go(next));
       K.go(next);
     };
-    const cont = U.button("cta", U.tr("Continue"), go);
+    const cont = U.button("cta" + (res.retry ? " retry" : ""), U.tr(res.retry ? "Try again" : "Continue"), go, res.retry ? "btn-tryagain" : undefined);
     box.appendChild(cont);
     U.$("keyhint").innerHTML = "";
     U.keys([]);

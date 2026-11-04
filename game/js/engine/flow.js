@@ -59,11 +59,14 @@
     // Continue (or a loaded save) returns to the very scene that was saved: its conditions, the scenes
     // that come before it and its event slot were settled when it was first reached, and are not asked again.
     K.visit = (K.visit || 0) + 1; // each arrival at a scene is a new visit (the page allows one choice per visit)
-    const back = !!(resuming && id === S.scene && S.seen.includes(id) && K.SCENES[id]);
+    // A deadly test's second try (K.choose) returns to its scene the same way.
+    const back = !!((resuming || (S.tryAgain && S.tryAgain.scene === id)) && id === S.scene && S.seen.includes(id) && K.SCENES[id]);
     const sc = back ? K.SCENES[id] : K.resolveScene(id);
     // A scene returned to this way has been read: its page comes back whole (ui/dom.js U.pageAgain).
     K.resumed = back ? K.visit : 0;
-    const prevScene = S.scene;
+    const prevScene = S.scene, prevAct = S.act;
+    // The act a life ended in (the death scene itself belongs to the war): the way back starts there.
+    if (sc.ending && !S.alive && S.deathAct == null && prevAct) S.deathAct = prevAct;
     S.scene = sc.id;
     if (sc.act && sc.act > S.act) drift(S, sc.act);
     // The act never goes back (a scene written for an earlier act, met late, stays in the current one);
@@ -81,7 +84,12 @@
       if (sc.enter) delta = K.apply(sc.enter);
     }
     K.lastDelta = delta;
+    // The start of an act (or the waking from the prologue into Act I): a copy of the life is kept
+    // beside the autosave, to go back to (K.checkpoint below).
+    const actStart = !back && S.alive && !sc.prologue && !sc.ending && (S.act !== prevAct || fromDream) && K.checkpointOk(S.act);
+    if (actStart && !S.lifeId && K.store.ok()) S.lifeId = K.newLifeId();
     K.commit();
+    if (actStart) K.checkpoint(S);
     K.emit("scene", sc);
     return sc;
   };
@@ -112,6 +120,9 @@
   }
 
   K.choiceList = function (sc, S = K.S) {
+    // After a deadly test failed once (K.choose): the one choice left here is to try it again.
+    const ta = S.tryAgain && S.tryAgain.scene === sc.id ? (K.val(sc.choices, S) || []).find((c) => c.id === S.tryAgain.choice) : null;
+    if (ta) return [{ c: Object.assign({}, ta, { t: "Try again", hint: "Your last chance", trial: Object.assign({}, ta.trial, ta.retryStakes ? { stakes: ta.retryStakes } : {}), again: true }), ok: true }];
     const crossed = (S.crossed || {})[sc.id] || {};
     const rows = (K.val(sc.choices, S) || [])
       .map((c) => (crossed[c.id] ? { c, ok: false, crossed: crossed[c.id] } : { c, ok: K.test(c.req, S) }))
@@ -338,6 +349,21 @@
       res.outcome = outcome;
       const practice = c.trial && c.trial.practice; // a first test that does not count
       const br = c[outcome] || (outcome === "close" ? c.lose : null) || {};
+      if (S.tryAgain && S.tryAgain.scene === sc.id) S.tryAgain = null; // the second try is this one
+      // A deadly test (its failure kills, outside story mode): the first failure is survived, at a
+      // small cost, and the test is offered once more. A second failure is death.
+      if (outcome !== "win" && !practice && K.deadlyBranch(br, S) && !S.flags.includes(K.retryFlag(sc.id, c.id))) {
+        S.flags.push(K.retryFlag(sc.id, c.id));
+        S.tryAgain = { scene: sc.id, choice: c.id };
+        K.record().gamesLost += 1;
+        addDelta(delta, K.apply(K.retryCost(c, S)));
+        S.log.push(sc.id + ":" + c.id);
+        res.retry = true;
+        res.text = K.val(c.retryText, S) || "It nearly killed you. You are still alive, and there is one more chance.";
+        res.next = sc.id; res.combat = null;
+        K.lastDelta = delta;
+        return res;
+      }
       if (!practice) K.record()[outcome === "win" ? "gamesWon" : "gamesLost"] += 1 + (outcome !== "win" && br.penalty ? 1 : 0); // a failed second chance counts twice
       addDelta(delta, K.apply(br.fx));
       if (br.text) res.text = K.val(br.text);
@@ -384,6 +410,23 @@
     return res;
   };
 
+  // Deadly tests (minigames whose failure kills): the flag that marks the one retry as used, whether
+  // a branch would kill (its effects hold die: true, outside story mode), and the price of the retry:
+  // the choice's own retryCost, else a scar (or, already scarred, a point of the test's attribute).
+  K.retryFlag = (sid, cid) => "tried_again_" + sid + "_" + cid;
+  K.deadlyBranch = function (br, S = K.S) {
+    if (!br || S.storyMode) return false;
+    const fx = K.val(br.fx, S);
+    return !!(fx && fx.die === true);
+  };
+  K.retryCost = function (c, S = K.S) {
+    const own = K.val(c.retryCost, S);
+    if (own) return own;
+    if (!S.injuries.includes("scar")) return { injury: "scar" };
+    const a = (c.trial && c.trial.attr) || "might";
+    return (S.attrs[a] || 0) > 0 ? { attr: { [a]: -1 } } : {};
+  };
+
   // Called by the combat layer when a fight ends.
   K.combatOutcome = function (encId, outcome, fallbackNext) {
     const S = K.S;
@@ -424,8 +467,106 @@
   K.store = {
     get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
     set(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } },
-    del(k) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } }
+    del(k) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } },
+    ok() { try { return typeof localStorage !== "undefined" && !!localStorage; } catch (e) { return false; } }
   };
+  let idN = 0;
+  K.newLifeId = () => Date.now().toString(36) + (idN++).toString(36);
+
+  // ---------- Act checkpoints ----------
+  // At the start of every act a copy of the life is kept in this browser, beside the autosave: one per
+  // act (the latest start of it), for the current life only. A death can go back to the start of the
+  // act it happened in, or of any earlier act; the title screen and the menu can start again from any
+  // of them. Stored compactly: the first act whole, each later one as what changed since the one
+  // before (arrays that only grew keep just their new end), about 15-25 KB for a whole life.
+  // K.checkpointOk(act) says which acts this build keeps (the split build's Part One: Acts I-IV).
+  const ACTS_KEY = KEY + ".acts";
+  K.checkpointOk = () => true;
+  const delta = (a, b) => {
+    const d = {};
+    for (const k of Object.keys(b)) {
+      const x = a[k], y = b[k], sx = JSON.stringify(x), sy = JSON.stringify(y);
+      if (sx === sy) continue;
+      if (Array.isArray(x) && Array.isArray(y) && y.length > x.length && JSON.stringify(y.slice(0, x.length)) === sx) (d["+"] = d["+"] || {})[k] = y.slice(x.length);
+      else (d["="] = d["="] || {})[k] = y;
+    }
+    const gone = Object.keys(a).filter((k) => !(k in b));
+    if (gone.length) d["-"] = gone;
+    return d;
+  };
+  const undelta = (a, d) => {
+    const s = JSON.parse(JSON.stringify(a));
+    for (const [k, v] of Object.entries(d["="] || {})) s[k] = v;
+    for (const [k, v] of Object.entries(d["+"] || {})) s[k] = (Array.isArray(s[k]) ? s[k] : []).concat(v);
+    for (const k of d["-"] || []) delete s[k];
+    return s;
+  };
+  K.actRecord = function () {
+    try { const r = JSON.parse(K.store.get(ACTS_KEY) || "null"); return r && typeof r === "object" && Array.isArray(r.acts) ? r : null; } catch (e) { return null; }
+  };
+  // The life at the start of each kept act, decoded in order: [{ act, age, path, side, life }].
+  const decodeAll = (rec) => {
+    let s = {};
+    return (rec ? rec.acts : []).map((e) => { s = undelta(s, e.d || {}); return { act: e.act, age: e.age, path: e.path, side: e.side, life: s }; });
+  };
+  const encodeAll = (rows) => {
+    let prev = {};
+    return rows.map((r) => { const e = { act: r.act, age: r.age, path: r.path || null, side: r.side || null, d: delta(prev, r.life) }; prev = r.life; return e; });
+  };
+  const writeRecord = (id, name, rows) => K.store.set(ACTS_KEY, JSON.stringify({ id, name, acts: encodeAll(rows) }));
+  // Keep the life as it stands now (its committed copy) as the start of its act. A later act of an
+  // older version of this life (before a going back) is dropped: those acts are lived again.
+  K.checkpoint = function (S = K.S) {
+    if (!S || !S.lifeId || !S.alive || !K.checkpointOk(S.act)) return false;
+    const life = K.committed && JSON.parse(K.committed).scene === S.scene ? JSON.parse(K.committed) : JSON.parse(JSON.stringify(S));
+    const rec = K.actRecord();
+    const rows = rec && rec.id === S.lifeId ? decodeAll(rec).filter((r) => r.act < S.act) : [];
+    rows.push({ act: S.act, age: S.age, path: S.path, side: S.side, life });
+    return writeRecord(S.lifeId, S.name, rows);
+  };
+  // The acts kept for the current (or last) life: [{ act, age, path, side }], and that life's name and id.
+  K.checkpoints = function () {
+    const rec = K.actRecord();
+    return rec ? { id: rec.id, name: rec.name, acts: rec.acts.filter((e) => K.checkpointOk(e.act) || K.checkpointShown(e.act)).map((e) => ({ act: e.act, age: e.age, path: e.path, side: e.side })) } : null;
+  };
+  K.checkpointShown = () => false; // part.js: acts kept for the other part of the game, still listed
+  // The life at the start of an act, cleaned like any save (or null).
+  K.checkpointLife = function (act) {
+    const row = decodeAll(K.actRecord()).find((r) => r.act === act);
+    if (!row) return null;
+    try { const s = K.cleanLife(K.migrate(JSON.parse(JSON.stringify(row.life)))); return K.SCENES[s.scene] ? s : null; } catch (e) { return null; }
+  };
+  // Go back: the copy of the life at that act's start becomes the life (and the autosave); the acts
+  // after it are dropped. A death already written in the Book of Lives stays there.
+  K.backToAct = function (act) {
+    const s = K.checkpointLife(act);
+    if (!s) return null;
+    const rec = K.actRecord();
+    writeRecord(rec.id, rec.name, decodeAll(rec).filter((r) => r.act <= act));
+    K.resume(s);
+    return s;
+  };
+  // A save code that carries a life's kept acts (the split build, crossing between its parts): the
+  // acts before the life's own act, and, with here, the life itself as the start of its act.
+  K.actsFor = function (S, here) {
+    const rec = K.actRecord();
+    const rows = rec && rec.id === S.lifeId ? decodeAll(rec).filter((r) => r.act < S.act) : [];
+    if (here) rows.push({ act: S.act, age: S.age, path: S.path, side: S.side, life: JSON.parse(S === K.S ? committedFor(S) : JSON.stringify(S)) });
+    return encodeAll(rows);
+  };
+  // A code read with kept acts in it: they become this browser's acts for that life.
+  K.adoptActs = function (s, cps) {
+    if (!Array.isArray(cps) || !cps.length) return false;
+    const rows = []; let prev = {};
+    for (const e of cps) {
+      if (!e || typeof e !== "object" || typeof e.act !== "number" || !e.d || typeof e.d !== "object") return false;
+      prev = undelta(prev, e.d);
+      rows.push({ act: e.act, age: num0(e.age), path: typeof e.path === "string" ? e.path : null, side: typeof e.side === "string" ? e.side : null, life: prev });
+    }
+    s.lifeId = s.lifeId || K.newLifeId();
+    return writeRecord(s.lifeId, s.name, rows.filter((r) => K.checkpointOk(r.act) || K.checkpointShown(r.act)));
+  };
+  const num0 = (v) => (typeof v === "number" && isFinite(v) ? v : 0);
   // The life as it stood when its current scene opened. A choice changes K.S at once, but the page moves
   // on only at the next scene; a save made on a result page (a copy, the save code, the story-mode switch)
   // writes this committed life, so loading it never offers a choice that was already made.
@@ -494,6 +635,8 @@
     s.moments = objs(s.moments, (m) => isId(m.kind));
     if (s.lostFriends !== undefined) s.lostFriends = objs(s.lostFriends, (f) => isId(f.who));
     s.alive = s.alive !== false; s.storyMode = !!s.storyMode;
+    if (s.lifeId !== undefined && !isId(s.lifeId)) delete s.lifeId;
+    if (s.tryAgain != null && !(kind(s.tryAgain) === "object" && isId(s.tryAgain.scene) && isId(s.tryAgain.choice))) s.tryAgain = null;
     return s;
   };
   K.loadSlot = function (slot) {
@@ -512,7 +655,14 @@
   };
   // Open a saved life on the scene it was saved on.
   K.resume = (S) => { K.S = S; return K.go(S.scene, true); };
-  K.exportCode = () => btoa(unescape(encodeURIComponent(K.S ? committedFor(K.S) : "{}")));
+  // opts.acts: the code carries the life's kept acts too (opts.here: with the life itself as the start
+  // of its act); opts.life: the code of another life than K.S (a kept act).
+  K.exportCode = function (opts) {
+    const o = opts || {}, S = o.life || K.S;
+    let txt = S ? (o.life ? JSON.stringify(S) : committedFor(S)) : "{}";
+    if (S && o.acts) { const j = JSON.parse(txt); j.cps = o.cps || K.actsFor(S, o.here); txt = JSON.stringify(j); }
+    return btoa(unescape(encodeURIComponent(txt)));
+  };
   K.importCode = function (txt) {
     txt = String(txt || "").trim();
     let s;
@@ -520,8 +670,10 @@
       try { s = JSON.parse(decodeURIComponent(escape(atob(txt)))); } catch (e2) { throw new Error(K.tr("That save code could not be read. Copy the whole code and try again.")); }
     }
     if (!s || typeof s !== "object" || Array.isArray(s)) throw new Error(K.tr("That save code could not be read. Copy the whole code and try again."));
+    const cps = s.cps; delete s.cps;
     s = K.cleanLife(K.migrate(s));
     if (s.v !== 2 || !K.SCENES[s.scene]) throw new Error(K.tr("That save code is from a different version of the game."));
+    if (cps) K.adoptActs(s, cps);
     return s;
   };
 })(window.K = window.K || {});
