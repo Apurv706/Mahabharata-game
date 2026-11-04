@@ -1948,18 +1948,18 @@ html.calm .sleepin.wakeup .wk-kid .pp { animation: none !important; }
 .endscreen.in .es-smoke i { animation: es-smoke 18s linear infinite; } .endscreen.in .es-smoke i:nth-child(2) { animation-duration: 24s; animation-delay: -8s; } .endscreen.in .es-smoke i:nth-child(3) { animation-duration: 30s; animation-delay: -15s; }
 @keyframes es-smoke { 0% { transform: translate(0, 10%); opacity: 0; } 20% { opacity: .8; } 100% { transform: translate(8%, -40%); opacity: 0; } }
 /* Karna's wheel, sinking into the ground line. */
-.es-wheelbox { position: absolute; left: 50%; top: calc(max(12px, var(--sat)) + 9vh); width: min(40vw, 25vh); height: calc(min(40vw, 25vh) * .9); transform: translateX(-50%); overflow: hidden; pointer-events: none; }
-.es-wheel { position: absolute; left: 0; right: 0; bottom: 0; height: calc(min(40vw, 25vh)); filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .6)); }
+.es-wheelbox { --ww: min(30vw, 20vh); position: absolute; left: 50%; top: calc(max(12px, var(--sat)) + 7vh); width: var(--ww); height: calc(var(--ww) * .9); transform: translateX(-50%); overflow: hidden; pointer-events: none; }
+.es-wheel { position: absolute; left: 0; right: 0; bottom: 0; height: var(--ww); opacity: .94; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .6)); }
 .es-wheel svg { width: 100%; height: 100%; display: block; }
 .endscreen.in .es-wheel { animation: es-sink 11s 1.6s cubic-bezier(.45, 0, .7, 1) forwards; }
 .endscreen.still .es-wheel { transform: translateY(42%) rotate(-9deg); }
 @keyframes es-sink { from { transform: translateY(0) rotate(0); } to { transform: translateY(42%) rotate(-9deg); } }
-.es-earth { position: absolute; left: 50%; top: calc(max(12px, var(--sat)) + 9vh + min(40vw, 25vh) * .9); width: min(64vw, 40vh); height: 16px; transform: translateX(-50%); border-top: 3px solid rgba(58, 34, 18, .95); background: linear-gradient(to bottom, rgba(70, 44, 24, .8), rgba(70, 44, 24, 0)); border-radius: 50% / 0 0 100% 100%; pointer-events: none; }
+.es-earth { position: absolute; left: 50%; top: calc(max(12px, var(--sat)) + 7vh + min(30vw, 20vh) * .9); width: min(56vw, 36vh); height: 2px; transform: translateX(-50%); background: linear-gradient(to right, rgba(226, 181, 90, 0), rgba(226, 181, 90, .95) 30%, rgba(226, 181, 90, .95) 70%, rgba(226, 181, 90, 0)); box-shadow: 0 0 10px rgba(0, 0, 0, .8); pointer-events: none; }
 /* The garland or the oath's emblem, over a death at dusk. */
 .es-emblem { position: absolute; left: 50%; top: calc(max(12px, var(--sat)) + 8vh); width: min(36vw, 24vh); height: min(36vw, 24vh); margin-left: calc(min(36vw, 24vh) / -2); background: var(--img) center / contain no-repeat; opacity: 0; transform: scale(.9); transition: opacity 2.4s 2.6s, transform 2.4s 2.6s; filter: drop-shadow(0 6px 16px rgba(0, 0, 0, .7)); pointer-events: none; }
 .es-emblem svg { width: 100%; height: 100%; display: block; }
 .endscreen.in .es-emblem, .endscreen.all .es-emblem { opacity: .95; transform: none; }
-.es-shade { background: linear-gradient(to bottom, rgba(10, 7, 5, .5) 0%, rgba(10, 7, 5, 0) 18%, rgba(10, 7, 5, 0) 44%, rgba(10, 7, 5, .7) 74%, rgba(10, 7, 5, .9) 100%); }
+.es-shade { background: linear-gradient(to bottom, rgba(10, 7, 5, .5) 0%, rgba(10, 7, 5, 0) 18%, rgba(10, 7, 5, 0) 32%, rgba(10, 7, 5, .42) 50%, rgba(10, 7, 5, .78) 74%, rgba(10, 7, 5, .9) 100%); }
 .es-skip { position: absolute; z-index: 3; top: max(12px, var(--sat)); right: max(14px, var(--sar)); min-height: 40px; padding: 8px 16px; border-radius: 999px; border: 1px solid rgba(244, 234, 214, .35); background: rgba(13, 10, 8, .45); color: #f4ead6; font: 600 14px/1 var(--text); cursor: pointer; }
 .endscreen.all .es-skip, .endscreen.rested .es-skip { display: none; }
 .es-tap { position: absolute; z-index: 3; left: 0; right: 0; bottom: max(10px, var(--sab)); text-align: center; font-size: 13px; color: rgba(244, 234, 214, .65); pointer-events: none; opacity: 0; transition: opacity 1s 3s; }
@@ -1969,7 +1969,7 @@ html.calm .sleepin.wakeup .wk-kid .pp { animation: none !important; }
 .endscreen.all .es-col { padding-bottom: calc(max(24px, var(--sab)) + 12px); }
 .es-head { display: grid; justify-items: center; gap: 6px; text-align: center; opacity: 0; transform: translateY(12px); transition: opacity 1.4s, transform 1.4s; }
 .endscreen.titled .es-head, .endscreen.all .es-head { opacity: 1; transform: none; }
-.es-head .kind { font-size: 12.5px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #e0c7a6; }
+.es-head .kind { font-size: 12.5px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #f0dcbc; text-shadow: 0 1px 3px rgba(0, 0, 0, .95), 0 0 12px rgba(0, 0, 0, .8); }
 .es-title { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(36px, min(9vw, 9vh), 68px); line-height: 1.04; color: #f3d27a; text-shadow: 0 2px 16px rgba(0, 0, 0, .85); text-wrap: balance; }
 .endscreen.fell .es-title { color: #ecc66e; }
 .es-cap { margin: 0; font-family: var(--display); font-style: italic; font-size: clamp(17px, 2.2vw, 21px); color: #ecdfc6; text-shadow: 0 1px 8px rgba(0, 0, 0, .9); }

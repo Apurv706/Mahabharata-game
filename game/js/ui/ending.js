@@ -100,9 +100,9 @@
     U[name] = function (sc) { if (!(name === "renderScene" && sc && sc.ending)) endClose(); return f.apply(this, arguments); };
   }
 
-  const WHEEL_SVG = '<svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="86" fill="none" stroke="#2e1c10" stroke-width="13"/><circle cx="100" cy="100" r="86" fill="none" stroke="#8a5d34" stroke-width="3"/>' +
-    Array.from({ length: 12 }, (_, i) => { const a = (i * Math.PI) / 6; return '<line x1="' + (100 + 16 * Math.cos(a)).toFixed(1) + '" y1="' + (100 + 16 * Math.sin(a)).toFixed(1) + '" x2="' + (100 + 80 * Math.cos(a)).toFixed(1) + '" y2="' + (100 + 80 * Math.sin(a)).toFixed(1) + '" stroke="#4a2e18" stroke-width="7" stroke-linecap="round"/>'; }).join("") +
-    '<circle cx="100" cy="100" r="19" fill="#2e1c10" stroke="#8a5d34" stroke-width="3"/></svg>';
+  const WHEEL_SVG = '<svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="86" fill="none" stroke="#2a180c" stroke-width="14"/><circle cx="100" cy="100" r="86" fill="none" stroke="#e2b55a" stroke-width="4"/>' +
+    Array.from({ length: 12 }, (_, i) => { const a = (i * Math.PI) / 6; return '<line x1="' + (100 + 16 * Math.cos(a)).toFixed(1) + '" y1="' + (100 + 16 * Math.sin(a)).toFixed(1) + '" x2="' + (100 + 80 * Math.cos(a)).toFixed(1) + '" y2="' + (100 + 80 * Math.sin(a)).toFixed(1) + '" stroke="#d9a94e" stroke-width="5" stroke-linecap="round"/>'; }).join("") +
+    '<circle cx="100" cy="100" r="19" fill="#2a180c" stroke="#e2b55a" stroke-width="4"/></svg>';
   // A marigold garland: a ring of beads, knotted at the foot.
   const GARLAND_SVG = '<svg viewBox="0 0 200 220" aria-hidden="true">' +
     Array.from({ length: 22 }, (_, i) => { const a = (i * 2 * Math.PI) / 22 - Math.PI / 2; return '<circle cx="' + (100 + 70 * Math.cos(a)).toFixed(1) + '" cy="' + (96 + 78 * Math.sin(a)).toFixed(1) + '" r="10" fill="' + (i % 2 ? "#f6c13a" : "#ee8a1c") + '" stroke="#9c4f10" stroke-width="1.5"/>'; }).join("") +

@@ -330,6 +330,24 @@ const PAGE = {
     if (close.top < (o.sat || 0) - 1 || close.bottom > innerHeight) out.push("Close button off screen or under the notch");
     return out;
   },
+  // The full-screen ending (ui/ending.js): the title on screen, nothing sideways, the act buttons and
+  // Live another life reachable by scrolling inside it, tap targets of 44px.
+  ending(o) {
+    const out = [], es = document.querySelector(".endscreen");
+    if (!es) return ["the ending did not open"];
+    const t = es.querySelector(".es-title").getBoundingClientRect();
+    if (o.all) {
+      const sc = es.querySelector(".es-scroll"); sc.scrollTop = sc.scrollHeight;
+      const last = es.querySelector(".es-rest .btnrow").getBoundingClientRect();
+      if (last.bottom > innerHeight + 1 || last.top < 0) out.push("Live another life cannot be reached");
+      for (const b of es.querySelectorAll(".actback, .es-rest .btnrow button")) { const r = b.getBoundingClientRect(); if (r.height < 44 && b.classList.contains("actback")) out.push("act button shorter than a tap target"); if (r.right > innerWidth + 1) out.push("button runs past the right edge"); }
+      sc.scrollTop = 0;
+    }
+    const skip = es.querySelector(".es-skip").getBoundingClientRect();
+    if (!es.classList.contains("all") && (skip.top < (o.sat || 0) - 1 || skip.height < 40)) out.push("Skip under the notch or too small");
+    if (t.top < 0 || t.right > innerWidth + 1) out.push("ending title off screen");
+    return out;
+  },
   journey(o) {
     const out = [];
     const map = document.querySelector(".leaf.journeying .bmap");
@@ -548,6 +566,14 @@ async function runDevice(browser, base, o, report) {
   await page.evaluate(() => K.go("a3_lac"));
   await page.waitForTimeout(700);
   await check("journey", ["journey"]);
+
+  // The full-screen ending: a death with acts to go back to, mid-sequence, then everything shown.
+  await page.evaluate((life) => { localStorage.removeItem("kurukshetra.v2.acts"); K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 23, act: 3, lifeId: "lay" }); K.go("a3_kampilya");
+    [1, 2, 3].forEach((a) => { K.S.act = a; K.committed = null; K.checkpoint(K.S); }); Object.assign(K.S, { alive: false }); K.S.flags.push("died_in_fire"); K.go("end_death"); }, LIFE);
+  // (calm motion, as all these checks: the ending is there whole at once, its title first)
+  await page.waitForTimeout(600);
+  await check("ending", ["ending"], { all: true });
+  await page.evaluate(() => K.UI.endingClose());
 
   // Tests of every kind.
   for (const [game, trial] of TESTS) {
