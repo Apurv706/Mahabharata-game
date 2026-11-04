@@ -122,14 +122,15 @@
   }
   function place(R) {
     const B = R.B, p = C.player();
-    p.rt.x = 0.3; p.rt.lane = 0;
+    p.rt.x = 0.27; p.rt.lane = 0;
     const allies = B.units.filter((u) => u.side === "ally");
-    allies.forEach((a, i) => { a.rt.x = clamp(0.2 - (i % 3) * 0.05 + (i > 2 ? 0.12 : 0), 0.06, 0.4); a.rt.lane = backRow(a); });
+    // As the layout page: your side on both sides of you, spread over the field.
+    allies.forEach((a, i) => { a.rt.x = [0.13, 0.43, 0.57, 0.08][i % 4]; a.rt.lane = backRow(a); });
     const foes = B.units.filter((u) => u.side === "enemy");
     foes.forEach((e, i) => {
       // More than two come in packs: two on the field, the rest waiting off it.
       e.rt.wave = i < 2 ? 0 : 1;
-      e.rt.x = e.rt.wave ? 1.12 + (i - 2) * 0.05 : 0.72 + i * 0.12 + (e.rt.archer ? 0.08 : 0);
+      e.rt.x = e.rt.wave ? 1.12 + (i - 2) * 0.05 : 0.72 + i * 0.16;
       e.rt.entered = !e.rt.wave && e.rt.x <= 0.97;
       e.rt.lane = backRow(e);
     });
@@ -158,13 +159,16 @@
   const dist = (a, b) => Math.abs(a.rt.x - b.rt.x);
   const rowGap = (a, b) => Math.abs(a.rt.lane - b.rt.lane);
   const ROWCUT = 0.25 * BODY; // reach lost for each row between
-  const APART = 0.62 * BODY;  // bodies in one row stand at least this far apart (about a quarter overlapping at most)
+  // Two figures of one side, in any row, stand at least this far apart (a fraction of the field): drawn, a
+  // figure is about a sixth of an upright phone's width, so this keeps them overlapping a quarter at most.
+  const APART = 0.14;
+  const NEAR = 0.62 * BODY;
   const FACE = 0.75 * BODY;   // you and a foe in your row, face to face
   function toRow(u, row, dt) { const d = row - u.rt.lane; if (Math.abs(d) > 1e-3) u.rt.lane += sign(d) * Math.min(Math.abs(d), 2.5 * dt); }
   // Keep a unit clear of the others standing in its row.
   function keepApart(R, u, x, dt, list) {
     for (const o of list) {
-      if (o === u || o.hp <= 0 || !o.rt || (o.side === "enemy" && !o.rt.entered) || rowGap(o, u) > 0.5) continue;
+      if (o === u || o.hp <= 0 || !o.rt || (o.side === "enemy" && !o.rt.entered)) continue;
       const g = o.rt.x - x;
       if (Math.abs(g) >= APART) continue;
       if (Math.abs(o.rt.x - u.rt.x) >= APART) x = o.rt.x - sign(o.rt.x - u.rt.x) * APART; // walking up to it: stop at its side
@@ -217,7 +221,7 @@
     if (a.row && !R.rowTo && R.roll <= 0 && R.kneel <= 0 && !held(p)) {
       const to = Math.round(p.rt.lane) + sign(a.row);
       if (to >= 0 && to <= 2) {
-        const block = living(B, "enemy").find((e) => e.rt.entered && Math.abs(e.rt.lane - to) < 0.5 && dist(e, p) < APART);
+        const block = living(B, "enemy").find((e) => e.rt.entered && Math.abs(e.rt.lane - to) < 0.5 && dist(e, p) < NEAR);
         if (block) R.fx.push({ k: "blocked", uid: block.uid }); else { R.rowTo = to; R.fx.push({ k: "row", to }); }
       }
     }
@@ -569,7 +573,7 @@
     else if (ad < waitAt - 0.04) dx = -sign(d) * u.speed * 0.6 * dt;
     let x = u.x + dx;
     // Foes keep apart from each other in a row, so each stands clear on the ground.
-    x = keepApart(R, e, x, dt, living(B, "enemy"));
+    if (!u.engaged) x = keepApart(R, e, x, dt, living(B, "enemy").filter((o) => !o.rt.atk && !o.rt.engaged));
     // A foe in your row does not walk through you.
     if (rowGap(e, p) < 0.5) {
       const pg = FACE;
@@ -623,7 +627,7 @@
     let nx = u.x;
     if (Math.abs(d) > 0.01) nx = u.x + sign(d) * Math.min(Math.abs(d), u.speed * 1.05 * dt);
     toRow(a, backRow(a), dt); // your side stands in the rows behind you
-    u.x = clamp(keepApart(R, a, nx, dt, living(B, "ally")), 0.07, 0.93);
+    u.x = clamp(keepApart(R, a, nx, dt, living(B, "friends")), 0.07, 0.93);
     // A healer among your friends tends the hurt.
     const hurt = living(B, "friends").find((f) => !f.still && f.hp / f.maxHp < 0.45 && dist(f, a) < 2 * BODY);
     if (u.cool <= 0 && hurt && a.abilities.includes("salve") && !(u.cd.salve > 0)) { u.atk = { id: "salve", on: hurt.uid, land: R.t + 0.5, t0: R.t }; u.cd.salve = 3 * ROUND; return; }
@@ -688,14 +692,24 @@
     return null;
   }
 
-  // Bodies of one side in one row never stand in each other (a knock-back, a pack walking in): eased apart.
+  // Figures of one side at rest never stand in each other (a knock-back, a pack walking in): eased apart.
+  // You are never pushed; your side makes room around you. A foe striking or stepping in to strike is not at rest.
   function spread(R) {
-    for (const side of ["enemy", "ally"]) {
-      const us = living(R.B, side).filter((u) => u.rt && !u.still && (side !== "enemy" || u.rt.entered));
+    const p = C.player();
+    for (const side of ["enemy", "friends"]) {
+      const us = living(R.B, side).filter((u) => u.rt && !u.still && (side !== "enemy" || (u.rt.entered && !u.rt.atk && !u.rt.engaged)));
       for (let i = 0; i < us.length; i++) for (let j = i + 1; j < us.length; j++) {
-        const a = us[i], b = us[j];
-        if (rowGap(a, b) > 0.5) continue;
+        let a = us[i], b = us[j];
+        if (b === p) { b = a; a = p; }
         const g = b.rt.x - a.rt.x;
+        if (a === p) {
+          if (Math.abs(g) >= APART * 0.98) continue;
+          let dir = Math.abs(g) > 1e-4 ? sign(g) : (b.rt.x > 0.5 ? -1 : 1);
+          if ((b.rt.x <= 0.0705 && dir < 0) || (b.rt.x >= 0.9295 && dir > 0) || b.rt.passing) { b.rt.passing = true; dir = sign(p.rt.x - b.rt.x) || 1; } // pinned at the edge: past you to the open side
+          b.rt.x = clamp(b.rt.x + dir * (b.rt.passing ? 0.3 : 0.5) * STEP, 0.07, 0.93);
+          if (b.rt.passing && Math.abs(b.rt.x - p.rt.x) >= APART && sign(b.rt.x - p.rt.x) !== sign(g || 1)) b.rt.passing = false;
+          continue;
+        }
         if (Math.abs(g) >= APART * 0.98) continue;
         const dir = Math.abs(g) > 1e-4 ? sign(g) : (b.rt.x > 0.5 ? -1 : 1); // b goes this way, a the other
         const push = 0.5 * STEP;

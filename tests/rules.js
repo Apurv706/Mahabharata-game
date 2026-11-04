@@ -1243,7 +1243,7 @@ require(G + "content/war_fights.js");
   { let worst = 9, rows = new Set();
     for (let i = 0; i < 6; i++) { K.seed(500 + i); life(); const B = C.start(i % 2 ? "e_guard" : "t_rt_pack"); const R = RT.begin(B);
       while (!R.over) { RT.step(R, RT.bot(R)); if (R.n % 30) continue;
-        const us = B.units.filter((u) => u.hp > 0 && u.rt && !u.rt.atk && (u.side !== "enemy" || u.rt.entered) && u.rt.down <= 0);
+        const us = B.units.filter((u) => u.hp > 0 && u.rt && !u.rt.atk && !u.rt.engaged && !u.rt.passing && (u.side !== "enemy" || u.rt.entered) && u.rt.down <= 0 && u.rt.stag <= 0);
         us.forEach((u) => rows.add(Math.round(u.rt.lane)));
         for (const a of us) for (const b of us) if (a !== b && a.side === b.side && Math.abs(a.rt.lane - b.rt.lane) < 0.1 && Math.abs(a.rt.lane - Math.round(a.rt.lane)) < 0.05) worst = Math.min(worst, Math.abs(a.rt.x - b.rt.x) / RT.BODY); }
       C.end(); }
