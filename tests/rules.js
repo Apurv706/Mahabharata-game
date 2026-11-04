@@ -1120,6 +1120,17 @@ require(G + "content/war_fights.js");
   const B = WK.Combat.state();
   ok(UI.fightBriefMode(B) === "melee" && /Bring them all down/.test(UI.fightBriefGoal(B)) && UI.fightBriefActions(B).some((a) => a[0] === "strike") && !w.document.querySelector(".fbrief-wrap"), "a real fight under the tests: no card on screen, but its mode, goal and moves are known");
   WK.Combat.end && WK.Combat.end();
+  // The real-time screen on a laptop: without a touch screen, the key strip (no phone controls), whatever the
+  // number of layouts; with one (a coarse pointer), the corner controls. touch is a boolean, never undefined.
+  if (UI.startRealtime) {
+    let coarse = false; w.matchMedia = () => ({ matches: coarse }); w.innerWidth = 1366; w.innerHeight = 657;
+    WK.S = Object.assign(WK.newLife(), { name: "T", origin: "panchala", pronoun: "she", age: 30, act: 6, path: "archer" });
+    UI.startRealtime("e_guard", () => {});
+    const rt = () => w.document.getElementById("rt"), states = [];
+    for (let i = 0; i < 3; i++) { w.dispatchEvent(new w.Event("resize")); states.push(rt().classList.contains("wide") && !rt().classList.contains("touch")); }
+    coarse = true; w.dispatchEvent(new w.Event("resize"));
+    ok(states.every(Boolean) && rt().classList.contains("touch"), "a 1366 laptop without touch keeps the key strip through every layout (" + states + "); a touch laptop gets the corner controls");
+  }
   w.close();
 }
 // 103. Motion is always on: the device's reduce-motion setting is not followed. "Calm motion" (menu,
@@ -1310,6 +1321,35 @@ require(G + "content/war_fights.js");
       for (let i = 0; i < 60 * 20 && !R.over; i++) RT.step(R, RT.bot(R)); C.settle("win"); C.end(); return dealt; };
     const all = run("allout"), hold = run("hold");
     ok(all > 0 && hold === 0, "a friend on all-out fights (" + all + " dealt in 20 s); on hold back he stays behind you and does not strike"); }
+  // Your soldiers follow their orders and pass you (you never block your own side; another row is no obstacle):
+  // all-out walks past you up to a foe and strikes; defend stays by you and strikes what comes in reach; stay out stays behind.
+  { const run = (order) => { K.seed(41); life(); const B = C.start("e_guard"); const R = RT.begin(B); R.orders.soldiers = order;
+      const so = B.units.find((u) => u.side === "ally" && u.plural), p = C.player(); let dealt = 0, ahead = -9, far = 0;
+      const hit = B.hit; B.hit = function (u, t, m, o) { const d = hit.call(B, u, t, m, o); if (u === so) dealt += d; return d; };
+      for (let i = 0; i < 60 * 20 && !R.over; i++) { p.hp = p.maxHp; RT.step(R, {}); if (so.hp > 0) { ahead = Math.max(ahead, so.rt.x - p.rt.x); far = Math.max(far, Math.abs(so.rt.x - p.rt.x)); } }
+      C.settle("win"); C.end(); return { dealt, ahead, far: far / RT.BODY }; };
+    const a = run("allout"), d = run("defend"), st = run("stay");
+    ok(a.dealt > 0 && a.ahead > 0, "soldiers on all-out pass you and strike a foe (" + a.dealt + " dealt, " + a.ahead.toFixed(2) + " of the field ahead of you)");
+    ok(d.dealt > 0 && d.far <= 2, "soldiers on defend stay by you (within " + d.far.toFixed(1) + " bodies) and strike what comes in reach (" + d.dealt + " dealt)");
+    ok(st.dealt === 0 && st.ahead < 0, "soldiers on stay out keep behind you and do not strike"); }
+  // A divine weapon in real time takes the share of a foe's health it takes on the turns (foes have hpFoe times the health).
+  { const share = (rt) => { K.seed(52); const S = life(); S.astras = [{ id: "agneya", from: "x" }]; const B = C.start("e_bandits"); const R = rt ? RT.begin(B) : null;
+      const foes = B.units.filter((u) => u.side === "enemy"); foes.forEach((u) => { if (rt) { u.rt.entered = true; u.rt.x = 0.6; } });
+      const hp0 = foes.map((u) => u.hp);
+      if (rt) { RT.step(R, { astra: "agneya" }); } else C.core.use(C.player(), "agneya", null);
+      const f = foes.reduce((n, u, i) => n + (hp0[i] - u.hp) / u.maxHp, 0) / foes.length; C.settle("win"); C.end(); return f; };
+    const turns = share(false), real = share(true);
+    ok(turns > 0 && Math.abs(real - turns) <= turns * 0.35 + 0.01, "a divine weapon in real time takes about the share of health it takes on the turns (" + Math.round(real * 100) + "% / " + Math.round(turns * 100) + "%)"); }
+  // Try again: what is used once a battle (the divine weapon, the call for help) stays used in the second try.
+  { K.seed(53); const S = life(); S.astras = [{ id: "agneya", from: "x" }]; const B = C.start("e_raid"); const R = RT.begin(B);
+    B.units.filter((u) => u.side === "enemy").forEach((u) => { u.rt.entered = true; u.rt.x = 0.6; });
+    RT.step(R, { astra: "agneya" }); const used = !!B.used.astra;
+    let n = 0; C.player().hp = 1; while (!R.over && n++ < 60 * 200) { C.player().hp = Math.min(C.player().hp, 1); RT.step(R, {}); }
+    const R2 = RT.retry(R);
+    ok(used && R.over === "retry" && R2.B.used.astra && RT.astras().every((x) => !!x.why), "Try again: the divine weapon used in the first try stays used in the second");
+    C.settle("lose"); C.end(); }
+  // A figure falls toward the middle of the stage, never off its edge.
+  ok(RT.fallDir({ rt: { x: 0.85 } }) === -1 && RT.fallDir({ rt: { x: 0.15 } }) === 1, "the fallen fall toward the middle of the stage");
   RT.force = false;
 }
 // 120. Act checkpoints (engine/flow.js): a copy of the life at the start of every act, kept compactly;

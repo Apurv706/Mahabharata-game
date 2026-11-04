@@ -142,10 +142,10 @@
   }
   function place(R) {
     const B = R.B, p = C.player();
-    p.rt.x = 0.27; p.rt.lane = 0;
+    p.rt.x = 0.3; p.rt.lane = 0;
     const allies = B.units.filter((u) => u.side === "ally");
     // As the layout page: your side on both sides of you, spread over the field.
-    allies.forEach((a, i) => { a.rt.x = [0.13, 0.43, 0.57, 0.08][i % 4]; a.rt.lane = backRow(a); });
+    allies.forEach((a, i) => { a.rt.x = [0.13, 0.46, 0.59, 0.08][i % 4]; a.rt.lane = backRow(a); });
     const foes = B.units.filter((u) => u.side === "enemy");
     foes.forEach((e, i) => {
       // More than two come in packs: two on the field, the rest waiting off it.
@@ -190,6 +190,8 @@
   function keepApart(R, u, x, dt, list) {
     for (const o of list) {
       if (o === u || o.hp <= 0 || !o.rt || (o.side === "enemy" && !o.rt.entered)) continue;
+      if (Math.abs(o.rt.lane - u.rt.lane) >= 0.5) continue; // a body in another row is no obstacle
+      if (o.side === "player" && u.side !== "enemy") continue; // your side passes you (as you pass them)
       const g = o.rt.x - x;
       if (Math.abs(g) >= APART) continue;
       if (Math.abs(o.rt.x - u.rt.x) >= APART) x = o.rt.x - sign(o.rt.x - u.rt.x) * APART; // walking up to it: stop at its side
@@ -260,10 +262,13 @@
           const before = new Map(B.units.map((u) => [u.uid, u.hp]));
           C.core.use(p, row.id, t ? t.uid : null);
           R.frozen = 2.4; // the moment: the fight stands still
-          // Ordinary foes struck by it are thrown off their feet (knocked flying, and down a while).
+          // Its blow is the turn-based share of a foe's health: foes here have hpFoe (and the fight's RT.TUNE) times as much.
           const struck = B.units.filter((u) => u.side === "enemy" && u.rt && before.get(u.uid) > u.hp);
-          struck.forEach((u) => { knock(R, u, sign(u.rt.x - p.rt.x), 1.1 * BODY, true); u.rt.down = Math.max(u.rt.down, 2.2); u.rt.flung = R.t; });
-          R.fx.push({ k: "astra", id: row.id, out: B.astraOut, struck: struck.map((u) => u.uid) });
+          const hk = RT.P.hpFoe * ((RT.TUNE[B.enc.id] || {}).hp || 1), dealt = {};
+          struck.forEach((u) => { const d = before.get(u.uid) - u.hp; u.hp = Math.max(0, before.get(u.uid) - Math.round(d * hk)); dealt[u.uid] = before.get(u.uid) - u.hp; });
+          // Ordinary foes struck by it are thrown off their feet (knocked flying, and down a while) when the moment ends.
+          R.astraKnock = struck.map((u) => u.uid);
+          R.fx.push({ k: "astra", id: row.id, out: B.astraOut, struck: struck.map((u) => u.uid), dealt });
           living(B, "enemy").forEach((e) => { if (e.rt.atk && (e.status.stun || e.status.asleep || e.status.bound)) cancel(R, e); });
         }
       }
@@ -314,6 +319,17 @@
     if (!u.rt.atk) u.rt.stag = Math.max(u.rt.stag, 0.3);
     if (down) u.rt.down = Math.max(u.rt.down, 1.2);
   }
+  // The divine weapon's struck foes, thrown away from you as its moment ends (the screen plays the throw then).
+  function astraThrow(R) {
+    const p = C.player(), ids = R.astraKnock || []; R.astraKnock = null;
+    for (const id of ids) {
+      const u = R.B.units.find((x) => x.uid === id); if (!u || !u.rt) continue;
+      const x0 = u.rt.x; knock(R, u, sign(u.rt.x - p.rt.x), 1.1 * BODY, true); u.rt.down = Math.max(u.rt.down, 2.2); u.rt.flung = R.t;
+      R.fx.push({ k: "thrown", uid: id, dx: u.rt.x - x0 });
+    }
+  }
+  // Which way a figure falls: toward the middle of the field (never out of the stage).
+  RT.fallDir = (u) => (u.rt && u.rt.x > 0.5 ? -1 : 1);
   function hitFx(R, t, d, heavy) { R.fx.push({ k: "hit", uid: t.uid, n: d, heavy: !!heavy }); }
   function skill(R) {
     const B = R.B, p = C.player(), id = R.skill, ab = K.ABILITIES[id];
@@ -724,7 +740,7 @@
   }
 
   // Figures of one side at rest never stand in each other (a knock-back, a pack walking in): eased apart.
-  // You are never pushed; your side makes room around you. A foe striking or stepping in to strike is not at rest.
+  // You are never pushed, and you push no one: your side passes you in the rows behind. A foe striking or stepping in to strike is not at rest.
   function spread(R) {
     const p = C.player();
     for (const side of ["enemy", "friends"]) {
@@ -732,15 +748,9 @@
       for (let i = 0; i < us.length; i++) for (let j = i + 1; j < us.length; j++) {
         let a = us[i], b = us[j];
         if (b === p) { b = a; a = p; }
+        if (Math.abs(a.rt.lane - b.rt.lane) >= 0.5) continue; // bodies in different rows stand clear of each other already
+        if (a === p) continue; // your side passes you; you never block them (they keep to the rows behind you)
         const g = b.rt.x - a.rt.x;
-        if (a === p) {
-          if (Math.abs(g) >= APART * 0.98) continue;
-          let dir = Math.abs(g) > 1e-4 ? sign(g) : (b.rt.x > 0.5 ? -1 : 1);
-          if ((b.rt.x <= 0.0705 && dir < 0) || (b.rt.x >= 0.9295 && dir > 0) || b.rt.passing) { b.rt.passing = true; dir = sign(p.rt.x - b.rt.x) || 1; } // pinned at the edge: past you to the open side
-          b.rt.x = clamp(b.rt.x + dir * (b.rt.passing ? 0.3 : 0.5) * STEP, 0.07, 0.93);
-          if (b.rt.passing && Math.abs(b.rt.x - p.rt.x) >= APART && sign(b.rt.x - p.rt.x) !== sign(g || 1)) b.rt.passing = false;
-          continue;
-        }
         if (Math.abs(g) >= APART * 0.98) continue;
         const dir = Math.abs(g) > 1e-4 ? sign(g) : (b.rt.x > 0.5 ? -1 : 1); // b goes this way, a the other
         const push = 0.5 * STEP;
@@ -761,7 +771,7 @@
     if (B.over) { R.over = B.over; return R; }
     R.n++;
     // A divine weapon's moment: the fight stands still while it plays (the screen clears R.frozen sooner).
-    if (R.frozen > 0) { R.frozen -= STEP; if (act.orders) Object.assign(R.orders, act.orders); return R; }
+    if (R.frozen > 0) { R.frozen -= STEP; if (act.orders) Object.assign(R.orders, act.orders); if (R.frozen <= 0) astraThrow(R); return R; }
     joined(R);
     playerAct(R, act);
     joined(R); // a friend who answered the call, or one a beat brought in
@@ -814,6 +824,7 @@
     if (R.over !== "retry") return R;
     const B = C.start(R.B.enc.id, R.B.onEnd);
     B.say("You get up. One more time.");
+    Object.assign(B.used, R.B.used); // what is used once a battle (a divine weapon, the call for help) stays used
     const R2 = RT.begin(B, { tries: R.tries + 1, hp: RT.P.retryHp, assist: R.assist });
     R2.orders = Object.assign({}, R.orders);
     R2.prev = { t: R.t };
