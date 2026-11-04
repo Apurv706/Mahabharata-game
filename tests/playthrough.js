@@ -118,7 +118,8 @@ function playLife(seed) {
 }
 
 const results = [];
-for (let i = 1; i <= N; i++) { results.push(playLife(i * 7919)); try { lastWindow.close(); } catch (e) { /* ignore */ } }
+// Copied out of the page's realm: a result holding the life's own arrays would keep the whole closed window alive (300 lives ran out of memory).
+for (let i = 1; i <= N; i++) { results.push(JSON.parse(JSON.stringify(playLife(i * 7919)))); try { lastWindow.close(); } catch (e) { /* ignore */ } }
 const crashes = results.filter((r) => r.crash);
 const stuck = results.filter((r) => r.stuck);
 const ends = {};
