@@ -76,7 +76,7 @@
   RT.TUNE = {
     cross_e_duel: { hp: 1.36, atk: 1.36 },
     e_raid: { hp: 1.1, atk: 1.1 },
-    e_gandharva: { hp: 1.0, atk: 1.0 },
+    e_gandharva: { hp: 0.85, atk: 0.85 }, // a hard fight, not a deadly one (canon: Duryodhana is carried off whatever you do); eased 4 November
     e_jaya: { hp: 0.81, atk: 0.81 },
     e_kings: { hp: 0.64, atk: 0.64 },
     e_road: { hp: 0.9, atk: 0.9 },
@@ -478,7 +478,9 @@
         const t = f;
         const allies = living(B, "ally").filter((a) => !a.still);
         if (!t) break;
-        if (!allies.length) { const d = B.hit(p, t, 1); hitFx(R, t, d); break; }
+        // Alone (owner, 4 November: the strategist was the weakest path when no one stands beside him): read the field
+        // instead, a sharper blow and the foe left open (40% more from every blow) for a round.
+        if (!allies.length) { B.status(t, "exposed", 1, "is exposed"); const d = B.hit(p, t, 1.2); hitFx(R, t, d); R.fx.push({ k: "toast", s: "Read the field" }); break; }
         allies.forEach((a) => { B.status(a, "inspired", 2); const d = B.hit(a, t, 1.2, { verb: "On your order, {a} hits {t} for {n}." }); hitFx(R, t, d); });
         break;
       }
