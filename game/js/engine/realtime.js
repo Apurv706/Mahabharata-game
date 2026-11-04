@@ -49,9 +49,15 @@
     botReact: [0.2, 0.42], botMiss: [0.25, 0.55], // the bot's reading, from grace (good to poor)
     cap: 240           // a fight that has run this long is stopped (it never should)
   };
-  // Per-fight tuning hook: RT.TUNE[encId] = { hp, atk } multiplies that fight's foes' health and blows.
-  // Empty by the owner's decision (3 November): every real-time fight uses the global RT.P.
-  RT.TUNE = {};
+  // Per-fight tuning: RT.TUNE[encId] = { hp, atk } multiplies that fight's foes' health and blows. Only the four
+  // outliers are tuned (owner, 3 November), each to within about 8 points of the same fight on the turns
+  // (RT=1 RTSTATS=1 COMPARE=1 node tests/lives.js, 3000 lives on fresh seeds); every other fight uses RT.P alone.
+  RT.TUNE = {
+    e_gandharva: { hp: 1.22, atk: 1.22 },
+    e_jaya: { hp: 1.08, atk: 1.08 },
+    e_kings: { hp: 0.64, atk: 0.64 },
+    e_road: { hp: 1.11, atk: 1.11 }
+  };
   // The fights played in real time (PRD §18.15 "Which fights are which"); every other fight stays on the turns.
   RT.IDS = new Set(["e_ugra", "e_spar", "e_bandits", "e_kings", "e_panchala", "e_border", "e_gandharva", "e_sudatta", "e_jayadratha", "e_cattle", "e_cattle_k",
     "e_guard", "e_hunt", "e_gate", "e_road", "e_jaya", "e_dushasana", "e_night", "e_ep_carts", "e_ep_ugra", "e_raid", "e_ash", "cross_e_duel", "cross_e_called", "x_practice"]);
@@ -112,7 +118,7 @@
     const B = R.B, foe = u.side === "enemy";
     const k = foe ? RT.P.hpFoe : u.side === "player" ? RT.P.hpFriend : RT.P.hpAlly == null ? RT.P.hpFoe : RT.P.hpAlly;
     u.maxHp = Math.max(1, Math.round(u.maxHp * k)); u.hp = Math.max(0, Math.round(u.hp * k));
-    if (foe) { // per-fight tuning (RT.TUNE, empty for now)
+    if (foe) { // per-fight tuning (RT.TUNE): the four outliers only
       const tune = RT.TUNE[B.enc.id] || {};
       if (tune.hp) { u.maxHp = Math.max(1, Math.round(u.maxHp * tune.hp)); u.hp = Math.max(0, Math.round(u.hp * tune.hp)); }
       u.atk = Math.round(u.atk * RT.P.atkFoe * (tune.atk || 1) * 10) / 10; // blows come oftener and are dodged more than on the turns
