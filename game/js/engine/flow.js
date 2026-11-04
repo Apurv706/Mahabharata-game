@@ -427,6 +427,17 @@
     return (S.attrs[a] || 0) > 0 ? { attr: { [a]: -1 } } : {};
   };
 
+  // A fight lost but lived through (owner, 4 November): the story goes on past it (a fight that is not deadly, or any fight in
+  // story mode), so the screen shows you slumped, the foes leaving and a line that what is written held, not a fall. Practice
+  // and the opening dream are not counted; a deadly loss (or one whose loss kills) falls as before.
+  K.loseLived = function (encId, S = K.S) {
+    const enc = K.ENCOUNTERS[encId];
+    if (!enc || enc.dream || encId === "x_practice" || !S) return false;
+    const fx = K.val((enc.lose || {}).fx, S);
+    if (fx && fx.die === true && !S.storyMode) return false;
+    return !enc.lethal || !!S.storyMode;
+  };
+
   // Called by the combat layer when a fight ends.
   K.combatOutcome = function (encId, outcome, fallbackNext) {
     const S = K.S;

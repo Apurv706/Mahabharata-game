@@ -523,7 +523,7 @@ html.calm .range .t-lamp { animation: none; }
 @keyframes pp-strike { 0% { transform: rotate(-170deg); } 100% { transform: rotate(-40deg); } }
 .pose-block .armF { transform: rotate(-112deg); } .pose-block .foreF { transform: rotate(-70deg); } .pose-block .pp-body { transform: rotate(-6deg); }
 .pose-hold .pp-body { transform: rotate(6deg); } .pose-hold .armF { transform: rotate(-66deg); } .pose-hold .foreF { transform: rotate(-24deg); } .pose-hold .armB { transform: rotate(-58deg); } .pose-hold .foreB { transform: rotate(-30deg); }
-.pose-sneak .pp-body { transform: translateY(12px) rotate(20deg); } .pose-sneak .legF { transform: rotate(-42deg); } .pose-sneak .shinF { transform: rotate(52deg); } .pose-sneak .legB { transform: rotate(26deg); } .pose-sneak .shinB { transform: rotate(44deg); } .pose-sneak .armF { transform: rotate(-40deg); } .pose-sneak .foreF { transform: rotate(-40deg); }
+.pose-sneak .pp-body { transform: translateY(12px) rotate(6deg); } .pose-sneak .legF { transform: rotate(-48deg); } .pose-sneak .shinF { transform: rotate(58deg); } .pose-sneak .legB { transform: rotate(28deg); } .pose-sneak .shinB { transform: rotate(50deg); } .pose-sneak .armF { transform: rotate(-40deg); } .pose-sneak .foreF { transform: rotate(-40deg); }
 .pose-think .armF { transform: rotate(-28deg); } .pose-think .foreF { transform: rotate(-140deg); } .pose-think .head { transform: rotate(10deg); }
 .pose-speak .armF { transform: rotate(-58deg); } .pose-speak .foreF { transform: rotate(-30deg); } .pose-speak .head { transform: rotate(-4deg); }
 /* Reactions. */
