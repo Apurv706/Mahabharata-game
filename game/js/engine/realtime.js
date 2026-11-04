@@ -49,32 +49,35 @@
     botReact: [0.2, 0.42], botMiss: [0.25, 0.55], // the bot's reading, from grace (good to poor)
     cap: 240           // a fight that has run this long is stopped (it never should)
   };
-  // Per-fight tuning: foes' health and blows, multiplied (calibrated with RT=1 RTSTATS=1 COMPARE=1 node tests/lives.js).
-  // Calibrated 3 November over 7 rounds of 2400-3000 lives (e_ep_carts capped at 2.5: it is lost 4 times in 100 on the turns).
+  // Per-fight tuning: each real-time fight's foes have their health and blows multiplied so the fight is won about as
+  // often as the same fight on the turns (the outcome, Try again included; calibrated 3 November with
+  // RT=1 COMPARE=1 node tests/lives.js over 4 rounds of 3000 lives on fresh seeds). e_ep_carts is capped at 2.5:
+  // the turns lose it almost always (the life arrives there hurt), and more would make it a wall.
   RT.TUNE = {
-    cross_e_called: { hp: 0.95, atk: 0.95 },
-    cross_e_duel: { hp: 1.70, atk: 1.70 },
-    e_ash: { hp: 1.00, atk: 1.00 },
+    cross_e_called: { hp: 1.15, atk: 1.15 },
+    cross_e_duel: { hp: 1.85, atk: 1.85 },
+    e_ash: { hp: 1.08, atk: 1.08 },
     e_bandits: { hp: 1.04, atk: 1.04 },
     e_border: { hp: 0.82, atk: 0.82 },
-    e_cattle: { hp: 1.13, atk: 1.13 },
-    e_dushasana: { hp: 1.16, atk: 1.16 },
+    e_cattle: { hp: 1.16, atk: 1.16 },
+    e_cattle_k: { hp: 1.04, atk: 1.04 },
+    e_dushasana: { hp: 1.38, atk: 1.38 },
     e_ep_carts: { hp: 2.50, atk: 2.50 },
-    e_ep_ugra: { hp: 1.34, atk: 1.34 },
-    e_gandharva: { hp: 1.32, atk: 1.32 },
-    e_gate: { hp: 0.71, atk: 0.71 },
-    e_guard: { hp: 1.15, atk: 1.15 },
-    e_hunt: { hp: 1.12, atk: 1.12 },
-    e_jaya: { hp: 1.41, atk: 1.41 },
+    e_ep_ugra: { hp: 1.50, atk: 1.50 },
+    e_gandharva: { hp: 1.25, atk: 1.25 },
+    e_gate: { hp: 0.67, atk: 0.67 },
+    e_guard: { hp: 1.38, atk: 1.38 },
+    e_hunt: { hp: 1.32, atk: 1.32 },
+    e_jaya: { hp: 1.55, atk: 1.55 },
     e_jayadratha: { hp: 1.14, atk: 1.14 },
-    e_kings: { hp: 0.64, atk: 0.64 },
-    e_panchala: { hp: 0.89, atk: 0.89 },
-    e_raid: { hp: 1.08, atk: 1.08 },
-    e_road: { hp: 1.22, atk: 1.22 },
+    e_kings: { hp: 0.66, atk: 0.66 },
+    e_panchala: { hp: 0.95, atk: 0.95 },
+    e_raid: { hp: 1.03, atk: 1.03 },
+    e_road: { hp: 1.60, atk: 1.60 },
     e_sudatta: { hp: 0.85, atk: 0.85 },
     e_ugra: { hp: 0.75, atk: 0.75 },
-    fs_d18_mace: { hp: 0.59, atk: 0.59 },
-    fs_sk_mace: { hp: 0.62, atk: 0.62 }
+    fs_d18_mace: { hp: 0.55, atk: 0.55 },
+    fs_sk_mace: { hp: 0.59, atk: 0.59 }
   };
   // The fights played in real time (PRD §18.15 "Which fights are which"); every other fight stays on the turns.
   RT.IDS = new Set(["e_ugra", "e_spar", "e_bandits", "e_kings", "e_panchala", "e_border", "e_gandharva", "e_sudatta", "e_jayadratha", "e_cattle", "e_cattle_k",
