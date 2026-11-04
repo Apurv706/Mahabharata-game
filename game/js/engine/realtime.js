@@ -585,7 +585,7 @@
   function startAttack(R, e, t) {
     const id = chooseMove(R, e, t), ab = K.ABILITIES[id];
     if (!ab) return;
-    if (MELEE.has(id) && dist(e, t) > e.rt.reach + LUNGE) { e.rt.cool = 0.2; e.rt.close = true; return; } // too far for a blow: close in first
+    if (MELEE.has(id) && dist(e, t) > hitReach(e)) { e.rt.cool = 0.2; e.rt.close = true; return; } // too far for a blow: close in first
     if (ab.target === "self" || ab.target === "ally" || ab.target === "allies") { // a brace, a war cry: at once
       ab.use(R.B, e, ab.target === "self" ? e : ab.target === "ally" ? e : living(R.B, "enemy"));
       if (id === "brace" || id === "guard") R.fx.push({ k: "brace", uid: e.uid });
@@ -608,7 +608,7 @@
     const fill = clamp((R.t - a.t0) / (a.land - a.t0), 0, 1);
     if (a.ranged) return { x0: a.lane - BODY * 0.5, x1: a.lane + BODY * 0.5, fill, lane: true, locked: a.locked, on: a.on, from: e.rt.x };
     if (a.area) return { x0: e.rt.x - quakeR(e), x1: e.rt.x + quakeR(e), fill, on: a.on, area: true, row: e.rt.lane };
-    const x1 = e.rt.x + e.rt.face * (e.rt.reach + LUNGE); // the blow carries a step forward
+    const x1 = e.rt.x + e.rt.face * hitReach(e); // the blow carries a step forward
     return { x0: Math.min(e.rt.x, x1), x1: Math.max(e.rt.x, x1), fill, on: a.on, row: e.rt.lane };
   };
   function inside(m, u) {
@@ -619,6 +619,10 @@
   // arrives (you, if you stepped into it for a friend). The screen draws it from the bow to that unit.
   const ARROW_SPEED = 1.7;
   const LUNGE = 0.45 * BODY; // field widths a second
+  // How far a foe's blow carries: his weapon's reach and a step; and never short of where he may stand to you (a short weapon
+  // against your long one: he may come no nearer than your reach, so his step in is that much longer; on a phone's scale a
+  // club could otherwise never reach a mace).
+  function hitReach(e) { const p = C.player(); return Math.max(e.rt.reach + LUNGE, p && p.rt ? standOff(p, e) + 0.3 * BODY : 0); }
   function loose(R, e, a) {
     const flight = Math.max(0.12, Math.abs(a.lane - e.rt.x) / ARROW_SPEED);
     const shot = { by: e.uid, side: e.side, id: a.id, on: a.on, lane: a.lane, from: e.rt.x, t0: R.t, arrive: R.t + flight, heavy: a.heavy, n: ++R.shotN, at0: a.t0 };
@@ -754,7 +758,7 @@
     toRow(e, u.engaged ? tr : backRow(e), dt);
     const want = u.keep && !u.close ? Math.max(u.keep * 0.8, Math.min(u.keep, 0.6)) : u.reach * 0.92;
     const spaced = living(B, "enemy").every((o) => !o.rt.atk || Math.abs(o.rt.atk.land - (R.t + (u.archer ? RT.P.track + RT.P.lock : u.windup))) >= RT.P.spacing);
-    const canAttack = u.cool <= 0 && RT.attacking(R) < 2 && spaced && onField(e) && ad <= (u.ranged && (u.archer || ad > u.reach + LUNGE) ? 0.9 : u.reach + LUNGE * 0.85 - ROWCUT * rowGap(e, t));
+    const canAttack = u.cool <= 0 && RT.attacking(R) < 2 && spaced && onField(e) && ad <= (u.ranged && (u.archer || ad > u.reach + LUNGE) ? 0.9 : hitReach(e) - LUNGE * 0.15 - ROWCUT * rowGap(e, t));
     if (canAttack) { startAttack(R, e, t); if (u.atk) u.close = false; return; }
     // Without a turn to strike, a foe waits at a distance.
     const waitAt = RT.attacking(R) >= 2 && !u.keep ? Math.max(want + BODY, 2.3 * BODY) : want;
