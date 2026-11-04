@@ -446,7 +446,7 @@
       el.querySelectorAll("[data-w]").forEach((b) => (b.onclick = () => { if (C.fleeBreaks().length) return sheet("confirm"); closeSheet(); V.queue.withdraw = true; }));
       el.querySelectorAll("[data-yes]").forEach((b) => (b.onclick = () => { closeSheet(); V.queue.withdraw = true; }));
       const rb = el.querySelector("[data-retry]"); if (rb) rb.onclick = () => { closeSheet(); retry(); };
-      const ab = el.querySelector("[data-accept]"); if (ab) ab.onclick = () => { closeSheet(); RT.accept(V.R); finishSoon(); };
+      const ab = el.querySelector("[data-accept]"); if (ab) ab.onclick = () => { closeSheet(); RT.accept(V.R); if (K.loseLived(V.encId)) return defeated(); const me = V.actors.get(C.player().uid); if (me && me.el.classList.contains("slumped")) { me.el.classList.remove("slumped"); fell(me); } finishSoon(); }; // given up: story mode lives on (the foes leave), else you fall
       const f = el.querySelector("button"); if (f && !U.calm()) f.focus({ preventScroll: true });
     }
   }
@@ -528,6 +528,8 @@
   function retry() { V.R = RT.retry(V.R); V.actors.forEach((a) => { a.el.remove(); if (a.tag) a.tag.remove(); if (a.weaponEl) a.weaponEl.remove(); }); $$(".scorch, .ax", V.el).forEach((e) => e.remove()); V.ax = null; V.actors.clear(); if (U.rigs) U.rigs.clear(); V.logAt = V.R.B.log.length; toast(K.tr("One more time.")); }
   // Beaten, but the story goes on (owner, 4 November): you slump where you stand, the foes turn and walk off the field, and a
   // line says you tried and what is written held. A tap (Enter or Space) goes on.
+  // A deadly fight lost the first time: you are down, not dead, while the second try is offered.
+  function retryLeft() { const R = V.R; return !!(R.B.enc.lethal && !R.tries && !R.noRetry); }
   function slumped(a) {
     a.el.classList.add("slumped"); a.el.classList.remove("windup", "shield-up"); a.shieldUp = false;
     if (a.tag) a.tag.classList.remove("on");
@@ -720,7 +722,7 @@
       case "perfect": toast(K.tr("Perfect roll")); break;
       case "perfectblock": { toast(K.tr("Perfect block")); const a = A(f.uid); if (a && a.u.hp > 0) { setTimeout(() => { if (V && a.u.hp > 0) { pose(a, "strain", 700, 0.45); if (a.rig) a.rig.kick({ rot: 160 * (a.u.rt ? -a.u.rt.face : 1), tx: 20 }); home(a, 900); } }, 120); } break; } // the one who struck staggers back off the shield
       case "winded": if (blocker()) toast(K.tr("Winded")); break;
-      case "fall": { const a = A(f.uid); if (a) { if (a.u.side === "player" && K.loseLived(V.encId)) slumped(a); else fell(a); } break; }
+      case "fall": { const a = A(f.uid); if (a) { if (a.u.side === "player" && (K.loseLived(V.encId) || retryLeft())) slumped(a); else fell(a); } break; }
       case "shot": { // the arrow leaves the bow (measured from the live figure) and flies down its lane
         const a = A(f.uid), s = f.shot; if (!a) break;
         const wr = V.world.getBoundingClientRect(), hand = a.svg.querySelector(".foreF") || a.svg, hr = hand.getBoundingClientRect();

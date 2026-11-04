@@ -32,25 +32,28 @@
   // The tunables (tests/balance.js measures them; PARAMS env in the tests can override).
   RT.P = {
     story: 8,          // seconds per round of a fight's story: beats, the field event, holds and "rounds"
-    // Easier (owner, 4 November: "fights are too hard now"): foes' health 6.5 -> 5.75 and blows x0.8, your health 1.15 -> 1.25, a
-    // longer rest between their blows, wider perfect-roll and perfect-block windows, and Block lets less through and tires
-    // you less. The bot then wins 86% of real-time fights (63% before; 68% on the turns; seed 11, 1500 lives).
-    hpFoe: 5.75,       // health is scaled up so a fight lasts its 30-60 s (blows are as in the turns)
-    hpFriend: 1.25,    // you act several times as often as any foe: your own health is scaled far less
-    atkFoe: 0.8,
+    // Easier (owner, 4 November: "fights are too hard now", then "still very hard"): measured with a bot that plays like a
+    // person on a phone (one button at a time with a gap between presses, a person's reaction time, some blows not read):
+    // foes keep their health (6.75, so a fight still lasts 30-60 s) but strike at half weight, your health 1.15 -> 1.35,
+    // longer rests between their blows, wider perfect-roll and perfect-block windows, and Block lets less through and tires
+    // you less. That bot wins 92% of real-time fights (63% before; 68% on the turns; seeds 11 and 37, 1500 lives each).
+    hpFoe: 6.75,       // health is scaled up so a fight lasts its 30-60 s (blows are as in the turns)
+    hpFriend: 1.35,    // you act several times as often as any foe: your own health is scaled far less
+    atkFoe: 0.5,
     hpAlly: null,      // those beside you act as often as foes: scaled as foes (null) unless set
     spacing: 0.45,
     archerGap: 0.55,   // an archer looses oftener than a swordsman swings (0.7 until archers only shot, 4 November)     // a second foe's blow never lands within this of the first (two at once, but readable)
-    gap: [1.75, 3.1],   // a foe's rest between blows, seconds
+    gap: [2.0, 3.4],   // a foe's rest between blows, seconds
     windup: 0.6,       // a plain blow's wind-up (never below 0.3)
     heavyWind: 0.95,
     track: 0.8, lock: 0.35, // an arrow: the lane follows, then locks
     breathMax: 100, rollCost: 32, rollMin: 32, breathRegen: 20,
     roll: 0.42,        // a roll's length (all of it unhurtable)
-    perfect: 0.2,     // a roll begun this close before a blow lands is perfect: the foes slow
+    perfect: 0.24,     // a roll begun this close before a blow lands is perfect: the foes slow
     retryHp: 0.8,      // a second try starts a little hurt
-    botReact: [0.2, 0.42], botMiss: [0.25, 0.55], // the bot's reading, from grace (good to poor)
-    botLead: [0.06, 0.34], // how long before a blow lands the bot raises its shield (a perfect block only when late enough)
+    botReact: [0.32, 0.55], botMiss: [0.35, 0.6], // the bot's reading, from grace (good to poor): a person's, not a machine's
+    botLead: [0, 0.24], // how long before a blow lands the bot raises its shield (a perfect block only when late enough)
+    botGap: [0.12, 0.22], // seconds between one button press and the next (a person's thumb; null: the old frame-perfect bot)
     glance: 0.15,      // shields (PRD §18.15): how often a shield-bearer facing you turns your blow, half spent
     shieldSoldiers: 0.6, shieldYou: 0.85, // your soldiers on Defend, a blow marked on them; you, a frontal blow, with a shield
     // Block (owner, 4 November): a shield-carrier (C.hasShield: the mace, the sword paths) holds up the shield where the others
@@ -58,8 +61,8 @@
     // (a heavy blow more, a shield-breaker more still); held, it drains breath, and each blow taken on it more; winded, it
     // drops and cannot be raised again until the breath is back to rollMin. Raised just before a blow lands (blockPerfect)
     // it is a perfect block: nothing gets through and the one who struck staggers.
-    blockThrough: 0.11, blockHeavy: 0.35, blockBreaker: 0.55, blockMin: 12, blockDrain: 5.5, blockHit: 10, blockHitHeavy: 18,
-    blockPerfect: 0.16, blockStag: 1.0, blockWalk: 0.4,
+    blockThrough: 0.08, blockHeavy: 0.35, blockBreaker: 0.55, blockMin: 12, blockDrain: 4.5, blockHit: 10, blockHitHeavy: 18,
+    blockPerfect: 0.2, blockStag: 1.0, blockWalk: 0.4,
     blockRows: 1.2,    // a blow from your row or the next is met; one from two rows off comes in from the side
     // The mace (owner, 4 November: heavy and slow): foes' mace blows wind up longer (an overhead smash, then a side sweep
     // that pushes you back), a little harder to keep their weight about the same.
@@ -74,7 +77,9 @@
   // Later on 4 November, with foes kneeling only at 5% (C.PLEAD) and fighting at their weapons' reach: the Gandharva
   // (1.22 -> 1.0), Jayadratha's road (e_jaya, 1.08 -> 0.81) and the road fight (e_road, 1.11 -> 0.75), on seed 11.
   RT.TUNE = {
-    cross_e_duel: { hp: 1.36, atk: 1.36 },
+    cross_e_duel: { hp: 1.15, atk: 1.15 }, // eased 4 November (1.36), still the hardest duel
+    cross_e_called: { hp: 0.85, atk: 0.85 },
+    e_ep_ugra: { hp: 0.7, atk: 0.7 },
     e_raid: { hp: 1.1, atk: 1.1 },
     e_gandharva: { hp: 0.85, atk: 0.85 }, // a hard fight, not a deadly one (canon: Duryodhana is carried off whatever you do); eased 4 November
     e_jaya: { hp: 0.81, atk: 0.81 },
@@ -991,7 +996,27 @@
 
   // ---------- The bot: approach, strike, roll out of marked blows, heal when low ----------
   // Its reading depends on grace: a quicker eye and fewer blows it misses. Every chance from K.rng.
+  // The bot plays like a person on a phone (owner, 4 November): one button at a time (no moving while striking, no strike
+  // while the shield is up), and a short gap between one press and the next (RT.P.botGap seconds; a tap again on the same
+  // button waits too). Holding a button (moving, the shield) goes on without a new press.
+  const TAPS = ["block", "roll", "herbs", "call", "astra", "spare", "skill", "strike"];
   RT.bot = function (R, opt = {}) {
+    const a = botWants(R, opt), P = RT.P;
+    if (!P.botGap) return a;
+    const h = R.hum || (R.hum = { btn: null, next: 0 });
+    const want = TAPS.find((k) => a[k]) || (a.move ? "move" + a.move : null);
+    const held = want === "block" || (want && want.startsWith("move"));
+    const gap = () => P.botGap[0] + K.rng() * (P.botGap[1] - P.botGap[0]);
+    if (want === h.btn && held) return want === "block" ? { block: true } : { move: a.move };
+    if (R.t < h.next) return h.btn === "block" && R.block ? { block: true } : {}; // between presses: the thumb is still on its way
+    h.btn = want; h.next = R.t + gap();
+    if (!want) return {};
+    if (want.startsWith("move")) return { move: a.move };
+    const out = { [want]: a[want] };
+    if (want === "roll") out.rollDir = a.rollDir;
+    return out;
+  };
+  function botWants(R, opt = {}) {
     const B = R.B, p = C.player(), S = K.S;
     if (!R.botState) {
       const g = clamp((K.attr("grace") || 0) / 6, 0, 1);
@@ -1040,7 +1065,7 @@
     if (ad <= (p.rt.reach - ROWCUT * rowGap(f, p)) * 0.92) { a.strike = !soon || p.rt.busy > 0; if (!a.strike) a.move = 0; }
     else a.move = sign(d);
     return a;
-  };
+  }
   RT.hash = function (s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(16); };
   // The fight's state as a fingerprint: same seed, same inputs → same hash.
   RT.fingerprint = function (R) {
