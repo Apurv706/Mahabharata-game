@@ -125,7 +125,6 @@
     window.addEventListener("resize", onResize); document.addEventListener("visibilitychange", onHidden);
     document.addEventListener("pointerdown", dropOutside, true);
     layout();
-    nameTagsAll(2);
   }
   // The layout page's layout(): upright or wide by the screen's shape; the stage takes what the controls leave.
   function layout() {
@@ -306,13 +305,13 @@
     panel.hidden = false;
     const ctl = $(".ctl"), ar = ctl && ctl.getBoundingClientRect(), wide = V.el.classList.contains("wide");
     panel.classList.remove("matched", "m-rt"); panel.classList.toggle("wide", wide);
-    if (ar && ar.height > 20 && (!wide || V.el.classList.contains("touch"))) {
+    if (ar && ar.height > 20 && !wide) { // a wide screen (touch or not) has no controls row under the stage: a corner
       panel.classList.add("matched", "m-rt");
-      Object.assign(panel.style, { position: "fixed", left: ar.left + "px", width: ar.width + "px", top: ar.top + "px", height: ar.height + "px", right: "auto", bottom: "auto", maxHeight: "none" });
+      Object.assign(panel.style, { position: "fixed", minHeight: "", left: ar.left + "px", width: ar.width + "px", top: ar.top + "px", height: ar.height + "px", right: "auto", bottom: "auto", maxHeight: "none" });
     } else {
       const sr = V.stage.getBoundingClientRect(), w = Math.min(360, sr.width * 0.32), br = btn.getBoundingClientRect();
       const hud = Math.max(br.bottom, ...$$(".hud-btns, .hb.aid").map((e) => e.getBoundingClientRect().bottom));
-      Object.assign(panel.style, { position: "fixed", width: w + "px", left: (br.right - w) + "px", right: "auto", top: (hud + 6) + "px", height: "auto", bottom: "auto", maxHeight: (sr.bottom - hud - 12) + "px" });
+      Object.assign(panel.style, { position: "fixed", width: w + "px", left: (br.right - w) + "px", right: "auto", top: (hud + 6) + "px", height: "auto", minHeight: "34px", bottom: "auto", maxHeight: (sr.bottom - hud - 12) + "px" });
     }
   }
   // A small diya burns down over 6 s; a tap in the panel lights it again; out, the panel closes.
@@ -391,7 +390,7 @@
   function draw() {
     const R = V.R, B = R.B, G = V.G; if (!G) return;
     const p = C.player();
-    if (R.t > 0 && Math.floor(R.t / 10) !== V.tagTick) { V.tagTick = Math.floor(R.t / 10); if (V.tagTick) nameTagsAll(2); } // every 10 s, for 2 s
+    if (Math.floor(R.t / 10) !== V.tagTick && V.actors.size) { V.tagTick = Math.floor(R.t / 10); nameTagsAll(2); } // at the start and every 10 s, for 2 s
     for (const u of B.units) {
       if (!u.rt) continue;
       const a = actorFor(u);
