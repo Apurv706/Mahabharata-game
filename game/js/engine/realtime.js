@@ -324,7 +324,7 @@
   function landBlow(R) {
     const B = R.B, p = C.player(), b = p.rt.blow;
     p.rt.blow = null;
-    const t = foesNear(R, p.rt.x, p.rt.face, p.rt.reach)[0];
+    const t = foesNear(R, p.rt.x, p.rt.face, p.rt.reach + LUNGE)[0]; // your blow carries a step forward, as a foe's does
     R.stats.blows++;
     if (!t) return;
     let m = b.c.m;
