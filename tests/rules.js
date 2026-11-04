@@ -1272,6 +1272,31 @@ require(G + "content/war_fights.js");
     C.settle("win"); C.end();
     RT.force = false; K.seed(31); life().flags.push("role_command"); const B2 = C.start("e_day16");
     ok(!B2.place && !C.setPlace("front"), "with the developer switch off, no place in the line: the war day is as before"); C.settle("win"); C.end(); RT.force = true; }
+  // Shields (PRD §18.15): a shield wall halves every blow on your side for the round and raises their shields; your
+  // company raises its shields against a blow marked on them; the player carries one only where the path suits it.
+  { K.seed(33); life({ path: "archer" }).flags.push("role_command"); C.stepNext = true;
+    const B = C.start("e_day16"); C.stepNext = false; const p = C.player(), co = B.units.find((u) => u.side === "ally" && u.plural), e = B.units.find((u) => u.side === "enemy");
+    ok(B.shields && p.abilities.includes("wall") && p.abilities.includes("rally_line"), "a war day with your company: Shield wall and Rally among the moves");
+    const blow = (t, setup) => { const hp = t.hp; K.seed(77); if (setup) setup(); B.hit(e, t, 1); const d = hp - t.hp; t.hp = hp; return d; };
+    const plain = blow(p), plainCo = blow(co);
+    C.act("wall", null);
+    const walled = blow(p);
+    ok(B.units.filter((u) => u.side !== "enemy" && u.hp > 0).every((u) => u.status.wall) && B.lastShield && B.lastShield.kind === "wall", "Shield wall: everyone on your side behind raised shields for the round");
+    ok(walled < plain && Math.abs(walled - Math.max(1, Math.round((plain + p.def) * 0.5 - p.def))) <= 1, "Shield wall halves the blow (" + plain + " → " + walled + ")");
+    while (C.foesPending()) C.resolve("miss");
+    ok(!p.status.wall, "the shield wall lasts the round only");
+    const raised = blow(co, () => { B.plan = { by: e.uid, uid: co.uid }; }); B.plan = null;
+    ok(raised < plainCo && B.lastShield && B.lastShield.kind === "raised", "your company raises its shields against a blow marked on them (" + plainCo + " → " + raised + ")");
+    C.settle("win"); C.end();
+    ok(C.hasShield({ path: "charioteer" }) && C.hasShield({ path: "strategist" }) && !C.hasShield({ path: "archer" }) && !C.hasShield({ path: "mace" }) && !C.hasShield({ path: "healer" }), "the player carries a shield only on a sword path (charioteer, strategist), not an archer, a mace fighter or a short blade");
+    K.seed(34); life({ path: "charioteer" }); const R1 = RT.begin(C.start("e_guard")); const s1 = R1.shield; C.settle("win"); C.end();
+    K.seed(34); life({ path: "archer" }); const R2 = RT.begin(C.start("e_guard")); const s2 = R2.shield; C.settle("win"); C.end();
+    ok(s1 && !s2, "real time: the charioteer fights with a shield, the archer without");
+    K.seed(35); life(); const B3 = C.start("e_last_stand"); const present = () => B3.units.filter((u) => u.side === "enemy" && !u.away && u.hp > 0);
+    ok(B3.packs === 2 && present().length === 2 && !present().some((u) => u.hero && B3.units.some((x) => x.side === "enemy" && !x.hero && x.away)), "four foes come in two packs, the named last (" + present().map((u) => u.name).join(", ") + ")");
+    present().forEach((u) => { u.hp = 0; }); C.act("strike", null);
+    ok(present().length === 2 && B3.packNow === 1 && !B3.over, "a pack beaten: the next comes on, the fight goes on");
+    C.settle("win"); C.end(); }
   // Friends follow their orders: all-out fights, hold back stays behind you and does not strike.
   { const run = (order) => { K.seed(41); life(); const B = C.start("e_kings"); const R = RT.begin(B); R.orders.friend = order; const bh = B.units.find((u) => u.side === "ally");
       let dealt = 0; const hit = B.hit; B.hit = function (u, t, m, o) { const d = hit.call(B, u, t, m, o); if (u === bh) dealt += d; return d; };

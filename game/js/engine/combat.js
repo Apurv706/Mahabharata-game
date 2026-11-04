@@ -4,7 +4,7 @@
   "use strict";
   const C = (K.Combat = {});
   let B = null;
-  const TIMED = ["guard", "evade", "exposed", "weakened", "inspired", "bleed", "taunt", "cursed", "burn", "asleep", "bound"];
+  const TIMED = ["guard", "evade", "exposed", "weakened", "inspired", "bleed", "taunt", "cursed", "burn", "asleep", "bound", "wall"];
   // Out of the fight for now: stunned, asleep (Sammohana) or bound (Nagapasha).
   const held = (u) => !!(u.status.stun || u.status.asleep || u.status.bound);
   // The log stores events, not sentences: { key, u: { role: unit }, v: { name: value }, crit }.
@@ -73,6 +73,7 @@
   // mode takes a quarter off. Tuned so an even fight is won about two times in three by a player who
   // guards and defends in time, and a hard one about two times in five (tests/balance.js).
   C.TOUGH = { hp: 2.2, atk: 1.9 };
+  C.GLANCE = 0.15; // how often a shield-bearer turns your blow aside, half spent (behind the developer switch)
   C.HARD = { hp: 1.5, atk: 1.35 }; // the hard fights are already built big (Ashwatthama, the lone chariot), so a smaller step
   function makeUnit(def, side, i, enc) {
     const m = side === "enemy" ? (enc && enc.hard ? C.HARD : C.TOUGH) : { hp: 1, atk: 1 };
@@ -80,11 +81,29 @@
     return {
       uid: side[0] + i, name: K.fmt(def.name), src: def.name, side, hp, maxHp: hp, atk: Math.round(def.atk * m.atk * 10) / 10, def: def.def || 1,
       abilities: def.abilities || ["strike"], cds: {}, status: {}, armed: def.armed !== false,
-      vowTag: def.vowTag || null, person: def.person || null, note: def.note || null, plural: !!def.plural, hero: !!def.hero, still: !!def.still
+      vowTag: def.vowTag || null, person: def.person || null, note: def.note || null, plural: !!def.plural, hero: !!def.hero, still: !!def.still,
+      shield: def.shield != null ? !!def.shield : !def.hero && !def.person && SHIELDED.test(String(def.name)) && !/archer|bow/i.test(String(def.name))
     };
   }
+  // Who carries a shield (PRD §18.15): the line's foot soldiers, guards and spearmen, and your own company. Archers,
+  // chariot-warriors, riders and the named do not. Shields count only behind the developer switch (B.shields).
+  const SHIELDED = /soldier|company|spearm|guard\b|veteran|captain|foot\b/i;
+  // The player carries a small shield where the path suits it: a sword (the driver on foot, the commander); not
+  // an archer's bow, a mace, or a short blade.
+  C.SHIELD_PATHS = { charioteer: true, strategist: true };
+  C.hasShield = (S = K.S) => !!(S && C.SHIELD_PATHS[S.path]);
+  const isCompany = (u) => !!(u && u.side === "ally" && u.plural && !u.person && !u.called);
 
-  const living = (side) => B.units.filter((u) => u.hp > 0 && (side === "friends" ? u.side !== "enemy" : u.side === side));
+  const living = (side) => B.units.filter((u) => u.hp > 0 && !u.away && (side === "friends" ? u.side !== "enemy" : u.side === side));
+  // The next pack comes on (C.packsWanted): at once when the field is clear, else as a round ends with one foe left.
+  function nextPack() {
+    if (!B.packs || B.packNow >= B.packs - 1) return false;
+    B.packNow++;
+    const come = B.units.filter((u) => u.side === "enemy" && u.pack === B.packNow);
+    come.forEach((u) => { delete u.away; });
+    api.tell("Another pack comes at the line.");
+    return come.length > 0;
+  }
   const foesOf = (u) => living(u.side === "enemy" ? "friends" : "enemy");
   const friendsOf = (u) => living(u.side === "enemy" ? "enemy" : "friends");
   C.player = () => B && B.units.find((u) => u.side === "player");
@@ -118,6 +137,17 @@
       if (def === "block") { dmg *= 0.45; B.lastDef = "block"; }
       if (def === "miss") { dmg *= o.heavy ? 1.15 : 1; B.lastDef = "miss"; }
       if (isP(u) && B.place) dmg *= PLACES[B.place].dmg(t); // your place in the line (C.setPlace)
+      // Your company's standing orders (C.setOrder): pressing hits harder and leaves them open; guarding you, softer.
+      if (B.order && isCompany(u)) dmg *= B.order === "press" ? 1.3 : B.order === "guardme" ? 0.85 : 1;
+      if (B.order && t.side !== "enemy" && u.side === "enemy") dmg *= B.order === "press" && isCompany(t) ? 1.15 : B.order === "fallback" ? 0.75 : 1;
+      // Shields (behind the developer switch): a shield wall halves every blow on your side this round; your company
+      // raises its shields against a blow marked on them (as a guard does); a shield-bearer turns some of your blows.
+      B.lastShield = null;
+      if (B.shields && u.side === "enemy" && t.side !== "enemy" && (t.status.wall || (isCompany(t) && t.shield && B.plan && B.plan.uid === t.uid && B.plan.by === u.uid))) {
+        dmg *= o.breaks ? 0.85 : 0.5; B.lastShield = { on: t.uid, kind: t.status.wall ? "wall" : "raised" };
+      } else if (B.shields && isP(u) && t.side === "enemy" && t.shield && !t.status.guard && K.rng() < C.GLANCE) {
+        dmg *= 0.5; B.lastShield = { on: t.uid, kind: "glance" }; api.tell("{t} catches your blow on a shield.", { t });
+      }
       if (u.status.inspired) dmg *= 1.3;
       if (u.status.weakened) dmg *= 0.7;
       if (u.status.cursed) dmg *= 0.5;
@@ -173,7 +203,19 @@
       B.kind = kind; B.rule = FK && FK.turn ? FK : null; B.mode = FK && FK.live && C.liveMode === kind ? kind : null;
       if (B.rule && B.rule.start) B.rule.start(B); }
     B.habit = []; // what you have done lately: enemies learn from it
-    if (C.placesWanted && C.placesWanted(enc, B)) B.place = "middle"; // a war day with your company: your place in the line
+    if (C.placesWanted && C.placesWanted(enc, B)) { // a war day with your company: your place in the line, standing orders, Shield wall and Rally
+      B.place = "middle"; B.order = "line";
+      const p = B.units[0]; p.abilities.push("wall", "rally_line");
+    }
+    B.shields = !!(C.shieldsWanted && C.shieldsWanted(enc, B));
+    // Packs (behind the developer switch): three or more foes come two at a time, the named last unless the story
+    // says otherwise (enc.packs: lists of enemy indices); the next pack comes on as the field thins.
+    if (C.packsWanted && C.packsWanted(enc, B)) {
+      const foes = B.units.filter((u) => u.side === "enemy");
+      const order = enc.packs ? enc.packs : (() => { const idx = foes.map((u, i) => i).sort((a, b) => (foes[a].hero ? 1 : 0) - (foes[b].hero ? 1 : 0) || a - b), out = []; for (let i = 0; i < idx.length; i += 2) out.push(idx.slice(i, i + 2)); return out; })();
+      order.forEach((list, k) => list.forEach((i) => { const u = foes[i]; if (u) { u.pack = k; if (k) u.away = true; } }));
+      B.packs = order.length; B.packNow = 0;
+    }
     if (S.boons.includes("healing_hands") && (S.items.herbs || 0) < 2) S.items.herbs = 2;
     B.pulled = {};
     // The screen asks for step mode (each blow aimed at you met in time); with timed moments off the
@@ -211,7 +253,7 @@
       const foes = foesOf(u);
       const taunt = foes.find((f) => f.status.taunt);
       if (taunt) return taunt;
-      if (u.side === "enemy") { const p = foes.find((f) => f.side === "player"); return p && K.rng() < (B.place ? PLACES[B.place].odds : 0.65) ? p : K.pick(foes); }
+      if (u.side === "enemy") { const p = foes.find((f) => f.side === "player"); return p && K.rng() < (B.place ? PLACES[B.place].odds : 0.65) * (B.order === "guardme" && foes.some(isCompany) ? 0.55 : 1) ? p : K.pick(foes); }
       // Those beside you go for the enemy you marked (a leader's order), while it stands; else the weakest.
       const marked = B.mark && foes.find((f) => f.uid === B.mark);
       if (marked) return marked;
@@ -282,8 +324,10 @@
     const plan = it && !u.cds[it.id] ? it : decide(u);
     const ab = K.ABILITIES[plan.id];
     let uid = plan.uid;
+    B.plan = it && plan === it ? { by: u.uid, uid: it.uid } : null; // a blow marked a round ahead (shields go up for it)
     if (ab.target === "enemy") { const taunt = foesOf(u).find((f) => f.status.taunt); if (taunt) uid = taunt.uid; } // a war cry still draws the blow
     use(u, plan.id, uid);
+    B.plan = null;
   }
   // The enemy's next move, for its card: { ab, who } where who is "you", a name, "all" or null.
   C.intent = function (u) {
@@ -322,7 +366,7 @@
     amulet(p);
     if (p.hp <= 0) return finish("lose");
     { const r = B.rule && B.rule.over ? B.rule.over(B) : null; if (r) return finish(r); } // a fight of another kind ends on its own terms
-    if (!living("enemy").length) return finish("win");
+    if (!living("enemy").length && !nextPack()) return finish("win");
     if (B.enc.rounds && B.round > B.enc.rounds) { api.say(B.enc.roundsText || "You held long enough."); return finish("win"); }
     // A holding fight is won by standing until the end, not by killing.
     if (B.enc.hold && B.round > B.enc.hold) { api.say(B.enc.holdText || "You held until the end."); return finish("win"); }
@@ -358,6 +402,7 @@
       for (const k of Object.keys(u.cds)) if (u.cds[k] > 0) u.cds[k]--;
     }
     B.round++;
+    if (B.packs && living("enemy").length <= 1) nextPack();
     if (B.enc.hold && B.round <= B.enc.hold) api.tell("Hold: {n} rounds left.", null, { n: B.enc.hold - B.round + 1 });
     // Friends who came at your call are pulled away by the fighting after a while.
     for (const u of B.units.filter((x) => x.leave && B.round >= x.leave && x.hp > 0)) { api.tell("The press of the fighting carries {t} away from you.", { t: u }); B.units = B.units.filter((x) => x !== u); }
@@ -406,7 +451,7 @@
     }
   }
   function others() {
-    for (const a of living("ally")) { if (B.over) return; aiTurn(a); if (over()) return; }
+    for (const a of living("ally")) { if (B.over) return; if (B.order === "fallback" && isCompany(a)) { delete a.intent; continue; } aiTurn(a); if (over()) return; }
     if (B.stepMode) { B.queue = acting().map((e) => e.uid); if (!B.queue.length) roundEnd(); return; }
     for (const e of acting()) { if (B.over) return; enemyTurn(e); if (over()) return; }
     roundEnd();
@@ -461,6 +506,18 @@
     if (!over()) others(); // later: it costs the round
     K.emit("combat", B);
     return true;
+  };
+
+  // Your company's standing orders (PRD §18.15; with your place in the line): hold the line, guard me, press, fall
+  // back. Given at any time, without spending the turn. Hold the line is the fight as before.
+  C.ORDERS = {
+    line: "Your company holds the line.", guardme: "Your company closes round you, shields towards the blows.",
+    press: "Your company presses forward.", fallback: "Your company falls back a step and keeps its shields up."
+  };
+  C.order = () => (B && B.order) || null;
+  C.setOrder = function (o) {
+    if (!B || B.over || !B.order || !C.ORDERS[o] || B.order === o) return false;
+    B.order = o; api.tell(C.ORDERS[o]); K.emit("combat", B); return true;
   };
 
   // ---------- A leader's mark ----------

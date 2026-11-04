@@ -90,6 +90,13 @@
     verse: { name: "Mocking verse", target: "enemy", cd: 2, desc: "The foe hits 30% softer for 2 turns.", use: (B, u, t) => B.status(t, "weakened", 2, "falters at the verse") },
     hymn: { name: "Steadying hymn", target: "allies", cd: 3, desc: "Every ally recovers 10% health.", use: (B, u, ts) => ts.forEach((t) => B.heal(u, t, pct(t, 0.1))) },
 
+    // The war day beside your company (PRD §18.15, behind the developer switch): Shield wall in place of Guard, and Rally.
+    // A shield wall lasts the round: every blow on your side is halved (a shield-breaker less so), and the line stays shut.
+    wall: { name: "Shield wall", target: "allies", cd: 2, needsAlly: true, desc: "Your soldiers close up behind their shields: every blow this round is halved.",
+      use: (B, u, ts) => { ts.forEach((t) => { t.status.wall = Math.max(t.status.wall || 0, 1); }); B.tell("Your soldiers step together and raise their shields, rim over rim."); } },
+    rally_line: { name: "Rally", target: "allies", cd: 3, needsAlly: true, desc: "A shout down the line: a little health back, and they hit harder.",
+      use: (B, u, ts) => { ts.forEach((t) => { B.heal(u, t, pct(t, 0.08)); B.status(t, "inspired", 2); }); } },
+
     // Enemy techniques
     heavy: { name: "Heavy blow", target: "enemy", cd: 3, desc: "", use: (B, u, t) => B.hit(u, t, 1.6, { heavy: true, verb: "A heavy blow hits {t} for {n}." }) },
     breaker: { name: "Shield-breaker", target: "enemy", cd: 3, desc: "", use: (B, u, t) => B.hit(u, t, 1.25, { heavy: true, breaks: true, verb: "A shield-breaking blow hits {t} for {n}." }) },
@@ -101,7 +108,7 @@
   K.STATUS_TEXT = {
     guard: "Guarding", evade: "Evading", stun: "Stunned", exposed: "Exposed", weakened: "Weakened",
     inspired: "Inspired", bleed: "Bleeding", crit: "Ready to strike", taunt: "Drawing fire", cursed: "Cursed",
-    burn: "Burning", asleep: "Asleep", bound: "Bound"
+    burn: "Burning", asleep: "Asleep", bound: "Bound", wall: "Shield wall"
   };
   // Speaking a named mantra: the condition's curse, the misuse curse, the hero's counter-weapon.
   // Returns false when the weapon did nothing more (the clash, or the failed mantra).

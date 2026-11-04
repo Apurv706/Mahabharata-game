@@ -47,6 +47,8 @@
     perfect: 0.16,     // a roll begun this close before a blow lands is perfect: the foes slow
     retryHp: 0.8,      // a second try starts a little hurt
     botReact: [0.2, 0.42], botMiss: [0.25, 0.55], // the bot's reading, from grace (good to poor)
+    glance: 0.15,      // shields (PRD §18.15): how often a shield-bearer facing you turns your blow, half spent
+    shieldSoldiers: 0.6, shieldYou: 0.85, // your soldiers on Defend, a blow marked on them; you, a frontal blow, with a shield
     cap: 240           // a fight that has run this long is stopped (it never should)
   };
   // Per-fight tuning: RT.TUNE[encId] = { hp, atk } multiplies that fight's foes' health and blows. Only the four
@@ -82,8 +84,13 @@
 
   // A turn-based war day fought beside your company: you choose your place in the line (K.Combat.setPlace).
   // Behind the developer switch with the rest of §18.15.
-  C.placesWanted = (enc, B) => RT.dev() && !RT.isRealtime(enc) && !!enc.lethal && !enc.dream && !(K.val(enc.kind) && K.FIGHT_KINDS && K.FIGHT_KINDS[K.val(enc.kind)]) &&
-    B.units.some((u) => u.side === "ally" && u.plural && !u.person);
+  // (Holding fights too: any turn-based fight with your company beside you, not only the deadly war days.)
+  const plainTurns = (enc) => RT.dev() && !RT.isRealtime(enc) && !enc.dream && !(K.val(enc.kind) && K.FIGHT_KINDS && K.FIGHT_KINDS[K.val(enc.kind)]);
+  C.placesWanted = (enc, B) => plainTurns(enc) && B.units.some((u) => u.side === "ally" && u.plural && !u.person);
+  // Shields on the turns (C.SHIELD_PATHS, the shield wall, your company's raised shields, a foe's shield turning a blow)
+  // and packs (three or more foes come two at a time): the new war-day screen's rules, behind the same switch.
+  C.shieldsWanted = (enc) => plainTurns(enc);
+  C.packsWanted = (enc, B) => plainTurns(enc) && B.units.filter((u) => u.side === "enemy").length >= 3;
 
   // The skill each path brings to a live fight (from its turn-based moves).
   RT.SKILL = { archer: "aimed", mace: "quake", charioteer: "ridedown", strategist: "command", healer: "salve", spy: "vanish", bard: "song" };
@@ -159,6 +166,7 @@
     place(R);
     const p = C.player();
     if (opts.hp) p.hp = Math.max(1, Math.round(p.maxHp * opts.hp));
+    R.shield = !!(C.hasShield && C.hasShield());
     const id = RT.SKILL[K.S.path];
     R.skill = id && p.abilities.includes(id) ? id : null;
     // Wrap the fight's status call so every effect that lasts rounds lasts about 4 s a round here.
@@ -291,6 +299,8 @@
     if (!t) return;
     let m = b.c.m;
     if (R.double) { m *= 2; R.double = false; }
+    // A shield-bearer facing you turns some of your blows on his shield: half spent, a spark (PRD §18.15).
+    if (t.shield && t.rt.face === -p.rt.face && K.rng() < RT.P.glance) { m *= 0.5; R.fx.push({ k: "spark", uid: t.uid, glance: true }); }
     const d = B.hit(p, t, m);
     R.stats.hits++;
     hitFx(R, t, d, b.c.heavy);
@@ -533,9 +543,17 @@
     if (a.shot) R.fx.push({ k: "arrive", shot: a.shot, uid: t ? t.uid : null });
     if (!t) { R.fx.push({ k: "whiff", uid: e.uid }); return; }
     const before = t.hp;
-    // One arrow at one unit hits as a plain blow (on the turns an arrow storm falls on everyone, lighter).
-    if (a.id === "arrows") B.hit(e, t, 1, { verb: "Arrows rain on {t} for {n}." });
-    else ab.use(B, e, ab.target === "enemies" ? [t] : t);
+    // Shields (PRD §18.15): your soldiers on Defend raise theirs against a blow marked on them; you, if you carry one,
+    // take a frontal blow a little lighter. A spark either way.
+    let sh = 1;
+    if (t !== p && isSoldiers(t) && R.orders.soldiers === "defend" && a.on === t.uid) sh = RT.P.shieldSoldiers;
+    else if (t === p && R.shield && sign(e.rt.x - p.rt.x) === p.rt.face) sh = RT.P.shieldYou;
+    if (sh < 1) { R.fx.push({ k: "spark", uid: t.uid }); const atk = e.atk; e.atk = Math.round(atk * sh * 10) / 10; try { doHit(); } finally { e.atk = atk; } }
+    else doHit();
+    function doHit() {
+      if (a.id === "arrows") B.hit(e, t, 1, { verb: "Arrows rain on {t} for {n}." });
+      else ab.use(B, e, ab.target === "enemies" ? [t] : t);
+    }
     hitFx(R, t, before - t.hp, a.heavy);
     if (t === p && before > t.hp) { R.kneel = 0; R.salveStop = true; if (a.heavy) { p.rt.busy = Math.max(p.rt.busy, 0.25); p.rt.blow = null; } }
   }
