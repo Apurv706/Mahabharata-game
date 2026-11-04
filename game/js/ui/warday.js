@@ -542,14 +542,15 @@
     // A blow: wind-up, a step in, contact. Across the gap the swing ends with the weapon's tip on the one struck (on his
     // shield, or crossing his weapon, when he blocks), measured on the live figures (U.aimBlow / U.blowImpact, puppet-anim.js).
     // A mace (owner, 4 November: heavy and slow): an overhead smash and a side sweep in turn (U.MACE_ARCS), each wound up longer.
-    const arc = a.spec && a.spec.item === "mace" && U.MACE_ARCS ? ((a.arcN = (a.arcN || 0) + 1) % 2 ? "smash" : "sweep") : null, A = arc ? U.MACE_ARCS[arc] : null, slow = A ? 160 : 0;
-    pose(a, A ? A.up : "windup", A ? 520 : 600, 0.7);
+    // Every weapon its own blow (U.arcFor: a sword cuts and thrusts, a spear thrusts, a dagger stabs, a club comes down overhead).
+    const item = a.spec && a.spec.item, arc = U.arcFor && item ? U.arcFor(item, a.arcN = (a.arcN || 0) + 1) : null, A = arc ? U.ARCS[arc] : null, slow = arc && U.MACE_ARCS[arc] && item === "mace" ? 160 : 0;
+    pose(a, A ? A.up : "windup", slow ? 520 : 600, 0.7);
     const h0 = hits.find((h) => !(h.def === "dodge" || (h.n === 0 && !h.sh))), t0 = h0 && firstFig(h0.on);
     const guard = h0 && t0 ? (h0.sh && t0.svg.querySelector(".it-s") ? "shield" : h0.def === "block" || h0.def === "counter" ? (t0.svg.querySelector(".it-s") ? "shield" : "weapon") : null) : null;
     let aim = null;
     now(() => {
       if (guard && t0) pose(t0, "guard", 1400, 0.55);
-      aim = a.rig && t0 && !t0.dead ? U.aimBlow(a.rig, t0.svg, { guard, k: A ? 1600 : 1900, z: 0.5, maxLunge: 1e4, pose: A ? A.end : undefined, at: A ? A.at : undefined }) : null; // across the gap: the step in is as long as it must be
+      aim = a.rig && t0 && !t0.dead ? U.aimBlow(a.rig, t0.svg, { guard, k: slow ? 1600 : 1900, z: 0.5, maxLunge: 1e4, pose: A ? A.end : undefined, at: A ? A.at : undefined, under: A && A.under != null ? A.under : undefined, straight: A && A.straight }) : null; // across the gap: the step in is as long as it must be
       if (!aim) { pose(a, A ? A.end : "strike", 1900, 0.5); a.dx = (enemy ? -1 : 1) * 0.035; pos(a); }
     }, 140 + slow);
     now(() => {

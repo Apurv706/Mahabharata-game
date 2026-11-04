@@ -41,7 +41,7 @@
     block: { rot: -6, armF: -112, foreF: -70, item: 180 },
     // The shield held up (Block, owner 4 November): the back arm brings the shield round in front of the chest, the weapon
     // held back and low behind it, the knees bent.
-    shieldUp: { rot: -4, ty: 5, head: 6, armB: -78, foreB: -38, armF: 24, foreF: -64, legF: -24, shinF: 14, legB: 22, shinB: 14, item: 180 },
+    shieldUp: { rot: -4, ty: 5, head: 6, armB: -50, foreB: -58, armF: 24, foreF: -64, legF: -24, shinF: 14, legB: 22, shinB: 14, item: 180 },
     // The mace's two blows (owner, 4 November: heavy and slow): the overhead smash wound up over the shoulder, the weight
     // behind the head, and brought down onto the head and shoulders; the side sweep wound back low behind the hip and
     // swung through at the ribs.
@@ -49,6 +49,11 @@
     smash: { rot: 20, tx: 11, ty: 4, head: 10, armF: -56, foreF: -4, armB: 16, foreB: -10, legF: -36, shinF: 18, legB: 26, shinB: 6, item: 180 },
     sweepBack: { rot: -18, tx: -8, ty: 3, head: -4, armF: 95, foreF: -10, armB: -50, foreB: -40, legF: -24, shinF: 8, legB: 24, shinB: 12, item: 100 },
     sweep: { rot: 12, tx: 12, ty: 2, head: 4, armF: -84, foreF: -2, armB: 30, foreB: -12, legF: -32, shinF: 14, legB: 28, shinB: 6, item: 180 },
+    // A thrust (a spear, a sword's third blow) and a stab (a dagger): drawn back at the hip, then driven straight in, the
+    // weight on the front foot.
+    thrustBack: { rot: -10, tx: -7, ty: 2, head: -4, armF: 62, foreF: -62, armB: -40, foreB: -40, legF: -20, shinF: 6, legB: 22, shinB: 12, item: 90 },
+    stabBack: { rot: -6, tx: -4, ty: 3, head: -2, armF: 50, foreF: -70, armB: -50, foreB: -50, legF: -18, shinF: 8, legB: 18, shinB: 10, item: 90 },
+    thrust: { rot: 14, tx: 13, ty: 2, head: 6, armF: -80, foreF: -6, armB: 24, foreB: -14, legF: -36, shinF: 18, legB: 30, shinB: 6, item: 90 },
     kneel: { ty: 26, head: 14, legF: -84, shinF: 96, legB: 8, shinB: 98, armF: -36, foreF: -84, armB: -30, foreB: -70 },
     strain: { rot: -14, head: -10, armF: -30, foreF: -40, armB: 30, foreB: -20, legB: 28, shinB: 10 },
     slack: { armF: 70, foreF: 30, armB: 40, foreB: 20, head: 22, legF: -14, shinF: 18, legB: 8, shinB: 10, item: 120 },
@@ -359,12 +364,19 @@
     const dy = P.y - S.y, need = (L) => P.x - S.x - Math.sqrt(Math.max(0, L * L - dy * dy));
     let d = Math.hypot(P.x - S.x, dy), dx = 0;
     const maxL = o.maxLunge == null ? (La + Lw) * 1.1 : o.maxLunge, back = (La + Lw) * 0.12;
-    if (d > Lmax) dx = Math.min(maxL, need(Lmax)); // too far: a lunge
+    // A thrust: the blade level, driven straight in at the target; the fist a blade's length short of it, the step (or the
+    // lean back) as long as it must be.
+    const Fx = P.x - Lw, dyF = Math.max(-La * 0.95, Math.min(La * 0.95, P.y - S.y));
+    // (a target far above or below, or too near for the blade's length: the point turned to it instead)
+    const lx = Fx - Math.sqrt(Math.max(0, La * La - dyF * dyF)) - S.x, level = o.straight && Lw && Math.abs(P.y - S.y) <= La * 0.95 && lx >= -back * 3 && lx <= maxL;
+    if (level) dx = lx;
+    else if (d > Lmax) dx = Math.min(maxL, need(Lmax)); // too far: a lunge
     else if (d < Lmin) dx = Math.max(-back, need(Lmin)); // too near: a lean back
     const Sx = S.x + dx; d = Math.max(1e-3, Math.hypot(P.x - Sx, dy));
     const phi = Math.atan2(dy, P.x - Sx);
     let al = phi, be = 0;
-    if (Lw && d < La + Lw) {
+    if (level) { al = Math.atan2(dyF, Fx - Sx); be = -al; }
+    else if (Lw && d < La + Lw) {
       const c = (x) => Math.max(-1, Math.min(1, x));
       const sig = Math.acos(c((La * La + d * d - Lw * Lw) / (2 * La * d))), gam = Math.acos(c((La * La + Lw * Lw - d * d) / (2 * La * Lw)));
       // A spear or a dagger thrusts up from below (the arm under the line, the point turned up); a blade, a mace or a club comes down from above.
@@ -405,6 +417,21 @@
   // The mace's two blows, for every screen that draws one (ui/realtime.js, ui/warday.js): the wind-up pose, the pose the
   // blow ends in (aimed by U.aimBlow), and where on the body it falls.
   U.MACE_ARCS = { smash: { up: "smashUp", end: "smash", at: "high" }, sweep: { up: "sweepBack", end: "sweep", at: "mid" } };
+  // Every weapon's blows (owner, 4 November): a sword cuts down from a raised wind-up twice and thrusts the third time; a
+  // spear thrusts; a dagger stabs; a club, a hammer or a staff comes down overhead; a fist punches. U.arcFor(weapon, n)
+  // names the arc of a weapon's n-th blow (the mace's own two come from the engine).
+  U.ARCS = Object.assign({ cut: { up: "windup", end: "strike" }, thrust: { up: "thrustBack", end: "thrust", at: "mid", under: true, straight: true },
+    stab: { up: "stabBack", end: "thrust", at: "mid", under: true, straight: true }, punch: { up: "stabBack", end: "thrust", at: "mid", straight: true } }, U.MACE_ARCS);
+  U.arcFor = function (w, n) {
+    n = n || 0;
+    if (w === "sword" || w === "woodsword") return n % 3 === 2 ? "thrust" : "cut";
+    if (w === "spear") return "thrust";
+    if (w === "dagger") return "stab";
+    if (w === "mace") return n % 2 ? "sweep" : "smash";
+    if (w === "club" || w === "hammer" || w === "staff") return "smash";
+    if (w === "fist") return "punch";
+    return "cut";
+  };
   U.rigs = { clear() { live.clear(); }, size: () => live.size, thaw() { frozen = 0; } };
   U.RIG_POSES = POSES;
   U.wait = (ms) => new Promise((r) => setTimeout(r, ms));

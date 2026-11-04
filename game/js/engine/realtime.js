@@ -353,7 +353,8 @@
   // Your blows: three quick ones, the third heavy and knocking back; with the mace (owner, 4 November: heavy and slow) two
   // big ones, each with a long wind-up: an overhead smash (over the shoulder, down onto the head and shoulders; it
   // staggers) and a side sweep that knocks back. About the same weight a second either way (2.29 in 1.30 s; 2.3 in 1.36 s).
-  const COMBO = [{ m: 0.62, land: 0.13, len: 0.34 }, { m: 0.62, land: 0.13, len: 0.34 }, { m: 1.05, land: 0.2, len: 0.62, heavy: true, knock: 0.4 }];
+  // (A blade's blows land a little after the press, so their wind-up reads: 0.22 s, the thrust 0.3 s; the same weight a second.)
+  const COMBO = [{ m: 0.62, land: 0.22, len: 0.34 }, { m: 0.62, land: 0.22, len: 0.34 }, { m: 1.05, land: 0.3, len: 0.62, heavy: true, knock: 0.4 }];
   const MACE_COMBO = [{ m: 1.3, land: 0.4, len: 0.72, heavy: true, arc: "smash", stag: 0.5 }, { m: 1.0, land: 0.34, len: 0.64, heavy: true, arc: "sweep", knock: 0.6 }];
   // An archer's Strike looses arrows from the bow: quick, quick, and a heavier third that knocks back.
   const BOW_COMBO = [{ m: 0.62, land: 0.16, len: 0.36, shot: true }, { m: 0.62, land: 0.16, len: 0.36, shot: true }, { m: 1.05, land: 0.26, len: 0.6, heavy: true, knock: 0.4, shot: true }];
@@ -760,7 +761,7 @@
     // Foes keep apart from each other in a row, so each stands clear on the ground.
     if (!u.engaged) x = keepApart(R, e, x, dt, living(B, "enemy").filter((o) => !o.rt.atk && !o.rt.engaged));
     // A foe in your row does not walk through you; nor, coming at you from another row, nearer than where the weapons reach.
-    if (rowGap(e, p) < 0.5 || t === p) {
+    { // (whomever he means to strike: a foe never stands stacked on you from another row either)
       const pg = Math.max(standOff(e, p), standOff(p, e)) - (rowGap(e, p) < 0.5 ? 0 : ROWCUT * rowGap(e, p)); // nor into your weapon's reach
       if (u.x >= p.rt.x && x < p.rt.x + pg) x = Math.max(x, Math.min(u.x + u.speed * 0.6 * dt, p.rt.x + pg)); // (inside it, from another row: he steps back out)
       if (u.x < p.rt.x && x > p.rt.x - pg) x = Math.min(x, Math.max(u.x - u.speed * 0.6 * dt, p.rt.x - pg));

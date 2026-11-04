@@ -251,12 +251,12 @@
   function swing(a, t, guard, arc) {
     if (!a || a.u.hp <= 0) return;
     const now = performance.now(), again = a.swing && now - a.swing.t0 < IMPACT + 60; // the blow already in the air, re-aimed at whom it strikes
-    const A = arc && U.MACE_ARCS ? U.MACE_ARCS[arc] : null;
+    const A = arc && U.ARCS ? U.ARCS[arc] : null;
     armFor(a);
     a.swing = { t0: again ? a.swing.t0 : now, on: t ? t.u.uid : null, aim: null, arc };
-    if (a.rig && t && t.u.hp > 0 && t !== a) a.swing.aim = U.aimBlow(a.rig, t.svg, { guard, k: A ? 1500 : 1700, z: 0.55, pose: A ? A.end : undefined, at: A ? A.at : undefined });
+    if (a.rig && t && t.u.hp > 0 && t !== a) a.swing.aim = U.aimBlow(a.rig, t.svg, { guard, k: A && U.MACE_ARCS[arc] ? 1500 : 1700, z: 0.55, pose: A ? A.end : undefined, at: A ? A.at : undefined, under: A && A.under != null ? A.under : undefined, straight: A && A.straight });
     if (!a.swing.aim) pose(a, A ? A.end : "strike", 1600, 0.55);
-    home(a, A ? 560 : 460);
+    home(a, A && U.MACE_ARCS[arc] ? 560 : 460);
   }
   function landHit(f) { // a melee blow: the struck one reacts when the weapon reaches it
     const a = V.actors.get(f.uid), by = f.by != null && V.actors.get(f.by);
@@ -264,7 +264,7 @@
     if (!f.melee || !by || by === a) return struck(a, f, null);
     by.swingOn = null;
     const guard = guardOf(a);
-    swing(by, a, guard, f.arc);
+    swing(by, a, guard, f.arc || (by.u.side === "player" ? by.blowArc : by.atkArc));
     const sw = by.swing, wait = Math.max(0, sw.t0 + IMPACT - performance.now());
     setTimeout(() => {
       if (!V || !a.el.isConnected) return;
@@ -555,8 +555,9 @@
       if (u.rt.atk && u.side === "enemy" && !a.warned) a.warned = u.rt.atk;
       a.el.classList.toggle("windup", !!u.rt.atk && u.side === "enemy" && a.warned === u.rt.atk);
       if (u.rt.atk !== a.atk) {
-        if (u.rt.atk) { pose(a, u.rt.atk.ranged ? "draw" : u.rt.atk.arc && U.MACE_ARCS ? U.MACE_ARCS[u.rt.atk.arc].up : "windup", u.rt.atk.arc ? 500 : 700, 0.5); const t = V.actors.get(u.rt.atk.on); if (t) nameTag(t, 1.5); }
-        else if (a.atk && !a.atk.ranged && u.hp > 0) { if (a.atk.area || a.atk.id === "salve") { pose(a, "strike", 1600, 0.55); home(a, 380); } else { a.swingOn = a.atk.on; a.swingArc = a.atk.arc || null; } }
+        if (u.rt.atk) a.atkArc = !u.rt.atk.ranged && !u.rt.atk.area && U.arcFor ? u.rt.atk.arc || U.arcFor(u.rt.weapon, a.blowN = (a.blowN || 0) + 1) : null; // which way this weapon's blow comes
+        if (u.rt.atk) { pose(a, u.rt.atk.ranged ? "draw" : a.atkArc && U.ARCS[a.atkArc] ? U.ARCS[a.atkArc].up : "windup", a.atkArc && U.MACE_ARCS[a.atkArc] ? 500 : 700, 0.5); const t = V.actors.get(u.rt.atk.on); if (t) nameTag(t, 1.5); }
+        else if (a.atk && !a.atk.ranged && u.hp > 0) { if (a.atk.area || a.atk.id === "salve") { pose(a, "strike", 1600, 0.55); home(a, 380); } else { a.swingOn = a.atk.on; a.swingArc = a.atkArc || null; } }
         a.atk = u.rt.atk;
       }
       a.el.classList.toggle("unseen", u.side === "player" && (R.unseen > 0 || R.roll > 0));
@@ -637,10 +638,10 @@
     const R = V.R, p = C.player(), me = V.actors.get(p.uid);
     const A = (uid) => V.actors.get(uid);
     switch (f.k) {
-      case "blow": if (f.arc && U.MACE_ARCS) { // a mace: the long wind-up, then the swing so the weapon arrives as the blow lands
-          pose(me, U.MACE_ARCS[f.arc].up, 1300, 0.55);
-          setTimeout(() => { if (V && me && !V.R.block) swing(me, inFront(p), null, f.arc); }, Math.max(0, f.land * 1000 - IMPACT));
-          if (K.Sound) K.Sound.play("tap"); break; }
+      case "blow": { // the wind-up of this weapon's blow, then the swing so the weapon arrives as the blow lands
+          const arc = f.arc || (U.arcFor ? U.arcFor(p.rt.weapon, f.n) : null), A = arc && U.ARCS[arc];
+          if (A) { me.blowArc = arc; pose(me, A.up, 1500, 0.55); setTimeout(() => { if (V && me && !V.R.block) swing(me, inFront(p), null, arc); }, Math.max(0, f.land * 1000 - IMPACT)); if (K.Sound) K.Sound.play("tap"); break; }
+        }
         if (f.n === 2) { pose(me, "windup", 1700, 0.55); setTimeout(() => { if (V && me) swing(me, inFront(p), null); }, 120); } else swing(me, inFront(p), null); if (K.Sound) K.Sound.play("tap"); break;
       case "roll": pose(me, "duck", 1400, 0.6); home(me, 400); break;
       case "kneel": pose(me, "kneel", 600, 0.6); home(me, 1100); break;
