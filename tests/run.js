@@ -132,7 +132,7 @@ async function one(c) {
       const r2 = await run(c, a2, env);
       fs.writeFileSync(path.join(LOGS, c.name.replace(/#/g, "-") + ".retry.txt"), "$ node " + a2.join(" ") + (env ? " (" + JSON.stringify(env) + ")" : "") + "\n\n" + r2.out);
       res.retry = { cmd: "node " + a2.join(" ") + (env ? " " + JSON.stringify(env) : ""), seconds: Math.round(r2.ms / 100) / 10, passed: r2.code === 0 };
-      res.seconds += res.retry.seconds;
+      res.seconds = Math.round((res.seconds + res.retry.seconds) * 10) / 10;
       if (r2.code === 0) { res.status = "FLAKY"; res.note = "passed on the re-run of " + (again ? "its failing cases" : "the whole check"); return res; }
       r = r2;
     }
