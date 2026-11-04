@@ -12,7 +12,7 @@ html[lang="hi"] #rt { line-height: 1.4; }
 #rt kbd { display: none; font: 600 14px/1 var(--text); padding: 2px 5px; border: 1px solid currentColor; border-radius: 4px; opacity: 0.8; }
 #rt.wide kbd { display: inline-block; }
 #rt.screen { position: fixed; left: 0; right: 0; top: var(--hb); bottom: 0; display: grid; gap: var(--gap);
-  padding: var(--pad) max(var(--pad), env(safe-area-inset-right)) max(var(--pad), env(safe-area-inset-bottom)) max(var(--pad), env(safe-area-inset-left)); }
+  padding: max(var(--pad), var(--sat, 0px)) max(var(--pad), var(--sar, 0px)) max(var(--pad), var(--sab, 0px)) max(var(--pad), var(--sal, 0px)); } /* clear of the notch or island and the home bar (base.css --sat/--sab, with ui/safearea.js's stand-in) */
 #rt.screen.upright { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; }
 #rt.screen.wide { --pad: 12px; --gap: 12px; grid-template-columns: minmax(0, 1fr) var(--side); grid-template-rows: minmax(0, 1fr); }
 #rt .stage { position: relative; min-height: 0; min-width: 0; overflow: hidden; border-radius: 10px; border: 1px solid var(--gold-line); background: #120806 center bottom / cover no-repeat; isolation: isolate; }

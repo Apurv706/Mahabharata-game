@@ -14,6 +14,7 @@
   const U = K.UI, C = K.Combat, RT = K.RT;
   const turnBased = U.startBattle;
   U.startBattle = function (encId, onEnd) {
+    if (V) stop(); // a fight still on screen gives way to the new one
     if (!RT || !RT.wanted(encId)) return turnBased(encId, onEnd);
     if (K.headless || /jsdom/i.test(navigator.userAgent || "")) return onEnd(RT.autoplay(encId, U.rtBotOptions || {}));
     return U.startRealtime(encId, onEnd);
@@ -413,6 +414,7 @@
   function loop(now) {
     if (!V) return;
     const R = V.R;
+    if (C.state() && C.state() !== R.B && !R.over) return stop(); // another fight has begun (never in play; a guard)
     const dt = Math.min(0.1, V.last ? (now - V.last) / 1000 : 0); V.last = now;
     if (!V.paused && !V.briefing && !R.over) {
       V.acc += dt;

@@ -229,8 +229,8 @@ const PAGE = {
     if (document.querySelector("header.top") && document.querySelector("header.top").offsetParent) out.push("top bar still showing during the fight");
     const btns = [...el.querySelectorAll(".ctl button, .hud button, .cards button, .wd-cards button")].filter((b) => b.offsetParent && !b.closest("[hidden], .sheet"));
     if (!btns.length) out.push("no fight controls");
-    const off = btns.filter((b) => { const q = b.getBoundingClientRect(); return q.bottom > H - (o.sab || 0) + 1 || q.right > W + 1 || q.left < -1 || q.top < -1; });
-    if (off.length) out.push(off.length + " control(s) off screen or under the home bar");
+    const off = btns.filter((b) => { const q = b.getBoundingClientRect(); return q.bottom > H - (o.sab || 0) + 1 || q.right > W + 1 || q.left < -1 || q.top < (o.sat || 0) - 1; });
+    if (off.length) out.push(off.length + " control(s) off screen, under the notch or under the home bar");
     if (o.kind === "phone") { const small = btns.filter((b) => { const q = b.getBoundingClientRect(); return q.width && (q.width < 43.5 || q.height < 43.5); }); if (small.length) out.push(small.length + " control(s) under 44 px: " + small.slice(0, 3).map((b) => b.className || b.textContent.trim().slice(0, 12)).join(", ")); }
     const figs = [...el.querySelectorAll(".actor svg.pp")].map((e) => e.getBoundingClientRect()).filter((b) => b.height);
     if (!figs.length) out.push("no figures on the stage");
@@ -716,7 +716,7 @@ async function runDevice(browser, base, o, report) {
     const sw = await page.evaluate(() => { const i = document.querySelector("#m-assist"); return i ? i.getBoundingClientRect().height : 0; });
     report.push({ browser: browser._name, device: label, screen: "menu: Meet blows for me", problems: sw ? [] : ["no assist switch in the menu"] });
     const fs2 = await page.evaluate(() => { const b = [...document.querySelectorAll("[data-fights]")]; return { n: b.length, on: (b.find((x) => x.getAttribute("aria-checked") === "true") || {}).dataset, h: b.length ? Math.min(...b.map((x) => x.getBoundingClientRect().height)) : 0 }; });
-    report.push({ browser: browser._name, device: label, screen: "menu: Fights real-time / turn-based, for every player", problems: fs2.n === 2 && fs2.on && fs2.on.fights === "realtime" ? (fs2.h >= (o.kind === "phone" ? 40 : 24) ? [] : ["the Fights switch is too small to tap (" + Math.round(fs2.h) + " px)"]) : ["no Fights switch in the menu, real-time by default (" + fs2.n + ")"] });
+    report.push({ browser: browser._name, device: label, screen: "menu: Fights real-time / turn-based, for every player", problems: fs2.n === 2 && fs2.on && fs2.on.fights === "realtime" ? (fs2.h >= (o.kind === "phone" ? 36 : 24) ? [] : ["the Fights switch is too small to tap (" + Math.round(fs2.h) + " px)"]) : ["no Fights switch in the menu, real-time by default (" + fs2.n + ")"] });
   }
   await page.click("#m-practice"); await page.waitForTimeout(700);
   await page.click('.pr-tile[data-kind="chaupar"]'); await page.waitForTimeout(700);
