@@ -4,7 +4,7 @@ Everything runs through one runner, `tests/run.js`, in two tiers. Each check is 
 be run alone (its header comment says what it checks and how to run it).
 
 ```
-npm test                          # quick tier (node tests/run.js quick), about 2 minutes
+npm test                          # quick tier (node tests/run.js quick), 1-2 minutes (under a minute on CI)
 npm run test:full                 # full tier (node tests/run.js full), under 40 minutes on a 4-core runner
 node tests/run.js full --only layout,battlefit --browser all
 node tests/run.js quick --list    # what each tier runs
@@ -47,7 +47,8 @@ whole output is in `<out>/logs/`. The exit code is 1 only when something FAILs.
 | visual | | ✓ | `visual.js`: screenshots against `baselines/shots/` |
 | smoke | | ✓ | `smoke.js`: the built play pages (both parts) played with real taps |
 
-CI (`.github/workflows/regression.yml`) runs the quick tier on every push and pull request, and the full tier nightly
+CI (`.github/workflows/regression.yml`) runs the quick tier on pushes to `main` and on every pull request (not on
+pushes to work branches, whose baselines move while they are worked on), and the full tier nightly
 (scheduled runs only fire from the default branch, so the nightly run starts once the workflow is on `main`) and by
 hand (Actions → Regression → Run workflow, with a choice of tier and browser). Reports, logs and visual diffs are
 uploaded as artifacts. The older workflows (`engine.yml`, `screen-fit.yml`) still run as before.
