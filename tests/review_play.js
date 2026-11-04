@@ -120,8 +120,10 @@ async function playLife(pg, cdp, L, R, o) {
   if (await pg.$("#as-list")) { await tap("#as-list"); await sleep(600); }
   const lands = await pg.$$("#origins .origin");
   if (!lands.length) { L.bad.push("no homelands to choose"); return; }
-  await tap(lands[Math.floor(R() * lands.length)]); await sleep(900);
-  await tap("#land-ok"); await sleep(900);
+  const land = Math.floor(R() * lands.length);
+  for (let i = 0; i < 4 && !(await pg.$("#land-ok")); i++) { const ls = await pg.$$("#origins .origin"); if (ls[land]) await tap(ls[land]); await sleep(1200); }
+  for (let i = 0; i < 4 && !(await pg.$("#pname")); i++) { await tap("#land-ok"); await sleep(1200); }
+  if (!(await pg.$("#pname"))) { L.bad.push("the homeland page did not lead to the name page"); await shot(pg, L, "create"); return; }
   await pg.fill("#pname", ["Ira", "Vasav", "Tara", "Kirit"][Math.floor(R() * 4)]);
   for (const s of ["#pron .opt", "#temps .pick", "#heirs .pick"]) { const all = await pg.$$(s); await tap(all[Math.floor(R() * all.length)]); await sleep(200); }
   if (o.story) await tap("#story");
@@ -320,6 +322,10 @@ async function trial(pg, cdp, L, R, o, tap, s) {
       else { await pg.mouse.move(pt.x, pt.y); await pg.mouse.down(); await sleep(ms); await pg.mouse.up(); }
       await sleep(250 + R() * 600); continue;
     }
+    const BP = ".trial.playing "; // a board may be drawn on the stage, outside the test's body
+    if (await pg.$(BP + ".pc.can")) { if (R() < 0.5) await pg.keyboard.press(R() < 0.5 ? "1" : "2"); else await tap(BP + ".pc.can"); await sleep(400 + R() * 300); continue; }
+    if (await pg.$(BP + ".pt.dest")) { const ds = await pg.$$(BP + ".pt.dest"); await tap(ds[Math.floor(R() * ds.length)]); await sleep(400); continue; }
+    if (await pg.$(BP + ".bagh")) { const ts = await pg.$$(BP + ".pt:has(.tiger)"); if (ts.length) await tap(ts[Math.floor(R() * ts.length)]); await sleep(400); continue; }
     const btn = await pg.$(P + ".pc.can") || await pg.$(P + ".pt.dest") || await pg.$(P + "button.cta:not([disabled]):not(.trial-press)") || await pg.$(P + "button.live:not([disabled])") || await pg.$(P + "[data-move]:not([disabled])");
     if (btn) { if (await pg.$(P + ".pt.dest")) await tap(btn); else if (await pg.$(P + ".bagh") && !(await pg.$(P + ".pt.sel"))) { const ts = await pg.$$(P + ".pt:has(.tiger)"); await tap(ts[Math.floor(R() * ts.length)]); } else await tap(btn); await sleep(300 + R() * 400); continue; }
     // Tiles, cards and other buttons the test puts up to tap (the bard's verses, the rings...).

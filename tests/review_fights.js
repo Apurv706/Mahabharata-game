@@ -613,14 +613,15 @@ browser("astra-ui", "a divine weapon in real time plays its full moment, and a c
     if (!hit) bad.push("the Agneyastra struck no foe");
   }
   await endFight(pg);
-  // A champion who can answer: Karna (cross_e_duel is Yuyutsu's, so a war duel with a hero foe: e_dushasana).
-  const hero = await pg.evaluate(() => { const out = []; for (const id of ["e_dushasana", "cross_e_duel", "e_jaya", "e_road", "e_kings"]) { const e = K.ENCOUNTERS[id]; const list = (K.val(e.enemies) || []).map((u) => (typeof u === "string" && K.UNITS[u] ? K.UNITS[u](K.S || K.newLife()) : u)); if (list.some((u) => u && u.hero)) out.push(id); } return out; });
+  // A champion who can answer: Ashwatthama at the night raid.
+  const hero = await pg.evaluate(() => { const out = []; for (const id of ["e_raid", "e_ash", "e_dushasana", "cross_e_duel", "e_jaya", "e_road", "e_kings"]) { const e = K.ENCOUNTERS[id]; const list = (K.val(e.enemies) || []).map((u) => (typeof u === "string" && K.UNITS[u] ? K.UNITS[u](K.S || K.newLife()) : u)); if (list.some((u) => u && u.hero)) out.push(id); } return out; });
   if (!hero.length) bad.push("no real-time fight with a champion who can answer a divine weapon");
   else {
     const enc = hero[0];
     await fight(pg, enc, { life: LIFE(enc, "archer"), S: { astras: ["agneya"] } });
     await keepAlive(pg);
-    await pg.evaluate(() => { window.__clash = false; const st = document.getElementById("rt-stage"); window.__axMo2 = new MutationObserver(() => { if (st.querySelector(".ax.clash, .ax .counter, .clash")) window.__clash = true; }); window.__axMo2.observe(st, { subtree: true, childList: true, attributes: true }); });
+    // The clash: both weapons' bolts meet in the middle (the canvas of U.astraFx, with the screen's shake) and the moment knows it.
+    await pg.evaluate(() => { window.__clash = false; window.__axMo2 = new MutationObserver(() => { const V = K.UI.rtScreen(); if (document.body.classList.contains("ax-shake") && V && V.ax && V.ax.clash) window.__clash = true; }); window.__axMo2.observe(document.body, { attributes: true, attributeFilter: ["class"] }); });
     // Up to the champion first.
     await pg.evaluate(() => { const B = K.Combat.state(), h = B.units.find((u) => u.side === "enemy" && u.hero && u.hp > 0); if (h) { h.rt.entered = true; K.Combat.player().rt.x = Math.max(0.12, h.rt.x - 0.15); } });
     await pg.keyboard.press("u"); await sleep(3200);
@@ -636,7 +637,7 @@ browser("turns-switch", "with Fights: turn-based, every real-time fight opens on
   const { pg, errs, close } = await open({ device: "iPhone 15" });
   const bad = [];
   // The Menu's switch, tapped.
-  await pg.evaluate(() => { const S = (K.S = Object.assign(K.newLife(), { name: "Ira", pronoun: "she", origin: "panchala", temperament: "bold", heirloom: "bow", age: 38, act: 5 })); K.go("a5_forest"); });
+  await pg.evaluate(() => { const S = (K.S = Object.assign(K.newLife(), { name: "Ira", pronoun: "she", origin: "panchala", temperament: "bold", heirloom: "bow", age: 38, act: 5 })); K.go(Object.keys(K.SCENES).find((id) => K.SCENES[id].act === 5 && !K.SCENES[id].ending && !K.SCENES[id].when) || "a5_child"); });
   await sleep(1200);
   await pg.tap("#nav-menu"); await sleep(600);
   const seg = await pg.$('[data-fights="turns"]');
