@@ -88,9 +88,10 @@
   // Who carries a shield (PRD §18.15): the line's foot soldiers, guards and spearmen, and your own company. Archers,
   // chariot-warriors, riders and the named do not. Shields count only behind the developer switch (B.shields).
   const SHIELDED = /soldier|company|spearm|guard\b|veteran|captain|foot\b/i;
-  // The player carries a small shield where the path suits it: a sword (the driver on foot, the commander); not
-  // an archer's bow, a mace, or a short blade.
-  C.SHIELD_PATHS = { charioteer: true, strategist: true };
+  // The player carries a small shield where the path suits it (owner, 4 November): the mace fighter, and a sword (the
+  // driver on foot, the commander); not an archer's bow or a short blade (the healer, the spy, the bard). In a
+  // real-time fight a shield-carrier blocks with it (RT, "Block") where the others roll.
+  C.SHIELD_PATHS = { mace: true, charioteer: true, strategist: true };
   C.hasShield = (S = K.S) => !!(S && C.SHIELD_PATHS[S.path]);
   const isCompany = (u) => !!(u && u.side === "ally" && u.plural && !u.person && !u.called);
 
