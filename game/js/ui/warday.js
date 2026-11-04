@@ -108,7 +108,7 @@
     const title = U.t(K.val(enc.title) || "");
     const company = !!B.order;
     const el = U.el('<div id="rt" class="screen war" role="application" aria-label="' + esc(T("Battle")) + '">' +
-      '<div class="stage" id="rt-stage"><div class="world" id="rt-world"></div><div class="wd-vig"></div><div class="wd-flash"></div>' +
+      '<div class="stage" id="rt-stage"><div class="world" id="rt-world"></div><div class="tags"></div><div class="wd-vig"></div><div class="wd-flash"></div>' +
         '<div class="hud"><div class="goal"><b>' + title + '</b><span class="wround"></span><span class="faint wpackline"></span><div class="pips"></div></div>' +
         '<div class="hud-r">' + (company ? '<button type="button" class="hb orders wpill" data-wact="company" aria-haspopup="dialog"><small>' + esc(T("Company")) + ' · <span class="wplace"></span></small><span class="word"></span><kbd>O</kbd></button>' : "") +
         '<button type="button" class="hb aid" data-wact="aid" aria-haspopup="dialog">' + esc(T("Aid")) + " ▾</button></div></div>" +
@@ -122,7 +122,7 @@
       '<div class="sheet aid-sheet dropdown" role="dialog" aria-label="' + esc(T("Aid")) + '" hidden></div></div>');
     document.body.appendChild(el);
     document.body.classList.add("in-rt", "intest");
-    V.el = el; V.stage = el.querySelector("#rt-stage"); V.world = el.querySelector("#rt-world");
+    V.el = el; V.stage = el.querySelector("#rt-stage"); V.world = el.querySelector("#rt-world"); V.tags = el.querySelector(".tags");
     const bg = U.FIGHT_BG && U.FIGHT_BG[enc.id];
     V.art = [U.artUrl(bg || K.val(enc.stage) || K.val(enc.art)), bg ? U.artUrl(bg + "_tall") : null]; // the fight's own field, wide and tall
     V.figs = new Map();
@@ -222,7 +222,7 @@
     // Those who have left (a friend carried away by the fighting) fade; the fallen of an earlier pack stay where they lie.
     V.figs.forEach((f, key) => {
       if (seen.has(key) || f.dead) return;
-      if (!B.units.includes(f.u)) { f.el.style.transition = "opacity .6s"; f.el.style.opacity = "0"; setTimeout(() => f.el.remove(), 600); if (f.tap) f.tap.remove(); if (f.chip) f.chip.remove(); V.figs.delete(key); }
+      if (!B.units.includes(f.u)) { f.el.style.transition = "opacity .6s"; f.el.style.opacity = "0"; setTimeout(() => f.el.remove(), 600); if (f.tap) f.tap.remove(); if (f.chip) f.chip.remove(); if (f.tag) f.tag.remove(); V.figs.delete(key); }
     });
   }
   function figure(u, i, side, key) {
@@ -263,6 +263,7 @@
     const G = V.G;
     f.x = (f.f + (f.dx || 0)) * G.W; f.gy = G.gl + f.d * G.dstep;
     f.el.style.left = f.x.toFixed(1) + "px"; f.el.style.bottom = f.gy.toFixed(1) + "px";
+    if (f.tag) { f.tag.style.bottom = (f.gy + f.fh * 0.4) + "px"; f.tag.style.left = (f.x - f.face * f.fh * 0.05) + "px"; }
     const m = f.el.querySelector(".mini b"), hp = V.hp[f.u.uid] != null ? V.hp[f.u.uid] : f.u.hp;
     if (m) m.style.width = clamp(hp / f.u.maxHp * 100, 0, 100) + "%";
   }
@@ -577,7 +578,7 @@
     const standing = figsOf(u).filter((f) => !f.dead), alive = aliveBodies(u);
     while (standing.length > alive) {
       const f = standing.pop();
-      f.dead = true; f.el.classList.add("dead"); f.el.style.zIndex = "4";
+      f.dead = true; f.el.classList.add("dead"); f.el.style.zIndex = "4"; if (f.tag) f.tag.classList.remove("on");
       if (f.rig) f.rig.fallDown(-86, f.side === "foe" ? -1 : 1); else pose(f, "fall");
       dropWeapon(f);
       if (f.tap) f.tap.hidden = true; if (f.chip) f.chip.hidden = true;
@@ -614,9 +615,9 @@
   function banner(s) { const el = $(".banner", V.stage); if (!el) return; el.textContent = s; el.classList.remove("off"); clearTimeout(V.banT); V.banT = setTimeout(() => el.classList.add("off"), 1900); }
   function nameTag(f, s) {
     if (!f || !f.name || f.dead) return;
-    let t = f.el.querySelector(".nametag");
-    if (!t) { t = document.createElement("span"); t.className = "nametag"; t.textContent = f.name; f.el.appendChild(t); }
-    t.style.bottom = (f.fh * 0.4) + "px"; t.style.left = (-f.face * f.fh * 0.05) + "px"; // the waist, nudged to the back hand, off the shield
+    let t = f.tag; // on a layer over every figure (.tags): no figure in front hides it
+    if (!t) { t = f.tag = document.createElement("span"); t.className = "nametag"; t.textContent = f.name; V.tags.appendChild(t); }
+    t.style.bottom = (f.gy + f.fh * 0.4) + "px"; t.style.left = (f.x - f.face * f.fh * 0.05) + "px"; // the waist, nudged to the back hand, off the shield
     t.classList.add("on"); clearTimeout(t.off); t.off = setTimeout(() => t.classList.remove("on"), (s || 2) * 1000);
   }
   function nameTags(uids) { if (!V) return; V.figs.forEach((f) => { if (!uids || uids.includes(f.u.uid)) nameTag(f, 2); }); }

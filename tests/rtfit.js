@@ -52,6 +52,11 @@ function measure(open) {
       for (const o of panel.querySelectorAll("button")) if (o.offsetWidth && o.scrollWidth > o.clientWidth + 1) out.push(open + " label cut: " + o.textContent.trim());
     }
   }
+  // A laptop without a touch screen: the key strip, no phone controls (a touch laptop the reverse).
+  if (innerWidth >= 820 && !matchMedia("(pointer: coarse)").matches) {
+    const ks = V.el.querySelector(".kstrip"), ctl = V.el.querySelector(".ctl");
+    if (!V.el.classList.contains("wide") || V.el.classList.contains("touch") || getComputedStyle(ks).display === "none" || getComputedStyle(ctl).display !== "none") out.push("a laptop without touch: the key strip should show and the phone controls hide");
+  }
   if (innerWidth < 820) for (const b of V.el.querySelectorAll(".ctl button, .hud button")) { const r = R(b); if (r.width && (r.width < 43.5 || r.height < 43.5)) out.push("touch target under 44 px: " + (b.className || b.dataset.act)); }
   return { problems: out, ratio: Math.round(ratio * 100) };
 }
@@ -59,13 +64,14 @@ const srv = http.createServer((q, r) => { let f = path.join(ROOT, decodeURICompo
 srv.listen(0, async () => {
   const port = srv.address().port, b = await pw.chromium.launch();
   let fails = 0, n = 0;
-  for (const dev of DEVICES) for (const lang of ["en", "hi"]) for (const enc of FIGHTS) {
+  const only = process.argv.indexOf("--device") > 0 ? process.argv[process.argv.indexOf("--device") + 1] : null;
+  for (const dev of DEVICES.filter((d) => !only || d.name === only)) for (const lang of ["en", "hi"]) for (const enc of FIGHTS) {
     const ctx = await b.newContext({ viewport: { width: dev.w, height: dev.h }, deviceScaleFactor: dev.mobile ? 2 : 1, isMobile: dev.mobile, hasTouch: dev.mobile });
     const pg = await ctx.newPage(); const errs = []; pg.on("pageerror", (e) => errs.push(e.message));
     await pg.route(/fonts\.(googleapis|gstatic)/, (r) => r.abort());
     await pg.goto("http://localhost:" + port + "/index.html?rt=1"); await pg.waitForTimeout(500);
     if (lang === "hi") { await pg.evaluate(() => new Promise((r) => K.UI.setLang("hi", r))); await pg.waitForTimeout(300); }
-    await pg.evaluate((enc) => { const S = K.S = Object.assign(K.newLife(), { name: "Ira", pronoun: "she", origin: "panchala", age: 30, act: 6, path: "archer", side: "pandava", teacher: "drona" }); S.attrs.might = 3; S.attrs.grace = 3; S.items.herbs = 2; S.flags.push("role_front"); S.friend = "charu"; S.bonds.charu = 8; K.seed(3); K.UI.startRealtime(enc, () => {}); }, enc);
+    await pg.evaluate((enc) => { const S = K.S = Object.assign(K.newLife(), { name: "Ira", pronoun: "she", origin: "panchala", age: 30, act: 6, path: "archer", side: "pandava", teacher: "drona" }); S.attrs.might = 3; S.attrs.grace = 3; S.items.herbs = 2; S.flags.push("role_front"); S.friend = "charu"; S.bonds.charu = 8; S.briefed = ["duel", "melee", "hold", "rounds"]; S.fightTour = 1; K.seed(3); K.UI.startRealtime(enc, () => {}); K.UI.rtScreen().paused = true; }, enc); // the fight as it begins (no drift with the page's timing)
     await pg.waitForTimeout(150); // at rest: the fight just begun
     await pg.evaluate(() => { const V = K.UI.rtScreen(); V.paused = true; V.stageTop = V.stage.getBoundingClientRect().top; });
     const tag = dev.name + " " + lang + " " + enc, res = [];
@@ -78,6 +84,23 @@ srv.listen(0, async () => {
       // tapping Resume closes the menu and the fight goes on
       res.push(await pg.evaluate((o) => { const V = K.UI.rtScreen(), b = V.el.querySelector("." + o + "-sheet .resume"); if (!b) return { problems: [] }; b.click(); const p = []; if (!V.el.querySelector("." + o + "-sheet").hidden || V.sheet || V.paused) p.push(o + " Resume did not close the menu and resume"); return { problems: p }; }, open));
       await pg.keyboard.press("Escape").catch(() => {}); await pg.evaluate(() => { const V = K.UI.rtScreen(); V.el.querySelectorAll(".sheet").forEach((s) => (s.hidden = true)); V.sheet = null; V.paused = true; });
+    }
+    // A life's first fight: the rules card, then the walkthrough; the fight waits through both; Skip ends it.
+    if (enc === "e_guard") {
+      await pg.evaluate(() => { const S = K.S; S.briefed = []; S.fightTour = 0; K.seed(3); K.UI.startRealtime("e_guard", () => {}); });
+      await pg.waitForTimeout(400);
+      if (SHOTS) await pg.screenshot({ path: path.join(SHOTS, (dev.name + "_" + lang + "_rules_card").replace(/\W+/g, "_") + ".png") });
+      res.push(await pg.evaluate(() => { const V = K.UI.rtScreen(), p = []; const card = V.el.querySelector(".fbrief-wrap"); if (!card) return { problems: ["no rules card on the first fight"] };
+        const r = card.querySelector(".fbrief").getBoundingClientRect(); if (r.top < -1 || r.bottom > innerHeight + 1 && card.scrollHeight <= card.clientHeight) p.push("rules card does not fit");
+        V.t0 = V.R.t; card.querySelector(".fb-go").click(); if (!V.el.querySelector(".tour-cap")) p.push("no walkthrough after the rules card"); return { problems: p }; }));
+      await pg.mouse.click(dev.w / 2, dev.h / 3); await pg.waitForTimeout(300);
+      if (SHOTS) await pg.screenshot({ path: path.join(SHOTS, (dev.name + "_" + lang + "_tour").replace(/\W+/g, "_") + ".png") });
+      res.push(await pg.evaluate(() => { const V = K.UI.rtScreen(), p = [], cap = V.el.querySelector(".tour-cap"), sr = V.stage.getBoundingClientRect();
+        if (!cap || !/^2 /.test(cap.querySelector(".tc-step").textContent.trim()) && !/2/.test(cap.querySelector(".tc-step").textContent)) p.push("a tap did not go on to the next step");
+        if (cap) { const c = cap.getBoundingClientRect(); if (c.left < -0.5 || c.right > innerWidth + 0.5 || c.top < sr.top - 0.5) p.push("walkthrough caption spills"); }
+        if (V.R.t !== V.t0) p.push("the fight did not wait during the rules card and walkthrough");
+        const sk = cap && cap.querySelector(".tc-skip"); if (sk) sk.click();
+        if (V.el.querySelector(".tour-cap") || V.briefing) p.push("Skip did not end the walkthrough"); return { problems: p }; }));
     }
     const probs = [...new Set(res.flatMap((r) => r.problems).concat(errs.map((e) => "script error: " + e)))];
     n++; if (probs.length) fails++;

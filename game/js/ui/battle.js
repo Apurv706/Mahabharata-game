@@ -290,8 +290,12 @@
     const ar = a.getBoundingClientRect(), lo = Math.max(0, ar.left) + EDGE_PX, hi = Math.min(innerWidth, ar.right) - EDGE_PX;
     const now = parseFloat(el.style.left) || 0;
     const d = p.l < lo ? lo - p.l : p.r > hi ? hi - p.r : 0;
-    if (Math.abs(d) < 1) return;
-    el.style.transition = "left .35s ease-out"; el.style.left = (now + d).toFixed(1) + "px";
+    // and a body lying past the stage's foot (a tall phone's short stage) is lifted onto it
+    const up = p.b > ar.bottom - 2 ? p.b - (ar.bottom - 2) : 0, top = parseFloat(el.style.top) || 0;
+    if (Math.abs(d) < 1 && up < 0.5) return;
+    el.style.transition = "left .35s ease-out, top .35s ease-out";
+    if (Math.abs(d) >= 1) el.style.left = (now + d).toFixed(1) + "px";
+    if (up >= 0.5) el.style.top = (top - up).toFixed(1) + "px";
   }
   const settleFallen = (uid) => setTimeout(() => keepIn(uid), 1500);
 

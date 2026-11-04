@@ -30,6 +30,7 @@
     const from = center(o.from) || { x: W * 0.25, y: H * 0.45 }, to = center(o.to) || { x: W * 0.75, y: H * 0.45 };
     if (K.Sound) { K.Sound.play("gong"); setTimeout(() => K.Sound.play(o.clash ? "hit" : "choose"), 650); }
     const layer = U.el('<div class="astra-fx" aria-hidden="true"><i class="ax-dark"></i><i class="ax-tint" style="background:' + K2.tint + '"></i><i class="ax-mantra"></i><canvas></canvas></div>');
+    if (o.noFlash) layer.classList.add("noflash"); // the screen that asked flashes once itself (the real-time fight)
     (o.into || document.body).appendChild(layer); // inside a moment, over its painting
     const reduced = U.calm();
     if (reduced) { layer.classList.add("still"); setTimeout(() => layer.remove(), 700); return; }

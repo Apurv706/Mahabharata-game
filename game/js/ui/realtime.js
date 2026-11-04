@@ -57,6 +57,9 @@
     const R = RT.begin(B, { assist: U.assist && U.assist() });
     V = { encId, onEnd, R, actors: new Map(), held: { l: false, r: false }, queue: {}, acc: 0, last: 0, raf: 0, paused: false, sheet: null, toastT: 0, logAt: B.log.length };
     build();
+    // Before the first blow: the rules card (or one line), then on a life's first fight the walkthrough. Not
+    // for the dream, a bout or the practice ground, nor under the tests (U.fightBriefWanted). The fight waits.
+    if (U.fightBriefWanted && U.fightBriefWanted(encId)) brief();
     V.raf = requestAnimationFrame(loop);
   };
 
@@ -68,7 +71,7 @@
     const skill = T(R.skill ? SKILL_NAME[R.skill] : "No skill");
     const el = U.el('<div id="rt" class="screen rt v-A" role="application" aria-label="' + T("Real-time fight") + '">' +
       '<div class="titleband"><b>' + title + '</b><small class="packn"></small></div>' +
-      '<div class="stage" id="rt-stage"><div class="world" id="rt-world"></div><div class="edgefx l"></div><div class="edgefx r"></div><div class="slowtint"></div><div class="rt-scorch"></div>' +
+      '<div class="stage" id="rt-stage"><div class="world" id="rt-world"></div><div class="tags"></div><div class="edgefx l"></div><div class="edgefx r"></div><div class="slowtint"></div><div class="rt-scorch"></div>' +
         '<div class="hud"><div class="bars">' +
           '<div class="bar hp"><span>' + T("You") + '</span><i><b id="b-hp"></b></i></div>' +
           '<div class="bar br"><span>' + T("Breath") + '</span><i><b id="b-br"></b></i></div>' +
@@ -90,7 +93,7 @@
       '<div class="sheet pause-sheet" role="dialog" aria-label="' + T("Paused") + '" hidden></div></div>');
     document.body.appendChild(el);
     document.body.classList.add("in-rt");
-    V.el = el; V.stage = el.querySelector("#rt-stage"); V.world = el.querySelector("#rt-world");
+    V.el = el; V.stage = el.querySelector("#rt-stage"); V.world = el.querySelector("#rt-world"); V.tags = el.querySelector(".tags");
     const bg = U.FIGHT_BG && U.FIGHT_BG[enc.id];
     V.art = [U.artUrl(K.val(enc.stage) || K.val(enc.art)), bg ? U.artUrl(bg + "_tall") : null];
     el.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", (e) => { e.preventDefault(); act(b.dataset.act); }));
@@ -106,43 +109,65 @@
     V.stage.addEventListener("pointerdown", (e) => {
       if (e.target.closest("button, .sheet, .hud")) return;
       const r = V.stage.getBoundingClientRect(), x = (e.clientX - r.left - V.G.fx0) / V.G.FW;
+      if (e.pointerType === "touch" && !V.touched) { V.touched = true; layout(); } // a touch on a laptop's screen: the corner controls
       if (e.pointerType !== "mouse") { V.swipe = { x: e.clientX, y: e.clientY, t: performance.now() }; return; }
       const p = C.player();
       if (e.button === 2 || e.shiftKey) { V.queue.roll = true; V.queue.rollDir = x >= p.rt.x ? 1 : -1; return; }
       if (e.button !== 0) return;
-      const foe = e.target.closest(".actor.foe");
-      if (foe && RT.spareable(V.R).some((u) => u.uid === foe.dataset.uid)) { V.queue.spare = foe.dataset.uid; return; }
-      V.walk = { x, foe: foe ? foe.dataset.uid : null };
+      const foe = foeAt(e.clientX - r.left, e.clientY - r.top);
+      if (foe && RT.spareable(V.R).some((u) => u.uid === foe)) { V.queue.spare = foe; return; }
+      V.walk = { x, foe };
     });
     V.stage.addEventListener("pointerup", (e) => {
       const sw = V.swipe; V.swipe = null;
       if (!sw || performance.now() - sw.t > 600) return;
       const dx = e.clientX - sw.x, dy = e.clientY - sw.y;
       if (Math.abs(dy) > 28 && Math.abs(dy) > Math.abs(dx) * 1.2) { V.queue.row = dy < 0 ? 1 : -1; return; }
-      if (Math.abs(dx) < 10 && Math.abs(dy) < 10) { const foe = e.target.closest(".actor.foe"); if (foe && RT.spareable(V.R).some((u) => u.uid === foe.dataset.uid)) V.queue.spare = foe.dataset.uid; } // spare: a tap on the beaten foe
+      if (Math.abs(dx) < 10 && Math.abs(dy) < 10) { const r = V.stage.getBoundingClientRect(), foe = foeAt(e.clientX - r.left, e.clientY - r.top); if (foe && RT.spareable(V.R).some((u) => u.uid === foe)) V.queue.spare = foe; } // spare: a tap on the beaten foe
     });
     window.addEventListener("keydown", onKey, true); window.addEventListener("keyup", onKeyUp, true);
     window.addEventListener("resize", onResize); document.addEventListener("visibilitychange", onHidden);
     document.addEventListener("pointerdown", dropOutside, true);
     layout();
   }
+  // The living foe drawn under a point of the stage (figures let clicks through): its body's box, the nearest first.
+  function foeAt(px, py) {
+    const G = V.G; if (!G) return null;
+    let best = null, bd = 1e9;
+    V.actors.forEach((a) => {
+      const u = a.u; if (u.side !== "enemy" || u.hp <= 0 || !u.rt || !u.rt.entered || a.x == null) return;
+      const hw = Math.max(a.bw * 0.7, 22), foot = G.H - a.gy, d = Math.abs(px - a.x);
+      if (d <= hw && py >= foot - a.fh * 1.05 && py <= foot + 10 && d < bd) { bd = d; best = u.uid; }
+    });
+    return best;
+  }
   // The layout page's layout(): upright or wide by the screen's shape; the stage takes what the controls leave.
   function layout() {
     if (!V) return;
     const vw = window.innerWidth, vh = window.innerHeight, scr = V.el;
     const wide = vw >= 820 && vw / vh >= 1.15;
-    const touch = !!(window.matchMedia && matchMedia("(pointer: coarse)").matches) || V.touched;
+    const touch = !!((window.matchMedia && matchMedia("(pointer: coarse)").matches) || V.touched); // a boolean: undefined would toggle the class on
     scr.classList.toggle("wide", wide); scr.classList.toggle("upright", !wide); scr.classList.toggle("touch", wide && touch);
     scr.style.setProperty("--bh", (wide ? 40 : 44) + "px"); scr.style.setProperty("--hb", "0px");
     const W = V.stage.clientWidth, H = V.stage.clientHeight;
     V.stage.style.backgroundImage = "url(" + (H > W * 1.25 && V.art[1] ? V.art[1] : V.art[0]) + ")";
     const FIELD = 1 / RT.BODY;
-    const ph = wide ? Math.min(H * 0.3, W / (FIELD * 0.36)) : Math.min(H * 0.3, W * 0.48);
+    const ph = wide ? Math.min(H * 0.3, W / (FIELD * 0.36)) : Math.min(H * 0.3, W * 0.52); // a tall phone: the front row's figure about 29% of the stage
     const FW = wide ? Math.min(W, ph * 0.36 * FIELD) : W;
     V.G = { W, H, ph, FW, fx0: (W - FW) / 2, dk: 0.12, gl: wide && !scr.classList.contains("touch") ? Math.max(H * 0.06, 46) : H * (wide ? 0.06 : 0.05), dstep: H * (wide ? 0.1 : 0.11), wide };
     V.actors.forEach((a) => size(a));
+    fitSkill();
     const eL = $(".edgefx.l"), eR = $(".edgefx.r"); if (eL) { eL.style.width = eR.style.width = (V.G.fx0 + FW * 0.12) + "px"; }
     if (V.sheet === "orders" || V.sheet === "aid") placeDrop($("." + V.sheet + "-sheet"), $(".hb." + V.sheet));
+  }
+  // A long skill name (Ground-shaker, Hindi) fits its ring: smaller, on two lines if it must.
+  function fitSkill() {
+    const b = $(".acts .skill"), sp = b && b.querySelector("span");
+    if (!sp || !b.offsetWidth) return;
+    sp.style.fontSize = ""; sp.style.maxWidth = (b.clientWidth - 8) + "px";
+    let fs = parseFloat(getComputedStyle(sp).fontSize) || 14;
+    const kb = b.querySelector("kbd"), room = () => b.clientHeight - 6 - (kb && kb.offsetHeight ? kb.offsetHeight + 2 : 0);
+    while (fs > 9.5 && (sp.scrollWidth > b.clientWidth - 6 || sp.offsetHeight > room())) { fs -= 0.5; sp.style.fontSize = fs + "px"; }
   }
   function onResize() { if (!V) return; const o = V.G && V.G.W > V.G.H; layout(); if (V.G && (V.G.W > V.G.H) !== o) pause(true); } // turning the phone pauses
   function onHidden() { if (V && document.hidden) pause(true); }
@@ -178,12 +203,17 @@
   function pose(a, p, k, z) { if (!a) return; if (a.rig) a.rig.set(p, k || 900, z == null ? 0.5 : z); else a.svg.setAttribute("class", a.svg.getAttribute("class").replace(/\bpose-\S+/, "pose-" + ({ windup: "strike", ready: "brace", bowready: "brace", draw: "aim", duck: "duck", kneel: "kneel", loose: "loose" }[p] || p))); }
   function home(a, ms) { setTimeout(() => { if (!V || !a.u) return; if (a.u.rt && a.u.rt.beaten && a.u.hp > 0) pose(a, "kneel", 600, 0.6); else if (a.rig && a.u.hp > 0) a.rig.set(a.base, 520, 0.42); else if (!a.rig && a.u.hp > 0) pose(a, a.u.side === "player" ? "brace" : "stand"); }, ms || 0); }
   // Name tags: a small pill at the waist, nudged off the shield; for 2 s at a time.
+  // On a layer over every figure (.tags), so no figure in front hides it; placed each frame while it shows.
   function nameTag(a, s) {
     if (!a || !a.name || a.u.hp <= 0) return;
-    let t = a.el.querySelector(".nametag");
-    if (!t) { t = document.createElement("span"); t.className = "nametag"; t.textContent = a.name; a.el.appendChild(t); }
-    t.style.bottom = (a.fh * (a.u.rt && a.u.rt.beaten ? 0.3 : 0.4)) + "px"; t.style.left = (-(a.u.rt ? a.u.rt.face : 1) * a.fh * 0.05) + "px";
+    let t = a.tag;
+    if (!t) { t = a.tag = document.createElement("span"); t.className = "nametag"; t.textContent = a.name; V.tags.appendChild(t); }
+    placeTag(a);
     t.classList.add("on"); clearTimeout(t.off); t.off = setTimeout(() => t.classList.remove("on"), (s || 2) * 1000);
+  }
+  function placeTag(a) {
+    const t = a.tag; if (!t || a.x == null) return;
+    t.style.bottom = (a.gy + a.fh * (a.u.rt && a.u.rt.beaten ? 0.3 : 0.4)) + "px"; t.style.left = (a.x - (a.u.rt ? a.u.rt.face : 1) * a.fh * 0.05) + "px";
   }
   function nameTagsAll(s) { V.actors.forEach((a) => nameTag(a, s)); }
   function pop(a, text, cls) {
@@ -196,16 +226,21 @@
   function shake(big) { if (U.calm()) return; V.stage.classList.remove("shake", "bigshake"); void V.stage.offsetWidth; V.stage.classList.add(big ? "bigshake" : "shake"); }
   function fell(a) {
     a.el.classList.add("dead"); a.el.classList.remove("windup"); a.el.style.zIndex = "4";
-    if (a.rig) a.rig.fallDown(-86, 1); else pose(a, "fall");
+    if (a.tag) a.tag.classList.remove("on");
+    // Toward the middle of the stage (RT.fallDir): forward when it faces the middle, else backward.
+    const toward = RT.fallDir(a.u), fwd = toward === (a.u.rt ? a.u.rt.face : 1) ? 1 : -1;
+    if (a.rig) a.rig.fallDown(-86, fwd); else pose(a, "fall");
+    const flung = a.u.rt && a.u.rt.flung != null && V.R.t - a.u.rt.flung < 3; // thrown by a divine weapon: the weapon flies
     const item = a.svg.querySelector(".it"), kind = a.spec && a.spec.item, svgW = WEAPON[kind] || (kind ? WEAPON.sword : null);
     if (item && svgW && !a.dropped) {
       item.style.visibility = "hidden"; a.dropped = true;
       const w = document.createElement("div"); w.className = "dropped"; w.innerHTML = svgW;
-      const len = a.fh * (kind === "spear" ? 0.62 : 0.42), side = a.x < V.G.W / 2 ? 1 : -1;
+      const len = a.fh * (kind === "spear" ? 0.62 : 0.42), side = -toward;
       Object.assign(w.style, { left: (a.x - side * a.bw * 0.15 - len / 2) + "px", bottom: (a.gy - 2) + "px", width: len + "px" });
       V.world.appendChild(w); a.weaponEl = w;
       const rot = side * 7;
-      if (!U.calm()) w.animate([{ transform: "translateY(" + (-a.fh * 0.5) + "px) rotate(" + (-side * 70) + "deg)" }, { transform: "translateY(0) rotate(" + rot + "deg)" }], { duration: 520, easing: "ease-in", fill: "forwards" });
+      if (!U.calm() && flung) w.animate([{ transform: "translate(" + (side * a.bw) + "px," + (-a.fh * 0.6) + "px) rotate(0deg)" }, { transform: "translate(" + (-side * a.bw * 0.4) + "px," + (-a.fh * 1.25) + "px) rotate(" + (-side * 380) + "deg)", offset: 0.45 }, { transform: "translate(0,0) rotate(" + (rot - side * 720) + "deg)" }], { duration: 900, easing: "cubic-bezier(.3,.5,.6,1)", fill: "forwards" });
+      else if (!U.calm()) w.animate([{ transform: "translateY(" + (-a.fh * 0.5) + "px) rotate(" + (-side * 70) + "deg)" }, { transform: "translateY(0) rotate(" + rot + "deg)" }], { duration: 520, easing: "ease-in", fill: "forwards" });
       else w.style.transform = "rotate(" + rot + "deg)";
     }
   }
@@ -214,6 +249,13 @@
   const KEY = { KeyJ: "strike", KeyK: "roll", Space: "roll", KeyL: "skill", KeyH: "herbs", KeyC: "call", KeyU: "astra", KeyO: "orders", KeyP: "pause", Escape: "pause", KeyE: "spare" };
   function onKey(e) {
     if (!V) return;
+    if (V.briefing) { // the rules card or the walkthrough is up: its own keys, nothing reaches the fight
+      e.preventDefault(); e.stopPropagation();
+      if (e.repeat) return;
+      if (V.tourNext) { if (e.code === "Escape") V.tourEnd(true); else if (["Space", "Enter", "ArrowRight", "NumpadEnter"].includes(e.code)) V.tourNext(); }
+      else if (V.briefGo && ["Space", "Enter", "NumpadEnter", "KeyJ"].includes(e.code)) V.briefGo();
+      return;
+    }
     if (e.code === "KeyA" || e.code === "ArrowLeft") { V.held.l = true; e.preventDefault(); e.stopPropagation(); return; }
     if (e.code === "KeyD" || e.code === "ArrowRight") { V.held.r = true; e.preventDefault(); e.stopPropagation(); return; }
     if (e.code === "KeyW" || e.code === "ArrowUp" || e.code === "KeyS" || e.code === "ArrowDown") { e.preventDefault(); e.stopPropagation(); if (!e.repeat && !V.sheet) V.queue.row = e.code === "KeyW" || e.code === "ArrowUp" ? 1 : -1; return; }
@@ -359,7 +401,7 @@
     if (!V) return;
     const R = V.R;
     const dt = Math.min(0.1, V.last ? (now - V.last) / 1000 : 0); V.last = now;
-    if (!V.paused && !R.over) {
+    if (!V.paused && !V.briefing && !R.over) {
       V.acc += dt;
       while (V.acc >= RT.STEP && !R.over) { RT.step(R, input()); V.acc -= RT.STEP; }
     }
@@ -370,7 +412,7 @@
     }
     V.raf = requestAnimationFrame(loop);
   }
-  function retry() { V.R = RT.retry(V.R); V.actors.forEach((a) => a.el.remove()); V.actors.clear(); if (U.rigs) U.rigs.clear(); V.logAt = V.R.B.log.length; toast(K.tr("One more time.")); }
+  function retry() { V.R = RT.retry(V.R); V.actors.forEach((a) => { a.el.remove(); if (a.tag) a.tag.remove(); if (a.weaponEl) a.weaponEl.remove(); }); $$(".scorch, .ax", V.el).forEach((e) => e.remove()); V.ax = null; V.actors.clear(); if (U.rigs) U.rigs.clear(); V.logAt = V.R.B.log.length; toast(K.tr("One more time.")); }
   function finishSoon() {
     if (V.ending) return; V.ending = true;
     setTimeout(() => {
@@ -404,6 +446,7 @@
       a.el.style.left = a.x.toFixed(1) + "px"; a.el.style.bottom = a.gy.toFixed(1) + "px";
       if (u.hp > 0) a.el.style.zIndex = String(u.side === "player" ? Math.round(30 - u.rt.lane * 8) : Math.round(10 - u.rt.lane * 6 + 10));
       a.el.classList.toggle("face-l", u.rt.face < 0);
+      if (a.tag && a.tag.classList.contains("on")) placeTag(a);
       // A foe glows only the first time it winds up; after that only its pose and its mark.
       if (u.rt.atk && u.side === "enemy" && !a.warned) a.warned = u.rt.atk;
       a.el.classList.toggle("windup", !!u.rt.atk && u.side === "enemy" && a.warned === u.rt.atk);
@@ -421,9 +464,10 @@
       a.el.classList.toggle("beaten", !!u.rt.beaten);
       const m = a.el.querySelector(".mini b"); if (m) m.style.width = Math.max(0, u.hp / u.maxHp * 100) + "%";
     }
-    V.actors.forEach((a, uid) => { if (!B.units.includes(a.u)) { a.el.style.transition = "opacity .6s"; a.el.style.opacity = "0"; setTimeout(() => a.el.remove(), 600); V.actors.delete(uid); } });
+    V.actors.forEach((a, uid) => { if (!B.units.includes(a.u)) { if (a.tag) a.tag.remove(); a.el.style.transition = "opacity .6s"; a.el.style.opacity = "0"; setTimeout(() => a.el.remove(), 600); V.actors.delete(uid); } });
     for (const f of R.fx) fx(f);
     R.fx.length = 0;
+    if (V.ax) axTick();
     marks();
     const w = (id, v) => { const e = V.el.querySelector("#" + id); if (e) e.style.width = clamp(v, 0, 100) + "%"; };
     w("b-hp", p.hp / p.maxHp * 100); w("b-br", R.breath / RT.P.breathMax * 100);
@@ -518,14 +562,160 @@
       case "beaten": { const a = A(f.uid); if (a) { pose(a, "kneel", 600, 0.6); a.el.classList.add("beaten"); } break; }
       case "join": { toast(K.tr("Help comes.")); const a = A(f.uid); if (a) setTimeout(() => nameTag(a, 2), 50); break; }
       case "call": break;
-      case "astra": {
-        const o = f.out || {}, to = o.uid && A(o.uid);
-        if (U.astraFx) U.astraFx({ kind: o.kind || "generic", clash: !!o.clash, from: me && me.svg, to: to && to.svg });
-        V.stage.classList.add("ax-flash"); setTimeout(() => V && V.stage.classList.remove("ax-flash"), 700);
-        shake(true);
-        if (!o.clash) { const sc = $(".rt-scorch", V.stage); sc.className = "rt-scorch on k-" + (o.kind || "generic"); setTimeout(() => { if (V) sc.className = "rt-scorch"; }, 6000); }
-        (f.struck || []).forEach((uid) => { const a = A(uid); if (a && a.rig) a.rig.kick({ rot: 600, tx: 40, head: 300 }); });
+      case "astra": axStart(f); break;
+      case "thrown": { // the divine weapon's struck foe, thrown away from you as the moment ends (the engine has moved it)
+        const a = A(f.uid); if (!a || U.calm()) break;
+        const dx = f.dx * V.G.FW, up = a.fh * 0.45;
+        a.el.animate([{ transform: "translate(" + (-dx) + "px,0)" }, { transform: "translate(" + (-dx * 0.4) + "px," + (-up) + "px)", offset: 0.4 }, { transform: "translate(0,0)" }], { duration: 700, easing: "cubic-bezier(.3,.6,.5,1)" });
+        if (a.rig) a.rig.kick({ rot: 600 * Math.sign(dx || 1), tx: 40, head: 300 });
         break; }
     }
+  }
+
+  // ---------- Before the fight: the rules card and the walkthrough (as ui/warday.js brief() and tour()) ----------
+  const RT_ICONS = { move: "M4 12h16M8 8l-4 4 4 4M16 8l4 4-4 4", strike: "M4 20l5-5M7 13l4 4M9 15L20 4v3L11 16", roll: "M12 4a8 8 0 108 8M20 4v5h-5", skill: "M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z",
+    orders: "M6 21V4M6 4h11l-2 4 2 4H6", aid: "M5 19c0-8 6-13 14-14-1 8-6 14-14 14zM5 19l7-7", spare: "M7 11V5.5a1.5 1.5 0 013 0V11", flee: "M10 6l-6 6 6 6M4 12h11", pause: "M8 5v14M16 5v14" };
+  const keysOnly = () => V.el.classList.contains("wide") && !V.el.classList.contains("touch");
+  function brief() {
+    const R = V.R, B = R.B, S = K.S, mode = U.fightBriefMode(B), full = !(S.briefed || []).includes(mode), goal = U.fightBriefGoal(B);
+    if (full) S.briefed = (S.briefed || []).concat(mode);
+    const MODE = { duel: "A duel", melee: "Against several", hold: "A hold", rounds: "Last the rounds" };
+    if (!full) {
+      const line = U.el('<p class="fb-line wd-fbline" aria-live="polite"><b>' + (T(MODE[mode] || "Against several")) + "</b>" + (goal ? " · " + U.esc(goal) : "") + "</p>");
+      V.stage.appendChild(line); setTimeout(() => line.remove(), 4200);
+      if (!S.fightTour) { S.fightTour = 1; tour(); }
+      return;
+    }
+    const k = keysOnly(), list = [];
+    const add = (ic, name, words) => list.push([ic, name, words]);
+    add("move", T("Move"), T(k ? "A / D to walk; W / S to change row" : "Hold ◀ ▶ to walk; swipe up or down to change row"));
+    add("strike", T("Strike"), T(k ? "J, or click a foe; three in a row for a combo" : "Three in a row for a combo"));
+    add("roll", T("Roll"), T(k ? "K or Space, through a marked blow; it costs breath" : "Through a marked blow; it costs breath"));
+    if (R.skill) add("skill", T(SKILL_NAME[R.skill]), T("Your path's skill; its ring fills as it gets ready"));
+    if (B.units.some((u) => u.side === "ally" && u.hp > 0 && !u.still)) add("orders", T("Orders"), T("How those beside you fight"));
+    add("aid", T("Aid"), T("Herbs, a divine weapon, a call for help"));
+    if (B.enc.spare) add("spare", T("Spare"), T("Let a beaten foe live"));
+    if (C.canFlee()) add("flee", T("Withdraw"), T(C.fleeBreaks().length ? "Leave the fight; it breaks a vow" : "Leave the fight, at a cost"));
+    add("pause", T("Pause"), T(k ? "P or Esc: the fight waits" : "The fight waits"));
+    const card = U.el('<div class="fbrief-wrap" role="dialog" aria-modal="true" aria-labelledby="fb-title"><div class="fbrief">' +
+      '<p class="fb-tag">' + (T(B.enc.lethal ? "Battle · you can die here" : "A fight")) + "</p>" +
+      '<h2 id="fb-title">' + U.t(K.val(B.enc.title)) + '</h2><p class="fb-mode">' + (T(MODE[mode] || "Against several")) + "</p>" + (goal ? '<p class="fb-goal">' + U.esc(goal) + "</p>" : "") +
+      '<p class="fb-lbl">' + (T("What you can do")) + '</p><ul class="fb-acts">' + list.map(([ic, n, w]) => '<li><span class="fb-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + RT_ICONS[ic] + '"/></svg></span><b>' + n + "</b><small>" + w + "</small></li>").join("") + "</ul>" +
+      '<div class="btnrow"><button type="button" class="cta fb-go">' + (T("Fight")) + "</button></div></div></div>");
+    V.briefing = true;
+    const go = V.briefGo = () => { if (!V || !card.isConnected) return; card.remove(); V.briefGo = null; if (!S.fightTour) { S.fightTour = 1; tour(); } else { V.briefing = false; V.last = 0; } };
+    card.querySelector(".fb-go").addEventListener("click", go);
+    V.el.appendChild(card);
+    setTimeout(() => { const b = card.querySelector(".fb-go"); if (b && b.isConnected) b.focus({ preventScroll: true }); }, 300);
+  }
+  // The walkthrough (the layout page's tour): each control lit in turn, a caption at the top of the stage (over the
+  // controls for the buttons at the top right), Skip in the caption; a tap or a key goes on. The fight waits.
+  function tour() {
+    if (!V) return;
+    const R = V.R, k = keysOnly(), has = (sel) => !!V.el.querySelector(sel);
+    const steps = [
+      [k ? ".kstrip .ks-keys" : ".pad", k ? "Press A or D, or click the ground, to walk. You can pass your own people, never a foe." : "Hold ◀ ▶ to walk. You can pass your own people, never a foe."],
+      [k ? ".kstrip .ks-keys" : ".acts .strike", k ? "Press J, or click a foe, to strike. The third in a row knocks him back." : "Strike three times for a combo. The third blow knocks a foe back."],
+      [k ? ".kstrip .ks-keys" : ".acts .roll", k ? "A blow is marked on the ground. Press K or Space (or right-click) to roll through it before the mark fills. Each roll costs breath." : "A blow is marked on the ground. Roll through it before the mark fills to its rim. Each roll costs breath."],
+      R.skill ? [k ? ".kstrip .ks-skill" : ".acts .skill", k ? "L is your path's skill. The ring in the strip fills as it gets ready." : "Your path's skill. The ring fills as it gets ready again."] : null,
+      [null, k ? "W or S (or ↑ ↓) steps to another row." : "Swipe up or down on the stage to step to another row."],
+      has(".hb.orders") ? [".hb.orders", "Orders tell those beside you how to fight."] : null,
+      [".hb.aid", "Herbs, your divine weapon and a call for help are in Aid."],
+      [".hb.pause", k ? "Pause stops the fight. So do P and Esc." : "Pause stops the fight."]
+    ].filter(Boolean);
+    V.briefing = true; V.el.classList.add("touring");
+    let i = -1;
+    const clear = () => { $$(".lit", V.el).forEach((e) => e.classList.remove("lit")); $$(".tour-cap", V.el).forEach((e) => e.remove()); };
+    const end = V.tourEnd = (skipped) => {
+      if (!V) return; clear(); V.el.classList.remove("touring"); V.el.removeEventListener("pointerdown", block, true); V.el.removeEventListener("click", onClick, true);
+      V.tourNext = V.tourEnd = null; V.briefing = false; V.last = 0;
+      if (skipped === true) toast(K.tr("Walkthrough skipped. Every control is yours."));
+    };
+    const show = () => {
+      clear();
+      const [sel, text] = steps[i];
+      if (sel) $$(sel, V.el).forEach((e) => e.classList.add("lit"));
+      const cap = document.createElement("div"); cap.className = "tour-cap top"; cap.setAttribute("role", "status");
+      cap.innerHTML = '<div class="tc-text"><span class="tc-step">' + U.esc(K.tr("{n} of {m}", { n: i + 1, m: steps.length }) + " · " + K.tr("Tap to go on")) + '</span><span class="tc-say">' + U.esc(K.tr(text)) + '</span></div><button type="button" class="tc-skip">' + U.esc(K.tr("Skip")) + "</button>";
+      if (sel && sel.startsWith(".hb")) { cap.classList.remove("top"); Object.assign(cap.style, { position: "fixed", bottom: "calc(var(--pad) + 4px)", left: "var(--pad)", right: "var(--pad)" }); V.el.appendChild(cap); }
+      else V.stage.appendChild(cap);
+    };
+    const next = V.tourNext = () => { i++; if (i >= steps.length) return end(); show(); };
+    const block = (e) => { e.stopPropagation(); if (!e.target.closest(".tc-skip")) e.preventDefault(); };
+    const onClick = (e) => { e.stopPropagation(); e.preventDefault(); if (e.target.closest(".tc-skip")) end(true); else next(); };
+    V.el.addEventListener("pointerdown", block, true); V.el.addEventListener("click", onClick, true);
+    next();
+  }
+
+  // ---------- The divine weapon (PRD §18.15; the layout page's astra() and impact()) ----------
+  // The fight stands still (R.frozen) while the weapon's name holds over the field, about 2.4 s; as it ends
+  // its element sweeps the field, a white-hot flash, a heavy shake and a ring; every foe it struck is thrown
+  // (the engine's "thrown"), its damage in big numbers, weapons flying as they fall; scorches stay on the
+  // ground with embers rising. Calm motion: one soft flash, no shake, nothing thrown.
+  const AX_SUB = { agneya: "The fire weapon", varuna: "The water weapon", vayavya: "The wind weapon", sammohana: "The weapon of sleep" };
+  function axStart(f) {
+    const o = f.out || {}, me = V.actors.get(C.player().uid), to = o.uid && V.actors.get(o.uid), ab = K.ABILITIES[f.id] || {};
+    const kind = o.kind || { agneya: "agneya", varuna: "varuna", vayavya: "vayavya", sammohana: "sammohana" }[f.id] || "generic";
+    if (U.astraFx) U.astraFx({ kind, clash: !!o.clash, from: me && me.svg, to: to && to.svg, into: V.el, noFlash: true }); // the weapon's weather, over the stage
+    const old = $(".ax", V.stage); if (old) old.remove();
+    const title = f.id === "astra" ? K.tr("Divine weapon") : K.tr(ab.name || "Divine weapon"), sub = f.id === "astra" ? "" : K.tr(AX_SUB[kind] || "Divine weapon");
+    const line = !o.clash && ab.target === "enemies" ? K.tr("Every foe before you takes the blow.") : "";
+    const ax = document.createElement("div"); ax.className = "ax k-" + kind;
+    ax.innerHTML = '<i class="ax-fire"></i><i class="ax-edges"></i><i class="ax-blink"></i><div class="ax-title" aria-live="assertive"><b>' + U.esc(title) + "</b>" + (sub ? "<small>" + U.esc(sub) + "</small>" : "") + (line ? "<p>" + U.esc(line) + "</p>" : "") + "</div>";
+    V.stage.appendChild(ax); void ax.offsetWidth; ax.classList.add("play");
+    if (me) pose(me, "draw", 500, 0.7);
+    if (U.rigFreeze && !U.calm()) U.rigFreeze(400);
+    V.ax = { el: ax, kind, struck: f.struck || [], dealt: f.dealt || {}, clash: !!o.clash };
+  }
+  function axTick() {
+    const R = V.R, X = V.ax, G = V.G, me = V.actors.get(C.player().uid);
+    const struck = X.struck.map((uid) => V.actors.get(uid)).filter(Boolean);
+    const dir = struck.length ? Math.sign(struck.reduce((n, a) => n + a.x, 0) / struck.length - (me ? me.x : 0)) || 1 : (C.player().rt.face || 1);
+    if (!X.waved && R.frozen < 0.45) { // the element sweeps the field from your hand
+      X.waved = true; X.el.classList.add("struck");
+      if (me) pose(me, "loose", 1200, 0.5);
+      if (!U.calm() && !X.clash) {
+        X.el.insertAdjacentHTML("beforeend", '<i class="ax-wave"></i>');
+        const wave = X.el.querySelector(".ax-wave"), mx = me ? me.x : G.W / 2, ww = G.W * 0.75;
+        wave.style.bottom = (G.gl - G.ph * 0.2) + "px"; wave.style.height = (G.ph * 2.1) + "px";
+        const from = dir > 0 ? mx - G.W * 0.35 : mx + G.W * 0.35 - ww, to = dir > 0 ? G.W * 1.05 : -ww - G.W * 0.05;
+        wave.animate([{ transform: "translateX(" + from + "px) scaleX(0.4)", opacity: 0 }, { opacity: 1, offset: 0.2 }, { transform: "translateX(" + to + "px) scaleX(1)", opacity: 0.85 }], { duration: 620, easing: "cubic-bezier(.4,0,.6,1)", fill: "forwards" });
+      }
+    }
+    if (X.hit || R.frozen > 0) return;
+    X.hit = true;
+    const calm = U.calm();
+    X.el.insertAdjacentHTML("beforeend", '<i class="ax-white"></i><i class="ax-ring"></i>');
+    X.el.querySelector(".ax-white").animate(calm ? [{ opacity: 0 }, { opacity: 0.35, offset: 0.3 }, { opacity: 0 }] : [{ opacity: 0 }, { opacity: 0.95, offset: 0.15 }, { opacity: 0 }], { duration: calm ? 600 : 420, easing: "ease-out" });
+    if (!calm) {
+      const cx = struck.length ? struck.reduce((n, a) => n + a.x, 0) / struck.length : G.W * 0.7, cy = G.H - G.gl - G.ph * 0.3, ring = X.el.querySelector(".ax-ring");
+      Object.assign(ring.style, { left: cx + "px", top: cy + "px", width: G.ph * 0.6 + "px", height: G.ph * 0.6 + "px" });
+      ring.animate([{ transform: "translate(-50%,-50%) scale(0.2)", opacity: 0.95 }, { transform: "translate(-50%,-50%) scale(4.2)", opacity: 0 }], { duration: 760, easing: "ease-out" });
+      shake(true); if (U.rigFreeze) U.rigFreeze(90);
+      if (K.Sound) K.Sound.play("hit");
+    }
+    for (const a of struck) {
+      const d = X.dealt[a.u.uid];
+      if (d) {
+        const big = document.createElement("span"); big.className = "pop big"; big.textContent = String(d);
+        big.style.left = a.x + "px"; big.style.bottom = (a.gy + a.fh * 1.1) + "px"; V.world.appendChild(big);
+        if (calm) setTimeout(() => big.remove(), 1200);
+        else big.animate([{ transform: "translate(-50%,10px) scale(.5)", opacity: 0 }, { transform: "translate(-50%,-6px) scale(1.25)", opacity: 1, offset: 0.2 }, { transform: "translate(-50%,-50px) scale(1)", opacity: 0 }], { duration: 1300, easing: "ease-out" }).onfinish = () => big.remove();
+      }
+      if (X.clash) continue;
+      // A scorch on the ground that stays, embers rising from it.
+      const sc = document.createElement("i"); sc.className = "scorch k-" + X.kind; Object.assign(sc.style, { left: a.x + "px", bottom: (a.gy - a.fh * 0.05) + "px", width: (a.fh * 0.8) + "px", height: (a.fh * 0.14) + "px" }); V.world.appendChild(sc);
+      if (U.flingBits) U.flingBits(V.world, "flake", { x: a.x, y: G.H - a.gy - a.fh * 0.5 }, 10, a.bw, "#8a3a2a");
+    }
+    if (!X.clash && struck.length) {
+      const mx = me ? me.x : 0, strip = document.createElement("i"); strip.className = "scorch strip k-" + X.kind;
+      Object.assign(strip.style, dir > 0 ? { left: (mx + G.W * 0.05) + "px", right: "0" } : { left: "0", width: Math.max(0, mx - G.W * 0.05) + "px" }, { bottom: (G.gl - G.ph * 0.05) + "px", height: (G.ph * 0.12) + "px" });
+      V.world.appendChild(strip);
+      const sc = $(".rt-scorch", V.stage); sc.className = "rt-scorch on k-" + X.kind; setTimeout(() => { if (V) sc.className = "rt-scorch"; }, 6000);
+      if (!calm && X.kind !== "varuna" && X.kind !== "sammohana") {
+        let n = 0; const host = V.world, emb = setInterval(() => { if (!V || !host.isConnected || ++n > 14) return clearInterval(emb); for (const a of struck) U.flingBits(host, "spark", { x: a.x + (Math.random() - 0.5) * a.bw, y: V.G.H - a.gy }, 2, a.bw, "#ff9a3c", true); }, 120);
+      }
+    }
+    const el = X.el; setTimeout(() => el.remove(), 900); V.ax = null;
   }
 })(window.K = window.K || {});

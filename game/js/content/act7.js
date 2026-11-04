@@ -149,7 +149,10 @@
     for (const h of K.TELL_HOOKS || []) h(S, t, has);
     const wrong = K.TELL_WRONG && K.TELL_WRONG(S);
     if (wrong) t.push(wrong);
-    if (!S.alive) t.push(S.deathText || "{They} fell at Kurukshetra.");
+    // Without a written death (an old save, a death set by hand), the place still follows the death: the
+    // house of lac is Varnavata, a death before the war is not at Kurukshetra.
+    const early = (S.deathAt && S.deathAt.act < 6) || (S.deathAct && S.deathAct < 6);
+    if (!S.alive) t.push(S.deathText || (has("died_in_fire") ? "{They} died in the house of lac at Varnavata, on the night everyone believes the Pandavas died." : early ? "{They} died before the war, far from Kurukshetra." : "{They} fell at Kurukshetra."));
     return t;
   }
 

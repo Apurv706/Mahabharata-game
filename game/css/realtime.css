@@ -558,12 +558,12 @@ html.calm #rt .stage.bigshake { animation: none; }
 #rt .sheet.compact .resume { min-height: 44px; min-width: 0; padding: 2px 8px; border-radius: 8px; border: 1px solid var(--gold-line); background: var(--raised); color: var(--data); font: 700 12px/1.1 var(--text); white-space: nowrap; justify-self: end; align-self: center; }
 #rt .aid-sheet.compact .resume { margin-left: auto; flex: 0 0 auto; display: flex; align-items: center; }
 #rt .orders-sheet.compact.matched.m-rt { grid-template-columns: auto minmax(0, 1fr) auto !important; }
-#rt .orders-sheet.compact.matched.m-rt .chips button { padding: 1px 1px; font-size: 11px; letter-spacing: -0.1px; }
+#rt .orders-sheet.compact.matched.m-rt .chips button { padding: 1px 1px; font-size: 12px; letter-spacing: -0.1px; }
 #rt .orders-sheet.compact.matched.m-rt .grp { min-width: 46px; padding: 2px 4px; }
 #rt .orders-sheet.compact.matched.m-rt { gap: 0 4px; }
 #rt .orders-sheet.compact.matched.m-rt .resume { padding: 2px 5px; font-size: 11.5px; }
 #rt .aid-sheet.compact.matched button[data-aid] { flex: 1 1 0; min-width: 0; }
-@media (max-width: 370px) { #rt .orders-sheet.compact.matched.m-rt .chips button { font-size: 10.5px; } #rt .orders-sheet.compact.matched.m-rt .resume { font-size: 11px; padding: 2px 4px; } #rt .orders-sheet.compact.matched.m-rt .grp { min-width: 44px; } }
+@media (max-width: 370px) { #rt .orders-sheet.compact.matched.m-rt .chips button { font-size: 11.5px; } #rt .orders-sheet.compact.matched.m-rt .resume { font-size: 11px; padding: 2px 4px; } #rt .orders-sheet.compact.matched.m-rt .grp { min-width: 44px; } }
 /* ---------- The turn-based war day in the game (ui/warday.js; PRD §18.15 stage 2) ---------- */
 #rt.screen.war.upright { grid-template-rows: minmax(0, 1fr) auto; }
 #rt.war .wctl { gap: 6px; }
@@ -625,7 +625,7 @@ html[lang="hi"] #rt.war .wd-champ b { line-height: 1.35; }
 #rt.war .wd-champ small { font: 600 15px/1.2 var(--text); color: var(--data); text-shadow: 0 2px 6px #000; }
 html.calm #rt.war .stage.champ .wd-flash, html.calm #rt.war .stage.champ .wd-champ { animation: none; opacity: 1; }
 html.calm #rt.war .stage.champ .wd-flash { opacity: 0; }
-#rt.war .wd-fbline { position: absolute; left: 50%; top: 40%; transform: translateX(-50%); z-index: 15; margin: 0; max-width: calc(100% - 24px); }
+#rt .wd-fbline { position: absolute; left: 50%; top: 40%; transform: translateX(-50%); z-index: 15; margin: 0; max-width: calc(100% - 24px); }
 #rt.war .fbrief-wrap, #rt.war .ftour { z-index: 80; }
 @media (max-width: 370px) { #rt.upright.war .moves button small { display: none; } #rt.war .wd-read button { font-size: 12px; } }
 #rt.wide.war .moves { grid-template-columns: repeat(var(--cols, 5), minmax(0, 1fr)); }
@@ -633,3 +633,20 @@ html.calm #rt.war .stage.champ .wd-flash { opacity: 0; }
 /* rows centred: 3+2 on a phone, never one alone (ui/warday.js sets --cols) */
 #rt.war .moves, #rt.upright.war .moves, #rt.wide.war .moves { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
 #rt.war .moves button, #rt.upright.war .moves button { flex: 0 0 calc((100% - (var(--cols, 3) - 1) * 6px) / var(--cols, 3)); height: 44px; }
+/* Review fixes (4 November): a touch laptop's corner controls, ◀ ▶ bottom left and skill / Roll / Strike bottom right;
+   a long skill name breaks inside its ring; name tags and intent chips above every figure. */
+#rt.wide.rt.touch .pad { order: -1; }
+#rt .acts .skill > span { overflow-wrap: normal; hyphens: manual; }
+#rt .tags { position: absolute; inset: 0; z-index: 31; pointer-events: none; }
+#rt .tags .nametag { z-index: auto; }
+#rt .intent { z-index: 31; }
+#rt .fbrief-wrap, #rt .ftour { z-index: 80; }
+#rt .astra-fx { z-index: 39; }
+.astra-fx.noflash::after { display: none; }
+/* The divine weapon's own colours: the sweep, the glow and the scorch (fire is the default). */
+#rt .ax.k-varuna .ax-fire, #rt .ax.k-varuna .ax-wave { background: radial-gradient(ellipse at 60% 100%, rgba(230, 245, 255, 0.95), rgba(120, 180, 240, 0.85) 30%, rgba(40, 90, 190, 0.6) 55%, rgba(20, 40, 120, 0) 75%); }
+#rt .ax.k-vayavya .ax-fire, #rt .ax.k-vayavya .ax-wave { background: radial-gradient(ellipse at 60% 100%, rgba(255, 250, 235, 0.9), rgba(225, 205, 160, 0.8) 30%, rgba(180, 150, 100, 0.5) 55%, rgba(120, 100, 60, 0) 75%); }
+#rt .ax.k-sammohana .ax-fire, #rt .ax.k-sammohana .ax-wave { background: radial-gradient(ellipse at 60% 100%, rgba(245, 230, 255, 0.9), rgba(180, 140, 235, 0.8) 30%, rgba(120, 70, 200, 0.55) 55%, rgba(60, 20, 120, 0) 75%); }
+#rt .ax.k-generic .ax-wave { background: radial-gradient(ellipse at 60% 100%, rgba(255, 255, 255, 0.95), rgba(255, 240, 200, 0.85) 30%, rgba(255, 210, 130, 0.55) 55%, rgba(200, 160, 90, 0) 75%); }
+#rt .scorch.k-varuna { background: radial-gradient(closest-side, rgba(30, 50, 90, 0.6), rgba(60, 110, 180, 0.3) 60%, rgba(0, 0, 0, 0)); }
+#rt .scorch.k-sammohana { background: radial-gradient(closest-side, rgba(70, 30, 110, 0.55), rgba(120, 60, 170, 0.25) 60%, rgba(0, 0, 0, 0)); }
