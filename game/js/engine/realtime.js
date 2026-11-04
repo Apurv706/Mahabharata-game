@@ -691,8 +691,12 @@
       return;
     }
     // The blow lands on you if you are in its path (even one marked on a friend), else on its mark.
+    // A roll that carried you out of a blow marked on you is a dodge all the same: recorded, and perfect when begun just
+    // before it lands (a roll away from the foe leaves the blow's reach, and was counted as no dodge at all).
     let t = null;
+    const rolledOut = !meIn && p.hp > 0 && a.on === p.uid && R.t - R.rollT >= 0 && R.t - R.rollT <= RT.P.roll + STEP;
     if (meIn) { if (R.roll > 0 || R.unseen > 0) { dodge(); return; } t = p; }
+    else if (rolledOut) { dodge(); return; }
     else {
       const orig = fr.find((f) => f.uid === a.on);
       if (orig && inside(m, orig) && targetable(R, orig)) t = orig;
