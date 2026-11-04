@@ -1,7 +1,7 @@
 /* Blows that land (owner, 4 November: "keep some space for the weapons to strike each other"): in real time, on an
    iPhone 15 and a 1366x657 laptop, the foes come and fight you and you fight back; at the moment each melee blow lands
    the weapon's tip lies within the body it strikes (the torso), or on the shield or the weapon that meets it when the
-   one struck is guarding; and two who fight stand at least 0.8 of the striker's reach apart (no side by side; a
+   one struck is guarding (a weapon held behind the body parries nothing); and two who fight stand at least 0.8 of the striker's reach apart (no side by side; a
    blow across a row reaches a quarter body less).
    Fights: guards and soldiers with spears (you with a sword), bandits with clubs (you with a mace).
    Usage: node tests/blowfit.js [--shots DIR]   (needs Playwright) */
@@ -27,16 +27,16 @@ function drive(phase) {
     const rows = (u) => Math.abs(u.rt.lane - p.rt.lane), reach = (u) => (p.rt.reach - 0.25 * K.RT.BODY * rows(u)) * 0.9;
     const f = foes.sort((a, b) => Math.abs(a.rt.x - p.rt.x) - reach(a) - (Math.abs(b.rt.x - p.rt.x) - reach(b)))[0]; if (!f) return;
     const d = f.rt.x - p.rt.x;
-    if (Math.abs(d) <= reach(f)) { V.held.l = V.held.r = false; V.queue.strike = true;
+    if (Math.abs(d) <= reach(f)) { V.held.l = V.held.r = false; V.walk = null; V.queue.strike = true;
       const fa = V.actors.get(f.uid); if (fa && fa.rig && (window.__guardEvery = (window.__guardEvery || 0) + 1) % 30 === 0) { fa.rig.set("guard", 900, 0.55); setTimeout(() => fa.rig.pose === "guard" && fa.rig.set(fa.base, 520, 0.42), 450); } }
-    else { V.held.r = d > 0; V.held.l = d < 0; }
+    else if (!V.walk) V.walk = { foe: f.uid }; // walking up to him as a click on him does (it stops at your reach, frame by frame)
   }, 50);
 }
 const srv = http.createServer((q, r) => { let f = path.join(ROOT, decodeURIComponent(q.url.split("?")[0])); if (f.endsWith("/")) f += "index.html"; fs.readFile(f, (e, d) => { if (e) { r.writeHead(404); return r.end(); } r.writeHead(200, { "content-type": TYPES[path.extname(f)] || "application/octet-stream" }); r.end(d); }); });
 srv.listen(0, async () => {
   const port = srv.address().port, b = await pw.chromium.launch();
   let fails = 0, n = 0;
-  for (const dev of DEVICES) for (const F of FIGHTS) {
+  for (const dev of DEVICES) for (const F of (process.env.WARONLY ? [] : FIGHTS)) {
     const ctx = await b.newContext({ viewport: { width: dev.w, height: dev.h }, deviceScaleFactor: dev.mobile ? 2 : 1, isMobile: dev.mobile, hasTouch: dev.mobile });
     const pg = await ctx.newPage(); const errs = []; pg.on("pageerror", (e) => errs.push(e.message));
     await pg.route(/fonts\.(googleapis|gstatic)/, (r) => r.abort());
@@ -67,7 +67,7 @@ srv.listen(0, async () => {
         const who = m.by + "→" + m.on + " at " + m.t.toFixed(1) + "s";
         if (!m.res) { out.push("a blow without a measured contact: " + who); continue; }
         if (!m.res.inside) out.push("the tip missed the " + m.res.on + " (" + who + "): tip " + Math.round(m.res.x) + "," + Math.round(m.res.y) + " box " + [m.res.box.l, m.res.box.r, m.res.box.t, m.res.box.b].map(Math.round).join(","));
-        if (m.guard && m.res.on === "body") out.push("a guarded blow fell on the body (" + who + ")");
+        if (m.guard === "shield" && m.res.on === "body") out.push("a blow on a raised shield fell on the body (" + who + ")");
         if (m.res.on === "body") body++; else clash++;
         if (m.by === p.uid) mine++;
         // Two who fight: at least 0.8 of the striker's reach apart (less a quarter body for each row between): the foe coming to you, you walking up to him.
@@ -82,6 +82,21 @@ srv.listen(0, async () => {
     const probs = res.problems.concat(errs.map((e) => "script error: " + e));
     n++; if (probs.length) fails++;
     console.log((probs.length ? "✗ " : "ok ") + tag + ": " + res.n + " blows (" + res.body + " on the body, " + res.clash + " on a shield or a weapon, " + res.mine + " yours), closest " + res.minRatio + " of the reach" + (probs.length ? "\n    " + probs.join("\n    ") : ""));
+    await ctx.close();
+  }
+  // The war-day screen (ui/warday.js): blows struck across the gap land on the body, the shield or the weapon too.
+  for (const dev of DEVICES) {
+    const ctx = await b.newContext({ viewport: { width: dev.w, height: dev.h }, deviceScaleFactor: dev.mobile ? 2 : 1, isMobile: dev.mobile, hasTouch: dev.mobile });
+    const pg = await ctx.newPage(); const errs = []; pg.on("pageerror", (e) => errs.push(e.message));
+    await pg.route(/fonts\.(googleapis|gstatic)/, (r) => r.abort());
+    await pg.goto("http://localhost:" + port + "/index.html?rt=1"); await pg.waitForTimeout(400);
+    await pg.evaluate(() => { const S = K.S = Object.assign(K.newLife(), { name: "Ira", pronoun: "she", origin: "panchala", age: 30, act: 6, path: "mace", side: "pandava", teacher: "drona" }); S.attrs.might = 3; S.attrs.grace = 3; S.flags.push("role_front"); S.briefed = ["duel", "melee", "hold", "rounds"]; S.fightTour = 1; K.seed(3); K.UI.startBattle("e_ring", () => {}); });
+    await pg.waitForTimeout(2600);
+    await pg.evaluate(() => { const b = document.querySelector('#rt [data-place="front"]'); if (b) b.click(); }); await pg.waitForTimeout(800);
+    for (let i = 0; i < 8; i++) { await pg.evaluate(() => { const p = K.Combat.player(); if (p) { p.maxHp = Math.max(p.maxHp, 9999); p.hp = p.maxHp; } K.Combat.state().units.forEach((u) => { if (u.side === "enemy") u.hp = Math.max(u.hp, u.maxHp * 0.6); }); const b = document.querySelector('#rt [data-move="strike"]:not([disabled])') || document.querySelector("#rt [data-move]:not([disabled])"); if (b) b.click(); }); await pg.waitForTimeout(1800); }
+    const r = await pg.evaluate(() => { const V = K.UI.warScreen(), list = (V && V.impacts) || [], out = []; for (const m of list) if (!m.res.inside) out.push("war day: the tip missed the " + m.res.on + " (" + m.by + "→" + m.on + "): tip " + Math.round(m.res.x) + "," + Math.round(m.res.y) + " box " + [m.res.box.l, m.res.box.r, m.res.box.t, m.res.box.b].map(Math.round).join(",")); if (list.length < 2) out.push("war day: too few melee blows measured (" + list.length + ")"); return { out, n: list.length, clash: list.filter((m) => m.res.on !== "body").length, log: K.Combat.state() ? K.Combat.state().log.slice(-12).map((l) => l.key || l.raw || "").join(" | ") : "" }; });
+    const probs = r.out.concat(errs.map((e) => "script error: " + e)); n++; if (probs.length) fails++;
+    console.log((probs.length ? "✗ " : "ok ") + dev.name + " war day e_ring (mace): " + r.n + " blows measured (" + r.clash + " on a shield or a weapon)" + (probs.length ? "\n    " + probs.join("\n    ") : ""));
     await ctx.close();
   }
   console.log((n - fails) + "/" + n + " fights land their blows");

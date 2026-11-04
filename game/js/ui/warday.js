@@ -539,15 +539,27 @@
       }, id === "aimed" ? 480 : 220);
       return id === "aimed" ? 1250 : 950;
     }
-    // A blow: wind-up, a step in, contact.
+    // A blow: wind-up, a step in, contact. Across the gap the swing ends with the weapon's tip on the one struck (on his
+    // shield, or crossing his weapon, when he blocks), measured on the live figures (U.aimBlow / U.blowImpact, puppet-anim.js).
     pose(a, "windup", 600, 0.7);
-    now(() => { pose(a, "strike", 1900, 0.5); a.dx = (enemy ? -1 : 1) * 0.035; pos(a); }, 140);
-    now(() => { land(hits, heals); }, 230);
-    now(() => { a.dx = 0; pos(a); home(a, 0); }, 420);
+    const h0 = hits.find((h) => !(h.def === "dodge" || (h.n === 0 && !h.sh))), t0 = h0 && firstFig(h0.on);
+    const guard = h0 && t0 ? (h0.sh && t0.svg.querySelector(".it-s") ? "shield" : h0.def === "block" || h0.def === "counter" ? (t0.svg.querySelector(".it-s") ? "shield" : "weapon") : null) : null;
+    let aim = null;
+    now(() => {
+      if (guard && t0) pose(t0, "guard", 1400, 0.55);
+      aim = a.rig && t0 && !t0.dead ? U.aimBlow(a.rig, t0.svg, { guard, k: 1900, z: 0.5, maxLunge: 1e4 }) : null; // across the gap: the step in is as long as it must be
+      if (!aim) { pose(a, "strike", 1900, 0.5); a.dx = (enemy ? -1 : 1) * 0.035; pos(a); }
+    }, 140);
+    now(() => {
+      const res = aim ? U.blowImpact(aim) : null, sr = V.stage.getBoundingClientRect();
+      if (res) (V.impacts = V.impacts || []).push({ by: a.u.uid, on: t0.u.uid, res, guard });
+      land(hits, heals, res && t0 ? { uid: t0.u.uid, x: res.x - sr.left, y: res.y - sr.top, on: res.on } : null);
+    }, 235);
+    now(() => { a.dx = 0; if (a.rig) { a.rig.t.dx = 0; a.rig.t.dy = 0; } pos(a); home(a, 0); }, 420);
     return 720;
   }
   // Blows land: the struck flash and are knocked, the number rises; a shield turns it in sparks; the fallen fall.
-  function land(hits, heals) {
+  function land(hits, heals, at) {
     const B = V.B;
     for (const h of hits) {
       const u = B.units.find((x) => x.uid === h.on); if (!u) continue;
@@ -555,7 +567,9 @@
       V.hp[h.on] = Math.max(0, (V.hp[h.on] != null ? V.hp[h.on] : u.hp) - h.n);
       if (h.def === "dodge" || (h.n === 0 && !h.sh)) { pop(f, K.tr("Missed"), "miss"); if (isP(u)) { pose(f, "duck", 600, 0.6); home(f, 500); } continue; }
       if (h.def === "block" || h.def === "counter") { pose(f, "guard", 800, 0.55); home(f, 700); }
-      if (h.sh) { spark(f); if (h.sh !== "glance" && !isP(u)) { pose(f, "guard", 900, 0.55); home(f, 900); } }
+      const pt = at && at.uid === h.on ? at : null; at = pt ? null : at; // the point of contact, for the first one struck
+      if (pt) impact(pt, f); else if (h.sh) spark(f);
+      if (h.sh && h.sh !== "glance" && !isP(u)) { pose(f, "guard", 900, 0.55); home(f, 900); }
       f.el.classList.add("hit"); setTimeout(() => f.el.classList.remove("hit"), 90);
       if (f.rig) f.rig.kick(f.side === "foe" ? { rot: 220, head: 180 } : { rot: -240, head: -200, armF: 140 });
       pop(f, String(h.n) + (h.sh ? " ⛉" : ""), f.side === "foe" ? "" : "me");
@@ -602,6 +616,13 @@
     el.style.left = f.x + "px"; el.style.bottom = (f.gy + f.fh * 1.08) + "px"; V.world.appendChild(el);
     if (U.calm() || !el.animate) { setTimeout(() => el.remove(), 700); return; }
     el.animate([{ transform: "translate(-50%,4px)", opacity: 0 }, { transform: "translate(-50%,-4px)", opacity: 1, offset: 0.15 }, { transform: "translate(-50%,-38px)", opacity: 0 }], { duration: 900, easing: "ease-out" }).onfinish = () => el.remove();
+  }
+  // Where a blow lands: a burst and flakes on the body; on a shield or a crossing weapon a cold flash and sparks.
+  function impact(pt, f) {
+    const clash = pt.on !== "body", fl = document.createElement("i");
+    fl.className = "impact" + (clash ? " clash" : ""); fl.style.left = pt.x + "px"; fl.style.top = pt.y + "px";
+    V.world.appendChild(fl); setTimeout(() => fl.remove(), 320);
+    if (U.flingBits) { if (clash) U.flingBits(V.world, "spark", pt, 10, 12, null, true); else U.flingBits(V.world, "flake", pt, 6, Math.max(8, f.bw * 0.2), "#8a3a2a"); }
   }
   // A blow on a shield: sparks fly from it.
   function spark(f) {

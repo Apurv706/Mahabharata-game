@@ -169,6 +169,9 @@
     const ph = wide ? Math.min(H * 0.3, W / (FIELD * 0.36)) : Math.min(H * 0.3, W * 0.52); // a tall phone: the front row's figure about 29% of the stage
     const FW = wide ? Math.min(W, ph * 0.36 * FIELD) : W;
     V.G = { W, H, ph, FW, fx0: (W - FW) / 2, dk: 0.12, gl: wide && !scr.classList.contains("touch") ? Math.max(H * 0.06, 46) : H * (wide ? 0.06 : 0.05), dstep: H * (wide ? 0.1 : 0.11), wide };
+    // The fight's scale: a front-row figure's width in the field's body widths (about 1.8 on a phone, 1 on a laptop), so
+    // that two who fight stand where their weapons reach, as drawn (engine RT.setScale).
+    if (RT.setScale && V.R) RT.setScale(V.R, ph * 0.36 / (FW / FIELD));
     V.actors.forEach((a) => size(a));
     fitSkill();
     const eL = $(".edgefx.l"), eR = $(".edgefx.r"); if (eL) { eL.style.width = eR.style.width = (V.G.fx0 + FW * 0.12) + "px"; }

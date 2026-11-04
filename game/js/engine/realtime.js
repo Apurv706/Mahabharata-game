@@ -114,9 +114,17 @@
   // The weapon each one strikes with (as the screen draws it, ui/puppet.js: a bowman draws a sword to strike), and how far
   // it reaches (owner, 4 November: room between the figures for the weapons to meet). The drawn reach, in body widths from
   // the figure's middle to the tip at full stretch, is spear 2.6, mace 2.3, sword 2.0, club 1.8, dagger 1.6, a fist 1.15;
-  // the blow lands on the chest (a third of a body short of that), and a figure on a phone is drawn about 1.4-1.8 of the
-  // field's body widths wide (1 on a laptop): REACH is that, in field body widths, where two stand to fight.
-  RT.REACH = { spear: 3.15, mace: 2.75, sword: 2.3, club: 2.0, hammer: 1.8, dagger: 1.75, fist: 1.1 };
+  // the blow lands on the chest (a third of a body short of that): REACH is where two stand to fight, in drawn body widths.
+  // The field is 9.5 body widths, but a figure on an upright phone is drawn about 1.8 of them wide (1 on a laptop): the
+  // screen gives the fight its scale (RT.setScale, held to 1.2-1.8; 1.4 without a screen, as the balance runs), so the
+  // figures stand where their weapons reach on every screen.
+  RT.REACH = { spear: 2.25, mace: 1.95, sword: 1.65, club: 1.45, hammer: 1.3, dagger: 1.25, fist: 0.8 };
+  RT.SCALE = 1.4;
+  const reachOf = (R, w) => RT.REACH[w] * BODY * (R.scale || RT.SCALE);
+  RT.setScale = function (R, k) {
+    R.scale = Math.max(1.2, Math.min(1.8, k || RT.SCALE));
+    for (const u of R.B.units) if (u.rt && u.rt.weapon) u.rt.reach = reachOf(R, u.rt.weapon);
+  };
   const PATH_WEAPON = { archer: "sword", mace: "mace", charioteer: "sword", strategist: "sword", healer: "dagger", spy: "dagger", bard: "dagger" };
   const PERSON_WEAPON = { bhima: "mace", duryodhana: "mace", dushasana: "mace", shalya: "mace", balarama: "mace", ghatotkacha: "club", ugra: "club", charu: "hammer",
     satyaki: "sword", dhrishtadyumna: "sword", nakula: "sword", sahadeva: "sword", yudhishthira: "spear", guard: "spear", soldier: "spear" };
@@ -136,7 +144,7 @@
     const weapon = RT.weaponOf(u);
     return {
       archer, ranged, weapon,
-      reach: RT.REACH[weapon] * BODY,
+      reach: 0, // set by initUnit (the screen's scale)
       speed: (archer ? 0.16 : 0.2) * (u.plural ? 0.9 : 1),
       windup: Math.max(0.3, RT.P.windup - Math.min(0.2, (u.atk || 0) * 0.006)),
       keep: archer ? 0.34 : 0 // an archer keeps its distance
@@ -151,7 +159,8 @@
       if (tune.hp) { u.maxHp = Math.max(1, Math.round(u.maxHp * tune.hp)); u.hp = Math.max(0, Math.round(u.hp * tune.hp)); }
       u.atk = Math.round(u.atk * RT.P.atkFoe * (tune.atk || 1) * 10) / 10; // blows come oftener and are dodged more than on the turns
     }
-    const pr = u.side === "player" ? { weapon: RT.weaponOf(u), reach: RT.REACH[RT.weaponOf(u)] * BODY, speed: 0.3, windup: 0.12 } : profile(u);
+    const pr = u.side === "player" ? { weapon: RT.weaponOf(u), speed: 0.3, windup: 0.12 } : profile(u);
+    pr.reach = reachOf(R, pr.weapon);
     const i = R.seen++;
     const sideIdx = (R.sideSeen[foe ? "e" : "f"] = (R.sideSeen[foe ? "e" : "f"] || 0) + 1) - 1;
     u.rt = Object.assign(pr, {
@@ -178,7 +187,7 @@
   }
 
   RT.begin = function (B, opts = {}) {
-    const R = { B, t: 0, n: 0, seen: 0, sideSeen: {}, over: null, tries: opts.tries || 0, marks: [], fx: [], slow: 0, round: 1, doT: ROUND,
+    const R = { B, scale: opts.scale || RT.SCALE, t: 0, n: 0, seen: 0, sideSeen: {}, over: null, tries: opts.tries || 0, marks: [], fx: [], slow: 0, round: 1, doT: ROUND,
       orders: { friend: "balanced", soldiers: "defend" }, breath: RT.P.breathMax, combo: 0, comboT: -9, buffer: false, roll: 0, rollT: -9, rollDir: 1,
       kneel: 0, skillCd: 0, salve: null, unseen: 0, double: false, haste: 0, frozen: 0, assist: !!opts.assist, stats: { blows: 0, hits: 0, rolls: 0, dodged: 0, perfect: 0, maxAtk: 0 },
       skill: null, shots: [], shotN: 0 };
@@ -650,8 +659,8 @@
     // A foe in your row does not walk through you; nor, coming at you from another row, nearer than where the weapons reach.
     if (rowGap(e, p) < 0.5 || t === p) {
       const pg = Math.max(standOff(e, p), standOff(p, e)) - (rowGap(e, p) < 0.5 ? 0 : ROWCUT * rowGap(e, p)); // nor into your weapon's reach
-      if (u.x >= p.rt.x && x < p.rt.x + pg) x = Math.max(x, Math.min(u.x, p.rt.x + pg));
-      if (u.x < p.rt.x && x > p.rt.x - pg) x = Math.min(x, Math.max(u.x, p.rt.x - pg));
+      if (u.x >= p.rt.x && x < p.rt.x + pg) x = Math.max(x, Math.min(u.x + u.speed * 0.6 * dt, p.rt.x + pg)); // (inside it, from another row: he steps back out)
+      if (u.x < p.rt.x && x > p.rt.x - pg) x = Math.min(x, Math.max(u.x - u.speed * 0.6 * dt, p.rt.x - pg));
     }
     u.x = clamp(x, 0.07, 0.93);
     if (ad > 1e-4) u.face = sign(d);
@@ -851,7 +860,7 @@
     const B = C.start(R.B.enc.id, R.B.onEnd);
     B.say("You get up. One more time.");
     Object.assign(B.used, R.B.used); // what is used once a battle (a divine weapon, the call for help) stays used
-    const R2 = RT.begin(B, { tries: R.tries + 1, hp: RT.P.retryHp, assist: R.assist });
+    const R2 = RT.begin(B, { tries: R.tries + 1, hp: RT.P.retryHp, assist: R.assist, scale: R.scale });
     R2.orders = Object.assign({}, R.orders);
     R2.prev = { t: R.t };
     return R2;
@@ -915,7 +924,7 @@
   RT.log = []; // per fight: { id, out, t, tries } for tests/balance.js
   RT.autoplay = function (encId, opt = {}) {
     let B = C.start(encId, null);
-    let R = RT.begin(B, { assist: opt.assist });
+    let R = RT.begin(B, { assist: opt.assist, scale: opt.scale || (typeof process !== "undefined" && process.env && +process.env.RTSCALE) || undefined });
     const play = () => { let guard = 0; while (!R.over && guard++ < 60 * (RT.P.cap + 30)) RT.step(R, RT.bot(R, opt)); };
     play();
     let total = R.t;

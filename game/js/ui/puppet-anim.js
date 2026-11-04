@@ -285,11 +285,13 @@
   const mid = (r) => ({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
   U.blowTip = (svg) => { const t = svg && tipEl(svg), r = t && rect(t); return r ? mid(r) : null; };
   // What a blow on this figure meets: its body (the torso), its shield, or its weapon (a segment, fist to tip).
-  U.blowTarget = function (svg, guard) {
+  U.blowTarget = function (svg, guard, from) {
     if (guard === "shield") { const r = rect(svg.querySelector(".pp-body .it-s")); if (r) return { kind: "shield", box: r }; }
     if (guard === "weapon") {
       const t = U.blowTip(svg), it = svg.querySelector(".pp-body .foreF .it-w:not([style*='display: none'])"), r = rect(it);
-      if (t && r) return { kind: "weapon", box: r, tip: t };
+      const tb = rect(svg.querySelector(".pp-torso")), c = tb && tb.left + tb.width / 2;
+      // only a weapon held out toward the one striking crosses his (one behind the body is no parry)
+      if (t && r && (from == null || !tb || (from - c) * (t.x - c) > 0)) return { kind: "weapon", box: r, tip: t };
     }
     const r = rect(svg.querySelector(".pp-torso")) || rect(svg.querySelector(".pp-body"));
     return r ? { kind: "body", box: r } : null;
@@ -312,7 +314,7 @@
     snapTo(rig, Object.assign({}, end, { armF: (end.armF || 0) + 90 })); const F1 = fistOf(svg);
     const torso = rect(svg.querySelector(".pp-torso")) || rect(svg.querySelector(".pp-body"));
     for (const k of KEYS) { rig.x[k] = save.x[k]; rig.v[k] = save.v[k]; } rig.apply();
-    const what = U.blowTarget(tsvg, o.guard);
+    const what = T0 && U.blowTarget(tsvg, o.guard, T0.x);
     if (!T0 || !F0 || !F1 || !torso || !what) return null;
     const f = T0.x >= torso.left + torso.width / 2 ? 1 : -1; // which way the figure faces, drawn (mirrored or not)
     // In the figure's own frame (x forward, y down) a turn of the arm is a plain rotation: the shoulder from two of the fist's places.
@@ -363,13 +365,13 @@
     const rig = aim.rig, guard = aim.guard === "body" ? null : aim.guard;
     const test = () => {
       snapTo(rig, endOf(aim)); aimAt(rig, aim);
-      const T = U.blowTip(rig.svg), w = U.blowTarget(aim.tsvg, guard);
+      const T = U.blowTip(rig.svg), w = U.blowTarget(aim.tsvg, guard, T && T.x);
       if (!T || !w) return null;
       const B = w.box, pad = w.kind === "body" ? 0 : 3;
       return { x: T.x, y: T.y, on: w.kind, inside: T.x >= B.left - pad && T.x <= B.right + pad && T.y >= B.top - pad && T.y <= B.bottom + pad, box: { l: B.left, r: B.right, t: B.top, b: B.bottom } };
     };
     let res = test();
-    for (let i = 0; i < 3 && res && !res.inside; i++) { const a2 = solve(rig, aim.tsvg, Object.assign({}, aim.o, { guard })); if (!a2) break; Object.assign(aim, { armF: a2.armF, item: a2.item, dxPx: a2.dxPx, dyPx: a2.dyPx }); res = test(); }
+    for (let i = 0; i < 3 && res && !res.inside; i++) { const a2 = solve(rig, aim.tsvg, Object.assign({}, aim.o, { guard: aim.guard === "body" ? null : aim.guard })); if (!a2) break; Object.assign(aim, { armF: a2.armF, item: a2.item, dxPx: a2.dxPx, dyPx: a2.dyPx }); res = test(); }
     if (!res) return null;
     (U.impacts = U.impacts || []).push(res); if (U.impacts.length > 40) U.impacts.shift();
     return res;
