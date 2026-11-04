@@ -163,7 +163,7 @@
   // figure is about a sixth of an upright phone's width, so this keeps them overlapping a quarter at most.
   const APART = 0.14;
   const NEAR = 0.62 * BODY;
-  const FACE = 0.75 * BODY;   // you and a foe in your row, face to face
+  const FACE = 0.11;          // you and a foe in your row, face to face (drawn, about a third of a body overlapping)
   function toRow(u, row, dt) { const d = row - u.rt.lane; if (Math.abs(d) > 1e-3) u.rt.lane += sign(d) * Math.min(Math.abs(d), 2.5 * dt); }
   // Keep a unit clear of the others standing in its row.
   function keepApart(R, u, x, dt, list) {
