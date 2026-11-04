@@ -23,14 +23,7 @@
    "steps": "node tests/layout.js --device iPad"
   },
   {
-   "test": "blowfit",
-   "match": "Laptop 1366x657 e_bandits (healer)",
-   "bug": "Since the easier real-time fights (42873f9): on a 1366x657 laptop, the healer's dagger blow on a club bandit lands with the two side by side, 0.63 of the reach apart (the rule is at least 0.8), at 12.5 s; the same fight on an iPhone 15 keeps 0.89. Deterministic (the same at every run).",
-   "file": "game/js/engine/realtime.js (42873f9: RT.P gap [1.75, 3.1], hpFoe 5.75, atkFoe 0.8... change who stands where when a blow lands)",
-   "steps": "FIGHT=e_bandits:healer node tests/blowfit.js: passes on 3e2854d, fails on 42873f9 and after."
-  },
-  {
-   "test": "strings",
+   "test": "strings-hi",
    "match": "untranslated: «hermit»",
    "bug": "Not seen by players: tests/strings.js check hi lists 'hermit' as untranslated because K.momentInfo (game/js/ui/moments.js:31) looks up K.personName(m.who) for every moment, and a teacher moment's who is the teacher id 'hermit' (not a person), which goes through K.tr untranslated; the teacher card itself shows 'Mauni' (translated). Fix: compute the name only for the kinds that show it, or add 'hermit' to i18n/hi.",
    "file": "game/js/ui/moments.js:31",
