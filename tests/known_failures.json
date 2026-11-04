@@ -1,0 +1,12 @@
+{
+  "_": "Real bugs the regression suite has found and that are not fixed yet. Each entry: the test (tests/<test>.js), the case or problem text it matches, and the bug. A check that matches an entry is reported KNOWN (not a failure); an entry that no longer matches anything is reported, so it can be taken off once the bug is fixed. The suite never fixes the game itself.",
+  "known": [
+    {
+      "test": "content",
+      "match": "art/scene_duel_ground_tall.webp",
+      "bug": "Karna's-day duel fights (kd_e_son, kd_e_wheel) on the war-day screen on an upright phone ask for art/scene_duel_ground_tall.webp, which does not exist: a 404 and no painted ground behind the fighters.",
+      "file": "game/js/content/war_duel.js:98 (K.COMMAND_FIGHT_BG -> scene_duel_ground, painted only 16:9), read by game/js/ui/warday.js:129,169",
+      "steps": "Menu: Calm motion on (or any setting where the chariot duel is fought as a plain hold). A Kaurava life on day 17, choose 'Guard Vrishasena's wheel' (kd_e_son) or the wheel fight (kd_e_wheel) on an iPhone held upright: the stage's background-image is art/scene_duel_ground_tall.webp and the request 404s."
+    }
+  ]
+}

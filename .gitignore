@@ -2,3 +2,4 @@
 node_modules
 .claude/worktrees/
 tools/split/war_lives.json
+tests/out/
