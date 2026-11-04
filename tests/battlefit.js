@@ -22,6 +22,10 @@
    The fights played live (a chariot duel, an archery duel, a mace duel, a carry: ui/fightmodes.js)
    are checked on their own test stage, at the start and while being played.
    A fallen figure's weapon, dropped beside it, is part of its painted box, so it is held to the same edges.
+   The old turn-based screen (ui/battle.js) is only reached under the test-only override K.prefs({ oldFights: true })
+   (engine/realtime.js RT.old), which this check sets: players get the real-time and war-day screens (checked by
+   tests/rtfit.js and tests/warfit.js). Every figure is also held to the stowed-weapon rule: a weapon put by for
+   another (Rig.wield) is not drawn, and a bow slung on the back is never over 60% of the figure high or above the head.
    Usage: node tests/battlefit.js [--browser chromium|webkit|all] [--device phone|desktop|all]
           [--fights id,id] [--jobs N] [--shots DIR [--shots-all]] [--out report.json]      (npm run test:battlefit)
    Writes a JSON report (default /tmp/battlefit.json, or --out) and a summary; exits 1 on any problem.

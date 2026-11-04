@@ -49,6 +49,7 @@
 
   let V = null; // the screen's state while a fight is on
   U.rtScreen = () => V; // for the fit checks and screenshots
+  U.rtStop = () => stop(); // close the screen without an outcome (the layout checks)
   // A foe kneeling and asking for mercy (C.spareable): "Mercy!" over him, an open hand, and the "Spare" hint when
   // he can be spared now (in reach, or on the turns); "Spared" once he is (the fight goes on). Shared with ui/warday.js.
   // state: "ask" (tap to spare), "far" (step closer), "spared", or "" (none).

@@ -51,10 +51,14 @@
     shieldSoldiers: 0.6, shieldYou: 0.85, // your soldiers on Defend, a blow marked on them; you, a frontal blow, with a shield
     cap: 240           // a fight that has run this long is stopped (it never should)
   };
-  // Per-fight tuning: RT.TUNE[encId] = { hp, atk } multiplies that fight's foes' health and blows. Only the four
-  // outliers are tuned (owner, 3 November), each to within about 8 points of the same fight on the turns
-  // (RT=1 RTSTATS=1 COMPARE=1 node tests/lives.js, 3000 lives on fresh seeds); every other fight uses RT.P alone.
+  // Per-fight tuning: RT.TUNE[encId] = { hp, atk } multiplies that fight's foes' health and blows. Only the
+  // outliers are tuned (owner, 3 and 4 November), each to within about 8 points of the same fight on the turns
+  // (RTSTATS=1 COMPARE=1 node tests/lives.js 3000 <seed>, on fresh seeds); every other fight uses RT.P alone.
+  // 4 November: Yuyutsu's day-2 duel (cross_e_duel, 72% -> 43% vs 42-43% on the turns) and the night raid (e_raid,
+  // 54% -> 37-39% vs 38-39%), on seeds 11 and 37.
   RT.TUNE = {
+    cross_e_duel: { hp: 1.36, atk: 1.36 },
+    e_raid: { hp: 1.1, atk: 1.1 },
     e_gandharva: { hp: 1.22, atk: 1.22 },
     e_jaya: { hp: 1.08, atk: 1.08 },
     e_kings: { hp: 0.64, atk: 0.64 },
@@ -126,7 +130,7 @@
     const B = R.B, foe = u.side === "enemy";
     const k = foe ? RT.P.hpFoe : u.side === "player" ? RT.P.hpFriend : RT.P.hpAlly == null ? RT.P.hpFoe : RT.P.hpAlly;
     u.maxHp = Math.max(1, Math.round(u.maxHp * k)); u.hp = Math.max(0, Math.round(u.hp * k));
-    if (foe) { // per-fight tuning (RT.TUNE): the four outliers only
+    if (foe) { // per-fight tuning (RT.TUNE): the outliers only
       const tune = RT.TUNE[B.enc.id] || {};
       if (tune.hp) { u.maxHp = Math.max(1, Math.round(u.maxHp * tune.hp)); u.hp = Math.max(0, Math.round(u.hp * tune.hp)); }
       u.atk = Math.round(u.atk * RT.P.atkFoe * (tune.atk || 1) * 10) / 10; // blows come oftener and are dodged more than on the turns

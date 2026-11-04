@@ -219,6 +219,25 @@ const PAGE = {
     if (leaf.getBoundingClientRect().bottom > H + 1) out.push("fight page runs off the bottom");
     return out;
   },
+  // A real-time fight (ui/realtime.js) or the war-day screen (ui/warday.js), the screens every player gets: the
+  // stage and its controls fill the screen and fit it, every control on screen and big enough to tap on a phone.
+  rt(o) {
+    const out = [], W = innerWidth, H = innerHeight, el = document.getElementById("rt");
+    if (!el) return ["the new fight screen did not open"];
+    const r = el.getBoundingClientRect();
+    if (r.width < W - 1 || r.height < H - 1) out.push("fight does not fill the screen");
+    if (document.querySelector("header.top") && document.querySelector("header.top").offsetParent) out.push("top bar still showing during the fight");
+    const btns = [...el.querySelectorAll(".ctl button, .hud button, .cards button, .wd-cards button")].filter((b) => b.offsetParent && !b.closest("[hidden], .sheet"));
+    if (!btns.length) out.push("no fight controls");
+    const off = btns.filter((b) => { const q = b.getBoundingClientRect(); return q.bottom > H - (o.sab || 0) + 1 || q.right > W + 1 || q.left < -1 || q.top < -1; });
+    if (off.length) out.push(off.length + " control(s) off screen or under the home bar");
+    if (o.kind === "phone") { const small = btns.filter((b) => { const q = b.getBoundingClientRect(); return q.width && (q.width < 43.5 || q.height < 43.5); }); if (small.length) out.push(small.length + " control(s) under 44 px: " + small.slice(0, 3).map((b) => b.className || b.textContent.trim().slice(0, 12)).join(", ")); }
+    const figs = [...el.querySelectorAll(".actor svg.pp")].map((e) => e.getBoundingClientRect()).filter((b) => b.height);
+    if (!figs.length) out.push("no figures on the stage");
+    if (figs.some((b) => b.right > W + 24 || b.left < -24)) out.push("a figure stands off the edge of the screen");
+    if (figs.some((b) => b.height < 60)) out.push("figures too small to see");
+    return out;
+  },
   // Before a fight (ui/battle.js): the card fits the screen, its Fight button in reach.
   brief(o) {
     const out = [], W = innerWidth, H = innerHeight;
@@ -234,7 +253,7 @@ const PAGE = {
   // The first fight's tour: the lit part and its line are on screen, Skip in reach.
   tour(o) {
     const out = [], W = innerWidth, H = innerHeight;
-    const cap = document.querySelector(".ftour .ft-cap"), skip = document.querySelector(".ftour .ft-skip");
+    const cap = document.querySelector(".ftour .ft-cap, #rt .tour-cap"), skip = document.querySelector(".ftour .ft-skip, #rt .tour-cap .tc-skip");
     if (!cap) return ["no tour of the fight screen"];
     const r = cap.getBoundingClientRect();
     if (r.left < 0 || r.right > W + 1 || r.top < 0 || r.bottom > H + 1) out.push("tour caption off screen");
@@ -424,7 +443,7 @@ async function goTest(page, game, trial) {
 // The card before a fight, and the first fight's tour after it: through both, to the fight.
 async function passBrief(page) {
   const go = await page.$(".fb-go"); if (go) { await go.click(); await page.waitForTimeout(400); }
-  const skip = await page.$(".ft-skip"); if (skip) { await skip.click(); await page.waitForTimeout(400); }
+  const skip = await page.$(".ft-skip, #rt .tc-skip"); if (skip) { await skip.click(); await page.waitForTimeout(400); }
 }
 const TESTS = [
   ["aim", { stage: "stage_training_ground", cast: ["drona"] }], ["push", {}], ["steady", {}], ["sneak", {}], ["notice", {}],
@@ -584,24 +603,27 @@ async function runDevice(browser, base, o, report) {
   // A fight.
   await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 44, act: 6, side: "pandava" }); K.go("a6_capture"); K.UI.startBattle("e_guard", () => {}); }, LIFE);
   await page.waitForTimeout(900);
+  // (A real-time fight, opened as any life opens it: no switch.)
+  report.push({ browser: browser._name, device: label, screen: "a fight opens in real time for every player", problems: (await page.evaluate(() => !!document.getElementById("rt") && !!K.UI.rtScreen())) ? [] : ["e_guard did not open on the real-time screen"] });
   await check("fight briefing", ["brief"]);
   await page.click(".fb-go"); await page.waitForTimeout(500);
   await check("fight: first-fight tour", ["tour"]);
-  await page.click(".ft-skip"); await page.waitForTimeout(400);
-  await check("fight", ["battle"]);
+  await page.click("#rt .tc-skip"); await page.waitForTimeout(400);
+  await check("fight", ["rt"]);
   // A fight holding two divine weapons: one "Invoke astra" card, and the chooser behind it.
   await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 44, act: 6, side: "pandava", astras: [{ id: "agneya", from: "fire_altar" }, { id: "varuna", from: "lake_sage" }], tapas: 9 }); K.go("a6_capture"); K.UI.startBattle("e_guard", () => {}); }, LIFE);
   await page.waitForTimeout(900);
   await passBrief(page);
-  await check("fight: two astras", ["battle"]);
+  await check("fight: two astras", ["rt"]);
   {
-    const cards = await page.$$eval("#battle .bmove, #battle button", (b) => b.map((x) => x.textContent));
-    const pick = await page.$("[data-move='astra-pick']");
-    if (pick) { await pick.click(); await page.waitForTimeout(400); await check("fight: astra chooser", ["battle"]); }
-    else report.push({ browser: browser._name, device: label, screen: "fight: astra chooser", problems: ["no Invoke astra card (" + cards.length + " buttons)"] });
+    // The divine weapon is in Aid (the real-time screen): the sheet opens over the controls with a ready weapon in it.
+    await page.click("#rt .hb.aid"); await page.waitForTimeout(400);
+    const a = await page.evaluate(() => { const b = document.querySelector("#rt .aid-sheet [data-aid='astra']"); return b ? { on: !b.disabled, text: b.textContent } : null; });
+    report.push({ browser: browser._name, device: label, screen: "fight: divine weapon in Aid", problems: a ? (a.on ? [] : ["the divine weapon is not ready in Aid: " + a.text]) : ["no divine weapon in Aid"] });
+    await check("fight: Aid open", ["rt"]);
   }
   // The character sheet holding tapas, weapons and charges.
-  await page.evaluate(() => K.UI.endBattle && K.UI.endBattle());
+  await page.evaluate(() => { const V = K.UI.rtScreen && K.UI.rtScreen(); if (V && K.UI.rtStop) K.UI.rtStop(); else if (K.UI.endBattle) K.UI.endBattle(); });
   await goScene(page, "a2_trial", { tapas: 12, astras: [{ id: "agneya", from: "fire_altar" }, { id: "sammohana", from: "gandharva" }], charges: { sanjivani: 1, kavacha: 1 }, boons: ["kavacha"] });
   await page.click("#nav-standing");
   await page.waitForTimeout(500);
@@ -612,12 +634,13 @@ async function runDevice(browser, base, o, report) {
   await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 17, act: 2 }); K.go("a2_spar"); K.UI.startBattle("e_spar", () => {}); }, LIFE);
   await page.waitForTimeout(900);
   report.push({ browser: browser._name, device: label, screen: "no briefing before a bout", problems: (await page.$(".fbrief-wrap")) ? ["a briefing card before the sparring bout"] : [] });
-  await check("fight: sparring", ["battle"]);
+  await check("fight: sparring", ["rt"]);
   // A holding fight (content/command.js): the champion's own painting, the countdown in the log.
   await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 44, act: 6, side: "pandava" }); K.S.flags.push("role_command", "role_division"); K.go("a6_day16"); K.UI.startBattle("hold_karna", () => {}); }, LIFE);
   await page.waitForTimeout(900);
   await passBrief(page);
-  await check("fight: holding", ["battle"]);
+  report.push({ browser: browser._name, device: label, screen: "a turn-based fight opens on the war-day screen", problems: (await page.evaluate(() => !!(K.UI.warScreen && K.UI.warScreen()))) ? [] : ["hold_karna did not open on the war-day screen"] });
+  await check("fight: holding", ["rt"]);
 
   // The practice ground (ui/practice.js). Beside a second chance, the offer; from the menu between
   // scenes, the ground; there a test played to its end, a blow read and the drill stopped, a bout
@@ -655,11 +678,12 @@ async function runDevice(browser, base, o, report) {
   await page.waitForTimeout(500);
   await page.click("#pr-acts .choice");
   await page.waitForTimeout(900);
-  await check("practice: a bout", ["battle"]);
-  await page.click(".pr-bout-stop");
+  await check("practice: a bout", ["rt"]);
+  // The bout (a real-time fight) stopped from the screen: Withdraw (in Pause on a phone); it ends by itself.
+  await page.evaluate(() => { const w = [...document.querySelectorAll("#rt .hb.withdraw")].find((b) => b.offsetParent); if (w) w.click(); else { const p = document.querySelector("#rt .hb.pause"); if (p) p.click(); } });
   await page.waitForTimeout(400);
-  await page.click("#battle-actions .cta");
-  await page.waitForTimeout(600);
+  await page.evaluate(() => { const b = document.querySelector("#rt .pause-sheet [data-w]"); if (b) b.click(); const y = document.querySelector("#rt [data-yes]"); if (y) y.click(); });
+  await page.waitForTimeout(2200);
   await page.click(".pr-leave");
   await page.waitForTimeout(700);
   {
@@ -676,12 +700,14 @@ async function runDevice(browser, base, o, report) {
   await page.waitForTimeout(900);
   await passBrief(page);
   {
-    const r = await page.evaluate(() => { const b = document.querySelector(".call-help"); if (!b) return { no: true }; const rb = b.getBoundingClientRect(); b.click(); return { note: !!b.querySelector(".call-note"), on: rb.bottom <= innerHeight + 1 && rb.top >= 0 }; });
-    await page.waitForTimeout(900);
+    // In real time the call is in Aid, with its note ("once a fight").
+    await page.click("#rt .hb.aid").catch(() => {}); await page.waitForTimeout(400);
+    const r = await page.evaluate(() => { const b = document.querySelector("#rt .aid-sheet [data-aid='call']"); if (!b) return { no: true }; const rb = b.getBoundingClientRect(); const note = !!(b.querySelector("small") && b.querySelector("small").textContent.trim()); b.click(); return { note, on: rb.bottom <= innerHeight + 1 && rb.top >= 0 }; });
+    await page.waitForTimeout(1200);
     const came = await page.evaluate(() => K.Combat.state() && K.Combat.state().units.some((u) => u.person === "charu" && u.called));
-    report.push({ browser: browser._name, device: label, screen: "a friend called into a fight", problems: [r.no ? "no Call for help in an ordinary fight" : null, r.no || r.note ? null : "no risk note on the call", r.no || r.on ? null : "the call button is off screen", came ? null : "Charu did not come when called"].filter(Boolean) });
+    report.push({ browser: browser._name, device: label, screen: "a friend called into a fight", problems: [r.no ? "no Call for help in an ordinary fight" : null, r.no || r.note ? null : "no note on the call", r.no || r.on ? null : "the call button is off screen", came ? null : "Charu did not come when called"].filter(Boolean) });
   }
-  await check("fight with a friend", ["battle"]);
+  await check("fight with a friend", ["rt"]);
   await fresh(page, url, o);
   await goScene(page, "a2_trial", { log: ["a2_pathtest:strategist"] });
   await page.evaluate(() => K.prefs({ practiceSpeed: "slow" }));
@@ -689,6 +715,8 @@ async function runDevice(browser, base, o, report) {
   {
     const sw = await page.evaluate(() => { const i = document.querySelector("#m-assist"); return i ? i.getBoundingClientRect().height : 0; });
     report.push({ browser: browser._name, device: label, screen: "menu: Meet blows for me", problems: sw ? [] : ["no assist switch in the menu"] });
+    const fs2 = await page.evaluate(() => { const b = [...document.querySelectorAll("[data-fights]")]; return { n: b.length, on: (b.find((x) => x.getAttribute("aria-checked") === "true") || {}).dataset, h: b.length ? Math.min(...b.map((x) => x.getBoundingClientRect().height)) : 0 }; });
+    report.push({ browser: browser._name, device: label, screen: "menu: Fights real-time / turn-based, for every player", problems: fs2.n === 2 && fs2.on && fs2.on.fights === "realtime" ? (fs2.h >= (o.kind === "phone" ? 40 : 24) ? [] : ["the Fights switch is too small to tap (" + Math.round(fs2.h) + " px)"]) : ["no Fights switch in the menu, real-time by default (" + fs2.n + ")"] });
   }
   await page.click("#m-practice"); await page.waitForTimeout(700);
   await page.click('.pr-tile[data-kind="chaupar"]'); await page.waitForTimeout(700);
@@ -739,7 +767,7 @@ async function runDevice(browser, base, o, report) {
       await fresh(mp, url, o, prefs);
       await mp.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 17, act: 2 }); K.go("a2_spar"); K.UI.startBattle("e_spar", () => {}); }, LIFE);
       await mp.waitForTimeout(700);
-      const look = () => mp.evaluate(() => [...document.querySelectorAll("#arena .actor svg")].map((v) => v.innerHTML).join("|"));
+      const look = () => mp.evaluate(() => [...document.querySelectorAll("#arena .actor svg, #rt .actor svg")].map((v) => v.innerHTML).join("|"));
       const a = await look(); await mp.waitForTimeout(600); const b = await look();
       return { moved: a !== b && a.length > 0, calm: await mp.evaluate(() => document.documentElement.classList.contains("calm")), motion: await mp.evaluate(() => K.UI.motion()) };
     };
