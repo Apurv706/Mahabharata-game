@@ -462,7 +462,7 @@ const SPACE = () => {
     if (ov <= 0) continue;
     const same = A.lane === B.lane && Math.abs(A.u.rt.lane - B.u.rt.lane) < 0.3;
     const share = ov / w;
-    if (A.u === p || B.u === p) { const o = A.u === p ? B : A; if (share > 0.5 && o.u.side === "enemy") out.onYou.push(K.text(o.u.src || o.u.name) + " " + Math.round(share * 100) + "% over you (rows " + p.rt.lane.toFixed(1) + "/" + o.u.rt.lane.toFixed(1) + ")"); continue; }
+    if (A.u === p || B.u === p) { const o = A.u === p ? B : A; if (share > 0.5 && o.u.side === "enemy" && Math.abs(o.u.rt.lane - Math.round(o.u.rt.lane)) < 0.05 && !o.u.rt.engaged) /* (one stepping between rows to strike is not at rest) */ out.onYou.push(K.text(o.u.src || o.u.name) + " " + Math.round(share * 100) + "% over you (rows " + p.rt.lane.toFixed(1) + "/" + o.u.rt.lane.toFixed(1) + ")"); continue; }
     if (same && share > 0.25 && A.u.side === B.u.side) out.pairs.push(K.text(A.u.src || A.u.name) + " / " + K.text(B.u.src || B.u.name) + " " + Math.round(share * 100) + "% (row " + A.lane + ")");
   }
   for (const x of bodies) { const r = x.b; if (r.left < -2 || r.right > innerWidth + 2 || r.bottom > innerHeight + 2 || r.top < -2) out.off.push(K.text(x.u.src || x.u.name) + " [" + Math.round(r.left) + "," + Math.round(r.right) + "]"); }

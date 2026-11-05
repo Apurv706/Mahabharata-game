@@ -91,7 +91,10 @@ function suite(name, header) {
     if (has("--browser-only")) list = list.filter((c) => c.kind === "browser");
     if (has("--list")) { console.log(header); for (const c of CASES) console.log(c.kind.padEnd(8) + c.id.padEnd(26) + c.what); return; }
     if (want) for (const id of want) if (!CASES.some((c) => c.id === id)) { console.error("no case " + id); process.exit(2); }
-    const known = H.knownFailures(name);
+    // Known failures: tests/known_failures.json (the suite's list) and tests/review_known.json (this review's: bugs reported to
+    // the owner and not fixed, each with why). A case whose every problem matches one is KNOWN, not FAIL.
+    let mine = []; try { mine = (JSON.parse(fs.readFileSync(path.join(__dirname, "review_known.json"), "utf8")).known || []).filter((k) => k.test === name); } catch (e) { /* none */ }
+    const known = H.knownFailures(name).concat(mine);
     const results = [];
     if (list.some((c) => c.kind === "browser")) {
       PW = H.pw(); if (!PW) { console.error("Playwright is not installed"); process.exit(2); }
@@ -106,7 +109,7 @@ function suite(name, header) {
       let probs;
       try { probs = await Promise.race([Promise.resolve(c.fn()), sleep(T).then(() => { throw new Error("timed out after " + T / 1000 + " s"); })]); } catch (e) { probs = ["threw: " + String(e && e.stack || e).split("\n").slice(0, 3).join(" | ")]; }
       probs = [...new Set((probs || []).filter(Boolean).map(String))];
-      const k = probs.length && known.find((x) => x.match === c.id || probs.every((p) => p.includes(x.match)));
+      const k = probs.length && (known.find((x) => x.match === c.id) || (probs.every((p) => known.some((x) => p.includes(x.match))) ? known.find((x) => probs.some((p) => p.includes(x.match))) : null));
       const status = probs.length ? (k ? "known" : "fail") : "pass";
       results.push({ id: c.id, kind: c.kind, status, problems: probs, ms: Date.now() - t });
       console.log((status === "pass" ? "ok    " : status === "known" ? "KNOWN " : "FAIL  ") + c.id.padEnd(26) + c.what + "  (" + ((Date.now() - t) / 1000).toFixed(1) + " s)");
