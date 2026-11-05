@@ -158,6 +158,7 @@
     const R = V.R, B = R.B;
     if (R.over === "retry") RT.accept(R);
     B.status = c.status; B.rt = null; B.round = c.round; // the real-time rounds inside the clash do not count as the war day's rounds
+    RT.unscale(B); // health and blows back on the turns' scale
     if (c.call && c.call.el) c.call.el.remove();
     const done = c.done;
     stop();

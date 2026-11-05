@@ -224,6 +224,8 @@
   function initUnit(R, u) {
     const B = R.B, foe = u.side === "enemy";
     const k = foe ? RT.P.hpFoe : u.side === "player" ? RT.P.hpFriend : RT.P.hpAlly == null ? RT.P.hpFoe : RT.P.hpAlly;
+    if (u._tb) RT.unscaleUnit(u); // already scaled (a war day's earlier clash): from its turn-based health and blows again
+    u._tb = { hp: u.hp, maxHp: u.maxHp, atk: u.atk }; // what it was on the turns (RT.unscale)
     u.maxHp = Math.max(1, Math.round(u.maxHp * k)); u.hp = Math.max(0, Math.round(u.hp * k));
     if (foe) { // per-fight tuning (RT.TUNE): the outliers only
       const tune = RT.TUNE[B.enc.id] || {};
@@ -257,6 +259,16 @@
     });
   }
 
+  // Back to the turns after a war day's clash (ui/realtime.js U.startClash): every unit's health, as a share of its
+  // health, and its blows as they were on the turns, so the war day's rounds and the next clash start from the same
+  // scale (without this each clash scaled the health up again: 6.75 times, then 45 times).
+  RT.unscaleUnit = function (u) {
+    const t = u._tb; if (!t) return;
+    const f = u.maxHp ? u.hp / u.maxHp : 0;
+    u.maxHp = t.maxHp; u.hp = u.hp > 0 ? Math.max(1, Math.round(f * t.maxHp)) : 0; u.atk = t.atk;
+    delete u._tb;
+  };
+  RT.unscale = (B) => { for (const u of B.units) RT.unscaleUnit(u); };
   RT.begin = function (B, opts = {}) {
     const R = { B, scale: opts.scale || RT.SCALE, t: 0, n: 0, seen: 0, sideSeen: {}, over: null, tries: opts.tries || 0, marks: [], fx: [], slow: 0, round: 1, doT: ROUND,
       orders: { friend: "balanced", soldiers: "defend" }, breath: RT.P.breathMax, combo: 0, comboT: -9, buffer: false, roll: 0, rollT: -9, rollDir: 1, block: false, blockT: -9, winded: false,

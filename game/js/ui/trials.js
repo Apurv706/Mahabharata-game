@@ -780,7 +780,9 @@
   // trial.shots (3), trial.need (2). Hold too long and the string slips.
   U.games.draw = function (box, done, c) {
     return frame(box, done, c, "draw", ({ host, power, t, finish: fin, onAct, cue }) => {
-      const shots = t.shots || 3, need = t.need || 2, width = clamp(0.05 + power * 0.008, 0.05, 0.11) * (t.small ? 0.75 : 1);
+      // The bright band: 0.05 of the bar at the least until the playtest of 5 November, where a person's pace missed the
+      // archer's path test four times running (about 0.11 s to let go in, at the stats of Act II); now about 0.14 s.
+      const shots = t.shots || 3, need = t.need || 2, width = clamp(0.065 + power * 0.008, 0.065, 0.12) * (t.small ? 0.75 : 1);
       let shot = 0, wins = 0, ten = 0, holding = false, busy = false, lo = 0.72, drift = 0, wob = 0, last = 0;
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="drawpit"><svg viewBox="0 0 300 220" class="bow" aria-hidden="true"><path class="limb" d=""/><path class="string" d=""/></svg>' +
         '<div class="meter"><div class="band"></div><div class="fill"></div></div></div><p class="game-note" aria-live="polite">' + U.trSpan(t.help || "Hold to draw. Let go while the bar is in the bright band.") + '</p><div class="btnrow"></div>';
