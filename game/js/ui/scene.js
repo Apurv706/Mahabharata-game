@@ -578,6 +578,9 @@
     storyFx(sc);
     // A clip that shows what happens after the choice (the fire) plays now.
     if (sc.clipAfter && res.after) U.addClip();
+    // sc.afterClip: a clip that closes the scene once its outcome is told (the house of lac burning, owner 5 November);
+    // where video cannot play, the painting and its fire drawn in code stay.
+    if (sc.afterClip && U.hasVideo(sc.afterClip) && U.living()) { if (U.stageFx) U.stageFx.stop(); U.setBackdrop(sc.afterClip); U.livePlay(true); }
     // What you chose and what came of it are written into the story; Continue waits below.
     const story = U.$("story"), box = U.$("choices");
     const pimg = K.val(c.img);

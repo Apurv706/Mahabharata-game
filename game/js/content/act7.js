@@ -205,7 +205,7 @@
     const intact = vows.length > 0 && vows.every((v) => !v.broken || v.released);
     const lost = new Set([S.spouse, S.child, S.friend].filter((p) => p && S.dead.includes(p))).size; // a friend who was also your spouse counts once
     const weakBonds = Object.values(S.bonds).filter((b) => b <= 2).length;
-    let title, art = "end_survivor", caption = "Dawn over the field";
+    let title, art = "end_survivor", caption = "Dawn over the field", clip = null;
     if (!S.alive) {
       const wheel = S.flags.includes("died_with_abhimanyu") || S.flags.includes("fell_to_abhimanyu"), karna = S.flags.includes("died_with_karna");
       art = wheel ? "end_wheel" : karna ? "war_day17" : "end_death";
@@ -215,7 +215,7 @@
       const at = S.deathAt;
       if (at && at.art) { art = at.art; caption = at.caption || caption; }
       if (S.flags.includes("peril_death") && (at ? at.act : S.act) < 6) title = "A life cut short";
-      if (S.flags.includes("died_in_fire")) { title = "The burnt house"; art = "end_fire"; caption = "The house at Varnavata, at dawn"; }
+      if (S.flags.includes("died_in_fire")) { title = "The burnt house"; art = "end_fire"; caption = "The house at Varnavata, at dawn"; clip = "scene_lac"; } // the house burning, as its closing shot (owner, 5 November)
       // The Samshaptakas' oath (war_oath.js): a fall with the oath still on you is its own ending, in place
       // of a glorious death (every vow kept) or a plain one; the deaths with their own endings keep them.
       if (K.hasVow("samshaptaka", S) && (title === "Glorious death" || title === "Fallen at Kurukshetra")) { title = "The oath to the death"; art = "end_oath"; caption = intact ? "A grass garland in the chariot ruts, every vow kept" : "A grass garland in the chariot ruts"; }
@@ -245,6 +245,6 @@
     }[title];
     const tell = telling(S);
     if (coda) tell.push(coda);
-    return { title, art, caption, telling: tell, fates: fates(S) };
+    return { title, art, caption, clip, telling: tell, fates: fates(S) };
   };
 })(window.K = window.K || {});

@@ -16,7 +16,7 @@
     retryLose: { penalty: 1, fx: { rep: { kuru: -2 }, flag: ["seen_at_tunnel", "tunnel_twice"] }, text: "One of Purochana's guards sees a figure near the house at night. He does not see your face, but he will keep looking." } };
 
   // The night of the fire: who knows what the house is for, and who is inside it when it burns.
-  const KNOWS_PLOT = { any: [{ teacher: "vidura" }, { path: "spy" }, { flag: "helped_tunnel" }] };
+  const KNOWS_PLOT = { any: [{ teacher: "vidura" }, { path: "spy" }, { flag: "helped_tunnel" }, { flag: "smelled_oil" }, { flag: "tried_nishada" }] }; // (owner, 5 November: more players reach the cellar)
   const INSIDE = (S) => S.flags.includes("tried_nishada") || S.flags.includes("helped_tunnel") || S.flags.includes("warned_pandavas") || S.flags.includes("cut_fuses");
 
   K.scenes([
@@ -60,6 +60,8 @@
         { id: "warn", t: "Warn the Nishada woman and her sons", fx: (S) => ({ duty: { conscience: 2 }, flag: "tried_nishada", memory: ["all", "You tried to wake the family who died at Varnavata."], rep: S.origin === "nishada" ? { common: 2 } : {} }),
           text: "They drank deep at Kunti's feast and do not wake, however hard you shake them." },
         { id: "tell", t: "Tell Duryodhana people are talking", req: { friend: "duryodhana" }, fx: { bond: { duryodhana: 2 }, duty: { court: 1, conscience: -2 }, flag: "warned_duryodhana" } },
+        { id: "oil", t: "Follow the smell of oil under the floor", fx: { flag: "smelled_oil", journal: "At Varnavata you found oil pooled in channels under the floor of the house of lac." },
+          text: "Under the boards, oil lies in channels, running from Purochana's rooms to where the brothers sleep." },
         { id: "stay", t: "Keep away from the house", fx: {} }
       ],
       after: ["On the last night of the festival, the house of lac burns."],
@@ -99,7 +101,7 @@
     // those outside can run in. The epic has written who dies here: a Nishada woman and her five
     // sons, and Purochana. A failed escape is death: the first failure is survived, burnt, with one more try.
     {
-      id: "a3_fire", act: 3, age: 23, canon: true, art: "scene_lac_fire", clip: "scene_lac", fx: "fire", place: "Varnavata", plate: ["#e5872e", "#2a1c1f"], caption: "The house of lac, burning",
+      id: "a3_fire", act: 3, age: 23, canon: true, art: "scene_lac_fire", afterClip: "scene_lac", fx: "fire", place: "Varnavata", plate: ["#e5872e", "#2a1c1f"], caption: "The house of lac, burning",
       title: "The night of the fire",
       witness: ["The house of lac burns. The Pandavas escape through the tunnel, and Purochana dies in his own fire."],
       body: (S) => [

@@ -166,7 +166,7 @@
       (died ? '<p class="es-note">' + U.tr("This death stays in your Book of Lives. Going back takes up the life as it was at the start of that act.") + "</p>" : "") +
       '<div class="actlist">' + U.actButtons(kept, { died }) + "</div></div>" : "";
     const map = S.road && S.road.length > 1 && U.mapOf ? '<div class="es-map"><span class="lbl">' + U.tr("Your road") + "</span>" + U.mapOf(S, { px: Math.min(640, window.innerWidth - 56) }) + "</div>" : "";
-    const clip = !still && U.hasVideo(e.art) && U.living();
+    const clipKey = e.clip || e.art, clip = !still && U.hasVideo(clipKey) && U.living(); // e.clip: a clip of its own (the house burning)
     const el = U.el('<div class="endscreen' + (still ? " still" : "") + (all ? " all" : "") + (S.alive ? " lived" : " fell") + (T.light ? " l-" + T.light : "") + '" role="dialog" aria-modal="true" aria-label="' + U.esc(K.tr(e.title)) + '">' +
       '<div class="es-art"><i style="--img:url(\'' + bg + '\')"></i></div>' +
       (T.light ? '<div class="es-light"></div>' : "") +
@@ -193,7 +193,7 @@
       const v = document.createElement("video");
       v.muted = true; v.defaultMuted = true; v.playsInline = true; v.autoplay = true; v.preload = "auto";
       v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("aria-hidden", "true");
-      v.src = "video/" + e.art + ".mp4";
+      if (U.clipSrc) U.clipSrc(v, clipKey); else v.src = "video/" + clipKey + ".mp4";
       v.addEventListener("playing", () => v.classList.add("on"));
       v.addEventListener("error", () => v.remove());
       el.querySelector(".es-art").appendChild(v);

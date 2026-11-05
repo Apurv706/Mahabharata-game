@@ -58,7 +58,7 @@
       let me = start === "door" ? at(0, 0) : start === "deep" ? at(3, 1) : at(2, 0);
       const sleepers = new Set([at(3, 3), at(1, 2)]);
       let carrying = 0, lost = 0, over = false, holding = null, holdFrom = 0, lastSpread = 0, moving = null, elapsed = 0, lastT = 0;
-      const stuckOpened = new Set();
+      const stuckOpened = new Set(), shoves = {};
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="lacplan"><svg viewBox="0 0 100 100" role="img" aria-label="' + U.esc(K.tr("The house, seen from above")) + '"></svg></div>' +
         '<p class="game-note" aria-live="polite">' + U.esc(K.tr("The fire comes from Purochana's side. Get to the tunnel mouth in the storeroom. Tap a room beside you, swipe, or use the arrows; hold to force a stuck door or to wake a sleeper.")) + "</p>" +
         '<div class="btnrow lac-btns"></div>';
@@ -128,7 +128,14 @@
         if (!neighbours(me).includes(j)) return;
         if (fire.has(j)) { say("That room is burning."); return; }
         const key = pairKey(me, j);
-        if (stuckSet.has(key) && !stuckOpened.has(key)) { holding = { secs: 0.8, then: () => { stuckOpened.add(key); sfx("tap"); go(j); } }; holdFrom = U.clock(); say("The door is stuck. Hold to force it."); draw(); return; }
+        if (stuckSet.has(key) && !stuckOpened.has(key)) {
+          // A stuck door gives to a hold, or to three quick shoves (taps), whichever a player tries (playtest, 5 November:
+          // a tap only cancelled its own hold, and a player tapping at it never got through).
+          const now = U.clock(), sh = shoves[key] && now - shoves[key].t < 1500 ? shoves[key].n + 1 : 1;
+          shoves[key] = { n: sh, t: now };
+          if (sh >= 3) { stuckOpened.add(key); sfx("tap"); say("You shoulder the door open."); go(j); return; }
+          holding = { secs: 0.8, then: () => { stuckOpened.add(key); sfx("tap"); go(j); } }; holdFrom = now; say(sh > 1 ? "Again! It is giving." : "The door is stuck. Hold, or shove it again."); draw(); return;
+        }
         go(j);
       }
       function go(j) {

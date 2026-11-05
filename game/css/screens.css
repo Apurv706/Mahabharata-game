@@ -2016,3 +2016,6 @@ body.ending-on .ledger { display: none; }
 .pp:is(.hold-spear, .hold-staff, .hold-plough).pose-walk .it-w { transform: rotate(-16deg); }
 .pp:is(.hold-spear, .hold-staff, .hold-plough).pose-slump .it-w { transform: rotate(-24deg); }
 .pp:is(.hold-spear, .hold-staff, .hold-plough).pose-side .it-w { transform: rotate(-34deg); }
+
+/* The burning house: only the rooms take taps; the tunnel mouth, sleepers, you and the doors drawn over them let a tap through to the room (playtest, 5 November: a tap on the storeroom's tunnel mouth did nothing, and the fire caught you a room from safety) */
+.lacplan svg :not(rect) { pointer-events: none; }

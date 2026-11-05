@@ -167,16 +167,28 @@
   function layer() { return U.$("backdrop").querySelectorAll(".bdl")[bdFlip]; }
   // opts.still: show the painting without its clip for now (U.addClip plays it later, when the
   // story reaches what the clip shows: the lac house catching fire, say).
+  // A clip's file. Safari on an iPhone plays video only from a server that answers byte-range requests; a host that does not
+  // (the private play pages) left every clip blank there while other browsers played it (owner, 5 November). So on Safari
+  // the file is fetched whole and played from memory (a blob URL needs no ranges); elsewhere it plays straight from the file.
+  const SAFARI = /^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent || "") || /iP(hone|ad|od)/.test(navigator.userAgent || "");
+  const blobs = {};
+  U.clipSrc = function (v, key) {
+    const url = "video/" + key + ".mp4";
+    if (!SAFARI || !window.fetch || !window.URL || !URL.createObjectURL) { v.src = url; return; }
+    (blobs[key] || (blobs[key] = fetch(url).then((r) => { if (!r.ok) throw new Error(r.status); return r.blob(); }).then((b) => URL.createObjectURL(b))))
+      .then((u) => { v.src = u; if (v.dataset.want) { const p = v.play(); if (p && p.catch) p.catch(() => {}); } })
+      .catch(() => { delete blobs[key]; v.src = url; });
+  };
   function makeVideo(key, pic) {
     const v = document.createElement("video");
     v.muted = true; v.defaultMuted = true; v.playsInline = true; v.preload = "auto";
     v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("aria-hidden", "true");
     // MP4 (H.264) plays in every current browser; the WebM copies were dropped (the published game holds at most 512 files).
-    ["mp4"].forEach((ext) => { const so = document.createElement("source"); so.src = "video/" + key + "." + ext; so.type = "video/" + ext; v.appendChild(so); });
+    U.clipSrc(v, key);
     v.addEventListener("playing", () => { v.classList.add("on"); v.dataset.playing = "1"; });
     v.addEventListener("ended", () => { delete v.dataset.playing; });
-    // If neither plays, the painting simply stays.
-    const last = v.lastElementChild; if (last) last.addEventListener("error", () => v.remove());
+    // If it will not play, the painting simply stays.
+    v.addEventListener("error", () => { if (v.src && !/^blob:/.test(v.src) || !SAFARI) v.remove(); });
     pic.appendChild(v);
     return v;
   }
@@ -221,7 +233,9 @@
     const v = L.querySelector("video"); if (!v) return;
     if (again) { try { v.currentTime = 0; } catch (e) { /* not loaded yet */ } }
     L.dataset.played = "1";
-    try { const p = v.play(); if (p && p.catch) p.catch(() => v.remove()); } catch (e) { v.remove(); }
+    v.dataset.want = "1"; // (a clip still being fetched on Safari starts when it arrives)
+    if (!v.src) return;
+    try { const p = v.play(); if (p && p.catch) p.catch(() => { if (!SAFARI) v.remove(); }); } catch (e) { v.remove(); }
   };
   // Where the page starts, ignoring the slide it is in the middle of.
   U.finalTop = null;
