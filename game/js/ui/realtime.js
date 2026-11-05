@@ -104,12 +104,13 @@
   // call for help once a battle: reach him in time and he holds; too late and he is cut down.
   U.startClash = function (B, opts, done) {
     if (V) stop();
-    const status = B.status;
+    const status = B.status, round = B.round;
     const R = RT.begin(B, { assist: U.assist && U.assist() });
     R.noRetry = true; // a war day has no second try
     V = { encId: B.enc.id, onEnd: null, R, actors: new Map(), held: { l: false, r: false }, queue: {}, acc: 0, last: 0, raf: 0, paused: false, sheet: null, toastT: 0, logAt: B.log.length,
-      clash: { secs: (opts && opts.secs) || 15, done, status, call: null } };
+      clash: { secs: (opts && opts.secs) || 15, done, status, round, call: null } };
     build();
+    V.el.classList.add("clashin"); // (a short fade from the war day's line)
     const bar = U.el('<div class="clashbar"><span class="cl-ring" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" class="cl-bg"/><circle cx="20" cy="20" r="17" class="cl-fg" pathLength="100"/></svg><b></b></span>' +
       '<button type="button" class="cl-back">' + T("Fall back") + "</button></div>");
     V.stage.appendChild(bar);
@@ -156,7 +157,7 @@
     c.ended = true;
     const R = V.R, B = R.B;
     if (R.over === "retry") RT.accept(R);
-    B.status = c.status; B.rt = null;
+    B.status = c.status; B.rt = null; B.round = c.round; // the real-time rounds inside the clash do not count as the war day's rounds
     if (c.call && c.call.el) c.call.el.remove();
     const done = c.done;
     stop();

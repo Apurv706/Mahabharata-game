@@ -82,7 +82,8 @@
       packSeen: B.packNow || 0, over: false, qte: null, tagT: 0, champSeen: new Set() };
     B.units.forEach((u) => { V.hp[u.uid] = u.hp; });
     // The clash (prototype, owner 5 November): after your order the round is fought in real time (ui/realtime.js).
-    B.clashMode = !!(U.startClash && !K.headless && B.enc.lethal !== undefined);
+    // (not when the player chose turn-based fights in the Menu: those keep pure turns)
+    B.clashMode = !!(U.startClash && !K.headless && K.RT && K.RT.on && K.RT.on() && !B.enc.dream);
     // Everything that happens is kept as it happens, to be played out in order: a move, the blows it lands, a heal.
     const hit0 = B.hit, heal0 = B.heal;
     B.hit = function (u, t, m, o) {
@@ -496,6 +497,19 @@
       if (id === "astra" || (K.ABILITIES[id] && K.ABILITIES[id].group === "astra")) {
         const o = B.astraOut || {}; B.astraOut = null;
         if (U.astraFx) U.astraFx({ kind: o.kind || "generic", clash: !!o.clash, from: actor && actor.svg, to: o.uid && firstFig(o.uid) ? firstFig(o.uid).svg : null });
+        // The impact on the line (item 16, as in real time): a white-hot flash, a ring that runs out over the ground, and
+        // scorch at the feet of the struck that lingers; quieter under Calm motion.
+        if (!U.calm()) setTimeout(() => {
+          if (!V) return;
+          const tf = o.uid && firstFig(o.uid), sr = V.stage.getBoundingClientRect(), tr = tf && tf.el ? tf.el.getBoundingClientRect() : null;
+          const x = tr ? tr.left + tr.width / 2 - sr.left : sr.width * 0.7, y = tr ? tr.bottom - sr.top : sr.height * 0.75;
+          const imp = U.el('<div class="wd-impact k-' + (o.kind || "generic") + '" aria-hidden="true" style="left:' + x + "px;top:" + y + 'px"><i class="ring"></i><i class="ring r2"></i></div>');
+          const white = U.el('<div class="wd-white" aria-hidden="true"></div>');
+          V.stage.appendChild(white); V.stage.appendChild(imp);
+          hits.forEach((h) => { const f = firstFig(h.on), r = f && f.el ? f.el.getBoundingClientRect() : null; if (!r) return; V.stage.appendChild(U.el('<i class="wd-scorch" aria-hidden="true" style="left:' + (r.left + r.width / 2 - sr.left) + "px;top:" + (r.bottom - sr.top) + 'px"></i>')); });
+          setTimeout(() => { white.remove(); imp.remove(); }, 1400);
+          setTimeout(() => { if (V) V.stage.querySelectorAll(".wd-scorch").forEach((e) => e.remove()); }, 7000);
+        }, 600);
         V.stage.classList.remove("bigshake"); void V.stage.offsetWidth; V.stage.classList.add("bigshake");
         setTimeout(() => { if (V) land(hits, heals); }, 900); return 1800;
       }
