@@ -620,6 +620,8 @@
     // A mace-bearer's blows: an overhead smash and a side sweep in turn, each wound up long.
     const arc = !ranged && !area && MELEE.has(id) && e.rt.weapon === "mace" ? ((e.rt.arcN = (e.rt.arcN || 0) + 1) % 2 ? "smash" : "sweep") : null;
     if (arc) wind = Math.max(wind, arc === "smash" ? P.maceSmash : P.maceSweep);
+    // An archer caught at close quarters draws slowly: time for the one who caught him to strike first (item 14).
+    if (ranged && e.rt.archer && t.side === "player" && Math.abs(t.rt.x - e.rt.x) <= t.rt.reach * 1.1) wind += 0.45;
     e.rt.face = sign(t.rt.x - e.rt.x);
     e.rt.atk = { id, on: t.uid, t0: R.t, land: R.t + Math.max(0.3, wind), ranged, area, lane: t.rt.x, locked: false, heavy: HEAVY.has(id) || area || arc === "smash", arc };
     R.stats.maxAtk = Math.max(R.stats.maxAtk, RT.attacking(R));
