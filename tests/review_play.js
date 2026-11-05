@@ -252,6 +252,8 @@ async function saveCopy(pg, L, o, tap) {
 // The end of a life: full-screen, and on a death once, back to the start of the act.
 async function ending(pg, L, R, o, tap) {
   await sleep(1500);
+  // Skip shows everything at once (the bards' lines, the record and the way back to an act).
+  { const sk = await pg.$(".endscreen .es-skip, .endscreen [data-skip], .endscreen button.skip"); if (sk) await tap(sk); else await pg.mouse.click(20, 200).catch(() => {}); await sleep(900); }
   const e = await pg.evaluate(() => { const el = document.querySelector(".endscreen"), r = el.getBoundingClientRect(); return { title: (el.querySelector(".es-title") || {}).textContent, alive: K.S.alive, full: r.left <= 0 && r.top <= 0 && r.right >= innerWidth - 1 && r.bottom >= innerHeight - 1, scene: K.S.scene, acts: [...el.querySelectorAll(".actback")].map((b) => +b.dataset.act) }; });
   if (!e.full) L.bad.push("the ending " + e.title + " is not full-screen");
   await shot(pg, L, "ending-" + (e.title || "?"));
@@ -260,8 +262,7 @@ async function ending(pg, L, R, o, tap) {
   const kept = await pg.evaluate(() => (K.lives() || []).some((l) => l.lifeId === K.S.lifeId || (l.me && l.me.name === K.S.name)));
   if (!kept) L.bad.push("the Book of Lives does not keep the life that ended (" + e.title + ")");
   if (!e.alive && !L.wentBack && e.acts.length) {
-    // Skip to everything, then go back to the start of the act.
-    for (let i = 0; i < 3; i++) { await pg.keyboard.press("Enter"); await sleep(400); }
+    // Go back to the start of the act (everything is shown already).
     const b = await pg.$(".endscreen .actback");
     if (b) {
       L.wentBack = true; const act = await b.evaluate((x) => +x.dataset.act);
