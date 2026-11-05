@@ -534,6 +534,7 @@
           const to = chest(t), dist = Math.abs(to.x - from.x);
           setTimeout(() => {
             if (!V) return;
+            if (t.dead) { land(hits.filter((h) => h.on === t.u.uid), []); return; } // already down (an earlier arrow beat you): no arrow flies at the spot where he stood
             U.flyArrow(V.world, from, to, Math.min(30, dist * 0.08), clamp(dist * 0.9, 160, 420), false, Math.max(22, a.fh * 0.28), { from: a.u.uid, to: t.u.uid, kind: id }).then(() => { if (V) land(hits.filter((h) => h.on === t.u.uid), []); });
           }, k * 80);
         });
