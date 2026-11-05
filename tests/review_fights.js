@@ -2,6 +2,8 @@
      weapons-rt       2  every figure in every real-time fight holds the weapon it strikes with (you on each path, named and
                          unnamed foes, soldiers, friends); a shield on the mace and sword paths
      weapons-war      2  the same on the war-day screen (its figures as ui/battle.js draws them)
+     ashwatthama-sword 2 the night raid's Ashwatthama: drawn with a sword and striking only with it (no weapon taken up), in
+                         real time and on the war day, no arrows, still a champion (owner, 4 November)
      friend-weapon    5  a friend called for help comes on holding his own weapon (Bhima a mace, Arjuna a bow, Charu a hammer)
      controls-touch   3  on an iPhone SE and an iPhone 15: ◀ ▶ held move you, Strike strikes, Block held raises the shield
                          (mace) or Roll rolls (archer), the path skill, Aid (herbs, the divine weapon, call for help), Orders,
@@ -139,6 +141,45 @@ browser("friend-weapon", "a friend called for help comes on holding his own weap
       if (!onStage) bad.push(enc + ": " + who + " is not to be seen on the stage");
     }
     await endFight(pg);
+  }
+  await close(); return bad.concat(errs);
+});
+
+browser("ashwatthama-sword", "the night raid's Ashwatthama is drawn with a sword and strikes only with it, in real time and on the war day; still a champion", async () => {
+  const bad = [];
+  const { pg, errs, close } = await open({ device: "iPhone 15" });
+  for (const enc of ["e_raid", "e_ash"]) {
+    // Real time: what he holds, and whether he ever takes up another weapon (Rig.wield) over 12 s of blows.
+    await fight(pg, enc, { life: { path: "charioteer" } });
+    await keepAlive(pg);
+    await pg.evaluate(() => { window.__wield = []; const B = K.Combat.state(), a = B.units.find((u) => /Ashwatthama/.test(u.name)); const A = K.UI.rtScreen().actors.get(a.uid); if (A && A.rig) { const w = A.rig.wield.bind(A.rig); A.rig.wield = (k) => { window.__wield.push(k); return w(k); }; } });
+    const r0 = await pg.evaluate(() => { const B = K.Combat.state(), a = B.units.find((u) => /Ashwatthama/.test(u.name)), A = K.UI.rtScreen().actors.get(a.uid); const it = A.svg.querySelector(".pp-body .it"); return { drawn: it && it.dataset.k, weapon: a.rt.weapon, archer: a.rt.archer, hero: a.hero, moves: a.abilities }; });
+    if (r0.drawn !== "sword" || r0.weapon !== "sword") bad.push(enc + " real time: drawn with " + r0.drawn + ", strikes with " + r0.weapon + " (a sword both)");
+    if (r0.archer || r0.moves.some((m) => ["arrows", "aimed", "volley", "pin"].includes(m))) bad.push(enc + ": a sword-holder who shoots (" + r0.moves.join(",") + ")");
+    if (!r0.hero) bad.push(enc + ": no longer a champion (the counter-weapon)");
+    await waitFight(pg, 12, 60000);
+    const w = await pg.evaluate(() => window.__wield);
+    if (w.length) bad.push(enc + " real time: he took up " + [...new Set(w)].join(", ") + " to strike");
+    await endFight(pg);
+    // The war day (Fights: turn-based): drawn with the sword, and no bow taken up for a move or the read.
+    await pg.evaluate(() => K.prefs({ fights: "turns" }));
+    await fight(pg, enc, { life: { path: "charioteer" } });
+    await keepAlive(pg);
+    const r1 = await pg.evaluate(() => { const B = K.Combat.state(), a = B.units.find((u) => /Ashwatthama/.test(u.name)); const el = document.querySelector('#rt [data-uid="' + a.uid + '"]'); const it = el && el.querySelector(".pp-body .it"); return { war: !!K.UI.warScreen(), drawn: it && it.dataset.k }; });
+    if (!r1.war) bad.push(enc + ": not on the war-day screen with Fights: turn-based");
+    else if (r1.drawn !== "sword") bad.push(enc + " war day: drawn with " + r1.drawn + ", not a sword");
+    for (let i = 0; i < 30; i++) { // a few rounds, with reads
+      const s = await pg.evaluate(() => { const V = K.UI.warScreen(); return V && { read: !!document.querySelector("#rt .wd-read [data-rd]"), line: (document.querySelector("#rt .wd-read .rd-who") || {}).textContent || "", over: V.over, busy: !!V.playing || !!(V.B.queue && V.B.queue.length) }; });
+      if (!s || s.over) break;
+      if (s.read) { if (/arrow/i.test(s.line)) bad.push(enc + " war day: a sword-holder's read says " + JSON.stringify(s.line)); await pg.evaluate(() => { const b = document.querySelector('#rt .wd-read [data-rd="block"]'); b.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true })); }); await sleep(600); continue; }
+      if (await pg.evaluate(() => !!document.querySelector("#rt [data-place]"))) { await pg.evaluate(() => document.querySelector("#rt [data-place]").click()); await sleep(500); continue; }
+      if (!s.busy) await pg.evaluate(() => { const b = document.querySelector('#wd-moves [data-move="strike"]:not([disabled])'); if (b) b.click(); });
+      await sleep(500);
+    }
+    const r2 = await pg.evaluate(() => { const B = K.Combat.state(), a = B && B.units.find((u) => /Ashwatthama/.test(u.name)); const el = a && document.querySelector('#rt [data-uid="' + a.uid + '"]'); return el ? [...el.querySelectorAll(".pp-body .it")].map((i) => i.dataset.k) : null; });
+    if (r2 && r2.some((k) => k && k !== "sword")) bad.push(enc + " war day: he holds " + r2.join(", ") + " after some rounds");
+    await endFight(pg);
+    await pg.evaluate(() => K.prefs({ fights: "realtime" }));
   }
   await close(); return bad.concat(errs);
 });

@@ -160,6 +160,7 @@
     satyaki: "sword", dhrishtadyumna: "sword", nakula: "sword", sahadeva: "sword", yudhishthira: "spear", guard: "spear", soldier: "spear" };
   RT.weaponOf = function (u) {
     if (u.side === "player") return K.S && K.S.path ? PATH_WEAPON[K.S.path] || "sword" : "fist"; // before a path, empty hands (K.fightItem): the fair's wrestling ring
+    if (u.item) return u.item; // drawn by this fight with another weapon (Ashwatthama in the sleeping camp: a sword)
     if (u.person) return PERSON_WEAPON[u.person] || "sword";
     // As the figure is drawn (ui/battle.js specFor; tests/weapons.js holds the two together).
     const n = String(u.src || u.name);
