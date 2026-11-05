@@ -162,6 +162,8 @@ for (let i = 0; i < LIVES; i++) {
     prev = sc.id;
     const act = K.S.act;
     if (sc.ending) {
+      // A death is told where it happened: one before the war (a peril, the house of lac) ends the life in Part One.
+      const act = !K.S.alive && K.S.deathAct ? K.S.deathAct : K.S.act;
       try { const e = sc.ending(K.S); (e.telling || []).forEach((l) => txt(l, sc.id + " telling")); (e.fates || []).forEach((l) => txt(l, sc.id + " fates")); txt(e.title, sc.id + " title"); for (const f of backdropFiles(e.art)) want(f, act, "ending " + e.title + " (" + e.art + ")"); if (VIDEOS.includes(e.art)) want("video/" + e.art + ".mp4", act, "ending clip"); } catch (e) { add("throws", sc.id + ".ending: " + e.message); }
       ended++; break;
     }

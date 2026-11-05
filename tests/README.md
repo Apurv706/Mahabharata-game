@@ -4,7 +4,7 @@ Everything runs through one runner, `tests/run.js`, in two tiers. Each check is 
 be run alone (its header comment says what it checks and how to run it).
 
 ```
-npm test                          # quick tier (node tests/run.js quick), about 2 minutes
+npm test                          # quick tier (node tests/run.js quick), 1-2 minutes (under a minute on CI)
 npm run test:full                 # full tier (node tests/run.js full), under 40 minutes on a 4-core runner
 node tests/run.js full --only layout,battlefit --browser all
 node tests/run.js quick --list    # what each tier runs
@@ -12,7 +12,8 @@ node tests/run.js quick --list    # what each tier runs
 
 Options: `--only a,b` / `--skip a,b` (a check's name, or the part before `#`: `playthrough` is all six parts),
 `--browser chromium|webkit|firefox|all` (for layout and battlefit, which run in several engines; the rest use
-Chromium), `--jobs N` (checks at a time), `--browser-jobs N` (of those, how many in a browser, default 2),
+Chromium), `--jobs N` (checks at a time), `--browser-jobs N` (of those, how many in a browser, default 1; a browser
+check never runs beside a memory-heavy one: the jsdom playthroughs, the lives batches, content, bands),
 `--out DIR` (logs, JSON and images; default `tests/out/`, or `$REGRESS_OUT`), `--report FILE`.
 
 At the end the runner prints a table: each check, **PASS**, **FAIL**, **FLAKY** (a browser check that failed, was run
@@ -47,7 +48,8 @@ whole output is in `<out>/logs/`. The exit code is 1 only when something FAILs.
 | visual | | ✓ | `visual.js`: screenshots against `baselines/shots/` |
 | smoke | | ✓ | `smoke.js`: the built play pages (both parts) played with real taps |
 
-CI (`.github/workflows/regression.yml`) runs the quick tier on every push and pull request, and the full tier nightly
+CI (`.github/workflows/regression.yml`) runs the quick tier on pushes to `main` and on every pull request (not on
+pushes to work branches, whose baselines move while they are worked on), and the full tier nightly
 (scheduled runs only fire from the default branch, so the nightly run starts once the workflow is on `main`) and by
 hand (Actions → Regression → Run workflow, with a choice of tier and browser). Reports, logs and visual diffs are
 uploaded as artifacts. The older workflows (`engine.yml`, `screen-fit.yml`) still run as before.

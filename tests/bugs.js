@@ -548,6 +548,35 @@ browser("stealth-upright", "42873f9", "stealth: the sneak pose and the creep in 
   await close(); return bad.concat(errs);
 });
 
+browser("retry-slump", "40d1128", "a deadly real-time fight lost the first time: you slump (not fall) while Try again is offered; giving up falls you, or in story mode the foes leave and the line shows", async () => {
+  const bad = [];
+  for (const story of [false, true]) {
+    const tag = story ? "story mode: " : "";
+    const { pg, errs, close } = await open({ device: "iPhone 15" });
+    await fight(pg, "e_guard", { path: "charioteer", storyMode: story });
+    if (!(await pg.evaluate(() => K.Combat.state().enc.lethal))) bad.push("e_guard is not deadly now: pick another deadly real-time fight");
+    await pg.evaluate(() => { K.Combat.player().hp = 0; });
+    const sheet = await pg.waitForSelector("#rt .pause-sheet [data-retry]", { timeout: 8000 }).catch(() => null);
+    if (!sheet) { bad.push(tag + "no Try again after the first loss"); await close(); continue; }
+    const me = await pg.evaluate(() => { const a = K.UI.rtScreen().actors.get(K.Combat.player().uid); return a ? { slumped: a.el.classList.contains("slumped"), dead: a.el.classList.contains("dead") } : null; });
+    if (!me || !me.slumped || me.dead) bad.push(tag + "while Try again is offered you are drawn " + JSON.stringify(me) + ", not slumped");
+    if (!(await pg.$("#rt .pause-sheet [data-accept]"))) { bad.push(tag + "no way to give up beside Try again"); await close(); continue; }
+    await pg.tap("#rt .pause-sheet [data-accept]");
+    if (story) {
+      const w = await pg.waitForSelector("#rt .written", { timeout: 8000 }).catch(() => null);
+      if (!w) bad.push(tag + "giving up did not show the line that what is written held");
+      else { const t = await pg.evaluate(() => document.querySelector("#rt .written p").textContent); if (t !== WRITTEN) bad.push(tag + "the line reads " + JSON.stringify(t)); }
+    } else {
+      await pg.waitForTimeout(400);
+      const after = await pg.evaluate(() => { const V = K.UI.rtScreen(); const a = V && V.actors.get(K.Combat.player().uid); return a ? { slumped: a.el.classList.contains("slumped"), dead: a.el.classList.contains("dead") } : { gone: true }; });
+      if (!after.gone && !after.dead) bad.push("giving up: you are not drawn fallen (" + JSON.stringify(after) + ")");
+      if (await pg.$("#rt .written")) bad.push("giving up outside story mode shows the story-mode line");
+    }
+    bad.push(...errs.map((e) => tag + e)); await close();
+  }
+  return bad;
+});
+
 // ======================= Run =======================
 (async () => {
   const only = arg("--case", ""), want = only ? new Set(only.split(",")) : null;

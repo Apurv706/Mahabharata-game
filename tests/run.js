@@ -9,7 +9,9 @@
    tests/known_failures.json lists is KNOWN (not a failure); the exit code is 1 only for FAIL.
    Usage: node tests/run.js [quick|full] [--only a,b] [--skip a,b] [--browser chromium|webkit|firefox|all] [--jobs N]
           [--browser-jobs N] [--out DIR] [--report FILE] [--list]
-   --jobs: checks at a time (default: the CPUs, at most 3); --browser-jobs: of those, how many in a browser (default 2).
+   --jobs: checks at a time (default: the CPUs, at most 3); --browser-jobs: of those, how many in a browser (default 1).
+   Memory: a browser check never runs beside a heavy one (the jsdom playthroughs, the lives batches, content, bands),
+   and only one heavy one runs at a time, so a small machine (2 cores, 8 GB) does not run out of memory.
    --browser picks the engines for the checks that run in several (layout, battlefit; the others are Chromium only).
    --only/--skip match a check's name or the part before '#' (playthrough matches playthrough#1..6). */
 "use strict";
@@ -33,7 +35,7 @@ fs.mkdirSync(LOGS, { recursive: true });
 const J = (name) => path.join(OUT, "json", name + ".json");
 fs.mkdirSync(path.join(OUT, "json"), { recursive: true });
 const MIN = 60 * 1000;
-const BJOBS = Math.max(1, parseInt(opt("--browser-jobs", "2"), 10));
+const BJOBS = Math.max(1, parseInt(opt("--browser-jobs", "1"), 10));
 
 // ---------- Retrying a browser check's failing cases ----------
 // Each returns the arguments for a run of just the failing cases, or null to run the whole check again.
@@ -63,21 +65,22 @@ const browsers = BROWSER === "all" ? "chromium,webkit,firefox" : BROWSER;
 const C = [];
 const add = (name, quick, full, o = {}) => C.push(Object.assign({ name, quick, full }, o));
 add("rules", ["tests/rules.js"], ["tests/rules.js"]);
-add("lives", ["tests/lives.js", "200", "1"], ["tests/lives.js", "600", "1"]);
-add("lives-turns", ["tests/lives.js", "300", "2", "--turns"], ["tests/lives.js", "1500", "2", "--turns"]);
+add("lives", ["tests/lives.js", "200", "1"], ["tests/lives.js", "600", "1"], { heavy: "full" });
+add("lives-turns", ["tests/lives.js", "300", "2", "--turns"], ["tests/lives.js", "1500", "2", "--turns"], { heavy: "full" });
 add("crossing", ["tests/crossing.js", "200", "1"], ["tests/crossing.js", "400", "1"]);
-add("content", ["tests/content.js", "--lives", "300", "--ui", "2", "--json", J("content")], ["tests/content.js", "--lives", "2000", "--ui", "24", "--json", J("content")], { timeout: 20 });
+add("content", ["tests/content.js", "--lives", "300", "--ui", "2", "--json", J("content")], ["tests/content.js", "--lives", "2000", "--ui", "24", "--json", J("content")], { timeout: 25, heavy: "full" });
 add("golden", ["tests/golden.js", "--json", J("golden")], ["tests/golden.js", "--twice", "--json", J("golden")]);
-add("bands", ["tests/bands.js", "--tier", "quick", "--json", J("bands")], ["tests/bands.js", "--tier", "full", "--json", J("bands")], { timeout: 25 });
+add("bands", ["tests/bands.js", "--tier", "quick", "--json", J("bands")], ["tests/bands.js", "--tier", "full", "--json", J("bands")], { timeout: 45, heavy: "full" });
 add("bugs", ["tests/bugs.js", "--engine-only", "--json", J("bugs")], ["tests/bugs.js", "--json", J("bugs")], { browser: "full", retryJson: "bugs", timeout: 20 });
 add("weapons", ["tests/weapons.js"], ["tests/weapons.js"]);
 add("facefit", ["tests/facefit.js"], ["tests/facefit.js"], { browser: true });
 add("saves", ["tests/saves.js", "--json", J("saves")], ["tests/saves.js", "--browser", "--json", J("saves")], { browser: "full", retryJson: "saves", timeout: 15 });
-add("command", null, ["--max-old-space-size=4096", "tests/command.js", "100"], { timeout: 25, items: items.command });
-for (let k = 0; k < 6; k++) add("playthrough#" + (k + 1), null, ["--max-old-space-size=3072", "tests/playthrough.js", "50", "--from", String(1 + 50 * k)], { timeout: 20, items: items.playthrough });
-for (let k = 0; k < 3; k++) add("playthrough-story#" + (k + 1), null, ["--max-old-space-size=3072", "tests/playthrough.js", "50", "--story", "--from", String(1 + 50 * k)], { timeout: 20, items: items.playthrough });
-add("strings-hi", null, ["tests/strings.js", "check", "hi", "40"], { timeout: 15, items: items.strings });
-add("balance", null, ["tests/balance.js", "120"], { timeout: 15, report: true });
+// The jsdom checks keep about 25 MB per finished life (heavy: one of them at a time, so two never exhaust the memory).
+add("command", null, ["--max-old-space-size=4096", "tests/command.js", "100"], { timeout: 25, items: items.command, heavy: true });
+for (let k = 0; k < 10; k++) add("playthrough#" + (k + 1), null, ["--max-old-space-size=3072", "tests/playthrough.js", "30", "--from", String(1 + 30 * k)], { timeout: 20, items: items.playthrough, heavy: true });
+for (let k = 0; k < 5; k++) add("playthrough-story#" + (k + 1), null, ["--max-old-space-size=3072", "tests/playthrough.js", "30", "--story", "--from", String(1 + 30 * k)], { timeout: 20, items: items.playthrough, heavy: true });
+add("strings-hi", null, ["tests/strings.js", "check", "hi", "40"], { timeout: 20, items: items.strings, heavy: true });
+add("balance", null, ["tests/balance.js", "120"], { timeout: 35, report: true, heavy: true });
 add("race-balance", null, ["tests/race_balance.js", "2000"], { report: true });
 add("rtsim", null, ["tests/rtsim.js", "all", "10"], { report: true });
 add("rtfit", null, ["tests/rtfit.js"], { browser: true, items: items.rtfit });
@@ -98,7 +101,7 @@ add("review-play", null, ["tests/review_play.js", "--lives", "1", "--seed", "2",
 // Rough lengths on a 2-core machine (seconds): the full tier starts the longest first.
 const EST = {"battlefit": 800, "layout#phone": 520, "layout#tablet": 260, "layout#desktop": 260, "balance": 400, "command": 300, "strings-hi": 250, "visual": 230, "bands": 220, "lives": 190, "smoke": 160, "warfit": 160, "blowfit": 180, "content": 150, "bugs": 110, "saves": 110, "rtfit": 60, "lives-turns": 45, "rtsim": 40, "race-balance": 28, "golden": 20};
 Object.assign(EST, { "review-fights": 900, "review-play": 1200, "review-story": 600, "review-screens": 300, "review-rules": 15 });
-for (const c of C) c.est = EST[c.name] || (/^playthrough/.test(c.name) ? 150 : 10);
+for (const c of C) c.est = EST[c.name] || (/^playthrough/.test(c.name) ? 90 : 10);
 const known = (() => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, "known_failures.json"), "utf8")).known || []; } catch (e) { return []; } })();
 const base = (n) => n.split("#")[0];
 const pick = (c) => c[TIER] && (!ONLY || ONLY.some((o) => o === c.name || o === base(c.name))) && !SKIP.some((o) => o === c.name || o === base(c.name));
@@ -113,8 +116,9 @@ function run(c, args, env) {
     const ch = cp.spawn(process.execPath, node.concat(rest), { cwd: ROOT, env: Object.assign({}, process.env, { REGRESS_OUT: OUT }, env || {}) });
     let out = "";
     ch.stdout.on("data", (d) => { out += d; }); ch.stderr.on("data", (d) => { out += d; });
-    const to = setTimeout(() => { out += "\n[run.js] timed out after " + (c.timeout || 15) + " min\n"; ch.kill("SIGKILL"); }, (c.timeout || 15) * MIN);
-    ch.on("close", (code, sig) => { clearTimeout(to); ok({ code: sig ? 124 : code, out, ms: Date.now() - t }); });
+    let timedOut = false;
+    const to = setTimeout(() => { timedOut = true; out += "\n[run.js] timed out after " + (c.timeout || 15) + " min\n"; ch.kill("SIGKILL"); }, (c.timeout || 15) * MIN);
+    ch.on("close", (code, sig) => { clearTimeout(to); if (sig && !timedOut) out += "\n[run.js] killed by " + sig + " (out of memory?)\n"; ok({ code: sig ? 124 : code, out, ms: Date.now() - t }); });
   });
 }
 const tail = (s, n) => s.trim().split("\n").slice(-n).join("\n");
@@ -137,7 +141,7 @@ async function one(c) {
       const r2 = await run(c, a2, env);
       fs.writeFileSync(path.join(LOGS, c.name.replace(/#/g, "-") + ".retry.txt"), "$ node " + a2.join(" ") + (env ? " (" + JSON.stringify(env) + ")" : "") + "\n\n" + r2.out);
       res.retry = { cmd: "node " + a2.join(" ") + (env ? " " + JSON.stringify(env) : ""), seconds: Math.round(r2.ms / 100) / 10, passed: r2.code === 0 };
-      res.seconds += res.retry.seconds;
+      res.seconds = Math.round((res.seconds + res.retry.seconds) * 10) / 10;
       if (r2.code === 0) { res.status = "FLAKY"; res.note = "passed on the re-run of " + (again ? "its failing cases" : "the whole check"); return res; }
       r = r2;
     }
@@ -145,7 +149,7 @@ async function one(c) {
     const its = c.items ? c.items(r.out) : [];
     const mine = known.filter((k) => k.test === base(c.name));
     if (its.length && mine.length && its.every((t) => mine.some((k) => t.includes(k.match)))) { res.status = "KNOWN"; res.note = its.length + " known: " + its.join("; ").slice(0, 120); }
-    else { res.tail = tail(r.out, 12); if (its.length) res.note = its.slice(0, 3).join("; ").slice(0, 140); }
+    else { res.tail = tail(r.out, 12); if (its.length) res.note = its.slice(0, 3).join("; ").slice(0, 140); const m = r.out.match(/\[run\.js\] (timed out after \d+ min|killed by \w+[^\n]*)/); if (m) res.note = m[1]; }
   }
   return res;
 }
@@ -155,10 +159,10 @@ async function one(c) {
   console.log("Regression suite, " + TIER + " tier: " + list.length + " checks, " + JOBS + " at a time (at most " + BJOBS + " in a browser); logs in " + (path.relative(process.cwd(), LOGS) || LOGS));
   const results = new Array(list.length);
   // The browser checks run one at a time (they measure layout and timing, and share the machine); the others fill the slots.
-  let browserBusy = 0, next = 0;
-  const queue = list.map((c, i) => ({ c, i, browser: c.browser === true || c.browser === TIER }));
+  let browserBusy = 0, heavyBusy = 0, next = 0;
+  const queue = list.map((c, i) => ({ c: Object.assign({}, c, { heavy: c.heavy === true || c.heavy === TIER }), i, browser: c.browser === true || c.browser === TIER }));
   const takeNext = () => {
-    for (let k = 0; k < queue.length; k++) { const q = queue[k]; if (q.done || q.taken) continue; if (q.browser && browserBusy >= BJOBS) continue; q.taken = true; if (q.browser) browserBusy++; return q; }
+    for (let k = 0; k < queue.length; k++) { const q = queue[k]; if (q.done || q.taken) continue; if (q.browser && (browserBusy >= BJOBS || heavyBusy)) continue; if (q.c.heavy && (heavyBusy || browserBusy)) continue; q.taken = true; if (q.browser) browserBusy++; if (q.c.heavy) heavyBusy++; return q; }
     return null;
   };
   await new Promise((finish) => {
@@ -168,7 +172,7 @@ async function one(c) {
         const q = takeNext(); if (!q) break;
         running++;
         one(q.c).then((r) => {
-          results[q.i] = r; q.done = true; if (q.browser) browserBusy--; running--;
+          results[q.i] = r; q.done = true; if (q.browser) browserBusy--; if (q.c.heavy) heavyBusy--; running--;
           console.log(r.status.padEnd(6) + " " + r.name.padEnd(22) + String(r.seconds).padStart(7) + " s" + (r.note ? "  " + r.note : ""));
           if (r.status === "FAIL" && r.tail) console.log(r.tail.split("\n").map((l) => "         | " + l.slice(0, 200)).join("\n"));
           if (queue.every((x) => x.done)) finish(); else pump();
