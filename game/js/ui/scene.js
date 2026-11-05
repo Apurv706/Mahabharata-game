@@ -122,6 +122,7 @@
       const b = U.button(cls, '<span class="k">' + (i + 1) + "</span>" + (img ? U.thumb(img, grid ? "emblem" : undefined) : "") + stars + '<span class="t">' + U.t(K.val(c.t)) + "</span>" +
         (fx ? '<span class="fx">' + fx + "</span>" : "") + (signs ? '<span class="marks">' + signs + "</span>" : ""), null, "choice-" + c.id);
       if (vowMark) b.title = vowMark[2];
+      if (!ok && !crossed && fx) { b.title = fx.replace(/<[^>]+>/g, ""); b.setAttribute("aria-label", U.t(K.val(c.t)) + ": " + b.title); } // (on a phone the reason folds away; it stays as the card's label)
       b.disabled = !ok;
       const run = () => pick(sc, c, b);
       b.addEventListener("click", run);

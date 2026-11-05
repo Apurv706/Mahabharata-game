@@ -2027,3 +2027,26 @@ body.ending-on .ledger { display: none; }
 .moment .mo-art video.mo-clip.on { opacity: 1; }
 .moment.clip .mo-text { opacity: 0; transition: opacity .8s ease; }
 .moment.clip.ended .mo-text { opacity: 1; }
+
+/* ---------- Less of the screen under words on a phone (owner, 5 November: 52 pages over half the screen) ----------
+   The choice cards were most of it: tighter cards, smaller portraits, the story a touch smaller. Act cards, the dream,
+   moments and endings are not .story and keep their sizes. */
+@media (max-width: 560px) {
+  .leaf .choices .choice { padding: 9px 12px; min-height: 44px; gap: 2px 10px; }
+  .leaf .choices .choice .t { font-size: 15.5px; line-height: 1.28; }
+  .leaf .choices .choice.has-img .thumb.face { width: 40px; height: 40px; }
+  .leaf .choices .choice .thumb.face { width: 40px; height: 40px; }
+  .leaf .choices .choice .thumb.emblem { width: 44px; height: 44px; }
+  .leaf .choices .choice .thumb.card { width: 72px; }
+  .leaf .story { font-size: 15px; line-height: 1.5; }
+  /* "As it is written": its label runs into its one sentence, in a slim box */
+  .leaf .story .witness { display: block; padding: 7px 11px; outline: 0; }
+  .leaf .story .witness .lbl { display: inline; font-size: 12.5px; letter-spacing: .05em; text-transform: uppercase; margin-right: 6px; }
+  .leaf .story .witness p { display: inline; font-size: 14px; line-height: 1.45; margin: 0; }
+  .leaf .story .witness p + p::before { content: " "; }
+  html[lang="hi"] .leaf .choices .choice .t { font-size: 15px; line-height: 1.4; }
+  /* A choice you cannot take: its name only, muted (the reason folds into the card's label); a way closed by failing stays struck through with its line */
+  .leaf .choices .choice:disabled:not(.crossed) { min-height: 38px; padding-block: 7px; }
+  .leaf .choices .choice:disabled:not(.crossed) .fx { display: none; }
+  .leaf .choices .choice:disabled:not(.crossed) .thumb.face { width: 30px; height: 30px; }
+}
