@@ -10,6 +10,8 @@
                          Pause and Resume, each through a tap or a held touch
      controls-keys    3  on a laptop: A/D, J, K held (Block) or K (Roll), L, H, U, C, O, P/Esc, E; a click on a foe strikes,
                          a click on the ground walks
+     read-lines       2  the war day's timed read follows the weapon the foe is drawn holding: a bowman's blows come as
+                         arrows (and he draws to wind up), one drawn with a spear or blade never shoots
      controls-war     3  the war day on a phone and a laptop: a place card, a move card and a tap on a foe play a round;
                          the timed read's buttons; Aid
      orders-friend    4  the friend's presets visibly apply: Hold back keeps behind you and strikes no one, All-out goes for
@@ -172,7 +174,7 @@ browser("ashwatthama-sword", "the night raid's Ashwatthama is drawn with a sword
       const s = await pg.evaluate(() => { const V = K.UI.warScreen(); return V && { read: !!document.querySelector("#rt .wd-read [data-rd]"), line: (document.querySelector("#rt .wd-read .rd-who") || {}).textContent || "", over: V.over, busy: !!V.playing || !!(V.B.queue && V.B.queue.length) }; });
       if (!s || s.over) break;
       if (s.read) { if (/arrow/i.test(s.line)) bad.push(enc + " war day: a sword-holder's read says " + JSON.stringify(s.line)); await pg.evaluate(() => { const b = document.querySelector('#rt .wd-read [data-rd="block"]'); b.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true })); }); await sleep(600); continue; }
-      if (await pg.evaluate(() => !!document.querySelector("#rt [data-place]"))) { await pg.evaluate(() => document.querySelector("#rt [data-place]").click()); await sleep(500); continue; }
+      if (await pg.evaluate(() => !!document.querySelector("#rt .wctl.picking"))) { await pg.evaluate(() => document.querySelector("#rt [data-place]").click()); await sleep(500); continue; }
       if (!s.busy) await pg.evaluate(() => { const b = document.querySelector('#wd-moves [data-move="strike"]:not([disabled])'); if (b) b.click(); });
       await sleep(500);
     }
@@ -181,6 +183,45 @@ browser("ashwatthama-sword", "the night raid's Ashwatthama is drawn with a sword
     await endFight(pg);
     await pg.evaluate(() => K.prefs({ fights: "realtime" }));
   }
+  await close(); return bad.concat(errs);
+});
+
+browser("read-lines", "the war day's timed read speaks of the weapon the foe is drawn holding: a bowman's blows as arrows, a spearman's never", async () => {
+  const bad = [], seen = { bow: 0, other: 0 };
+  const { pg, errs, close } = await open({ device: "iPhone 15" });
+  for (const enc of ["hold_arjuna", "e_day1", "e_day16"]) {
+    await fight(pg, enc, { life: { path: "charioteer", side: "kaurava" } });
+    await keepAlive(pg);
+    for (let i = 0; i < 60 && (seen.bow < 4 || seen.other < 4); i++) {
+      const s = await pg.evaluate(() => {
+        const V = K.UI.warScreen(); if (!V || V.over) return { over: true };
+        const rd = document.querySelector("#rt .wd-read .rd-who");
+        if (rd && document.querySelector("#rt .wd-read [data-rd]")) {
+          const who = (rd.querySelector("b") || {}).textContent || "", line = rd.textContent;
+          const u = V.B.units.find((x) => x.side === "enemy" && K.text(x.src || x.name) === who);
+          const el = u && document.querySelector('#rt [data-uid="' + u.uid + '"]');
+          const it = el && el.querySelector(".pp-body .it"), held = it ? it.dataset.k : null;
+          const wind = el ? el.querySelector("svg.pp").getAttribute("class") + " " + ((V.figs && [...V.figs.values()].find((f) => f.u === u) || {}).rig || {}).pose : "";
+          return { read: true, who, line, held, wind };
+        }
+        return { place: !!document.querySelector("#rt .wctl.picking"), busy: !!V.playing || !!(V.B.queue && V.B.queue.length) };
+      });
+      if (s.over) break;
+      if (s.read) {
+        const arrow = /arrow/i.test(s.line);
+        if (s.held === "bow") { seen.bow++; if (!arrow) bad.push(enc + ": " + s.who + " (drawn with a bow) winds up for " + JSON.stringify(s.line)); }
+        else if (s.held || s.who) { seen.other++; if (arrow) bad.push(enc + ": " + s.who + " (drawn with " + s.held + ") looses " + JSON.stringify(s.line)); if (/\bdraw\b|pose-aim/.test(s.wind)) bad.push(enc + ": " + s.who + " (drawn with " + s.held + ") draws a bow to wind up"); }
+        await pg.evaluate(() => { const b = document.querySelector('#rt .wd-read [data-rd="block"]'); if (b) b.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true })); });
+        await sleep(700); continue;
+      }
+      if (s.place) { await pg.evaluate(() => document.querySelector("#rt [data-place]").click()); await sleep(500); continue; }
+      if (!s.busy) await pg.evaluate(() => { const b = document.querySelector('#wd-moves [data-move="wall"]:not([disabled]), #wd-moves [data-move="guard"]:not([disabled]), #wd-moves [data-move="strike"]:not([disabled])'); if (b) b.click(); });
+      await sleep(400);
+    }
+    await endFight(pg);
+  }
+  if (!seen.bow) bad.push("no read from a bowman was seen to check");
+  if (!seen.other) bad.push("no read from a foe drawn with another weapon was seen to check");
   await close(); return bad.concat(errs);
 });
 

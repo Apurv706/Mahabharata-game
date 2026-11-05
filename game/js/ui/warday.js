@@ -702,21 +702,26 @@
   const SHAPES = {
     low: { need: "jump", line: "A low sweep at your legs", arrow: "An arrow, low, at your legs" },
     high: { need: "duck", line: "A swing at your head", arrow: "An arrow at your head" },
-    thrust: { need: "side", line: "A straight thrust" },
-    charge: { need: "side", line: "A charge, head down" }
+    thrust: { need: "side", line: "A straight thrust", arrow: "An arrow at your chest" },
+    charge: { need: "side", line: "A charge, head down", arrow: "An arrow at your chest" }
   };
   const shapeFor = (id) => K.pick({ arrows: ["low", "high"], strike: ["high", "thrust", "low"], heavy: ["high", "charge"], disarm: ["thrust"], breaker: ["charge"] }[id] || ["high", "thrust"]);
   function read(u, th) {
     const B = V.B, g = K.attr("grace");
     const Tm = 1.1 * th.speed, END = Tm * 1.32;
     const Wn = { perfect: 0.065 + g * 0.004, move: 0.17 + g * 0.009, block: 0.2 + g * 0.01 };
-    const shape = shapeFor(th.id), S2 = SHAPES[shape], what = th.id === "arrows" && S2.arrow ? S2.arrow : S2.line;
+    // The line and the wind-up follow the weapon he is drawn holding (as RT.weaponOf does in real time): a bowman's every blow
+    // comes as an arrow, and one drawn with a blade, a spear or a mace never shoots. (shapeFor's draw is kept as it was, so the
+    // random stream and the outcomes do not change.)
+    const shape = shapeFor(th.id), S2 = SHAPES[shape];
+    const efig = firstFig(u.uid), spec = efig ? efig.spec : specFor(u), bowman = !!((efig && efig.bow) || (spec && spec.item === "bow"));
+    const what = bowman ? S2.arrow : S2.line;
     const box = $(".wd-read");
     box.innerHTML = '<p class="rd-who"><b>' + esc(K.text(u.src || u.name)) + "</b> · " + esc(T(what)) + '</p><div class="rd-row"><span class="rd-ring"><i class="mark"></i><i class="ring"></i></span>' +
       [["Jump ↑", "jump"], ["Duck ↓", "duck"], ["Sidestep ↔", "side"], ["Block", "block"]].map(([l, m]) => '<button type="button" data-rd="' + m + '">' + esc(T(l)) + "</button>").join("") + '</div><p class="rd-note" aria-live="assertive"></p>';
     const ring = box.querySelector(".ring"), note = box.querySelector(".rd-note");
     const ef = firstFig(u.uid), me = firstFig(B.units[0].uid);
-    if (ef) { pose(ef, ef.bow || th.id === "arrows" ? "draw" : "windup", 700, 0.6); ef.el.classList.add("windup"); }
+    if (ef) { pose(ef, bowman ? "draw" : "windup", 700, 0.6); ef.el.classList.add("windup"); }
     let t0 = 0, raf = 0, done = false;
     const LINES = { counter: "A perfect read! You strike back.", block: "Blocked.", dodge: "Clear!", graze: "Late: it grazes you.", early: "Too early.", late: "Too late.", wrong: "The wrong way!" };
     const finish = (result, line, mv) => {
