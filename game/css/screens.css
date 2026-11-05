@@ -2110,3 +2110,21 @@ body.ending-on .ledger { display: none; }
   /* Vows and other emblem choices: a smaller emblem */
   .leaf .choices .choice.has-img .thumb.emblem { width: 36px; height: 36px; }
 }
+/* Fighter mode (ui/practice.js, feedback item 21): the choice on waking, the weapon, the end of a run. */
+.fmode { position: fixed; inset: 0; z-index: 92; display: grid; place-items: center; padding: max(20px, var(--sat, 0px)) 16px max(20px, var(--sab, 0px)); background: radial-gradient(ellipse at 50% 40%, rgba(58, 30, 18, .94), rgba(14, 8, 5, .97)); opacity: 0; transition: opacity .45s ease; overflow-y: auto; }
+.fmode.in { opacity: 1; }
+.fmode.out { opacity: 0; pointer-events: none; }
+html.calm .fmode { transition: none; }
+.fm-in { width: min(100%, 560px); display: grid; gap: 16px; text-align: center; }
+.fmode h2 { margin: 0; font: 600 clamp(28px, 7vw, 40px)/1.1 var(--display); color: var(--ink); }
+.fm-pick { display: grid; gap: 12px; }
+.fm-card, .fm-w { display: grid; gap: 4px; text-align: left; padding: 16px 18px; border-radius: var(--r-control); border: 1px solid var(--gold-line); background: rgba(var(--surface-rgb), .72); color: var(--ink); cursor: pointer; font: inherit; }
+.fm-card b { font: 600 24px/1.2 var(--display); }
+.fm-w b { font: 600 19px/1.2 var(--display); }
+.fm-card small, .fm-w small { color: var(--muted); font-size: 15px; line-height: 1.35; }
+.fm-card:hover, .fm-w:hover, .fm-card:focus-visible, .fm-w:focus-visible { border-color: var(--accent); background: var(--hover); }
+.fm-weapons { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.fm-best { margin: 0; color: var(--muted); }
+.fm-best.new { color: var(--accent); font-weight: 600; }
+.fm-score { margin: 0; font-size: 20px; }
+.fmode .btnrow { justify-content: center; }

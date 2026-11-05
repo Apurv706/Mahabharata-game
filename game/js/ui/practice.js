@@ -768,3 +768,119 @@
     return { stop() { over = true; cancelAnimationFrame(raf); off(); if (flyer) flyer.remove(); } };
   }
 })(window.K = window.K || {});
+
+// ---------- Fighter mode (feedback item 21, owner 5 November) ----------
+// On waking from the dream the player chooses how to play: "Live the story" (Act I, as ever) or "Just
+// fight". Just fight: pick a weapon (a path's weapon, its Block or Roll and its skills), then the game's
+// real-time fights come one after another, from the bandits on the road to the night raid, each a little
+// harder (the act ramp and the difficulty setting, engine/realtime.js). Each opens on its own painting with
+// its title card, and the act cards divide the run. No story, choices, friends, company, call for help or
+// divine weapon; herbs, two a fight. A lost fight may be tried once more; lose that and the run ends, with
+// its count and the best run kept on this device. Nothing of the run is carried into a life.
+(function (K) {
+  "use strict";
+  const U = K.UI;
+  // The ladder: [fight, act]. Your side is the Pandavas' all through, so the war's fights are one war.
+  const LADDER = [["e_bandits", 1], ["e_ugra", 1], ["e_spar", 2], ["e_panchala", 2], ["e_border", 2], ["e_kings", 3], ["e_sudatta", 4],
+    ["e_gandharva", 5], ["e_jayadratha", 5], ["e_cattle", 5], ["cross_e_duel", 6], ["e_gate", 6], ["e_road", 6], ["e_night", 6], ["e_dushasana", 6], ["e_raid", 7]];
+  K.FIGHTER_LADDER = LADDER;
+  // You, as a life of that act would be (measured over lives: from act II on, a fighter's health and blows hardly grow).
+  const GROW = { 1: { age: 13, might: 3, grace: 3, stat: 2, skill: 1 }, 2: { age: 18, might: 3, grace: 4, stat: 3, skill: 4 }, 3: { age: 25, might: 3, grace: 4, stat: 4, skill: 4 },
+    4: { age: 30, might: 3, grace: 4, stat: 4, skill: 5 }, 5: { age: 36, might: 3, grace: 4, stat: 4, skill: 5 }, 6: { age: 44, might: 4, grace: 4, stat: 4, skill: 5 }, 7: { age: 44, might: 4, grace: 4, stat: 4, skill: 6 } };
+  K.fighterGrow = function (S, act) {
+    const g = GROW[act] || GROW[6], P = K.PATHS[S.path] || {};
+    S.act = act; S.age = g.age;
+    S.attrs = { might: g.might, aim: g.stat, grace: g.grace, wisdom: g.stat, command: g.stat };
+    if (P.stat && P.stat !== "might" && P.stat !== "grace") S.attrs[P.stat] = g.stat;
+    S.skills = { archery: 0, mace: 1, chariot: 0, statecraft: 0, healing: 0, stealth: 0, lore: 0 };
+    if (P.skill) S.skills[P.skill] = g.skill + (P.skill === "mace" ? 0 : 0);
+    S.items = Object.assign({}, S.items, { herbs: 2 });
+    S.astras = []; S.boons = []; S.injuries = []; S.curses = []; S.vows = []; S.friend = null; S.spouse = null; S.child = null;
+    S.side = "pandava"; S.storyMode = false; S.fighter = true;
+  };
+  const best = () => { const b = K.prefs().fighterBest; return b && typeof b.won === "number" ? b : null; };
+  const clock = (s) => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
+  let sheetEl = null;
+  function sheet(html, wire) {
+    if (sheetEl) sheetEl.remove();
+    sheetEl = U.el('<div class="fmode" role="dialog" aria-modal="true"><div class="fm-in">' + html + "</div></div>");
+    document.body.appendChild(sheetEl);
+    requestAnimationFrame(() => requestAnimationFrame(() => sheetEl && sheetEl.classList.add("in")));
+    wire(sheetEl);
+    const f = sheetEl.querySelector("button"); if (f && !U.calm()) f.focus({ preventScroll: true });
+  }
+  const closeSheet = () => { if (!sheetEl) return; const el = sheetEl; sheetEl = null; el.classList.remove("in"); el.classList.add("out"); setTimeout(() => el.remove(), 400); };
+  const bestLine = () => { const b = best(); return b ? '<p class="fm-best">' + U.tr("Best run: {n} fights won · {t}", { n: b.won, t: clock(b.secs) }) + "</p>" : ""; };
+
+  // On waking: how will you play?
+  U.askMode = function (done) {
+    if (K.headless || /jsdom/i.test(navigator.userAgent || "") || !K.S || K.S.modeAsked) return done();
+    K.S.modeAsked = true;
+    sheet('<h2>' + U.tr("How will you play?") + "</h2>" +
+      '<div class="fm-pick">' +
+      '<button type="button" class="fm-card" data-mode="story"><b>' + U.tr("Live the story") + "</b><small>" + U.tr("Grow up, choose a side, and live a whole life to the war and after.") + "</small></button>" +
+      '<button type="button" class="fm-card" data-mode="fight"><b>' + U.tr("Just fight") + "</b><small>" + U.tr("The fights alone, one after another, each a little harder. No story, no friends, no divine weapons.") + "</small></button>" +
+      "</div>" + bestLine(), (el) => {
+      el.querySelector('[data-mode="story"]').addEventListener("click", () => { closeSheet(); done(); });
+      el.querySelector('[data-mode="fight"]').addEventListener("click", () => { U.fighterStart(done); });
+    });
+  };
+
+  // The weapon, then the run.
+  const WEAPON = { archer: "Bow", mace: "Mace and shield", charioteer: "Sword and shield", strategist: "Sword and shield", healer: "Dagger", spy: "Dagger", bard: "Dagger" };
+  let life = null, story = null;
+  U.fighterStart = function (toStory) {
+    if (toStory) story = toStory;
+    if (!life) life = JSON.stringify(K.S); // the life as it woke: "Live the story" goes back to it
+    const paths = Object.keys(K.PATHS);
+    sheet('<h2>' + U.tr("Choose your weapon") + "</h2>" +
+      '<div class="fm-weapons">' + paths.map((p) => {
+        const block = K.Combat.SHIELD_PATHS[p];
+        return '<button type="button" class="fm-w" data-path="' + p + '"><b>' + U.tr(K.PATHS[p].name) + "</b><small>" + U.tr(WEAPON[p]) + " · " + U.tr(block ? "Blocks" : "Rolls") + "</small></button>";
+      }).join("") + "</div>" + bestLine() +
+      (story ? '<div class="btnrow"><button type="button" class="ghost" data-story>' + U.tr("Live the story instead") + "</button></div>" : ""), (el) => {
+      el.querySelectorAll("[data-path]").forEach((b) => b.addEventListener("click", () => { closeSheet(); run(b.dataset.path); }));
+      const s = el.querySelector("[data-story]"); if (s) s.addEventListener("click", toLife);
+    });
+  };
+  function toLife() {
+    closeSheet();
+    if (life) { K.S = JSON.parse(life); life = null; }
+    const go = story; story = null;
+    if (go) go();
+  }
+  let F = null;
+  function run(path) {
+    K.S = JSON.parse(life); K.S.path = path;
+    F = { path, i: 0, won: 0, t0: Date.now(), act: 0 };
+    next();
+  }
+  function next() {
+    const [id, act] = LADDER[F.i], enc = K.ENCOUNTERS[id];
+    if (!enc) { F.i++; return F.i < LADDER.length ? next() : over(true); }
+    K.fighterGrow(K.S, act);
+    const newAct = act !== F.act; F.act = act;
+    const sc = { title: K.val(enc.title), place: K.val(enc.caption) || null, art: enc.art };
+    U.sceneBeats(sc, { act: newAct, full: true, tag: "written", tagText: U.tr("Fight {n} of {m}", { n: F.i + 1, m: LADDER.length }), art: enc.art }, () => {
+      U.startRealtime(id, (out) => {
+        if (out === "win" || out === "spare") { F.won++; F.i++; if (F.i >= LADDER.length) return over(true); return next(); }
+        over(false);
+      });
+    });
+  }
+  function over(all) {
+    const secs = (Date.now() - F.t0) / 1000, b = best(), won = F.won;
+    const better = !b || won > b.won || (won === b.won && secs < b.secs);
+    if (better && won > 0) K.prefs({ fighterBest: { won, secs: Math.round(secs), path: F.path } });
+    if (U.setBackdrop) U.setBackdrop(all ? "war_day18" : (K.ENCOUNTERS[LADDER[Math.min(F.i, LADDER.length - 1)][0]] || {}).art);
+    const leaf = U.$("leaf"); if (leaf) { leaf.className = "leaf"; leaf.innerHTML = ""; } // the fight's page under the screen
+    sheet('<h2>' + U.tr(all ? "Every fight won" : "The run ends") + "</h2>" +
+      '<p class="fm-score">' + U.tr("Fights won: {n} of {m} · {t}", { n: won, m: LADDER.length, t: clock(secs) }) + "</p>" +
+      (better && won > 0 ? '<p class="fm-best new">' + U.tr("Your best run yet.") + "</p>" : bestLine()) +
+      '<div class="btnrow"><button type="button" class="cta" data-again>' + U.tr("New run") + '</button>' + (story ? '<button type="button" class="ghost" data-story>' + U.tr("Live the story instead") + "</button>" : "") + "</div>", (el) => {
+      el.querySelector("[data-again]").addEventListener("click", () => U.fighterStart());
+      const s = el.querySelector("[data-story]"); if (s) s.addEventListener("click", toLife);
+    });
+    F = null;
+  }
+})(window.K = window.K || {});

@@ -1057,7 +1057,7 @@
     const B = R.B;
     R.lost = out === "lose";
     // A deadly fight lost the first time: one more try (RT.retry), with a little cost.
-    if (out === "lose" && B.enc.lethal && !R.tries && !B.over && !R.noRetry) { R.over = "retry"; return; }
+    if (out === "lose" && (B.enc.lethal || (K.S && K.S.fighter)) && !R.tries && !B.over && !R.noRetry) { R.over = "retry"; return; } // fighter mode: every fight one more try
     R.over = out;
     if (!B.over) C.settle(out);
   }

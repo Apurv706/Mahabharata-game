@@ -517,7 +517,7 @@
       const el = $(".aid-sheet"), ast = RT.astras(), aReady = ast.find((x) => !x.why);
       const it = (k, label, note, off, key) => '<button type="button" data-aid="' + k + '"' + (off ? ' disabled aria-disabled="true"' : "") + "><b>" + U.esc(label) + "</b><small>" + U.esc(note) + "</small><kbd>" + key + "</kbd></button>";
       el.innerHTML = it("herbs", K.tr("Herbs"), K.tr("{n} left", { n: K.S.items.herbs || 0 }), !RT.can(R, "herbs"), "H") +
-        (ast.filter((x) => !x.why).length > 1 ? ast.filter((x) => x.id !== "astra" || !x.why).map((x) => it("astra:" + x.id, K.tr(x.name), x.why ? K.tr(x.why) : K.tr("Divine weapon"), !!x.why, "")).join("") : it("astra", K.tr(aReady ? aReady.name : "Divine weapon"), aReady ? K.tr("Divine weapon") : ast[0] ? (B_used(ast) ? K.tr("used") : ast[0].why || "") : K.tr("not given"), !aReady, "U")) + // two or more ready: one row each (item 12)
+        (K.S && K.S.fighter ? "" : ast.filter((x) => !x.why).length > 1 ? ast.filter((x) => x.id !== "astra" || !x.why).map((x) => it("astra:" + x.id, K.tr(x.name), x.why ? K.tr(x.why) : K.tr("Divine weapon"), !!x.why, "")).join("") : it("astra", K.tr(aReady ? aReady.name : "Divine weapon"), aReady ? K.tr("Divine weapon") : ast[0] ? (B_used(ast) ? K.tr("used") : ast[0].why || "") : K.tr("not given"), !aReady, "U")) + // two or more ready: one row each (item 12)
         (p.abilities.includes("call") ? it("call", K.tr("Call for help"), RT.can(R, "call") ? K.tr("once a fight") : K.tr("called"), !RT.can(R, "call"), "C") : "");
       el.querySelectorAll("[data-aid]").forEach((b) => (b.onclick = () => { closeSheet(); act(b.dataset.aid); }));
       resumeBtn(el); el.classList.add("compact"); placeDrop(el, $(".hb.aid")); dropTimer(el);
@@ -533,7 +533,7 @@
       el.querySelectorAll("[data-w]").forEach((b) => (b.onclick = () => { if (C.fleeBreaks().length) return sheet("confirm"); closeSheet(); V.queue.withdraw = true; }));
       el.querySelectorAll("[data-yes]").forEach((b) => (b.onclick = () => { closeSheet(); V.queue.withdraw = true; }));
       const rb = el.querySelector("[data-retry]"); if (rb) rb.onclick = () => { closeSheet(); retry(); };
-      const ab = el.querySelector("[data-accept]"); if (ab) ab.onclick = () => { closeSheet(); RT.accept(V.R); if (K.loseLived(V.encId)) return defeated(); const me = V.actors.get(C.player().uid); if (me && me.el.classList.contains("slumped")) { me.el.classList.remove("slumped"); fell(me); } finishSoon(); }; // given up: story mode lives on (the foes leave), else you fall
+      const ab = el.querySelector("[data-accept]"); if (ab) ab.onclick = () => { closeSheet(); RT.accept(V.R); if (K.loseLived(V.encId) && !(K.S && K.S.fighter)) return defeated(); const me = V.actors.get(C.player().uid); if (me && me.el.classList.contains("slumped")) { me.el.classList.remove("slumped"); fell(me); } finishSoon(); }; // given up: story mode lives on (the foes leave), else you fall
       const f = el.querySelector("button"); if (f && !U.calm()) f.focus({ preventScroll: true });
     }
   }
@@ -609,7 +609,7 @@
     if (V.clash) { clashTick(); if (V) V.raf = requestAnimationFrame(loop); return; }
     if (R.over && !V.ending) {
       if (R.over === "retry") { if (V.sheet !== "retry") sheet("retry"); }
-      else if (R.over === "lose" && K.loseLived(V.encId)) defeated();
+      else if (R.over === "lose" && K.loseLived(V.encId) && !(K.S && K.S.fighter)) defeated(); // fighter mode: straight to the end of the run
       else finishSoon();
     }
     V.raf = requestAnimationFrame(loop);
@@ -618,7 +618,7 @@
   // Beaten, but the story goes on (owner, 4 November): you slump where you stand, the foes turn and walk off the field, and a
   // line says you tried and what is written held. A tap (Enter or Space) goes on.
   // A deadly fight lost the first time: you are down, not dead, while the second try is offered.
-  function retryLeft() { const R = V.R; return !!(R.B.enc.lethal && !R.tries && !R.noRetry); }
+  function retryLeft() { const R = V.R; return !!((R.B.enc.lethal || (K.S && K.S.fighter)) && !R.tries && !R.noRetry); }
   function slumped(a) {
     a.el.classList.add("slumped"); a.el.classList.remove("windup", "shield-up"); a.shieldUp = false;
     if (a.tag) a.tag.classList.remove("on");

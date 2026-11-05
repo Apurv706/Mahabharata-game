@@ -192,12 +192,13 @@
     const me = makePlayer(S);
     if (enc.dream) { Object.assign(me, enc.dream); me.maxHp = me.hp; me.abilities = (enc.dream.abilities || me.abilities).slice(); }
     B = Object.assign({ enc, units: [me], round: 1, log: [], acts: [], over: null, used: {}, onEnd, bid: Date.now() + ":" + encId }, api);
-    (K.val(enc.allies) || []).forEach((a, i) => { const d = typeof a === "string" ? K.UNITS[a] && K.UNITS[a](S) : a; if (d) B.units.push(makeUnit(d, "ally", i, enc)); });
+    // Fighter mode (item 21): you alone, with no friends, company, call for help or divine weapon.
+    if (!S.fighter) (K.val(enc.allies) || []).forEach((a, i) => { const d = typeof a === "string" ? K.UNITS[a] && K.UNITS[a](S) : a; if (d) B.units.push(makeUnit(d, "ally", i, enc)); });
     K.val(enc.enemies).forEach((e, i) => B.units.push(makeUnit(e, "enemy", i, enc)));
     // Some fights let you shout for a friend (once), and show the divine weapon even to those who
     // were never given one (greyed: "You were never given a divine weapon").
     // Any fight lets you shout for a friend once; fights without a rule of their own use K.friendHelp.
-    { const p = B.units[0]; if (enc.callHelp !== null && (enc.callHelp || (K.friendHelp && !enc.bout))) p.abilities.push("call"); if (enc.showAstra && !p.abilities.includes("astra")) p.abilities.push("astra"); }
+    { const p = B.units[0]; if (!S.fighter && enc.callHelp !== null && (enc.callHelp || (K.friendHelp && !enc.bout))) p.abilities.push("call"); if (!S.fighter && enc.showAstra && !p.abilities.includes("astra")) p.abilities.push("astra"); }
     // A fight of another kind (content/war_fights.js, enc.kind): an escort, a break-through or weathering a
     // storm rides on the turns (B.rule); a chariot duel, an archery duel, a mace duel or a carry is played
     // live by the screen (B.mode, ui/fightmodes.js) when it asks, and otherwise is fought as a plain hold.

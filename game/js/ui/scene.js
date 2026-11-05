@@ -518,7 +518,7 @@
         if (!K.S.alive) return K.go("end_death");
         // A dream fight (the prologue) does not go back to its page: the field goes white, you wake,
         // and the childhood begins.
-        if ((K.ENCOUNTERS[res.combat] || {}).dream) return U.wakeScene(o.text, () => K.go(o.next));
+        if ((K.ENCOUNTERS[res.combat] || {}).dream) return U.wakeScene(o.text, () => (U.askMode ? U.askMode(() => K.go(o.next)) : K.go(o.next))); // on waking: the story, or just the fights (item 21)
         U.renderScene(sc);
         showAfter(sc, c, { text: o.text, after: res.after, check: null, pre: res.text, lampOut: res.lampOut, lostFight: outcome === "lose" ? res.combat : null }, o.next);
       });

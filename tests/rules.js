@@ -1527,4 +1527,19 @@ require(G + "content/war_fights.js");
   ok(w.document.querySelectorAll(".modal .actback").length === 2, "the list: each act reached by the life as it stands");
   w.close();
 }
+// Fighter mode (item 21): you fight alone (no friends, company, call for help or divine weapon), every fight
+// lost the first time may be tried once more, and the difficulty grows with the act (item 19).
+{
+  S = fresh({ act: 3, age: 25, side: "pandava", path: "mace" }); S.fighter = true; S.astras = [{ id: "brahmastra" }]; S.boons = ["astra"];
+  const B = K.Combat.start("e_kings", null), p = B.units[0];
+  ok(!B.units.some((u) => u.side === "ally"), "fighter mode: no one fights beside you (the swayamvara's brahmin stays out)");
+  ok(!p.abilities.includes("call"), "fighter mode: no call for help");
+  K.Combat.end && (B.over = "lose") && K.Combat.end();
+  S.fighter = false;
+  const lv = (act, d) => { S.act = act; return K.RT.level(S, d); };
+  ok(lv(1, "normal").atk === 1 && lv(6, "normal").atk > lv(3, "normal").atk && lv(7, "normal").feint > 0, "Normal starts gentle and grows act by act to the war");
+  ok(lv(6, "easy").atk === 1 && lv(6, "easy").feint === 0, "Easy stays gentle all through");
+  ok(lv(1, "hard").atk > lv(1, "normal").atk && lv(6, "hard").rest < lv(6, "normal").rest, "Hard is harder from the start");
+  S.storyMode = true; ok(K.RT.difficulty(S) === "easy" || !!process.env.DIFF, "story mode keeps Easy whatever the setting"); S.storyMode = false;
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);
