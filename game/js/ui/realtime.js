@@ -98,6 +98,71 @@
     setTimeout(() => { el.classList.add("off"); if (V && V.stage) V.stage.classList.remove("champ"); setTimeout(() => el.remove(), 500); }, calm ? 1200 : 1900);
   }
 
+  // ---------- The clash (owner, 5 November) ----------
+  // A war day's round fought out on this screen: the same units, about 15 s of real time after your order, then back to
+  // the war day's orders. It ends early when every foe on the field is down, or when you fall back. A named comrade may
+  // call for help once a battle: reach him in time and he holds; too late and he is cut down.
+  U.startClash = function (B, opts, done) {
+    if (V) stop();
+    const status = B.status;
+    const R = RT.begin(B, { assist: U.assist && U.assist() });
+    R.noRetry = true; // a war day has no second try
+    V = { encId: B.enc.id, onEnd: null, R, actors: new Map(), held: { l: false, r: false }, queue: {}, acc: 0, last: 0, raf: 0, paused: false, sheet: null, toastT: 0, logAt: B.log.length,
+      clash: { secs: (opts && opts.secs) || 15, done, status, call: null } };
+    build();
+    const bar = U.el('<div class="clashbar"><span class="cl-ring" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" class="cl-bg"/><circle cx="20" cy="20" r="17" class="cl-fg" pathLength="100"/></svg><b></b></span>' +
+      '<button type="button" class="cl-back">' + T("Fall back") + "</button></div>");
+    V.stage.appendChild(bar);
+    bar.querySelector(".cl-back").addEventListener("click", () => clashEnd("fallback"));
+    V.clash.bar = bar;
+    toast(T("The clash: {n} seconds", { n: V.clash.secs }));
+    V.raf = requestAnimationFrame(loop);
+  };
+  function clashTick() {
+    const c = V.clash, R = V.R, B = R.B, p = C.player();
+    if (c.ended) return;
+    const left = Math.max(0, c.secs - R.t);
+    const fg = c.bar.querySelector(".cl-fg"); fg.style.strokeDasharray = (left / c.secs * 100) + " 100";
+    c.bar.querySelector("b").textContent = Math.ceil(left);
+    // A named comrade calls, once a battle, a few seconds in.
+    if (!c.call && !B.clashCalled && R.t > 3) {
+      const a = B.units.find((u) => u.side === "ally" && (u.person || u.called) && u.hp > 0 && u.rt);
+      if (a) {
+        B.clashCalled = true;
+        const fl = R.B.units.filter((u) => u.side === "enemy" && u.hp > 0 && u.rt && u.rt.entered);
+        a.rt.x = Math.min(0.78, Math.max(0.22, p.rt.x + (p.rt.x < 0.5 ? 0.45 : -0.45))); // away from you, on the far flank
+        fl.slice(0, 2).forEach((e, i) => { e.rt.x = Math.min(0.92, Math.max(0.08, a.rt.x + (i ? -1 : 1) * 0.12)); });
+        const name = K.text(a.src || a.name).split(",")[0];
+        c.call = { a, t0: R.t, secs: 6, name };
+        const el = U.el('<div class="cl-call" aria-live="assertive"><i>!</i><span>' + U.esc(T("{n}: To me! My flank breaks!", { n: name })) + "</span></div>");
+        V.stage.appendChild(el); c.call.el = el;
+      }
+    }
+    if (c.call && !c.call.over) {
+      const k = c.call, act = V.actors.get(k.a.uid), sr = V.stage.getBoundingClientRect();
+      if (act && act.el) { const r = act.el.getBoundingClientRect(); k.el.style.left = clamp(r.left + r.width / 2 - sr.left, 60, sr.width - 60) + "px"; k.el.style.top = Math.max(8, r.top - sr.top - 34) + "px"; }
+      const near = Math.abs(p.rt.x - k.a.rt.x) < 1.4 * RT.BODY, late = R.t - k.t0 > k.secs || k.a.hp <= 0;
+      k.el.style.setProperty("--left", Math.max(0, 1 - (R.t - k.t0) / k.secs));
+      if (near && k.a.hp > 0) { k.over = "held"; k.el.remove(); K.S.bonds[k.a.person] = (K.S.bonds[k.a.person] || 0) + 1; toast(T("You reached {n} in time. He holds.", { n: k.name })); B.log.push(T("You reached {n} in time when his flank broke.", { n: k.name })); }
+      else if (late) { k.over = "lost"; k.el.remove(); k.a.hp = Math.max(0, k.a.hp - Math.ceil(k.a.maxHp * 0.7)); toast(T("Too late: {n} is cut down.", { n: k.name })); B.log.push(T("You did not reach {n} in time.", { n: k.name })); }
+    }
+    const foesUp = B.units.some((u) => u.side === "enemy" && u.hp > 0 && u.rt && u.rt.entered && !u.spared);
+    if (R.over) clashEnd(R.over === "retry" ? "lose" : R.over);
+    else if (!foesUp && R.t > 1) clashEnd("cleared");
+    else if (left <= 0) clashEnd("time");
+  }
+  function clashEnd(why) {
+    const c = V && V.clash; if (!c || c.ended) return;
+    c.ended = true;
+    const R = V.R, B = R.B;
+    if (R.over === "retry") RT.accept(R);
+    B.status = c.status; B.rt = null;
+    if (c.call && c.call.el) c.call.el.remove();
+    const done = c.done;
+    stop();
+    if (done) done(why);
+  }
+
   // ---------- The screen (the layout page's DOM) ----------
   function build() {
     const R = V.R, B = R.B, enc = B.enc;
@@ -540,6 +605,7 @@
       while (V.acc >= RT.STEP && !R.over) { RT.step(R, input()); V.acc -= RT.STEP; }
     }
     draw();
+    if (V.clash) { clashTick(); if (V) V.raf = requestAnimationFrame(loop); return; }
     if (R.over && !V.ending) {
       if (R.over === "retry") { if (V.sheet !== "retry") sheet("retry"); }
       else if (R.over === "lose" && K.loseLived(V.encId)) defeated();

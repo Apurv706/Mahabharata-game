@@ -563,10 +563,15 @@
     if (!row || row.why) return false;
     B.habit.push({ id, uid });
     use(C.player(), id, uid);
+    // The clash (prototype, owner 5 November): on a war day the round's blows are fought out in real time for a few
+    // seconds (ui/realtime.js U.startClash) instead of the foes' turns; your move above still lands first.
+    if (B.clashMode) { if (!over()) B.clashPending = true; K.emit("combat", B); return true; }
     if (!over()) others();
     K.emit("combat", B);
     return true;
   };
+  // After a clash: the round closes as a round of turns would (statuses, packs, the champion), unless the fight is over.
+  C.clashDone = function () { if (!B) return; B.clashPending = false; if (!over()) roundEnd(); K.emit("combat", B); };
   // A friend who falls can be dragged out of the press. It costs your turn.
   C.fallen = () => (B && !B.over ? B.units.filter((u) => u.side === "ally" && u.person && u.hp <= 0 && !B.pulled[u.uid]) : []);
   C.pull = function (uid) {
