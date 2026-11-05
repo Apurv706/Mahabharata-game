@@ -82,6 +82,7 @@
       uid: side[0] + i, name: K.fmt(def.name), src: def.name, side, hp, maxHp: hp, atk: Math.round(def.atk * m.atk * 10) / 10, def: def.def || 1,
       abilities: def.abilities || ["strike"], cds: {}, status: {}, armed: def.armed !== false,
       vowTag: def.vowTag || null, person: def.person || null, note: def.note || null, plural: !!def.plural, hero: !!def.hero, still: !!def.still,
+      item: def.item || null, // what this fight draws him holding, over his usual weapon (Ashwatthama in the sleeping camp: a sword)
       shield: def.shield != null ? !!def.shield : !def.hero && !def.person && SHIELDED.test(String(def.name)) && !/archer|bow/i.test(String(def.name))
     };
   }

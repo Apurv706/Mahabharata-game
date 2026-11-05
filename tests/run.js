@@ -91,9 +91,16 @@ for (const kind of ["phone", "tablet", "desktop"]) add("layout#" + kind, null, [
 add("battlefit", null, ["tests/battlefit.js", "--browser", browsers, "--jobs", "3", "--out", path.join(OUT, "battlefit.json")], { browser: true, timeout: 40, retry: retry.battlefit, items: items.battlefit });
 add("visual", null, ["tests/visual.js", "--json", J("visual")], { browser: true, retryJson: "visual", timeout: 20 });
 add("smoke", null, ["tests/smoke.js", "--json", J("smoke")], { browser: true, retryJson: "smoke", timeout: 20 });
+// The review of 4 November (tests/review_*.js): the owner's checklist as checks, and whole lives played through the built parts.
+add("review-rules", ["tests/review_rules.js", "--json", J("review_rules")], ["tests/review_rules.js", "--json", J("review_rules")]);
+add("review-story", ["tests/review_story.js", "--engine-only", "--lives", "150", "--json", J("review_story")], ["tests/review_story.js", "--case-timeout", "900", "--json", J("review_story")], { browser: "full", retryJson: "review_story", timeout: 30 });
+add("review-fights", null, ["tests/review_fights.js", "--case-timeout", "900", "--json", J("review_fights")], { browser: true, retryJson: "review_fights", timeout: 45 });
+add("review-screens", null, ["tests/review_screens.js", "--json", J("review_screens")], { browser: true, retryJson: "review_screens", timeout: 20 });
+add("review-play", null, ["tests/review_play.js", "--lives", "1", "--seed", "2", "--steps", "900", "--partial", "--json", J("review_play")], { browser: true, timeout: 40 });
 
 // Rough lengths on a 2-core machine (seconds): the full tier starts the longest first.
 const EST = {"battlefit": 800, "layout#phone": 520, "layout#tablet": 260, "layout#desktop": 260, "balance": 400, "command": 300, "strings-hi": 250, "visual": 230, "bands": 220, "lives": 190, "smoke": 160, "warfit": 160, "blowfit": 180, "content": 150, "bugs": 110, "saves": 110, "rtfit": 60, "lives-turns": 45, "rtsim": 40, "race-balance": 28, "golden": 20};
+Object.assign(EST, { "review-fights": 900, "review-play": 1200, "review-story": 600, "review-screens": 300, "review-rules": 15 });
 for (const c of C) c.est = EST[c.name] || (/^playthrough/.test(c.name) ? 90 : 10);
 const known = (() => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, "known_failures.json"), "utf8")).known || []; } catch (e) { return []; } })();
 const base = (n) => n.split("#")[0];

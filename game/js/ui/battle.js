@@ -83,13 +83,19 @@
     common: { pronoun: "he", palette: ["#9c6a42", "#6b5a3a", "#a8875a"], item: "staff", stage: "adult" }
   };
   function specFor(u) {
+    const s = specOf(u);
+    return u.item && s && !s.thing && u.side !== "player" ? Object.assign({}, s, { item: u.item }) : s; // a fight that draws him with another weapon (unit.item)
+  }
+  function specOf(u) {
     if (u.side === "player") { // the weapon this fight is fought with; the small shield on the mace and sword paths, with a mace or a blade in hand
       const B = C.state(), s = Object.assign(K.puppetSpec(K.S), { item: K.fightItem(K.S, B ? B.mode || (B.enc.dream ? "dream" : null) : null) });
       if (C.hasShield && C.hasShield() && /^(mace|sword|spear)$/.test(s.item || "")) s.gear = (s.gear || []).filter((g) => g !== "shield").concat("buckler");
       return s;
     }
+    if (u.person === "ugra") return Object.assign(U.puppetFor("ugra"), { item: "club" }); // Ugra grown, at the war: the club he strikes with
     if (u.person && K.PUPPETS[u.person]) return U.puppetFor(u.person);
     const n = String(u.src || u.name);
+    if (/Ketan/.test(n)) return Object.assign(U.puppetFor("boy"), { item: "woodsword" }); // the sparring bout: blunted weapons
     if (/\bcart$/i.test(n)) return { thing: "cart" }; // what is not a person is drawn as what it is
     if (/elephant/i.test(n)) return { thing: "elephant" };
     if (/Narayana weapon/.test(n)) return { thing: "light" };
@@ -123,6 +129,9 @@
   };
   Object.assign(FIGHT_BG, K.COMMAND_FIGHT_BG || {}); // the holding fights (content/command.js)
   U.FIGHT_BG = FIGHT_BG;
+  // The tall painting of a fight's background, for upright screens: the fight and stage paintings have one; a story
+  // painting standing in for a fight's ground (Karna's-day duel on scene_duel_ground) is painted wide only.
+  U.fightTall = (bg) => (!bg ? null : U.tallOf(bg) ? U.artUrl(U.tallOf(bg)) : /^(fight|stage)_/.test(bg) ? U.artUrl(bg + "_tall") : null);
   U.battleSpecFor = (u) => specFor(u); // who each fighter is drawn as (tests/weapons.js)
   // A fighter's figure; the fallen lie forward (toward the middle of the stage), their weapon on the ground beside them.
   const figure = (u) => U.puppet(specFor(u), { h: 150, flip: u.side === "enemy", pose: u.hp <= 0 ? "dead" : liveFigures() ? "live" : u.side === "player" ? "brace" : "stand", fwd: true, label: u.side === "player" ? K.tr("You") : null });

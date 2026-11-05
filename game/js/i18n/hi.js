@@ -4207,6 +4207,7 @@
     "An arrow, low, at your legs": "टाँगों पर नीचा आता बाण",
     "A swing at your head": "सिर पर घुमाकर वार",
     "An arrow at your head": "सिर की ओर बाण",
+    "An arrow at your chest": "छाती की ओर बाण",
     "A straight thrust": "सीधा भोंकता वार",
     "A charge, head down": "सिर झुकाकर धावा",
     "A perfect read! You strike back.": "बिल्कुल सही पढ़ा! तुम पलटवार करते हो।",

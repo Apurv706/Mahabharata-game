@@ -145,7 +145,7 @@
   // screen gives the fight its scale (RT.setScale, held to 1.2-1.8; 1.4 without a screen, as the balance runs), so the
   // figures stand where their weapons reach on every screen.
   // A bow's REACH is only where its bearer stands to a foe (as a sword's): its arrows fly much further (RT.SHOOT).
-  RT.REACH = { spear: 2.25, mace: 1.95, sword: 1.65, bow: 1.65, staff: 1.6, club: 1.45, hammer: 1.3, dagger: 1.25, fist: 0.8 };
+  RT.REACH = { spear: 2.25, mace: 1.95, sword: 1.65, woodsword: 1.65, bow: 1.65, staff: 1.6, club: 1.45, hammer: 1.3, dagger: 1.25, fist: 0.8 };
   RT.SHOOT = 0.62; // how far your arrows fly (a fraction of the field)
   RT.SCALE = 1.4;
   const reachOf = (R, w) => RT.REACH[w] * BODY * (R.scale || RT.SCALE);
@@ -156,9 +156,11 @@
   // An archer fights with the bow, at any range (owner, 4 November: "archers fight as archers"; no sword drawn).
   const PATH_WEAPON = { archer: "bow", mace: "mace", charioteer: "sword", strategist: "sword", healer: "dagger", spy: "dagger", bard: "dagger" };
   const PERSON_WEAPON = { bhima: "mace", duryodhana: "mace", dushasana: "mace", shalya: "mace", balarama: "mace", ghatotkacha: "club", ugra: "club", charu: "hammer",
+    karna: "bow", arjuna: "bow", drona: "bow", bhishma: "bow", ashwatthama: "bow", abhimanyu: "bow", kripa: "bow", drupada: "bow", jayadratha: "bow", ekalavya: "bow", shikhandi: "bow", // as their figures are drawn (tests/weapons.js)
     satyaki: "sword", dhrishtadyumna: "sword", nakula: "sword", sahadeva: "sword", yudhishthira: "spear", guard: "spear", soldier: "spear" };
   RT.weaponOf = function (u) {
-    if (u.side === "player") return PATH_WEAPON[K.S && K.S.path] || "sword";
+    if (u.side === "player") return K.S && K.S.path ? PATH_WEAPON[K.S.path] || "sword" : "fist"; // before a path, empty hands (K.fightItem): the fair's wrestling ring
+    if (u.item) return u.item; // drawn by this fight with another weapon (Ashwatthama in the sleeping camp: a sword)
     if (u.person) return PERSON_WEAPON[u.person] || "sword";
     // As the figure is drawn (ui/battle.js specFor; tests/weapons.js holds the two together).
     const n = String(u.src || u.name);
@@ -168,6 +170,8 @@
     if (/champion|dented helmet|\bmace\b/i.test(n)) return "mace"; // a mace champion
     if (/archer|chariot/i.test(n)) return "bow";
     if (/horseman|rider|veteran/i.test(n)) return "sword";
+    if (/miller's son/.test(n)) return "fist"; // Ugra in the wrestling ring at the fair, empty-handed as he is drawn
+    if (/Ketan/.test(n)) return "woodsword"; // the sparring bout: a blunted (wooden) sword, as long as a sword
     if (/^Ugra(?!'s)/.test(n) || /club|raider|bandit/i.test(n)) return "club"; // (Ugra's levies are soldiers)
     if (/cowherd|villager/i.test(n)) return "staff";
     return "spear"; // a guard, a soldier: the spear
@@ -176,7 +180,7 @@
     const n = String(u.src || u.name);
     const ab = u.abilities || [];
     const ranged = ab.some((a) => RANGED.has(a));
-    const archer = ranged && (/archer|chariot\b|chariot-|torch|bow/i.test(n) || !ab.some((a) => MELEE.has(a)));
+    const archer = ranged && (/archer|chariot\b|chariot-|torch|bow/i.test(n) || !ab.some((a) => MELEE.has(a)) || PERSON_WEAPON[u.person] === "bow"); // (Karna, called to your side, shoots: he is drawn with his bow)
     let weapon = RT.weaponOf(u);
     if (archer) weapon = "bow"; else if (weapon === "bow") weapon = "sword"; // an archer only shoots; a bowman's name with no bow work: a sword
     return {
@@ -656,7 +660,7 @@
     R.fx.push({ k: "arrive", shot: s, uid: t ? t.uid : null });
     if (!t) return;
     if (s.m) { // an arrow of your Strike combo: a plain hit, the third knocking him back
-      const d = B.hit(p, t, s.m); R.stats.hits++; hitFx(R, t, d, s.heavy); t.rt.hits.push(R.t);
+      const d = B.hit(p, t, s.m); if (p.side === "player") R.stats.hits++; hitFx(R, t, d, s.heavy, p.side === "player" ? null : p); t.rt.hits.push(R.t); // (an archer beside you: his own hit)
       if (s.knock && t.hp > 0) knock(R, t, sign(t.rt.x - p.rt.x), s.knock * BODY, false);
       return;
     }
@@ -690,8 +694,12 @@
       return;
     }
     // The blow lands on you if you are in its path (even one marked on a friend), else on its mark.
+    // A roll that carried you out of a blow marked on you is a dodge all the same: recorded, and perfect when begun just
+    // before it lands (a roll away from the foe leaves the blow's reach, and was counted as no dodge at all).
     let t = null;
+    const rolledOut = !meIn && p.hp > 0 && a.on === p.uid && R.t - R.rollT >= 0 && R.t - R.rollT <= RT.P.roll + STEP;
     if (meIn) { if (R.roll > 0 || R.unseen > 0) { dodge(); return; } t = p; }
+    else if (rolledOut) { dodge(); return; }
     else {
       const orig = fr.find((f) => f.uid === a.on);
       if (orig && inside(m, orig) && targetable(R, orig)) t = orig;
@@ -801,10 +809,13 @@
     const hast = R.haste > 0 ? 0.7 : 1;
     if (u.atk) {
       if (R.t >= u.atk.land - 1e-6) {
-        const t = B.units.find((x) => x.uid === u.atk.on && x.hp > 0), id = u.atk.id; u.atk = null;
+        const t = B.units.find((x) => x.uid === u.atk.on && x.hp > 0), id = u.atk.id, shot = !!u.atk.ranged; u.atk = null;
         u.cool = r(1.4, 2.3) * hast * (order === "allout" ? 0.75 : 1); u.rec = 0.3;
         const ab = K.ABILITIES[id];
-        if (ab.target === "ally") { ab.use(B, a, t); R.fx.push({ k: "heal", uid: t && t.uid }); }
+        if (shot && t) { // an archer beside you looses an arrow down the lane (owner, 4 November: archers fight with the bow only)
+          const s = { by: a.uid, side: a.side, id: "arrows", m: order === "allout" ? 1.25 : 1, on: t.uid, lane: t.rt.x, from: u.x, t0: R.t, arrive: R.t + Math.max(0.06, Math.abs(t.rt.x - u.x) / (ARROW_SPEED * 1.4)), n: ++R.shotN };
+          R.shots.push(s); R.fx.push({ k: "shot", uid: a.uid, shot: s });
+        } else if (ab.target === "ally") { ab.use(B, a, t); R.fx.push({ k: "heal", uid: t && t.uid }); }
         else if (t && Math.abs(t.rt.x - u.x) <= u.reach * 1.25 + LUNGE - ROWCUT * rowGap(a, t)) {
           const before = t.hp;
           if (order === "allout" && id === "strike") B.hit(a, t, 1.25); else ab.use(B, a, ab.target === "enemies" ? [t] : t); // all-out hits harder
@@ -842,7 +853,7 @@
       const id = ok("heavy") && K.rng() < 0.3 ? "heavy" : a.abilities.includes("strike") ? "strike" : a.abilities.find((x) => MELEE.has(x)) || "strike";
       if (K.ABILITIES[id].cd) u.cd[id] = K.ABILITIES[id].cd * ROUND;
       u.face = sign(foe.rt.x - u.x);
-      u.atk = { id, on: foe.uid, t0: R.t, land: R.t + 0.45 * hast };
+      u.atk = { id, on: foe.uid, t0: R.t, land: R.t + 0.45 * hast, ranged: !!u.archer }; // an archer draws, then shoots (above)
     }
   }
 
