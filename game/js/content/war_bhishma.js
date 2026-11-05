@@ -331,7 +331,9 @@
       v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("aria-hidden", "true");
       v.className = "mo-clip"; v.dataset.want = "1";
       if (K.UI.clipSrc) K.UI.clipSrc(v, "war_wheel"); else v.src = "video/war_wheel.mp4"; // (on Safari, fetched whole and played from memory)
+      let fell = false;
       const fallback = () => { // the clip will not play: the puppets, over the field
+        if (fell) return; fell = true;
         v.remove(); el.classList.remove("clip");
         art.style.setProperty("--img", "url('" + K.UI.bgUrl("fight_war_field") + "')");
         stageWheel(el).catch(() => {});

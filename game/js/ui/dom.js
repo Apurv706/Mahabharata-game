@@ -167,6 +167,23 @@
   function layer() { return U.$("backdrop").querySelectorAll(".bdl")[bdFlip]; }
   // opts.still: show the painting without its clip for now (U.addClip plays it later, when the
   // story reaches what the clip shows: the lac house catching fire, say).
+  // The frame-rate counter (Menu: Show frame rate): frames drawn in the last second, in a corner, so the owner can read
+  // how smoothly a fight runs on a real phone (owner, 5 November). Off by default; costs one rAF while on.
+  let fpsEl = null, fpsRaf = 0;
+  U.fpsMeter = function () {
+    const on = !!(K.prefs && K.prefs().fps);
+    if (!on) { cancelAnimationFrame(fpsRaf); fpsRaf = 0; if (fpsEl) { fpsEl.remove(); fpsEl = null; } return; }
+    if (fpsRaf) return;
+    fpsEl = document.createElement("div"); fpsEl.className = "fps-meter"; fpsEl.setAttribute("aria-hidden", "true"); document.body.appendChild(fpsEl);
+    let n = 0, t0 = performance.now(), worst = 999;
+    const tick = (now) => {
+      n++;
+      if (now - t0 >= 1000) { const f = Math.round(n * 1000 / (now - t0)); worst = Math.min(worst, f); fpsEl.textContent = f + " fps · low " + worst; fpsEl.classList.toggle("bad", f < 30); n = 0; t0 = now; }
+      fpsRaf = requestAnimationFrame(tick);
+    };
+    fpsRaf = requestAnimationFrame(tick);
+  };
+  setTimeout(() => { try { U.fpsMeter(); } catch (e) { /* prefs not ready */ } }, 500);
   // A clip's file. Safari on an iPhone plays video only from a server that answers byte-range requests; a host that does not
   // (the private play pages) left every clip blank there while other browsers played it (owner, 5 November). So on Safari
   // the file is fetched whole and played from memory (a blob URL needs no ranges); elsewhere it plays straight from the file.

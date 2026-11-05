@@ -387,3 +387,6 @@ body.inscene .ledger { position: fixed; z-index: 40; top: calc(max(8px, var(--sa
 .leaf .choices.grid .choice.tile .t { font-size: 15.5px; line-height: 1.2; }
 .choices.grid .choice.tile:hover:not(:disabled) { transform: translateY(-2px); }
 @media (max-width: 720px) { .choices.grid .choice.tile .thumb.emblem, .split .actions .choices.grid .choice.tile .thumb.emblem { width: 58px; height: 58px; } .choices.grid .choice.tile { padding: 8px 6px 7px; gap: 2px; } }
+/* The frame-rate counter (Menu: Show frame rate) */
+.fps-meter { position: fixed; z-index: 9999; left: calc(6px + env(safe-area-inset-left, 0px)); bottom: calc(6px + env(safe-area-inset-bottom, 0px)); padding: 3px 7px; border-radius: 6px; background: rgba(0, 0, 0, .72); color: #9fe39a; font: 700 12px/1.2 ui-monospace, Menlo, monospace; pointer-events: none; }
+.fps-meter.bad { color: #ff9a7a; }

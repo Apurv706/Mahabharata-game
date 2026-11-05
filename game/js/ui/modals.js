@@ -104,6 +104,7 @@
       '<label class="toggle"><input type="checkbox" id="m-big"' + (prefs.bigText ? " checked" : "") + "><span>" + U.tr("Larger text") + "</span></label>" +
       '<label class="toggle"><input type="checkbox" id="m-gradual"' + (prefs.gradual !== false ? " checked" : "") + "><span>" + U.tr("Reveal the story line by line") + "<small>" + U.tr("Tap the page or press Space to show everything at once.") + "</small></span></label>" +
       '<label class="toggle"><input type="checkbox" id="m-calm"' + (U.calm() ? " checked" : "") + "><span>" + U.tr("Calm motion") + "<small>" + U.tr("Less movement on screen: the puppets stand still and effects are quieter.") + "</small></span></label>" +
+      '<label class="toggle"><input type="checkbox" id="m-fps"' + (prefs.fps ? " checked" : "") + "><span>" + U.tr("Show frame rate") + "<small>" + U.tr("Frames a second in the corner, to check how smoothly fights run on this device.") + "</small></span></label>" +
       '<div class="seg-row"><span>' + U.tr("Scene titles") + "<small>" + U.tr("Full: a title card before big moments. Short: the title over the painting, for every scene.") + "</small></span>" +
       '<div class="seg" role="radiogroup" aria-label="' + U.tr("Scene titles") + '">' +
       ["full", "short"].map((v) => '<button type="button" role="radio" data-titles="' + v + '" aria-checked="' + ((prefs.titles || "full") === v) + '">' + U.tr(v === "full" ? "Full" : "Short") + "</button>").join("") + "</div></div>" +
@@ -133,6 +134,7 @@
         U.$("m-gradual").addEventListener("change", (e) => { K.prefs({ gradual: e.target.checked }); });
         // Calm motion applies at once (the html class); the next screen or fight starts still.
         U.$("m-calm").addEventListener("change", (e) => { K.prefs({ calm: e.target.checked }); U.applyCalm(); });
+        U.$("m-fps").addEventListener("change", (e) => { K.prefs({ fps: e.target.checked }); U.fpsMeter(); });
         document.querySelectorAll("[data-titles]").forEach((b) => b.addEventListener("click", () => {
           K.prefs({ titles: b.dataset.titles });
           document.querySelectorAll("[data-titles]").forEach((x) => x.setAttribute("aria-checked", String(x === b)));
