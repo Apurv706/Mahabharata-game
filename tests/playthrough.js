@@ -3,6 +3,7 @@
    crashes, dead ends, content problems and the spread of endings.
    Usage: npm install && npm test            (default 300 lives)
           node tests/playthrough.js 1000 --story
+          node tests/playthrough.js 50 --from 51   (lives 51-100 of a longer run)
           By default the real-time fights (PRD §18.15) are played by engine/realtime.js's bot, which
           spares a beaten foe now and then; RT=0 node tests/playthrough.js 20 (or --turns) plays every fight on the turns */
 const fs = require("fs");
@@ -118,7 +119,10 @@ function playLife(seed) {
 }
 
 const results = [];
-for (let i = 1; i <= N; i++) { results.push(playLife(i * 7919)); try { lastWindow.close(); } catch (e) { /* ignore */ } }
+// --from K: lives K..K+N-1 (default 1), so a long run can be split across processes: each closed page still keeps about
+// 25 MB alive in jsdom, and 300 lives in one process run out of memory (tests/run.js plays them in parts of 50).
+const FROM = Math.max(1, parseInt((process.argv[process.argv.indexOf("--from") + 1] || "1"), 10) || 1);
+for (let i = FROM; i < FROM + N; i++) { results.push(playLife(i * 7919)); try { lastWindow.close(); } catch (e) { /* ignore */ } }
 const crashes = results.filter((r) => r.crash);
 const stuck = results.filter((r) => r.stuck);
 const ends = {};

@@ -1,0 +1,40 @@
+{
+ "_": "Real bugs the regression suite has found and that are not fixed yet. Each entry: the test (tests/<test>.js), the case or problem text it matches, and the bug. A check that matches an entry is reported KNOWN (not a failure); an entry that no longer matches anything is reported, so it can be taken off once the bug is fixed. The suite never fixes the game itself.",
+ "known": [
+  {
+   "test": "content",
+   "match": "art/scene_duel_ground_tall.webp",
+   "bug": "Karna's-day duel fights (kd_e_son, kd_e_wheel) on the war-day screen on an upright phone ask for art/scene_duel_ground_tall.webp, which does not exist: a 404 and no painted ground behind the fighters.",
+   "file": "game/js/content/war_duel.js:98 (K.COMMAND_FIGHT_BG -> scene_duel_ground, painted only 16:9), read by game/js/ui/warday.js:129,169",
+   "steps": "Menu: Calm motion on (or any setting where the chariot duel is fought as a plain hold). A Kaurava life on day 17, choose 'Guard Vrishasena's wheel' (kd_e_son) or the wheel fight (kd_e_wheel) on an iPhone held upright: the stage's background-image is art/scene_duel_ground_tall.webp and the request 404s."
+  },
+  {
+   "test": "layout",
+   "match": "iPad landscape (1180×820) · fight",
+   "bug": "On an iPad held sideways (1180x820, a 21 px home bar) the real-time fight's corner controls (◀ ▶, the skill, Roll or Block, Strike) end at 802 px, 2-3 px inside the home-bar inset (799 px): tests/layout.js 'control(s) off screen, under the notch or under the home bar' on fight, fight: two astras, fight: Aid open, fight: sparring, fight with a friend.",
+   "file": "game/css/realtime.css:417 (#rt.wide.rt.touch .ctl { bottom: calc(var(--pad) + 8px) } does not add var(--sab))",
+   "steps": "node tests/layout.js --device iPad (or --only tablet); seen on every commit from 0684976 to now."
+  },
+  {
+   "test": "layout",
+   "match": "iPad landscape (1180×820) · practice: a bout",
+   "bug": "The same on the practice ground's sparring bout (the real-time screen).",
+   "file": "game/css/realtime.css:417",
+   "steps": "node tests/layout.js --device iPad"
+  },
+  {
+   "test": "strings-hi",
+   "match": "untranslated: «hermit»",
+   "bug": "Not seen by players: tests/strings.js check hi lists 'hermit' as untranslated because K.momentInfo (game/js/ui/moments.js:31) looks up K.personName(m.who) for every moment, and a teacher moment's who is the teacher id 'hermit' (not a person), which goes through K.tr untranslated; the teacher card itself shows 'Mauni' (translated). Fix: compute the name only for the kinds that show it, or add 'hermit' to i18n/hi.",
+   "file": "game/js/ui/moments.js:31",
+   "steps": "node tests/strings.js check hi 40 (a life whose teacher is Mauni the hermit, with the character sheet open)."
+  },
+  {
+   "test": "command",
+   "match": "Never reached: hold_",
+   "bug": "Not a game bug: test sampling. tests/command.js fails when one of the four holding-fight offers is never met in its lives; they are rare (0-7 in 120 lives) and which one is missed moves with every balance change (60 lives on 3e2854d missed hold_bhima_offer; 120 lives on cd454b0 missed hold_arjuna_offer). tests/content.js shows all four reachable. More lives would settle it, but jsdom keeps about 25 MB per finished life and 200 lives run out of memory.",
+   "file": "tests/command.js",
+   "steps": "node tests/command.js 60, or node --max-old-space-size=4096 tests/command.js 120"
+  }
+ ]
+}
