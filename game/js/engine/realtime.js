@@ -145,7 +145,7 @@
   // screen gives the fight its scale (RT.setScale, held to 1.2-1.8; 1.4 without a screen, as the balance runs), so the
   // figures stand where their weapons reach on every screen.
   // A bow's REACH is only where its bearer stands to a foe (as a sword's): its arrows fly much further (RT.SHOOT).
-  RT.REACH = { spear: 2.25, mace: 1.95, sword: 1.65, bow: 1.65, staff: 1.6, club: 1.45, hammer: 1.3, dagger: 1.25, fist: 0.8 };
+  RT.REACH = { spear: 2.25, mace: 1.95, sword: 1.65, woodsword: 1.65, bow: 1.65, staff: 1.6, club: 1.45, hammer: 1.3, dagger: 1.25, fist: 0.8 };
   RT.SHOOT = 0.62; // how far your arrows fly (a fraction of the field)
   RT.SCALE = 1.4;
   const reachOf = (R, w) => RT.REACH[w] * BODY * (R.scale || RT.SCALE);
@@ -159,7 +159,7 @@
     karna: "bow", arjuna: "bow", drona: "bow", bhishma: "bow", ashwatthama: "bow", abhimanyu: "bow", kripa: "bow", drupada: "bow", jayadratha: "bow", ekalavya: "bow", shikhandi: "bow", // as their figures are drawn (tests/weapons.js)
     satyaki: "sword", dhrishtadyumna: "sword", nakula: "sword", sahadeva: "sword", yudhishthira: "spear", guard: "spear", soldier: "spear" };
   RT.weaponOf = function (u) {
-    if (u.side === "player") return PATH_WEAPON[K.S && K.S.path] || "sword";
+    if (u.side === "player") return K.S && K.S.path ? PATH_WEAPON[K.S.path] || "sword" : "fist"; // before a path, empty hands (K.fightItem): the fair's wrestling ring
     if (u.person) return PERSON_WEAPON[u.person] || "sword";
     // As the figure is drawn (ui/battle.js specFor; tests/weapons.js holds the two together).
     const n = String(u.src || u.name);
@@ -169,6 +169,8 @@
     if (/champion|dented helmet|\bmace\b/i.test(n)) return "mace"; // a mace champion
     if (/archer|chariot/i.test(n)) return "bow";
     if (/horseman|rider|veteran/i.test(n)) return "sword";
+    if (/miller's son/.test(n)) return "fist"; // Ugra in the wrestling ring at the fair, empty-handed as he is drawn
+    if (/Ketan/.test(n)) return "woodsword"; // the sparring bout: a blunted (wooden) sword, as long as a sword
     if (/^Ugra(?!'s)/.test(n) || /club|raider|bandit/i.test(n)) return "club"; // (Ugra's levies are soldiers)
     if (/cowherd|villager/i.test(n)) return "staff";
     return "spear"; // a guard, a soldier: the spear

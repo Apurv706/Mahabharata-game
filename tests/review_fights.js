@@ -82,7 +82,8 @@ browser("weapons-rt", "every figure in every real-time fight holds the weapon it
       await keepAlive(pg);
       await pg.evaluate(() => { const B = K.Combat.state(); B.units.filter((u) => u.side === "enemy" && u.rt && u.rt.entered).forEach((u) => { u.hp = 0; }); });
       await sleep(2200);
-      bad.push(...heldProblems(enc + " (later pack)", path, await pg.evaluate(READ_HELD)));
+      const later = await pg.evaluate(READ_HELD); // (no later pack: the fight is over and its screen gone)
+      if (later) bad.push(...heldProblems(enc + " (later pack)", path, later));
       await endFight(pg);
     }
   }
@@ -329,8 +330,8 @@ browser("orders-friend", "the friend's presets visibly apply (Hold back, All-out
   await keepAlive(pg);
   await pg.keyboard.press("c"); await waitFight(pg, 1.2);
   if (!(await pg.evaluate(() => K.Combat.state().units.some((u) => u.called)))) { await close(); return ["Bhima did not come to be ordered"].concat(errs); }
-  // Bhima's own health kept up, so each preset is seen whole.
-  await pg.evaluate(() => { clearInterval(window.__ally); window.__ally = setInterval(() => { const B = K.Combat.state(); if (B) B.units.forEach((u) => { if (u.side === "enemy" && u.hp < u.maxHp * 0.3) u.hp = u.maxHp; if (u.called && u.hp > 0) u.hp = u.maxHp; }); }, 100); });
+  // Bhima's own health kept up, and kept on the field past his span (a friend called stays three rounds), so each preset is seen whole.
+  await pg.evaluate(() => { clearInterval(window.__ally); window.__ally = setInterval(() => { const B = K.Combat.state(); if (B) B.units.forEach((u) => { if (u.side === "enemy" && u.hp < u.maxHp * 0.3) u.hp = u.maxHp; if (u.called && u.hp > 0) { u.hp = u.maxHp; if (u.rt) u.rt.leaveAt = null; } }); }, 100); });
   const r = {};
   for (const o of ["hold", "allout", "guard", "balanced"]) { await underOrder(pg, "friend", o, 1.5); r[o] = await underOrder(pg, "friend", o, 7); }
   const B = r.hold.body;
@@ -464,7 +465,7 @@ const SPACE = () => {
     if (A.u === p || B.u === p) { const o = A.u === p ? B : A; if (share > 0.5 && o.u.side === "enemy") out.onYou.push(K.text(o.u.src || o.u.name) + " " + Math.round(share * 100) + "% over you (rows " + p.rt.lane.toFixed(1) + "/" + o.u.rt.lane.toFixed(1) + ")"); continue; }
     if (same && share > 0.25 && A.u.side === B.u.side) out.pairs.push(K.text(A.u.src || A.u.name) + " / " + K.text(B.u.src || B.u.name) + " " + Math.round(share * 100) + "% (row " + A.lane + ")");
   }
-  for (const x of bodies) { const r = x.whole; if (r.left < -2 || r.right > innerWidth + 2 || r.bottom > innerHeight + 2 || r.top < -2) out.off.push(K.text(x.u.src || x.u.name) + " [" + Math.round(r.left) + "," + Math.round(r.right) + "]"); }
+  for (const x of bodies) { const r = x.b; if (r.left < -2 || r.right > innerWidth + 2 || r.bottom > innerHeight + 2 || r.top < -2) out.off.push(K.text(x.u.src || x.u.name) + " [" + Math.round(r.left) + "," + Math.round(r.right) + "]"); }
   return out;
 };
 browser("spacing", "at rest bodies keep apart (a quarter of a width in a row), nobody stands on you, no one is off the screen", async () => {

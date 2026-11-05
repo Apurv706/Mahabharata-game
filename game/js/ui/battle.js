@@ -88,8 +88,10 @@
       if (C.hasShield && C.hasShield() && /^(mace|sword|spear)$/.test(s.item || "")) s.gear = (s.gear || []).filter((g) => g !== "shield").concat("buckler");
       return s;
     }
+    if (u.person === "ugra") return Object.assign(U.puppetFor("ugra"), { item: "club" }); // Ugra grown, at the war: the club he strikes with
     if (u.person && K.PUPPETS[u.person]) return U.puppetFor(u.person);
     const n = String(u.src || u.name);
+    if (/Ketan/.test(n)) return Object.assign(U.puppetFor("boy"), { item: "woodsword" }); // the sparring bout: blunted weapons
     if (/\bcart$/i.test(n)) return { thing: "cart" }; // what is not a person is drawn as what it is
     if (/elephant/i.test(n)) return { thing: "elephant" };
     if (/Narayana weapon/.test(n)) return { thing: "light" };
