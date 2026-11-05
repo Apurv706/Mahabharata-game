@@ -319,8 +319,33 @@
   }
 
   K.MOMENT_KINDS = K.MOMENT_KINDS || {};
-  K.MOMENT_KINDS.bh_wheel = () => ({ theme: "milestone", title: "Krishna takes up the wheel", line: "He swore not to fight. He runs at the grandsire with a chariot wheel.",
-    art: "fight_war_field", playAt: 250, ms: 8200, play: (el) => { stageWheel(el).catch(() => {}); } });
+  // The wheel as a living painting (owner, 5 November: war_wheel.mp4, five painted beats, 10 s), where video
+  // plays; the puppets staged over the field painting otherwise (calm motion, data saver, a clip that fails).
+  const wheelPuppets = { art: "fight_war_field", playAt: 250, ms: 8200, play: (el) => { stageWheel(el).catch(() => {}); } };
+  const wheelClip = {
+    art: "war_wheel", playAt: 0, ms: 13200, clip: true, // 10 s of clip, then its last beat held under the title
+    play: (el) => {
+      const art = el.querySelector(".mo-art"); if (!art) return;
+      const v = document.createElement("video");
+      v.muted = true; v.defaultMuted = true; v.playsInline = true; v.preload = "auto";
+      v.setAttribute("muted", ""); v.setAttribute("playsinline", ""); v.setAttribute("aria-hidden", "true");
+      v.className = "mo-clip"; v.dataset.want = "1";
+      if (K.UI.clipSrc) K.UI.clipSrc(v, "war_wheel"); else v.src = "video/war_wheel.mp4"; // (on Safari, fetched whole and played from memory)
+      const fallback = () => { // the clip will not play: the puppets, over the field
+        v.remove(); el.classList.remove("clip");
+        art.style.setProperty("--img", "url('" + K.UI.bgUrl("fight_war_field") + "')");
+        stageWheel(el).catch(() => {});
+      };
+      v.addEventListener("error", fallback);
+      v.addEventListener("playing", () => v.classList.add("on"));
+      v.addEventListener("ended", () => el.classList.add("ended")); // the title over the last beat (Arjuna at his feet)
+      art.appendChild(v); el.classList.add("clip");
+      if (v.src) { try { const p = v.play(); if (p && p.catch) p.catch(fallback); } catch (e) { fallback(); } }
+      setTimeout(() => { if (v.isConnected && !v.classList.contains("on")) fallback(); }, 3500); // never started: the puppets
+    }
+  };
+  K.MOMENT_KINDS.bh_wheel = () => Object.assign({ theme: "milestone", title: "Krishna takes up the wheel", line: "He swore not to fight. He runs at the grandsire with a chariot wheel." },
+    K.UI && K.UI.hasVideo && K.UI.hasVideo("war_wheel") && K.UI.living && K.UI.living() ? wheelClip : wheelPuppets);
   K.MOMENT_KINDS.bh_fall = () => ({ theme: "farewell", title: "The grandsire falls", line: "Arjuna's arrows hold him off the ground.",
     art: "fight_war_sunset", playAt: 250, ms: 9400, play: (el) => { stageFall(el).catch(() => {}); } });
   K.bhStage = { wheel: stageWheel, fall: stageFall }; // for the screenshot steps
