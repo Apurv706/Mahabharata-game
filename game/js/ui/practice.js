@@ -97,6 +97,10 @@
       trial: { attr: "grace", skill: "chariot", vehicle: "chariot", stage: "stage_racetrack", obstacles: ["rock", "wreck"], rules: "Steer through the course, and change lanes to miss what is in your way." },
       tip: "Look past the next rock to the one after it, and change lanes early.",
       show: [["hold", "Watch the road ahead, not your horses."], ["push", "Move as soon as you see something in your lane, and only once."]] },
+    dash: { group: "war", name: "Through the turning rings", partner: "teacher",
+      trial: { attr: "command", skill: "chariot", mode: "open", lead: false, stage: "stage_chakravyuha_top", rules: "Drive in through each ring's opening as it comes round. A ring you hit throws you back." },
+      tip: "Steer for the next opening as soon as you are through a ring, not when you reach it.",
+      show: [["hold", "Find the next opening the moment you are through."], ["push", "Crack the whip only when the opening is right ahead."]] },
     rings: { group: "war", name: "Turning the rings", partner: "teacher",
       trial: { attr: "wisdom", skill: "statecraft", mode: "open", stage: "stage_chakravyuha_top", rules: "Turn the rings until every opening lines up with the outer one." },
       tip: "Work from the outside in: each ring you turn drags the next one inward.",
@@ -106,7 +110,7 @@
       tip: "While it is shown, say each mark's unit to yourself, from the front to the back.",
       show: [["think", "Front: chariots. Flanks: archers. Say it as you look."], ["speak", "When a unit comes, its mark is already in your head."]] }
   };
-  const ORDER = ["aim", "draw", "push", "rhythm", "steady", "sneak", "herd", "notice", "retort", "drill", "hands", "pasha", "chaupar", "baghchal", "moksha", "race", "rings", "formation"];
+  const ORDER = ["aim", "draw", "push", "rhythm", "steady", "sneak", "herd", "notice", "retort", "drill", "hands", "pasha", "chaupar", "baghchal", "moksha", "race", "dash", "rings", "formation"];
   // Kinds whose test is played standing on a painted ground: here, the training ground. The others
   // (a course, a board, a field seen from above) keep their own painting.
   const STANDING = new Set(["aim", "draw", "push", "rhythm", "steady", "sneak", "notice", "retort", "drill", "formation"]);

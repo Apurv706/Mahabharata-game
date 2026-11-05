@@ -82,6 +82,7 @@ for (let k = 0; k < 5; k++) add("playthrough-story#" + (k + 1), null, ["--max-ol
 add("strings-hi", null, ["tests/strings.js", "check", "hi", "40"], { timeout: 20, items: items.strings, heavy: true });
 add("balance", null, ["tests/balance.js", "120"], { timeout: 35, report: true, heavy: true });
 add("race-balance", null, ["tests/race_balance.js", "2000"], { report: true });
+add("dash-balance", ["tests/dash_balance.js", "300"], ["tests/dash_balance.js", "1000"]); // the wheel dash (fails outside its bands)
 add("rtsim", null, ["tests/rtsim.js", "all", "10"], { report: true });
 add("rtfit", null, ["tests/rtfit.js"], { browser: true, items: items.rtfit });
 add("warfit", null, ["tests/warfit.js"], { browser: true, items: items.warfit });
@@ -99,7 +100,7 @@ add("review-screens", null, ["tests/review_screens.js", "--json", J("review_scre
 add("review-play", null, ["tests/review_play.js", "--lives", "1", "--seed", "2", "--steps", "900", "--partial", "--json", J("review_play")], { browser: true, timeout: 40 });
 
 // Rough lengths on a 2-core machine (seconds): the full tier starts the longest first.
-const EST = {"battlefit": 800, "layout#phone": 520, "layout#tablet": 260, "layout#desktop": 260, "balance": 400, "command": 300, "strings-hi": 250, "visual": 230, "bands": 220, "lives": 190, "smoke": 160, "warfit": 160, "blowfit": 180, "content": 150, "bugs": 110, "saves": 110, "rtfit": 60, "lives-turns": 45, "rtsim": 40, "race-balance": 28, "golden": 20};
+const EST = {"battlefit": 800, "layout#phone": 520, "layout#tablet": 260, "layout#desktop": 260, "balance": 400, "command": 300, "strings-hi": 250, "visual": 230, "bands": 220, "lives": 190, "smoke": 160, "warfit": 160, "blowfit": 180, "content": 150, "bugs": 110, "saves": 110, "rtfit": 60, "lives-turns": 45, "rtsim": 40, "race-balance": 28, "dash-balance": 12, "golden": 20};
 Object.assign(EST, { "review-fights": 900, "review-play": 1200, "review-story": 600, "review-screens": 300, "review-rules": 15 });
 for (const c of C) c.est = EST[c.name] || (/^playthrough/.test(c.name) ? 90 : 10);
 const known = (() => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, "known_failures.json"), "utf8")).known || []; } catch (e) { return []; } })();

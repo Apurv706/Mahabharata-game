@@ -730,6 +730,50 @@ body.inscene .jmap .bmap { max-height: min(520px, max(180px, calc(var(--vh) - 34
 .ringfield .core { fill: #6b2a1c; stroke: var(--data); stroke-width: 2; }
 .ringfield .core.open { fill: var(--data); }
 .ringfield.maze .core { fill: #2c4a22; }
+/* The wheel dash (ui/play.js, U.games.dash): the Chakravyuha from above, seven turning rings of shields
+   and chariots. Driving in, the view rides with you; keeping it shut, your ring is the bright outer one. */
+.dashfield { position: relative; min-height: 260px; overflow: hidden; border-radius: var(--r-control); background: radial-gradient(circle, #5a3420, #2a170e); touch-action: none; user-select: none; -webkit-user-select: none; cursor: pointer; }
+.dashfield svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.trial.playing > .trial-body > .dashfield { flex: 1 1 0; min-height: 200px; }
+.trial.immersive .dashfield { border-radius: 0; background: none; margin: 0 -12px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent), linear-gradient(transparent, #000 5%, #000 95%, transparent); -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent), linear-gradient(transparent, #000 5%, #000 95%, transparent); mask-composite: intersect; }
+.dashfield .heart { fill: rgba(255, 210, 122, .16); stroke: #ffd27a; stroke-width: 1; stroke-dasharray: 2 2; }
+.dashfield .band-u { fill: none; stroke: #24110a; opacity: .75; }
+.dashfield .band { fill: none; stroke: #9b3a26; stroke-dasharray: 3.2 1.1; }
+.dashfield .ring:is(.r1, .r3, .r5) .band { stroke: #b9874f; }
+.dashfield .tok { fill: #3a2412; stroke: #e2b55a; stroke-width: .5; }
+.dashfield .tokw { stroke: #1d0f08; stroke-width: 1.2; }
+.dashfield .post { stroke: #24110a; stroke-width: 1.4; stroke-linecap: round; }
+.dashfield .flag { fill: #e2b55a; stroke: #24110a; stroke-width: .4; }
+.dashfield .glow { fill: none; stroke: #ffd27a; opacity: 0; transition: opacity .2s; }
+.dashfield .ring.next .glow { opacity: .55; }
+:where(html:not(.calm)) .dashfield .ring.next .glow { animation: dashglow .8s ease-in-out infinite alternate; }
+@keyframes dashglow { from { opacity: .3; } to { opacity: .75; } }
+.dashfield .ring.done { opacity: .45; }
+.dashfield .ring.sealed .glow { opacity: 1; stroke: #5a1a10; stroke-dasharray: 3.2 1.1; animation: none; }
+.dashfield .ring.deco { opacity: .6; }
+.dashfield .ring.mine .band { stroke: #c9472c; }
+.dashfield .ring.mine .tok { stroke: #ffd27a; }
+.dashfield .ring.mine .glow { opacity: .9; stroke: #ff8a5c; stroke-dasharray: 3 2.4; }
+.dashfield .car.abhi .banner path { fill: none; stroke: #24110a; stroke-width: .8; }
+.dashfield .car.abhi .banner .bf { fill: #3b6fb0; stroke-width: .4; }
+.dashfield .car.foe { transition: opacity .8s; }
+.dashfield .car.foe.out { opacity: .55; }
+.dashfield .dfx circle, .dashfield .dfx path { transform-box: fill-box; transform-origin: center; }
+.dashfield .dfx.through circle { fill: none; stroke: #ffd27a; stroke-width: 1.6; animation: dashring .6s ease-out forwards; }
+.dashfield .dfx.spark circle { fill: #ffe39a; }
+.dashfield .dfx.spark path { stroke: #ffe9a8; stroke-width: 1.2; stroke-linecap: round; }
+.dashfield .dfx.spark { animation: dashspark .5s ease-out forwards; }
+@keyframes dashring { from { transform: scale(.5); opacity: 1; } to { transform: scale(2.8); opacity: 0; } }
+@keyframes dashspark { from { opacity: 1; } to { opacity: 0; } }
+.dashfield.bump { animation: dashbump .3s; }
+@keyframes dashbump { 25% { transform: translate(-4px, 2px); } 50% { transform: translate(3px, -2px); } 75% { transform: translate(-2px, 1px); } }
+.dashfield.fast { box-shadow: inset 0 0 48px rgba(255, 210, 122, .28); }
+.trial.trial-dash .btnrow.dash-btns { flex-wrap: nowrap; gap: 10px; width: min(100%, 520px); align-self: center; }
+.trial.trial-dash .btnrow.dash-btns > .trial-press { min-width: 0; flex: 1 1 0; padding-left: 6px; padding-right: 6px; }
+.trial.trial-dash .btnrow.dash-btns > .trial-press.steer { font-size: 1.5em; line-height: 1; }
+.trial.trial-dash .btnrow.dash-btns > .whip { flex: 1.5 1 0; }
+.dashfield .hint { fill: #ffd27a; stroke: #24110a; stroke-width: .8; opacity: 0; transition: opacity .25s; }
+.dashfield .hint.on { opacity: .9; }
 .ring-btns .trial-press { min-width: 96px; min-height: 56px; font-size: 18px; }
 
 /* Board games on the painted table */
@@ -1253,7 +1297,7 @@ html.calm .trial.jolt > .cast.face { animation: none; }
 .trial.immersive .calm, .trial.immersive .sus { align-self: center; width: min(78%, 420px); height: 6px; background: rgba(var(--surface-rgb), 0.55); border: 1px solid var(--gold-line); }
 .trial.immersive .glass, .trial.immersive .taunt, .trial.immersive .table li, .trial.immersive .replies .cta, .trial.immersive .drill .tile {
   background: rgba(var(--surface-rgb), 0.62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border: 1px solid var(--gold-line); color: var(--ink); }
-.trial.immersive.trial-race > .cast, .trial.immersive.trial-herd > .cast, .trial.immersive.trial-rings > .cast, .trial.immersive.trial-sneak > .cast, .trial.immersive.trial-formation > .cast { display: none; }
+.trial.immersive.trial-race > .cast, .trial.immersive.trial-herd > .cast, .trial.immersive.trial-rings > .cast, .trial.immersive.trial-dash > .cast, .trial.immersive.trial-sneak > .cast, .trial.immersive.trial-formation > .cast { display: none; }
 .trial.immersive .formfield { flex: 1 1 0; min-height: 0; background: none; display: flex; align-items: center; justify-content: center; }
 .trial.immersive .formfield svg { width: auto; height: 100%; max-width: 100%; max-height: 520px; filter: drop-shadow(0 8px 14px rgba(0, 0, 0, .5)); }
 

@@ -821,6 +821,350 @@
     });
   };
 
+  // ---------- Dash: a chariot dash through the turning rings of the wheel ----------
+  // The Chakravyuha on the thirteenth day, seen from above (owner, 5 November: in place of turning
+  // the rings). Seven rings of chariots and shields turn round the heart, each at its own speed and
+  // in its own direction, each with one to three openings.
+  // mode "open" (the Pandavas): you drive in close behind Abhimanyu, always forward, and steer round
+  // the wheel to meet each ring's opening as it comes by; a ring you hit throws you back and costs a
+  // man (five and the company breaks); the whip doubles your speed for a moment. Jayadratha's line
+  // seals the gate behind Abhimanyu after a set time: through every ring wins, five or six is close,
+  // fewer loses (held at the gate, or caught between the rings).
+  // mode "close" (the Kauravas): you command the outer ring. The Pandava chariots drive at it from
+  // outside, each steering for an opening, and you turn the ring so that they meet shields. Hold
+  // until the sun moves: one breach is allowed, two is close, three loses at once.
+  // Distances are in units of a field 300 across with the wheel's heart at 0,0; angles in radians,
+  // clockwise on screen. The rules are apart from the drawing, as the race's are, so that
+  // tests/dash_balance.js can play them with a bot.
+  const DASH = {
+    RINGS: [132, 116, 100, 84, 68, 52, 36], GAPS: [4, 4, 3, 3, 3, 2, 2], BAND: 6, HEART: 20,
+    START: 152, LEAD: 14,              // where you start, and how far ahead of you Abhimanyu starts
+    VR: 11, SIDE: 80, SIDE_ACC: 400,   // forward speed; steering round the wheel (along the arc), and how fast it answers
+    HALF: 6, WIDE: 3.2,                // half your chariot's length (its nose meets a ring), and half its width
+    GAP: 14, GAP_POWER: 0.6, GAP_MAX: 20, ASSIST: 1.3, // half an opening along its ring: wider with your stats, and with story mode or assist
+    SPIN: [12, 24], SPIN_POWER: 0.02,  // how fast the rings turn along their length; slower with your stats
+    BOUNCE: 9, STUN: 0.55, HULL: 5,     // a ring you hit: thrown back, a moment to recover, a man lost
+    WHIP: 1.2, WHIP_COOL: 5,           // the whip: twice the speed for 1.2 s, then 5 s to recharge
+    SECS: 12, SECS_POWER: 0.15, SECS_MAX: 14, // until Jayadratha's line seals the gate
+    // Keeping it shut: your ring (its radius, openings, half an opening, how fast you turn it), the
+    // turning rings inside it, and the chariots: where they come from, their speed in and round, how often.
+    MY: 112, MY_BAND: 10, MY_GAPS: 3, MY_GAP: 19, MY_GAP_POWER: 0.6, MY_GAP_MIN: 13, MY_SPIN: 56, MY_ACC: 260, INNER: [96, 82, 68, 54, 40, 27],
+    FROM: 172, CV: 11, CS: 32, CS_POWER: 0.6, EVERY: [3, 1.9], WAVE: 2.8, LEAD_SECS: 1.2, HOLD: 32, ALLOW: 0, BREACHES: 2
+  };
+  U.DASH = DASH;
+  U.dashSetup = function (t, power, assist) {
+    const D = DASH, easy = assist ? D.ASSIST : 1;
+    return {
+      mode: t.mode === "close" ? "close" : "open",
+      gap: clamp(D.GAP + power * D.GAP_POWER, D.GAP, D.GAP_MAX) * easy,
+      spin: clamp(1 - power * D.SPIN_POWER, 0.75, 1),
+      secs: t.secs || clamp(D.SECS + power * D.SECS_POWER, D.SECS, D.SECS_MAX),
+      hull: D.HULL,
+      myGap: clamp(D.MY_GAP - power * D.MY_GAP_POWER, D.MY_GAP_MIN, D.MY_GAP) / easy,
+      cs: clamp(D.CS - power * D.CS_POWER, D.CS - 6, D.CS) / easy,
+      hold: t.secs || D.HOLD
+    };
+  };
+  // step(dt, steer) moves it on (steer: -1, 0 or 1; +1 turns clockwise) and returns what happened:
+  // pass, hit, spawn, breach, held, end (outcome, why).
+  U.dashRules = function (o, rng) {
+    const D = DASH, TAU = Math.PI * 2, N = D.RINGS.length;
+    const wrap = (x) => { x = (x + Math.PI) % TAU; if (x < 0) x += TAU; return x - Math.PI; };
+    const R = { t: 0, over: false, outcome: null, why: null, ids: 0 };
+    // How far (along the ring) a point at angle a is from the nearest opening's middle.
+    const off = (g, a) => { let b = Infinity; for (let k = 0; k < g.n; k++) b = Math.min(b, Math.abs(wrap(a - g.phi - k * TAU / g.n)) * g.r); return b; };
+    R.off = off; R.wrap = wrap;
+    const ring = (r, n, half, v) => ({ r, n, half, phi: rng() * TAU, v });
+    const speed = () => (rng() < 0.5 ? -1 : 1) * (D.SPIN[0] + rng() * (D.SPIN[1] - D.SPIN[0])) * (o.spin || 1);
+    let ev = [];
+    const end = (outcome, why) => { if (R.over) return; R.over = true; R.outcome = outcome; R.why = why; ev.push({ type: "end", outcome, why }); };
+    if (o.mode !== "close") {
+      R.rings = D.RINGS.map((r, i) => ring(r, D.GAPS[i], o.gap, speed()));
+      for (let i = 1; i < N; i++) if (Math.sign(R.rings[i].v) === Math.sign(R.rings[i - 1].v) && rng() < 0.6) R.rings[i].v *= -1; // neighbours mostly turn opposite ways
+      const a0 = rng() * TAU;
+      R.me = { r: D.START, a: a0, v: 0, stun: 0, kb: 0, boost: 0, cool: 0, passed: 0, hits: 0 };
+      R.abhi = { r: D.START - D.LEAD, a: a0, v: 0, passed: 0 };
+      R.contact = (i) => R.rings[i].r + D.BAND / 2 + D.HALF;
+      R.whip = () => { const m = R.me; if (R.over || m.boost > 0 || m.cool > 0 || m.stun > 0) return false; m.boost = D.WHIP; m.cool = D.WHIP + D.WHIP_COOL; return true; };
+    } else {
+      R.my = ring(D.MY, D.MY_GAPS, o.myGap, 0); R.my.w = 0;
+      R.rings = D.INNER.map((r, i) => ring(r, D.GAPS[i + 1], D.GAP, speed()));
+      R.cars = []; R.spawnIn = 1; R.breaches = 0; R.held = 0;
+      R.contact = () => D.MY + D.MY_BAND / 2 + D.HALF;
+      R.whip = () => false;
+    }
+    function stepOpen(dt, steer) {
+      const m = R.me, A = R.abhi;
+      m.cool = Math.max(0, m.cool - dt); m.boost = Math.max(0, m.boost - dt);
+      m.v += clamp(clamp(steer || 0, -1, 1) * D.SIDE - m.v, -D.SIDE_ACC * dt, D.SIDE_ACC * dt);
+      m.a += (m.v / m.r) * dt;
+      if (m.stun > 0) { m.r += m.kb * (m.stun / D.STUN) * dt; m.stun -= dt; }
+      else if (m.passed < N) m.r -= D.VR * (m.boost > 0 ? 2 : 1) * dt;
+      if (m.passed < N && m.stun <= 0) {
+        const g = R.rings[m.passed], cr = R.contact(m.passed);
+        if (m.r <= cr) {
+          if (off(g, m.a) <= g.half - D.WIDE) { m.passed++; ev.push({ type: "pass", i: m.passed - 1 }); if (m.passed === N) end("win", "through"); }
+          else {
+            m.r = cr; m.stun = D.STUN; m.kb = (2 * D.BOUNCE) / D.STUN; m.boost = 0; m.hits++;
+            ev.push({ type: "hit", i: m.passed });
+            if (m.hits >= o.hull) end("lose", "broken");
+          }
+        }
+      }
+      // Abhimanyu: he steers for the opening he can reach soonest and waits at a ring until it comes.
+      if (A.passed < N) {
+        const g = R.rings[A.passed], cr = R.contact(A.passed), va = D.VR * 1.1, tc = Math.max(0, (A.r - cr) / va);
+        let best = null;
+        for (let k = 0; k < g.n; k++) { const d = wrap(g.phi + (k * TAU) / g.n + (g.v / g.r) * tc - A.a) * A.r; if (best === null || Math.abs(d) < Math.abs(best)) best = d; }
+        const want = clamp(best / Math.max(tc, 0.3), -D.SIDE * 1.2, D.SIDE * 1.2);
+        A.v += clamp(want - A.v, -D.SIDE_ACC * 1.2 * dt, D.SIDE_ACC * 1.2 * dt);
+        A.a += (A.v / A.r) * dt;
+        const inGap = off(g, A.a) <= g.half - D.WIDE - 1;
+        if (A.r > cr + 0.5 || inGap) A.r -= va * dt; else A.r = cr + 0.5;
+        if (A.r <= cr && inGap) A.passed++;
+      } else {
+        A.r = Math.max(D.HEART * 0.6, A.r - D.VR * dt);
+        A.v += clamp(D.SIDE * 0.4 - A.v, -D.SIDE_ACC * dt, D.SIDE_ACC * dt); A.a += (A.v / A.r) * dt; // in the heart, wheeling and fighting
+      }
+      if (!R.over && R.t >= o.secs) end(m.passed >= N - 2 ? "close" : "lose", m.passed === 0 ? "gate" : "between");
+    }
+    function stepClose(dt, steer) {
+      const M = R.my;
+      M.w += clamp(clamp(steer || 0, -1, 1) * D.MY_SPIN - M.w, -D.MY_ACC * dt, D.MY_ACC * dt);
+      M.phi += (M.w / M.r) * dt;
+      R.spawnIn -= dt;
+      if (R.spawnIn <= 0 && R.t < o.hold - 3) {
+        // a charge: one chariot at first, then two or three together, each from a side no other is coming from
+        const f = clamp(R.t / o.hold, 0, 1), many = 1 + Math.floor(f * D.WAVE + rng() * 0.6);
+        for (let j = 0; j < many; j++) {
+          let a = 0;
+          for (let k = 0; k < 12; k++) { a = rng() * TAU; if (R.cars.every((c) => c.state !== "come" || Math.abs(wrap(c.a - a)) > 0.9)) break; }
+          const car = { id: ++R.ids, r: D.FROM + j * 9, a, v: 0, state: "come", t: 0 };
+          R.cars.push(car); ev.push({ type: "spawn", car });
+        }
+        R.spawnIn = (D.EVERY[0] + (D.EVERY[1] - D.EVERY[0]) * f) * (0.75 + many * 0.35);
+      }
+      const cr = R.contact();
+      for (const c of R.cars) {
+        c.t += dt;
+        if (c.state === "come") {
+          // he steers for the opening nearest him, where it will be when he gets there (as far as he can tell)
+          const tc = clamp((c.r - cr) / D.CV, 0, D.LEAD_SECS);
+          let best = null;
+          for (let k = 0; k < M.n; k++) { const d = wrap(M.phi + (M.w / M.r) * tc + (k * TAU) / M.n - c.a) * c.r; if (best === null || Math.abs(d) < Math.abs(best)) best = d; }
+          c.v += clamp(clamp(best * 2.5, -o.cs, o.cs) - c.v, -90 * dt, 90 * dt);
+          c.a += (c.v / c.r) * dt; c.r -= D.CV * dt;
+          if (c.r <= cr) {
+            if (off(M, c.a) <= M.half - D.WIDE) { c.state = "in"; R.breaches++; ev.push({ type: "breach", car: c }); if (R.breaches >= D.BREACHES) end("lose", "breached"); }
+            else { c.state = "out"; R.held++; ev.push({ type: "held", car: c }); }
+          }
+        } else if (c.state === "in") c.r = Math.max(4, c.r - D.CV * 1.3 * dt);
+        else c.r += D.CV * 0.9 * dt; // thrown back
+      }
+      R.cars = R.cars.filter((c) => c.t < 14 && c.r < D.FROM + 24);
+      if (!R.over && R.t >= o.hold) end(R.breaches <= D.ALLOW ? "win" : "close", "held");
+    }
+    R.step = (dt, steer) => {
+      ev = [];
+      if (R.over) return ev;
+      R.t += dt;
+      for (const g of R.rings) g.phi += (g.v / g.r) * dt;
+      if (o.mode !== "close") stepOpen(dt, steer); else stepClose(dt, steer);
+      return ev;
+    };
+    return R;
+  };
+
+  // On screen: the wheel from above. Driving in, the view rides with you: you stay at the foot of
+  // the field facing the heart, and the wheel turns about you as you steer; keeping it shut, the
+  // whole wheel is in view and your ring is the bright outer one.
+  U.games.dash = function (box, done, c) {
+    return U.trialFrame(box, done, c, "dash", ({ host, power, t, finish, cue, onAct }) => {
+      const D = DASH, TAU = Math.PI * 2, deg = (x) => (x * 180) / Math.PI, still = U.calm();
+      const o = U.dashSetup(t, power, !!((U.assist && U.assist()) || (K.S && K.S.storyMode))), R = U.dashRules(o, K.rng), open = o.mode === "open";
+      const N = D.RINGS.length;
+      host.innerHTML = '<p class="score" aria-live="polite"></p>' +
+        '<div class="dashfield ' + o.mode + '"><svg role="img" aria-label="' + U.esc(K.tr("The wheel, seen from above")) + '"><g class="dw"></g></svg></div>' +
+        '<p class="game-note" aria-live="polite">' + U.trSpan(t.help || (open ? "Steer round the wheel to meet each ring's opening. A ring you hit throws you back. Space cracks the whip." : "Turn your ring so the chariots meet shields, not an opening.")) + "</p>" +
+        '<div class="btnrow race-btns dash-btns"></div>';
+      const field = host.querySelector(".dashfield"), svg = field.querySelector("svg"), world = svg.querySelector(".dw");
+      const score = host.querySelector(".score"), note = host.querySelector(".game-note"), clock = U.countdown(host);
+      const P = (r, a) => (Math.cos(a) * r).toFixed(2) + "," + (Math.sin(a) * r).toFixed(2);
+      const arc = (r, a0, a1) => "M" + P(r, a0) + " A" + r + "," + r + " 0 " + (a1 - a0 > Math.PI ? 1 : 0) + " 1 " + P(r, a1);
+      // A ring: its band of shields with a chariot every so often, a post at each side of every
+      // opening, and a glow across the opening (lit on the ring you are making for).
+      function ringSvg(g, cls, band) {
+        const step = TAU / g.n, h = g.half / g.r;
+        let d = "", toks = "", posts = "", glow = "";
+        for (let k = 0; k < g.n; k++) {
+          const a0 = k * step + h, a1 = (k + 1) * step - h;
+          d += arc(g.r, a0, a1) + " ";
+          const m = Math.max(1, Math.floor(((a1 - a0) * g.r) / 24));
+          for (let j = 0; j < m; j++) { const a = a0 + ((j + 0.5) / m) * (a1 - a0); toks += '<g transform="translate(' + P(g.r, a) + ") rotate(" + deg(a).toFixed(1) + ')"><rect class="tok" x="-1.5" y="-2.6" width="3" height="5.2" rx=".9"/><path class="tokw" d="M-2.2 -2.1 V2.1 M2.2 -2.1 V2.1"/></g>'; }
+          for (const a of [k * step - h, k * step + h]) posts += '<g transform="translate(' + P(g.r, a) + ") rotate(" + deg(a).toFixed(1) + ')"><path class="post" d="M0 ' + (-band / 2 - 1.5) + " V" + (band / 2 + 1.5) + '"/><path class="flag" d="M0 ' + (-band / 2 - 1.5) + " l" + (k % 2 ? 4.5 : -4.5) + ' 1.6 l' + (k % 2 ? -4.5 : 4.5) + ' 1.6 Z"/></g>';
+          glow += '<path class="glow" d="' + arc(g.r, k * step - h, k * step + h) + '" style="stroke-width:' + (band + 4) + '"/>';
+        }
+        return '<g class="ring ' + cls + '"><path class="band-u" d="' + d + '" style="stroke-width:' + (band + 2) + '"/><path class="band" d="' + d + '" style="stroke-width:' + band + '"/>' + toks + glow + posts + "</g>";
+      }
+      // The chariots: yours in your colours; Abhimanyu's white and blue, crowned; the Pandava charges blue.
+      const carSvg = (pal, horses, crown) => chariotSvg(pal, horses, crown).replace("<svg ", '<svg x="-40" y="-75" width="80" height="150" ');
+      const mine = K.puppetSpec(K.S), myPal = (mine && mine.palette) || ["#c98a52", "#2d5aa0", "#e2b55a"];
+      const abPal = (K.PUPPETS && K.PUPPETS.abhimanyu && K.PUPPETS.abhimanyu.palette) || ["#c27a44", "#f2ead2", "#3b6fb0"];
+      const SCALE = open ? 0.1 : 0.18;
+      const carEl = (pal, horses, crown, cls) => { const g = document.createElementNS("http://www.w3.org/2000/svg", "g"); g.setAttribute("class", "car " + cls); g.innerHTML = '<g transform="scale(' + SCALE + ')">' + carSvg(pal, horses, crown) + "</g>"; return g; };
+      let s0 = '<circle class="heart" r="' + D.HEART + '"/>';
+      if (open) R.rings.forEach((g, i) => { s0 += ringSvg(g, "r" + i, D.BAND); });
+      else { R.rings.forEach((g, i) => { s0 += ringSvg(g, "deco r" + (i + 1), D.BAND - 1); }); s0 += ringSvg(R.my, "mine", D.MY_BAND); }
+      world.innerHTML = s0 + '<g class="fxl"></g>';
+      // Driving in: a chevron at the side of the view, toward the next ring's nearest opening when it is far round.
+      const hintL = open ? svg.appendChild(document.createElementNS("http://www.w3.org/2000/svg", "path")) : null, hintR = open ? svg.appendChild(document.createElementNS("http://www.w3.org/2000/svg", "path")) : null;
+      if (open) { hintL.setAttribute("class", "hint"); hintR.setAttribute("class", "hint"); hintL.setAttribute("d", "M0 0 l6 -6 v4 h5 v4 h-5 v4 Z"); hintR.setAttribute("d", "M0 0 l-6 -6 v4 h-5 v4 h5 v4 Z"); }
+      const ringEls = [...world.querySelectorAll(".ring")], myEl = open ? null : world.querySelector(".ring.mine"), fxl = world.querySelector(".fxl");
+      let ME = null, AB = null, meG = null, abG = null;
+      const cars = new Map(); // keeping it shut: chariot id → { g, p }
+      if (open) {
+        abG = carEl(abPal, ["#efe6d2", "#8a6a3a"], true, "abhi"); world.appendChild(abG); AB = chariotParts(abG, 0);
+        if (t.lead === false) abG.style.display = "none"; // at the practice ground there is no one to follow
+        meG = carEl(myPal, ["#c9a679", "#3a2412"], false, "me"); world.appendChild(meG); ME = chariotParts(meG, 0);
+        abG.insertAdjacentHTML("beforeend", '<g class="banner"><path d="M0 9 V19" /><path class="bf" d="M0 19 l7 -2 l-7 -2 Z"/></g>');
+      }
+      // A short flash where something happened: sparks on a ring that threw you back, a ring of light
+      // where you went through, dust where a charge broke on your shields.
+      const flash = (x, y, cls) => {
+        if (still && cls !== "through") return;
+        const el = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        el.setAttribute("class", "dfx " + cls); el.setAttribute("transform", "translate(" + x.toFixed(1) + " " + y.toFixed(1) + ")");
+        el.innerHTML = cls === "through" ? '<circle r="6"/>' : '<circle r="3"/><path d="M-7 -5 L-2 -1 M7 -6 L2 -1 M-6 6 L-1 1 M7 5 L2 1"/>';
+        fxl.appendChild(el); setTimeout(() => el.remove(), 700);
+      };
+      let sayT = 0;
+      const say = (key, p, ms) => { U.trLabel(note, key, p); clearTimeout(sayT); if (ms) sayT = setTimeout(() => { if (!R.over && note.dataset.tr === key) { note.textContent = ""; delete note.dataset.tr; delete note.dataset.trp; } }, ms); };
+      const bump = () => { if (still) return; field.classList.remove("bump"); void field.offsetWidth; field.classList.add("bump"); };
+      const tally = () => {
+        if (open) score.textContent = K.tr("Rings: {p} of {n} · Men lost: {h}", { p: R.me.passed, n: N, h: R.me.hits });
+        else score.textContent = K.tr("Charges broken: {h} · Through your ring: {b}", { h: R.held, b: R.breaches });
+      };
+      // Steering: hold a button, an arrow key, or a side of the field.
+      const held = { l: 0, r: 0, fl: 0, fr: 0 };
+      const steer = () => { const l = held.l || held.fl, r = held.r || held.fr; return open ? (l ? 1 : 0) - (r ? 1 : 0) : (r ? 1 : 0) - (l ? 1 : 0); };
+      const row = host.querySelector(".btnrow");
+      const hold = (label, k) => { const b = U.pressButton(label, () => { held[k] = 1; cue("act"); }, () => { held[k] = 0; }); b.classList.add("steer"); return b; };
+      row.appendChild(hold(open ? "◀" : "⟲", "l"));
+      let whipBtn = null;
+      const whip = () => { if (!open || !R.whip()) return; cue("act"); sfx("quill"); if (!still) { ME.crack = 0.32; ME.rearV += 26; } };
+      if (open) {
+        whipBtn = U.pressButton("Whip ×2", whip); whipBtn.classList.add("whip", "ready");
+        whipBtn.insertAdjacentHTML("beforeend", '<kbd aria-hidden="true">' + U.trSpan("Space") + "</kbd>");
+        row.appendChild(whipBtn); onAct(whip);
+      }
+      row.appendChild(hold(open ? "▶" : "⟳", "r"));
+      const KEYS = { ArrowLeft: "l", a: "l", A: "l", ArrowRight: "r", d: "r", D: "r" };
+      const kd = (e) => { const k = KEYS[e.key]; if (k) { e.preventDefault(); e.stopPropagation(); held[k] = 1; } else if (open && (e.key === "ArrowUp" || e.key === "w" || e.key === "W")) { e.preventDefault(); e.stopPropagation(); if (!e.repeat) whip(); } };
+      const ku = (e) => { const k = KEYS[e.key]; if (k) { e.preventDefault(); held[k] = 0; } };
+      document.addEventListener("keydown", kd, true); document.addEventListener("keyup", ku, true);
+      const fdown = (e) => { e.preventDefault(); const b = field.getBoundingClientRect(); held[e.clientX < b.left + b.width / 2 ? "fl" : "fr"] = 1; };
+      const fup = () => { held.fl = 0; held.fr = 0; };
+      field.addEventListener("pointerdown", fdown); field.addEventListener("pointerup", fup); field.addEventListener("pointercancel", fup); field.addEventListener("pointerleave", fup);
+      // The view: the smaller side of the field shows this many units, centred so that you sit near
+      // its foot (driving in) or on the whole wheel (keeping it shut).
+      let fw = 1, fh = 1, cy = open ? D.START - 60 : 0;
+      const size = () => { fw = field.clientWidth || 1; fh = field.clientHeight || 1; };
+      size(); window.addEventListener("resize", size);
+      const view = (dt) => {
+        const S = open ? 140 : 290, wu = fw < fh ? S : (S * fw) / fh, hu = fw < fh ? (S * fh) / fw : S;
+        if (open) { const want = Math.max(0, R.me.r - hu * 0.32); cy += (want - cy) * Math.min(1, dt * 4); }
+        svg.setAttribute("viewBox", (-wu / 2).toFixed(1) + " " + (cy - hu / 2).toFixed(1) + " " + wu.toFixed(1) + " " + hu.toFixed(1));
+        if (open) {
+          const m = R.me, g = R.rings[m.passed];
+          let d = 0;
+          if (g && !R.over) { d = Infinity; for (let k = 0; k < g.n; k++) { const x = R.wrap(g.phi + (k * TAU) / g.n - m.a); if (Math.abs(x) < Math.abs(d)) d = x; } }
+          const far = Math.abs(d) * (g ? g.r : 0) > wu * 0.42, y = (m.r - 18).toFixed(1);
+          hintL.classList.toggle("on", far && d > 0); hintR.classList.toggle("on", far && d < 0);
+          hintL.setAttribute("transform", "translate(" + (-wu / 2 + 4).toFixed(1) + " " + y + ")"); hintR.setAttribute("transform", "translate(" + (wu / 2 - 4).toFixed(1) + " " + y + ")");
+        }
+      };
+      // A chariot placed at (r, a) facing along its heading (radians, clockwise from the right).
+      const place = (g, r, a, head) => g.setAttribute("transform", "translate(" + P(r, a) + ") rotate(" + (deg(head) + 90).toFixed(1) + ")");
+      let last = 0, endAt = null, abHead = null, abPrev = null;
+      tally();
+      const stop = U.loop((s) => {
+        const dt = Math.min(0.05, s - last); last = s;
+        if (endAt === null) {
+          for (const e of R.step(dt, steer())) {
+            if (e.type === "pass") { sfx("tap"); cue("good"); flash(Math.cos(R.me.a) * R.me.r, Math.sin(R.me.a) * R.me.r, "through"); say(e.i === N - 1 ? "Through the last ring!" : "Through! On to the next.", null, 900); }
+            else if (e.type === "hit") { sfx("hit"); cue("bad"); bump(); flash(Math.cos(R.me.a) * R.me.r, Math.sin(R.me.a) * R.me.r, "spark"); if (!still) { ME.joltV += 10; ME.rearV += 20; } say("The ring throws you back. A man falls.", null, 1300); }
+            else if (e.type === "spawn") { const g = carEl(["#b98656", "#3d5a8a", "#d9c27a"], ["#d8c8a8", "#5a4022"], false, "foe"); world.insertBefore(g, fxl); cars.set(e.car.id, { g, p: chariotParts(g, 0), c: e.car }); sfx("drum"); }
+            else if (e.type === "held") { sfx("clang"); cue("good"); const m = cars.get(e.car.id); if (m) m.g.classList.add("out"); flash(Math.cos(e.car.a) * e.car.r, Math.sin(e.car.a) * e.car.r, "spark"); say(t.heldLine || "The charge breaks on your shields.", null, 1100); }
+            else if (e.type === "breach") { sfx("hit"); cue("bad"); bump(); const m = cars.get(e.car.id); if (m) m.g.classList.add("in"); say(t.breachLine || "A chariot is through your ring!", null, 1400); }
+            else if (e.type === "end") {
+              endAt = s;
+              if (open && e.outcome !== "win" && ringEls[0]) ringEls[0].classList.add("sealed"); // Jayadratha's line fills the gate
+              if (open && e.why !== "through") { sfx("drum"); if (e.why !== "broken") say(t.sealLine || "Jayadratha's line closes the gate.", null, 0); }
+            }
+          }
+        }
+        // Drawing.
+        if (open) {
+          const m = R.me, A = R.abhi;
+          ringEls.forEach((el, i) => {
+            const g = R.rings[i];
+            el.setAttribute("transform", "rotate(" + deg(g.phi).toFixed(2) + ")");
+            el.classList.toggle("next", i === m.passed && !R.over); el.classList.toggle("done", i < m.passed);
+          });
+          world.setAttribute("transform", "rotate(" + (90 - deg(m.a)).toFixed(2) + ")");
+          if (endAt !== null && R.outcome === "win") m.r = Math.max(D.HEART * 0.9, m.r - D.VR * dt); // on into the heart
+          const fwd = m.stun > 0 ? 0.3 : m.boost > 0 ? 2 : 1;
+          place(meG, m.r, m.a, m.a + Math.atan2(m.v, -D.VR * Math.max(fwd, 0.5)));
+          ME.turn += (clamp(-m.v / D.SIDE, -1, 1) * 0.8 - ME.turn) * Math.min(1, dt * 10);
+          ME.rearV += (-300 * ME.rear - 2 * 0.35 * Math.sqrt(300) * ME.rearV) * dt; ME.rear += ME.rearV * dt;
+          ME.joltV += (-320 * ME.jolt - 2 * 0.3 * Math.sqrt(320) * ME.joltV) * dt; ME.jolt += ME.joltV * dt;
+          drawChariot(ME, dt, still ? 0 : fwd * 1.6, s);
+          const ax = Math.cos(A.a) * A.r, ay = Math.sin(A.a) * A.r;
+          if (abPrev) { const dx = ax - abPrev[0], dy = ay - abPrev[1]; if (Math.hypot(dx, dy) > 0.02) { const h = Math.atan2(dy, dx); abHead = abHead === null ? h : abHead + R.wrap(h - abHead) * Math.min(1, dt * 8); } }
+          abPrev = [ax, ay]; if (abHead === null) abHead = A.a + Math.PI;
+          place(abG, A.r, A.a, abHead);
+          drawChariot(AB, dt, still ? 0 : 1.6, s);
+          if (whipBtn) {
+            whipBtn.style.setProperty("--c", (m.boost > 0 ? m.boost / D.WHIP : m.cool > 0 ? 1 - m.cool / D.WHIP_COOL : 1).toFixed(3));
+            whipBtn.classList.toggle("ready", m.cool <= 0); whipBtn.classList.toggle("on", m.boost > 0); whipBtn.setAttribute("aria-disabled", String(m.cool > 0));
+          }
+          field.classList.toggle("fast", m.boost > 0);
+          clock.set(o.secs - R.t, o.secs);
+        } else {
+          ringEls.forEach((el, i) => { const g = el === myEl ? R.my : R.rings[i]; el.setAttribute("transform", "rotate(" + deg(g.phi).toFixed(2) + ")"); });
+          for (const [id, m] of cars) {
+            if (!R.cars.includes(m.c)) { m.g.remove(); cars.delete(id); continue; }
+            const c = m.c, head = c.state === "out" ? c.a : c.a + Math.PI + Math.atan2(c.v, -D.CV);
+            place(m.g, c.r, c.a, head);
+            drawChariot(m.p, dt, still ? 0 : c.state === "out" ? 0.6 : 1.4, s);
+          }
+          clock.set(o.hold - R.t, o.hold);
+        }
+        view(dt);
+        tally();
+        if (endAt !== null && s - endAt >= (R.outcome === "win" && open ? 0.8 : 0.35)) {
+          endAt = Infinity;
+          const left = Math.max(0, Math.round(o.secs - R.t)), p = open ? R.me.passed : 0;
+          const line = open
+            ? (R.why === "through" ? ["Through all seven rings with Abhimanyu, with {s} seconds to spare.", { s: left }]
+              : R.why === "broken" ? "Your company broke against the rings."
+              : R.why === "gate" ? "Jayadratha's line closed the gate in front of you."
+              : ["Caught between the rings: {p} of seven when the gate closed.", { p }])
+            : (R.outcome === "win" ? ["The wheel held. {h} charges broke on your shields.", { h: R.held }]
+              : R.outcome === "close" ? "The wheel held, but a chariot got through your ring."
+              : "Two chariots broke through your ring.");
+          if (R.outcome === "win") sfx("gong");
+          finish(R.outcome, line);
+        }
+      }, host);
+      return () => {
+        stop(); clearTimeout(sayT);
+        document.removeEventListener("keydown", kd, true); document.removeEventListener("keyup", ku, true);
+        window.removeEventListener("resize", size);
+      };
+    });
+  };
+
   // ---------- Formation: set your company in the array the commander names ----------
   // The commander shows the array once (crane, eagle, crescent). Then the company comes onto the
   // field unit by unit, and each must go on its mark before the drum stops. Then the enemy tests a

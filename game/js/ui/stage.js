@@ -66,7 +66,7 @@
   // trial.stage: the painting; trial.cast: puppet ids (K.PUPPETS) for the others in the scene.
   // What you hold in each kind of test: a bow to shoot, bare hands to push, hold steady or creep.
   // Kinds not listed keep the weapon of your path. (t.item, when a test sets one, wins.)
-  const GEAR = { aim: "bow", draw: "bow", push: null, steady: null, sneak: null, breath: null, escape: null, fuse: null, notice: null, retort: null, board: null, rings: null, formation: null, array: null, race: "whip", herd: null };
+  const GEAR = { aim: "bow", draw: "bow", push: null, steady: null, sneak: null, breath: null, escape: null, fuse: null, notice: null, retort: null, board: null, rings: null, dash: null, formation: null, array: null, race: "whip", herd: null };
   // Someone to push against when a test names no one.
   const FOE_FOR = { push: ["soldier"] };
   // The faces of the timing test (trial.face, trials.js): what you hold, who stands across from you

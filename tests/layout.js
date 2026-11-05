@@ -449,7 +449,7 @@ const TESTS = [
   ["aim", { stage: "stage_training_ground", cast: ["drona"] }], ["push", {}], ["steady", {}], ["sneak", {}], ["notice", {}],
   ["drill", { set: "mudra", stage: "stage_training_ground", cast: ["balarama"] }], ["rhythm", { stage: "stage_smithy", cast: ["charu"], sound: "clang" }],
   ["race", { stage: "stage_racetrack", cast: ["karna"], rival: "Karna" }], ["herd", { stage: "stage_khandava_top", theme: "fire" }],
-  ["rings", { stage: "stage_chakravyuha_top", mode: "open" }], ["chaupar", { stage: "stage_board_table", cast: ["shakuni"], opponent: "Shakuni" }],
+  ["rings", { stage: "stage_chakravyuha_top", mode: "open" }], ["dash", { stage: "stage_chakravyuha_top", mode: "open", cast: ["abhimanyu"] }], ["dash", { _label: "keep it shut", stage: "stage_chakravyuha_top", mode: "close", cast: ["drona"] }], ["chaupar", { stage: "stage_board_table", cast: ["shakuni"], opponent: "Shakuni" }],
   ["baghchal", { stage: "stage_board_table", cast: ["shakuni"], opponent: "Shakuni" }], ["moksha", { stage: "stage_board_table", cast: ["boy"], opponent: "Vikarna" }],
   ["retort", { stage: "stage_lotus_garden", cast: ["duryodhana"], rounds: [{ line: "They say your family sweeps the stables.", replies: ["And yours sweeps the floor before the king.", "That is not true.", "Leave me alone."] }, { line: "Is that a bow or a broom?", replies: ["Come closer and find out.", "A bow.", "Go away."] }, { line: "Who taught you?", replies: ["Someone who could.", "Nobody.", "My mother."] }] }],
   ["draw", { stage: "stage_bow_courtyard", cast: ["guard"] }], ["formation", { stage: "stage_chakravyuha_top", array: "eagle" }], ["hands", { stage: "stage_dice_board_top", cast: ["shakuni"] }], ["pasha", null],
