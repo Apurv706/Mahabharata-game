@@ -142,7 +142,7 @@
   // Living paintings: short clips made from some paintings (game/video/<key>.mp4). The painting
   // shows at once; its clip fades in over it when it can play, plays once and rests on its last
   // frame. Off in the menu, with calm motion, when the device asks to save data, and in tests.
-  const VIDEOS = new Set(["war_eve", "scene_dice_hall", "scene_poison", "scene_lac", "scene_dice_cloth", "war_day17", "scene_arrows",
+  const VIDEOS = new Set(["war_wheel", "war_eve", "scene_dice_hall", "scene_poison", "scene_lac", "scene_dice_cloth", "war_day17", "scene_arrows",
     "end_death", "end_survivor", "end_broken", "end_elder", "end_forest", "end_river", "scene_princes", "scene_fair", "scene_teacher",
     "scene_teaching", "scene_tournament", "scene_swayamvara", "scene_indraprastha", "scene_dice_throws", "scene_exile", "scene_virata",
     "scene_day13", "war_day18"]);
