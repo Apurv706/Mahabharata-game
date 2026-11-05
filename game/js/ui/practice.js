@@ -780,8 +780,10 @@
 (function (K) {
   "use strict";
   const U = K.UI;
-  // The ladder: [fight, act]. Your side is the Pandavas' all through, so the war's fights are one war.
-  const LADDER = [["e_bandits", 1], ["e_ugra", 1], ["e_spar", 2], ["e_panchala", 2], ["e_border", 2], ["e_kings", 3], ["e_sudatta", 4],
+  // The ladder: [fight, act]. Your side is the Pandavas' all through, so the war's fights are one war. Ugra at the fair
+  // opens it: the bandits on the road are grown men, met once you have trained (as a first fight at thirteen, one
+  // run in three ended there).
+  const LADDER = [["e_ugra", 1], ["e_spar", 2], ["e_bandits", 2], ["e_panchala", 2], ["e_border", 2], ["e_kings", 3], ["e_sudatta", 4],
     ["e_gandharva", 5], ["e_jayadratha", 5], ["e_cattle", 5], ["cross_e_duel", 6], ["e_gate", 6], ["e_road", 6], ["e_night", 6], ["e_dushasana", 6], ["e_raid", 7]];
   K.FIGHTER_LADDER = LADDER;
   // You, as a life of that act would be (measured over lives: from act II on, a fighter's health and blows hardly grow).

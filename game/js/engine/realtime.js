@@ -120,6 +120,9 @@
     for (const [k, [a, b]] of Object.entries(L)) out[k] = a + (b - a) * h;
     return out;
   };
+  // Fighter mode (item 21) fights alone: a fight the story gives you soldiers for is eased where that left it far
+  // harder than its neighbours on the ladder (measured with the bot: the road to Jayadratha 38% alone, the night battle 30%, Dushasana's men 46%).
+  RT.FIGHTER = { e_road: 0.75, e_night: 0.7, e_dushasana: 0.8 };
   // The fights played in real time (PRD §18.15 "Which fights are which"); every other fight stays on the turns.
   RT.IDS = new Set(["e_ugra", "e_spar", "e_bandits", "e_kings", "e_panchala", "e_border", "e_gandharva", "e_sudatta", "e_jayadratha", "e_cattle", "e_cattle_k",
     "e_guard", "e_hunt", "e_gate", "e_road", "e_jaya", "e_dushasana", "e_night", "e_ep_carts", "e_ep_ugra", "e_raid", "e_ash", "cross_e_duel", "cross_e_called", "x_practice"]);
@@ -227,8 +230,9 @@
     if (u._tb) RT.unscaleUnit(u); // already scaled (a war day's earlier clash): from its turn-based health and blows again
     u._tb = { hp: u.hp, maxHp: u.maxHp, atk: u.atk }; // what it was on the turns (RT.unscale)
     u.maxHp = Math.max(1, Math.round(u.maxHp * k)); u.hp = Math.max(0, Math.round(u.hp * k));
-    if (foe) { // per-fight tuning (RT.TUNE): the outliers only
-      const tune = RT.TUNE[B.enc.id] || {};
+    if (foe) { // per-fight tuning (RT.TUNE): the outliers only; in fighter mode (no one beside you) RT.FIGHTER as well
+      const tune = Object.assign({}, RT.TUNE[B.enc.id] || {}), ft = K.S && K.S.fighter ? RT.FIGHTER[B.enc.id] : null;
+      if (ft) { tune.hp = (tune.hp || 1) * ft; tune.atk = (tune.atk || 1) * ft; }
       if (tune.hp) { u.maxHp = Math.max(1, Math.round(u.maxHp * tune.hp)); u.hp = Math.max(0, Math.round(u.hp * tune.hp)); }
       u.atk = Math.round(u.atk * RT.P.atkFoe * (tune.atk || 1) * R.D.atk * 10) / 10; // blows come oftener and are dodged more than on the turns
     }
