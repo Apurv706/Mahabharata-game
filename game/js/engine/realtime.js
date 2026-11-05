@@ -922,8 +922,14 @@
         if (Math.abs(g) >= APART * 0.98) continue;
         const dir = Math.abs(g) > 1e-4 ? sign(g) : (b.rt.x > 0.5 ? -1 : 1); // b goes this way, a the other
         const push = 0.5 * STEP;
-        const nb = clamp(b.rt.x + dir * push, 0.07, 0.93), lostB = push - Math.abs(nb - b.rt.x);
-        const na = clamp(a.rt.x - dir * (push + lostB), 0.07, 0.93), lostA = push + lostB - Math.abs(na - a.rt.x);
+        // A foe eased apart is never eased into your weapon's reach (as he never walks into it): the other one moves instead.
+        let pa = push, pb = push;
+        if (side === "enemy" && p && p.rt) {
+          const into = (u, nx) => { const pg = Math.max(standOff(u, p), standOff(p, u)) - (rowGap(u, p) < 0.5 ? 0 : ROWCUT * rowGap(u, p)); return Math.abs(nx - p.rt.x) < pg && Math.abs(nx - p.rt.x) < Math.abs(u.rt.x - p.rt.x); };
+          if (into(b, b.rt.x + dir * push)) { pb = 0; pa = 2 * push; } else if (into(a, a.rt.x - dir * push)) { pa = 0; pb = 2 * push; }
+        }
+        const nb = clamp(b.rt.x + dir * pb, 0.07, 0.93), lostB = pb - Math.abs(nb - b.rt.x);
+        const na = clamp(a.rt.x - dir * (pa + lostB), 0.07, 0.93), lostA = pa + lostB - Math.abs(na - a.rt.x);
         a.rt.x = na; b.rt.x = clamp(nb + dir * lostA, 0.07, 0.93); // pressed against an edge, the other one moves the more
       }
     }
