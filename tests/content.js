@@ -135,7 +135,7 @@ function fightArt(id, act) {
   let st = null, ar = null;
   try { st = K.val(e.stage); ar = K.val(e.art); } catch (x) { add("art throws", "fight " + id + ": " + x.message); }
   for (const k of [st || ar, bg || st || ar]) want(plainFile(k), act, "fight " + id);
-  if (bg) want(plainFile(bg + "_tall"), act, "fight " + id + " (tall)");
+  if (bg && (!U.fightTall || U.fightTall(bg))) want(plainFile(bg + "_tall"), act, "fight " + id + " (tall)"); // only where a tall one is painted (ui/battle.js U.fightTall, 6f23c4c)
   const e2 = encAct.get(id) || new Set(); e2.add(act); encAct.set(id, e2);
 }
 
