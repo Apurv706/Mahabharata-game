@@ -261,6 +261,9 @@
   // Two who fight stand where the one striking reaches the other with his weapon's tip, not body to body:
   // you stop short of a foe by your weapon's reach, a foe walks no nearer to you than his.
   const standOff = (a, b) => Math.max(FACE, a.rt.reach * 0.88);
+  const SPACE = 0.84, BACKSTEP = 0.6; // a blow lands at no less than 0.84 of the striker's reach (less a quarter body a row); the step back, field widths a second
+  // How near two who fight may stand: the longer weapon's stand-off, less a quarter body for each row between (never stacked).
+  const gapTo = (a, b) => { const g = rowGap(a, b); return g < 0.5 ? Math.max(standOff(a, b), standOff(b, a)) : Math.max(0.5 * BODY, 0.88 * (Math.max(a.rt.reach, b.rt.reach) - ROWCUT * g)); };
   function toRow(u, row, dt) { const d = row - u.rt.lane; if (Math.abs(d) > 1e-3) u.rt.lane += sign(d) * Math.min(Math.abs(d), 2.5 * dt); }
   // Keep a unit clear of the others standing in its row.
   function keepApart(R, u, x, dt, list) {
@@ -540,6 +543,11 @@
       R.salve.left--; R.salve.next = R.t + 1;
       if (!R.salve.left) R.salve = null;
     }
+    if (p.rt.blow && !p.rt.blow.c.shot) { // your swing keeps its length too: too close to the foe in front, you give ground as you swing
+      const f = foesNear(R, p.rt.x, p.rt.face, p.rt.reach + LUNGE)[0];
+      if (f) { const want = SPACE * (p.rt.reach - (rowGap(f, p) < 0.5 ? 0 : ROWCUT * rowGap(f, p))), ad = Math.abs(f.rt.x - p.rt.x);
+        if (ad < want) p.rt.x = clamp(p.rt.x - p.rt.face * Math.min(want - ad, BACKSTEP * dt), EDGE, 1 - EDGE); }
+    }
     if (p.rt.blow && R.t >= p.rt.blow.at) landBlow(R);
     if (p.rt.busy > 0) {
       p.rt.busy -= dt;
@@ -551,8 +559,8 @@
       let x = p.rt.x + mv * p.rt.speed * (R.block ? P.blockWalk : 1) * dt; // behind the shield, slowly
       // Foes block your way; your own side never does.
       for (const e of living(B, "enemy")) {
-        if (!e.rt.entered || rowGap(e, p) > 0.5) continue; // only a foe in your row stands in your way
-        const gap = standOff(p, e);
+        if (!e.rt.entered || e.rt.beaten || rowGap(e, p) > 2.5) continue; // a foe in your row blocks your way; one a row over, nearer than his weapon allows
+        const g = rowGap(e, p), gap = g < 0.5 ? standOff(p, e) : Math.max(0.5 * BODY, 0.88 * (p.rt.reach - ROWCUT * g)); // your own weapon's length: a long-weapon foe gives ground himself
         if (mv > 0 && p.rt.x <= e.rt.x && x > e.rt.x - gap) x = Math.max(p.rt.x, e.rt.x - gap);
         if (mv < 0 && p.rt.x >= e.rt.x && x < e.rt.x + gap) x = Math.min(p.rt.x, e.rt.x + gap);
       }
@@ -761,7 +769,22 @@
     if (u.atk) {
       const a = u.atk, t = B.units.find((x) => x.uid === a.on);
       if (a.ranged && !a.locked) { if (t && t.hp > 0) a.lane = t.rt.x; if (a.land - R.t <= RT.P.lock) a.locked = true; }
-      if (!a.ranged && !a.area && t && t.hp > 0) u.face = sign(t.rt.x - u.x) || u.face;
+      if (!a.ranged && t && t.hp > 0) {
+        if (!a.area) u.face = sign(t.rt.x - u.x) || u.face;
+        // A long weapon too close to strike (a spear on a dagger fighter who has slipped inside): he gives ground as he
+        // winds up, so the blow lands at its own length and not through the body (owner: at least 0.8 of the reach apart).
+        // (measured to whoever stands nearest in the blow's way: you, stepping in front of the friend it was meant for)
+        const pp = C.player(), tt = pp && pp.hp > 0 && pp !== t && sign(pp.rt.x - u.x) === sign(t.rt.x - u.x) && Math.abs(pp.rt.x - u.x) < Math.abs(t.rt.x - u.x) && rowGap(e, pp) < 1.5 ? pp : t;
+        const want = SPACE * (u.reach - (rowGap(e, tt) < 0.5 ? 0 : ROWCUT * rowGap(e, tt))), ad = Math.abs(tt.rt.x - u.x);
+        if (ad < want) {
+          const dir = sign(tt.rt.x - u.x) || -u.face, nx = clamp(u.x - dir * Math.min(want - ad, BACKSTEP * dt), 0.07, 0.93), moved = Math.abs(nx - u.x);
+          u.x = nx;
+          // Backed against the edge of the field, he shoves you back instead, as he swings.
+          if (moved < 1e-4 && tt.side === "player") tt.rt.x = clamp(tt.rt.x + dir * Math.min(want - ad, BACKSTEP * dt), EDGE, 1 - EDGE);
+        }
+        // Still too close when it should land (a stagger held him while you pressed in): the blow waits a moment more while he steps back.
+        if (R.t >= a.land - 1e-6 && ad < want * 0.95 && (a.wait || 0) < 4) { a.land = R.t + 0.1; a.wait = (a.wait || 0) + 1; }
+      }
       if (R.t >= a.land - 1e-6) landAttack(R, e);
       return;
     }
@@ -788,7 +811,7 @@
     if (!u.engaged) x = keepApart(R, e, x, dt, living(B, "enemy").filter((o) => !o.rt.atk && !o.rt.engaged));
     // A foe in your row does not walk through you; nor, coming at you from another row, nearer than where the weapons reach.
     { // (whomever he means to strike: a foe never stands stacked on you from another row either)
-      const pg = Math.max(standOff(e, p), standOff(p, e)) - (rowGap(e, p) < 0.5 ? 0 : ROWCUT * rowGap(e, p)); // nor into your weapon's reach
+      const pg = gapTo(e, p); // nor into either weapon's reach
       if (u.x >= p.rt.x && x < p.rt.x + pg) x = Math.max(x, Math.min(u.x + u.speed * 0.6 * dt, p.rt.x + pg)); // (inside it, from another row: he steps back out)
       if (u.x < p.rt.x && x > p.rt.x - pg) x = Math.min(x, Math.max(u.x - u.speed * 0.6 * dt, p.rt.x - pg));
     }
@@ -925,7 +948,7 @@
         // A foe eased apart is never eased into your weapon's reach (as he never walks into it): the other one moves instead.
         let pa = push, pb = push;
         if (side === "enemy" && p && p.rt) {
-          const into = (u, nx) => { const pg = Math.max(standOff(u, p), standOff(p, u)) - (rowGap(u, p) < 0.5 ? 0 : ROWCUT * rowGap(u, p)); return Math.abs(nx - p.rt.x) < pg && Math.abs(nx - p.rt.x) < Math.abs(u.rt.x - p.rt.x); };
+          const into = (u, nx) => { const pg = gapTo(u, p); return Math.abs(nx - p.rt.x) < pg && Math.abs(nx - p.rt.x) < Math.abs(u.rt.x - p.rt.x); };
           if (into(b, b.rt.x + dir * push)) { pb = 0; pa = 2 * push; } else if (into(a, a.rt.x - dir * push)) { pa = 0; pb = 2 * push; }
         }
         const nb = clamp(b.rt.x + dir * pb, 0.07, 0.93), lostB = pb - Math.abs(nb - b.rt.x);
