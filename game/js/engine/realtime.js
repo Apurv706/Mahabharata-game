@@ -727,13 +727,13 @@
       perfectBlock = R.t - R.blockT <= P.blockPerfect + STEP;
       const breaker = a.id === "breaker";
       sh = perfectBlock ? 0 : breaker ? P.blockBreaker : a.heavy ? P.blockHeavy : P.blockThrough;
-      R.breath -= (perfectBlock ? 0.5 : 1) * (a.heavy || breaker ? P.blockHitHeavy : P.blockHit) * (breaker ? 1.5 : 1);
+      R.breath -= (perfectBlock ? 0.5 : 1) * (a.heavy || breaker ? P.blockHitHeavy : P.blockHit) * (breaker ? 1.5 : 1) * (a.ranged ? 0.35 : 1); // (an arrow on the shield: a third of a blade's cost, so a volley does not drop it at once)
       if (perfectBlock) { R.stats.perfectBlocks++; if (!a.ranged) { e.rt.stag = Math.max(e.rt.stag, P.blockStag); e.rt.rec = 0; } R.fx.push({ k: "perfectblock", uid: e.uid }); }
       if (R.breath <= 0) { R.breath = 0; lowerShield(R, true); }
     } else if (t !== p && isSoldiers(t) && R.orders.soldiers === "defend" && a.on === t.uid) sh = P.shieldSoldiers;
     else if (t === p && R.shield && frontal) sh = P.shieldYou;
     if (a.arc) sh *= P.maceHit; // a mace blow: slower, a little harder
-    if (blocked || sh < (a.arc ? P.maceHit : 1)) R.fx.push({ k: "spark", uid: t.uid, block: blocked });
+    if (blocked || sh < (a.arc ? P.maceHit : 1)) R.fx.push({ k: "spark", uid: t.uid, block: blocked, arrow: !!a.ranged });
     if (sh <= 0) { /* a perfect block: nothing gets through */ }
     else if (sh !== 1) { const atk = e.atk; e.atk = Math.round(atk * sh * 10) / 10; try { doHit(); } finally { e.atk = atk; } }
     else doHit();
@@ -805,7 +805,13 @@
     const waitAt = RT.attacking(R) >= 2 && !u.keep ? Math.max(want + BODY, 2.3 * BODY) : want;
     let dx = 0;
     if (ad > waitAt + 0.01) dx = sign(d) * u.speed * dt;
-    else if (ad < waitAt - 0.04) dx = -sign(d) * u.speed * 0.6 * dt;
+    else if (ad < waitAt - 0.04) {
+      // An archer steps back only just after loosing (playtest, 5 November: a mace fighter could never reach one); caught in
+      // your reach or backed to the edge he stands and fights close, and steps back again only once he has struck.
+      const cornered = (u.x <= 0.09 && d > 0) || (u.x >= 0.91 && d < 0), caught = u.archer && t === p && ad <= p.rt.reach * 1.05;
+      if (u.archer && (cornered || caught)) { u.close = true; u.tgt = p.uid; }
+      else if (!u.archer || u.cool > 0.5) dx = -sign(d) * u.speed * 0.6 * dt;
+    }
     let x = u.x + dx;
     // Foes keep apart from each other in a row, so each stands clear on the ground.
     if (!u.engaged) x = keepApart(R, e, x, dt, living(B, "enemy").filter((o) => !o.rt.atk && !o.rt.engaged));

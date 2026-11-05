@@ -715,6 +715,7 @@
       case "spark": { // a blow taken on a shield: it is raised to meet it, and the sparks fly where the blow lands on it
         const a = A(f.uid); if (!a) break;
         a.sparkAt = performance.now();
+        if (a.u.side === "player" && f.block && f.arrow) pop(a, K.tr("Blocked"), "miss"); // an arrow snapping on the raised shield
         if (a.u.side === "player" && R.block) break; // already behind the raised shield
         if (a.u.side !== "player" || !f.glance) { pose(a, "guard", 1400, 0.55); if (!a.shieldUp) home(a, 500); }
         break; }

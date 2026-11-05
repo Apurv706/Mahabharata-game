@@ -4698,6 +4698,7 @@
     "You reach thirty-six, and Vikarna tips his piece over, laughing. Then he tells you what he really thinks of the war to come.": "तुम छत्तीस पर पहुँचते हो, और विकर्ण हँसकर अपनी गोटी गिरा देता है। फिर वह बताता है कि वह आने वाले युद्ध के बारे में सचमुच क्या सोचता है।",
     "Calm motion": "शांत हलचल",
     "Less movement on screen: the puppets stand still and effects are quieter.": "स्क्रीन पर कम हलचल: कठपुतलियाँ स्थिर खड़ी रहती हैं और प्रभाव धीमे होते हैं।",
+    "Blocked": "रोका",
     "Whip ×2": "चाबुक ×2",
     "Space": "स्पेस",
     "Change lanes to miss what is in the road: up and down, or the buttons. Space cracks the whip.": "रास्ते की रुकावटों से बचने के लिए पंक्ति बदलो: ऊपर और नीचे, या बटन। स्पेस से चाबुक चलाओ।",
