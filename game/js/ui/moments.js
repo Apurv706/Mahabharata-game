@@ -80,6 +80,11 @@
     return true;
   };
 
+  // The paintings of moments just earned, loaded at once (the choice that earned them is still being told), so the
+  // moment comes up on time (owner, 5 November: the friendship and vow moments came up late).
+  U.preloadMoments = function () {
+    for (const m of (K.momentQueue || [])) { try { const info = K.momentInfo(m, K.S); const key = info && (info.art || info.place); if (key) { const im = new Image(); im.src = U.bgUrl(key); } } catch (e) { /* a moment without a painting */ } }
+  };
   function show(m, after) {
     const S = K.S, info = K.momentInfo(m, S);
     if (!info) return after();
@@ -111,7 +116,8 @@
     // The painting comes in once it has loaded (or after a moment, whatever happens); the figures'
     // beats are timed from then, so a slow painting does not leave them behind.
     let shown = false;
-    const reveal = () => { if (shown || running !== run) return; shown = true; requestAnimationFrame(() => requestAnimationFrame(() => { el.classList.add("in"); plan(); })); };
+    el.classList.add("wait"); // the dark ground at once, over the page
+    const reveal = () => { if (shown || running !== run) return; shown = true; requestAnimationFrame(() => requestAnimationFrame(() => { el.classList.add("in"); el.classList.remove("wait"); plan(); })); };
     const plan = () => {
       beats.push(setTimeout(close, still ? 6000 : info.ms || (info.astra ? 8200 : 7200))); // info.ms: a staged scene's own length (war_bhishma.js)
       if (info.play) at(info.playAt || 600, () => info.play(el)); // an effect drawn in code over the painting

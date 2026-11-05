@@ -264,7 +264,8 @@
       // A palace guard's tall wrapped turban.
       case "turban": return '<path d="' + TURBAN + '" fill="' + hat + '"' + OUT + "/>" + holeRow("M51.4 40.6 Q62 30.4 75.4 37", hat, 2.6) + '<path d="M50 43 Q62 32 76 40 M50 37 Q62 28 74 34" fill="none" stroke="' + ht + '" stroke-width="1.4"/><path d="M63 28 Q66 22 70 24 Q66 26 65 29 Z" fill="' + ht + '"' + OUT + "/>";
       case "helmet": return helmetSvg(ht);
-      case "crest": return helmetSvg(ht) + '<path d="M62 25 Q50 10 36 18 Q46 18 50 28 Q42 24 38 30 Q52 26 60 31 Z" fill="' + hat + '"' + OUT + "/>";
+      // The horsehair falls from the helmet's crown down the back of the head (it swept up and back like a horn: owner, 5 November).
+      case "crest": return '<path d="M62 24 Q53 21 47 28 Q41 35 41.5 46 Q44.5 38 49.5 34 Q46.5 41 47.5 50 Q51 39 56.5 32 Q58 28 63 27 Z" fill="' + hat + '"' + OUT + "/>" + helmetSvg(ht) + '<circle cx="63" cy="23.5" r="2.2" fill="' + ht + '"' + OUT + "/>";
       // An archer's close cap with one white feather.
       case "capfeather": return '<path d="M50 47 Q50 34 63 33 Q76 34 76 45 Q63 39 50 47 Z" fill="' + hat + '"' + OUT + '/><path d="M51 44 Q63 37 75 43" fill="none" stroke="' + ht + '" stroke-width="1.6"/><path d="M54 36 Q46 20 52 8 Q58 22 57 35 Z" fill="#e9dcc0"' + OUT + '/><path d="M54 33 L53 14" stroke="#24120a" stroke-width=".7"/>';
       default: return "";

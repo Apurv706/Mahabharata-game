@@ -574,6 +574,7 @@
     if (U.stageFx) U.stageFx.stop();
     // The painting stays where it is while what came of your choice is written; it moves once, at the end.
     U.finalTop = U.leafTop();
+    if (U.preloadMoments) U.preloadMoments(); // a moment this choice earned: its painting on its way now
     U.setBackdrop(artFor(sc), { still: !!(sc.clipAfter || sc.still) });
     storyFx(sc);
     // A clip that shows what happens after the choice (the fire) plays now.
