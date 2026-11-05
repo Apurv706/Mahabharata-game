@@ -21,5 +21,6 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
+      - run: npm ci
       - run: node tests/rules.js
       - run: node tests/lives.js 600 1
