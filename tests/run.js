@@ -109,16 +109,21 @@ const list = C.filter(pick).sort((a, b) => (TIER === "full" ? b.est - a.est : 0)
 if (argv.includes("--list")) { for (const c of C) console.log((c.quick ? "Q" : " ") + (c.full ? "F" : " ") + (c.browser ? " B " : "   ") + c.name.padEnd(22) + "node " + (c[TIER] || c.full || c.quick).join(" ")); process.exit(0); }
 let pwOk = true; try { require.resolve("playwright"); } catch (e) { pwOk = ["/usr/local/lib/node_modules_global/playwright", "/opt/npm-tools/node_modules/playwright"].some((p) => fs.existsSync(p)); }
 
+const live = new Set();
+const killGroup = (ch) => { try { process.kill(-ch.pid, "SIGKILL"); } catch (e) { try { ch.kill("SIGKILL"); } catch (e2) { /* gone */ } } };
+for (const sig of ["SIGINT", "SIGTERM"]) process.on(sig, () => { for (const ch of live) killGroup(ch); process.exit(130); });
 function run(c, args, env) {
   return new Promise((ok) => {
     const t = Date.now();
     const node = args.filter((a) => a.startsWith("--max-old-space")), rest = args.filter((a) => !a.startsWith("--max-old-space"));
-    const ch = cp.spawn(process.execPath, node.concat(rest), { cwd: ROOT, env: Object.assign({}, process.env, { REGRESS_OUT: OUT }, env || {}) });
+    // Each check in its own process group, so stopping the runner (or a timeout) stops everything the check started.
+    const ch = cp.spawn(process.execPath, node.concat(rest), { cwd: ROOT, detached: true, env: Object.assign({}, process.env, { REGRESS_OUT: OUT }, env || {}) });
+    live.add(ch);
     let out = "";
     ch.stdout.on("data", (d) => { out += d; }); ch.stderr.on("data", (d) => { out += d; });
     let timedOut = false;
-    const to = setTimeout(() => { timedOut = true; out += "\n[run.js] timed out after " + (c.timeout || 15) + " min\n"; ch.kill("SIGKILL"); }, (c.timeout || 15) * MIN);
-    ch.on("close", (code, sig) => { clearTimeout(to); if (sig && !timedOut) out += "\n[run.js] killed by " + sig + " (out of memory?)\n"; ok({ code: sig ? 124 : code, out, ms: Date.now() - t }); });
+    const to = setTimeout(() => { timedOut = true; out += "\n[run.js] timed out after " + (c.timeout || 15) + " min\n"; killGroup(ch); }, (c.timeout || 15) * MIN);
+    ch.on("close", (code, sig) => { clearTimeout(to); live.delete(ch); if (sig && !timedOut) out += "\n[run.js] killed by " + sig + " (out of memory?)\n"; ok({ code: sig ? 124 : code, out, ms: Date.now() - t }); });
   });
 }
 const tail = (s, n) => s.trim().split("\n").slice(-n).join("\n");
