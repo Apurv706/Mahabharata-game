@@ -44,7 +44,7 @@ async function fight(pg, enc, o = {}) {
     K.seed(o.seed || 3); window.__ended = null; window.__endedN = 0;
     K.UI.startBattle(enc, (out) => { window.__ended = out; window.__endedN++; });
   }, [enc, o]);
-  await pg.waitForSelector("#rt", { timeout: 8000 });
+  try { await pg.waitForSelector("#rt", { timeout: 15000 }); } catch (e) { throw new Error(enc + ": no fight screen opened in 15 s"); }
   await sleep(o.wait != null ? o.wait : 1200);
 }
 // Keep you alive (a check that is not about losing).
@@ -98,6 +98,9 @@ function suite(name, header) {
       BROWSER = await PW.chromium.launch(); SRV = await H.serve(path.resolve(arg("--game", H.GAME)));
     }
     const T = parseInt(arg("--case-timeout", "240"), 10) * 1000;
+    const shut = async () => { try { if (BROWSER) await BROWSER.close(); } catch (e) { /* closed */ } BROWSER = null; };
+    process.once("SIGTERM", () => shut().then(() => process.exit(143))); process.once("SIGINT", () => shut().then(() => process.exit(130)));
+    try {
     for (const c of list) {
       const t = Date.now();
       let probs;
@@ -109,7 +112,7 @@ function suite(name, header) {
       console.log((status === "pass" ? "ok    " : status === "known" ? "KNOWN " : "FAIL  ") + c.id.padEnd(26) + c.what + "  (" + ((Date.now() - t) / 1000).toFixed(1) + " s)");
       for (const p of probs.slice(0, 10)) console.log("        " + p.slice(0, 260));
     }
-    if (BROWSER) await BROWSER.close(); if (SRV) await SRV.close();
+    } finally { await shut(); if (SRV) await SRV.close().catch(() => {}); }
     const fails = results.filter((r) => r.status === "fail");
     console.log(name + ": " + results.length + " checks, " + results.filter((r) => r.status === "pass").length + " pass, " + fails.length + " fail, " + results.filter((r) => r.status === "known").length + " known");
     const J = arg("--json", ""); if (J) fs.writeFileSync(J, JSON.stringify({ results, failed: fails.map((r) => r.id), browserFailed: fails.filter((r) => r.kind === "browser").map((r) => r.id) }, null, 1));

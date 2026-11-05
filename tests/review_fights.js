@@ -193,16 +193,23 @@ async function controlChecks(dev, bad) {
   const a1 = await pg.evaluate(ST);
   if (!(a1.frozen > 0) && !a1.used.astra) bad.push(tag + "the divine weapon was not loosed");
   await sleep(1000); await waitFight(pg, 0.5);
-  // Orders: the friend's preset.
-  if (touch) await pg.tap('#rt [data-act="orders"]'); else await pg.keyboard.press("o");
-  await sleep(400);
-  const o0 = await pg.evaluate(ST);
-  if (o0.sheet !== "orders" || !o0.paused) bad.push(tag + "Orders did not open, paused");
-  const hb = await pg.$('#rt .orders-sheet .sec.on [data-fr="hold"]');
-  if (!hb) bad.push(tag + "Orders shows no presets for Bhima (" + (await pg.evaluate(() => (document.querySelector("#rt .orders-sheet") || {}).innerText || "").catch(() => "")).replace(/\s+/g, " ").slice(0, 120) + ")");
-  else { await (touch ? hb.tap({ timeout: 4000 }) : hb.click({ timeout: 4000 })).catch((e) => bad.push(tag + "Hold back could not be tapped: " + String(e.message).split("\n")[0])); await sleep(200); if ((await pg.evaluate(ST)).orders.friend !== "hold") bad.push(tag + "Hold back was not set"); }
-  const rs = await pg.$("#rt .orders-sheet:not([hidden]) [data-resume]"); // (on a busy machine the panel may have burnt out already: 6 s)
-  if (rs) await (touch ? rs.tap({ timeout: 4000 }) : rs.click({ timeout: 4000 })).catch((e) => bad.push(tag + "Resume ▶ could not be tapped: " + String(e.message).split("\n")[0]));
+  // Orders: the friend's preset. (The panel burns out by itself after 6 s; on a slow machine it is opened again.)
+  let setHold = false;
+  for (let tries = 0; tries < 3 && !setHold; tries++) {
+    if ((await pg.evaluate(ST)).sheet !== "orders") { if (touch) await pg.tap('#rt [data-act="orders"]'); else await pg.keyboard.press("o"); await sleep(300); }
+    const o0 = await pg.evaluate(ST);
+    if (o0.sheet !== "orders" || !o0.paused) { bad.push(tag + "Orders did not open, paused"); break; }
+    const hb = await pg.$('#rt .orders-sheet .sec.on [data-fr="hold"]');
+    if (!hb) { bad.push(tag + "Orders shows no presets for Bhima (" + (await pg.evaluate(() => (document.querySelector("#rt .orders-sheet") || {}).innerText || "")).replace(/\s+/g, " ").slice(0, 120) + ")"); break; }
+    const inPanel = await hb.evaluate((b) => { const r = b.getBoundingClientRect(), p = b.closest(".sheet").getBoundingClientRect(), at = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return r.width > 0 && r.top >= p.top - 1 && r.bottom <= p.bottom + 1 && r.left >= p.left - 1 && r.right <= p.right + 1 && (at === b || b.contains(at)); });
+    if (!inPanel) { bad.push(tag + "Hold back lies outside the Orders panel or under something: it cannot be tapped"); break; }
+    try { if (touch) await hb.tap({ timeout: 3000 }); else await hb.click({ timeout: 3000 }); } catch (e) { continue; }
+    await sleep(150);
+    setHold = (await pg.evaluate(ST)).orders.friend === "hold";
+  }
+  if (!setHold && !bad.some((b) => b.startsWith(tag + "Orders") || b.startsWith(tag + "Hold back"))) bad.push(tag + "Hold back was not set");
+  const rs = await pg.$("#rt .orders-sheet:not([hidden]) [data-resume]");
+  if (rs) await (touch ? rs.tap({ timeout: 3000 }) : rs.click({ timeout: 3000 })).catch(() => {});
   await sleep(300);
   if ((await pg.evaluate(ST)).paused) bad.push(tag + "Resume ▶ did not resume");
   // Pause and Resume.
@@ -235,11 +242,11 @@ async function controlChecks(dev, bad) {
   }
   // Spare: bring one foe to 4% and step up to him.
   await pg.evaluate(() => { const V = K.UI.rtScreen(), p = K.Combat.player(), f = V.R.B.units.find((u) => u.side === "enemy" && u.hp > 0 && u.rt.entered); f.hp = Math.max(1, Math.floor(f.maxHp * 0.04)); p.rt.x = Math.max(0.12, f.rt.x - 0.1); window.__spareUid = f.uid; });
-  await sleep(1500);
+  await waitFight(pg, 1.2);
   await pg.evaluate(() => { const V = K.UI.rtScreen(), p = K.Combat.player(), f = V.R.B.units.find((u) => u.uid === window.__spareUid); p.rt.x = Math.max(0.12, f.rt.x - 0.08); });
-  await sleep(300);
-  if (touch) { const t = await pg.$("#rt .plea i"); if (t) await t.tap(); else bad.push(tag + "no Spare on the kneeling foe"); } else await pg.keyboard.press("e");
-  await sleep(500);
+  await waitFight(pg, 0.3);
+  if (touch) { const t = await pg.$("#rt .plea i"); if (t) await t.tap().catch(() => bad.push(tag + "the Spare on the kneeling foe could not be tapped")); else bad.push(tag + "no Spare on the kneeling foe"); } else await pg.keyboard.press("e");
+  await waitFight(pg, 0.3);
   if (!((await pg.evaluate(ST)).spared > 0)) bad.push(tag + "Spare did not spare the kneeling foe");
   await endFight(pg);
   bad.push(...errs.map((e) => tag + e));
@@ -320,7 +327,7 @@ browser("orders-friend", "the friend's presets visibly apply (Hold back, All-out
   const bad = [];
   await fight(pg, "e_bandits", { life: { act: 5, age: 38, path: "spy" }, S: { bonds: { bhima: 9 }, friend: "bhima" } });
   await keepAlive(pg);
-  await pg.keyboard.press("c"); await sleep(1500);
+  await pg.keyboard.press("c"); await waitFight(pg, 1.2);
   if (!(await pg.evaluate(() => K.Combat.state().units.some((u) => u.called)))) { await close(); return ["Bhima did not come to be ordered"].concat(errs); }
   // Bhima's own health kept up, so each preset is seen whole.
   await pg.evaluate(() => { clearInterval(window.__ally); window.__ally = setInterval(() => { const B = K.Combat.state(); if (B) B.units.forEach((u) => { if (u.side === "enemy" && u.hp < u.maxHp * 0.3) u.hp = u.maxHp; if (u.called && u.hp > 0) u.hp = u.maxHp; }); }, 100); });

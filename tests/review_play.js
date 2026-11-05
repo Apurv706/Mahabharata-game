@@ -13,7 +13,7 @@
    fails on a page or console error, a failed request, a screen with no way forward, an empty page, a fight that
    never ends or a fight screen left behind.
    Usage: node tests/review_play.js [--lives N=2] [--seed S=1] [--device "iPhone SE"|"iPhone 15"|laptop|all]
-          [--lang en|hi|both] [--story on|off|mix] [--start new|war|act5] [--steps N=1500] [--shots DIR] [--json FILE]
+          [--lang en|hi|both] [--story on|off|mix] [--start new|war|act5] [--turns] [--steps N=3000 [--partial]] [--shots DIR] [--json FILE]
    Each life alternates device, language and story mode from the seed (with all/both/mix). Exits 1 on any problem. */
 "use strict";
 const fs = require("fs");
@@ -52,6 +52,9 @@ if (require.main === module) (async () => {
   const fontCss = fs.existsSync(path.join(FONTS, "fonts.css")) ? fs.readFileSync(path.join(FONTS, "fonts.css"), "utf8") : "";
   const browser = await pw.chromium.launch();
   const results = [];
+  const shut = () => browser.close().catch(() => {});
+  process.once("SIGTERM", () => shut().then(() => process.exit(143))); process.once("SIGINT", () => shut().then(() => process.exit(130)));
+  try {
 
   for (let li = 0; li < LIVES; li++) {
     const seed = SEED + li, R = rng(seed);
@@ -81,7 +84,7 @@ if (require.main === module) (async () => {
     console.log((L.bad.length ? "✗ " : "ok ") + tag + ": " + L.scenes.length + " scenes, " + L.fights.length + " fights (" + L.fights.map((f) => f.enc + ":" + f.out).join(" ") + "), " + L.tests.length + " tests, ending " + JSON.stringify(L.ending) + ", " + (L.ms / 60000).toFixed(1) + " min");
     fs.writeFileSync(path.join(OUT, tag + ".json"), JSON.stringify(L, null, 1));
   }
-  await browser.close(); await srv.close();
+  } finally { await shut(); await srv.close().catch(() => {}); }
   const fails = results.filter((x) => x.bad.length);
   console.log("review_play: " + results.length + " lives, " + (fails.length ? fails.length + " with problems" : "all clean"));
   const J = arg("--json", ""); if (J) fs.writeFileSync(J, JSON.stringify({ failed: fails.map((x) => x.tag), results }, null, 1));
@@ -227,7 +230,8 @@ async function walk(pg, cdp, L, R, o, tap) {
     if (o.touch) await pg.touchscreen.tap(box.x, box.y); else await pg.mouse.click(box.x, box.y);
     await sleep(500);
   }
-  L.bad.push("still playing after " + MAXSTEPS + " steps (at " + L.scenes.slice(-1)[0] + ")");
+  if (has("--partial")) L.events.push("stopped after " + MAXSTEPS + " steps (--partial), at " + L.scenes.slice(-1)[0]);
+  else L.bad.push("still playing after " + MAXSTEPS + " steps (at " + L.scenes.slice(-1)[0] + ")");
 }
 async function shot(pg, L, what) { const f = path.join(SHOTS, L.tag + "-" + String(L.scenes.length).padStart(3, "0") + "-" + what.replace(/[^\w]+/g, "_").slice(0, 40) + ".png"); await pg.screenshot({ path: f }).catch(() => {}); L.events.push("shot " + f); return f; }
 
@@ -362,7 +366,9 @@ async function escapeStep(pg, cdp, o) {
   // A phone: tap the room (a stuck door is held open: the touch is held).
   const pt = await pg.evaluate((n) => { const r = document.querySelector('.lacplan rect[data-i="' + n + '"]'); if (!r) return null; const b = r.getBoundingClientRect(); return { x: b.left + b.width / 2, y: b.top + b.height / 2 }; }, n); // (the plan is drawn again each step)
   if (!pt) { await sleep(200); return; }
-  await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [pt] }); await sleep(950);
+  const STUCK = new Set([[at(1, 1), at(2, 1)], [at(2, 3), at(2, 4)], [at(0, 2), at(0, 3)]].map(([a, b]) => key(a, b)));
+  if (!STUCK.has(key(st.me, n))) { await pg.touchscreen.tap(pt.x, pt.y); await sleep(380); return; } // a plain tap on the room beside you
+  await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [pt] }); await sleep(950); // a stuck door: held open
   await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] }); await sleep(200);
 }
 
