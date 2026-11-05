@@ -1,4 +1,4 @@
-# Change list (29 Oct – 1 Nov 2026)
+# Change list (29 Oct – 5 Nov 2026)
 
 Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct); see PRD §18.11 for the full description of each. **Items 22–25 are built** (30 Oct); see PRD §18.12. **Items 26–31 are built** (31 Oct); see PRD §18.1–18.9. **Item 32** (1 Nov) fixes the 18 critical issues from the code review (`Code_Review_2026-10-31.md`). Item 5 (art) is done.
 
@@ -199,6 +199,41 @@ Following `Quality_Review_2026-11-02.md` and its "Decided 2 November" section. T
 69. **Less to read (owner, 2 Nov):** every question cut to the bare minimum and scene-setting to a line; canon boxes one sentence; test rules one line; no screen over half a phone of text (36 before, 0 after). Choice cards show no effect lines (bonds, duties, reputation, skills, odds are discovered in play); small icons instead: a bow for a fight, a skull or bars for danger, the vow's emblem for a vow. Locked choices hidden at the teacher and the ashram. The weapon choice is a grid of weapon pictures you tap. Ekalavya and the swayamvara show only the choices.
 70. **The dice hall in five screens:** invitation, Shakuni's hands (spotting the cheat calls it out), the hall (the stakes and Draupadi's question together, four choices; no walking out partway), the robe, the road out.
 71. **From the owner's play:** the story box opens at full size over the painting, is written into, then the painting moves once; fight figures solid (no see-through limbs); tap a figure to target it; the Varunastra dive is played in the water; the act never goes back; the sibling on the other side is one line on the eve of the war; the Safari screen-fit check runs on Ubuntu 24.04.
+
+## Built 3–5 Nov: battles (PRD §18.15; on the public site 5 Nov after the full test pass)
+72. **Real-time fights and turn-based war days.**
+    - **Real time:** ordinary fights play on the painting: move, strike, Block or Roll, one path skill, and *Aid ▾*. Every enemy blow is readable.
+    - **Turn-based:** the war days stay in turns, with each blow marked before you choose, company orders and packs.
+    - **The rules:**
+      - Sparing only at 5%.
+      - *Try again* once, in real-time fights only (owner, 5 Nov).
+      - Every weapon has its own reach and its own blow; archers always shoot.
+    - **Later on 4 Nov:**
+      - Fights eased for a person: foes strike at half weight, you have more health, and perfect windows are wider. The test bot plays at a person's speed and wins 92%.
+      - Beaten but alive: you slump on one knee and the foes walk off.
+      - A deadly loss: you slump while *Try again* is offered.
+      - Command used alone leaves the foe open for a round.
+      - The Gandharva ambush is eased (×0.85).
+      - Stealth walks upright.
+      - Holding a control on a phone opens no text menus.
+      - Ashwatthama raids the camp sword in hand, still a champion.
+73. **The review of 4 Nov** played 10 lives with real taps through both play pages and fixed:
+    - the duel ground on phones;
+    - two missing paintings in the split parts;
+    - Aid on the foes' turn ("Not now");
+    - called archers now shoot;
+    - the roll dodge;
+    - every fighter strikes with what he is drawn holding;
+    - the war day's read follows the foe's weapon;
+    - story choices sat 18 px left (since 25 Oct);
+    - the iPad home bar;
+    - a foe nudged apart into your reach (5 Nov).
+    The flank's "Fewer blows" stays, and the bard drill on iPhone SE is fine (owner).
+74. **The regression suite** (`tests/run.js`):
+    - **Quick tier:** 13 checks, on every push to main.
+    - **Full tier:** 45 checks, nightly and before a release.
+    - **Covers:** content, 16 recorded lives, win-rate bands, 66 screenshots, screen fit, both play pages played with taps, saves, and a check for each fixed bug.
+    - **Final run (5 Nov):** all pass, with one known item.
 
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**

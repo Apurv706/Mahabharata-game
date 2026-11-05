@@ -457,6 +457,7 @@ The private play page holds at most 512 files, fewer than the game now has, so i
 - From the owner's play: the story box opens whole, solid figures, tap to target, the act never goes back [60, 71].
 - The private play page in two parts (§16.10) [61].
 - Art: everything ordered by 31 October is delivered and in the game, with no stand-ins; the war storylines' 31 paintings and the great duel's two arrived on 2 November.
+- Battles (§18.15): real-time fights and turn-based war days, eased for a person, the review's fixes and the regression suite (3–5 Nov) [72–74]; on GitHub main 5 November.
 
 ### Being built
 1. **Master leather** (§18.14), from 3 November, in `ui/puppet.js` and the puppet section of `css/screens.css`. Then every pose, test stage and fight checked again, and frame rate on a mid-range phone in a three-a-side fight.
@@ -746,7 +747,41 @@ Proposed and built on 2 November, and on the public site the same day after the 
 
 **Built with the battles.** Act checkpoints (every act start saved, without limit; the Book of Lives keeps its deaths; Part One hands over to Part Two); text kept clear of the iPhone notch and Dynamic Island; homeland paintings loaded in both parts.
 
-**Status (4 November).** All built: engine, fight conversions, war-day additions, tuning, Block, the heavy mace, archers always shooting, each weapon's own blow. Next: a regression test suite, then a full review with real play tests. Waiting for the owner's approval before GitHub main.
+**Later on 4 November (owner's play) [72].**
+- *Fights eased for a person, not a machine.* The test bot now plays like a person: one button at a time, with a gap between presses, and it reads blows at a person's speed. Foes keep their health, so fights still last 30–60 seconds, but they strike at half weight. You have more health, foes rest longer between blows, perfect blocks and rolls have wider windows, and Block is kinder. That bot wins 92% of real-time fights (turn-based 70%). Retuned to match: Yuyutsu's duel ×1.15, his call ×0.85, Ugra's war fight ×0.7, the Gandharva ambush ×0.85 (a hard fight, not a deadly one).
+- *Beaten but alive* (a fight that is not deadly, or story mode): you slump on one knee, the foes walk off the field, and a line says what the epic holds, in real time and on the war day. *A deadly fight lost the first time:* you slump while *Try again* is offered. Give it up and you fall, or in story mode the foes leave.
+- *Command* used alone reads the field: a sharper blow, and the foe is left open for a round.
+- *Upright walking* in the stealth tests: the sneak bends at the knees instead of leaning stiffly like a plank.
+- *On a phone:* holding a control or the stage never selects text or opens a look-up bubble or copy menu.
+
+**The night raid (owner, 4 November).** Ashwatthama goes through the sleeping camp sword in hand (`e_raid`, `e_ash`). He is still a champion, and answers a divine weapon with his own. The win rates stayed in their bands, so nothing was retuned.
+
+**The review (4 November) [73].** A full review played 10 lives with real taps through both play pages (phone and laptop, English and Hindi, story mode on and off) and fixed:
+- Karna's-day duels on a phone had no ground painting.
+- Two paintings were missing from one part or the other.
+- *Aid* tapped during the foes' turn now says "Not now".
+- Arjuna or Karna, called to help, shoot their bows.
+- A roll that carries you out of a marked blow counts as a dodge.
+- Every fighter strikes only with what he is drawn holding. Ugra in the wrestling ring uses his fists, and a child before choosing a path is empty-handed.
+- The war day's timed read follows the foe's weapon: a bowman's blows come as arrows.
+- The story choices no longer sit 18 px left of their column (since 25 October; on a phone they ran off the screen's edge).
+- On an iPad held sideways, the fight's corner controls clear the home bar.
+- One foe nudged apart from another could end up inside your weapon's reach. He no longer can (found by the final check on 5 November).
+
+**Decided after the review (owner, 4–5 November).**
+- *Try again* stays in real-time fights only. Deadly war days, and fights played turn-based, keep one try.
+- The bard's verse drill may cover your figure on iPhone SE; that is fine.
+- The flank's "Fewer blows" re-aim stays as it is.
+
+**The regression suite [74].** `tests/run.js` runs a quick tier (13 checks, about a minute and a half, on every push to main and every pull request) and a full tier (45 checks, about three and a half hours on a 2-core machine; nightly and before a release). Checks are counted as PASS, FAIL, KNOWN (listed in `tests/known_failures.json`) or FLAKY (passed when the failing cases were run again). The suite covers the content and every painting in both play parts, 16 recorded lives, per-fight win-rate bands, 66 screenshots, the screen fit of fights and blows, both play pages played with real taps, saves, and one check for each fixed bug.
+
+**Status (5 November).** Pushed to GitHub main and the live site on 5 November, after the full tier passed on the final version. One KNOWN item: the tests never reach the hold of Arjuna's offer. Both play pages were updated. Still open:
+- Safari on a real iPhone: the slung bow, the notch, and frame rate. A frame-rate counter is to be added to the play pages.
+- Two brief drawing glitches seen once each and passed on re-run: a raider standing on you (border spy fight), and an ally sliding off the screen's edge (the last stand).
+- Screens where text covers more than half the screen, to cut down.
+- 2–3 lives played end to end at a person's speed.
+- The Hindi Block label: रोको or ढाल.
+- An easy / hard toggle (later).
 
 ### 18.16 Less to read (decided and built 2 November)
 The owner's decisions of 2 November on how much a player has to read [69, 70]:
