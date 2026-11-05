@@ -458,6 +458,7 @@ The private play page holds at most 512 files, fewer than the game now has, so i
 - The private play page in two parts (§16.10) [61].
 - Art: everything ordered by 31 October is delivered and in the game, with no stand-ins; the war storylines' 31 paintings and the great duel's two arrived on 2 November.
 - Battles (§18.15): real-time fights and turn-based war days, eased for a person, the review's fixes and the regression suite (3–5 Nov) [72–74]; on GitHub main 5 November.
+- Build A (5 Nov) [75–77]: the owner's feedback of 5 November (no horns, moments on time, the lac house's cellar test and closing clip, two divine weapons by name, archers and the shield, blows at their length, Krishna's wheel clip, less to read on a phone, champions announced) and the human-paced playtest's fixes, with a frame-rate counter. On GitHub main 5 November.
 
 ### Being built
 1. **Master leather** (§18.14), from 3 November, in `ui/puppet.js` and the puppet section of `css/screens.css`. Then every pose, test stage and fight checked again, and frame rate on a mid-range phone in a three-a-side fight.
@@ -776,9 +777,9 @@ Proposed and built on 2 November, and on the public site the same day after the 
 **The regression suite [74].** `tests/run.js` runs a quick tier (13 checks, about a minute and a half, on every push to main and every pull request) and a full tier (45 checks, about three and a half hours on a 2-core machine; nightly and before a release). Checks are counted as PASS, FAIL, KNOWN (listed in `tests/known_failures.json`) or FLAKY (passed when the failing cases were run again). The suite covers the content and every painting in both play parts, 16 recorded lives, per-fight win-rate bands, 66 screenshots, the screen fit of fights and blows, both play pages played with real taps, saves, and one check for each fixed bug.
 
 **Status (5 November).** Pushed to GitHub main and the live site on 5 November, after the full tier passed on the final version. One KNOWN item: the tests never reach the hold of Arjuna's offer. Both play pages were updated. Still open:
-- Safari on a real iPhone: the slung bow, the notch, and frame rate. A frame-rate counter is to be added to the play pages.
+- Safari on a real iPhone: the slung bow, the notch, frame rate (the counter is in the Menu since Build A, 5 November) and the clips (fetched whole on Safari since Build A).
 - Two brief drawing glitches seen once each and passed on re-run: a raider standing on you (border spy fight), and an ally sliding off the screen's edge (the last stand).
-- Screens where text covers more than half the screen, to cut down.
+- Screens where text covers more than half the screen: cut in Build A (iPhone 15 mean 56% to 49%); about 20 pages still at 51–63%.
 - 2–3 lives played end to end at a person's speed.
 - The Hindi Block label: रोको or ढाल.
 - An easy / hard toggle (later).
