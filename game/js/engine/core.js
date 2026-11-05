@@ -76,8 +76,9 @@
   K.isDead = (who, S = K.S) => S.dead.includes(who);
   // Display name of a person, in the current language.
   K.personName = (id, S = K.S) => {
-    if (id === "spouse" && S.spouse) return K.tr(K.PEOPLE[S.spouse]?.name || "your spouse");
-    if (id === "friend" && S.friend) return K.tr(K.PEOPLE[S.friend]?.name || "your friend");
+    // (no spouse or friend yet: "your friend", never the bare id; the Hindi check found "friend" shown untranslated)
+    if (id === "spouse") return K.tr((S.spouse && K.PEOPLE[S.spouse]?.name) || "your spouse");
+    if (id === "friend") return K.tr((S.friend && K.PEOPLE[S.friend]?.name) || "your friend");
     return K.tr(K.PEOPLE[id]?.name || id);
   };
 

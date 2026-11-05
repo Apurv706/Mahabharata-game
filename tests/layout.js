@@ -618,8 +618,9 @@ async function runDevice(browser, base, o, report) {
   {
     // The divine weapon is in Aid (the real-time screen): the sheet opens over the controls with a ready weapon in it.
     await page.click("#rt .hb.aid"); await page.waitForTimeout(400);
-    const a = await page.evaluate(() => { const b = document.querySelector("#rt .aid-sheet [data-aid='astra']"); return b ? { on: !b.disabled, text: b.textContent } : null; });
-    report.push({ browser: browser._name, device: label, screen: "fight: divine weapon in Aid", problems: a ? (a.on ? [] : ["the divine weapon is not ready in Aid: " + a.text]) : ["no divine weapon in Aid"] });
+    // Two ready: each by name (item 12, data-aid "astra:<id>"); one: the single row (data-aid "astra").
+    const a = await page.evaluate(() => { const bs = [...document.querySelectorAll("#rt .aid-sheet [data-aid^='astra']")]; return bs.length ? { ready: bs.filter((b) => !b.disabled).length, text: bs.map((b) => b.textContent).join(" | ") } : null; });
+    report.push({ browser: browser._name, device: label, screen: "fight: divine weapon in Aid", problems: a ? (a.ready >= 2 ? [] : ["both divine weapons should be ready in Aid, each by name: " + a.text]) : ["no divine weapon in Aid"] });
     await check("fight: Aid open", ["rt"]);
   }
   // The character sheet holding tapas, weapons and charges.
