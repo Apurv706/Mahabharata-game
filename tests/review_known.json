@@ -7,6 +7,27 @@
    "bug": "The night raid (e_raid, e_ash): Ashwatthama is drawn with his bow but strikes with a sword he takes up (Rig.wield), against the rule that every foe strikes with what he is drawn holding and archers only shoot.",
    "why": "Making him an archer who only shoots changes a tuned deadly fight (RT.TUNE e_raid 1.1); the owner should choose: an archer (and re-tune), or drawn with a sword in the raid.",
    "file": "game/js/engine/realtime.js profile() (archer by name or by having no melee move); game/js/content/act6b.js e_raid, e_ash"
+  },
+  {
+   "test": "review_rules",
+   "match": "Ashwatthama is not a champion who can answer a divine weapon",
+   "bug": "No real-time fight has a champion who can answer a divine weapon with his counter-weapon (PRD 18.15): the only champion in one, Ashwatthama at the night raid (e_raid, e_ash), is not flagged hero there, so the weapon simply strikes him.",
+   "why": "Flagging him (hero: true in content/act6b.js) drops the bot's real-time win rate in e_raid from 95% to 78% (tests/bands.js quick, out of its band): a change to a tuned deadly fight, for the owner to decide (tried in 36b510b, reverted in the next commit).",
+   "file": "game/js/content/act6b.js e_raid, e_ash"
+  },
+  {
+   "test": "review_rules",
+   "match": "no real-time fight has a champion who can answer a divine weapon",
+   "bug": "The same: no champion in any real-time fight.",
+   "why": "As above.",
+   "file": "game/js/content/act6b.js"
+  },
+  {
+   "test": "review_fights",
+   "match": "the champion did not answer the divine weapon",
+   "bug": "The same, on the real-time screen: the Agneyastra loosed at Ashwatthama in the night raid strikes him; no counter-weapon.",
+   "why": "As above (review_rules).",
+   "file": "game/js/content/act6b.js"
   }
  ]
 }
