@@ -168,7 +168,7 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; justify-cont
 /* The canon frame draws in: the box appears, then its lines. */
 .witness.staged { transform: scale(0.985); }
 /* Choices slide in from the left. */
-.choice.staged { transform: translateX(-18px); }
+.choice.staged:not(.shown) { transform: translateX(-18px); } /* (once shown, .staged.shown sets it back: the cards sat 18 px left, cut by the screen's edge on a phone) */
 /* Choosing: the picked card glows gold, the others fall away. */
 .choice.chosen { background: var(--hover); box-shadow: 0 0 0 1px var(--data), 0 0 22px rgba(226, 181, 90, 0.35); transition: box-shadow 0.3s, background-color 0.3s; } /* taste-skill-ignore: selection glow, transient */
 .choice.dismiss { opacity: 0; transform: translateX(14px); transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: none; }
