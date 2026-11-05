@@ -988,6 +988,7 @@
         '<p class="game-note" aria-live="polite">' + U.trSpan(t.help || (open ? "Steer round the wheel to meet each ring's opening. A ring you hit throws you back. Space cracks the whip." : "Turn your ring so the chariots meet shields, not an opening.")) + "</p>" +
         '<div class="btnrow race-btns dash-btns"></div>';
       const field = host.querySelector(".dashfield"), svg = field.querySelector("svg"), world = svg.querySelector(".dw");
+      field._dash = R; // for the life test (tests/review_play.js), which looks at the field as a person would
       const score = host.querySelector(".score"), note = host.querySelector(".game-note"), clock = U.countdown(host);
       const P = (r, a) => (Math.cos(a) * r).toFixed(2) + "," + (Math.sin(a) * r).toFixed(2);
       const arc = (r, a0, a1) => "M" + P(r, a0) + " A" + r + "," + r + " 0 " + (a1 - a0 > Math.PI ? 1 : 0) + " 1 " + P(r, a1);

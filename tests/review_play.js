@@ -14,6 +14,7 @@
    never ends or a fight screen left behind.
    Usage: node tests/review_play.js [--lives N=2] [--seed S=1] [--device "iPhone SE"|"iPhone 15"|laptop|all]
           [--lang en|hi|both] [--story on|off|mix] [--start new|war|act5] [--turns] [--steps N=3000 [--partial]] [--shots DIR] [--json FILE]
+          [--human] [--audit] [--land KEY] [--path PATH] [--side pandava|kaurava]
    Each life alternates device, language and story mode from the seed (with all/both/mix). Exits 1 on any problem. */
 "use strict";
 const fs = require("fs");
@@ -29,7 +30,7 @@ const LIVES = parseInt(arg("--lives", "2"), 10), SEED = parseInt(arg("--seed", "
 const TURNS = has("--turns");
 const DEVSEL = arg("--device", "all"), LANGSEL = arg("--lang", "both"), STORYSEL = arg("--story", "mix"), START = arg("--start", "new");
 const FONTS = path.join(__dirname, "fixtures", "fonts");
-const HUMAN = has("--human"), AUDIT = has("--audit") || HUMAN, LAND = arg("--land", ""), PATHSEL = arg("--path", "");
+const HUMAN = has("--human"), AUDIT = has("--audit") || HUMAN, LAND = arg("--land", ""), PATHSEL = arg("--path", ""), SIDESEL = arg("--side", "");
 const sleep = (ms) => new Promise((r) => setTimeout(r, HUMAN ? ms * 1.6 : ms)); // --human: a person's pace between actions
 // --audit: on every page, how much of the screen text covers and whether anything sits off the screen; in every
 // real-time fight, how far apart two fighters stood when a blow landed (against the weapon's reach) and whether it hit.
@@ -213,6 +214,8 @@ async function walk(pg, cdp, L, R, o, tap) {
     if (sig === prevSig) idle++; else idle = 0;
     prevSig = sig;
     if (idle > 25) { L.bad.push("no way forward at " + s.scene + " (" + sig.slice(0, 200) + ")"); await shot(pg, L, "stuck-" + s.scene); return; }
+    // On waking from the dream: how to play (item 21). A life plays the story.
+    if (await pg.$('.fmode [data-mode="story"]')) { await shot(pg, L, "mode"); await tap('.fmode [data-mode="story"]'); L.events.push("chose Live the story on waking"); await sleep(900); continue; }
     if (s.end) { await ending(pg, L, R, o, tap); if (L.again) { L.again = false; last = null; continue; } return; }
     if (s.partEnd) { if (!(await handOver(pg, L, o, tap))) return; last = null; continue; }
     if (s.rt) {
@@ -245,6 +248,7 @@ async function walk(pg, cdp, L, R, o, tap) {
       if (HUMAN) { const words = await pg.evaluate(() => ((document.querySelector("#leaf") || {}).innerText || "").split(/\s+/).length).catch(() => 0); await sleep(Math.min(4000, 400 + words * 30)); } // reading the page
     }
     if (PATHSEL && s.choices.includes("#choice-" + PATHSEL)) { await tap("#choice-" + PATHSEL); await sleep(900); continue; } // --path: this life's weapon
+    if (SIDESEL && s.choices.includes("#choice-" + SIDESEL)) { await tap("#choice-" + SIDESEL); L.events.push("chose the side " + SIDESEL + " at " + s.scene); await sleep(900); continue; } // --side: pandava or kaurava
     if (s.choices.length) {
       // A player who likes a fight: a choice that leads to one, more often than not (fights are what this reviews most).
       const fights = await pg.evaluate((ids) => { const sc = K.SCENES[K.S.scene]; return ids.filter((id) => { const c = sc && (K.val(sc.choices) || []).find((x) => "#choice-" + x.id === id); return c && (c.combat || (K.leadsToFight && K.leadsToFight(c))); }); }, s.choices);
@@ -346,6 +350,7 @@ async function trial(pg, cdp, L, R, o, tap, s) {
     const st = await pg.evaluate(() => ({ on: !!document.querySelector(".trial.playing"), done: !!document.querySelector(".trial.done") || !document.querySelector(".trial") }));
     if (!st.on || st.done) break;
     if (kind === "escape") { await escapeStep(pg, cdp, o); continue; }
+    if (kind === "dash") { await dashStep(pg, cdp, o, R); continue; }
     // A board: a piece that can move, a point a tiger can go to (or a tiger), the dice's buttons.
     const P = ".trial.playing .trial-body ";
     const press = await pg.$(P + "button.trial-press:not([disabled])");
@@ -373,6 +378,36 @@ async function trial(pg, cdp, L, R, o, tap, s) {
   }
   if (await pg.evaluate(() => !!document.querySelector(".trial.playing"))) { L.bad.push("the test " + kind + " at " + s.scene + " did not end in 150 s of play"); await shot(pg, L, "test-" + kind); await pg.evaluate(() => { const b = document.querySelector(".trial.playing"); if (b) b.classList.remove("playing"); }); }
   await sleep(1200);
+}
+// The wheel dash (item 18): a look at the field every so often, as a person would, then a press of ◀ or ▶ long enough to
+// get there (give or take), and the whip when the opening is right ahead. Keeping the wheel shut: the ring turned away
+// from the chariot about to arrive. Keys on a laptop, the buttons held on a phone.
+async function dashStep(pg, cdp, o, R) {
+  const plan = await pg.evaluate((err) => {
+    const D = K.UI.DASH, f = document.querySelector(".dashfield"), G = f && f._dash; if (!G || G.over) return null;
+    const TAU = Math.PI * 2;
+    if (G.me) {
+      const m = G.me; if (m.passed >= D.RINGS.length) return null;
+      const g = G.rings[m.passed], cr = G.contact(m.passed), tc = Math.max(0, (m.r - cr) / (D.VR * (m.boost > 0 ? 2 : 1))) + Math.max(0, m.stun);
+      let best = null, reach = null;
+      for (let k = 0; k < g.n; k++) { const d = G.wrap(g.phi + (k * TAU) / g.n + (g.v / g.r) * tc - m.a), need = (Math.abs(d) * m.r) / D.SIDE; if (best === null || Math.abs(d) < Math.abs(best)) best = d; if (need <= tc * 0.9 && (reach === null || Math.abs(d) < Math.abs(reach))) reach = d; }
+      const d = (reach !== null ? reach : best) + err / g.r, arc = d * m.r;
+      return { dir: Math.abs(arc) < 1.5 ? 0 : arc > 0 ? "l" : "r", ms: Math.round((Math.abs(arc) / D.SIDE + D.SIDE / D.SIDE_ACC / 2) * 1000), whip: G.off(g, m.a) < g.half - D.WIDE - 2 && Math.abs(arc) < 3 && m.r - cr > 8 };
+    }
+    const M = G.my, cr = G.contact(), come = G.cars.filter((c) => c.state === "come").sort((a, b) => a.r - b.r)[0];
+    if (!come) return { dir: 0, ms: 0 };
+    let bestS = 0, bestP = Infinity;
+    for (const s of [0, -1, 1]) { const ring = { r: M.r, n: M.n, phi: M.phi + (s * D.MY_SPIN * 0.35) / M.r }; const p = Math.max(0, M.half + 8 - G.off(ring, come.a + err / come.r)); if (p < bestP - 1e-6) { bestP = p; bestS = s; } }
+    return { dir: bestS > 0 ? "r" : bestS < 0 ? "l" : 0, ms: 350 };
+  }, (R() - 0.5) * 10).catch(() => null);
+  if (!plan) { await sleep(200); return; }
+  if (plan.whip) await pg.keyboard.press(" ");
+  if (plan.dir) {
+    const btn = o.touch ? await pg.$(".dash-btns .steer:" + (plan.dir === "l" ? "first-child" : "last-child")) : null, bb = btn && (await btn.boundingBox());
+    if (bb) { const pt = { x: bb.x + bb.width / 2, y: bb.y + bb.height / 2 }; await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [pt] }); await new Promise((r) => setTimeout(r, plan.ms)); await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] }); }
+    else { const key = plan.dir === "l" ? "ArrowLeft" : "ArrowRight"; await pg.keyboard.down(key); await new Promise((r) => setTimeout(r, plan.ms)); await pg.keyboard.up(key); }
+  }
+  await sleep(180 + R() * 120); // a person's look at the field before the next press
 }
 // The lac-house escape: the shortest way to the tunnel through the rooms not burning (arrows on a laptop, taps on a phone).
 async function escapeStep(pg, cdp, o) {
@@ -537,4 +572,4 @@ async function warDay(pg, cdp, L, R, o, tap) {
   L.fights.push(F);
 }
 
-module.exports = { rtFight, warDay, trial, walk, watch, READ_RT, LOOK, rng };
+module.exports = { rtFight, warDay, trial, walk, watch, READ_RT, LOOK, rng, dashStep };
