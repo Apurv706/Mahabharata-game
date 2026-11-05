@@ -2057,3 +2057,12 @@ body.ending-on .ledger { display: none; }
   .leaf .choices.two .choice { grid-template-columns: minmax(0, 1fr); }
   .leaf .choices.two .choice.has-img { grid-template-columns: auto minmax(0, 1fr); }
 }
+@media (max-width: 560px) {
+  /* The weapon grid three to a row on a phone, smaller pictures (seven weapons took two thirds of the screen) */
+  .leaf .choices.grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .leaf .choices.grid .choice.tile { padding: 7px 5px 6px; }
+  .leaf .choices.grid .choice.tile .thumb.emblem { width: 44px; height: 44px; }
+  .leaf .choices.grid .choice.tile .t { font-size: 13.5px; line-height: 1.2; }
+  /* Vows and other emblem choices: a smaller emblem */
+  .leaf .choices .choice.has-img .thumb.emblem { width: 36px; height: 36px; }
+}

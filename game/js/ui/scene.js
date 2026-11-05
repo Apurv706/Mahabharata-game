@@ -106,7 +106,7 @@
     const grid = !!K.val(sc.grid) && rows.every(({ c }) => K.val(c.img));
     box.classList.toggle("grid", grid);
     // Four or more short choices with nothing beneath them sit two to a row on a phone (owner, 5 November: less of the screen under words).
-    box.classList.toggle("two", !grid && rows.length >= 4 && rows.every(({ c, ok, crossed }) => !crossed && U.t(K.val(c.t)).length <= 26));
+    box.classList.toggle("two", !grid && rows.length >= 4 && rows.every(({ c, ok, crossed }) => !crossed && U.t(K.val(c.t)).length <= 30));
     rows.forEach(({ c, ok, crossed }, i) => {
       // The card shows no effect line (effects are found in play). A way closed by two failed tests
       // stays on the page, struck through, with the reason; a locked one shows its short reason.
