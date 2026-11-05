@@ -675,3 +675,13 @@ html[lang="hi"] #rt .written p { font: 600 17px/1.55 var(--text); font-style: no
 #rt .written .go { min-height: 44px; padding: 8px 20px; border-radius: 12px; background: var(--raised); border: 1px solid var(--gold-line); color: var(--ink); font: 700 15px/1.1 var(--text); }
 @keyframes rtWritten { from { opacity: 0; transform: translate(-50%, 8px); } to { opacity: 1; transform: translate(-50%, 0); } }
 html.calm #rt .written { animation: none; }
+/* The clash (prototype): the round's timer and Fall back at the top of the stage; a comrade's call over his head */
+#rt .clashbar { position: absolute; top: calc(40px + var(--sat, 0px)); left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; z-index: 30; pointer-events: auto; }
+#rt .cl-ring { position: relative; width: 40px; height: 40px; display: inline-block; }
+#rt .cl-ring svg { width: 40px; height: 40px; transform: rotate(-90deg); }
+#rt .cl-ring .cl-bg { fill: rgba(20, 12, 8, .72); stroke: rgba(255, 255, 255, .15); stroke-width: 3; }
+#rt .cl-ring .cl-fg { fill: none; stroke: #e2b55a; stroke-width: 3.5; stroke-linecap: round; stroke-dasharray: 100 100; }
+#rt .cl-ring b { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font: 700 14px/1 var(--f-ui, system-ui); color: #f4e7d0; }
+#rt .cl-back { font: 600 13px/1 var(--f-ui, system-ui); color: #f4e7d0; background: rgba(40, 24, 15, .85); border: 1px solid #8a6a3a; border-radius: 8px; padding: 9px 12px; min-height: 40px; }
+#rt .cl-call { position: absolute; transform: translate(-50%, -100%); z-index: 31; display: flex; align-items: center; gap: 6px; max-width: 70%; white-space: nowrap; padding: 5px 9px 5px 5px; border-radius: 16px; background: rgba(20, 12, 8, .88); border: 1.5px solid #ff7a4d; color: #ffe1cf; font: 600 12px/1.2 var(--f-ui, system-ui); pointer-events: none; }
+#rt .cl-call i { flex: none; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-style: normal; font-weight: 800; color: #1b120d; background: conic-gradient(#ff7a4d calc(var(--left, 1) * 360deg), rgba(255, 122, 77, .25) 0); }

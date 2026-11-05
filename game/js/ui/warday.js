@@ -81,6 +81,8 @@
     V = { B, onEnd, figs: new Map(), hp: {}, ev: [], playing: false, target: null, placed: !B.place, choosing: false, sheet: null, dropT: 0, toastT: 0, logAt: B.log.length,
       packSeen: B.packNow || 0, over: false, qte: null, tagT: 0, champSeen: new Set() };
     B.units.forEach((u) => { V.hp[u.uid] = u.hp; });
+    // The clash (prototype, owner 5 November): after your order the round is fought in real time (ui/realtime.js).
+    B.clashMode = !!(U.startClash && !K.headless && B.enc.lethal !== undefined);
     // Everything that happens is kept as it happens, to be played out in order: a move, the blows it lands, a heal.
     const hit0 = B.hit, heal0 = B.heal;
     B.hit = function (u, t, m, o) {
@@ -663,6 +665,19 @@
   function idle() {
     if (!V) return;
     const B = V.B;
+    if (B.clashPending && !V.clashing && !B.over) { // your order has played: now the clash
+      V.clashing = true; V.el.style.visibility = "hidden"; V.el.id = "rt-war"; // both screens are #rt: the war day steps aside while the clash has the stage
+      setTimeout(() => U.startClash(B, { secs: 15 }, (why) => {
+        if (!V) return;
+        V.el.id = "rt"; V.el.style.visibility = ""; V.clashing = false; document.body.classList.add("in-rt", "intest");
+        C.clashDone();
+        B.units.forEach((u) => { V.hp[u.uid] = u.hp; });
+        V.figs.forEach((f) => { if (f.u.hp <= 0 && !f.dead) { f.dead = true; f.el.classList.add("dead"); } });
+        toast(why === "cleared" ? K.tr("The pack is broken.") : why === "fallback" ? K.tr("You fall back. New orders.") : why === "time" ? K.tr("The clash ends. New orders.") : "");
+        changed();
+      }), 350);
+      return;
+    }
     // New faces (a friend come at your call, the next pack), and those who have gone.
     const before = V.figs.size;
     cast(); if (V.figs.size !== before) { V.figs.forEach((f) => size(f)); }
