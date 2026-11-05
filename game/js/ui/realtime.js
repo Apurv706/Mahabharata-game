@@ -809,6 +809,7 @@
         if (a.u.side !== "player" || !f.glance) { pose(a, "guard", 1400, 0.55); if (!a.shieldUp) home(a, 500); }
         break; }
       case "miss": { const a = A(f.uid); if (a) pop(a, K.tr("Missed"), "miss"); break; }
+      case "feint": { const a = A(f.uid); if (a && a.u.hp > 0) { pop(a, K.tr("Feint!"), "miss"); pose(a, "guard", 300, 0.4); } break; } // the wind-up stops short (item 19): it comes again
       case "perfect": toast(K.tr("Perfect roll")); break;
       case "perfectblock": { toast(K.tr("Perfect block")); const a = A(f.uid); if (a && a.u.hp > 0) { setTimeout(() => { if (V && a.u.hp > 0) { pose(a, "strain", 700, 0.45); if (a.rig) a.rig.kick({ rot: 160 * (a.u.rt ? -a.u.rt.face : 1), tx: 20 }); home(a, 900); } }, 120); } break; } // the one who struck staggers back off the shield
       case "winded": if (blocker()) toast(K.tr("Winded")); break;

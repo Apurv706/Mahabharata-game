@@ -113,6 +113,10 @@
       (K.RT ? '<div class="seg-row"><span>' + U.tr("Fights") + "<small>" + U.tr("Real-time: you move, strike and roll as the fight happens. Turn-based: every fight in turns, as before.") + "</small></span>" +
         '<div class="seg" role="radiogroup" aria-label="' + U.tr("Fights") + '">' +
         ["realtime", "turns"].map((v) => '<button type="button" role="radio" data-fights="' + v + '" aria-checked="' + (K.RT.mode() === v) + '">' + U.tr(v === "turns" ? "Turn-based" : "Real-time") + "</button>").join("") + "</div></div>" : "") +
+      // Difficulty of the real-time fights (item 19): Normal grows act by act; story mode keeps its own easing.
+      (K.RT && K.RT.LEVELS ? '<div class="seg-row"><span>' + U.tr("Difficulty") + "<small>" + U.tr("Real-time fights. Normal grows harder act by act; Easy stays gentle; Hard is hard from the start. Story mode keeps Easy.") + "</small></span>" +
+        '<div class="seg" role="radiogroup" aria-label="' + U.tr("Difficulty") + '">' +
+        ["easy", "normal", "hard"].map((v) => '<button type="button" role="radio" data-diff="' + v + '" aria-checked="' + ((K.RT.LEVELS[prefs.difficulty] ? prefs.difficulty : "normal") === v) + '">' + U.tr(v === "easy" ? "Easy" : v === "hard" ? "Hard" : "Normal") + "</button>").join("") + "</div></div>" : "") +
       '<label class="toggle"><input type="checkbox" id="m-assist"' + (U.assist() ? " checked" : "") + "><span>" + U.tr("Meet blows for me") + "<small>" + U.tr("In fights, blows aimed at you are met for you, on kinder odds. On by itself in story mode.") + "</small></span></label>" +
       '<label class="toggle"><input type="checkbox" id="m-timed"' + (prefs.timed !== false ? " checked" : "") + "><span>" + U.tr("Timed moments") + "<small>" + U.tr("At a few hard moments a lamp burns down. If it goes out, you hold your tongue.") + "</small></span></label>" +
       '<label class="toggle"><input type="checkbox" id="m-sound"' + (prefs.sound !== false ? " checked" : "") + "><span>" + U.tr("Sound") + "<small>" + U.tr("The quill, the conch, the dice and the gong.") + "</small></span></label>" +
@@ -146,6 +150,10 @@
         document.querySelectorAll("[data-fights]").forEach((b) => b.addEventListener("click", () => {
           K.prefs({ fights: b.dataset.fights });
           document.querySelectorAll("[data-fights]").forEach((x) => x.setAttribute("aria-checked", String(x === b)));
+        }));
+        document.querySelectorAll("[data-diff]").forEach((b) => b.addEventListener("click", () => {
+          K.prefs({ difficulty: b.dataset.diff });
+          document.querySelectorAll("[data-diff]").forEach((x) => x.setAttribute("aria-checked", String(x === b)));
         }));
         U.$("m-timed").addEventListener("change", (e) => { K.prefs({ timed: e.target.checked }); });
         U.$("m-assist").addEventListener("change", (e) => { K.prefs({ assist: e.target.checked }); });
