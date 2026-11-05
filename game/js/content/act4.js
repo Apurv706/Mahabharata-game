@@ -67,10 +67,10 @@
     {
       id: "a4_aftermath", act: 4, age: 30, canon: true, place: "The road out of Hastinapura", art: "scene_exile", plate: ["#5c3361", "#16131f"], caption: "The Pandavas walk into exile",
       title: "Thirteen years",
-      witness: ["The Pandavas walk into exile in deerskins. When the thirteen years end, there will be war."],
+      witness: ["The Pandavas go into exile for thirteen years."],
       body: (S) => [
-        S.flags.includes("absent_dice") || S.flags.includes("left_dice") ? "You hear the story secondhand." : "You saw it all.",
-        "What will you do with the next thirteen years?"
+        S.flags.includes("absent_dice") || S.flags.includes("left_dice") ? "You hear the story secondhand." : null,
+        "What will you do with the thirteen years?"
       ],
       choices: [
         { id: "forest", t: "Follow the Pandavas into exile", fx: { set: { exile: "forest" }, rep: { pandava: 2, kuru: -1 }, duty: { court: -2 }, journal: "You followed the Pandavas into exile." } },

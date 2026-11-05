@@ -50,7 +50,7 @@
       id: "a3_lac", act: 3, age: 23, canon: true, place: "Varnavata", to: "varnavata", travel: "You go to Varnavata for the spring festival.", art: "scene_lac", still: true, plate: ["#e5872e", "#2a1c1f"], caption: "A new house that smells of resin",
       title: "The house at Varnavata",
       witness: [
-        "Purochana has built the Pandavas a house of lac, meant to burn, and Vidura's miner digs a tunnel under it."
+        "The house of lac is built to burn. Vidura's miner digs a tunnel under it."
       ],
       body: (S) => [
         S.teacher === "vidura" ? "The miner needs someone to carry earth out at night, unseen." : null
@@ -174,7 +174,7 @@
       id: "a3_news", act: 3, age: 25, canon: true, place: (S) => K.homePlace(S), art: "scene_swayamvara", caption: "A traveller's story",
       title: "News from Kampilya",
       witness: [
-        "The brahmins who won Draupadi were Arjuna and Bhima. The Pandavas are alive, and Draupadi is the wife of all five."
+        "The Pandavas are alive, and Draupadi is the wife of all five."
       ],
       body: (S) => [
         "You hear it from a traveller at the well.",
@@ -191,9 +191,9 @@
       id: "a3_court", act: 3, age: 26, canon: true, place: "Hastinapura and Indraprastha", art: "scene_indraprastha", plate: ["#3e8c72", "#d4a84b"], caption: "A new city rises from burned forest",
       title: "Two kingdoms",
       witness: [
-        "Dhritarashtra gives the Pandavas half the kingdom. They build Indraprastha on the ashes of the Khandava forest."
+        "The Pandavas are given half the kingdom, and build Indraprastha."
       ],
-      body: (S) => ["You are twenty-six. Where do you make your life?", S.friend && K.PEOPLE[S.friend]?.canon ? { memory: "{friend} asks where you will go." } : null],
+      body: ["Where do you make your life?"], // (owner, 5 November: less of the screen under words)
       choices: [
         { id: "hastinapura", t: "Serve Hastinapura", fx: { rep: { kuru: 2 }, bond: { duryodhana: 1 }, journal: "You pledged yourself to the court at Hastinapura." }, resolve: pledge("hastinapura") },
         { id: "indraprastha", t: "Serve Indraprastha", fx: { rep: { pandava: 2 }, bond: { yudhishthira: 1 }, journal: "You went to Indraprastha to serve Yudhishthira." }, resolve: pledge("indraprastha") },
@@ -223,7 +223,7 @@
       id: "a3_rajasuya", act: 3, age: 29, canon: true, place: "Indraprastha", travel: "All the kings of Bharata go to Indraprastha for Yudhishthira's great sacrifice, and you go too.", art: "scene_rajasuya", plate: ["#6f8fd8", "#d4a84b"], caption: "The hall that Maya built",
       title: "The Rajasuya",
       witness: [
-        "Yudhishthira is crowned emperor. In Maya's hall, Duryodhana falls into a pool, and Bhima laughs."
+        "In Maya's hall, Duryodhana falls into a pool, and Bhima laughs."
       ],
       body: ["He comes up near you, soaked and shaking with rage."],
       choices: [

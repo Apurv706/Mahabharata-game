@@ -137,7 +137,7 @@
       id: "a2_drupada", act: 2, age: 18, canon: true, place: "The road to Panchala", travel: "Drona marches his students east to Panchala to collect his fee.", art: "scene_drupada", plate: ["#c0472f", "#5c3361"], caption: "The road to Drupada's capital",
       title: "Drona's fee",
       witness: [
-        "For his fee, Drona asks his students to bring him King Drupada of Panchala as a prisoner."
+        "For his fee, Drona asks for King Drupada as a prisoner."
       ],
       body: (S) => [
         S.origin === "panchala" ? { memory: S.flags.includes("moved_capital") ? "Panchala is your homeland. The arrows in the Kuru quivers came from your mother's workshop in the armoury." : "Panchala is your home. Your mother's arrows are in those quivers." } : null,

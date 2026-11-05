@@ -232,9 +232,9 @@
       id: "a1_princes", act: 1, age: 8, canon: true, place: "The palace gardens, Hastinapura", art: "scene_princes", plate: ["#d4a84b", "#3e8c72"], caption: "The palace gardens",
       title: "The princes at play",
       witness: [
-        "The five Pandava boys have come to Hastinapura. Bhima wins every game, and Duryodhana does not laugh."
+        "Bhima wins every game, and Duryodhana does not laugh."
       ],
-      body: ["You are eight. At the palace festival, the princes are choosing sides for tag."],
+      body: ["At the palace festival, the princes choose sides for tag."],
       choices: [
         { id: "bhima", t: "Play on Bhima's side", game: "sneak", hint: "A game of tag", trial: TAG.bhima,
           win: { fx: { bond: { bhima: 2, duryodhana: -1 }, flag: ["played_bhima", "tagged_duryodhana"], memory: ["duryodhana", "You tagged him by the lotus pond when you were eight, and Bhima threw him in."] },
@@ -304,7 +304,7 @@
       id: "a1_poison", act: 1, age: 12, canon: true, place: "Pramanakoti, on the Ganga", travel: "The princes go down to Pramanakoti for the river games, and you go with them.", art: "scene_poison", plate: ["#3b5ba9", "#16131f"], caption: "Pavilions by the river",
       title: "The river at Pramanakoti",
       witness: [
-        "At a river festival, Duryodhana poisons Bhima and has him rolled into the Ganga."
+        "Duryodhana poisons Bhima and rolls him into the Ganga."
       ],
       body: (S) => [
         "You saw Duryodhana's men carry something heavy to the water. No one else did.",

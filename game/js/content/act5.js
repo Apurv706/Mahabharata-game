@@ -238,7 +238,7 @@
       id: "a5_side", act: 5, age: 44, canon: true, art: "scene_envoy", place: "Hastinapura", travel: "Krishna comes to Hastinapura as the Pandavas' envoy, and the whole kingdom gathers to hear him.", caption: "Thirteen years, gone",
       title: "Not a needle's point",
       witness: [
-        "Duryodhana will not give the Pandavas even five villages. Both sides gather at Kurukshetra."
+        "Duryodhana refuses even five villages. Both sides gather at Kurukshetra."
       ],
       body: (S) => [
         S.teacher === "balarama" ? { memory: "Balarama has gone on pilgrimage rather than fight. He asked you to do the same." } : null,

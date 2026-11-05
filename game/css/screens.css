@@ -2050,3 +2050,10 @@ body.ending-on .ledger { display: none; }
   .leaf .choices .choice:disabled:not(.crossed) .fx { display: none; }
   .leaf .choices .choice:disabled:not(.crossed) .thumb.face { width: 30px; height: 30px; }
 }
+@media (max-width: 560px) {
+  .leaf .choices.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .leaf .choices.two .choice { min-height: 44px; align-items: center; }
+  .leaf .choices.two .choice .k { display: none; }
+  .leaf .choices.two .choice { grid-template-columns: minmax(0, 1fr); }
+  .leaf .choices.two .choice.has-img { grid-template-columns: auto minmax(0, 1fr); }
+}
