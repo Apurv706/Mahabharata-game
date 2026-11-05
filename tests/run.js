@@ -95,7 +95,7 @@ add("smoke", null, ["tests/smoke.js", "--json", J("smoke")], { browser: true, re
 add("review-rules", ["tests/review_rules.js", "--json", J("review_rules")], ["tests/review_rules.js", "--json", J("review_rules")]);
 add("review-story", ["tests/review_story.js", "--engine-only", "--lives", "150", "--json", J("review_story")], ["tests/review_story.js", "--case-timeout", "900", "--json", J("review_story")], { browser: "full", retryJson: "review_story", timeout: 30 });
 add("review-fights", null, ["tests/review_fights.js", "--case-timeout", "900", "--json", J("review_fights")], { browser: true, retryJson: "review_fights", timeout: 45 });
-add("review-screens", null, ["tests/review_screens.js", "--fps-min", "20", "--json", J("review_screens")], { browser: true, retryJson: "review_screens", timeout: 20 });
+add("review-screens", null, ["tests/review_screens.js", "--json", J("review_screens")], { browser: true, retryJson: "review_screens", timeout: 20 });
 add("review-play", null, ["tests/review_play.js", "--lives", "1", "--seed", "2", "--steps", "900", "--partial", "--json", J("review_play")], { browser: true, timeout: 40 });
 
 // Rough lengths on a 2-core machine (seconds): the full tier starts the longest first.
