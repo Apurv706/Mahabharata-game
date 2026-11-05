@@ -12,7 +12,8 @@ node tests/run.js quick --list    # what each tier runs
 
 Options: `--only a,b` / `--skip a,b` (a check's name, or the part before `#`: `playthrough` is all six parts),
 `--browser chromium|webkit|firefox|all` (for layout and battlefit, which run in several engines; the rest use
-Chromium), `--jobs N` (checks at a time), `--browser-jobs N` (of those, how many in a browser, default 2),
+Chromium), `--jobs N` (checks at a time), `--browser-jobs N` (of those, how many in a browser, default 1; a browser
+check never runs beside a memory-heavy one: the jsdom playthroughs, the lives batches, content, bands),
 `--out DIR` (logs, JSON and images; default `tests/out/`, or `$REGRESS_OUT`), `--report FILE`.
 
 At the end the runner prints a table: each check, **PASS**, **FAIL**, **FLAKY** (a browser check that failed, was run

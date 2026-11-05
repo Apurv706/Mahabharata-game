@@ -9,7 +9,9 @@
    tests/known_failures.json lists is KNOWN (not a failure); the exit code is 1 only for FAIL.
    Usage: node tests/run.js [quick|full] [--only a,b] [--skip a,b] [--browser chromium|webkit|firefox|all] [--jobs N]
           [--browser-jobs N] [--out DIR] [--report FILE] [--list]
-   --jobs: checks at a time (default: the CPUs, at most 3); --browser-jobs: of those, how many in a browser (default 2).
+   --jobs: checks at a time (default: the CPUs, at most 3); --browser-jobs: of those, how many in a browser (default 1).
+   Memory: a browser check never runs beside a heavy one (the jsdom playthroughs, the lives batches, content, bands),
+   and only one heavy one runs at a time, so a small machine (2 cores, 8 GB) does not run out of memory.
    --browser picks the engines for the checks that run in several (layout, battlefit; the others are Chromium only).
    --only/--skip match a check's name or the part before '#' (playthrough matches playthrough#1..6). */
 "use strict";
@@ -33,7 +35,7 @@ fs.mkdirSync(LOGS, { recursive: true });
 const J = (name) => path.join(OUT, "json", name + ".json");
 fs.mkdirSync(path.join(OUT, "json"), { recursive: true });
 const MIN = 60 * 1000;
-const BJOBS = Math.max(1, parseInt(opt("--browser-jobs", "2"), 10));
+const BJOBS = Math.max(1, parseInt(opt("--browser-jobs", "1"), 10));
 
 // ---------- Retrying a browser check's failing cases ----------
 // Each returns the arguments for a run of just the failing cases, or null to run the whole check again.
@@ -63,12 +65,12 @@ const browsers = BROWSER === "all" ? "chromium,webkit,firefox" : BROWSER;
 const C = [];
 const add = (name, quick, full, o = {}) => C.push(Object.assign({ name, quick, full }, o));
 add("rules", ["tests/rules.js"], ["tests/rules.js"]);
-add("lives", ["tests/lives.js", "200", "1"], ["tests/lives.js", "600", "1"]);
-add("lives-turns", ["tests/lives.js", "300", "2", "--turns"], ["tests/lives.js", "1500", "2", "--turns"]);
+add("lives", ["tests/lives.js", "200", "1"], ["tests/lives.js", "600", "1"], { heavy: "full" });
+add("lives-turns", ["tests/lives.js", "300", "2", "--turns"], ["tests/lives.js", "1500", "2", "--turns"], { heavy: "full" });
 add("crossing", ["tests/crossing.js", "200", "1"], ["tests/crossing.js", "400", "1"]);
-add("content", ["tests/content.js", "--lives", "300", "--ui", "2", "--json", J("content")], ["tests/content.js", "--lives", "2000", "--ui", "24", "--json", J("content")], { timeout: 20 });
+add("content", ["tests/content.js", "--lives", "300", "--ui", "2", "--json", J("content")], ["tests/content.js", "--lives", "2000", "--ui", "24", "--json", J("content")], { timeout: 25, heavy: "full" });
 add("golden", ["tests/golden.js", "--json", J("golden")], ["tests/golden.js", "--twice", "--json", J("golden")]);
-add("bands", ["tests/bands.js", "--tier", "quick", "--json", J("bands")], ["tests/bands.js", "--tier", "full", "--json", J("bands")], { timeout: 45 });
+add("bands", ["tests/bands.js", "--tier", "quick", "--json", J("bands")], ["tests/bands.js", "--tier", "full", "--json", J("bands")], { timeout: 45, heavy: "full" });
 add("bugs", ["tests/bugs.js", "--engine-only", "--json", J("bugs")], ["tests/bugs.js", "--json", J("bugs")], { browser: "full", retryJson: "bugs", timeout: 20 });
 add("weapons", ["tests/weapons.js"], ["tests/weapons.js"]);
 add("facefit", ["tests/facefit.js"], ["tests/facefit.js"], { browser: true });
@@ -151,9 +153,9 @@ async function one(c) {
   const results = new Array(list.length);
   // The browser checks run one at a time (they measure layout and timing, and share the machine); the others fill the slots.
   let browserBusy = 0, heavyBusy = 0, next = 0;
-  const queue = list.map((c, i) => ({ c, i, browser: c.browser === true || c.browser === TIER }));
+  const queue = list.map((c, i) => ({ c: Object.assign({}, c, { heavy: c.heavy === true || c.heavy === TIER }), i, browser: c.browser === true || c.browser === TIER }));
   const takeNext = () => {
-    for (let k = 0; k < queue.length; k++) { const q = queue[k]; if (q.done || q.taken) continue; if (q.browser && browserBusy >= BJOBS) continue; if (q.c.heavy && heavyBusy) continue; q.taken = true; if (q.browser) browserBusy++; if (q.c.heavy) heavyBusy++; return q; }
+    for (let k = 0; k < queue.length; k++) { const q = queue[k]; if (q.done || q.taken) continue; if (q.browser && (browserBusy >= BJOBS || heavyBusy)) continue; if (q.c.heavy && (heavyBusy || browserBusy)) continue; q.taken = true; if (q.browser) browserBusy++; if (q.c.heavy) heavyBusy++; return q; }
     return null;
   };
   await new Promise((finish) => {
