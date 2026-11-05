@@ -29,7 +29,19 @@ const LIVES = parseInt(arg("--lives", "2"), 10), SEED = parseInt(arg("--seed", "
 const TURNS = has("--turns");
 const DEVSEL = arg("--device", "all"), LANGSEL = arg("--lang", "both"), STORYSEL = arg("--story", "mix"), START = arg("--start", "new");
 const FONTS = path.join(__dirname, "fixtures", "fonts");
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const HUMAN = has("--human"), AUDIT = has("--audit") || HUMAN, LAND = arg("--land", ""), PATHSEL = arg("--path", "");
+const sleep = (ms) => new Promise((r) => setTimeout(r, HUMAN ? ms * 1.6 : ms)); // --human: a person's pace between actions
+// --audit: on every page, how much of the screen text covers and whether anything sits off the screen; in every
+// real-time fight, how far apart two fighters stood when a blow landed (against the weapon's reach) and whether it hit.
+const COVER = () => { const vw = innerWidth, vh = innerHeight, sel = ["#leaf", ".fbrief-wrap .fbrief", ".fbrief", ".ft-card", ".ftour", ".written", "[role=dialog]", "[role=alertdialog]", ".sheet", ".modal"];
+  const rows = new Float32Array(vh); for (const q of sel) for (const e of document.querySelectorAll(q)) { const cs = getComputedStyle(e); if (cs.display === "none" || cs.visibility === "hidden" || +cs.opacity < 0.2) continue;
+    if (e.id === "leaf" && document.querySelector("#rt, .wd")) continue; const r = e.getBoundingClientRect(); if (r.width < 40 || r.height < 30 || !(e.innerText || "").trim()) continue;
+    const t = Math.max(0, Math.round(r.top)), b = Math.min(vh, Math.round(r.bottom)), w = Math.max(0, Math.min(vw, r.right) - Math.max(0, r.left)) / vw; for (let y = t; y < b; y++) rows[y] = Math.max(rows[y], w); }
+  let a = 0; for (let y = 0; y < vh; y++) a += rows[y];
+  const off = [...document.querySelectorAll("button, .choice, .cta, [role=button]")].filter((e) => { const r = e.getBoundingClientRect(), cs = getComputedStyle(e); if (!r.width || !r.height || cs.visibility === "hidden" || +cs.opacity < 0.2) return false;
+    let p = e; while (p && p !== document.body) { const ps = getComputedStyle(p); if (/(auto|scroll)/.test(ps.overflowY + ps.overflowX) && p.scrollHeight > p.clientHeight + 2) return false; p = p.parentElement; }
+    return r.left < -1 || r.right > vw + 1 || r.top < -1 || r.bottom > vh + 1; }).map((e) => ((e.innerText || e.getAttribute("aria-label") || e.id || "").trim().replace(/\s+/g, " ").slice(0, 30)) + " @" + [e.getBoundingClientRect().left, e.getBoundingClientRect().right].map(Math.round).join("-"));
+  return { pct: Math.round(a / vh * 100), off }; };
 fs.mkdirSync(SHOTS, { recursive: true });
 
 // A small seeded random for the player's choices (the game keeps its own).
@@ -67,7 +79,7 @@ if (require.main === module) (async () => {
     await ctx.route(/fonts\.googleapis\.com/, (rt) => (fontCss ? rt.fulfill({ status: 200, contentType: "text/css", body: fontCss.replace(/url\(([^)]*?)([^/)]+\.woff2)\)/g, "url(" + srv.url + "__fonts/$2)") }) : rt.abort()));
     await ctx.route(/fonts\.gstatic\.com|__fonts\//, (rt) => { const f = path.join(FONTS, path.basename(rt.request().url())); return fs.existsSync(f) ? rt.fulfill({ status: 200, contentType: "font/woff2", body: fs.readFileSync(f) }) : rt.abort(); });
     const pg = await ctx.newPage();
-    const L = { tag, seed, device, lang, story, bad: [], scenes: [], fights: [], tests: [], noArt: [], events: [], ending: null, part: 1 };
+    const L = { tag, seed, device, lang, story, bad: [], scenes: [], fights: [], tests: [], noArt: [], events: [], ending: null, part: 1, heavy: [], off: [], reach: [], audited: {} };
     const bad = (s, shot) => { L.bad.push(s); console.log("    ✗ " + tag + ": " + s.slice(0, 220)); if (shot !== false) shotOf(s.slice(0, 40)); };
     const shotOf = async (what) => { const f = path.join(SHOTS, tag + "-" + String(L.scenes.length).padStart(3, "0") + "-" + what.replace(/[^\w]+/g, "_").slice(0, 40) + ".png"); try { await pg.screenshot({ path: f }); L.events.push("shot " + f); } catch (e) { /* closed */ } return f; };
     pg.on("pageerror", (e) => bad("page error: " + e.message + " at " + (L.scenes[L.scenes.length - 1] || "?")));
@@ -123,7 +135,8 @@ async function playLife(pg, cdp, L, R, o) {
   if (await pg.$("#as-list")) { await tap("#as-list"); await sleep(600); }
   const lands = await pg.$$("#origins .origin");
   if (!lands.length) { L.bad.push("no homelands to choose"); return; }
-  const land = Math.floor(R() * lands.length);
+  const land = LAND ? await pg.evaluate((k) => Object.keys(K.ORIGINS).indexOf(k), LAND) : Math.floor(R() * lands.length);
+  if (LAND && land < 0) { L.bad.push("no homeland " + LAND); return; }
   for (let i = 0; i < 4 && !(await pg.$("#land-ok")); i++) { const ls = await pg.$$("#origins .origin"); if (ls[land]) await tap(ls[land]); await sleep(1200); }
   for (let i = 0; i < 4 && !(await pg.$("#pname")); i++) { await tap("#land-ok"); await sleep(1200); }
   if (!(await pg.$("#pname"))) { L.bad.push("the homeland page did not lead to the name page"); await shot(pg, L, "create"); return; }
@@ -202,7 +215,16 @@ async function walk(pg, cdp, L, R, o, tap) {
     if (idle > 25) { L.bad.push("no way forward at " + s.scene + " (" + sig.slice(0, 200) + ")"); await shot(pg, L, "stuck-" + s.scene); return; }
     if (s.end) { await ending(pg, L, R, o, tap); if (L.again) { L.again = false; last = null; continue; } return; }
     if (s.partEnd) { if (!(await handOver(pg, L, o, tap))) return; last = null; continue; }
-    if (s.rt) { await rtFight(pg, cdp, L, R, o, tap); continue; }
+    if (s.rt) {
+      if (AUDIT) await pg.evaluate(() => { window.__imp = []; clearInterval(window.__impT); window.__impT = setInterval(() => { const V = K.UI.rtScreen && K.UI.rtScreen(); if (!V || !V.impacts) return; for (const m of V.impacts) if (!m.__seen) { m.__seen = 1; const p = K.Combat.player(); window.__imp.push({ mine: !!p && m.by === p.uid, onMe: !!p && m.on === p.uid, apart: m.apart, reach: m.reach, rows: m.rows, inside: m.res ? m.res.inside : null, on: m.res && m.res.on, t: m.t, by: m.by, to: m.on, enc: V.R && V.R.B && V.R.B.enc && V.R.B.enc.id }); } }, 100); }).catch(() => {});
+      await rtFight(pg, cdp, L, R, o, tap);
+      if (AUDIT) { const imp = await pg.evaluate(() => { clearInterval(window.__impT); return window.__imp || []; }).catch(() => []);
+        const B = 1 / 9.5; for (const m of imp) { if (!(m.mine || m.onMe) || m.apart == null || !m.reach) continue; const net = m.reach - 0.25 * B * (m.rows || 0), r = m.apart / net;
+          if (r < 0.8 - 1e-6) L.reach.push((m.enc || s.scene) + ": " + m.by + "→" + m.to + " at " + (m.t || 0).toFixed(1) + "s, " + r.toFixed(2) + " of the reach apart");
+          if (m.inside === false) L.reach.push((m.enc || s.scene) + ": " + m.by + "→" + m.to + " at " + (m.t || 0).toFixed(1) + "s, the tip missed the " + m.on); }
+        L.events.push("fight " + (imp[0] && imp[0].enc) + ": " + imp.length + " blows measured"); }
+      continue;
+    }
     if (s.war) { await warDay(pg, cdp, L, R, o, tap); continue; }
     if (s.fbGo) { await tap(".fbrief-wrap .fb-go"); await sleep(600); continue; }
     if (s.qte) { await sleep(800 + R() * 400); const bs = await pg.$$(".qte .qte-btns button"); await tap(bs[R() < 0.6 ? bs.length - 1 : Math.floor(R() * bs.length)]); await sleep(700); continue; }
@@ -216,6 +238,13 @@ async function walk(pg, cdp, L, R, o, tap) {
     if (s.trial && (s.trialPlaying || s.trialBegin) && !s.trialDone) { await trial(pg, cdp, L, R, o, tap, s); continue; }
     // Once in a life, save a copy from the Menu and check its code reads back.
     if (!saved && s.act >= 2 && s.choices.length) { saved = true; await saveCopy(pg, L, o, tap); continue; }
+    if (AUDIT && s.choices.length && !L.audited[s.scene]) { // once a scene, when its choices are up
+      L.audited[s.scene] = 1; const a = await pg.evaluate(COVER).catch(() => null);
+      if (a && a.pct > 50) { L.heavy.push(s.scene + ": text covers " + a.pct + "% of the screen"); await shot(pg, L, "heavy-" + a.pct + "-" + s.scene); }
+      if (a && a.off.length) { L.off.push(s.scene + ": " + a.off.slice(0, 4).join("; ")); await shot(pg, L, "off-" + s.scene); }
+      if (HUMAN) { const words = await pg.evaluate(() => ((document.querySelector("#leaf") || {}).innerText || "").split(/\s+/).length).catch(() => 0); await sleep(Math.min(4000, 400 + words * 30)); } // reading the page
+    }
+    if (PATHSEL && s.choices.includes("#choice-" + PATHSEL)) { await tap("#choice-" + PATHSEL); await sleep(900); continue; } // --path: this life's weapon
     if (s.choices.length) {
       // A player who likes a fight: a choice that leads to one, more often than not (fights are what this reviews most).
       const fights = await pg.evaluate((ids) => { const sc = K.SCENES[K.S.scene]; return ids.filter((id) => { const c = sc && (K.val(sc.choices) || []).find((x) => "#choice-" + x.id === id); return c && (c.combat || (K.leadsToFight && K.leadsToFight(c))); }); }, s.choices);
