@@ -216,12 +216,12 @@
     const body = o.broad ? "M50 46 L50 34 Q51 24 62 22 Q73 24 74 34 L74 46 Z"
       : "M50.5 46 L52 37 L54.5 37 L55.5 " + y1 + " L58 " + y1 + " L59 " + y2 + " L60.6 " + y2 + " Q62 " + (top - 2) + " 63.4 " + y2 + " L65 " + y2 + " L66 " + y1 + " L68.5 " + y1 + " L69.5 37 L72 37 L73.5 46 Z";
     const metal = o.white ? "#efe6cf" : GOLD;
-    const fanD = "M52 46 Q36 46 33 30 Q40 34 46 32 Q38 22 41 10 Q48 22 54 30 Q50 20 54 12 Q57 24 57 34 Z";
+    const fanD = "M52 46 Q38 47 34 37 Q40 39 45 37 Q38 31 40 24 Q47 31 52 34 Q50 28 53 23 Q57 30 57 36 Z"; // low, swept back: its tall points read as horns (owner, 5 November)
     const gems = (o.broad ? [[56, 38], [62, 34], [68, 38]] : [[62, 40], [62, 46 - 27 * tall], [56.5, 41], [67.5, 41]]).map(([x, y], i) => '<circle cx="' + x + '" cy="' + y + '" r="' + (i ? 1.5 : 2.4) + '" fill="' + (Array.isArray(gem) ? gem[i % gem.length] : gem) + '" stroke="#24120a" stroke-width=".7"/>').join("");
     const rib = o.white ? "#a8956a" : "#7a5418", tc = o.trim || "#b2432a";
     const fan = '<path d="' + fanD + '" fill="' + metal + '"' + OUT + "/>" +
-      '<path d="M51 44 Q41 42 37 33 M51.5 40 Q45 30 43.5 15 M54.6 36 Q54 26 54.6 16" fill="none" stroke="' + rib + '" stroke-width="0.9"/>' +
-      holeRow("M49 42.2 Q42.4 39.6 39.6 34", metal, 2.4, 1) + holeRow("M49.8 37.4 Q46 29 45.4 20", metal, 2.4, 1);
+      '<path d="M51 44 Q42 43 37 38.5 M51.5 40 Q45 34 42.5 26 M54.6 37 Q54 30 54 24.5" fill="none" stroke="' + rib + '" stroke-width="0.9"/>' +
+      holeRow("M49 42.2 Q43 40.6 40 38", metal, 2.4, 1) + holeRow("M49.8 38 Q46.5 32.5 45 28", metal, 2.4, 1);
     // The tiers, each outlined in the trim colour with a row of holes in it.
     const tiers = o.broad ? '<path d="M50 34 h24" stroke="' + tc + '" stroke-width="1.5"/>' + holeRow("M51.6 31 Q62 26.4 72.4 31", metal, 2.4, 1) + holeRow("M51.2 39 H72.8", metal, 2.6, 1)
       : '<path d="M51.9 37 h20.2 M55.5 ' + f2(y1) + " h13 M59 " + f2(y2) + ' h6" stroke="' + tc + '" stroke-width="1.5"/>' +

@@ -768,8 +768,10 @@
   // A champion comes on: a white flash, the edges darken, his name, and your line raises its shields.
   function champion() {
     if (!V) return;
-    const B = V.B, h = B.units.find((u) => u.side === "enemy" && u.hero && !u.away && u.hp > 0 && !V.champSeen.has(u.uid));
+    if (document.querySelector(".fbrief-wrap, .ftour")) { setTimeout(champion, 700); return; } // after the rules card and the tour, not under them (item 22)
+    const B = V.B, h = B.units.find((u) => u.side === "enemy" && (u.hero || u.person) && !u.away && u.hp > 0 && !V.champSeen.has(u.uid));
     if (!h) return;
+    if (K.Sound) K.Sound.play("drumCall");
     V.champSeen.add(h.uid);
     const c = $(".wd-champ", V.stage); if (!c) return;
     c.innerHTML = "<b>" + esc(K.text(h.src || h.name).split(",")[0]) + "</b><small>" + esc(T("A champion comes at the line")) + "</small>";

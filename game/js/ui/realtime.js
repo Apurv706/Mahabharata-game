@@ -81,6 +81,23 @@
     V.raf = requestAnimationFrame(loop);
   };
 
+  // ---------- A champion takes the field (item 22) ----------
+  // One of the epic's named fighters entering the fight: the fight slows, the edges darken, his name in gold with his title,
+  // a drum; then on. Once a champion a fight; quieter under Calm motion.
+  function champCheck(R) {
+    const seen = V.champSeen || (V.champSeen = new Set());
+    const h = R.B.units.find((u) => u.side === "enemy" && (u.person || u.hero) && u.hp > 0 && u.rt && u.rt.entered && !seen.has(u.uid));
+    if (!h) return;
+    R.B.units.forEach((u) => { if (u.side === "enemy" && (u.person || u.hero) && u.rt && u.rt.entered) seen.add(u.uid); });
+    const full = K.text(h.src || h.name), cut = full.indexOf(","), name = cut > 0 ? full.slice(0, cut) : full, title = cut > 0 ? full.slice(cut + 1).trim() : T("A champion takes the field");
+    const el = U.el('<div class="rt-champ" aria-live="assertive"><b>' + U.esc(name) + "</b><small>" + U.esc(title) + "</small></div>");
+    V.stage.appendChild(el); V.stage.classList.add("champ");
+    if (K.Sound) K.Sound.play("drumCall");
+    const calm = U.calm();
+    V.slowUntil = calm ? 0 : performance.now() + 1500;
+    setTimeout(() => { el.classList.add("off"); if (V && V.stage) V.stage.classList.remove("champ"); setTimeout(() => el.remove(), 500); }, calm ? 1200 : 1900);
+  }
+
   // ---------- The screen (the layout page's DOM) ----------
   function build() {
     const R = V.R, B = R.B, enc = B.enc;
@@ -212,6 +229,8 @@
     const el = U.el('<div class="actor ' + (u.side === "player" ? "me" : foe ? "foe" : "ally") + '" data-uid="' + u.uid + '" data-id="' + u.uid + '"><span class="shadow"></span><div class="fl">' +
       U.puppet(spec, { pose: U.motion() ? "live" : u.side === "player" ? "brace" : "stand", h: 200 }) + "</div>" + (u.side === "player" ? "" : '<span class="mini"><b></b></span>') + "</div>");
     V.world.appendChild(el);
+    // The health bar sits above the head: higher for a tall figure, and higher still over a crown (it crossed Ashwatthama's face).
+    { const tall = /^(crown|kirita|mukuta)$/.test(spec.headgear || "") ? 0.26 : spec.headgear === "crest" ? 0.12 : 0; el.style.setProperty("--barh", (1.04 * (spec.size || 1) + tall).toFixed(2)); }
     const svg = el.querySelector("svg.pp");
     const vb = (svg.getAttribute("viewBox") || "0 0 120 200").split(/[\s,]+/).map(Number);
     const bow = !!svg.querySelector('.it:not(.it-w) path[d="M50 86 L50 166"]');
@@ -385,6 +404,8 @@
       case "pause": return V.sheet === "pause" ? closeSheet() : sheet("pause");
       case "withdraw": return withdraw();
     }
+    if (a.indexOf("astra:") === 0) { if (V.sheet) closeSheet(); V.queue.astra = a.slice(6); return; } // one divine weapon, chosen by name (item 12)
+    if (a === "astra" && RT.astras().filter((x) => !x.why).length > 1 && V.sheet !== "aid") return sheet("aid"); // two or more ready: choose which
     if (V.sheet) closeSheet();
     if (a === "astra") { const ready = RT.astras().filter((x) => !x.why); if (!ready.length) return toast(K.tr(RT.astras()[0] ? RT.astras()[0].why || "Not ready yet" : "You were never given a divine weapon")); V.queue.astra = ready[0].id; return; }
     if (a === "spare") { const t = RT.spareable(R)[0]; if (t) V.queue.spare = t.uid; else if (C.spareable().length) toast(K.tr("Step closer to spare him")); return; }
@@ -430,7 +451,7 @@
       const el = $(".aid-sheet"), ast = RT.astras(), aReady = ast.find((x) => !x.why);
       const it = (k, label, note, off, key) => '<button type="button" data-aid="' + k + '"' + (off ? ' disabled aria-disabled="true"' : "") + "><b>" + U.esc(label) + "</b><small>" + U.esc(note) + "</small><kbd>" + key + "</kbd></button>";
       el.innerHTML = it("herbs", K.tr("Herbs"), K.tr("{n} left", { n: K.S.items.herbs || 0 }), !RT.can(R, "herbs"), "H") +
-        it("astra", K.tr(aReady ? aReady.name : "Divine weapon"), aReady ? K.tr("Divine weapon") : ast[0] ? (B_used(ast) ? K.tr("used") : ast[0].why || "") : K.tr("not given"), !aReady, "U") +
+        (ast.filter((x) => !x.why).length > 1 ? ast.filter((x) => x.id !== "astra" || !x.why).map((x) => it("astra:" + x.id, K.tr(x.name), x.why ? K.tr(x.why) : K.tr("Divine weapon"), !!x.why, "")).join("") : it("astra", K.tr(aReady ? aReady.name : "Divine weapon"), aReady ? K.tr("Divine weapon") : ast[0] ? (B_used(ast) ? K.tr("used") : ast[0].why || "") : K.tr("not given"), !aReady, "U")) + // two or more ready: one row each (item 12)
         (p.abilities.includes("call") ? it("call", K.tr("Call for help"), RT.can(R, "call") ? K.tr("once a fight") : K.tr("called"), !RT.can(R, "call"), "C") : "");
       el.querySelectorAll("[data-aid]").forEach((b) => (b.onclick = () => { closeSheet(); act(b.dataset.aid); }));
       resumeBtn(el); el.classList.add("compact"); placeDrop(el, $(".hb.aid")); dropTimer(el);
@@ -514,7 +535,8 @@
     if (C.state() && C.state() !== R.B && !R.over) return stop(); // another fight has begun (never in play; a guard)
     const dt = Math.min(0.1, V.last ? (now - V.last) / 1000 : 0); V.last = now;
     if (!V.paused && !V.briefing && !R.over) {
-      V.acc += dt;
+      champCheck(R);
+      V.acc += V.slowUntil && now < V.slowUntil ? dt * 0.3 : dt; // a champion's arrival: the fight slows for a moment
       while (V.acc >= RT.STEP && !R.over) { RT.step(R, input()); V.acc -= RT.STEP; }
     }
     draw();

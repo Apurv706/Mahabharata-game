@@ -4705,6 +4705,7 @@
     "Follow the smell of oil under the floor": "फ़र्श के नीचे तेल की गंध का पीछा करो",
     "Under the boards, oil lies in channels, running from Purochana's rooms to where the brothers sleep.": "तख़्तों के नीचे नालियों में तेल भरा है, जो पुरोचन के कमरों से वहाँ तक जाता है जहाँ भाई सोते हैं।",
     "At Varnavata you found oil pooled in channels under the floor of the house of lac.": "वारणावत में तुमने लाक्षागृह के फ़र्श के नीचे नालियों में भरा तेल देखा।",
+    "A champion takes the field": "एक महारथी मैदान में उतरा",
     "Whip ×2": "चाबुक ×2",
     "Space": "स्पेस",
     "Change lanes to miss what is in the road: up and down, or the buttons. Space cracks the whip.": "रास्ते की रुकावटों से बचने के लिए पंक्ति बदलो: ऊपर और नीचे, या बटन। स्पेस से चाबुक चलाओ।",
