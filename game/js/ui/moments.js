@@ -28,14 +28,14 @@
 
   // Everything one moment shows. Built from the record, so the card can be redrawn in any language.
   K.momentInfo = function (m, S = K.S) {
-    const who = m.who ? K.personName(m.who, S) : "";
+    // (the name in the current language only where a card shows it: a teacher moment's who is a teacher id, not a person)
     switch (m.kind) {
       case "friend": return { theme: "friend", title: ["A friend for life: {who}", { who: K.PEOPLE[m.who].name }], line: FRIEND_LINE[m.who] || "",
         art: PAINTED.friend.includes(m.who) ? "moment_friend_" + m.who : null, portrait: U.portraitKey(m.who), with: m.who };
       case "farewell": return { theme: "farewell", title: ["A friendship ends: {who}", { who: K.PEOPLE[m.who].name }], line: (K.FAREWELLS || {})[m.who] || "",
         art: PAINTED.friend.includes(m.who) ? "moment_friend_" + m.who : null, portrait: U.portraitKey(m.who), grey: true };
       case "teacher": return { theme: "milestone", title: ["Your teacher: {who}", { who: (K.TEACHERS[m.who] || {}).short || m.who }], line: TEACHER_LINE[m.who] || "", art: "moment_teacher" };
-      case "marriage": return { theme: "milestone", title: ["Married: {who}", { who: K.PEOPLE[m.who] ? K.PEOPLE[m.who].name : who }], line: "Seven steps around the fire, and the rest of your life to keep them.", art: "moment_marriage" };
+      case "marriage": return { theme: "milestone", title: ["Married: {who}", { who: K.PEOPLE[m.who] ? K.PEOPLE[m.who].name : (m.who ? K.personName(m.who, S) : "") }], line: "Seven steps around the fire, and the rest of your life to keep them.", art: "moment_marriage" };
       case "astra": {
         const g = (K.ASTRA_GIVERS || {})[m.from] || {}, A = m.which && K.ASTRAS && K.ASTRAS[m.which];
         return { theme: "astra", title: A ? ["The {name}", { name: A.name }] : "A divine weapon", line: g.cond ? ["Given by {who}, on one condition: “{cond}”", { who: g.who, cond: g.cond }] : "The mantra is yours now, and so is every place it lands.",
