@@ -511,7 +511,7 @@ const READ_RT = () => {
   const box = (sel) => { const e = V.el.querySelector(sel); if (!e || e.offsetParent === null) return null; const r = e.getBoundingClientRect(); return r.width ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null; };
   return {
     enc: V.encId, over: R.over, sheet: V.sheet, briefing: !!V.briefing, tour: !!V.el.querySelector(".tc-skip"), brief: !!V.el.querySelector(".fb-go"), written: !!V.el.querySelector(".written .go"),
-    hp: p ? p.hp / p.maxHp : 0, x: p ? p.rt.x : 0, reach: p ? p.rt.reach : 0, blocker: !!R.blocker, t: R.t,
+    hp: p ? p.hp / p.maxHp : 0, x: p ? p.rt.x : 0, reach: p ? p.rt.reach : 0, weapon: p ? p.rt.weapon : null, shoot: RT.SHOOT, blocker: !!R.blocker, t: R.t,
     near: near ? { uid: near.uid, x: near.rt.x, d: near.rt.x - p.rt.x } : null, foes: foes.length,
     threat: th.length ? Math.min(...th.map((t) => t.land - R.t)) : null,
     canRoll: RT.can(R, "roll"), canBlock: RT.can(R, "block"), canSkill: RT.can(R, "skill"), canHerbs: RT.can(R, "herbs"), canCall: RT.can(R, "call"),
@@ -578,6 +578,14 @@ async function rtFight(pg, cdp, L, R, o, tap, clash) {
     if (s.canSkill && R() < 0.15) { await press("skill", s.btn.skill, "l"); await sleep(250); continue; }
     if (!s.near) { await release(); await sleep(200); continue; }
     const d = s.near.d, ad = Math.abs(d);
+    // An archer shoots from where it stands: its arrows fly most of the field (RT.SHOOT), so a person does not walk up to
+    // sword distance first (owner, 6 November: "should we make archers stronger?" -- the test was playing them like a
+    // swordsman). A foe right on top of you: a step or two back first, now and then, as a person would.
+    if (s.weapon === "bow") {
+      if (ad < 0.15 && R() < 0.5) { const k = d > 0 ? "l" : "r"; await hold(k, s.btn[k]); await sleep(200 + R() * 150); await release(); F.used.push("back off"); continue; }
+      if (ad <= s.shoot * 0.85) { await release(); await press("strike", s.btn.strike, "j"); await sleep(220 + R() * 260); continue; }
+      const k = d > 0 ? "r" : "l"; await hold(k, s.btn[k]); await sleep(160); continue;
+    }
     if (ad <= s.reach * 0.92 || s.foes && ad < 0.06) {
       await release();
       if (!o.touch && R() < 0.3) { // a click on the foe
