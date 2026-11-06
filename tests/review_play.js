@@ -601,6 +601,7 @@ async function rtFight(pg, cdp, L, R, o, tap, clash) {
     for (let i = 0; i < 30 && (await pg.evaluate(() => !!K.UI.rtScreen())); i++) { await sleep(300); const w = await pg.$("#rt .written .go, #rt [data-accept]"); if (w) await w.click().catch(() => {}); }
   }
   F.out = await outOf(pg, F.enc);
+  F.scene = L.scenes[L.scenes.length - 1] || null; // (the page it was fought from: which day of the war)
   L.fights.push(F);
 }
 async function sheetAid(pg, o, what, s, F) {
@@ -655,6 +656,7 @@ async function warDay(pg, cdp, L, R, o, tap) {
   }
   if (await pg.evaluate(() => !!K.UI.warScreen())) { L.bad.push("the war day " + F.enc + " did not end in 600 s of play"); await shot(pg, L, "war-long-" + F.enc); }
   F.out = await outOf(pg, F.enc); F.rounds = rounds;
+  F.scene = L.scenes[L.scenes.length - 1] || null; // (the page it was fought from: which day of the war)
   L.fights.push(F);
 }
 
