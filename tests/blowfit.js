@@ -89,12 +89,14 @@ srv.listen(0, async () => {
     await ctx.close();
   }
   // The war-day screen (ui/warday.js): blows struck across the gap land on the body, the shield or the weapon too.
+  // (Since Build B a war day's blows are fought in the real-time clash after your move, measured above as real time; the
+  // war-day screen strikes its own blows with Fights: turn-based, so that is set here.)
   for (const dev of DEVICES) {
     const ctx = await b.newContext({ viewport: { width: dev.w, height: dev.h }, deviceScaleFactor: dev.mobile ? 2 : 1, isMobile: dev.mobile, hasTouch: dev.mobile });
     const pg = await ctx.newPage(); const errs = []; pg.on("pageerror", (e) => errs.push(e.message));
     await pg.route(/fonts\.(googleapis|gstatic)/, (r) => r.abort());
     await pg.goto("http://localhost:" + port + "/index.html?rt=1"); await pg.waitForTimeout(400);
-    await pg.evaluate(() => { const S = K.S = Object.assign(K.newLife(), { name: "Ira", pronoun: "she", origin: "panchala", age: 30, act: 6, path: "mace", side: "pandava", teacher: "drona" }); S.attrs.might = 3; S.attrs.grace = 3; S.flags.push("role_front"); S.briefed = ["duel", "melee", "hold", "rounds"]; S.fightTour = 1; K.seed(3); K.UI.startBattle("e_ring", () => {}); });
+    await pg.evaluate(() => { const S = K.S = Object.assign(K.newLife(), { name: "Ira", pronoun: "she", origin: "panchala", age: 30, act: 6, path: "mace", side: "pandava", teacher: "drona" }); S.attrs.might = 3; S.attrs.grace = 3; S.flags.push("role_front"); S.briefed = ["duel", "melee", "hold", "rounds"]; S.fightTour = 1; K.prefs({ fights: "turns" }); K.seed(3); K.UI.startBattle("e_ring", () => {}); });
     await pg.waitForTimeout(2600);
     await pg.evaluate(() => { const b = document.querySelector('#rt [data-place="front"]'); if (b) b.click(); }); await pg.waitForTimeout(800);
     for (let i = 0; i < 8; i++) { await pg.evaluate(() => { const p = K.Combat.player(); if (p) { p.maxHp = Math.max(p.maxHp, 9999); p.hp = p.maxHp; } K.Combat.state().units.forEach((u) => { if (u.side === "enemy") u.hp = Math.max(u.hp, u.maxHp * 0.6); }); const b = document.querySelector('#rt [data-move="strike"]:not([disabled])') || document.querySelector("#rt [data-move]:not([disabled])"); if (b) b.click(); }); await pg.waitForTimeout(1800); }
