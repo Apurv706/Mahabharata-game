@@ -165,7 +165,7 @@
     // ---------- Threads: Ugra at the tournament ----------
     {
       id: "ep_ugra_tournament", act: 2, age: 17, away: true, when: (S) => ugraMet(S) && !S.dead.includes("ugra"), skipTo: "a2_tournament", next: "a2_tournament",
-      art: art("scene_tournament_crowd"), place: "Tournament grounds, Hastinapura", caption: "The morning before the princes' tournament",
+      art: "stage_tournament_arena", place: "Tournament grounds, Hastinapura", caption: "The morning before the princes' tournament", // the arena the bout is fought in (owner, 5 November: not the procession)
       title: "The miller's son, again",
       body: (S) => [
         "Among the village levies at the tournament grounds is Ugra, the miller's son.",

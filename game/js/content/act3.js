@@ -84,8 +84,10 @@
         "He means to light them tonight."],
       choices: [
         { id: "cut", t: "Cut the oil lines", game: "fuse", hint: "A test of stealth",
-          trial: { attr: "grace", skill: "stealth", stage: "stage_lac_cellar", lines: 3, secs: 32, verb: "Cut",
+          trial: { attr: "grace", skill: "stealth", stage: "stage_lac_cellar", lines: 3, secs: 48, verb: "Cut",
             rules: "Hold to cut a line while the light is away; let go in the light. Cut two of three.",
+            howto: ["Tap an oil line to choose it. Cut two of the three.", "Hold Cut while the lamp is at either end.",
+              "Let go when its light falls on the lines: Cut turns gold just before. Seen twice, and you must leave."],
             stakes: ["Every line cut slows the fire tonight, and the Pandavas will owe you.", "The guard sends you up the stairs with the lines whole. The fire will run as fast as Purochana meant it to."] },
           win: { fx: { flag: ["cut_fuses", "bhima_debt"], bond: { yudhishthira: 1, bhima: 1 }, journal: "On the last night at Varnavata you cut Purochana's oil lines in the cellar." }, text: "The oil runs out across the stone and soaks into the earth. Upstairs, someone turns over in their sleep." },
           close: { fx: { flag: ["cut_fuses", "bhima_debt"] }, text: "One line parts before the lamp comes back for good. It will have to be enough." },
@@ -101,7 +103,7 @@
     // those outside can run in. The epic has written who dies here: a Nishada woman and her five
     // sons, and Purochana. A failed escape is death: the first failure is survived, burnt, with one more try.
     {
-      id: "a3_fire", act: 3, age: 23, canon: true, art: "scene_lac_fire", afterClip: "scene_lac", fx: "fire", place: "Varnavata", plate: ["#e5872e", "#2a1c1f"], caption: "The house of lac, burning",
+      id: "a3_fire", act: 3, age: 23, canon: true, art: "scene_lac_fire", liveArt: "scene_lac", fx: "fire", place: "Varnavata", plate: ["#e5872e", "#2a1c1f"], caption: "The house of lac, burning",
       title: "The night of the fire",
       witness: ["The house of lac burns. The Pandavas escape through the tunnel, and Purochana dies in his own fire."],
       body: (S) => [
@@ -113,6 +115,9 @@
         { id: "run", t: (S) => (INSIDE(S) ? "Get to the tunnel" : "Run in to get people out"), game: "escape",
           trial: { attr: "grace", skill: "stealth", stage: "stage_lac_fire_top", start: (S) => (INSIDE(S) ? (S.flags.includes("tried_nishada") ? "deep" : "hall") : "door"), auto: 0.7,
             rules: "Reach the tunnel in the storeroom before the fire. Hold to force stuck doors.",
+            howto: ["Tap a room beside you to move. Red rooms are burning.",
+              "A brown bar is a stuck door: hold the room past it, or tap three times.",
+              "Reach the tunnel, bottom left, before the fire. To carry a sleeper, stand on them and hold Wake; it slows you."],
             stakes: ["You reach the tunnel, and whoever you carried comes with you.", "The fire catches you in the house. You may get one more chance, and no more."] },
           retryStakes: ["You reach the tunnel, and whoever you carried comes with you.", "The fire catches you again, and this time it does not let go."],
           retryText: "The smoke takes your legs. You come to on the floor with your sleeve burning and the roof still up. You crawl. There is still a way to the storeroom, for a little longer.",

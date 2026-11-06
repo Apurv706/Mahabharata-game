@@ -346,6 +346,12 @@ html.calm .bmap .m-ring, html.calm .journey { animation: none; }
 .stakes .win b { color: var(--positive); }
 .stakes .lose b { color: var(--negative); }
 .trial-stats { margin: 0; font-size: 14px; color: var(--muted); }
+/* A how-to card (trial.howto, trials.js): a small picture of the game beside its numbered steps (owner, 5 November). */
+.trial .howto { display: grid; grid-template-columns: 92px 1fr; gap: 6px 14px; align-items: start; margin: 0; padding: 10px 12px; border-radius: 12px; background: rgba(0, 0, 0, .2); border: 1px solid var(--gold-line); }
+.trial .howto-h { grid-column: 1 / -1; margin: 0; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--data); }
+.trial .howto-pic svg { display: block; width: 92px; height: auto; }
+.trial .howto ol { margin: 0; padding-left: 1.15em; display: grid; gap: 4px; font-size: 14.5px; line-height: 1.38; }
+@media (max-width: 400px) { .trial .howto { grid-template-columns: 64px 1fr; gap: 4px 10px; } .trial .howto-pic svg { width: 64px; } .trial .howto ol { font-size: 13.5px; } }
 .trial .score { margin: 0; font-size: 15px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .trial .game-note { margin: 0; min-height: 1.4em; font-size: 16px; color: var(--ink); }
 .trial-press { min-height: 68px; min-width: min(280px, 100%); font-size: 21px; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
@@ -1184,6 +1190,7 @@ body.intest .backdrop::after { background: linear-gradient(to bottom, rgba(16, 6
 /* Before it starts: the rules and stakes, a card over the scene. */
 .trial.immersive:not(.playing):not(.done) > .trial-body { margin: auto; width: min(460px, 100%); padding: 20px 20px 18px; border-radius: 16px; background: rgba(var(--surface-rgb), 0.86); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--gold-line); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); align-self: center; } /* taste-skill-ignore: the card floats over the scene */
 .trial.immersive:not(.playing):not(.done) > .trial-body .btnrow { margin-top: 4px; }
+.trial.immersive:not(.playing):not(.done) > .trial-body { max-height: 100%; overflow-y: auto; overscroll-behavior: contain; } /* a tall card scrolls on a small phone; Begin is never out of reach */
 .trial.immersive:not(.playing):not(.done) > .cast { padding-bottom: max(16px, var(--sab)); }
 /* The outcome, large over the scene. */
 .t-result { position: fixed; inset: 0; z-index: 4; display: grid; place-items: center; pointer-events: none; }
@@ -1277,6 +1284,19 @@ body.intest .leaf .text { background: none !important; }
 /* The drill: a sword's length apart. The post: in reach of your mace. */
 .trial.immersive.trial-push > .cast.face-drill .actor.foe { margin-left: calc(var(--F) * 0.21); }
 .trial.immersive.trial-push > .cast.face-post .actor.prop { margin-left: calc(var(--F) * 0.02); }
+/* The post in the beat test (Kripa's way of breaking it): sized and placed as in the timing test; it rocks at a clean
+   blow and splits at a win (play.js). */
+.trial.immersive.trial-rhythm:has(> .cast.face-post) { --F: clamp(150px, 30vh, 300px); }
+.trial.immersive.trial-rhythm > .cast.face-post { justify-content: center; gap: 0; } /* in reach of your mace, as in the timing test */
+.trial.immersive.trial-rhythm > .cast.face-post .actor svg { height: var(--F); }
+.trial.immersive.trial-rhythm > .cast.face-post .actor.prop { margin-left: calc(var(--F) * 0.02); z-index: 2; }
+.cast .actor.prop.post svg.struck { animation: post-struck .32s ease-out; }
+@keyframes post-struck { 30% { transform: rotate(2.4deg); } 65% { transform: rotate(-1.2deg); } 100% { transform: none; } }
+.cast .actor.prop.post svg .pl, .cast .actor.prop.post svg .pr { transition: transform .9s cubic-bezier(.55, 0, .9, .4); }
+.cast .actor.prop.post svg.split .pl { transform: rotate(-14deg); transform-origin: 16px 200px; }
+.cast .actor.prop.post svg.split .pr { transform: rotate(16deg); transform-origin: 46px 200px; }
+.cast .actor.prop.post svg.split .ropes, .cast .actor.prop.post svg.split .cracks { opacity: 0; transition: opacity .3s; }
+html.calm .cast .actor.prop.post svg.struck { animation: none; } html.calm .cast .actor.prop.post svg .pl, html.calm .cast .actor.prop.post svg .pr { transition: none; } /* the game's own calm setting */
 /* The gate: your shoulder to the leaf, the raiders beyond it and a little smaller. */
 .trial.immersive.trial-push > .cast.face-gate .actor.prop { margin-left: calc(var(--F) * -0.18); }
 .trial.immersive.trial-push > .cast.face-gate .actor.prop svg { height: calc(var(--F) * 0.88); }
@@ -1754,7 +1774,13 @@ svg .pr-hint { outline: none; filter: drop-shadow(0 0 6px #ffd680) drop-shadow(0
 .trial.immersive .fuse-btns .trial-press { width: min(100%, 420px); justify-self: center; }
 .laccellar .floor { fill: rgba(20, 12, 6, .5); stroke: #c9a06a; stroke-width: .6; }
 .laccellar .lamp { fill: #ffd680; filter: drop-shadow(0 0 6px rgba(255, 214, 128, .9)); }
-.laccellar .light { fill: rgba(255, 200, 120, .16); }
+.laccellar .light { fill: rgba(255, 200, 120, .07); transition: fill .15s; }
+.laccellar .light.soon { fill: rgba(255, 200, 120, .16); }
+.laccellar .light.on { fill: rgba(255, 214, 140, .36); } /* the light is on the lines: Cut is seen (owner, 5 November) */
+.fuse-btns .trial-press { transition: background-color .15s, box-shadow .15s; }
+.fuse-btns .trial-press.dark { box-shadow: 0 0 0 3px rgba(120, 200, 120, .55); }
+.fuse-btns .trial-press.soon { box-shadow: 0 0 0 3px rgba(255, 196, 80, .9); }
+.fuse-btns .trial-press.lit { background-color: #8a4a30; box-shadow: 0 0 0 3px rgba(230, 90, 60, .8); }
 .laccellar .oil { fill: none; stroke: #6b4a2a; stroke-width: 2.2; stroke-linecap: round; cursor: pointer; }
 .laccellar .oil.chosen { stroke: #ffb04a; filter: drop-shadow(0 0 3px rgba(255, 176, 74, .8)); }
 .laccellar .oil.cut { stroke: #5a4a3a; stroke-dasharray: 3 3; opacity: .6; }
@@ -2130,3 +2156,15 @@ html.calm .fmode { transition: none; }
 .fm-best.new { color: var(--accent); font-weight: 600; }
 .fm-score { margin: 0; font-size: 20px; }
 .fmode .btnrow { justify-content: center; }
+/* A champion takes the field on the older fight screen (battle.js champArrive, item 22): his name in gold over the arena,
+   the edges darkened, for about two seconds. */
+.b-champ { position: fixed; inset: 0; z-index: 60; display: grid; align-content: start; justify-items: center; gap: 4px; padding: 13vh 16px 0; text-align: center; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 30%, transparent 40%, rgba(10, 6, 3, 0.72) 100%); animation: b-champ 2.2s ease both; }
+.b-champ.off { opacity: 0; transition: opacity .4s ease; }
+.b-champ b { font: 700 clamp(28px, 7.5vw, 50px)/1.15 var(--display); color: #fff3d6; text-shadow: 0 3px 12px rgba(0, 0, 0, 0.9), 0 0 22px rgba(255, 170, 80, 0.55); }
+html[lang="hi"] .b-champ b { line-height: 1.35; }
+.b-champ small { font: 600 clamp(13px, 3.4vw, 16px)/1.3 var(--text); color: #f3d48d; text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9); letter-spacing: .04em; }
+@keyframes b-champ { 0% { opacity: 0; } 12% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 1; } }
+.b-champ b { animation: b-champ-name 2.2s ease both; } @keyframes b-champ-name { 0% { transform: translateY(8px) scale(0.96); } 15% { transform: none; } }
+.arena .actor.champ-in svg { animation: champ-in 0.9s ease-out; } @keyframes champ-in { 0% { filter: drop-shadow(0 0 0 rgba(255, 190, 90, 0)); } 30% { filter: drop-shadow(0 0 18px rgba(255, 190, 90, 0.95)); } 100% { filter: none; } }
+html.calm .b-champ, html.calm .b-champ b, html.calm .arena .actor.champ-in svg { animation: none; }

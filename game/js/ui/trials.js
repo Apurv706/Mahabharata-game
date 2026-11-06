@@ -81,7 +81,10 @@
     function intro() {
       host.innerHTML =
         (t.practice ? '<p class="trial-practice">' + U.tr("A first test. This one does not count; it shows you how tests work.") + "</p>" : "") +
-        '<p class="game-rules">' + U.t(K.val(t.rules)) + "</p>" +
+        (t.howto ? "" : '<p class="game-rules">' + U.t(K.val(t.rules)) + "</p>") +
+        // trial.howto: numbered steps beside a small picture of the game (U.HOWTO_PIC), read before the clock starts (owner, 5 November)
+        (t.howto ? '<div class="howto"><p class="howto-h">' + U.tr("How to play") + "</p>" + (U.HOWTO_PIC && U.HOWTO_PIC[kind] ? '<div class="howto-pic" aria-hidden="true">' + U.HOWTO_PIC[kind] + "</div>" : "") +
+          "<ol>" + K.val(t.howto).map((s) => "<li>" + U.t(K.val(s)) + "</li>").join("") + "</ol></div>" : "") +
         (typeof t.brief === "function" ? t.brief() : "") +
         (t.stakes ? '<ul class="stakes"><li class="win"><b>' + U.tr("If you succeed") + "</b> " + U.t(K.val(t.stakes[0])) + '</li><li class="lose"><b>' + U.tr("If you fail") + "</b> " + U.t(K.val(t.stakes[1])) + "</li></ul>" : "") +
         (t.attr || t.skill ? '<p class="trial-stats">' + U.tr("Helped by your {what}: {n}. The higher, the easier.", { what: statNames(t), n: power }) + "</p>" : "") +

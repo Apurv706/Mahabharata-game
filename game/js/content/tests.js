@@ -199,7 +199,7 @@
       lose: { fx: {}, text: "Your arms are shaking. The post has two dents in it, and it is laughing at you." },
       retryLose: { penalty: 1, fx: { flag: "post_twice" }, text: "The post stands, and your hands are bleeding. Maybe the mace is not for you." } },
     mace_beat: { t: "Break the practice post", req: { path: "mace", teacher: "kripa" }, game: "rhythm", hint: "A test of strength",
-      trial: Object.assign({}, POST, { verb: "Strike", bpm: 86, tally: "Clean blows: {h} · Missed: {m} · {left} to go", clean: "The post cracks!", okLine: "A solid blow.", soon: "Too soon.", late: "Too late.",
+      trial: Object.assign({}, POST, { verb: "Strike", face: "post", bpm: 86, tally: "Clean blows: {h} · Missed: {m} · {left} to go", clean: "The post cracks!", okLine: "A solid blow.", soon: "Too soon.", late: "Too late.",
         rules: "Strike the post on every beat, to the end.",
         stakes: ["The post splits, and the younger students stare.", "The post stands. You may try again tomorrow."] }),
       retryStakes: ["The post splits, and the younger students stare.", "The post stands again, and you must choose another path. It counts as two failures, and it will weigh on every mace test to come."],

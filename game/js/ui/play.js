@@ -111,6 +111,15 @@
       const tally = () => { score.textContent = K.tr(t.tally || "On the beat: {h} · Missed: {m} · {left} to go", { h: hits, m: misses, left: notes.filter((n) => !n.done).length }); };
       tally();
       const flash = (cls) => { lane.classList.remove("good", "bad"); void lane.offsetWidth; lane.classList.add(cls); };
+      // The practice post (trial.face "post", drawn by U.castBand): each clean blow rocks it and the cracks open as
+      // the blows add up; at a win it splits.
+      const trialEl = host.closest(".trial"), post = trialEl && trialEl.querySelector(".cast .actor.prop.post svg");
+      const struck = () => {
+        if (!post) return;
+        post.classList.remove("struck"); void post.getBoundingClientRect(); post.classList.add("struck");
+        const k = Math.min(3, Math.floor((hits / Math.ceil(total * 0.8)) * 3));
+        for (let i = 1; i <= k; i++) { const cr = post.querySelector(".c" + i); if (cr) cr.setAttribute("opacity", 1); }
+      };
       const strike = () => {
         cue("act");
         // The nearest beat not yet played.
@@ -118,7 +127,7 @@
         for (const n of notes) if (!n.done) { const x = Math.abs(n.at - now); if (x < d) { d = x; best = n; } }
         if (best && d <= win) {
           best.done = true; best.el.classList.add("hit"); hits++;
-          sfx(t.sound || "drum"); flash("good"); cue("good");
+          sfx(t.sound || "drum"); flash("good"); cue("good"); struck();
           note.textContent = K.tr(d <= win / 2 ? t.clean || "Clean!" : t.okLine || "On the beat.");
         } else if (!best || d > 0.32) {
           strays++; flash("bad"); note.textContent = K.tr("Nothing there."); // a stroke on empty air costs a little
@@ -141,6 +150,7 @@
         }
         if (s >= end) {
           const acc = hits / total;
+          if (post && acc >= 0.8) post.classList.add("split");
           finish(acc >= 0.8 ? "win" : acc >= 0.6 ? "close" : "lose", ["{h} of {n} beats.", { h: hits, n: total }]);
         }
       }, host);

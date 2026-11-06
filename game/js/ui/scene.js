@@ -22,7 +22,10 @@
     // The prologue is a dream of the war, years ahead: no age, so the childhood that follows reads as now.
     U.where("<b>" + U.t(K.val(sc.actTitle) || K.ACT_TITLES[S.act] || "") + "</b><span>" + (sc.prologue ? U.tr("Years from now") : U.tr("Age {n}", { n: S.age })) + " · " + U.t(K.val(sc.place) || "") + "</span>");
   }
-  function artFor(sc) {
+  function artFor(sc, opening) {
+    // sc.liveArt: a clip that plays in the picture when the page opens (the house of lac catching fire, owner 5 November).
+    // Where video cannot play, and once the choice is made, the scene's own painting.
+    if (opening && sc.liveArt && U.hasVideo(sc.liveArt) && U.living()) return sc.liveArt;
     const a = K.val(sc.art);
     // The charioteer family's Champa years use Anga's painting.
     if (a === "origin") return K.S.origin === "suta" && !K.S.flags.includes("moved_capital") ? "home_anga" : "home_" + K.S.origin;
@@ -92,7 +95,8 @@
     const witness = K.val(sc.witness);
     const leaf = U.$("leaf");
     leaf.className = "leaf split";
-    leaf.innerHTML = U.plate({ art: artFor(sc), still: !!(sc.clipAfter || sc.still), grad: sc.plate, caption: K.val(sc.caption), tag, tagText, heading: K.val(sc.title) }) +
+    const liveArt = sc.liveArt && artFor(sc, true) === sc.liveArt;
+    leaf.innerHTML = U.plate({ art: artFor(sc, true), still: !!(sc.clipAfter || sc.still || liveArt), grad: sc.plate, caption: K.val(sc.caption), tag, tagText, heading: K.val(sc.title) }) +
       '<div class="text"><div class="story" id="story" tabindex="0">' +
       (witness ? '<div class="witness"><div class="lbl">' + U.tr("As it is written") + "</div>" + U.blocks(witness) + "</div>" : "") +
       (S.loopThen && S.loopThen.scene === sc.id ? '<p class="aside loopnote">' + U.tr("You are back at the same choice. One way is closed to you now.") + "</p>" : "") +
@@ -168,6 +172,7 @@
       settledFor = sc.id; U.settled = true;
       setTimeout(() => U.fitBackdrop(), U.motion() ? 450 : 0);
     }, again);
+    if (liveArt) U.addClip(); // the clip starts with the page, not under the title cards before it
     U.livePlay();
     if (U.playMoments && K.momentQueue && K.momentQueue.length) U.playMoments();
     // The paintings this scene's choices lead to, loaded while the player reads.
@@ -351,7 +356,9 @@
   // painting has a clip: the house of lac burning has embers even where clips cannot play.
   function storyFx(sc, kind, art) {
     kind = kind || K.val(sc.fx);
-    if (kind && U.stageFx) U.stageFx.start(art || artFor(sc), kind, { story: true, at: FX_AT[art || artFor(sc)] });
+    const a = art || artFor(sc, true);
+    if (sc.liveArt && a === sc.liveArt) return; // the clip has its own fire
+    if (kind && U.stageFx) U.stageFx.start(a, kind, { story: true, at: FX_AT[a] });
   }
   // Where in each painting its effect rises from: the burning wing of the lac house; the ashes at dawn.
   const FX_AT = { scene_lac_fire: [0.12, 0.66, 0.18, 0.62], scene_lac: [0.15, 0.85, 0.2, 0.6], end_fire: [0.3, 0.8, 0.35, 0.7] };
@@ -362,8 +369,8 @@
     // sc.clip: a clip that opens the scene full-screen before its own painting takes over (the
     // lac house catching fire, before the night of the fire is told).
     const clip = o.art === undefined && sc.clip && U.hasVideo(sc.clip) && U.living() ? sc.clip : null;
-    const bgKey = o.art !== undefined ? o.art : clip || artFor(sc) || null;
-    U.setBackdrop(bgKey, { still: !!(sc.clipAfter || sc.still) });
+    const bgKey = o.art !== undefined ? o.art : clip || artFor(sc, true) || null;
+    U.setBackdrop(bgKey, { still: !!(sc.clipAfter || sc.still || (sc.liveArt && bgKey === sc.liveArt)) }); // (a liveArt clip waits for the page)
     storyFx(sc, o.fx, bgKey);
     const leaf = U.$("leaf");
     leaf.className = "leaf"; leaf.innerHTML = "";
@@ -579,7 +586,7 @@
     U.finalTop = U.leafTop();
     if (U.preloadMoments) U.preloadMoments(); // a moment this choice earned: its painting on its way now
     U.setBackdrop(artFor(sc), { still: !!(sc.clipAfter || sc.still) });
-    storyFx(sc);
+    storyFx(sc, null, artFor(sc));
     // A clip that shows what happens after the choice (the fire) plays now.
     if (sc.clipAfter && res.after) U.addClip();
     // sc.afterClip: a clip that closes the scene once its outcome is told (the house of lac burning, owner 5 November);

@@ -91,7 +91,8 @@
   U.castBand = function (t, kind) {
     if (!t || !t.stage || !K.puppetSpec) return "";
     const info = U.stageInfo(t.stage);
-    const face = kind === "push" && FACES[t.face] ? t.face : null, fc = face ? FACES[face] : null;
+    // (The post also stands in the beat test, Kripa's way of breaking it: owner, 5 November, it was missing.)
+    const face = (kind === "push" || (kind === "rhythm" && t.face === "post")) && FACES[t.face] ? t.face : null, fc = face ? FACES[face] : null;
     const spec = Object.assign({}, K.puppetSpec(K.S));
     if (t.item !== undefined) spec.item = t.item;
     else if (fc) spec.item = fc.me;

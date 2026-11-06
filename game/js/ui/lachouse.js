@@ -24,6 +24,26 @@
   // tall) for the escape; the cellar (stage_lac_cellar, a 3:1 strip and tall) for the fuse; the
   // house burning (scene_lac_fire) for the scene; the burnt house at dawn (end_fire) for the ending.
 
+  // The small pictures on the how-to cards (trial.howto, trials.js): the house with the fire, you, a stuck door and the
+  // way to the tunnel; the cellar with the lamp at one end, its light off the lines, and a line being cut.
+  U.HOWTO_PIC = {
+    escape: '<svg viewBox="0 0 50 50">' + (() => {
+      let s = "";
+      for (let r = 0; r < 5; r++) for (let c = 0; c < 5; c++) { const f = (c === 4 && r < 2) || (c === 3 && r === 0); s += '<rect x="' + (c * 10 + 0.6) + '" y="' + (r * 10 + 0.6) + '" width="8.8" height="8.8" rx="1" fill="' + (f ? "#c0472f" : "rgba(30,18,10,.55)") + '" stroke="' + (f ? "#ffb04a" : "#c9a06a") + '" stroke-width=".5"/>'; }
+      return s + '<path d="M25 5 V25 H5 V45" fill="none" stroke="#ffd680" stroke-width="1.2" stroke-dasharray="1.6 1.6"/>' +
+        '<line x1="2.5" y1="30" x2="7.5" y2="30" stroke="#8a5a2a" stroke-width="2"/>' + // the stuck door on the way
+        '<ellipse cx="5" cy="45" rx="3.2" ry="2.2" fill="#120a06" stroke="#f3d9a4" stroke-width=".7"/>' +
+        '<path d="M43 9 Q43 3 45 1.5 Q46 4 47 3.5 Q48 6 48 9Z" fill="#ffd27a"/>' +
+        '<circle cx="25" cy="5" r="2.6" fill="#3b6fb0" stroke="#fff1cf" stroke-width=".7"/>';
+    })() + "</svg>",
+    fuse: '<svg viewBox="0 0 100 64"><rect x="2" y="2" width="96" height="60" rx="3" fill="rgba(20,12,6,.6)" stroke="#c9a06a" stroke-width=".8"/>' +
+      '<ellipse cx="12" cy="32" rx="11" ry="30" fill="rgba(255,200,120,.22)"/><circle cx="12" cy="6" r="3.4" fill="#ffd680"/>' +
+      '<path d="M90 32 C78 32 72 12 58 12 S30 10 22 11" fill="none" stroke="#6b4a2a" stroke-width="2.2" stroke-linecap="round"/>' +
+      '<path d="M90 32 C76 33 68 32 54 32 S30 33 22 32" fill="none" stroke="#ffb04a" stroke-width="2.6" stroke-linecap="round"/>' +
+      '<path d="M90 32 C80 36 70 52 54 52 S30 54 22 53" fill="none" stroke="#6b4a2a" stroke-width="2.2" stroke-linecap="round"/>' +
+      '<circle cx="60" cy="32" r="3" fill="#fff1cf" stroke="#ffb04a" stroke-width=".8"/><circle cx="90" cy="32" r="3.4" fill="#c0472f"/></svg>'
+  };
+
   // ---------- The house, as a plan ----------
   // 5 columns by 5 rows of rooms; walls are listed as door-less edges. Purochana's room (the
   // fire-point) is top right, the tunnel mouth bottom left under the floor of the storeroom.
@@ -51,7 +71,8 @@
       // The fire spreads one room every few seconds: a little slower for a quick, calm player, and
       // slower again for every oil line cut in the cellar.
       // (Tuned so a straight run is safe, and carrying the sleepers out is the gamble.)
-      const spread = clamp(1.4 + power * 0.04, 1.4, 1.75) + 0.3 * Math.min(3, fuses);
+      // (Half as slow again on 5 November: the owner found it near impossible on a phone.)
+      const spread = (clamp(1.4 + power * 0.04, 1.4, 1.75) + 0.3 * Math.min(3, fuses)) * 1.5;
       const fire = new Set([at(4, 0)]), smoke = new Set();
       const tunnel = at(0, 4), fireAt = at(4, 0);
       const start = K.val(t.start, S);
@@ -192,10 +213,12 @@
   };
 
   // ---------- Fuse: the cellar ----------
-  // trial: { lines: 3, secs: 32 }. Choose a line (tap it, or 1–3), hold Cut while the lamp is away.
+  // trial: { lines: 3, secs: 48 }. Choose a line (tap it, or 1–3), hold Cut while the lamp is away.
+  // The light shows bright on the lines only while it is on them (when Cut would be seen), and the Cut button warns
+  // a moment before it comes (owner, 5 November: it was near impossible to tell when it was safe).
   U.games.fuse = function (box, done, c) {
     return U.trialFrame(box, done, c, "fuse", ({ host, power, t, finish, cue }) => {
-      const n = t.lines || 3, total = t.secs || 32;
+      const n = t.lines || 3, total = t.secs || 48;
       const cutTime = clamp(2.4 - power * 0.08, 1.6, 2.4); // seconds of held, unlit time to cut a line
       // The three oil lines, from the fire-point (right) to the sleeping rooms (left), as paths in a 100×100 plan.
       const LINES = [
@@ -210,9 +233,12 @@
       const svg = host.querySelector("svg"), score = host.querySelector(".score"), note = host.querySelector(".game-note"), clock = U.countdown(host), row = host.querySelector(".btnrow");
       const say = (txt, v) => { note.textContent = K.tr(txt, v); };
       const lit = () => Math.abs(lampX - 50) < 22; // the lamp's light falls across the middle of the cellar, where the lines run
+      // The light comes within half a second: the lamp heading for the middle and nearly there.
+      const soon = () => !lit() && lampDir === Math.sign(50 - lampX) && (Math.abs(lampX - 50) - 22) / 22 < 0.5;
+      let wasSoon = false, cutBtn = null;
       function draw() {
         let s = '<rect class="floor" x="2" y="2" width="96" height="96"/>';
-        s += '<circle class="lamp" cx="' + lampX.toFixed(1) + '" cy="6" r="4"/><ellipse class="light" cx="' + lampX.toFixed(1) + '" cy="50" rx="18" ry="60"/>';
+        s += '<circle class="lamp" cx="' + lampX.toFixed(1) + '" cy="6" r="4"/><ellipse class="light' + (lit() ? " on" : soon() ? " soon" : "") + '" cx="' + lampX.toFixed(1) + '" cy="50" rx="18" ry="60"/>';
         LINES.forEach((L, i) => {
           s += '<path class="oil' + (i === chosen ? " chosen" : "") + (cutDone[i] ? " cut" : "") + '" data-i="' + i + '" d="' + L.d + '"/>';
           s += '<g class="room" transform="translate(' + L.end[0] + " " + L.end[1] + ')"><rect x="-6" y="-5" width="12" height="10"/></g>';
@@ -229,7 +255,7 @@
       function pick(i) { if (over || cutDone[i]) return; chosen = i; draw(); say("Hold to cut while the lamp is away."); }
       const down = () => { if (over) return; holding = true; cue("act"); };
       const upHold = () => { holding = false; cue("rest"); };
-      row.appendChild(U.pressButton("Cut", down, upHold));
+      row.appendChild((cutBtn = U.pressButton("Cut", down, upHold)));
       const nextLine = () => { const j = LINES.findIndex((L, i) => !cutDone[i] && i !== chosen); if (j >= 0) pick(j); };
       const offKeys = keyset({ 1: () => pick(0), 2: () => pick(1), 3: () => pick(2), Tab: nextLine, ArrowDown: nextLine, ArrowUp: nextLine });
       const onK = (e) => { if ((e.key === " " || e.key === "Enter") && !e.repeat) { e.preventDefault(); down(); } };
@@ -251,6 +277,10 @@
         if (s >= total) return end();
         // The guard's lamp sweeps the cellar, slower for a calmer hand on the plan.
         lampX += lampDir * dt * 22; if (lampX > 96 || lampX < 4) lampDir = -lampDir;
+        const L = lit(), S0 = soon();
+        cutBtn.classList.toggle("lit", L); cutBtn.classList.toggle("soon", S0); cutBtn.classList.toggle("dark", !L && !S0);
+        if (S0 && !wasSoon && holding) say("The light is coming. Let go!");
+        wasSoon = S0;
         if (holding && !cutDone[chosen]) {
           if (lit()) {
             seen++; holding = false; sfx("hit"); cue("bad");

@@ -614,7 +614,7 @@
   // arrow or sweep, duck a high swing or arrow, sidestep a thrust or a charge. Block meets anything,
   // for half the harm.
   const SHAPES = {
-    low: { need: "jump", line: "A low sweep at your legs", arrow: "An arrow, low, at your legs", y: 0.86 },
+    low: { need: "jump", line: "A low sweep at your legs", arrow: "An arrow, low, at your legs", y: 0.74 }, // shin high: at 0.86 it skimmed the ground under the feet (owner, 5 November)
     high: { need: "duck", line: "A swing at your head", arrow: "An arrow at your head", y: 0.2 },
     thrust: { need: "side", line: "A straight thrust", y: 0.5 },
     charge: { need: "side", line: "A charge, head down", y: 0.55 }
@@ -924,7 +924,28 @@
     // Before the first blow: the card that says how this fight goes; or the tour of the screen, going on.
     if (briefFor === enc.id && C.state() === B) drawBrief(B);
     else if (tour) tour.refresh();
+    champArrive(B);
   };
+  // ---------- A champion takes the field (item 22) ----------
+  // The fights on this screen (the holds: Bhishma's arrows) had no arrival moment; the real-time and war-day screens do
+  // (owner, 5 November). One of the epic's named fighters on the other side, the first time he is on the field in a fight:
+  // the edges darken, his name in gold with his title, a drum; after the rules card and the tour, once a champion a fight.
+  const champSeen = {};
+  function champArrive(B) {
+    if (K.headless || !B || B.over || C.state() !== B || !U.$("arena")) return;
+    const seen = champSeen[B.bid] || (champSeen[B.bid] = new Set());
+    const h = B.units.find((u) => u.side === "enemy" && (u.person || u.hero) && !u.away && u.hp > 0 && !seen.has(u.uid));
+    if (!h) return;
+    if (document.querySelector(".fbrief-wrap, .ftour")) { clearTimeout(champArrive.t); champArrive.t = setTimeout(() => champArrive(B), 700); return; }
+    B.units.forEach((u) => { if (u.side === "enemy" && (u.person || u.hero) && u.hp > 0) seen.add(u.uid); });
+    const full = K.text(h.src || h.name), cut = full.indexOf(","), name = cut > 0 ? full.slice(0, cut) : full, title = cut > 0 ? full.slice(cut + 1).trim() : K.tr("A champion takes the field");
+    const old = document.querySelector(".b-champ"); if (old) old.remove();
+    const el = U.el('<div class="b-champ" aria-live="assertive"><b>' + U.esc(name) + "</b><small>" + U.esc(title) + "</small></div>");
+    document.body.appendChild(el); // over the arena, which is drawn again as the turns go
+    if (K.Sound) K.Sound.play("drumCall");
+    const a = document.querySelector('#arena .actor[data-uid="' + h.uid + '"]'); if (a) { a.classList.remove("champ-in"); void a.offsetWidth; a.classList.add("champ-in"); }
+    setTimeout(() => { el.classList.add("off"); setTimeout(() => el.remove(), 450); }, U.calm() ? 1200 : 2100);
+  }
   // For a moment after each draw, watch the fighters' feet: whenever they are not where the painting was
   // last fitted (Safari lays the page out later than Chrome, and fonts and images arrive late), fit again.
   let settleUntil = 0;
