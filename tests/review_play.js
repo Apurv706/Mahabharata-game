@@ -357,6 +357,7 @@ async function trial(pg, cdp, L, R, o, tap, s) {
     if (kind === "escape") { await escapeStep(pg, cdp, o); continue; }
     if (kind === "dash") { await dashStep(pg, cdp, o, R); continue; }
     if (kind === "draw") { await drawStep(pg, cdp, o, R); continue; }
+    if (kind === "sneak") { await sneakPlay(pg, cdp, o, R); continue; }
     // A board: a piece that can move, a point a tiger can go to (or a tiger), the dice's buttons.
     const P = ".trial.playing .trial-body ";
     const press = await pg.$(P + "button.trial-press:not([disabled])");
@@ -384,6 +385,46 @@ async function trial(pg, cdp, L, R, o, tap, s) {
   }
   if (await pg.evaluate(() => !!document.querySelector(".trial.playing"))) { L.bad.push("the test " + kind + " at " + s.scene + " did not end in 150 s of play"); await shot(pg, L, "test-" + kind); await pg.evaluate(() => { const b = document.querySelector(".trial.playing"); if (b) b.classList.remove("playing"); }); }
   await sleep(1200);
+}
+// The lamp game (U.games.sneak): watch the light and keep out of it, as the card says, with a look every 90-140 ms.
+// Hold Move while the guard's light is away from you; let go when it comes near. With a twist, as its line says:
+// the wall lamp (wait at its edge until it goes dark, keep still if it flares while you are in it), the moon (keep
+// still while it is out or about to come out), the dog (rest when its bar is high). It held at random before, so its
+// failures said nothing about the game (6 November).
+async function sneakPlay(pg, cdp, o, R) {
+  const btn = await pg.$(".trial.playing .trial-body button.trial-press:not([disabled])"), bb = btn && (await btn.boundingBox());
+  if (!bb) { await sleep(300); return; }
+  const pt = { x: bb.x + bb.width / 2, y: bb.y + bb.height / 2 };
+  let held = false, rest = false, lampGo = 0;
+  const set = async (h) => {
+    if (h === held) return; held = h;
+    if (o.touch) await cdp.send("Input.dispatchTouchEvent", h ? { type: "touchStart", touchPoints: [pt] } : { type: "touchEnd", touchPoints: [] });
+    else if (h) { await pg.mouse.move(pt.x, pt.y); await pg.mouse.down(); } else await pg.mouse.up();
+  };
+  const t0 = Date.now();
+  while (Date.now() - t0 < 150000) {
+    const s = await pg.evaluate(() => {
+      const w = document.querySelector(".trial.playing .sneakway"); if (!w || document.querySelector(".trial.done")) return null;
+      const me = w.querySelector(".me"), pool = w.querySelector(".beam .pool"), p2 = w.querySelector(".beam .pool2"), nz = document.querySelector(".trial.playing .noise i");
+      const m = /([\d.]+)%/.exec(me.style.left || "0%");
+      return { pos: m ? +m[1] / 100 : 0, spot: +pool.getAttribute("cx") / 100, half: +pool.getAttribute("rx") / 100, caught: w.classList.contains("caught"),
+        lamp: p2 ? { c: +p2.getAttribute("cx") / 100, half: +p2.getAttribute("rx") / 100, on: p2.classList.contains("on"), warn: p2.classList.contains("warn") } : null,
+        moon: w.classList.contains("moonlit") || w.classList.contains("moonsoon"), noise: nz ? parseFloat(nz.style.width) / 100 : null };
+    }).catch(() => null);
+    if (!s) break;
+    let go = !s.caught && Math.abs(s.pos - s.spot) > s.half + 0.04;
+    if (s.lamp) {
+      const a = s.lamp.c - s.lamp.half, b = s.lamp.c + s.lamp.half;
+      if (s.lamp.on || s.lamp.warn) lampGo = 0; else if (!lampGo) lampGo = Date.now();
+      if (s.pos < a && s.pos > a - 0.04 && (s.lamp.on || s.lamp.warn || Date.now() - lampGo > 450)) go = false; // at its edge: go only as it goes dark
+      else if (s.pos >= a && s.pos < b && (s.lamp.on || s.lamp.warn) && b - s.pos > 0.04) go = false;
+    }
+    if (s.moon) go = false;
+    if (s.noise != null) { if (s.noise > 0.8) rest = true; if (s.noise < 0.3) rest = false; if (rest) go = false; }
+    await set(go);
+    await new Promise((r) => setTimeout(r, 90 + R() * 50));
+  }
+  await set(false);
 }
 // The draw test (the archer's path test, and the war bow): hold, watch the bar, let go as it enters the bright band,
 // a look every 70-110 ms as a person's eye would (so now and then too late). It held for a random time before, and
