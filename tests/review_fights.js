@@ -189,6 +189,9 @@ browser("ashwatthama-sword", "the night raid's Ashwatthama is drawn with a sword
 browser("read-lines", "the war day's timed read speaks of the weapon the foe is drawn holding: a bowman's blows as arrows, a spearman's never", async () => {
   const bad = [], seen = { bow: 0, other: 0 };
   const { pg, errs, close } = await open({ device: "iPhone 15" });
+  // Since Build B a war day's blows land in the real-time clash after your move; the timed read is played only with
+  // Fights: turn-based (the Menu), so that is where it is checked.
+  await pg.evaluate(() => K.prefs({ fights: "turns" }));
   for (const enc of ["hold_arjuna", "e_day1", "e_day16"]) {
     await fight(pg, enc, { life: { path: "charioteer", side: "kaurava" } });
     await keepAlive(pg);
@@ -222,6 +225,7 @@ browser("read-lines", "the war day's timed read speaks of the weapon the foe is 
   }
   if (!seen.bow) bad.push("no read from a bowman was seen to check");
   if (!seen.other) bad.push("no read from a foe drawn with another weapon was seen to check");
+  await pg.evaluate(() => K.prefs({ fights: "realtime" }));
   await close(); return bad.concat(errs);
 });
 
@@ -346,7 +350,10 @@ browser("controls-war", "the war day: place, move cards, a tap on a foe, the tim
     const tp = async (sel) => { const b = await pg.$(sel); if (!b) return false; try { if (touch) await b.tap({ timeout: 4000 }); else await b.click({ timeout: 4000 }); } catch (e) { return false; } return true; };
     await fight(pg, "e_day16", { life: { path: "mace" } });
     await keepAlive(pg);
-    const w = () => pg.evaluate(() => { const V = K.UI.warScreen(); return V && { round: V.B.round, place: V.B.place, placed: !!V.placed, read: !!document.querySelector("#rt .wd-read [data-rd]"), playing: !!V.playing, over: !!V.over, order: V.B.order, hp: K.Combat.player().hp, herbs: K.S.items.herbs, sheet: V.sheet }; });
+    // (Build B: after your move the round is fought in a real-time clash; Fall back hands it back to the orders.)
+    const w = () => pg.evaluate(() => { const V = K.UI.warScreen(); return V && { round: V.B.round, place: V.B.place, placed: !!V.placed, read: !!document.querySelector("#rt .wd-read [data-rd]"), playing: !!V.playing, over: !!V.over, order: V.B.order, hp: K.Combat.player().hp, herbs: K.S.items.herbs, sheet: V.sheet, clashing: !!V.clashing || !!V.B.clashPending }; });
+    let clashes = 0;
+    const fallBack = async () => { const b = await pg.$("#rt .cl-back"); if (b) { clashes++; try { if (touch) await b.tap({ timeout: 4000 }); else await b.click({ timeout: 4000 }); } catch (e) { /* the clash ended meanwhile */ } } await sleep(700); };
     if (!(await tp("#rt [data-place]"))) bad.push(tag + "no place cards before round 1");
     await sleep(700);
     if (!(await w()).placed) bad.push(tag + "a tap on a place card did not choose it");
@@ -355,25 +362,28 @@ browser("controls-war", "the war day: place, move cards, a tap on a foe, the tim
     for (let i = 0; i < 40 && rounds < 3; i++) {
       const s = await w(); if (!s || s.over) break;
       if (s.read) { await sleep(1000); await tp('#rt .wd-read [data-rd="block"]'); reads++; await sleep(800); continue; }
+      if (s.clashing) { await sleep(1200); await fallBack(); continue; }
       if (s.playing) { await sleep(400); continue; }
       if (await tp('#wd-moves [data-move="strike"]:not([disabled])')) { await sleep(300); await tp("#rt .foe-tap:not([hidden])"); await sleep(1500); }
       const s2 = await w(); if (s2) rounds = s2.round - r0.round;
     }
+    if (!clashes) bad.push(tag + "no real-time clash after a move on the war day");
     if (rounds < 2) bad.push(tag + "Strike and a tap on a foe played only " + rounds + " rounds (from round " + r0.round + "; the fight " + JSON.stringify(await pg.evaluate(() => K.Combat.state() && K.Combat.state().over)) + ")");
     // Aid: herbs.
     // From here you are kept hurt (40%) but alive, so Herbs is always offered and the day goes on.
     await pg.evaluate(() => { clearInterval(window.__alive); window.__alive = setInterval(() => { const p = K.Combat.player(); if (p) p.hp = Math.max(Math.min(p.hp, Math.round(p.maxHp * 0.6)), Math.round(p.maxHp * 0.4)); }, 50); });
     // Aid while the foes move: it says so. Then at your move: herbs heal.
-    const busy = async () => pg.evaluate(() => { const V = K.UI.warScreen(); return !V || V.over || !!V.playing || !!V.qte || !!(V.B.queue && V.B.queue.length); });
-    for (let i = 0; i < 40 && (await busy()) && !(await w()).over; i++) { if ((await w()).read) await tp('#rt .wd-read [data-rd="block"]'); await sleep(500); }
+    const busy = async () => pg.evaluate(() => { const V = K.UI.warScreen(); return !V || V.over || !!V.playing || !!V.qte || !!V.clashing || !!V.B.clashPending || !!(V.B.queue && V.B.queue.length); });
+    const settle = async () => { for (let i = 0; i < 40 && (await busy()) && !(await w()).over; i++) { const s = await w(); if (s.read) await tp('#rt .wd-read [data-rd="block"]'); else if (s.clashing) await fallBack(); await sleep(500); } };
+    await settle();
     await tp('#wd-moves [data-move="wall"]:not([disabled]), #wd-moves [data-move="guard"]:not([disabled]), #wd-moves [data-move="strike"]:not([disabled])'); await sleep(120);
     if (await busy()) {
       await tp('#rt [data-wact="aid"]'); await sleep(300);
       const hb0 = await pg.$('#rt .aid-sheet [data-aid="herbs"]:not([disabled])');
       if (hb0) { const n0 = (await w()).herbs; if (touch) await hb0.tap().catch(() => {}); else await hb0.click().catch(() => {}); await sleep(150); const said = await pg.evaluate(() => (document.querySelector("#rt .toast") || {}).textContent || ""); if ((await w()).herbs === n0 && !said) bad.push(tag + "herbs tapped while the foes move: nothing happens and nothing is said"); }
     }
-    await pg.evaluate(() => { const V = K.UI.warScreen(); if (V && V.sheet) document.querySelector('#rt [data-wact="' + (V.sheet === "company" ? "company" : "aid") + '"]').click(); });
-    for (let i = 0; i < 40 && (await busy()) && !(await w()).over; i++) { if ((await w()).read) await tp('#rt .wd-read [data-rd="block"]'); await sleep(500); }
+    await pg.evaluate(() => { const V = K.UI.warScreen(); const b = V && V.sheet && V.el.querySelector('[data-wact="' + (V.sheet === "company" ? "company" : "aid") + '"]'); if (b) b.click(); });
+    await settle();
     await sleep(300);
     if (!(await pg.evaluate(() => K.UI.warScreen() && K.UI.warScreen().sheet === "aid"))) await tp('#rt [data-wact="aid"]');
     await sleep(400);
