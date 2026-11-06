@@ -57,7 +57,10 @@ html[lang="hi"] #rt .fname b { line-height: 1.35; }
 #rt .actor.windup svg.pp { animation: rtl-wind 0.3s ease-in-out 2 alternate; }
 @keyframes rtl-wind { from { filter: brightness(1.15) sepia(0.3) drop-shadow(0 0 6px rgba(255, 122, 60, 0.7)); } to { filter: brightness(1.55) sepia(0.6) saturate(1.4) drop-shadow(0 0 14px rgba(255, 122, 60, 1)); } }
 html.calm #rt .actor.windup svg.pp { animation: none; filter: brightness(1.5) sepia(0.6) drop-shadow(0 0 12px rgba(255, 122, 60, 1)); }
-#rt .actor.hit svg.pp { filter: brightness(2.1) !important; animation: none; }
+/* Struck: a short flash (6 November, owner: brightness 2.1 washed the figure out pale yellow) - a foe brightens a little with a
+   white edge; you, a red edge */
+#rt .actor.hit svg.pp { filter: brightness(1.35) drop-shadow(0 0 4px rgba(255, 246, 228, .95)) !important; animation: none; }
+#rt .actor.me.hit svg.pp { filter: brightness(1.08) drop-shadow(0 0 3px rgba(255, 60, 40, 1)) drop-shadow(0 0 9px rgba(255, 60, 40, .85)) !important; }
 #rt .actor.beaten svg.pp { filter: grayscale(0.55) brightness(0.8) drop-shadow(0 4px 4px rgba(0, 0, 0, 0.6)); }
 #rt .actor.unseen svg.pp { opacity: 0.5; }
 #rt .actor .mini { position: absolute; left: 0; bottom: calc(var(--fh) * var(--barh, 1.04)); /* --barh: above a crown, never across the face */ width: 46px; height: 6px; transform: translateX(-50%); border-radius: 3px; background: rgba(0, 0, 0, 0.5); overflow: hidden; }

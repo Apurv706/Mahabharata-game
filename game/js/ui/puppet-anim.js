@@ -47,7 +47,10 @@
     // swung through at the ribs.
     smashUp: { rot: -18, tx: -6, ty: 2, head: -6, armF: -148, foreF: -104, armB: -40, foreB: -30, legF: -22, shinF: 6, legB: 20, shinB: 12, item: 204 },
     smash: { rot: 20, tx: 11, ty: 4, head: 10, armF: -56, foreF: -4, armB: 16, foreB: -10, legF: -36, shinF: 18, legB: 26, shinB: 6, item: 180 },
-    sweepBack: { rot: -18, tx: -8, ty: 3, head: -4, armF: 95, foreF: -10, armB: -50, foreB: -40, legF: -24, shinF: 8, legB: 24, shinB: 12, item: 100 },
+    // (6 November, owner: "the mace is pointing down when I strike": the sweep is wound back at the hip, the mace level behind,
+    // no longer hanging; and with the shield up a mace is held raised over the shoulder, not hanging at the side)
+    sweepBack: { rot: -14, tx: -8, ty: 3, head: -4, armF: 115, foreF: -55, armB: -50, foreB: -40, legF: -24, shinF: 8, legB: 24, shinB: 12, item: 215 },
+    shieldUpMace: { rot: -4, ty: 5, head: 6, armB: -50, foreB: -58, armF: -150, foreF: -95, legF: -24, shinF: 14, legB: 22, shinB: 14, item: 210 },
     sweep: { rot: 12, tx: 12, ty: 2, head: 4, armF: -84, foreF: -2, armB: 30, foreB: -12, legF: -32, shinF: 14, legB: 28, shinB: 6, item: 180 },
     // A thrust (a spear, a sword's third blow) and a stab (a dagger): drawn back at the hip, then driven straight in, the
     // weight on the front foot.
@@ -168,7 +171,10 @@
     if (this.bow) this.nock = this.bow.querySelector(".nock");
     return this;
   };
+  // A mace (or a club) in a fight: its own way of holding it behind the raised shield.
+  const MACE_POSE = { shieldUp: "shieldUpMace" };
   Rig.prototype.set = function (name, k, z, snap) {
+    if (this.fight && MACE_POSE[name] && this.itemEl && /^(mace|club)$/.test(this.itemEl.dataset.k || "")) name = MACE_POSE[name];
     let p = POSES[name] || POSES.stand;
     if (!this.fight && REST.has(name)) { // at rest: nothing held over the face
       const kind = this.itemEl && this.itemEl.dataset.k;
@@ -422,6 +428,7 @@
   // The mace's two blows, for every screen that draws one (ui/realtime.js, ui/warday.js): the wind-up pose, the pose the
   // blow ends in (aimed by U.aimBlow), and where on the body it falls.
   U.MACE_ARCS = { smash: { up: "smashUp", end: "smash", at: "high" }, sweep: { up: "sweepBack", end: "sweep", at: "mid" } };
+  U.POSES = POSES; // (for the pose checks: tests and screenshots)
   // Every weapon's blows (owner, 4 November): a sword cuts down from a raised wind-up twice and thrusts the third time; a
   // spear thrusts; a dagger stabs; a club, a hammer or a staff comes down overhead; a fist punches. U.arcFor(weapon, n)
   // names the arc of a weapon's n-th blow (the mace's own two come from the engine).

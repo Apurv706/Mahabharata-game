@@ -475,7 +475,7 @@
     armFor(a);
     a.swing = { t0: again ? a.swing.t0 : now, on: t ? t.u.uid : null, aim: null, arc };
     if (a.rig && t && t.u.hp > 0 && t !== a) a.swing.aim = U.aimBlow(a.rig, t.svg, { guard, k: A && U.MACE_ARCS[arc] ? 1500 : 1700, z: 0.55, pose: A ? A.end : undefined, at: A ? A.at : undefined, under: A && A.under != null ? A.under : undefined, straight: A && A.straight });
-    if (!a.swing.aim) pose(a, A ? A.end : "strike", 1600, 0.55);
+    if (!a.swing.aim) pose(a, A ? (U.MACE_ARCS[arc] ? "sweep" : A.end) : "strike", 1600, 0.55); // (a mace blow that finds no one follows through level, not into the ground)
     home(a, A && U.MACE_ARCS[arc] ? 560 : 460);
   }
   function landHit(f) { // a melee blow: the struck one reacts when the weapon reaches it

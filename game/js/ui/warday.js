@@ -571,7 +571,7 @@
     now(() => {
       if (guard && t0) pose(t0, "guard", 1400, 0.55);
       aim = a.rig && t0 && !t0.dead ? U.aimBlow(a.rig, t0.svg, { guard, k: slow ? 1600 : 1900, z: 0.5, maxLunge: 1e4, pose: A ? A.end : undefined, at: A ? A.at : undefined, under: A && A.under != null ? A.under : undefined, straight: A && A.straight }) : null; // across the gap: the step in is as long as it must be
-      if (!aim) { pose(a, A ? A.end : "strike", 1900, 0.5); a.dx = (enemy ? -1 : 1) * 0.035; pos(a); }
+      if (!aim) { pose(a, A ? (U.MACE_ARCS[arc] ? "sweep" : A.end) : "strike", 1900, 0.5); /* a mace blow that finds no one: level */ a.dx = (enemy ? -1 : 1) * 0.035; pos(a); }
     }, 140 + slow);
     now(() => {
       const res = aim ? U.blowImpact(aim) : null, sr = V.stage.getBoundingClientRect();
