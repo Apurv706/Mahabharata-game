@@ -132,9 +132,11 @@
   // The tall painting of a fight's background, for upright screens: the fight and stage paintings have one; a story
   // painting standing in for a fight's ground (Karna's-day duel on scene_duel_ground) is painted wide only.
   U.fightTall = (bg) => (!bg ? null : U.tallOf(bg) ? U.artUrl(U.tallOf(bg)) : /^(fight|stage)_/.test(bg) ? U.artUrl(bg + "_tall") : null);
-  U.battleSpecFor = (u) => specFor(u); // who each fighter is drawn as (tests/weapons.js)
+  // A foe who carries a shield (combat.js u.shield: since 6 November every sword or spear) is drawn with the round one.
+  const shielded = (u, sp) => (u && u.side === "enemy" && u.shield && sp && !sp.thing && sp.item !== "bow" ? Object.assign({}, sp, { gear: (sp.gear || []).filter((g) => g !== "buckler" && g !== "shield").concat("shield") }) : sp);
+  U.battleSpecFor = (u) => shielded(u, specFor(u)); // who each fighter is drawn as (tests/weapons.js)
   // A fighter's figure; the fallen lie forward (toward the middle of the stage), their weapon on the ground beside them.
-  const figure = (u) => U.puppet(specFor(u), { h: 150, flip: u.side === "enemy", pose: u.hp <= 0 ? "dead" : liveFigures() ? "live" : u.side === "player" ? "brace" : "stand", fwd: true, label: u.side === "player" ? K.tr("You") : null });
+  const figure = (u) => U.puppet(shielded(u, specFor(u)), { h: 150, flip: u.side === "enemy", pose: u.hp <= 0 ? "dead" : liveFigures() ? "live" : u.side === "player" ? "brace" : "stand", fwd: true, label: u.side === "player" ? K.tr("You") : null });
   // A fighter who has fallen without a live figure (reduced motion, or after the CSS fall): drawn again lying down.
   function layDead(uid) {
     const el = actorEl(uid), B = C.state(), u = B && B.units.find((x) => x.uid === uid), old = el && el.querySelector("svg.pp");
