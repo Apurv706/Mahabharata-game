@@ -40,7 +40,7 @@
   U.renderBattle = function (B) {
     if (!B) return;
     if (V && V.B === B) return changed();
-    if (want && C.state() === B && B.enc.id === want.encId && !B.mode && !B.rule && !B.enc.dream) { const w = want; want = null; return build(B, w.onEnd); }
+    if (want && C.state() === B && B.enc.id === want.encId && !B.mode && !B.rule) { const w = want; want = null; return build(B, w.onEnd); } // the dream too, with its clash (owner, 5 November)
     return prevRender(B);
   };
 
@@ -83,7 +83,7 @@
     B.units.forEach((u) => { V.hp[u.uid] = u.hp; });
     // The clash (prototype, owner 5 November): after your order the round is fought in real time (ui/realtime.js).
     // (not when the player chose turn-based fights in the Menu: those keep pure turns)
-    B.clashMode = !!(U.startClash && !K.headless && K.RT && K.RT.on && K.RT.on() && !B.enc.dream);
+    B.clashMode = !!(U.startClash && !K.headless && K.RT && K.RT.on && K.RT.on()); // the dream as well (owner, 5 November)
     // Everything that happens is kept as it happens, to be played out in order: a move, the blows it lands, a heal.
     const hit0 = B.hit, heal0 = B.heal;
     B.hit = function (u, t, m, o) {
@@ -181,7 +181,7 @@
   // Who is on the stage: you, those beside you (your company as two soldiers), and the foes of the pack now on.
   function specFor(u) {
     if (isP(u)) {
-      const s = Object.assign({}, K.puppetSpec(K.S), { item: K.fightItem(K.S) });
+      const s = Object.assign({}, K.puppetSpec(K.S), { item: K.fightItem(K.S, V && V.B && V.B.enc.dream ? "dream" : null) }); // the dream: grown, with a sword
       if (C.hasShield && C.hasShield()) s.gear = (s.gear || []).filter((g) => g !== "shield").concat("buckler"); // a small shield, on the mace and sword paths
       return s;
     }
@@ -815,6 +815,14 @@
     closeSheet(); cards(); place();
     if (U.stopDrums) U.stopDrums();
     const enc = B.enc;
+    // The dream does not end on a card: the field goes white, and you wake (scene.js U.wakeScene opens on its own white).
+    if (enc.dream && U.motion()) {
+      const veil = U.el('<div class="dream-white" aria-hidden="true"></div>');
+      document.body.appendChild(veil);
+      requestAnimationFrame(() => requestAnimationFrame(() => veil.classList.add("on")));
+      setTimeout(() => { if (!V) { veil.remove(); return; } const cb = V.onEnd, done = C.end(); stop(); document.body.classList.remove("intest"); if (cb) cb(done ? done.over : B.over); setTimeout(() => veil.remove(), 400); }, 1300);
+      return;
+    }
     if (B.over === "flee") { const f = firstFig(B.units[0].uid); if (f && f.rig) { f.face = -f.face; f.el.classList.toggle("face-l", f.face < 0); } }
     const lived = B.over === "lose" && K.loseLived(enc.id); // beaten but alive: the foes leave, and what is written held
     const msg = lived ? "You fought with all you had. What is written was not yours to stop." : { win: K.val(enc.winLine) || "The fight is won.", lose: K.val(enc.loseLine) || (enc.lethal && !K.S.storyMode ? "You have fallen." : "You are beaten."), flee: "You leave the fight behind.", spare: "You let them live." }[B.over];

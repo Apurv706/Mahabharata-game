@@ -42,7 +42,7 @@
   // him (one rule for every screen: tests/weapons.js holds RT.weaponOf to it).
   function specFor(u) {
     if (u.side === "player") {
-      const sp = Object.assign({}, K.puppetSpec(K.S), { item: K.fightItem(K.S) });
+      const sp = Object.assign({}, K.puppetSpec(K.S), { item: V && V.R && V.R.B.enc.dream ? "sword" : K.fightItem(K.S) }); // the dream: grown, with a sword
       if (C.hasShield && C.hasShield()) sp.gear = (sp.gear || []).filter((g) => g !== "shield").concat("buckler");
       return sp;
     }

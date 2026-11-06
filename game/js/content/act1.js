@@ -109,12 +109,6 @@
   };
   const UGRA_WIN = { fx: { rep: { common: 1 }, bond: { charu: 1 }, flag: ["beat_ugra", "balarama_noticed"], journal: "You beat Ugra in the ring at the spring fair. A giant of a man with a plough on his shoulder asked your name." },
     text: "Ugra hits the sand and lets go of Charu. At the edge of the crowd a giant of a man with a plough on his shoulder asks your name." };
-  const ugraTrial = (retry) => ({ attr: "might", skill: "mace", foe: "Ugra", stage: "fight_fair_ring", cast: ["ugra"], bpm: 84, verb: "Throw",
-    help: "Strike as each beat reaches the ring: every beat is Ugra shifting his weight.",
-    tally: "Holds broken: {h} · Missed: {m} · {left} to go", clean: "He staggers!", okLine: "He gives ground.", soon: "Too soon. He reads you.", late: "Too late. He shoves you back.",
-    rules: "Catch Ugra on the beat, again and again, and he goes down.",
-    stakes: retry ? ["Ugra lets Charu go, in front of everyone.", "Ugra wins twice, and you will not get into that ring again. It counts as two failures, and it will weigh on every wrestling test to come."]
-      : ["Ugra lets Charu go, in front of everyone.", "Ugra keeps his grip on Charu. You can get up and ask for another bout."] });
 
   // The game of tag by the lotus pond (age 8): on Bhima's side you creep up on Duryodhana; on
   // Duryodhana's, Bhima is hunting you. Daylight, so the cone is where the watcher is looking.
@@ -354,8 +348,9 @@
       ],
       choices: [
         { id: "fight", t: "Challenge him", req: { not: { friend: "charu" } }, locked: "", combat: "e_ugra" },
-        { id: "bout", t: "Challenge him", req: { friend: "charu" }, locked: "", game: "rhythm", hint: "A wrestling test", trial: ugraTrial(false),
-          win: UGRA_WIN, close: { fx: {}, text: "Ugra goes to one knee, and gets up again. Charu is still in his grip.", next: "a1_rematch" }, lose: { fx: {}, text: "Ugra throws you out of the ring. Charu is still in his grip.", next: "a1_rematch" } },
+        // With Charu in his grip it is a fight too (owner, 5 November: it had become a timing test of rings since 28 October);
+        // lose it and you may get up for another bout (a1_rematch).
+        { id: "bout", t: "Challenge him", req: { friend: "charu" }, locked: "", combat: "e_ugra" },
         { id: "talk", t: "Shame him",
           check: { attr: "command", skill: "lore", dc: 7,
             pass: { fx: { rep: { common: 1 }, flag: "shamed_ugra" }, text: "You turn the crowd's laughter on him. Ugra drops what he took and stalks off, looking back once at you." },
@@ -369,10 +364,7 @@
       title: "Get up",
       body: ["The crowd is laughing. Ugra is laughing. Charu is not."],
       choices: [
-        { id: "again", t: "Get up and ask for another bout", game: "rhythm", hint: "Your second chance", trial: ugraTrial(true), win: UGRA_WIN,
-          back: { scene: "a1_wrestle", why: "Ugra threw you twice. You will not get into that ring again." },
-          lose: { penalty: 1, fx: { rep: { common: -1 }, flag: ["lost_to_ugra", "ugra_twice"], memory: ["charu", "You got up and fought Ugra twice for Charu. You lost twice. Charu never forgot either part."] },
-            text: "He throws you again, harder. Ugra lets Charu go anyway, bored, and Charu helps you home." } },
+        { id: "again", t: "Get up and ask for another bout", combat: "e_ugra_again", hint: "Your second chance" },
         { id: "down", t: "Stay down", fx: { flag: "lost_to_ugra" }, text: "You stay down. Ugra lets Charu go anyway, bored." }
       ],
       next: "a2_teacher"
@@ -390,12 +382,23 @@
     lose: { fx: { flag: "dreamt_the_field" }, text: "The field goes white. Far away, someone is calling your name." }
   });
 
+  // Ugra at the fair: a little girl's bangles in his fist, or (with Charu your friend) Charu's arm behind his back, when a
+  // lost bout may be fought once more (a1_rematch, e_ugra_again).
+  const charu = (S) => S.friend === "charu";
   K.encounter({
     id: "e_ugra", title: "Ugra at the fair", art: "scene_fair", caption: "The wrestling ring", lethal: false,
     intro: "The crowd makes a ring. Ugra grins and spits on his palms.",
     enemies: [K.foe("Ugra, the miller's son", 1, { hp: 26, atk: 4 })],
-    win: { fx: { rep: { common: 1 }, bond: { charu: 1 }, flag: ["beat_ugra", "balarama_noticed"], journal: "You beat Ugra in the ring at the spring fair. A giant of a man with a plough on his shoulder asked your name." },
-      text: "Ugra stays down. A huge man with a plough over his shoulder laughs and asks your name: Balarama of the Yadavas." },
-    lose: { fx: { duty: { conscience: 1 }, flag: "lost_to_ugra" }, text: "You lose, badly. But you stood up to him, and everyone saw." }
+    win: { fx: UGRA_WIN.fx, text: (S) => (charu(S) ? UGRA_WIN.text : "Ugra stays down. A huge man with a plough over his shoulder laughs and asks your name: Balarama of the Yadavas.") },
+    lose: { fx: (S) => (charu(S) ? {} : { duty: { conscience: 1 }, flag: "lost_to_ugra" }), text: (S) => (charu(S) ? "Ugra throws you out of the ring. Charu is still in his grip." : "You lose, badly. But you stood up to him, and everyone saw."),
+      next: (S) => (charu(S) ? "a1_rematch" : undefined) }
+  });
+  K.encounter({
+    id: "e_ugra_again", title: "Ugra at the fair", art: "scene_fair", caption: "The wrestling ring", lethal: false, realtime: true,
+    intro: "Ugra waves you back into the ring, grinning.",
+    enemies: [K.foe("Ugra, the miller's son", 1, { hp: 26, atk: 4 })],
+    win: UGRA_WIN,
+    lose: { fx: { rep: { common: -1 }, flag: ["lost_to_ugra", "ugra_twice"], memory: ["charu", "You got up and fought Ugra twice for Charu. You lost twice. Charu never forgot either part."] },
+      text: "He throws you again, harder. Ugra lets Charu go anyway, bored, and Charu helps you home." }
   });
 })(window.K = window.K || {});

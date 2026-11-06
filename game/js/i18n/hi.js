@@ -2036,7 +2036,7 @@
     "{who} moves.": "{who} आगे बढ़ता है।",
     "Meet the blow": "वार का सामना करो",
     "Block as the ring meets the mark. Dodge needs better timing.": "जब छल्ला निशान से मिले, तब रोको। बचने के लिए और सटीक समय चाहिए।",
-    "Block": "रोको",
+    "Block": "ढाल",
     "Dodge": "बचो",
     "Create someone the epic never mentions and live their whole life, from a childhood beside the young princes to the eighteen days of war and what comes after. The great events are written. Where you stand, what you swear, who you love and how you die are unwritten, and yours.": "किसी ऐसे व्यक्ति को रचो जिसका महाकाव्य में कभी नाम नहीं आता, और उसका पूरा जीवन जियो: युवा राजकुमारों के साथ बीते बचपन से लेकर युद्ध के अठारह दिनों तक, और उसके बाद तक। बड़ी घटनाएँ लिखी जा चुकी हैं। तुम कहाँ खड़े होते हो, क्या शपथ लेते हो, किसे प्रेम करते हो और कैसे मरते हो, यह अनलिखा है, और तुम्हारा है।",
     "See the lands as pictures": "देशों को चित्रों में देखो",
