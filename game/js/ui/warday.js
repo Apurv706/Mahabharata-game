@@ -710,9 +710,9 @@
     // Lines of the story (a field event, a friend's arrival) as a toast.
     while (V.logAt < B.log.length) { const e = B.log[V.logAt++]; if (e && (e.raw || e.ev)) toast(C.line(e)); }
     B.units.forEach((u) => { V.hp[u.uid] = u.hp; });
-    // Life below a tenth (owner, 6 November: "when my life gets less than 10%, create a warning"): the edges of the
+    // Life below a fifth (owner, 6 November: first a tenth, then 20%; K.LOW_LIFE): the edges of the
     // field pulse red, a heartbeat, and a line says what you can do (in the clash the real-time screen says it).
-    { const p = B.units[0], low = p.hp > 0 && p.hp < p.maxHp * 0.1, w = $(".lowwarn", V.stage);
+    { const p = B.units[0], low = p.hp > 0 && p.hp < p.maxHp * (K.LOW_LIFE || 0.2), w = $(".lowwarn", V.stage);
       if (low !== !!V.low) {
         V.low = low; V.el.classList.toggle("lowlife", low);
         if (w) { if (low) w.querySelector("span").textContent = T((K.S.items.herbs || 0) > 0 ? "Use your herbs." : p.abilities.includes("wall") ? "Raise the shield wall." : "Guard, and hold on."); w.hidden = !low; }

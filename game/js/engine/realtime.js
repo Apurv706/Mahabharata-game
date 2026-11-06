@@ -29,6 +29,8 @@
   const RT = (K.RT = {});
   const STEP = 1 / 60, ROUND = 4, BODY = 1 / 9.5, EDGE = 0.1;
   RT.STEP = STEP; RT.ROUND = ROUND; RT.BODY = BODY; RT.EDGE = EDGE;
+  // The warning that your life is low (ui/realtime.js, ui/warday.js) comes below this share of it (owner, 6 November: 20%).
+  K.LOW_LIFE = 0.2;
   // The tunables (tests/balance.js measures them; PARAMS env in the tests can override).
   RT.P = {
     story: 8,          // seconds per round of a fight's story: beats, the field event, holds and "rounds"

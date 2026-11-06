@@ -223,10 +223,11 @@
     V.parryTold = true; try { K.prefs({ tipParry: true }); } catch (e) { /* no store */ }
     toast(T("A blade lit white is coming down on you: Strike now to parry it."));
   }
-  // Life below a tenth (owner, 6 November: "when my life gets less than 10%, create a warning"): the edges of the field
-  // pulse red, your bar flashes, a heartbeat every few seconds, and a line says what you can do, for as long as it lasts.
+  // Life below a fifth (owner, 6 November: "when my life gets less than 10%, create a warning"; then 20%: played like a
+  // person, a blow of 15-25% of your life could skip the tenth): the edges of the field pulse red, your bar flashes, a
+  // heartbeat every few seconds, and a line says what you can do, for as long as it lasts.
   function lowLife(p) {
-    const low = p.hp > 0 && p.hp < p.maxHp * 0.1;
+    const low = p.hp > 0 && p.hp < p.maxHp * K.LOW_LIFE;
     if (low !== !!V.low) {
       V.low = low; V.el.classList.toggle("lowlife", low);
       const w = $(".lowwarn", V.stage);
