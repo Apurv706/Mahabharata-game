@@ -98,10 +98,11 @@ add("review-story", ["tests/review_story.js", "--engine-only", "--lives", "150",
 add("review-fights", null, ["tests/review_fights.js", "--case-timeout", "900", "--json", J("review_fights")], { browser: true, retryJson: "review_fights", timeout: 45 });
 add("review-screens", null, ["tests/review_screens.js", "--json", J("review_screens")], { browser: true, retryJson: "review_screens", timeout: 20 });
 add("review-play", null, ["tests/review_play.js", "--lives", "1", "--seed", "2", "--steps", "900", "--partial", "--json", J("review_play")], { browser: true, timeout: 40 });
+add("review-battle", null, ["tests/review_battle.js", "--case-timeout", "900", "--json", J("review_battle")], { browser: true, retryJson: "review_battle", timeout: 45 }); // Build B: battles played like a person, the orders, the low-life warning, foes' shields
 
 // Rough lengths on a 2-core machine (seconds): the full tier starts the longest first.
 const EST = {"battlefit": 800, "layout#phone": 520, "layout#tablet": 260, "layout#desktop": 260, "balance": 400, "command": 300, "strings-hi": 250, "visual": 230, "bands": 220, "lives": 190, "smoke": 160, "warfit": 160, "blowfit": 180, "content": 150, "bugs": 110, "saves": 110, "rtfit": 60, "lives-turns": 45, "rtsim": 40, "race-balance": 28, "dash-balance": 12, "golden": 20};
-Object.assign(EST, { "review-fights": 900, "review-play": 1200, "review-story": 600, "review-screens": 300, "review-rules": 15 });
+Object.assign(EST, { "review-fights": 900, "review-play": 1200, "review-battle": 1500, "review-story": 600, "review-screens": 300, "review-rules": 15 });
 for (const c of C) c.est = EST[c.name] || (/^playthrough/.test(c.name) ? 90 : 10);
 const known = (() => { try { return JSON.parse(fs.readFileSync(path.join(__dirname, "known_failures.json"), "utf8")).known || []; } catch (e) { return []; } })();
 const base = (n) => n.split("#")[0];
