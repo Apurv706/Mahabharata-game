@@ -211,7 +211,7 @@
     el.querySelectorAll("[data-act]").forEach((b) => b.addEventListener("click", (e) => { e.preventDefault(); act(b.dataset.act); }));
     el.querySelectorAll("[data-hold]").forEach((b) => {
       const k = b.dataset.hold;
-      const on = (e) => { e.preventDefault(); V.held[k] = true; b.classList.add("held"); };
+      const on = (e) => { if (e.cancelable) e.preventDefault(); V.held[k] = true; b.classList.add("held"); }; // a touch the phone is already scrolling with cannot be held back (and Chrome says so in red)
       const off = () => { if (!V) return; V.held[k] = false; b.classList.remove("held"); };
       b.addEventListener("pointerdown", on); b.addEventListener("pointerup", off); b.addEventListener("pointerleave", off); b.addEventListener("pointercancel", off);
       b.addEventListener("contextmenu", (e) => e.preventDefault());

@@ -682,7 +682,9 @@
     const B = V.B;
     if (B.clashPending && !V.clashing && !B.over) { // your order has played: now the clash
       V.clashing = true; V.el.style.visibility = "hidden"; V.el.id = "rt-war"; // both screens are #rt: the war day steps aside while the clash has the stage
-      setTimeout(() => U.startClash(B, { secs: 15 }, (why) => {
+      // The foes strike at 0.8 of their weight in the clash, as in the storms: at full weight a player of middling
+      // reflexes fell on the first day of the war three times in four (life test and clash simulation, 6 November).
+      setTimeout(() => U.startClash(B, { secs: 15, atk: 0.8 }, (why) => {
         if (!V) return;
         V.el.id = "rt"; V.el.style.visibility = ""; V.clashing = false; document.body.classList.add("in-rt", "intest");
         C.clashDone();
