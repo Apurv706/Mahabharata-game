@@ -72,7 +72,7 @@
     flee: { fx: {}, text: "You pull back out of the charge. Iravan does not." }
   });
   const CARRY = { id: "carry", t: "Carry Iravan to the river", game: "sneak", hint: "A test of stealth",
-    trial: { attr: "grace", skill: "stealth", stage: "stage_field_to_river", trips: 1, spots: 2, watch: "soldier", verb: "Carry",
+    trial: { twist: "clouds", attr: "grace", skill: "stealth", stage: "stage_field_to_river", trips: 1, spots: 2, watch: "soldier", verb: "Carry",
       help: "Hold to carry him forward. Stop when a fire-arrow lights the ground near you.", tally: "Toward the river: {d} of {n} · Seen: {s} of {m}", made: "The river.", spotted: "A fire-arrow lands close. You go flat over him.",
       rules: "Move while the archers' light is elsewhere; lie still when it comes near.",
       stakes: ["You bring him to his mother's people.", "The arrows pin you down until the nagas come for him themselves."] },

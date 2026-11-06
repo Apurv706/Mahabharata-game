@@ -101,7 +101,7 @@
     lose: { fx: { rep: { kuru: -1 }, flag: "name_suspected" }, text: "The steward says nothing more and writes something down. A rider leaves for Hastinapura that evening." } };
 
   const DANCE_HALL = { id: "hall", t: "Get her out in the dark", game: "sneak", hint: "A test of stealth",
-    trial: { attr: "grace", skill: "stealth", stage: "stage_kichaka_hall_night", trips: 2, spots: 2, watch: "guard", verb: "Move",
+    trial: { twist: "lamp", attr: "grace", skill: "stealth", stage: "stage_kichaka_hall_night", trips: 2, spots: 2, watch: "guard", verb: "Move",
       help: "Hold to move along the pillars. Stop when Kichaka's lamp turns your way.", tally: "Crossed: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "Across. Now back, with her.", spotted: "The lamp swings toward you. You press into a pillar.",
       rules: "Cross the hall to Draupadi and back along the pillars while the lamp sweeps the floor.",
       stakes: ["She is in the kitchens, among the women, when the screaming starts.", "Kichaka's lamp finds you, and you have to run before you reach her."] },
@@ -110,17 +110,19 @@
     lose: { fx: { bond: { bhima: -1 }, flag: "hall_seen" }, text: "The lamp finds you, and you run. Bhima does the rest alone." } };
 
   const CARTS = { id: "carts", t: "Cut the carts loose", game: "sneak", hint: "A test of stealth",
-    trial: { attr: "grace", skill: "stealth", stage: "stage_supply_camp_night", trips: 2, spots: 2, watch: "soldier", verb: "Move",
+    trial: { twist: "dog", attr: "grace", skill: "stealth", stage: "stage_supply_camp_night", trips: 2, spots: 2, watch: "soldier", verb: "Move",
       help: "Hold to move between the carts. Stop when the sentry's torch turns.", tally: "Carts reached: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "The ropes are cut. Back to the dark.", spotted: "The sentry turns. You drop behind a wheel.",
       rules: "Reach the carts twice past the sentry's torch: once to cut the lines, once to fire the fodder.",
       stakes: ["The fodder burns, and tomorrow the enemy's horses are hungry.", "The sentry raises the alarm, and you fight your way out."] },
     win: { fx: { flag: "burned_carts", keepsake: "arrow", journal: "One night in the war you crept into the enemy's supply camp and burned their fodder." }, text: "The fodder goes up with a sound like wind. You are back in the horse lines before the first shout." },
     lose: { fx: { flag: "carts_alarm" }, next: "ep_carts_fight", text: "The sentry turns too soon, and the camp wakes around you." } };
 
-  const RIVER = { id: "swim", t: "Swim the river with it", game: "sneak", hint: "A test of stealth",
-    trial: { attr: "grace", skill: "stealth", stage: "stage_river_crossing_night", trips: 1, spots: 2, watch: "soldier", verb: "Swim",
-      help: "Hold to swim. Stop and go under when the watch-fire's light reaches the water.", tally: "Across: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "The far bank.", spotted: "A sentry shouts. You go under and let the current take you.",
-      rules: "Swim the river and come up under the enemy's bank unseen.",
+  // A swim round the snags and the sentries' arrows, not a creep (owner, 5 November: the lamp game came round too often).
+  const RIVER = { id: "swim", t: "Swim the river with it", game: "race", hint: "A test of stealth",
+    trial: { attr: "grace", skill: "stealth", stage: "stage_river_crossing_night", vehicle: "foot", obstacles: ["wave", "arrow"], hull: 3, speed: 2.6,
+      tally: "Across: {d}% · Close calls: {h} of {l}", bump: "An arrow splashes beside you. You go under and come up further down.",
+      help: "Swim round the snags and the sentries' arrows: up and down, or the buttons.", helpSide: "Swim left and right round the snags and the sentries' arrows.",
+      rules: "Swim the river round the snags and the arrows from the bank. Three close calls, and the night goes wrong.",
       stakes: ["You come up under their bank with the packet dry.", "A sentry sees the water move, and the night goes wrong."] },
     win: { fx: {}, text: "You come up under the enemy's bank with the packet dry, and lie in the reeds until your breath is quiet." },
     lose: { fx: { injury: "scar" }, text: "An arrow finds your shoulder in the water. You deliver the packet bleeding, and swim back the long way." } };

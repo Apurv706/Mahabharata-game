@@ -192,7 +192,7 @@
     fx: { tapas: 3, astraGrant: { id: "vayavya", from: "hermitage" }, rep: { pandava: -1 }, flag: "served_a_year", journal: "You served a sage for a year in the exile, and he gave you the mantra of the wind." },
     hint: "A year of your life: tapas +3, and a divine weapon", text: "After a year of silence the sage gives you the mantra of the wind. Never turn your back on a fight you chose." });
   const OFFERING = { t: "Steal it back by night", game: "sneak", hint: "A test of stealth",
-    trial: { attr: "grace", skill: "stealth", stage: art("scene_temple_offering"),
+    trial: { twist: "dog", attr: "grace", skill: "stealth", stage: art("scene_temple_offering"),
       rules: "Cross the robber's house, in and out. Do not be seen twice.",
       stakes: ["The temple gets its lamp back, and its priest gives you a charmed shield.", "You are caught, and beaten, and let go as a fool."] },
     win: { fx: { boon: "charm_shield", tapas: 2, rep: { common: 1, sages: 1 } }, text: "By dawn the lamp is back on its chain, and the old priest gives you the temple's shield. \"It turns the first blow.\"" },

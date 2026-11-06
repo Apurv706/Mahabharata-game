@@ -346,6 +346,7 @@ html.calm .bmap .m-ring, html.calm .journey { animation: none; }
 .stakes .win b { color: var(--positive); }
 .stakes .lose b { color: var(--negative); }
 .trial-stats { margin: 0; font-size: 14px; color: var(--muted); }
+.trial-twist { margin: 0; padding: 8px 12px; border-left: 3px solid var(--data); border-radius: 6px; background: rgba(226, 181, 90, 0.1); font-size: 15px; line-height: 1.4; } /* the lamp game's twist for this place */
 /* A how-to card (trial.howto, trials.js): a small picture of the game beside its numbered steps (owner, 5 November). */
 .trial .howto { display: grid; grid-template-columns: 92px 1fr; gap: 6px 14px; align-items: start; margin: 0; padding: 10px 12px; border-radius: 12px; background: rgba(0, 0, 0, .2); border: 1px solid var(--gold-line); }
 .trial .howto-h { grid-column: 1 / -1; margin: 0; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--data); }
@@ -2168,3 +2169,27 @@ html[lang="hi"] .b-champ b { line-height: 1.35; }
 .b-champ b { animation: b-champ-name 2.2s ease both; } @keyframes b-champ-name { 0% { transform: translateY(8px) scale(0.96); } 15% { transform: none; } }
 .arena .actor.champ-in svg { animation: champ-in 0.9s ease-out; } @keyframes champ-in { 0% { filter: drop-shadow(0 0 0 rgba(255, 190, 90, 0)); } 30% { filter: drop-shadow(0 0 18px rgba(255, 190, 90, 0.95)); } 100% { filter: none; } }
 html.calm .b-champ, html.calm .b-champ b, html.calm .arena .actor.champ-in svg { animation: none; }
+/* The lamp game's twists (trials.js trial.twist, owner 5 November): a second lamp on the wall, the moon, the dog. */
+.sneakway .beam .pool2 { fill: rgba(255, 214, 140, 0); transition: fill .2s; }
+.sneakway .beam .pool2.warn { fill: rgba(255, 214, 140, 0.18); animation: pool-flicker .18s steps(2) infinite; }
+.sneakway .beam .pool2.on { fill: rgba(255, 214, 140, 0.6); }
+@keyframes pool-flicker { 50% { fill: rgba(255, 214, 140, 0.05); } }
+.sneakway .walllamp { position: absolute; top: 38%; width: 16px; height: 22px; margin-left: -8px; z-index: 1; border-radius: 50% 50% 40% 40%; background: #6b4220; box-shadow: 0 0 0 2px #24120a, 0 0 10px 3px rgba(255, 190, 100, 0.3); }
+.sneakway .walllamp::after { content: ""; position: absolute; left: 50%; top: 100%; width: 3px; height: 20px; margin-left: -1.5px; background: #24120a; } /* its bracket */
+.sneakway .walllamp.on::before { content: ""; position: absolute; left: 50%; top: 100%; width: 90px; height: 260px; margin-left: -45px; pointer-events: none; background: linear-gradient(rgba(255, 214, 140, 0.45), rgba(255, 214, 140, 0)); clip-path: polygon(44% 0, 56% 0, 100% 100%, 0 100%); mix-blend-mode: screen; } /* its light, down to the ground */
+.sneakway .walllamp.warn { background: #c98a3a; animation: lamp-flicker .18s steps(2) infinite; }
+.sneakway .walllamp.on { background: #ffd27a; box-shadow: 0 0 0 2px #24120a, 0 0 18px 6px rgba(255, 200, 110, 0.75); }
+@keyframes lamp-flicker { 50% { background: #5a3418; } }
+.sneakway .moonwash { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: rgba(180, 200, 235, 0); transition: background .6s; }
+.sneakway.moonsoon .moonwash { background: rgba(180, 200, 235, 0.08); }
+.sneakway.moonlit .moonwash { background: rgba(190, 210, 245, 0.26); }
+.sneakway .moonball { position: absolute; top: 6%; right: 8%; width: 26px; height: 26px; border-radius: 50%; z-index: 0; background: #e8ecf5; opacity: .25; box-shadow: 0 0 0 0 rgba(220, 230, 255, 0); transition: opacity .6s, box-shadow .6s; }
+.sneakway.moonsoon .moonball { opacity: .55; }
+.sneakway.moonlit .moonball { opacity: 1; box-shadow: 0 0 26px 10px rgba(220, 230, 255, 0.55); }
+.noise { display: flex; align-items: center; gap: 8px; align-self: center; width: min(78%, 420px); font-size: 13px; color: var(--muted); }
+.noise b { font-weight: 600; white-space: nowrap; }
+.noise span { flex: 1; height: 8px; border-radius: 4px; background: var(--track); overflow: hidden; }
+.noise i { display: block; height: 100%; width: 0; background: #d9a53a; }
+.noise.bark b { color: var(--negative); }
+.trial.immersive .noise { padding: 3px 10px; border-radius: 999px; background: rgba(var(--surface-rgb), 0.6); border: 1px solid var(--gold-line); color: var(--ink); }
+html.calm .sneakway .beam .pool2.warn, html.calm .sneakway .walllamp.warn { animation: none; }

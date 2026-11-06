@@ -118,10 +118,11 @@
       tally: "Seen: {s} of {m}", spotted: "Duryodhana turns, and you freeze behind the hedge. His brothers point.", made: "You tag him!",
       rules: "Creep up on Duryodhana along the hedge. Seen twice, and you are out.",
       stakes: ["You tag Duryodhana in front of everyone, and Bhima throws him in the pond.", "Duryodhana tags you out, and his brothers cheer."] },
-    duryo: { attr: "grace", skill: "stealth", verb: "Run", watch: "bhima", daylight: true, stage: "stage_lotus_garden", trips: 1, spots: 2, secs: 40,
-      help: "Hold to slip from bush to bush. Stop when Bhima looks your way.",
-      tally: "Seen: {s} of {m}", spotted: "Bhima sees you and comes crashing through the lotuses. You dive back under the bushes.", made: "You touch the far wall!",
-      rules: "Get across the garden to the far wall. Seen twice, and you are in the pond.",
+    // A chase, not a creep (owner, 5 November: the lamp game came round too often): run from Bhima for the far wall.
+    duryo: { attr: "grace", skill: "stealth", stage: "stage_lotus_garden", vehicle: "foot", obstacles: ["rock", "wave"], hull: 3, speed: 2.4,
+      tally: "Distance: {d}% · Falls: {h} of {l}", bump: "You trip, and hear Bhima crashing through the lotuses behind you.",
+      help: "Run for the far wall round the stones and the lotus pools: up and down, or the buttons.", helpSide: "Run left and right round the stones and the lotus pools.",
+      rules: "Run from Bhima across the garden to the far wall. Fall three times, and he has you.",
       stakes: ["You are the only one on your side Bhima never catches.", "Bhima catches you and throws you into the pond."] }
   };
 
@@ -235,7 +236,7 @@
             text: "You tag Duryodhana before he hears you, and Bhima throws him in the pond. He climbs out alone and looks straight at you." },
           lose: { fx: { bond: { bhima: 1 }, flag: "played_bhima" },
             text: "Duryodhana spins round and tags you, and his brothers cheer. Bhima's side wins anyway." } },
-        { id: "duryo", t: "Join Duryodhana", game: "sneak", hint: "A game of tag", trial: TAG.duryo,
+        { id: "duryo", t: "Join Duryodhana", game: "race", hint: "A game of tag", trial: TAG.duryo,
           win: { fx: { bond: { duryodhana: 3, bhima: -1 }, flag: ["played_duryodhana", "escaped_bhima"], memory: ["duryodhana", "You were the only one Bhima could not catch, the day of the lotus pond."] },
             text: "You are the only one on your side Bhima cannot catch. Duryodhana, dripping, laughs for the first time all day." },
           lose: { fx: { bond: { duryodhana: 2, bhima: -1 }, flag: ["played_duryodhana", "ducked_by_bhima"] },

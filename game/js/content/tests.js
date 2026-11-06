@@ -237,7 +237,7 @@
       lose: { fx: {}, text: "The bone slips out of line, and the boy goes white. The old healer takes over, and nods at you to watch." },
       retryLose: { penalty: 1, fx: { flag: "arm_twice" }, text: "The bone slips again. The old healer sets it herself, and does not send for you after that." } },
     spy: { t: "Cross the palace at night", req: { path: "spy" }, game: "sneak", hint: "A test of stealth",
-      trial: { attr: "grace", skill: "stealth", stage: "stage_palace_corridor", cast: ["guard"], verb: "Move", trips: 2, help: "Hold to move along the corridor. Stop before the lamplight reaches you.",
+      trial: { twist: "lamp", attr: "grace", skill: "stealth", stage: "stage_palace_corridor", cast: ["guard"], verb: "Move", trips: 2, help: "Hold to move along the corridor. Stop before the lamplight reaches you.",
         tally: "Crossings: {d} of {n} · Seen: {s} of {m}", made: "Through. Now back.", spotted: "A guard turns. You slip back behind a pillar.",
         rules: "Carry the note past the night guard and back, twice, unseen.",
         stakes: ["Your teacher starts trusting you with real secrets.", "A guard sees a shadow. You may try again tomorrow night."] },
@@ -346,7 +346,7 @@
   // ---------- Act IV: those who stayed away from the hall ----------
   const HOUSEHOLD = {
     vidura: { t: "Carry the message", req: (S) => K.homeKey(S) === "hastinapura", game: "sneak", hint: "A test of stealth",
-      trial: { attr: "grace", skill: "stealth", stage: "stage_city_night", cast: ["guard"], verb: "Move", help: "Hold to move along the wall. Stop before the torchlight reaches you.", tally: "Messages through: {d} of {n} · Seen: {s} of {m}", made: "Through. Back for the next.", spotted: "A shout. You run back into the dark.",
+      trial: { twist: "dog", attr: "grace", skill: "stealth", stage: "stage_city_night", cast: ["guard"], verb: "Move", help: "Hold to move along the wall. Stop before the torchlight reaches you.", tally: "Messages through: {d} of {n} · Seen: {s} of {m}", made: "Through. Back for the next.", spotted: "A shout. You run back into the dark.",
         rules: "Carry Vidura's two messages past the watchmen at Kunti's door, unseen.",
         stakes: ["Kunti gets Vidura's words before her sons leave.", "The watchmen turn you back. You may try again before dawn."] },
       retryStakes: ["Kunti gets Vidura's words before her sons leave.", "The watchmen catch you, and Duryodhana hears your name. It counts as two failures, and it will weigh on every stealth test to come; if your stealth is low, they may keep you."],
@@ -357,7 +357,7 @@
       lose: { fx: {}, text: "A torch swings your way and you run, the message still with you. Dawn is a few hours off." },
       retryLose: { penalty: 1, fx: { rep: { kuru: -1, pandava: -1 }, flag: "message_twice" }, text: "A watchman catches your sleeve. You tear free, but he has seen your face, and by morning Duryodhana knows your name." } },
     out: { t: "Get the steward's family out", req: (S) => K.homeKey(S) !== "hastinapura", game: "sneak", hint: "A test of stealth",
-      trial: { attr: "grace", skill: "stealth", stage: "stage_city_night", cast: ["guard"], verb: "Move", trips: 2, help: "Hold to move through the street. Stop before the patrol's torch reaches you.",
+      trial: { twist: "clouds", attr: "grace", skill: "stealth", stage: "stage_city_night", cast: ["guard"], verb: "Move", trips: 2, help: "Hold to move through the street. Stop before the patrol's torch reaches you.",
         tally: "Brought through: {d} of {n} · Seen: {s} of {m}", made: "Through the gate. Back for the others.", spotted: "A patrol shouts. You pull them back into a doorway.",
         rules: "Get Yudhishthira's steward and his family past the patrols, in two trips.",
         stakes: ["The steward's family is across the river before the light comes.", "A patrol turns you back. You can try again before dawn."] },
@@ -458,7 +458,7 @@
       retryLose: { penalty: 1, fx: { flag: "maneater_twice" }, text: "It gets away again. That winter it takes another herdboy, and the villagers stop asking you for help." } }
   };
   const PRISON = { t: "Get out of the prison yard", game: "sneak", hint: "A test of stealth",
-    trial: { attr: "grace", skill: "stealth", stage: "stage_prison_yard", cast: ["guard"], verb: "Move", trips: 2, help: "Hold to creep along the wall. Stop when the torch on the watch platform turns your way.",
+    trial: { twist: "turns", attr: "grace", skill: "stealth", stage: "stage_prison_yard", cast: ["guard"], verb: "Move", trips: 2, help: "Hold to creep along the wall. Stop when the torch on the watch platform turns your way.",
       tally: "Gate reached: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "At the gate. Back to the shadows.", spotted: "The guard on the platform calls out. You freeze in the corner.",
       rules: "Reach the gate twice past the torch: once to slip the bar, once to slip through.",
       stakes: ["You are over the wall and away before dawn.", "The guard nearly sees you. You can try again tomorrow night."] },
@@ -510,10 +510,12 @@
       win: { fx: { rep: { common: 1 }, flag: "night_run", journal: "On the night of the fourteenth day you drove arrows up to the front through the dark." }, text: "You pull up behind the line with the axle smoking. Hands reach up out of the dark for the arrows, and somebody laughs, high and shaky." },
       lose: { fx: {}, text: "A wreck you never saw tips the chariot on one wheel. You get it down again and turn back for another run." },
       retryLose: { penalty: 1, fx: { injury: "leg", flag: "night_twice" }, text: "The chariot goes over in the dark. You crawl out from under it with your leg on fire, and the line runs dry an hour before dawn." } },
-    carry: { t: "Carry the wounded back", req: { side: ["neutral", null, undefined] }, game: "sneak", hint: "A test of nerve",
-      trial: { attr: "grace", skill: "healing", kind: "war", stage: "stage_battlefield_night", cast: ["healer"], verb: "Carry", trips: 2, help: "Hold to carry. Stop when the archers' torchlight sweeps your way.",
-        tally: "Carried back: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "One more behind the lines.", spotted: "Arrows come out of the dark. You flatten yourself in the mud.",
-        rules: "Carry two of the wounded back between the lines, out of the torchlight.",
+    // A run between the lines with him on your back, not a creep (owner, 5 November: the lamp game came round too often).
+    carry: { t: "Carry the wounded back", req: { side: ["neutral", null, undefined] }, game: "race", hint: "A test of nerve",
+      trial: { attr: "grace", skill: "healing", kind: "war", stage: "stage_battlefield_night", vehicle: "foot", obstacles: ["arrow", "fire"], hull: 3, speed: 2.4,
+        tally: "Distance: {d}% · Hit: {h} of {l}", bump: "Arrows come out of the dark. You go down in the mud, and get up again.",
+        help: "Carry him back round the arrows and the burning wrecks: up and down, or the buttons.", helpSide: "Step left and right round the arrows and the burning wrecks.",
+        rules: "Carry the wounded back between the lines, round the arrows and the burning wrecks. Hit three times, and you are pinned down.",
         stakes: ["You bring two back alive, and the healers stop arguing with you.", "The archers pin you down. There are still voices calling."] },
       retryStakes: ["You bring two back alive, and the healers stop arguing with you.", "An arrow finds you between the lines. It counts as two failures, and it will weigh on every test of grace to come."],
       win: { fx: { rep: { common: 2 }, duty: { conscience: 1 }, flag: "night_run", journal: "On the night of the fourteenth day you carried the wounded back between the torches." }, text: "You bring in two men, and the second is from the other army. Nobody in the tent says a word about it." },
@@ -715,7 +717,7 @@
   const WAIT = { unflag: "captive", flag: "waited_out_captivity", duty: { family: -1 }, rep: { common: -1 },
     journal: "You were locked away for months, and waited until they let you go." };
   const ESCAPE = { t: "Get out over the wall", game: "sneak", hint: "A test of stealth",
-    trial: { attr: "grace", skill: "stealth", stage: "stage_prison_yard", cast: ["guard"], verb: "Move", trips: 2, help: "Hold to creep along the wall. Stop when the torch on the watch platform turns your way.",
+    trial: { twist: "clouds", attr: "grace", skill: "stealth", stage: "stage_prison_yard", cast: ["guard"], verb: "Move", trips: 2, help: "Hold to creep along the wall. Stop when the torch on the watch platform turns your way.",
       tally: "Gate reached: {d} of {n} · Seen: {s} of {m} · {t} seconds", made: "At the gate. Back to the shadows.", spotted: "The guard on the platform calls out. You freeze in the corner.",
       rules: "Reach the gate twice past the torch: once to slip the bar, once to slip through.",
       stakes: ["You are over the wall and away before dawn.", "The guard nearly sees you. You can try again another night."] },

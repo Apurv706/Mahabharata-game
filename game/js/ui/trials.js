@@ -82,6 +82,7 @@
       host.innerHTML =
         (t.practice ? '<p class="trial-practice">' + U.tr("A first test. This one does not count; it shows you how tests work.") + "</p>" : "") +
         (t.howto ? "" : '<p class="game-rules">' + U.t(K.val(t.rules)) + "</p>") +
+        (t.twist && TWIST[t.twist] ? '<p class="trial-twist">' + U.tr(TWIST[t.twist]) + "</p>" : "") + // the lamp game's twist (sneak)
         // trial.howto: numbered steps beside a small picture of the game (U.HOWTO_PIC), read before the clock starts (owner, 5 November)
         (t.howto ? '<div class="howto"><p class="howto-h">' + U.tr("How to play") + "</p>" + (U.HOWTO_PIC && U.HOWTO_PIC[kind] ? '<div class="howto-pic" aria-hidden="true">' + U.HOWTO_PIC[kind] + "</div>" : "") +
           "<ol>" + K.val(t.howto).map((s) => "<li>" + U.t(K.val(s)) + "</li>").join("") + "</ol></div>" : "") +
@@ -191,6 +192,13 @@
 
   // Shared with the other kinds of test (ui/play.js, ui/boards.js).
   U.trialFrame = frame; U.pressButton = pressButton; U.loop = loop;
+  // The lamp game's twists, said on the card before it starts and under the way while it plays (U.games.sneak).
+  const TWIST = {
+    dog: "A dog lies by the gate. Move in short bursts: keep going too long and it hears you.",
+    lamp: "A lamp on the wall flares up now and then. Keep out of its light when it does; it flickers first.",
+    clouds: "The moon comes and goes behind the clouds. When it is out, keep still.",
+    turns: "This guard is nervous: he turns back often, with little warning."
+  };
 
   // ---------- Archers with weight (js/ui/puppet-anim.js) ----------
   // On the painting your figure is a live rig: the bow upright in the fist, the string drawn back to
@@ -844,8 +852,18 @@
   // Hold to move. Moving in the light, or standing in it too long, gets you seen.
   U.games.sneak = function (box, done, c) {
     return frame(box, done, c, "sneak", ({ host, power, t, finish, onAct, cue }) => {
-      const need = t.trips || 2, lives = t.spots || 2, light = clamp(0.26 - power * 0.012, 0.15, 0.26), LIMIT = t.secs || 45;
+      // trial.twist (owner, 5 November: the lamp game had grown repetitive), one to a place:
+      //   dog     a dog by the gate hears you if you keep moving: go in short bursts, or it barks and the guard comes your way;
+      //   lamp    a second lamp on the wall flares up now and then over part of the way (it flickers first);
+      //   clouds  the moon comes out from behind the clouds: moving in moonlight is seen (standing still is not);
+      //   turns   a nervous guard who doubles back often, with only a short tell.
+      // Each twist gives a few more seconds.
+      const tw = t.twist || null;
+      const need = t.trips || 2, lives = t.spots || 2, light = clamp(0.26 - power * 0.012, 0.15, 0.26), LIMIT = (t.secs || 45) + (tw ? 8 : 0);
       let pos = 0, trips = 0, seen = 0, sus = 0, holding = false, freeze = 0, last = 0;
+      let noise = 0, dogT = 0, barkT = 0; // the dog
+      const L2 = { c: 0.5 + (K.rng() - 0.5) * 0.16, w: 0.15, on: false, t: 1.6 + K.rng(), warn: false }; // the wall lamp
+      let moon = false, moonT = 3 + K.rng(), moonWarn = false; // the moon
       // The guard walks the far side carrying the torch; its light falls on the ground just ahead of
       // him. He starts on the right and paces the back wall. Before he turns he stops and lifts the
       // torch (the tell); now and then he stops to look. When he sees you he comes at you and the
@@ -857,10 +875,15 @@
       const loads = !t.tally || /load/i.test(t.tally);
       host.innerHTML = '<p class="score" aria-live="polite"></p><div class="sneakway' + (painted ? " painted" : "") + (day ? " daylight" : "") + '">' +
         '<svg class="beam" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sneak-beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd890" stop-opacity="0.85"/><stop offset="1" stop-color="#ffaa50" stop-opacity="0.32"/></linearGradient></defs><polygon fill="url(#sneak-beam)"/><ellipse class="pool" rx="1" ry="4"/></svg>' +
+        (tw === "lamp" ? '<i class="walllamp"></i>' : "") + (tw === "clouds" ? '<i class="moonwash"></i><i class="moonball"></i>' : "") +
         '<div class="goal"></div><div class="guard">' + (painted ? U.puppet(Object.assign({}, U.puppetFor(t.watch || "guard"), { item: null }), { h: 150, pose: "live", flip: true }) : "") + '<i class="flame"></i></div><div class="me"></div></div><div class="sus"><i></i></div>' +
-        '<p class="game-note" aria-live="polite">' + U.trSpan(t.help || "Hold to move. Stop before the light reaches you.") + '</p><div class="btnrow"></div>';
+        (tw === "dog" ? '<div class="noise"><b>' + U.tr("The dog") + "</b><span><i></i></span></div>" : "") +
+        '<p class="game-note" aria-live="polite">' + U.trSpan(tw && TWIST[tw] ? TWIST[tw] : t.help || "Hold to move. Stop before the light reaches you.") + '</p><div class="btnrow"></div>';
       const way = host.querySelector(".sneakway"), me = host.querySelector(".me"), susBar = host.querySelector(".sus i"), score = host.querySelector(".score"), note = host.querySelector(".game-note");
       const guard = host.querySelector(".guard"), poly = host.querySelector(".beam polygon"), pool = host.querySelector(".beam .pool"), clock = U.countdown(host);
+      const noiseBar = host.querySelector(".noise i"), lampEl = host.querySelector(".walllamp");
+      if (tw === "lamp") { pool.insertAdjacentHTML("afterend", '<ellipse class="pool2" rx="1" ry="4"/>'); if (lampEl) lampEl.style.left = L2.c * 100 + "%"; }
+      const pool2 = host.querySelector(".beam .pool2");
       let flame = guard.querySelector(".flame");
       // On the painting your own puppet creeps along the ground through the shadows, empty-handed to
       // make no sound, with the load in a basket on the head. The guard holds his torch up in front
@@ -919,16 +942,25 @@
           gpause -= dt; gpose = turning ? "tell" : "look";
           if (gpause <= 0 && turning) { gdir = -gdir; turning = false; }
         } else {
-          gp += gdir * gspeed * dt;
-          if ((gp <= 0.08 && gdir < 0) || (gp >= 0.92 && gdir > 0)) { gp = clamp(gp, 0.08, 0.92); gpause = 0.9; turning = true; }
-          else if (K.rng() < dt * 0.12) { gpause = 0.6 + K.rng() * 0.6; turning = K.rng() < 0.45; }
+          gp += gdir * gspeed * (dogT > 0 ? 2.2 : 1) * dt; // the dog barked: he comes quickly your way
+          if (dogT > 0) dogT -= dt;
+          if ((gp <= 0.08 && gdir < 0) || (gp >= 0.92 && gdir > 0)) { gp = clamp(gp, 0.08, 0.92); gpause = 0.9; turning = true; dogT = 0; }
+          else if (tw === "turns" ? K.rng() < dt * 0.3 : K.rng() < dt * 0.12) { gpause = tw === "turns" ? 0.25 + K.rng() * 0.25 : 0.6 + K.rng() * 0.6; turning = K.rng() < (tw === "turns" ? 0.75 : 0.45); }
         }
         if (glock <= 0) spot = clamp(gp + gdir * REACH * (gpause > 0 && turning ? 0.4 : 1), 0, 1);
-        const lit = Math.abs(pos - spot) < light / 2;
+        // The twists' own clocks.
+        if (tw === "lamp") { L2.t -= dt; L2.warn = !L2.on && L2.t < 0.5; if (L2.t <= 0) { L2.on = !L2.on; L2.t = L2.on ? 1.8 + K.rng() * 0.6 : 1.6 + K.rng() * 1.2; } }
+        if (tw === "clouds") { moonT -= dt; moonWarn = !moon && moonT < 0.7; if (moonT <= 0) { moon = !moon; moonT = moon ? 2.2 + K.rng() * 0.8 : 2.8 + K.rng() * 1.4; if (moon && holding) note.textContent = K.tr("The moon is out. Keep still."); } }
+        if (tw === "dog" && freeze <= 0) {
+          noise = clamp(noise + (holding ? dt * 0.42 : -dt * 0.6), 0, 1);
+          if (noise >= 1) { noise = 0.4; barkT = 1; gdir = pos >= gp ? 1 : -1; gpause = 0; turning = false; dogT = 1.6; note.textContent = K.tr("The dog barks, and the guard turns your way."); if (K.Sound) K.Sound.play("drum"); }
+        }
+        if (barkT > 0) barkT -= dt;
+        const lit = Math.abs(pos - spot) < light / 2 || (tw === "lamp" && L2.on && Math.abs(pos - L2.c) < L2.w / 2);
         if (freeze > 0) freeze -= dt;
         else {
           if (holding) pos = Math.min(1, pos + dt * 0.11);
-          sus = clamp(sus + (lit ? (holding ? dt * 2.4 : dt * 0.22) : -dt * 0.35), 0, 1);
+          sus = clamp(sus + (lit ? (holding ? dt * 2.4 : dt * 0.22) : moon && holding ? dt * 1.1 : -dt * 0.35), 0, 1);
           if (sus >= 1) { seen++; sus = 0; glock = 1.1; freeze = 1.1; runBack = 1.1; note.textContent = K.tr(t.spotted || "A shout. You drop the basket and run back into the dark."); if (K.Sound) K.Sound.play("hit"); cue("bad");
             if (basket) basket.style.display = "none"; // you start, and the basket drops
             if (mrig) mrig.kick({ ty: -260, head: -300, rot: -200 });
@@ -970,6 +1002,10 @@
           pool.setAttribute("cx", (spot * 100).toFixed(1)); pool.setAttribute("cy", "98"); pool.setAttribute("rx", (light * 50).toFixed(1));
         }
         way.classList.toggle("caught", glock > 0);
+        if (pool2) { pool2.setAttribute("cx", (L2.c * 100).toFixed(1)); pool2.setAttribute("cy", "98"); pool2.setAttribute("rx", (L2.w * 50).toFixed(1)); pool2.setAttribute("class", "pool2" + (L2.on ? " on" : L2.warn ? " warn" : "")); }
+        if (lampEl) lampEl.className = "walllamp" + (L2.on ? " on" : L2.warn ? " warn" : "");
+        if (tw === "clouds") { way.classList.toggle("moonlit", moon); way.classList.toggle("moonsoon", moonWarn); }
+        if (noiseBar) { noiseBar.style.width = noise * 100 + "%"; noiseBar.parentNode.parentNode.classList.toggle("bark", barkT > 0); }
         me.style.left = painted ? "calc(" + shown * 100 + "% + " + Math.round((1 - shown) * 40) + "px)" : pos * 100 + "%"; // the painted figure starts fully on screen
         me.classList.toggle("lit", lit);
         susBar.style.width = sus * 100 + "%";

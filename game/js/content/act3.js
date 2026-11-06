@@ -5,7 +5,7 @@
 
   // The tunnel at Varnavata: Act III's test for those who know of it (the others try the great bow).
   const TUNNEL = { t: "Carry earth from the tunnel", req: { any: [{ teacher: "vidura" }, { path: "spy" }, { friend: ["bhima", "arjuna"] }] }, game: "sneak", hint: "A test of stealth",
-    trial: { attr: "grace", skill: "stealth", verb: "Move", stage: "stage_lac_wall", cast: ["guard"], help: "Hold to creep along the wall with the basket. Stop before the torchlight reaches you.",
+    trial: { twist: "turns", attr: "grace", skill: "stealth", verb: "Move", stage: "stage_lac_wall", cast: ["guard"], help: "Hold to creep along the wall with the basket. Stop before the torchlight reaches you.",
       rules: "Carry two baskets of earth out unseen. Seen twice, and you stop for the night.",
       stakes: ["The tunnel grows by a night's digging, and the Pandavas will owe you.", "You have to stop for the night. The miner will try again tomorrow, with or without you."] },
     retryStakes: ["The tunnel grows by a night's digging, and the Pandavas will owe you.", "A guard sees you, and Purochana starts asking questions. It counts as two failures, and it will weigh on every stealth test to come; if your stealth is low, the guard may not stop at questions."],
