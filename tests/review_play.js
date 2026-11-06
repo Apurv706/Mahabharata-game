@@ -124,7 +124,10 @@ async function playLife(pg, cdp, L, R, o) {
     await tap(START === "war" ? "#btn-war" : "#btn-act5"); await sleep(800);
     const rows = await pg.$$(START === "war" ? ".part-lives [data-w]" : ".part-lives [data-i]");
     if (!rows.length) { L.bad.push("Begin at " + START + " lists no lives"); return; }
-    await tap(rows[Math.floor(R() * rows.length)]); await sleep(2000);
+    const WL = arg("--war-life", ""); // one ready-made life by its place in the list (SPLIT_WAR may give the list)
+    const row = WL !== "" && START === "war" ? await pg.$('.part-lives [data-w="' + WL + '"]') : rows[Math.floor(R() * rows.length)];
+    if (!row) { L.bad.push("no ready-made war life " + WL); return; }
+    await tap(row); await sleep(2000);
     const s = await pg.evaluate(() => K.S && { scene: K.S.scene, act: K.S.act, side: K.S.side, path: K.S.path });
     L.events.push("began at " + START + ": " + JSON.stringify(s));
     if (o.story) { await setMenu(pg, tap, "#m-story"); }
