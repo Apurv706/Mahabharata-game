@@ -88,7 +88,8 @@
     // Then he must lower the shield before he can come again: fblockRec x R.D.rest seconds with no blow from him, and none
     // of yours caught again for fblockCd. That is the opening: strike again.
     fblock: 0.18, fblockLight: 0.15, fblockHeavy: 0.45, fblockRec: 1.0, fblockCd: 1.8,
-    bowSecond: 0.65, bowGap: 0.08, // an archer's second arrow to a press: its weight, and how long after the first (bowShot)
+    bowSecond: 0.8, bowGap: 0.08, // an archer's second arrow to a press: its weight (0.65, then 0.8: owner, 6 November, "make the phone archer stronger"), and how long after the first (bowShot)
+    arrowPush: 0.12,   // every arrow of yours that lands pushes the foe back this much of a body (half on a named champion): no stagger, he walks in against it
     cap: 240         // a fight that has run this long is stopped (it never should)
   };
   // Per-fight tuning: RT.TUNE[encId] = { hp, atk } multiplies that fight's foes' health and blows. Only the
@@ -541,8 +542,8 @@
     if (near && Math.abs(near.rt.x - p.rt.x) < 0.7 * BODY) { p.rt.x = clamp(p.rt.x - face * 0.5 * BODY, EDGE, 1 - EDGE); R.fx.push({ k: "stepback" }); }
     // Two arrows to a press (owner, 6 November: "we should make the archers stronger"; "maybe they shoot 2 arrows at a
     // time"): the first at the first foe in front, the second a moment later at the next foe in front within range, at
-    // RT.P.bowSecond of a blow; a lone foe takes both, each at RT.P.bowSecond (so about 1.3 of a blow on one foe, 1.65
-    // over two). Only the first can knock back.
+    // RT.P.bowSecond of a blow; a lone foe takes both, each at RT.P.bowSecond (so about 1.6 of a blow on one foe, 1.8
+    // over two). Only the first can knock back; every arrow that lands pushes its foe back a little (RT.P.arrowPush).
     const inLane = foesNear(R, p.rt.x, face, RT.SHOOT), t = inLane[0], t2 = inLane[1] || null;
     const k2 = RT.P.bowSecond;
     const one = (on, m, knock, dt) => {
@@ -828,6 +829,7 @@
     if (s.m) { // an arrow of your Strike combo: a plain hit, the third knocking him back (or caught on a shield: foeBlocks)
       const d = B.hit(p, t, s.m * (p.side === "player" ? foeBlocks(R, t, s.heavy, true) : 1)); if (p.side === "player") R.stats.hits++; hitFx(R, t, d, s.heavy, p.side === "player" ? null : p); t.rt.hits.push(R.t); // (an archer beside you: his own hit)
       if (s.knock && t.hp > 0) knock(R, t, sign(t.rt.x - p.rt.x), s.knock * BODY, false);
+      else if (p.side === "player" && t.hp > 0 && d > 0) t.rt.x = clamp(t.rt.x + sign(t.rt.x - p.rt.x) * RT.P.arrowPush * (t.hero || t.person ? 0.5 : 1) * BODY, 0.07, 0.93); // pushed back a little
       return;
     }
     const d = K.ABILITIES[s.id].use(B, p, t) || 0; hitFx(R, t, d, true);

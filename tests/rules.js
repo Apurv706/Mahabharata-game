@@ -1422,6 +1422,14 @@ require(G + "content/war_fights.js");
     const one = volley(false), two = volley(true);
     ok(one.n === 2 && one.on[0] === one.on[1] && Math.abs(one.m[0] - one.m[1]) < 1e-9 && one.m[0] < 0.62, "an archer looses two arrows a press: on a lone foe both, each lighter (" + JSON.stringify(one) + ")");
     ok(two.n === 2 && two.on[0] === two.ids[0] && two.on[1] === two.ids[1] && two.m[0] > two.m[1], "with two foes in front the second arrow goes to the next one (" + JSON.stringify(two) + ")"); }
+  // Every arrow that lands pushes its foe back a little (owner, 6 November: "make the phone archer stronger"), without
+  // staggering him.
+  { K.seed(43); life({ path: "archer" }); const B = C.start("e_guard"); const R = RT.begin(B), p = C.player();
+    const e = B.units.find((u) => u.side === "enemy");
+    B.units.forEach((u) => { if (u !== p && u !== e) { u.still = true; if (u.side === "enemy") { u.rt.entered = false; u.rt.x = 1.1; } } });
+    e.rt.entered = true; e.rt.cool = 99; e.rt.lane = p.rt.lane; e.rt.x = 0.6; e.still = true; e.hero = false; e.person = false; e.shield = false; e.shieldDrawn = false; p.rt.x = 0.3; p.rt.face = 1;
+    const x0 = e.rt.x; RT.step(R, { strike: true }); const t1 = R.t + 0.9; while (R.t < t1 && !R.over) RT.step(R, {});
+    ok(e.rt.x > x0 + RT.P.arrowPush * RT.BODY * 1.5 && e.rt.stag <= 0, "an archer's arrows push the foe back a little, without a stagger (" + (e.rt.x - x0).toFixed(3) + ")"); C.settle("win"); C.end(); }
   // You step between rows (a short step); not into a row where a foe stands right beside you; your side makes room.
   { K.seed(21); life(); const B = C.start("e_guard"); const R = RT.begin(B); const p = C.player();
     B.units.filter((u) => u.side === "enemy").forEach((u) => { u.rt.x = 0.97; u.rt.cool = 99; u.rt.wave = 1; u.rt.entered = false; });
