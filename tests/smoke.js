@@ -119,14 +119,24 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     for (let i = 0; i < 40 && (await pg.evaluate(() => !!K.UI.rtScreen())); i++) { await sleep(300); const w = await pg.$("#rt .written .go, #rt [data-accept]"); if (w) await w.tap().catch(() => {}); }
     return "real-time fight" + (still ? " (ended after 50 s)" : "");
   }
-  // A war-day fight: a place in the line, then the first move card and a tap on a foe, round after round.
+  // A war-day fight: a place in the line, then the first move card and a tap on a foe, round after round. Since Build B
+  // each move is followed by a real-time clash: a few blows struck in it, then Fall back to the orders.
+  const clashing = (pg) => pg.evaluate(() => !!(K.UI.warScreen() && (K.UI.warScreen().clashing || K.Combat.state() && K.Combat.state().clashPending)));
+  async function clashOut(pg) {
+    for (let i = 0; i < 20 && (await clashing(pg)); i++) {
+      if (await pg.$("#rt .cl-back")) { for (let k = 0; k < 3; k++) { await tapSel(pg, '#rt [data-act="strike"]'); await sleep(200); } await tapSel(pg, "#rt .cl-back"); }
+      await sleep(600);
+    }
+  }
   async function playWar(pg) {
     const t = Date.now();
     while (Date.now() - t < 60000 && (await pg.evaluate(() => !!(K.UI.warScreen() && !K.UI.warScreen().over && !document.querySelector("#rt .endcard"))))) {
+      if (await clashing(pg)) { await clashOut(pg); continue; }
       if (await tapSel(pg, "#rt [data-place]")) { await sleep(500); continue; }
       await tapSel(pg, '#wd-moves [data-move="strike"], #wd-moves button:not([disabled])'); await sleep(250);
       await tapSel(pg, "#rt .foe-tap:not([hidden])"); await sleep(1200);
     }
+    await clashOut(pg);
     if (await pg.evaluate(() => !!(K.UI.warScreen() && !document.querySelector("#rt .endcard")))) await pg.evaluate(() => { const B = K.Combat.state(); if (B && !B.over) { B.units.forEach((u) => { if (u.side === "enemy") u.hp = 0; }); K.Combat.settle("win"); K.UI.renderBattle(B); } });
     for (let i = 0; i < 30 && (await pg.evaluate(() => !!K.UI.warScreen())); i++) { await sleep(300); await tapSel(pg, "#rt .endcard button"); }
     return "war-day fight";
