@@ -648,7 +648,7 @@ async function warDay(pg, cdp, L, R, o, tap) {
     if (s.written) { await tp(".written .go"); await sleep(600); continue; }
     if (s.brief) { await tp(".fb-go"); await sleep(500); continue; }
     if (s.tour) { await tp(".tc-skip"); await sleep(500); continue; }
-    if (s.place) { const all = await pg.$$("#rt [data-place]"); const b = all[Math.floor(R() * all.length)]; await (o.touch ? b.tap() : b.click()).catch(() => {}); F.used.push("place"); await sleep(600); continue; }
+    if (s.place) { const all = await pg.$$("#rt [data-place]"); const b = all[Math.floor(R() * all.length)]; if (b) await (o.touch ? b.tap() : b.click()).catch(() => {}); F.used.push("place"); await sleep(600); continue; }
     if (s.sheet) { if (!(await tp(".sheet:not([hidden]) [data-resume], .sheet:not([hidden]) [data-close]"))) await tp(s.sheet === "company" ? '[data-wact="company"]' : '[data-wact="aid"]'); await sleep(300); continue; }
     if (s.read) { await sleep(900 + R() * 300); const opts = await pg.$$("#rt .wd-read [data-rd]"); const b = opts[R() < 0.6 ? 3 : Math.floor(R() * opts.length)]; if (b) await (o.touch ? b.tap() : b.click()).catch(() => {}); F.used.push("read"); await sleep(700); continue; }
     if (!company && s.company && s.round >= 2) { company = true; F.used.push("company"); await tp('[data-wact="company"]'); await sleep(500);
@@ -657,7 +657,7 @@ async function warDay(pg, cdp, L, R, o, tap) {
     if (s.moves.length) {
       const m = R() < 0.6 && s.moves.includes("strike") ? "strike" : s.moves[Math.floor(R() * s.moves.length)];
       await tp('#wd-moves [data-move="' + m + '"]'); F.used.push(m); await sleep(350);
-      if (await pg.$("#rt .foe-tap:not([hidden])")) { const fs_ = await pg.$$("#rt .foe-tap:not([hidden])"); const b = fs_[Math.floor(R() * fs_.length)]; await (o.touch ? b.tap() : b.click()).catch(() => {}); }
+      if (await pg.$("#rt .foe-tap:not([hidden])")) { const fs_ = await pg.$$("#rt .foe-tap:not([hidden])"); const b = fs_[Math.floor(R() * fs_.length)]; if (b) await (o.touch ? b.tap() : b.click()).catch(() => {}); }
       rounds++; await sleep(900); continue;
     }
     await sleep(400);
