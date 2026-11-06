@@ -534,7 +534,7 @@ async function rtFight(pg, cdp, L, R, o, tap, clash) {
   const hold = async (k, pt) => { if (holding === k) return; await release(); holding = k; F.used.push("hold:" + k); if (o.touch) await touchDown(pt); else await pg.keyboard.down(KEYOF[k]); };
   const release = async () => { if (!holding) return; if (o.touch) await touchUp(); else await pg.keyboard.up(KEYOF[holding]); holding = null; };
   const press = async (k, pt, key) => { await release(); if (o.touch && pt) await pg.touchscreen.tap(pt.x, pt.y); else await pg.keyboard.press(key); F.used.push(k); };
-  const sheetTap = async (sel) => { await release(); const b = await pg.$("#rt " + sel); if (b) { if (o.touch) await b.tap().catch(() => b.click().catch(() => {})); else await b.click().catch(() => {}); } }; // the sheet may close under the finger
+  const sheetTap = async (sel) => { await release(); const b = await pg.$("#rt " + sel); if (b) { if (o.touch) await b.tap({ timeout: 1500 }).catch(() => b.click({ timeout: 1500 }).catch(() => {})); else await b.click({ timeout: 1500 }).catch(() => {}); } }; // the sheet may close under the finger
   while (Date.now() - t0 < LIMIT) {
     const s = await pg.evaluate(READ_RT);
     if (s.gone) break;
@@ -566,13 +566,13 @@ async function rtFight(pg, cdp, L, R, o, tap, clash) {
       if (!pz.p || pz2 !== pz.t) L.bad.push(F.enc + ": Pause did not stop the fight (" + JSON.stringify([pz, pz2]) + ")");
       continue; }
     if (!did.orders && (s.friend || s.soldiers) && T > 3) { did.orders = true; F.used.push("orders"); if (o.touch) await press("orders", s.btn.orders); else await pg.keyboard.press("o"); await sleep(500);
-      const opts = await pg.$$("#rt .orders-sheet .sec.on [data-so], #rt .orders-sheet .sec.on [data-fr]"); if (opts.length) { const b = opts[Math.floor(R() * opts.length)]; await (o.touch ? b.tap() : b.click()).catch(() => {}); F.used.push("order:" + (await b.evaluate((x) => x.dataset.so || x.dataset.fr))); }
+      const opts = await pg.$$("#rt .orders-sheet .sec.on [data-so], #rt .orders-sheet .sec.on [data-fr]"); if (opts.length) { const b = opts[Math.floor(R() * opts.length)]; await (o.touch ? b.tap({ timeout: 1500 }) : b.click({ timeout: 1500 })).catch(() => {}); F.used.push("order:" + (await b.evaluate((x) => x.dataset.so || x.dataset.fr))); }
       continue; }
     if (!did.call && s.canCall && s.hp < 0.7 && R() < 0.5) { did.call = true; await sheetAid(pg, o, "call", s, F); continue; }
     if (!did.astra && s.astra && T > 4 && R() < 0.4) { did.astra = true; await sheetAid(pg, o, "astra", s, F); await sleep(2500); continue; }
     if (s.canHerbs && s.hp < 0.35) { await sheetAid(pg, o, "herbs", s, F); continue; }
     // A foe kneeling and asking: spare him, sometimes.
-    if (s.spare.length && !did.spare && R() < 0.5) { did.spare = true; F.used.push("spare"); if (o.touch) { const t = await pg.$("#rt .plea i"); if (t) await t.tap().catch(() => {}); else await pg.keyboard.press("e"); } else await pg.keyboard.press("e"); await sleep(300); continue; }
+    if (s.spare.length && !did.spare && R() < 0.5) { did.spare = true; F.used.push("spare"); if (o.touch) { const t = await pg.$("#rt .plea i"); if (t) await t.tap({ timeout: 1500 }).catch(() => {}); else await pg.keyboard.press("e"); } else await pg.keyboard.press("e"); await sleep(300); continue; }
     // A storm (nothing to strike at): keep your distance and defend.
     if (s.noStrike) { if (s.near && Math.abs(s.near.d) < 0.4) { const k = s.near.d > 0 ? "l" : "r"; await hold(k, s.btn[k]); } else await release(); await sleep(150); continue; }
     if (s.canSkill && R() < 0.15) { await press("skill", s.btn.skill, "l"); await sleep(250); continue; }
@@ -618,7 +618,7 @@ async function sheetAid(pg, o, what, s, F) {
   if (o.touch) await pg.touchscreen.tap(s.btn.aid.x, s.btn.aid.y); else await pg.mouse.click(s.btn.aid.x, s.btn.aid.y);
   await sleep(350);
   const b = await pg.$('#rt .aid-sheet [data-aid="' + what + '"]:not([disabled])');
-  if (b) { await (o.touch ? b.tap() : b.click()).catch(() => {}); F.used.push(what); } else { await pg.evaluate(() => { const r = document.querySelector("#rt .aid-sheet [data-resume]"); if (r) r.click(); }); F.used.push(what + "(not offered)"); }
+  if (b) { await (o.touch ? b.tap({ timeout: 1500 }) : b.click({ timeout: 1500 })).catch(() => {}); F.used.push(what); } else { await pg.evaluate(() => { const r = document.querySelector("#rt .aid-sheet [data-resume]"); if (r) r.click(); }); F.used.push(what + "(not offered)"); }
   await sleep(300);
 }
 
@@ -633,7 +633,9 @@ async function warDay(pg, cdp, L, R, o, tap) {
   const t0 = Date.now(), F = { enc: await pg.evaluate(() => K.UI.warScreen() && K.UI.warScreen().B.enc.id), out: null, used: [], war: true };
   let company = false, rounds = 0;
   F.clashes = 0; F.clashSecs = 0;
-  const tp = async (sel) => { const b = await pg.$("#rt " + sel); if (!b) return false; await (o.touch ? b.tap() : b.click()).catch(() => {}); return true; };
+  // (a short wait at most: a tap Playwright cannot make at once -- the war day hidden behind its clash -- waited up to 30 s,
+  // and the clash ran with no one at the controls; owner's war replays, 6 November)
+  const tp = async (sel) => { const b = await pg.$("#rt " + sel); if (!b) return false; await (o.touch ? b.tap({ timeout: 1500 }) : b.click({ timeout: 1500 })).catch(() => {}); return true; };
   while (Date.now() - t0 < 600000) {
     // The clash: the war day steps aside (#rt-war) and the real-time screen has the stage for about 15 s.
     if (await pg.evaluate(() => { const V = K.UI.warScreen(); return !!(V && V.clashing && K.UI.rtScreen && K.UI.rtScreen()); })) {
@@ -648,16 +650,16 @@ async function warDay(pg, cdp, L, R, o, tap) {
     if (s.written) { await tp(".written .go"); await sleep(600); continue; }
     if (s.brief) { await tp(".fb-go"); await sleep(500); continue; }
     if (s.tour) { await tp(".tc-skip"); await sleep(500); continue; }
-    if (s.place) { const all = await pg.$$("#rt [data-place]"); const b = all[Math.floor(R() * all.length)]; if (b) await (o.touch ? b.tap() : b.click()).catch(() => {}); F.used.push("place"); await sleep(600); continue; }
+    if (s.place) { const all = await pg.$$("#rt [data-place]"); const b = all[Math.floor(R() * all.length)]; if (b) await (o.touch ? b.tap({ timeout: 1500 }) : b.click({ timeout: 1500 })).catch(() => {}); F.used.push("place"); await sleep(600); continue; }
     if (s.sheet) { if (!(await tp(".sheet:not([hidden]) [data-resume], .sheet:not([hidden]) [data-close]"))) await tp(s.sheet === "company" ? '[data-wact="company"]' : '[data-wact="aid"]'); await sleep(300); continue; }
-    if (s.read) { await sleep(900 + R() * 300); const opts = await pg.$$("#rt .wd-read [data-rd]"); const b = opts[R() < 0.6 ? 3 : Math.floor(R() * opts.length)]; if (b) await (o.touch ? b.tap() : b.click()).catch(() => {}); F.used.push("read"); await sleep(700); continue; }
+    if (s.read) { await sleep(900 + R() * 300); const opts = await pg.$$("#rt .wd-read [data-rd]"); const b = opts[R() < 0.6 ? 3 : Math.floor(R() * opts.length)]; if (b) await (o.touch ? b.tap({ timeout: 1500 }) : b.click({ timeout: 1500 })).catch(() => {}); F.used.push("read"); await sleep(700); continue; }
     if (!company && s.company && s.round >= 2) { company = true; F.used.push("company"); await tp('[data-wact="company"]'); await sleep(500);
-      const os = await pg.$$("#rt .company-sheet [data-ord][aria-pressed=false]"); if (os.length) { const b = os[Math.floor(R() * os.length)]; await (o.touch ? b.tap() : b.click()).catch(() => {}); F.used.push("order:" + (await b.evaluate((x) => x.dataset.ord))); }
+      const os = await pg.$$("#rt .company-sheet [data-ord][aria-pressed=false]"); if (os.length) { const b = os[Math.floor(R() * os.length)]; await (o.touch ? b.tap({ timeout: 1500 }) : b.click({ timeout: 1500 })).catch(() => {}); F.used.push("order:" + (await b.evaluate((x) => x.dataset.ord))); }
       await sleep(300); if (await pg.evaluate(() => K.UI.warScreen() && K.UI.warScreen().sheet)) await tp('[data-wact="company"]'); await sleep(300); continue; }
     if (s.moves.length) {
       const m = R() < 0.6 && s.moves.includes("strike") ? "strike" : s.moves[Math.floor(R() * s.moves.length)];
       await tp('#wd-moves [data-move="' + m + '"]'); F.used.push(m); await sleep(350);
-      if (await pg.$("#rt .foe-tap:not([hidden])")) { const fs_ = await pg.$$("#rt .foe-tap:not([hidden])"); const b = fs_[Math.floor(R() * fs_.length)]; if (b) await (o.touch ? b.tap() : b.click()).catch(() => {}); }
+      if (await pg.$("#rt .foe-tap:not([hidden])")) { const fs_ = await pg.$$("#rt .foe-tap:not([hidden])"); const b = fs_[Math.floor(R() * fs_.length)]; if (b) await (o.touch ? b.tap({ timeout: 1500 }) : b.click({ timeout: 1500 })).catch(() => {}); }
       rounds++; await sleep(900); continue;
     }
     await sleep(400);
