@@ -97,7 +97,7 @@
     B.acts.push = function (a) { if (V && V.B === B) V.ev.push({ k: "act", uid: a.uid, id: a.id }); return push0.apply(this, arguments); };
     dom();
     if (K.Sound && K.Sound.mood) K.Sound.mood("battle");
-    U.redraw = () => { if (V) { dom(); idle(); } };
+    U.redraw = () => { if (V) { dom(); V.low = null; idle(); } }; // (a fresh screen: the low-life warning set again if it is due)
     // Before the first blow: the card that says how this fight goes (or one line), then the tour on a life's first fight.
     if (U.fightBriefWanted && U.fightBriefWanted(B.enc.id)) brief();
     idle();

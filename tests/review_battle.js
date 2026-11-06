@@ -200,7 +200,7 @@ browser("orders-day", "the commander's orders at a battle day: name, since, Toda
   for (const [dev, lang, side, scene, last] of CASES) {
     const tag = dev + " " + lang + " " + side + " " + scene + ": ";
     const { pg, errs, close } = await open({ device: dev, lang });
-    const r = await pg.evaluate(async ([side, scene, last]) => {
+    const r = await pg.evaluate(async ([side, scene, last, lang]) => {
       const S = K.newLife(); Object.assign(S, { alive: true, act: 6, age: 44, name: "Asha", pronoun: "she", origin: "panchala", court: "panchala", path: "mace", side, teacher: "drona", temperament: "bold", heirloom: "amulet" }); K.S = S;
       S.ordersDay = last; S.ordersJ = 0; S.journal.push({ age: 44, act: 6, src: "You survived the first days of the war.", text: "You survived the first days of the war." });
       K.prefs({ calm: false, beats: false });
@@ -212,7 +212,7 @@ browser("orders-day", "the commander's orders at a battle day: name, since, Toda
       const gr = go.getBoundingClientRect();
       return { who: (o.querySelector(".ord-who b") || {}).textContent || "", since: o.querySelectorAll(".ord-since li").length, today: !!o.querySelector(".ord-today p"), you: !!o.querySelector(".ord-you p"),
         fits: cr.top >= -1 && cr.bottom <= innerHeight + 1 && cr.left >= -1 && cr.right <= innerWidth + 1, goIn: gr.top >= 0 && gr.bottom <= innerHeight + 1 && gr.width > 30, lang: K.lang, latin: lang === "hi" ? (o.innerText.match(/[A-Za-z]{4,}/g) || []).filter((w) => !/Asha/.test(w)).slice(0, 5) : [] };
-    }, [side, scene, last]);
+    }, [side, scene, last, lang]);
     if (r.none) { bad.push(tag + "no orders were shown (scene " + r.scene + ")"); await close(); continue; }
     if (!r.who) bad.push(tag + "no commander's name");
     if (!r.since) bad.push(tag + "nothing about what happened since the last orders");
@@ -281,9 +281,14 @@ browser("low-life", "the warning below a fifth of your life: real time, a war da
   await pg.evaluate(() => { const S = (K.S = Object.assign(K.newLife(), { name: "Ira", pronoun: "she", origin: "panchala", age: 44, act: 6, path: "mace", side: "pandava", teacher: "drona" })); S.items.herbs = 2; S.flags.push("role_front"); S.briefed = ["duel", "melee", "hold", "rounds"]; S.fightTour = 1; K.seed(5); K.UI.startBattle("e_day1", () => {}); });
   await sleep(1800);
   const place = await pg.$("#rt [data-place]"); if (place) { await place.tap().catch(() => {}); await sleep(700); }
-  await setLife(0.15); await sleep(1200);
+  // (the war day's screen redraws on the fight's events: a blow brings you down to 15%, as in play)
+  const blowTo = (k) => pg.evaluate((k) => { const B = K.Combat.state(), p = B.units[0], e = B.units.find((u) => u.side === "enemy" && u.hp > 0); p.hp = Math.max(2, Math.round(p.maxHp * k) + 1); B.hit(e, p, 0.01); K.UI.renderBattle(B); }, k);
+  await blowTo(0.15); await sleep(1500);
   s = await shown("war"); if (!s.n) bad.push("war day: no warning on the war day's screen at 15% of your life");
   await pg.screenshot({ path: path.join(SHOTS, "lowlife-warday-iPhone15.png") });
+  await pg.evaluate(() => K.UI.redraw()); await sleep(600);
+  s = await shown("war"); if (!s.n) bad.push("war day: the warning went after the screen was redrawn (a language switch)");
+  await setLife(0.15);
   const mv = await pg.$('#rt #wd-moves [data-move="wall"]:not([disabled]), #rt #wd-moves [data-move="strike"]:not([disabled])');
   if (mv) { await mv.tap().catch(() => {}); await sleep(350); const ft = await pg.$("#rt .foe-tap:not([hidden])"); if (ft) await ft.tap().catch(() => {}); }
   let clash = false;
