@@ -40,8 +40,10 @@
     // longer rests between their blows, wider perfect-roll and perfect-block windows, and Block lets less through and tires
     // you less. That bot wins 92% of real-time fights (63% before; 68% on the turns; seeds 11 and 37, 1500 lives each).
     hpFoe: 6.75,       // health is scaled up so a fight lasts its 30-60 s (blows are as in the turns)
-    hpFriend: 1.35,    // you act several times as often as any foe: your own health is scaled far less
-    atkFoe: 0.425,     // a little easier (owner, 6 November: "let's make the fights a little easier"): 0.5 -> 0.425, blows 15% softer
+    hpFriend: 1.5,     // you act several times as often as any foe: your own health is scaled far less (1.35 -> 1.5: owner, 6 November, 11:52)
+    atkFoe: 0.36,      // a little easier (owner, 6 November: "let's make the fights a little easier"): 0.5 -> 0.425, blows 15% softer;
+                       // then (11:52, "make the games easier, it's too hard right now"; chosen: a little easier, real-time fights and
+                       // war-day clashes) 0.425 -> 0.36, 15% softer again, with your health up a ninth (hpFriend); the act ramp kept
     hpAlly: null,     // those beside you act as often as foes: scaled as foes (null) unless set
     spacing: 0.45,
     archerGap: 0.55,   // an archer looses oftener than a swordsman swings (0.7 until archers only shot, 4 November)     // a second foe's blow never lands within this of the first (two at once, but readable)
