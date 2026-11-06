@@ -183,7 +183,7 @@
   function specFor(u) {
     if (isP(u)) {
       const s = Object.assign({}, K.puppetSpec(K.S), { item: K.fightItem(K.S, V && V.B && V.B.enc.dream ? "dream" : null) }); // the dream: grown, with a sword
-      if (C.hasShield && C.hasShield()) s.gear = (s.gear || []).filter((g) => g !== "shield").concat("buckler"); // a small shield, on the mace and sword paths
+      if (C.hasShield && C.hasShield()) s.gear = (s.gear || []).filter((g) => g !== "shield" && g !== "buckler").concat("shield"); // the big round shield, on the mace and sword paths (and in the dream)
       return s;
     }
     if (isCompany(u)) return Object.assign({}, K.PUPPETS.soldier, { stage: "adult" });

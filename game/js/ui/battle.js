@@ -87,9 +87,9 @@
     return u.item && s && !s.thing && u.side !== "player" ? Object.assign({}, s, { item: u.item }) : s; // a fight that draws him with another weapon (unit.item)
   }
   function specOf(u) {
-    if (u.side === "player") { // the weapon this fight is fought with; the small shield on the mace and sword paths, with a mace or a blade in hand
+    if (u.side === "player") { // the weapon this fight is fought with; the round shield on the mace and sword paths, with a mace or a blade in hand
       const B = C.state(), s = Object.assign(K.puppetSpec(K.S), { item: K.fightItem(K.S, B ? B.mode || (B.enc.dream ? "dream" : null) : null) });
-      if (C.hasShield && C.hasShield() && /^(mace|sword|spear)$/.test(s.item || "")) s.gear = (s.gear || []).filter((g) => g !== "shield").concat("buckler");
+      if (C.hasShield && C.hasShield() && /^(mace|sword|spear)$/.test(s.item || "")) s.gear = (s.gear || []).filter((g) => g !== "shield" && g !== "buckler").concat("shield"); // the big round shield (owner, 6 November)
       return s;
     }
     if (u.person === "ugra") return Object.assign(U.puppetFor("ugra"), { item: "club" }); // Ugra grown, at the war: the club he strikes with

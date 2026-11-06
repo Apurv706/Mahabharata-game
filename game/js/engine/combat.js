@@ -92,8 +92,9 @@
   // The player carries a small shield where the path suits it (owner, 4 November): the mace fighter, and a sword (the
   // driver on foot, the commander); not an archer's bow or a short blade (the healer, the spy, the bard). In a
   // real-time fight a shield-carrier blocks with it (RT, "Block") where the others roll.
+  // (6 November, owner: the dream's grown fighter, with a sword, carries one too, and blocks.)
   C.SHIELD_PATHS = { mace: true, charioteer: true, strategist: true };
-  C.hasShield = (S = K.S) => !!(S && C.SHIELD_PATHS[S.path]);
+  C.hasShield = (S = K.S) => !!(S && (C.SHIELD_PATHS[S.path] || (B && B.enc && B.enc.dream && S === K.S)));
   const isCompany = (u) => !!(u && u.side === "ally" && u.plural && !u.person && !u.called);
 
   const living = (side) => B.units.filter((u) => u.hp > 0 && !u.away && (side === "friends" ? u.side !== "enemy" : u.side === side));

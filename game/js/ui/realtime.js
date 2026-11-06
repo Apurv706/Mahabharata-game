@@ -38,12 +38,12 @@
     sword: '<svg viewBox="0 0 100 12" aria-hidden="true"><path d="M4 6 H20" stroke="#5a3418" stroke-width="4" stroke-linecap="round"/><path d="M20 3 L92 5 L98 6 L92 7 L20 9 Z" fill="#dcd7c8" stroke="#1d0f08" stroke-width="1"/></svg>'
   };
   // Each unit as a puppet: you with the weapon you fight with (K.fightItem: a sword for the driver and the commander, the bow
-  // for the archer, no swap mid-fight) and your small shield on the mace and sword paths; everyone else as ui/battle.js draws
+  // for the archer, no swap mid-fight) and your round shield on the mace and sword paths (and in the dream); everyone else as ui/battle.js draws
   // him (one rule for every screen: tests/weapons.js holds RT.weaponOf to it).
   function specFor(u) {
     if (u.side === "player") {
       const sp = Object.assign({}, K.puppetSpec(K.S), { item: V && V.R && V.R.B.enc.dream ? "sword" : K.fightItem(K.S) }); // the dream: grown, with a sword
-      if (C.hasShield && C.hasShield()) sp.gear = (sp.gear || []).filter((g) => g !== "shield").concat("buckler");
+      if (C.hasShield && C.hasShield()) sp.gear = (sp.gear || []).filter((g) => g !== "shield" && g !== "buckler").concat("shield"); // the big round shield (owner, 6 November; it was a small one)
       return sp;
     }
     if (U.battleSpecFor) return U.battleSpecFor(u);
