@@ -472,11 +472,15 @@ const READ_RT = () => {
     astra: RT.astras().some((a) => !a.why), spare: RT.spareable(R).map((u) => u.uid), plea: !!V.el.querySelector(".plea i"),
     friend: R.B.units.some((u) => u.side === "ally" && u.hp > 0 && (u.called || u.person)), soldiers: R.B.units.some((u) => u.side === "ally" && u.hp > 0 && u.plural && !u.person && !u.called),
     held: Object.assign({}, V.held), ax: !!V.ax,
+    clash: !!V.clash, call: V.clash && V.clash.call && !V.clash.call.over ? V.clash.call.a.rt.x - p.rt.x : null, // a war day's clash; a comrade calling, and how far
+
     btn: { l: box('[data-hold="l"]'), r: box('[data-hold="r"]'), block: box('[data-hold="block"]'), strike: box('[data-act="strike"]'), roll: box('[data-act="roll"]'), skill: box('[data-act="skill"]'), aid: box('[data-act="aid"]'), orders: box('[data-act="orders"]'), pause: box('[data-act="pause"]') }
   };
 };
-async function rtFight(pg, cdp, L, R, o, tap) {
-  const t0 = Date.now(), F = { enc: null, out: null, used: [], secs: 0, tries: 0 };
+// clash: a war day's clash (about 15 s on this screen, then back to the war day): no pause or orders check, nothing
+// recorded as a fight of its own; the war day keeps the record.
+async function rtFight(pg, cdp, L, R, o, tap, clash) {
+  const t0 = Date.now(), F = { enc: null, out: null, used: [], secs: 0, tries: 0 }, LIMIT = clash ? 60000 : 240000;
   let holding = null, did = { orders: false, pause: false, call: false, astra: false, spare: false };
   const touchDown = async (pt) => { await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [pt] }); };
   const touchUp = async () => { await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] }); };
@@ -485,7 +489,7 @@ async function rtFight(pg, cdp, L, R, o, tap) {
   const release = async () => { if (!holding) return; if (o.touch) await touchUp(); else await pg.keyboard.up(KEYOF[holding]); holding = null; };
   const press = async (k, pt, key) => { await release(); if (o.touch && pt) await pg.touchscreen.tap(pt.x, pt.y); else await pg.keyboard.press(key); F.used.push(k); };
   const sheetTap = async (sel) => { await release(); const b = await pg.$("#rt " + sel); if (b) { if (o.touch) await b.tap().catch(() => b.click().catch(() => {})); else await b.click().catch(() => {}); } }; // the sheet may close under the finger
-  while (Date.now() - t0 < 240000) {
+  while (Date.now() - t0 < LIMIT) {
     const s = await pg.evaluate(READ_RT);
     if (s.gone) break;
     F.enc = F.enc || s.enc;
@@ -506,6 +510,10 @@ async function rtFight(pg, cdp, L, R, o, tap) {
     if (holding === "block") { await sleep(80); continue; }
     // Once a fight: pause and resume; open Orders and pick another order; call for help; the divine weapon.
     const T = (Date.now() - t0) / 1000;
+    if (clash) { did.pause = true; did.orders = true; }
+    // A comrade calling from the far flank: most people go to him.
+    if (s.call != null && !did.heed) { did.heed = true; did.go = R() < 0.75; if (did.go) F.used.push("heed"); }
+    if (s.call != null && did.go && Math.abs(s.call) > 0.05) { const k = s.call > 0 ? "r" : "l"; await hold(k, s.btn[k]); await sleep(160); continue; }
     if (!did.pause && T > 6) { did.pause = true; F.used.push("pause"); if (o.touch) await press("pause", s.btn.pause); else await pg.keyboard.press("p"); await sleep(500);
       const pz = await pg.evaluate(() => ({ p: K.UI.rtScreen() && K.UI.rtScreen().paused, t: K.UI.rtScreen() && K.UI.rtScreen().R.t })); await sleep(500);
       const pz2 = await pg.evaluate(() => K.UI.rtScreen() && K.UI.rtScreen().R.t);
@@ -535,6 +543,10 @@ async function rtFight(pg, cdp, L, R, o, tap) {
   }
   await release();
   F.secs = Math.round((Date.now() - t0) / 1000);
+  if (clash) {
+    if (await pg.evaluate(() => !!K.UI.rtScreen())) { L.bad.push("a clash on " + F.enc + " did not end in 60 s"); await shot(pg, L, "clash-long-" + F.enc); }
+    return F;
+  }
   if (await pg.evaluate(() => !!K.UI.rtScreen())) {
     L.bad.push("the real-time fight " + F.enc + " did not end in 240 s of play"); await shot(pg, L, "fight-long-" + F.enc);
     await pg.evaluate(() => K.Combat.state().units.forEach((u) => { if (u.side === "enemy") u.hp = 0; }));
@@ -563,10 +575,18 @@ async function watch(pg) {
 async function warDay(pg, cdp, L, R, o, tap) {
   const t0 = Date.now(), F = { enc: await pg.evaluate(() => K.UI.warScreen() && K.UI.warScreen().B.enc.id), out: null, used: [], war: true };
   let company = false, rounds = 0;
+  F.clashes = 0; F.clashSecs = 0;
   const tp = async (sel) => { const b = await pg.$("#rt " + sel); if (!b) return false; await (o.touch ? b.tap() : b.click()).catch(() => {}); return true; };
-  while (Date.now() - t0 < 300000) {
-    const s = await pg.evaluate(() => { const V = K.UI.warScreen(); if (!V) return { gone: true }; return { over: !!V.over, end: !!document.querySelector("#rt .endcard button"), brief: !!document.querySelector("#rt .fb-go"), tour: !!document.querySelector("#rt .tc-skip"), place: [...document.querySelectorAll("#rt [data-place]")].filter((b) => b.offsetParent !== null).length, read: !!document.querySelector("#rt .wd-read [data-rd]"), moves: [...document.querySelectorAll("#wd-moves [data-move]:not([disabled])")].map((b) => b.dataset.move), foes: [...document.querySelectorAll("#rt .foe-tap:not([hidden])")].length, sheet: V.sheet || null, round: V.B.round, company: !!document.querySelector('#rt [data-wact="company"]'), written: !!document.querySelector("#rt .written .go") }; });
+  while (Date.now() - t0 < 600000) {
+    // The clash: the war day steps aside (#rt-war) and the real-time screen has the stage for about 15 s.
+    if (await pg.evaluate(() => { const V = K.UI.warScreen(); return !!(V && V.clashing && K.UI.rtScreen && K.UI.rtScreen()); })) {
+      const c = await rtFight(pg, cdp, L, R, o, tap, true);
+      F.clashes++; F.clashSecs += c.secs; F.used.push("clash(" + c.used.filter((u) => u === "strike" || u === "click").length + " blows" + (c.used.includes("heed") ? ", heeded the call" : "") + ")");
+      await sleep(500); continue;
+    }
+    const s = await pg.evaluate(() => { const V = K.UI.warScreen(); if (!V) return { gone: true }; if (V.clashing) return { wait: true }; return { over: !!V.over, end: !!document.querySelector("#rt .endcard button"), brief: !!document.querySelector("#rt .fb-go"), tour: !!document.querySelector("#rt .tc-skip"), place: [...document.querySelectorAll("#rt [data-place]")].filter((b) => b.offsetParent !== null).length, read: !!document.querySelector("#rt .wd-read [data-rd]"), moves: [...document.querySelectorAll("#rt #wd-moves [data-move]:not([disabled])")].map((b) => b.dataset.move), foes: [...document.querySelectorAll("#rt .foe-tap:not([hidden])")].length, sheet: V.sheet || null, round: V.B.round, company: !!document.querySelector('#rt [data-wact="company"]'), written: !!document.querySelector("#rt .written .go") }; });
     if (s.gone) break;
+    if (s.wait) { await sleep(300); continue; } // between the order and the clash
     if (s.end) { await sleep(800); await tp(".endcard button"); await sleep(800); continue; }
     if (s.written) { await tp(".written .go"); await sleep(600); continue; }
     if (s.brief) { await tp(".fb-go"); await sleep(500); continue; }
@@ -585,7 +605,7 @@ async function warDay(pg, cdp, L, R, o, tap) {
     }
     await sleep(400);
   }
-  if (await pg.evaluate(() => !!K.UI.warScreen())) { L.bad.push("the war day " + F.enc + " did not end in 300 s of play"); await shot(pg, L, "war-long-" + F.enc); }
+  if (await pg.evaluate(() => !!K.UI.warScreen())) { L.bad.push("the war day " + F.enc + " did not end in 600 s of play"); await shot(pg, L, "war-long-" + F.enc); }
   F.out = await outOf(pg, F.enc); F.rounds = rounds;
   L.fights.push(F);
 }
