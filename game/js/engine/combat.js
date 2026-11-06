@@ -83,7 +83,11 @@
       abilities: def.abilities || ["strike"], cds: {}, status: {}, armed: def.armed !== false,
       vowTag: def.vowTag || null, person: def.person || null, note: def.note || null, plural: !!def.plural, hero: !!def.hero, still: !!def.still,
       item: def.item || null, // what this fight draws him holding, over his usual weapon (Ashwatthama in the sleeping camp: a sword)
-      shield: def.shield != null ? !!def.shield : !/archer|bow/i.test(String(def.name)) && ((!def.hero && !def.person && SHIELDED.test(String(def.name))) || (side === "enemy" && C.foeShielded(def)))
+      shield: def.shield != null ? !!def.shield : !def.hero && !def.person && SHIELDED.test(String(def.name)) && !/archer|bow/i.test(String(def.name)),
+      // drawn with a shield (owner, 6 November: every foe with a sword or a spear); only those above turn your blows with it
+      // (with the new ones turning blows too, the balance runs lost 15-22 points in the duel between the lines, the drive for
+      // the king and the supply camp)
+      shieldDrawn: side === "enemy" && C.foeShielded(def)
     };
   }
   // A foe who fights with a sword or a spear carries the round shield too (owner, 6 November: "let's add shields to foes as
@@ -95,8 +99,8 @@
     const w = K.RT.weaponOf({ side: "enemy", name: n, src: n, person: def.person || null, item: def.item || null });
     return w === "sword" || w === "spear";
   };
-  // Who carries a shield (PRD §18.15): the line's foot soldiers, guards and spearmen, and your own company; since 6 November
-  // every foe with a sword or a spear (C.foeShielded), riders and the named too. Archers and maces do not. Shields count only behind the developer switch (B.shields).
+  // Who carries a shield (PRD §18.15): the line's foot soldiers, guards and spearmen, and your own company. Since 6 November
+  // every foe with a sword or a spear is drawn with one too (C.foeShielded: riders and the named), without its turning blows. Shields count only behind the developer switch (B.shields).
   const SHIELDED = /soldier|company|spearm|guard\b|veteran|captain|foot\b/i;
   // The player carries a small shield where the path suits it (owner, 4 November): the mace fighter, and a sword (the
   // driver on foot, the commander); not an archer's bow or a short blade (the healer, the spy, the bard). In a

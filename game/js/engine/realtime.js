@@ -112,9 +112,9 @@
   //   feint   the chance a melee wind-up stops just short and comes again (a roll or a shield spent on nothing)
   //   pair    the least time between two foes' blows landing (smaller: pairs strike together)
   RT.LEVELS = {
-    easy: { atk: [1, 1], rest: [1, 1], wind: [1, 1], perfect: [1, 1], glance: [1, 1], feint: [0, 0], pair: [1, 1], parryFoe: [0.04, 0.08] },
-    normal: { atk: [1, 1.42], rest: [1, 0.72], wind: [1, 0.86], perfect: [1, 0.85], glance: [1, 1.7], feint: [0, 0.22], pair: [1, 0.6], parryFoe: [0.1, 0.22] },
-    hard: { atk: [1.25, 1.6], rest: [0.8, 0.6], wind: [0.9, 0.76], perfect: [0.8, 0.68], glance: [1.4, 2.2], feint: [0.1, 0.32], pair: [0.7, 0.4], parryFoe: [0.18, 0.32] }
+    easy: { atk: [1, 1], rest: [1, 1], wind: [1, 1], perfect: [1, 1], glance: [1, 1], feint: [0, 0], pair: [1, 1], parryFoe: [0.02, 0.05] },
+    normal: { atk: [1, 1.42], rest: [1, 0.72], wind: [1, 0.86], perfect: [1, 0.85], glance: [1, 1.7], feint: [0, 0.22], pair: [1, 0.6], parryFoe: [0.06, 0.14] },
+    hard: { atk: [1.25, 1.6], rest: [0.8, 0.6], wind: [0.9, 0.76], perfect: [0.8, 0.68], glance: [1.4, 2.2], feint: [0.1, 0.32], pair: [0.7, 0.4], parryFoe: [0.12, 0.25] }
   };
   // How far along the ramp each act is: the early acts teach, the war is the hardest.
   RT.HEAT = { 1: 0, 2: 0.1, 3: 0.3, 4: 0.45, 5: 0.6, 6: 0.9, 7: 1 };
@@ -463,6 +463,7 @@
     p.rt.face = sign(e.rt.x - p.rt.x) || p.rt.face;
     p.rt.blow = null; p.rt.busy = 0.3; R.combo = 0; R.buffer = false;
     if (LIGHT.has(p.rt.weapon) && (a.heavy || a.arc === "smash")) { // too heavy for a dagger to stop: half of it lands
+      if (own) return false; // (not worth breaking off a blow of your own for: in the balance runs it cost the dagger paths dear)
       a.part = P.parryPart; R.stats.partParries++;
       R.fx.push({ k: "parry", uid: e.uid, part: true });
       return true;
