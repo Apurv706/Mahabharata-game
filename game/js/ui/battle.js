@@ -622,7 +622,9 @@
   const shapeFor = (id) => K.pick({ arrows: ["low", "high"], strike: ["high", "thrust", "low"], heavy: ["high", "charge"], disarm: ["thrust"], breaker: ["charge"] }[id] || ["high", "thrust"]);
   const CUT = { // leather cut-outs for what comes at you
     arrow: '<svg viewBox="-40 -8 80 16"><path d="M-38 0 L-26 -6 L-26 -2 L30 -2 L36 -7 L36 7 L30 2 L-26 2 L-26 6 Z"/></svg>',
-    blade: '<svg viewBox="-30 -30 60 60"><path d="M-24 18 Q-30 -10 4 -26 Q-14 -6 -10 22 Z"/></svg>',
+    // A blade's swing: an orange-red arc with streaks trailing it (owner, 5 November: the brown crescent it was, at rest
+    // behind your head as a swing at the head arrived, read as a horn).
+    blade: '<svg viewBox="-30 -30 60 60"><path class="arc" d="M-20 24 Q-27 -6 2 -26 Q-12 -6 -9 24 Z"/><path class="streak" d="M6 -20 L26 -17 M4 -6 L28 -3 M2 8 L24 11" fill="none"/></svg>',
     charge: '<svg viewBox="-30 -20 60 40"><path d="M-28 0 L-8 -16 L-8 -6 L26 -6 L26 6 L-8 6 L-8 16 Z"/></svg>'
   };
   function defend(B, u, th, done) {
@@ -693,7 +695,9 @@
       const kind = th.id === "arrows" || (rain && thing !== "light") ? "arrow" : shape === "charge" ? "charge" : "blade";
       flyer = U.el('<i class="incoming ' + kind + " " + shape + '" aria-hidden="true">' + CUT[kind] + "</i>");
       const y = rp.top - r0.top + rp.height * S2.y;
-      flyer.style.cssText = "left:" + (ra.left - r0.left + ra.width * 0.3) + "px;top:" + y + "px;--to:" + (rp.left - ra.left + rp.width * 0.2 - ra.width * 0.3) + "px;--dur:" + T + "s";
+      // It stops at your front, where the blow meets you (it ran on to your back, and a swing at the head rested there).
+      const front = ra.left > rp.left ? rp.left + rp.width * 0.78 : rp.left + rp.width * 0.22;
+      flyer.style.cssText = "left:" + (ra.left - r0.left + ra.width * 0.3) + "px;top:" + y + "px;--to:" + (front - ra.left - ra.width * 0.3) + "px;--dur:" + T + "s";
       ar.appendChild(flyer);
       requestAnimationFrame(() => flyer && flyer.classList.add("go"));
     };

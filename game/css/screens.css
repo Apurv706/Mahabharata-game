@@ -1484,6 +1484,8 @@ html.calm body.ax-shake #leaf { animation: none; }
 .arena .incoming { position: absolute; z-index: 3; width: 74px; height: 22px; margin: -11px 0 0 -37px; color: #2a160c; pointer-events: none; transform: translateX(0); opacity: 0; filter: drop-shadow(0 0 6px rgba(255, 200, 120, .7)) drop-shadow(0 3px 2px rgba(0, 0, 0, .5)); }
 .arena .incoming svg { width: 100%; height: 100%; fill: #6b3a1c; stroke: #e9c98a; stroke-width: 1.4; }
 .arena .incoming.blade { width: 54px; height: 54px; margin: -27px 0 0 -27px; }
+.arena .incoming.blade svg .arc { fill: #e0553a; stroke: #ffe0b0; stroke-width: 1.6; }
+.arena .incoming.blade svg .streak { stroke: rgba(255, 196, 140, 0.8); stroke-width: 2.2; stroke-linecap: round; }
 .arena .incoming.charge { width: 70px; height: 44px; margin: -22px 0 0 -35px; }
 .arena .incoming.go { opacity: 1; transform: translateX(var(--to)); transition: transform var(--dur) linear, opacity .15s; }
 .arena .incoming.gone { opacity: 0; transition: opacity .25s; }
