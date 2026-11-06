@@ -73,9 +73,10 @@
     // 1 parry in 7 tries, the rest too early or too late; 0.22 catches a reaction of 0.2-0.4 s after the light)
     // meets it: neither blow lands, the moment slows, and he reels back (parryStag; off a mace, parryStagMace). A dagger or
     // empty hands cannot stop a heavy blow or a mace's smash: half of it still lands (parryPart). Arrows cannot be parried.
-    // The screen lights the blade for parryCue before it lands. A named champion meets some of your blows with his own
+    // The screen lights the blade for parryCue before it lands (0.45 s: a reaction of a quarter to a third of a second to the
+    // light then falls inside the window). A named champion meets some of your blows with his own
     // (R.D.parryFoe, RT.LEVELS): you are thrown off for parriedBusy and he answers soon after; not twice in parryFoeCd.
-    parry: 0.22, parryStag: 1.0, parryStagMace: 1.4, parryPart: 0.5, parryCue: 0.4, parriedBusy: 0.45, parryFoeCd: 2.5,
+    parry: 0.22, parryStag: 1.0, parryStagMace: 1.4, parryPart: 0.5, parryCue: 0.45, parriedBusy: 0.45, parryFoeCd: 2.5,
     cap: 240          // a fight that has run this long is stopped (it never should)
   };
   // Per-fight tuning: RT.TUNE[encId] = { hp, atk } multiplies that fight's foes' health and blows. Only the
