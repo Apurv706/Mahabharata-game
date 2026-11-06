@@ -211,7 +211,7 @@ browser("orders-day", "the commander's orders at a battle day: name, since, Toda
       card.scrollTop = card.scrollHeight; await new Promise((r) => setTimeout(r, 100));
       const gr = go.getBoundingClientRect();
       return { who: (o.querySelector(".ord-who b") || {}).textContent || "", since: o.querySelectorAll(".ord-since li").length, today: !!o.querySelector(".ord-today p"), you: !!o.querySelector(".ord-you p"),
-        fits: cr.top >= -1 && cr.bottom <= innerHeight + 1 && cr.left >= -1 && cr.right <= innerWidth + 1, goIn: gr.top >= 0 && gr.bottom <= innerHeight + 1 && gr.width > 30, lang: K.lang, latin: lang === "hi" ? (o.innerText.match(/[A-Za-z]{4,}/g) || []).filter((w) => !/Asha/.test(w)).slice(0, 5) : [] };
+        fits: cr.top >= -1 && cr.bottom <= innerHeight + 1 && cr.left >= -1 && cr.right <= innerWidth + 1, goIn: gr.top >= 0 && gr.bottom <= innerHeight + 1 && gr.width > 30, lang: K.lang, latin: lang === "hi" ? ([...o.querySelectorAll(".ord-who, .ord-since h3, .ord-since li, .ord-today, .ord-you, .ord-go, .ord-mine b")].map((e) => e.innerText).join(" ").match(/[A-Za-z]{4,}/g) || []).filter((w) => !/Asha/.test(w)).slice(0, 5) : [] }; // (not "Your part": the journal lines this check makes up have no Hindi)
     }, [side, scene, last, lang]);
     if (r.none) { bad.push(tag + "no orders were shown (scene " + r.scene + ")"); await close(); continue; }
     if (!r.who) bad.push(tag + "no commander's name");
