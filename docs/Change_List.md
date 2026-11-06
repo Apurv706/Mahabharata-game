@@ -235,6 +235,20 @@ Following `Quality_Review_2026-11-02.md` and its "Decided 2 November" section. T
     - **Covers:** content, 16 recorded lives, win-rate bands, 66 screenshots, screen fit, both play pages played with taps, saves, and a check for each fixed bug.
     - **Final run (5 Nov):** all pass, with one known item.
 
+## Built 5 Nov: Build A, the owner's feedback and the playtest (on the public site 5 Nov after the full test pass)
+75. **From the owner's feedback of 5 Nov:**
+    - **Horns gone (7):** the horsehair crest of champions and riders falls from the helmet down the back of the head; the crown's fan sits low and swept back.
+    - **Moments on time (8):** a moment covers the page at once with its dark ground while its painting loads, and the paintings of moments a choice can earn load while its outcome is told (the friendship and vow moments came up late).
+    - **The lac house (10, 11):** more players reach the cellar test (follow the smell of oil under the floor, or having tried to warn the Nishada family); the house burning plays after the night and as the closing shot of The burnt house; a stuck door gives to three quick shoves as well as a hold; on Safari a clip is fetched whole and played from memory.
+    - **Two divine weapons (12):** Aid lists each ready weapon by name.
+    - **Archers (13, 14, 23):** an arrow on a raised shield costs a third of a blade's breath and shows *Blocked*; an archer steps back only just after loosing, and caught close he stands and fights, drawing slowly.
+    - **Blows at their length (23):** you can no longer stand on a foe one row over; a long weapon too close to strike gives ground as it winds up, and backed to the edge shoves you back; no blow lands under 0.8 of its weapon's reach.
+    - **Krishna's wheel (17):** the owner's painted clip (`war_wheel.mp4`) plays as day 9's moment, the puppets the fallback.
+    - **Less to read on a phone (20):** tighter choice cards, two to a row when short, locked choices showing their name only, slim canon boxes, and the longest pages cut (iPhone 15: mean 56% to 49% of the screen; the vows 66% to 49%). Act cards, the dream, moments and endings untouched.
+    - **Champions announced (22):** a named fighter entering a real-time fight slows it a moment, darkens the edges and shows his name in gold with a drum; on a war day the champion's arrival waits for the rules card and the tour.
+76. **From the human-paced playtest of 5 Nov:** the lac-house tunnel mouth now takes a tap (3 of 4 lives died a room from safety there); no arrow flies at a figure already down; a frame-rate counter (Menu: *Show frame rate*) for checking a real phone.
+77. **Checks:** the life test plays at a person's pace with its homeland and weapon chosen (`tests/review_play.js --human --land --path`), auditing text over half the screen, controls off the screen and blows inside the reach. Fixed on the way: a bare "friend" shown untranslated in Hindi.
+
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**
 - **Batches and patch:** batches 3–6f, and the 6-file patch (sun banners on the war field, sunset and camp gate).
