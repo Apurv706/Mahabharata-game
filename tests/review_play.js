@@ -351,6 +351,7 @@ async function trial(pg, cdp, L, R, o, tap, s) {
     if (!st.on || st.done) break;
     if (kind === "escape") { await escapeStep(pg, cdp, o); continue; }
     if (kind === "dash") { await dashStep(pg, cdp, o, R); continue; }
+    if (kind === "draw") { await drawStep(pg, cdp, o, R); continue; }
     // A board: a piece that can move, a point a tiger can go to (or a tiger), the dice's buttons.
     const P = ".trial.playing .trial-body ";
     const press = await pg.$(P + "button.trial-press:not([disabled])");
@@ -378,6 +379,23 @@ async function trial(pg, cdp, L, R, o, tap, s) {
   }
   if (await pg.evaluate(() => !!document.querySelector(".trial.playing"))) { L.bad.push("the test " + kind + " at " + s.scene + " did not end in 150 s of play"); await shot(pg, L, "test-" + kind); await pg.evaluate(() => { const b = document.querySelector(".trial.playing"); if (b) b.classList.remove("playing"); }); }
   await sleep(1200);
+}
+// The draw test (the archer's path test, and the war bow): hold, watch the bar, let go as it enters the bright band,
+// a look every 70-110 ms as a person's eye would (so now and then too late). It held for a random time before, and
+// failed the archer's path test twice in a life more often than not, sending the life down another path.
+async function drawStep(pg, cdp, o, R) {
+  const btn = await pg.$(".trial.playing .trial-body button.trial-press:not([disabled])"), bb = btn && (await btn.boundingBox());
+  if (!bb || (await pg.$(".trial.playing .drawpit.good, .trial.playing .drawpit.bad"))) { await sleep(300); return; }
+  const pt = { x: bb.x + bb.width / 2, y: bb.y + bb.height / 2 };
+  if (o.touch) await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [pt] }); else { await pg.mouse.move(pt.x, pt.y); await pg.mouse.down(); }
+  const t0 = Date.now();
+  while (Date.now() - t0 < 4000) {
+    const m = await pg.evaluate(() => { const f = document.querySelector(".trial.playing .drawpit .fill"), b = document.querySelector(".trial.playing .drawpit .band"); if (!f || !b) return null; return { v: parseFloat(f.style.width) || 0, lo: parseFloat(b.style.left) || 0, w: parseFloat(b.style.width) || 0 }; }).catch(() => null);
+    if (!m || m.v >= m.lo + m.w * 0.3) break;
+    await new Promise((r) => setTimeout(r, 70 + R() * 40));
+  }
+  if (o.touch) await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] }); else await pg.mouse.up();
+  await sleep(1100);
 }
 // The wheel dash (item 18): a look at the field every so often, as a person would, then a press of ◀ or ▶ long enough to
 // get there (give or take), and the whip when the opening is right ahead. Keeping the wheel shut: the ring turned away
@@ -466,7 +484,7 @@ async function rtFight(pg, cdp, L, R, o, tap) {
   const hold = async (k, pt) => { if (holding === k) return; await release(); holding = k; F.used.push("hold:" + k); if (o.touch) await touchDown(pt); else await pg.keyboard.down(KEYOF[k]); };
   const release = async () => { if (!holding) return; if (o.touch) await touchUp(); else await pg.keyboard.up(KEYOF[holding]); holding = null; };
   const press = async (k, pt, key) => { await release(); if (o.touch && pt) await pg.touchscreen.tap(pt.x, pt.y); else await pg.keyboard.press(key); F.used.push(k); };
-  const sheetTap = async (sel) => { await release(); const b = await pg.$("#rt " + sel); if (b) { if (o.touch) await b.tap().catch(() => b.click()); else await b.click(); } };
+  const sheetTap = async (sel) => { await release(); const b = await pg.$("#rt " + sel); if (b) { if (o.touch) await b.tap().catch(() => b.click().catch(() => {})); else await b.click().catch(() => {}); } }; // the sheet may close under the finger
   while (Date.now() - t0 < 240000) {
     const s = await pg.evaluate(READ_RT);
     if (s.gone) break;
@@ -572,4 +590,4 @@ async function warDay(pg, cdp, L, R, o, tap) {
   L.fights.push(F);
 }
 
-module.exports = { rtFight, warDay, trial, walk, watch, READ_RT, LOOK, rng, dashStep };
+module.exports = { rtFight, warDay, trial, walk, watch, READ_RT, LOOK, rng, dashStep, drawStep };
