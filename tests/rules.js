@@ -1410,6 +1410,18 @@ require(G + "content/war_fights.js");
     ok(caught.second && !caught.struck && caught.second.fblocks === 1 && caught.second.lost > caught.lost, "while he lowers it he cannot strike, and your next blow is not caught (" + JSON.stringify(caught.second) + ")");
     ok(drawn.fblocks === 1, "a sword or spear foe's shield (drawn on every one since 6 November) catches blows too");
     ok(busy.fblocks === 0, "a foe winding up a blow of his own cannot raise his shield"); }
+  // Two arrows to a press (owner, 6 November: "we should make the archers stronger"): the second at the next foe in front,
+  // or both on a lone foe at RT.P.bowSecond of a blow each.
+  { const volley = (two) => { K.seed(41); life({ path: "archer" }); const B = C.start("e_guard"); const R = RT.begin(B), p = C.player();
+      const foes = B.units.filter((u) => u.side === "enemy");
+      B.units.forEach((u) => { if (u !== p && u.side !== "enemy") u.still = true; });
+      foes.forEach((u, i) => { u.rt.entered = i < (two ? 2 : 1); u.rt.cool = 99; u.rt.lane = p.rt.lane; u.rt.x = i < (two ? 2 : 1) ? 0.55 + i * 0.12 : 1.1; u.still = i >= (two ? 2 : 1); });
+      p.rt.x = 0.3; p.rt.face = 1;
+      RT.step(R, { strike: true }); const shots = R.shots.slice();
+      const out = { n: shots.length, on: shots.map((x) => x.on), m: shots.map((x) => x.m), ids: foes.slice(0, 2).map((u) => u.uid) }; C.settle("win"); C.end(); return out; };
+    const one = volley(false), two = volley(true);
+    ok(one.n === 2 && one.on[0] === one.on[1] && Math.abs(one.m[0] - one.m[1]) < 1e-9 && one.m[0] < 0.62, "an archer looses two arrows a press: on a lone foe both, each lighter (" + JSON.stringify(one) + ")");
+    ok(two.n === 2 && two.on[0] === two.ids[0] && two.on[1] === two.ids[1] && two.m[0] > two.m[1], "with two foes in front the second arrow goes to the next one (" + JSON.stringify(two) + ")"); }
   // You step between rows (a short step); not into a row where a foe stands right beside you; your side makes room.
   { K.seed(21); life(); const B = C.start("e_guard"); const R = RT.begin(B); const p = C.player();
     B.units.filter((u) => u.side === "enemy").forEach((u) => { u.rt.x = 0.97; u.rt.cool = 99; u.rt.wave = 1; u.rt.entered = false; });

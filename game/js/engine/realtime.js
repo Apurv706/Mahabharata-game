@@ -88,6 +88,7 @@
     // Then he must lower the shield before he can come again: fblockRec x R.D.rest seconds with no blow from him, and none
     // of yours caught again for fblockCd. That is the opening: strike again.
     fblock: 0.18, fblockLight: 0.15, fblockHeavy: 0.45, fblockRec: 1.0, fblockCd: 1.8,
+    bowSecond: 0.65, bowGap: 0.08, // an archer's second arrow to a press: its weight, and how long after the first (bowShot)
     cap: 240         // a fight that has run this long is stopped (it never should)
   };
   // Per-fight tuning: RT.TUNE[encId] = { hp, atk } multiplies that fight's foes' health and blows. Only the
@@ -538,13 +539,21 @@
     const p = C.player(), face = p.rt.face;
     const near = foesNear(R, p.rt.x, face, 0.7 * BODY)[0];
     if (near && Math.abs(near.rt.x - p.rt.x) < 0.7 * BODY) { p.rt.x = clamp(p.rt.x - face * 0.5 * BODY, EDGE, 1 - EDGE); R.fx.push({ k: "stepback" }); }
-    const t = foesNear(R, p.rt.x, face, RT.SHOOT)[0];
-    const lane = t ? t.rt.x : clamp(p.rt.x + face * RT.SHOOT, 0, 1);
-    const t0 = R.t + c.land;
-    const shot = { by: p.uid, side: "player", id: "arrows", m: c.m, knock: c.knock || 0, on: t ? t.uid : null, lane, from: p.rt.x, t0, arrive: t0 + Math.max(0.06, Math.abs(lane - p.rt.x) / (ARROW_SPEED * 1.4)), heavy: !!c.heavy, n: ++R.shotN, combo: R.combo };
-    p.rt.busy = c.len; R.shots.push(shot); R.stats.blows++;
+    // Two arrows to a press (owner, 6 November: "we should make the archers stronger"; "maybe they shoot 2 arrows at a
+    // time"): the first at the first foe in front, the second a moment later at the next foe in front within range, at
+    // RT.P.bowSecond of a blow; a lone foe takes both, each at RT.P.bowSecond (so about 1.3 of a blow on one foe, 1.65
+    // over two). Only the first can knock back.
+    const inLane = foesNear(R, p.rt.x, face, RT.SHOOT), t = inLane[0], t2 = inLane[1] || null;
+    const k2 = RT.P.bowSecond;
+    const one = (on, m, knock, dt) => {
+      const lane = on ? on.rt.x : clamp(p.rt.x + face * RT.SHOOT, 0, 1), t0 = R.t + c.land + dt;
+      const shot = { by: p.uid, side: "player", id: "arrows", m, knock, on: on ? on.uid : null, lane, from: p.rt.x, t0, arrive: t0 + Math.max(0.06, Math.abs(lane - p.rt.x) / (ARROW_SPEED * 1.4)), heavy: !!c.heavy && !dt, n: ++R.shotN, combo: R.combo };
+      R.shots.push(shot); R.fx.push({ k: "shot", uid: p.uid, shot, second: !!dt });
+    };
+    one(t, t2 ? c.m : c.m * k2, c.knock || 0, 0);
+    one(t2 || t, c.m * k2, 0, RT.P.bowGap);
+    p.rt.busy = c.len; R.stats.blows++;
     R.combo = (R.combo + 1) % list.length; R.comboT = R.t + c.len;
-    R.fx.push({ k: "shot", uid: p.uid, shot });
   }
   // The shield: raised to face the blow coming soonest (else the nearest foe), lowered when let go or winded.
   function raiseShield(R) {
