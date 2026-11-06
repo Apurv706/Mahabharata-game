@@ -105,10 +105,17 @@
   U.startClash = function (B, opts, done) {
     if (V) stop();
     const status = B.status, round = B.round;
-    const R = RT.begin(B, { assist: U.assist && U.assist() });
+    // opts.noStrike: a storm (nothing to strike at: block, roll and live); opts.only: the foes who come at you (a
+    // break-through's lane), the rest wait off the field until the clash is over.
+    const stilled = opts && opts.only ? B.units.filter((u) => u.side === "enemy" && u.hp > 0 && !u.still && !opts.only.includes(u.uid)) : [];
+    stilled.forEach((u) => { u.still = true; });
+    const R = RT.begin(B, { assist: U.assist && U.assist(), noStrike: !!(opts && opts.noStrike) });
+    stilled.forEach((u) => { if (u.rt) { u.rt.entered = false; u.rt.x = 1.08; } });
+    // opts.atk: the foes' blows lighter for this kind of clash (put back with the rest of the scale when it ends: RT.unscale).
+    if (opts && opts.atk) B.units.forEach((u) => { if (u.side === "enemy" && u.rt) u.atk = Math.max(1, Math.round(u.atk * opts.atk)); });
     R.noRetry = true; // a war day has no second try
     V = { encId: B.enc.id, onEnd: null, R, actors: new Map(), held: { l: false, r: false }, queue: {}, acc: 0, last: 0, raf: 0, paused: false, sheet: null, toastT: 0, logAt: B.log.length,
-      clash: { secs: (opts && opts.secs) || 15, done, status, round, call: null } };
+      clash: { secs: (opts && opts.secs) || 15, done, status, round, call: null, stilled } };
     build();
     V.el.classList.add("clashin"); // (a short fade from the war day's line)
     const bar = U.el('<div class="clashbar"><span class="cl-ring" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" class="cl-bg"/><circle cx="20" cy="20" r="17" class="cl-fg" pathLength="100"/></svg><b></b></span>' +
@@ -116,7 +123,8 @@
     V.stage.appendChild(bar);
     bar.querySelector(".cl-back").addEventListener("click", () => clashEnd("fallback"));
     V.clash.bar = bar;
-    toast(T("The clash: {n} seconds", { n: V.clash.secs }));
+    toast(R.noStrike ? T("Nothing to strike at: block, roll and live. {n} seconds", { n: V.clash.secs }) : T("The clash: {n} seconds", { n: V.clash.secs }));
+    if (R.noStrike) V.el.classList.add("nostrike");
     V.raf = requestAnimationFrame(loop);
   };
   function clashTick() {
@@ -158,6 +166,7 @@
     const R = V.R, B = R.B;
     if (R.over === "retry") RT.accept(R);
     B.status = c.status; B.rt = null; B.round = c.round; // the real-time rounds inside the clash do not count as the war day's rounds
+    (c.stilled || []).forEach((u) => { u.still = false; });
     RT.unscale(B); // health and blows back on the turns' scale
     if (c.call && c.call.el) c.call.el.remove();
     const done = c.done;

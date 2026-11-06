@@ -175,7 +175,7 @@ const LOOK = () => {
     beat: !!document.getElementById("beat"), moment: !!document.querySelector(".moment"),
     modal: [...document.querySelectorAll(".scrim .modal button")].filter(vis).map((e) => e.id || e.textContent.trim().slice(0, 30)),
     modalTitle: (document.querySelector(".scrim .modal h2") || {}).textContent || "",
-    rt: !!(K.UI.rtScreen && K.UI.rtScreen()), war: !!(K.UI.warScreen && K.UI.warScreen()),
+    rt: !!(K.UI.rtScreen && K.UI.rtScreen()), rtClash: !!(K.UI.rtScreen && K.UI.rtScreen() && K.UI.rtScreen().clash), war: !!(K.UI.warScreen && K.UI.warScreen()),
     fightmode: !!document.querySelector(".fm-beat"),
     fbGo: !!document.querySelector(".fbrief-wrap .fb-go"),
     oldFight: !!document.querySelector("#battle-actions button:not([disabled])"), oldBattle: !!document.querySelector("#battle-actions"), qte: !!document.querySelector(".qte .qte-btns button"),
@@ -221,6 +221,8 @@ async function walk(pg, cdp, L, R, o, tap) {
     if (await pg.$('.fmode [data-mode="story"]')) { await shot(pg, L, "mode"); await tap('.fmode [data-mode="story"]'); L.events.push("chose Live the story on waking"); await sleep(900); continue; }
     if (s.end) { await ending(pg, L, R, o, tap); if (L.again) { L.again = false; last = null; continue; } return; }
     if (s.partEnd) { if (!(await handOver(pg, L, o, tap))) return; last = null; continue; }
+    // A clash from the older fight screen (a storm, an escort, a break-through): fought, and kept with that fight.
+    if (s.rtClash) { const c = await rtFight(pg, cdp, L, R, o, tap, true); L.events.push("clash in " + c.enc + ": " + c.used.filter((u) => u === "strike" || u === "click").length + " blows, " + c.secs + " s"); continue; }
     if (s.rt) {
       if (AUDIT) await pg.evaluate(() => { window.__imp = []; clearInterval(window.__impT); window.__impT = setInterval(() => { const V = K.UI.rtScreen && K.UI.rtScreen(); if (!V || !V.impacts) return; for (const m of V.impacts) if (!m.__seen) { m.__seen = 1; const p = K.Combat.player(); window.__imp.push({ mine: !!p && m.by === p.uid, onMe: !!p && m.on === p.uid, apart: m.apart, reach: m.reach, rows: m.rows, inside: m.res ? m.res.inside : null, on: m.res && m.res.on, t: m.t, by: m.by, to: m.on, enc: V.R && V.R.B && V.R.B.enc && V.R.B.enc.id }); } }, 100); }).catch(() => {});
       await rtFight(pg, cdp, L, R, o, tap);
@@ -475,7 +477,7 @@ const READ_RT = () => {
     astra: RT.astras().some((a) => !a.why), spare: RT.spareable(R).map((u) => u.uid), plea: !!V.el.querySelector(".plea i"),
     friend: R.B.units.some((u) => u.side === "ally" && u.hp > 0 && (u.called || u.person)), soldiers: R.B.units.some((u) => u.side === "ally" && u.hp > 0 && u.plural && !u.person && !u.called),
     held: Object.assign({}, V.held), ax: !!V.ax,
-    clash: !!V.clash, call: V.clash && V.clash.call && !V.clash.call.over ? V.clash.call.a.rt.x - p.rt.x : null, // a war day's clash; a comrade calling, and how far
+    clash: !!V.clash, noStrike: !!R.noStrike, call: V.clash && V.clash.call && !V.clash.call.over ? V.clash.call.a.rt.x - p.rt.x : null, // a war day's clash; a comrade calling, and how far
 
     btn: { l: box('[data-hold="l"]'), r: box('[data-hold="r"]'), block: box('[data-hold="block"]'), strike: box('[data-act="strike"]'), roll: box('[data-act="roll"]'), skill: box('[data-act="skill"]'), aid: box('[data-act="aid"]'), orders: box('[data-act="orders"]'), pause: box('[data-act="pause"]') }
   };
@@ -530,6 +532,8 @@ async function rtFight(pg, cdp, L, R, o, tap, clash) {
     if (s.canHerbs && s.hp < 0.35) { await sheetAid(pg, o, "herbs", s, F); continue; }
     // A foe kneeling and asking: spare him, sometimes.
     if (s.spare.length && !did.spare && R() < 0.5) { did.spare = true; F.used.push("spare"); if (o.touch) { const t = await pg.$("#rt .plea i"); if (t) await t.tap().catch(() => {}); else await pg.keyboard.press("e"); } else await pg.keyboard.press("e"); await sleep(300); continue; }
+    // A storm (nothing to strike at): keep your distance and defend.
+    if (s.noStrike) { if (s.near && Math.abs(s.near.d) < 0.4) { const k = s.near.d > 0 ? "l" : "r"; await hold(k, s.btn[k]); } else await release(); await sleep(150); continue; }
     if (s.canSkill && R() < 0.15) { await press("skill", s.btn.skill, "l"); await sleep(250); continue; }
     if (!s.near) { await release(); await sleep(200); continue; }
     const d = s.near.d, ad = Math.abs(d);

@@ -4793,6 +4793,7 @@
     "Tap a room beside you to move. Red rooms are burning.": "बगल के कमरे को छूकर आगे बढ़ो। लाल कमरे जल रहे हैं।",
     "A brown bar is a stuck door: hold the room past it, or tap three times.": "भूरी पट्टी अटका हुआ दरवाज़ा है: उसके पार वाले कमरे को दबाए रखो, या तीन बार छुओ।",
     "Reach the tunnel, bottom left, before the fire. To carry a sleeper, stand on them and hold Wake; it slows you.": "आग से पहले नीचे बाईं ओर की सुरंग तक पहुँचो। किसी सोते हुए को उठाने के लिए उसके पास खड़े होकर जगाओ दबाए रखो; इससे तुम धीमे हो जाते हो।",
+    "Nothing to strike at: block, roll and live. {n} seconds": "वार करने को कुछ नहीं: ढाल उठाओ, लुढ़को और बचे रहो। {n} सेकंड",
     "Whip ×2": "चाबुक ×2",
     "Space": "स्पेस",
     "Change lanes to miss what is in the road: up and down, or the buttons. Space cracks the whip.": "रास्ते की रुकावटों से बचने के लिए पंक्ति बदलो: ऊपर और नीचे, या बटन। स्पेस से चाबुक चलाओ।",

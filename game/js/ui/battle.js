@@ -725,6 +725,7 @@
   // ---------- The screen ----------
   U.renderBattle = function (B) {
     if (!B) return;
+    if (clash && clash.live) return; // the clash has the stage; this screen is drawn again when it hands back
     // A fight played live takes the page as a test does; when it is over, the story goes straight on.
     if (B.mode) {
       if (B.over) { if (!onEndCb) return; stopQte(); drums.stop(); const cb = onEndCb; const out = C.end().over; onEndCb = null; const L = U.$("leaf"); if (L) L.dataset.battle = ""; document.body.classList.remove("intest"); cb(out); return; }
@@ -732,6 +733,9 @@
       if (L.dataset.battle !== B.bid) { L.dataset.battle = B.bid; U.fightMode.play(B); }
       return;
     }
+    // The clash (owner, 5 November: every turn-based fight in Build B): the storms, escorts and break-throughs fought on
+    // this screen play each round's blows out in real time for about 15 s after your move (clashSoon), as the war days do.
+    if (B.rule && B.clashMode === undefined) B.clashMode = !!(U.startClash && !K.headless && K.RT && K.RT.on && K.RT.on());
     if (C.state() === B) C.foesPending(); // a round whose last foes have fallen is closed before anything is drawn
     U.redraw = () => { const L = U.$("leaf"); if (L) L.dataset.battle = ""; U.renderBattle(C.state() || B); };
     U.setNav(true);
@@ -925,7 +929,31 @@
     if (briefFor === enc.id && C.state() === B) drawBrief(B);
     else if (tour) tour.refresh();
     champArrive(B);
+    clashSoon(B);
   };
+  // Your move has played: after a moment to see it land, the real-time screen takes the stage for the clash (ui/realtime.js
+  // U.startClash). A storm has nothing to strike at (block, roll and live); a break-through brings only the foe in the lane
+  // you chose; an escort has the one you guard on the field. Then the round closes as the turns would.
+  let clash = null;
+  // Measured with the real-time bot against the same fights on the turns (tests: a storm and the escort won about as often
+  // as on the turns; at 15 s and full weight a storm was won by a third of the bot's lives, the elephant by a few).
+  const CLASH = { weather: { secs: 12, atk: 0.8, noStrike: true }, escort: { secs: 12, atk: 0.85 }, breakthrough: { secs: 15 } };
+  function clashSoon(B) {
+    if (!B.clashPending || B.over || clash || C.state() !== B) return;
+    clash = { live: false };
+    setTimeout(() => {
+      if (C.state() !== B || B.over || !B.clashPending || !U.startClash) { clash = null; return; }
+      clash.live = true;
+      const leaf = U.$("leaf"); if (leaf) leaf.style.visibility = "hidden";
+      const lane = B.kind === "breakthrough" && B.lane != null && B.enc.lanes && B.enc.lanes[B.lane] ? "e" + B.enc.lanes[B.lane].foe : null;
+      U.startClash(B, Object.assign({ secs: 15 }, CLASH[B.kind], { only: lane ? [lane] : null }), () => {
+        clash = null;
+        const L = U.$("leaf"); if (L) { L.style.visibility = ""; L.dataset.battle = ""; } // the stage and its figures drawn afresh
+        C.clashDone(); // (the round closes, and the screen is drawn again)
+        if (C.state() === B && !B.clashPending) U.renderBattle(B);
+      });
+    }, U.motion() ? 1100 : 300);
+  }
   // ---------- A champion takes the field (item 22) ----------
   // The fights on this screen (the holds: Bhishma's arrows) had no arrival moment; the real-time and war-day screens do
   // (owner, 5 November). One of the epic's named fighters on the other side, the first time he is on the field in a fight:

@@ -280,7 +280,7 @@
     const R = { B, scale: opts.scale || RT.SCALE, t: 0, n: 0, seen: 0, sideSeen: {}, over: null, tries: opts.tries || 0, marks: [], fx: [], slow: 0, round: 1, doT: ROUND,
       orders: { friend: "balanced", soldiers: "defend" }, breath: RT.P.breathMax, combo: 0, comboT: -9, buffer: false, roll: 0, rollT: -9, rollDir: 1, block: false, blockT: -9, winded: false,
       kneel: 0, skillCd: 0, salve: null, unseen: 0, double: false, haste: 0, frozen: 0, assist: !!opts.assist, stats: { blows: 0, hits: 0, rolls: 0, dodged: 0, perfect: 0, maxAtk: 0, blocks: 0, blocked: 0, perfectBlocks: 0 },
-      skill: null, shots: [], shotN: 0, D: RT.level(K.S) };
+      skill: null, shots: [], shotN: 0, D: RT.level(K.S), noStrike: !!opts.noStrike };
     B.rt = R;
     B.units.forEach((u) => initUnit(R, u));
     place(R);
@@ -355,7 +355,7 @@
     switch (what) {
       case "roll": return !R.blocker && R.roll <= 0 && R.kneel <= 0 && R.breath >= RT.P.rollMin && !held(p);
       case "block": return R.blocker && (R.block || (R.roll <= 0 && R.kneel <= 0 && !R.winded && R.breath >= RT.P.blockMin)) && !held(p) && R.frozen <= 0;
-      case "skill": return !!R.skill && R.skillCd <= 0 && R.kneel <= 0 && !held(p);
+      case "skill": return !R.noStrike && !!R.skill && R.skillCd <= 0 && R.kneel <= 0 && !held(p);
       case "herbs": return R.kneel <= 0 && (R.herbCd || 0) <= 0 && p.abilities.includes("herbs") && (K.S.items.herbs || 0) > 0 && p.hp < p.maxHp;
       case "call": return p.abilities.includes("call") && ready("call");
       case "withdraw": return C.canFlee();
@@ -412,6 +412,7 @@
       R.fx.push({ k: "roll" });
     }
     if (a.herbs && RT.can(R, "herbs") && R.roll <= 0 && !R.block) { R.kneel = 1.1; p.rt.busy = 0; R.buffer = false; R.fx.push({ k: "kneel" }); }
+    if (R.noStrike) { a.strike = false; a.skill = false; } // a storm's clash (weather): nothing to strike at; block, roll and live
     if (a.skill && RT.can(R, "skill") && R.roll <= 0 && !R.block && p.rt.busy <= 0.05) skill(R);
     if (a.strike && R.roll <= 0 && R.kneel <= 0 && !R.block) { // no blow with the shield up
       if (p.rt.busy > 0) R.buffer = true; // a press during a blow is kept for the next
@@ -1146,6 +1147,8 @@
     }
     const soon = th.some((t) => t.land - R.t < 0.5 && bs.read[t.uid + "@" + t.t0]);
     if (p.hp < p.maxHp * 0.36 && RT.can(R, "herbs") && !soon) { a.herbs = true; return a; }
+    // A storm's clash (R.noStrike): nothing to strike at, so keep your distance and defend.
+    if (R.noStrike) { const f = nearestFoe(R, p.rt.x); if (f && Math.abs(f.rt.x - p.rt.x) < 0.45) { const d = sign(p.rt.x - f.rt.x) || -1, to = p.rt.x + d * 0.08; if (to > EDGE + 0.04 && to < 1 - EDGE - 0.04) a.move = d; } return a; }
     const foes = living(B, "enemy").filter((e) => e.rt.entered);
     // Call for help when it is worth it.
     if (!bs.called && RT.can(R, "call") && (p.hp < p.maxHp * 0.6 || foes.length >= 2)) { bs.called = true; a.call = true; }
