@@ -232,6 +232,27 @@ browser("orders-day", "the commander's orders at a battle day: name, since, Toda
     bad.push(...errs.map((e) => tag + e));
     await close();
   }
+  // Another page drawn under the orders (a checkpoint, a save loaded): they go, and the new page can be tapped (the full
+  // check of 6 November found the orders left over it).
+  {
+    const { pg, errs, close } = await open({ device: "iPhone 15" });
+    const up = await pg.evaluate(async () => {
+      const S = K.newLife(); Object.assign(S, { alive: true, act: 6, age: 44, name: "Asha", pronoun: "she", origin: "panchala", court: "panchala", path: "mace", side: "pandava", teacher: "drona" }); K.S = S;
+      K.prefs({ calm: true, beats: false }); K.go("a6_day1");
+      for (let k = 0; k < 40; k++) { await new Promise((r) => setTimeout(r, 200)); if (document.querySelector(".moment.orders")) return true; }
+      return false;
+    });
+    if (!up) bad.push("leftover: no orders on a6_day1 to begin with");
+    else {
+      await pg.evaluate(() => K.go("a6_eve")); await sleep(1200);
+      if (await pg.$("#journey-go")) { await pg.click("#journey-go", { timeout: 3000 }).catch(() => {}); await sleep(500); }
+      const left = await pg.evaluate(() => !!document.querySelector(".moment.orders"));
+      if (left) bad.push("leftover: the orders stayed over the next page");
+      await pg.click("#choices .choice", { timeout: 3000 }).catch((e) => bad.push("leftover: the next page's choice could not be tapped: " + String(e.message).split("\n")[0]));
+    }
+    bad.push(...errs.map((e) => "leftover: " + e));
+    await close();
+  }
   return bad;
 });
 
