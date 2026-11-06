@@ -589,7 +589,7 @@ async function rtFight(pg, cdp, L, R, o, tap, clash) {
     if (ad <= s.reach * 0.92 || s.foes && ad < 0.06) {
       await release();
       if (!o.touch && R() < 0.3) { // a click on the foe
-        const pt = await pg.evaluate((uid) => { const a = K.UI.rtScreen().actors.get(uid); if (!a) return null; const b = a.el.querySelector(".pp-body") || a.el; const r = b.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height * 0.4 }; }, s.near.uid);
+        const pt = await pg.evaluate((uid) => { const V = K.UI.rtScreen(), a = V && V.actors.get(uid); if (!a) return null; const b = a.el.querySelector(".pp-body") || a.el; const r = b.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height * 0.4 }; }, s.near.uid);
         if (pt) { await pg.mouse.click(pt.x, pt.y); F.used.push("click"); await sleep(260 + R() * 200); continue; }
       }
       await press("strike", s.btn.strike, "j"); await sleep(220 + R() * 260); continue;
