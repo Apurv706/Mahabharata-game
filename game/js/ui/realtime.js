@@ -109,7 +109,7 @@
     // break-through's lane), the rest wait off the field until the clash is over.
     const stilled = opts && opts.only ? B.units.filter((u) => u.side === "enemy" && u.hp > 0 && !u.still && !opts.only.includes(u.uid)) : [];
     stilled.forEach((u) => { u.still = true; });
-    const R = RT.begin(B, { assist: U.assist && U.assist(), noStrike: !!(opts && opts.noStrike) });
+    const R = RT.begin(B, { assist: U.assist && U.assist(), noStrike: !!(opts && opts.noStrike), clash: true });
     stilled.forEach((u) => { if (u.rt) { u.rt.entered = false; u.rt.x = 1.08; } });
     // opts.atk: the foes' blows lighter for this kind of clash (put back with the rest of the scale when it ends: RT.unscale).
     if (opts && opts.atk) B.units.forEach((u) => { if (u.side === "enemy" && u.rt) u.atk = Math.max(1, Math.round(u.atk * opts.atk)); });

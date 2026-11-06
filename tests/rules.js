@@ -1357,6 +1357,15 @@ require(G + "content/war_fights.js");
     ok(al.length > 0 && !struck && !far, "under a shield wall your side closes up behind you and holds (" + al.length + " beside you, at most " + mx.toFixed(2) + " of a body away, " + struck + " blows)");
     let after = 0; while (R.t < 12 && !R.over) { RT.step(R, {}); al.forEach((a) => { if (a.rt.atk) after++; }); }
     ok(!B.units.some((u) => u.status.wall) && after > 0, "the wall opens after its seconds and they fight on (" + after + ")"); C.settle("win"); C.end(); }
+  // A war day's clash keeps the war day's round: its beats are not played again in every clash (they were: in front of
+  // Shikhandi your side was made exposed in each clash); and with the first pack fallen, the living stand on the field
+  // (they were put off it, and the clash ended at once as "the pack is broken").
+  { K.seed(41); life(); const B = C.start("e_ep_bhishma"); B.round = 3; const R = RT.begin(B, { clash: true });
+    while (R.t < 12 && !R.over) RT.step(R, {});
+    ok(B.round === 3 && !B.units.some((u) => u.side !== "enemy" && u.status.exposed), "a clash keeps the war day's round and plays no beat again (round " + B.round + ")"); C.settle("win"); C.end();
+    K.seed(42); life(); const B2 = C.start("t_rt_pack"); B2.units.filter((u) => u.side === "enemy").slice(0, 2).forEach((u) => { u.hp = 0; });
+    const R2 = RT.begin(B2, { clash: true }), up = B2.units.filter((u) => u.side === "enemy" && u.hp > 0);
+    ok(up.length === 2 && up.every((u) => u.rt.entered && u.rt.x <= 0.97), "with the first pack fallen, the living stand on the field when a clash begins (" + up.map((u) => u.rt.x.toFixed(2)).join(", ") + ")"); C.settle("win"); C.end(); }
   // The parry (owner, 6 November): Strike pressed just before a foe's blade lands on you meets it (no blow lands, he reels);
   // too early it is an ordinary blow and his lands; a dagger only half stops a heavy blow; an arrow is never parried; a named
   // champion meets some of your blows with his own.

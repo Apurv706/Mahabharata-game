@@ -266,7 +266,10 @@
     const allies = B.units.filter((u) => u.side === "ally");
     // As the layout page: your side on both sides of you, spread over the field.
     allies.forEach((a, i) => { a.rt.x = [0.13, 0.46, 0.59, 0.08][i % 4]; a.rt.lane = backRow(a); });
-    const foes = B.units.filter((u) => u.side === "enemy");
+    // The fallen are left out (a war day's clash: the first pack lying dead put the living off the field, and the clash
+    // ended at once, "the pack is broken", before they had walked on; 6 November).
+    B.units.filter((u) => u.side === "enemy" && u.hp <= 0).forEach((e) => { e.rt.wave = 0; e.rt.x = 1.2; e.rt.entered = false; e.rt.lane = backRow(e); });
+    const foes = B.units.filter((u) => u.side === "enemy" && u.hp > 0);
     foes.forEach((e, i) => {
       // More than two come in packs: two on the field, the rest waiting off it.
       e.rt.wave = i < 2 ? 0 : 1;
@@ -290,7 +293,7 @@
     const R = { B, scale: opts.scale || RT.SCALE, t: 0, n: 0, seen: 0, sideSeen: {}, over: null, tries: opts.tries || 0, marks: [], fx: [], slow: 0, round: 1, doT: ROUND,
       orders: { friend: "balanced", soldiers: "defend" }, breath: RT.P.breathMax, combo: 0, comboT: -9, buffer: false, roll: 0, rollT: -9, rollDir: 1, block: false, blockT: -9, winded: false,
       kneel: 0, skillCd: 0, salve: null, unseen: 0, double: false, haste: 0, frozen: 0, assist: !!opts.assist, stats: { blows: 0, hits: 0, rolls: 0, dodged: 0, perfect: 0, maxAtk: 0, blocks: 0, blocked: 0, perfectBlocks: 0, parries: 0, partParries: 0, parried: 0 },
-      skill: null, shots: [], shotN: 0, D: RT.level(K.S), noStrike: !!opts.noStrike };
+      skill: null, shots: [], shotN: 0, D: RT.level(K.S), noStrike: !!opts.noStrike, clash: !!opts.clash };
     B.rt = R;
     B.units.forEach((u) => initUnit(R, u));
     place(R);
@@ -1044,7 +1047,10 @@
     for (const u of B.units.filter((x) => x.rt && x.rt.leaveAt != null && R.t >= x.rt.leaveAt && x.hp > 0)) {
       B.tell("The press of the fighting carries {t} away from you.", { t: u }); B.units = B.units.filter((x) => x !== u); R.fx.push({ k: "leave", uid: u.uid });
     }
-    const round = 1 + Math.floor(R.t / RT.P.story);
+    // (Not in a war day's clash: there the war day keeps its rounds, its beats and its field events. Counted here, each clash
+    // began again at round 1 and played the beats of rounds 1 and 2 once more: in front of Shikhandi your side was made
+    // exposed in every clash. 6 November.)
+    const round = R.clash ? B.round : 1 + Math.floor(R.t / RT.P.story);
     if (round !== B.round) {
       B.round = round;
       const beat = (K.val(B.enc.beats) || []).find((b) => b.round === B.round);
