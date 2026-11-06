@@ -251,8 +251,10 @@
     allies: (S) => K.warAllies(S), spare: true, callHelp: K.warHelp,
     intro: (S) => ["The riders come at {who} first. You get there before they do.", { who: sibName(S) }],
     // The captain at 4, not 5 (6 November): at 5 this deadly fight was the hardest live one in the war, won 76% of the time
-    // in the full check against 90% for guarding the king, and the life test lost it four times out of four.
-    enemies: [K.foe("Kaurava rider", 4, { abilities: ["strike", "heavy"] }), K.foe("Kaurava riders' captain", 4, { abilities: ["strike", "heavy", "guard"] })],
+    // in the full check against 90% for guarding the king, and the life test lost it four times out of four. The rider at 3
+    // too (6 November, later): with the captain at 4 the war replays still lost it 2 times in 3 on phones (a life ended there),
+    // and in simulation it stayed below guarding the king (mean of five paths 57% against 69%; now 79%).
+    enemies: [K.foe("Kaurava rider", 3, { abilities: ["strike", "heavy"] }), K.foe("Kaurava riders' captain", 4, { abilities: ["strike", "heavy", "guard"] })],
     flee: { tags: ["retreat"], fx: (S) => ({ flag: ["sibling_other_side_set", "sibling_taken_back"], unflag: "called_across_came", set: { calledAcross: null }, bond: { [S.sibling]: -2 } }),
       text: (S) => ["You fall back. The riders take {who} back across the field between two horses.", { who: sibName(S) }] },
     win: { fx: (S) => ({ bond: { [S.sibling]: 1 }, flag: "kept_called_across", journal: { src: "On the second morning you fought beside {who} against the riders sent to take {who} back.", p: { who: sibName(S) } } }),
