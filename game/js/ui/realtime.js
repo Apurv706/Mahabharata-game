@@ -821,8 +821,8 @@
         const from = { x: hr.left - wr.left + hr.width / 2, y: hr.top - wr.top + hr.height * 0.45 };
         const tgt = s.on && A(s.on), G = V.G;
         const to = { x: G.fx0 + s.lane * G.FW, y: G.H - ((tgt ? tgt.gy : G.gl) + (tgt ? tgt.fh : G.fh) * 0.55) };
-        const go = () => U.flyArrow && U.flyArrow(V.world, from, to, Math.abs(to.x - from.x) * 0.05, Math.max(90, (s.arrive - s.t0) * 1000), false, Math.max(26, G.fh * 0.36));
-        if (a.u.side === "player") { pose(a, "draw", 900, 0.6); setTimeout(() => { pose(a, "loose", 1200, 0.5); home(a, 450); go(); }, Math.max(0, (s.t0 - V.R.t) * 1000)); }
+        const v = V, go = () => U.flyArrow && U.flyArrow(v.world, from, to, Math.abs(to.x - from.x) * 0.05, Math.max(90, (s.arrive - s.t0) * 1000), false, Math.max(26, G.fh * 0.36));
+        if (a.u.side === "player") { pose(a, "draw", 900, 0.6); setTimeout(() => { if (V !== v) return; pose(a, "loose", 1200, 0.5); home(a, 450); go(); }, Math.max(0, (s.t0 - V.R.t) * 1000)); } // (a clash may end while the bow is drawn)
         else { pose(a, "loose", 1200, 0.5); home(a, 450); go(); }
         break; }
       case "blocked": toast(K.tr("A foe stands in your way")); break;
