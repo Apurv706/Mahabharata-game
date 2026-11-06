@@ -1364,11 +1364,14 @@ require(G + "content/war_fights.js");
       const e = B.units.find((u) => u.side === "enemy");
       B.units.forEach((u) => { if (u !== p && u !== e) { u.still = true; if (u.side === "enemy") { u.rt.entered = false; u.rt.x = 1.1; } } });
       p.rt.x = 0.4; p.rt.face = 1; e.rt.entered = true; e.rt.lane = p.rt.lane; e.rt.x = p.rt.x + e.rt.reach * 0.85; e.rt.face = -1; e.rt.cool = 99;
+      if (o.swing) { RT.step(R, { strike: true }); RT.step(R, {}); } // your own blow in the air
       e.rt.atk = Object.assign({ id: "strike", on: p.uid, t0: R.t, land: R.t + (o.land || 0.1), ranged: false, area: false, lane: p.rt.x, locked: false, heavy: false, arc: null }, o.atk || {});
       const hp0 = p.hp; RT.step(R, { strike: true }); const t1 = R.t + 0.8; while (R.t < t1 && !R.over) RT.step(R, {});
       const out = { lost: hp0 - p.hp, stag: e.rt.stag, parries: R.stats.parries, part: R.stats.partParries }; C.settle("win"); C.end(); return out; };
     const a = duel("mace", {}), b = duel("mace", { land: 0.5 }), c = duel("spy", { atk: { heavy: true, id: "heavy" } }), d = duel("charioteer", { atk: { ranged: true, id: "arrows" } });
     ok(a.parries === 1 && a.lost === 0, "Strike just before his blade lands meets it: nothing lands (" + JSON.stringify(a) + ")");
+    const sw = duel("mace", { swing: true });
+    ok(sw.parries === 1 && sw.lost === 0, "a mace blow still in the air is broken off to meet his blade (" + JSON.stringify(sw) + ")");
     ok(b.parries === 0 && b.lost > 0, "too early, it is an ordinary blow and his lands (" + JSON.stringify(b) + ")");
     ok(c.part === 1 && c.lost > 0, "a dagger only half stops a heavy blow (" + JSON.stringify(c) + ")");
     ok(d.parries === 0 && d.part === 0, "an arrow is never parried (" + JSON.stringify(d) + ")");

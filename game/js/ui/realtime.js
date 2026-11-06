@@ -953,7 +953,7 @@
     switch (f.k) {
       case "blow": { // the wind-up of this weapon's blow, then the swing so the weapon arrives as the blow lands
           const arc = f.arc || (U.arcFor ? U.arcFor(p.rt.weapon, f.n) : null), A = arc && U.ARCS[arc];
-          if (A) { me.blowArc = arc; pose(me, A.up, 1500, 0.55); setTimeout(() => { if (V && me && !V.R.block) swing(me, inFront(p), null, arc); }, Math.max(0, f.land * 1000 - IMPACT)); if (K.Sound) K.Sound.play("tap"); break; }
+          if (A) { me.blowArc = arc; pose(me, A.up, 1500, 0.55); setTimeout(() => { if (V && me && !V.R.block && p.rt.blow) swing(me, inFront(p), null, arc); }, Math.max(0, f.land * 1000 - IMPACT)); /* (not a blow broken off to parry) */ if (K.Sound) K.Sound.play("tap"); break; }
         }
         if (f.n === 2) { pose(me, "windup", 1700, 0.55); setTimeout(() => { if (V && me) swing(me, inFront(p), null); }, 120); } else swing(me, inFront(p), null); if (K.Sound) K.Sound.play("tap"); break;
       case "roll": pose(me, "duck", 1400, 0.6); home(me, 400); break;

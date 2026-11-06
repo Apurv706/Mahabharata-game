@@ -431,8 +431,7 @@
   }
   // The parry (RT.P.parry): Strike pressed as a foe's blade comes down on you. The soonest such blow is met: with a blade, a
   // mace, a spear, a staff, it stops dead and he reels back; with a dagger or empty hands a heavy blow (or a mace's smash) is
-  // only half stopped. Not an arrow, not a blow that sweeps all around him, not a feint still to come, and not while your
-  // own blow is half swung.
+  // only half stopped. Not an arrow, not a blow that sweeps all around him, not a feint still to come.
   const PARRY_WITH = new Set(["sword", "woodsword", "mace", "spear", "staff", "club", "hammer", "dagger", "fist"]), LIGHT = new Set(["dagger", "fist"]);
   RT.canParry = () => { const p = C.player(); return !!(p && p.rt && PARRY_WITH.has(p.rt.weapon)); };
   RT.parryable = function (R, e, win) {
@@ -445,7 +444,12 @@
   };
   function parry(R) {
     const p = C.player();
-    if (!RT.canParry() || p.rt.busy > 0.1 || R.noStrike) return false;
+    if (!RT.canParry() || R.noStrike) return false;
+    // Mid-swing you can still meet his blade: a blow of yours not yet landed is broken off (the mace's swing is 0.7 s long:
+    // played like a person, most lit blades came while the mace was in the air, 13 parries in 103 blows against
+    // Ashwatthama), and so is the recovery after one; only in the instant your own blow lands is there no parry.
+    const own = p.rt.blow;
+    if (own && own.at - R.t < 0.06 && own.at - R.t > -STEP) return false;
     const win = RT.P.parry * R.D.perfect + STEP;
     const e = living(R.B, "enemy").filter((x) => RT.parryable(R, x, win)).sort((x, y) => x.rt.atk.land - y.rt.atk.land)[0];
     if (!e) return false;
