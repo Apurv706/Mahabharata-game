@@ -125,11 +125,119 @@
     V.clash.bar = bar;
     toast(R.noStrike ? T("Nothing to strike at: block, roll and live. {n} seconds", { n: V.clash.secs }) : T("The clash: {n} seconds", { n: V.clash.secs }));
     if (R.noStrike) V.el.classList.add("nostrike");
+    opening();
     V.raf = requestAnimationFrame(loop);
   };
+  // ---------- The clash's opening: what your move on the turns leaves standing (owner, 6 November) ----------
+  // "The option selected in turn by turn doesn't flow to the real-time fight." Its effect carried already (a status lasts
+  // its rounds as seconds here: RT.begin); now it is seen. A shield wall: your side closes up behind you, shields up, rim
+  // over rim, with two more of the company's front rank, for its seconds (every blow halved; engine/realtime.js allyStep).
+  // A guard, a war cry, a rally, a swerve and a stunned foe are named under the timer while they last.
+  const OPENERS = [
+    { s: "wall", side: "friends", t: "Shield wall: blows halved" },
+    { s: "guard", side: "player", t: "Guard: the next blow halved" },
+    { s: "taunt", side: "player", t: "War cry: they come at you" },
+    { s: "inspired", side: "friends", t: "Rally: your side hits harder" },
+    { s: "evade", side: "player", t: "Swerve: the next blow misses" },
+    { s: "stun", side: "enemy", t: "Stunned: they cannot strike" }
+  ];
+  const stLeft = (s, side) => {
+    let m = 0;
+    for (const u of V.R.B.units) {
+      if (u.hp <= 0 || !u.rt || !u.status[s]) continue;
+      if (side === "player" ? u.side !== "player" : side === "enemy" ? u.side !== "enemy" : u.side === "enemy") continue;
+      m = Math.max(m, u.rt.st[s] || 0);
+    }
+    return m;
+  };
+  function opening() {
+    const c = V.clash, box = U.el('<div class="cl-opens" aria-live="polite"></div>');
+    V.stage.appendChild(box); c.opens = [];
+    for (const o of OPENERS) {
+      const left = stLeft(o.s, o.side);
+      if (left <= 0) continue;
+      const el = U.el('<div class="cl-open k-' + o.s + '"><span>' + U.esc(T(o.t)) + "</span><b>" + Math.ceil(left) + "</b></div>");
+      box.appendChild(el); c.opens.push({ o, el });
+    }
+    V.openFx = c.opens.length > 0; // the figures are made on the first frame: their poses then (openFx)
+  }
+  function openFx() {
+    const p = C.player(), me = p && V.actors.get(p.uid);
+    if (stLeft("wall", "friends") > 0) wallUp();
+    else if (me && p.status.guard) { pose(me, "shieldUp", 1500, 0.6); U.guardFlash(me.svg, 1300); home(me, 1400); }
+    if (me && p.status.taunt) { me.el.classList.add("roared"); setTimeout(() => { if (me.el) me.el.classList.remove("roared"); }, 1400); }
+  }
+  function openTick() {
+    const c = V.clash; if (!c || !c.opens) return;
+    c.opens = c.opens.filter((x) => {
+      const left = stLeft(x.o.s, x.o.side);
+      if (left <= 0) { x.el.classList.add("gone"); setTimeout(() => x.el.remove(), 450); return false; }
+      const b = x.el.querySelector("b"), n = String(Math.ceil(left)); if (b.textContent !== n) b.textContent = n;
+      return true;
+    });
+    if (V.walled && stLeft("wall", "friends") <= 0) wallDown();
+  }
+  // The wall: everyone on your side under it raises the shield (a soldier's round hide shield; with none, the forearm),
+  // and the company's front rank stands beside them, two more shield-bearers in the rows between, as the war day draws
+  // a band as two. When it opens, they step back into the company.
+  function wallUp() {
+    const B = V.R.B, p = C.player(); if (!p || !V.G) return;
+    V.walled = true;
+    for (const u of B.units) {
+      if (u.side === "enemy" || u.hp <= 0 || !u.status.wall || !u.rt) continue;
+      const a = actorFor(u); a.walled = true; a.el.classList.add("in-wall");
+      if (a.rig) { a.rig.t.dx = 0; a.rig.t.dy = 0; }
+      pose(a, u.side === "player" ? "shieldUp" : "guard", 900, 0.6); U.guardFlash(a.svg, 1400);
+    }
+    const comp = B.units.find((u) => u.side === "ally" && u.plural && !u.person && !u.called && u.hp > 0 && u.status.wall);
+    if (!comp) return;
+    const spec = specFor(comp);
+    V.wallMen = [[0.5, -0.06], [1.5, 0.3]].map(([lane, off]) => {
+      const el = U.el('<div class="actor ally wallman in-wall" aria-hidden="true"><span class="shadow"></span><div class="fl">' + U.puppet(spec, { pose: U.motion() ? "live" : "stand", h: 200 }) + "</div></div>");
+      V.world.appendChild(el);
+      const svg = el.querySelector("svg.pp"), vb = (svg.getAttribute("viewBox") || "0 0 120 200").split(/[\s,]+/).map(Number);
+      const m = { u: { rt: { lane }, side: "ally", hp: 1 }, el, svg, fl: el.querySelector(".fl"), vbW: vb[2], vbH: vb[3], sc: 210 / vb[3], d: lane, off, base: "ready" };
+      m.rig = U.motion() && U.rig ? U.rig(svg, el, "ready", { fight: true }) : null;
+      size(m); pose(m, "guard", 700, 0.6); U.guardFlash(svg, 1400);
+      return m;
+    });
+  }
+  function wallDown() {
+    V.walled = false;
+    (V.wallMen || []).forEach((m) => { m.el.style.transition = "opacity .5s, translate .5s"; m.el.style.opacity = "0"; setTimeout(() => m.el.remove(), 520); });
+    V.wallMen = null;
+    V.actors.forEach((a) => { if (a.walled) { a.walled = false; a.el.classList.remove("in-wall"); if (a.u.hp > 0) home(a, 0); } });
+  }
+  function wallMenDraw(p) {
+    const G = V.G; if (!G || !p || !p.rt) return;
+    for (const m of V.wallMen) {
+      const x = clamp(p.rt.x - (p.rt.face || 1) * m.off * RT.BODY, 0.06, 0.94);
+      m.el.style.left = (G.fx0 + x * G.FW).toFixed(1) + "px"; m.el.style.bottom = (G.gl + m.d * G.dstep).toFixed(1) + "px";
+      m.el.style.zIndex = String(Math.round(20 - m.d * 6)); m.el.classList.toggle("face-l", (p.rt.face || 1) < 0);
+    }
+  }
+  // Life below a tenth (owner, 6 November: "when my life gets less than 10%, create a warning"): the edges of the field
+  // pulse red, your bar flashes, a heartbeat every few seconds, and a line says what you can do, for as long as it lasts.
+  function lowLife(p) {
+    const low = p.hp > 0 && p.hp < p.maxHp * 0.1;
+    if (low !== !!V.low) {
+      V.low = low; V.el.classList.toggle("lowlife", low);
+      const w = $(".lowwarn", V.stage);
+      if (w) { if (low) w.querySelector("span").textContent = T(lowHint()); w.hidden = !low; }
+      if (low) V.beatAt = -9;
+    }
+    if (low && K.Sound && V.R.t - V.beatAt > 2.4) { V.beatAt = V.R.t; K.Sound.play("heartbeat"); }
+  }
+  function lowHint() {
+    const out = V.clash ? "fall back" : C.canFlee() ? "withdraw" : "";
+    if ((K.S.items.herbs || 0) > 0) return out === "fall back" ? "Use your herbs, or fall back." : out ? "Use your herbs, or withdraw." : "Use your herbs.";
+    if (V.R.blocker) return out === "fall back" ? "Block, or fall back." : out ? "Block, or withdraw." : "Block and hold on.";
+    return out === "fall back" ? "Roll clear, or fall back." : out ? "Roll clear, or withdraw." : "Roll clear and hold on.";
+  }
   function clashTick() {
     const c = V.clash, R = V.R, B = R.B, p = C.player();
     if (c.ended) return;
+    openTick();
     const left = Math.max(0, c.secs - R.t);
     const fg = c.bar.querySelector(".cl-fg"); fg.style.strokeDasharray = (left / c.secs * 100) + " 100";
     c.bar.querySelector("b").textContent = Math.ceil(left);
@@ -193,7 +301,8 @@
           '<button type="button" class="hb pause" data-act="pause" aria-label="' + T("Pause") + '" title="' + T("Pause") + '">' + PAUSE + "</button>" +
           '</div><button type="button" class="hb aid" data-act="aid" aria-haspopup="dialog">' + T("Aid") + " ▾</button></div></div>" +
         '<div class="kstrip" aria-hidden="true"><span class="ks-skill"><svg class="ring" viewBox="0 0 40 40"><circle class="bg" cx="20" cy="20" r="16"/><circle class="fg" cx="20" cy="20" r="16" stroke-dasharray="100.5" stroke-dashoffset="0"/></svg>' + skill + ' <kbd>L</kbd></span><span class="ks-herbs">' + T("Herbs") + ' <b id="ksherbs"></b> <kbd>H</kbd></span><span class="ks-keys">' + T(R.blocker ? "J strike · K block · L skill · H herbs · W/S row · P pause" : "J strike · K roll · L skill · H herbs · W/S row · P pause") + "</span></div>" +
-        '<div class="banner off" role="status"></div><div class="toast off" role="status"></div></div>' +
+        '<div class="banner off" role="status"></div><div class="toast off" role="status"></div>' +
+        '<div class="lowwarn" role="alert" hidden><i aria-hidden="true">!</i><div><b>' + T("Your life is low") + "</b><span></span></div></div></div>" +
       '<div class="ctl" id="rt-ctl"><div class="pad"><button type="button" class="mv" data-hold="l" aria-label="' + T("Move left") + '">◀' + kb("A") + '</button><button type="button" class="mv" data-hold="r" aria-label="' + T("Move right") + '">▶' + kb("D") + "</button></div>" +
         '<ul class="keys">' + T(R.blocker ? KEYS_BLOCK : KEYS_ALL).split(" · ").map((x) => "<li>" + U.esc(x) + "</li>").join("") + "</ul>" +
         '<div class="acts"><button type="button" class="skill" data-act="skill"' + (R.skill ? "" : " disabled") + '><svg class="ring" viewBox="0 0 40 40" aria-hidden="true"><circle class="bg" cx="20" cy="20" r="18"/><circle class="fg" cx="20" cy="20" r="18" stroke-dasharray="113.1" stroke-dashoffset="0"/></svg><span>' + skill + "</span>" + kb("L") + "</button>" +
@@ -331,6 +440,7 @@
   function home(a, ms) { setTimeout(() => { if (!V || !a.u) return; if (a.swing && performance.now() - a.swing.t0 < 300) return; // a new blow begun meanwhile keeps its swing
     if (a.rig) { a.rig.t.dx = 0; a.rig.t.dy = 0; if (a.armed) { a.rig.unwield(); a.armed = false; } }
     if (a.u.side === "player" && V.R.block && a.u.hp > 0) { pose(a, "shieldUp", 1500, 0.6); return; } // the shield stays up while held
+    if (a.walled && a.u.hp > 0) { pose(a, a.u.side === "player" ? "shieldUp" : "guard", 900, 0.6); return; } // and under a shield wall (the clash's opening)
     if (a.u.rt && a.u.rt.beaten && a.u.hp > 0) pose(a, "kneel", 600, 0.6); else if (a.rig && a.u.hp > 0) a.rig.set(a.base, 520, 0.42); else if (!a.rig && a.u.hp > 0) pose(a, a.u.side === "player" ? "brace" : "stand"); }, ms || 0); }
   // ---------- Blows that land (owner, 4 November: room for the weapons; the blow falls on the body or the weapon) ----------
   // A swing ends with the weapon's tip on the one struck: U.aimBlow (puppet-anim.js) turns the arm about the shoulder
@@ -725,16 +835,21 @@
         a.shieldUp = !!R.block; a.el.classList.toggle("shield-up", a.shieldUp);
         if (a.shieldUp) { if (a.rig) { a.rig.t.dx = 0; a.rig.t.dy = 0; } pose(a, "shieldUp", 1500, 0.6); } else home(a, 0);
       }
-      // Your soldiers on Defend raise their shields while a blow is marked on them (PRD §18.15).
-      if (u.side === "ally" && u.plural && !u.person && !u.called && u.hp > 0) {
+      // Your soldiers on Defend raise their shields while a blow is marked on them (PRD §18.15); under a shield wall they
+      // are up already (wallUp).
+      if (u.side === "ally" && u.plural && !u.person && !u.called && u.hp > 0 && !a.walled) {
         const up = R.orders.soldiers === "defend" && B.units.some((e) => e.side === "enemy" && e.hp > 0 && e.rt && e.rt.atk && e.rt.atk.on === u.uid);
         if (up !== !!a.shieldUp) { a.shieldUp = up; if (up) pose(a, "guard", 900, 0.55); else home(a, 250); a.el.classList.toggle("shield-up", up); }
       }
+      // A rally carried in from the turns: your side glows gold while it lasts; a stunned foe sways (the clash's opening).
+      if (u.hp > 0) { a.el.classList.toggle("inspired", u.side !== "enemy" && (u.rt.st.inspired || 0) > 0); a.el.classList.toggle("dazed", u.side === "enemy" && (u.rt.st.stun || 0) > 0); }
       a.el.classList.toggle("beaten", !!u.rt.beaten);
       if (u.side === "enemy") U.pleaTag(a.el, u.spared ? "spared" : u.hp > 0 && pleading.includes(u) ? (inReach.includes(u) ? "ask" : "far") : "", () => { V.queue.spare = u.uid; });
       const m = a.el.querySelector(".mini b"); if (m) m.style.width = Math.max(0, u.hp / u.maxHp * 100) + "%";
     }
     V.actors.forEach((a, uid) => { if (!B.units.includes(a.u)) { if (a.tag) a.tag.remove(); a.el.style.transition = "opacity .6s"; a.el.style.opacity = "0"; setTimeout(() => a.el.remove(), 600); V.actors.delete(uid); } });
+    if (V.openFx) { V.openFx = false; openFx(); }
+    if (V.wallMen) wallMenDraw(p);
     for (const f of R.fx) fx(f);
     R.fx.length = 0;
     // A blow that struck no one (dodged, a whiff) still swings at whom it was meant for.
@@ -743,6 +858,7 @@
     marks();
     const w = (id, v) => { const e = V.el.querySelector("#" + id); if (e) e.style.width = clamp(v, 0, 100) + "%"; };
     w("b-hp", p.hp / p.maxHp * 100); w("b-br", R.breath / RT.P.breathMax * 100);
+    lowLife(p);
     const fr = B.units.find((u) => u.side === "ally" && u.hp > 0 && !u.still && (u.called || u.person)) || B.units.find((u) => u.side === "ally" && u.hp > 0 && !u.still);
     $(".bar.fr").hidden = !fr;
     if (fr) { $("#b-frn").textContent = K.text(fr.src || fr.name).split(",")[0]; w("b-fr", fr.hp / fr.maxHp * 100); }

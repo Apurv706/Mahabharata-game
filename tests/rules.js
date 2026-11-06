@@ -1340,11 +1340,23 @@ require(G + "content/war_fights.js");
   { let worst = 9, rows = new Set();
     for (let i = 0; i < 6; i++) { K.seed(500 + i); life(); const B = C.start(i % 2 ? "e_guard" : "t_rt_pack"); const R = RT.begin(B);
       while (!R.over) { RT.step(R, RT.bot(R)); if (R.n % 30) continue;
-        const us = B.units.filter((u) => u.hp > 0 && u.rt && !u.rt.atk && !u.rt.engaged && !u.rt.passing && (u.side !== "enemy" || u.rt.entered) && u.rt.down <= 0 && u.rt.stag <= 0);
+        // (at rest: not in a blow, nor stepping back from one just landed, rt.rec: with the foes' blows 15% softer on
+        // 6 November, a raider that had just lunged was caught a third of a body from the next, for a moment)
+        const us = B.units.filter((u) => u.hp > 0 && u.rt && !u.rt.atk && !u.rt.engaged && !u.rt.passing && (u.side !== "enemy" || u.rt.entered) && u.rt.down <= 0 && u.rt.stag <= 0 && !(u.rt.rec > 0));
         us.forEach((u) => rows.add(Math.round(u.rt.lane)));
         for (const a of us) for (const b of us) if (a !== b && a.side === b.side && Math.abs(a.rt.lane - b.rt.lane) < 0.1 && Math.abs(a.rt.lane - Math.round(a.rt.lane)) < 0.05) worst = Math.min(worst, Math.abs(a.rt.x - b.rt.x) / RT.BODY); }
       C.end(); }
     ok(rows.size === 3 && worst >= 0.5, "figures stand in three rows; bodies on one side in one row keep apart (closest " + worst.toFixed(2) + " of a body)"); }
+  // A shield wall carried into the clash from the turns (owner, 6 November): for its seconds your side closes up behind
+  // you and holds its shields (no blows); then the wall opens and they fight on.
+  { K.seed(31); life(); const B = C.start("e_guard"); B.shields = true; const p = C.player();
+    B.units.filter((u) => u.side !== "enemy").forEach((u) => { u.status.wall = 1; });
+    const R = RT.begin(B), al = B.units.filter((u) => u.side === "ally" && !u.still);
+    let struck = 0, far = 0, mx = 0;
+    while (R.t < 3.6 && !R.over) { RT.step(R, {}); al.forEach((a) => { if (a.rt.atk) struck++; if (R.t > 1.5) { const d = Math.abs(a.rt.x - p.rt.x) / RT.BODY; mx = Math.max(mx, d); if (d > 0.8) far++; } }); }
+    ok(al.length > 0 && !struck && !far, "under a shield wall your side closes up behind you and holds (" + al.length + " beside you, at most " + mx.toFixed(2) + " of a body away, " + struck + " blows)");
+    let after = 0; while (R.t < 12 && !R.over) { RT.step(R, {}); al.forEach((a) => { if (a.rt.atk) after++; }); }
+    ok(!B.units.some((u) => u.status.wall) && after > 0, "the wall opens after its seconds and they fight on (" + after + ")"); C.settle("win"); C.end(); }
   // You step between rows (a short step); not into a row where a foe stands right beside you; your side makes room.
   { K.seed(21); life(); const B = C.start("e_guard"); const R = RT.begin(B); const p = C.player();
     B.units.filter((u) => u.side === "enemy").forEach((u) => { u.rt.x = 0.97; u.rt.cool = 99; u.rt.wave = 1; u.rt.entered = false; });

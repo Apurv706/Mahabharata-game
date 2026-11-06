@@ -115,7 +115,8 @@
         '<div class="hud"><div class="goal"><b>' + title + '</b><span class="wround"></span><span class="faint wpackline"></span><div class="pips"></div></div>' +
         '<div class="hud-r">' + (company ? '<button type="button" class="hb orders wpill" data-wact="company" aria-haspopup="dialog"><small>' + esc(T("Company")) + ' · <span class="wplace"></span></small><span class="word"></span><kbd>O</kbd></button>' : "") +
         '<button type="button" class="hb aid" data-wact="aid" aria-haspopup="dialog">' + esc(T("Aid")) + " ▾</button></div></div>" +
-        '<div class="banner off" role="status"></div><div class="toast off" role="status"></div><div class="wd-champ" aria-live="polite"></div></div>' +
+        '<div class="banner off" role="status"></div><div class="toast off" role="status"></div><div class="wd-champ" aria-live="polite"></div>' +
+        '<div class="lowwarn" role="alert" hidden><i aria-hidden="true">!</i><div><b>' + esc(T("Your life is low")) + "</b><span></span></div></div></div>" +
       '<div class="wctl"><div class="moves" id="wd-moves"></div>' +
         '<div class="placepick"><p class="pp-title">' + esc(T("Choose your place in the line for the first round")) + '</p><div class="pp-opts">' +
           PLACES.map((k) => '<button type="button" data-place="' + k + '"><b>' + esc(T(PLACE[k][0])) + "</b><small>" + esc(T(PLACE[k][1])) + "</small></button>").join("") + "</div></div>" +
@@ -709,6 +710,14 @@
     // Lines of the story (a field event, a friend's arrival) as a toast.
     while (V.logAt < B.log.length) { const e = B.log[V.logAt++]; if (e && (e.raw || e.ev)) toast(C.line(e)); }
     B.units.forEach((u) => { V.hp[u.uid] = u.hp; });
+    // Life below a tenth (owner, 6 November: "when my life gets less than 10%, create a warning"): the edges of the
+    // field pulse red, a heartbeat, and a line says what you can do (in the clash the real-time screen says it).
+    { const p = B.units[0], low = p.hp > 0 && p.hp < p.maxHp * 0.1, w = $(".lowwarn", V.stage);
+      if (low !== !!V.low) {
+        V.low = low; V.el.classList.toggle("lowlife", low);
+        if (w) { if (low) w.querySelector("span").textContent = T((K.S.items.herbs || 0) > 0 ? "Use your herbs." : p.abilities.includes("wall") ? "Raise the shield wall." : "Guard, and hold on."); w.hidden = !low; }
+        if (low && K.Sound) K.Sound.play("heartbeat");
+      } }
     V.figs.forEach((f) => { if (!f.dead && aliveBodies(f.u) === 0) falls(f.u); });
     // A foe kneeling and asking for mercy (C.pleads): "Mercy!" and the Spare hint over him (a tap spares him); spared, he kneels on.
     V.figs.forEach((f) => {

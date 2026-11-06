@@ -465,6 +465,14 @@
       o.type = "sine"; o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(48, t + 0.18); o.connect(og); og.connect(sfxBus);
       env(og, t, 0.003, 0.3, 0.2); o.start(t); o.stop(t + 0.25);
     },
+    heartbeat() { // your life below a tenth (owner, 6 November): two low, soft beats
+      const t = now();
+      [0, 0.26].forEach((d, i) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "sine"; o.frequency.setValueAtTime(72, t + d); o.frequency.exponentialRampToValueAtTime(40, t + d + 0.17); o.connect(g); g.connect(sfxBus);
+        env(g, t + d, 0.004, i ? 0.24 : 0.34, 0.2); o.start(t + d); o.stop(t + d + 0.3);
+      });
+    },
     drum() { // a dhol stroke: a low skin with a slap on top
       const t = now(), o = ctx.createOscillator(), g = ctx.createGain(), s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), sg = ctx.createGain();
       o.type = "sine"; o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(62, t + 0.22); o.connect(g); g.connect(sfxBus);

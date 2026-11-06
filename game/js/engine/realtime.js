@@ -39,8 +39,8 @@
     // you less. That bot wins 92% of real-time fights (63% before; 68% on the turns; seeds 11 and 37, 1500 lives each).
     hpFoe: 6.75,       // health is scaled up so a fight lasts its 30-60 s (blows are as in the turns)
     hpFriend: 1.35,    // you act several times as often as any foe: your own health is scaled far less
-    atkFoe: 0.5,
-    hpAlly: null,      // those beside you act as often as foes: scaled as foes (null) unless set
+    atkFoe: 0.425,     // a little easier (owner, 6 November: "let's make the fights a little easier"): 0.5 -> 0.425, blows 15% softer
+    hpAlly: null,     // those beside you act as often as foes: scaled as foes (null) unless set
     spacing: 0.45,
     archerGap: 0.55,   // an archer looses oftener than a swordsman swings (0.7 until archers only shot, 4 November)     // a second foe's blow never lands within this of the first (two at once, but readable)
     gap: [2.0, 3.4],   // a foe's rest between blows, seconds
@@ -909,6 +909,17 @@
       return;
     }
     if (u.cool > 0) u.cool -= dt;
+    // A shield wall carried into the clash from your move on the turns (owner, 6 November: "if I selected shield wall,
+    // the first few seconds should show the whole company shields up, sticking together"): while it lasts your side
+    // closes up on you in the rows behind, shoulder to shoulder, and holds its shields instead of striking.
+    if (a.status.wall && u.st.wall > 0 && p && p.rt) {
+      const rank = living(B, "friends").filter((f) => f !== p && !f.still).indexOf(a);
+      const goal = clamp(p.rt.x - sign(p.rt.face || 1) * (0.12 + 0.2 * Math.max(0, rank)) * BODY, 0.07, 0.93), d = goal - u.x;
+      if (Math.abs(d) > 0.004) u.x = clamp(u.x + sign(d) * Math.min(Math.abs(d), u.speed * 1.4 * dt), 0.07, 0.93);
+      toRow(a, backRow(a), dt);
+      u.face = p.rt.face || 1;
+      return;
+    }
     // Where to stand.
     let goal, foe = null;
     const foes = living(B, "enemy").filter((e) => e.rt.entered);
@@ -996,7 +1007,7 @@
   function spread(R) {
     const p = C.player();
     for (const side of ["enemy", "friends"]) {
-      const us = living(R.B, side).filter((u) => u.rt && !u.still && (side !== "enemy" || (u.rt.entered && !u.rt.atk && !u.rt.engaged)));
+      const us = living(R.B, side).filter((u) => u.rt && !u.still && (side !== "enemy" || (u.rt.entered && !u.rt.atk && !u.rt.engaged)) && !(side === "friends" && u.status.wall && u.rt.st.wall > 0)); // a shield wall stands rim over rim
       for (let i = 0; i < us.length; i++) for (let j = i + 1; j < us.length; j++) {
         let a = us[i], b = us[j];
         if (b === p) { b = a; a = p; }
