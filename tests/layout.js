@@ -422,6 +422,9 @@ async function goScene(page, id, extra) {
   await page.waitForTimeout(600);
   // A new place: the journey page comes first; a tap on it moves on to the scene.
   if (await page.$("#journey-go")) { await page.click("#journey-go"); await page.waitForTimeout(400); }
+  // A battle day's first scene opens with the commander's orders over it (Build B; tests/review_battle.js checks them):
+  // "To your place", as a player would, to measure the scene.
+  if (await page.$(".moment.orders .ord-go")) { await page.click(".moment.orders .ord-go"); await page.waitForTimeout(500); }
   // Let the page finish rising into place.
   await page.waitForFunction(() => !document.getAnimations || document.getAnimations().every((a) => a.playState !== "running" || a.effect?.getComputedTiming().iterations === Infinity), null, { timeout: 3000 }).catch(() => {});
 }
