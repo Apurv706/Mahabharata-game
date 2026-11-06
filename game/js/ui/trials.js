@@ -855,11 +855,11 @@
       // trial.twist (owner, 5 November: the lamp game had grown repetitive), one to a place:
       //   dog     a dog by the gate hears you if you keep moving: go in short bursts, or it barks and the guard comes your way;
       //   lamp    a second lamp on the wall flares up now and then over part of the way (it flickers first);
-      //   clouds  the moon comes out from behind the clouds: moving in moonlight is seen (standing still is not);
+      //   clouds  the moon comes out from behind the clouds (1.6-2.2 s, then 3.4-4.8 s dark): moving in moonlight is seen (standing still is not);
       //   turns   a nervous guard who doubles back often, with only a short tell.
       // Each twist gives a few more seconds.
       const tw = t.twist || null;
-      const need = t.trips || 2, lives = t.spots || 2, light = clamp(0.26 - power * 0.012, 0.15, 0.26), LIMIT = (t.secs || 45) + (tw ? 8 : 0);
+      const need = t.trips || 2, lives = t.spots || 2, light = clamp(0.26 - power * 0.012, 0.15, 0.26), LIMIT = (t.secs || 45) + (tw === "clouds" ? 12 : tw ? 8 : 0); // under the moon you wait more: 12 s (a simulated careful player, 6 November: 63-87% with 8)
       let pos = 0, trips = 0, seen = 0, sus = 0, holding = false, freeze = 0, last = 0;
       let noise = 0, dogT = 0, barkT = 0; // the dog
       const L2 = { c: 0.5 + (K.rng() - 0.5) * 0.16, w: 0.15, on: false, t: 1.6 + K.rng(), warn: false }; // the wall lamp
@@ -950,7 +950,7 @@
         if (glock <= 0) spot = clamp(gp + gdir * REACH * (gpause > 0 && turning ? 0.4 : 1), 0, 1);
         // The twists' own clocks.
         if (tw === "lamp") { L2.t -= dt; L2.warn = !L2.on && L2.t < 0.5; if (L2.t <= 0) { L2.on = !L2.on; L2.t = L2.on ? 1.8 + K.rng() * 0.6 : 1.6 + K.rng() * 1.2; } }
-        if (tw === "clouds") { moonT -= dt; moonWarn = !moon && moonT < 0.7; if (moonT <= 0) { moon = !moon; moonT = moon ? 2.2 + K.rng() * 0.8 : 2.8 + K.rng() * 1.4; if (moon && holding) note.textContent = K.tr("The moon is out. Keep still."); } }
+        if (tw === "clouds") { moonT -= dt; moonWarn = !moon && moonT < 0.7; if (moonT <= 0) { moon = !moon; moonT = moon ? 1.6 + K.rng() * 0.6 : 3.4 + K.rng() * 1.4; if (moon && holding) note.textContent = K.tr("The moon is out. Keep still."); } }
         if (tw === "dog" && freeze <= 0) {
           noise = clamp(noise + (holding ? dt * 0.42 : -dt * 0.6), 0, 1);
           if (noise >= 1) { noise = 0.4; barkT = 1; gdir = pos >= gp ? 1 : -1; gpause = 0; turning = false; dogT = 1.6; note.textContent = K.tr("The dog barks, and the guard turns your way."); if (K.Sound) K.Sound.play("drum"); }
