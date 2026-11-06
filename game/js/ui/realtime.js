@@ -216,6 +216,13 @@
       m.el.style.zIndex = String(Math.round(20 - m.d * 6)); m.el.classList.toggle("face-l", (p.rt.face || 1) < 0);
     }
   }
+  // The first time a blade is lit for you (on this device), a line says what it means.
+  function parryTip() {
+    let seen = false; try { seen = !!(K.prefs && K.prefs().tipParry); } catch (e) { /* no store */ }
+    if (seen || V.parryTold) return;
+    V.parryTold = true; try { K.prefs({ tipParry: true }); } catch (e) { /* no store */ }
+    toast(T("A blade lit white is coming down on you: Strike now to parry it."));
+  }
   // Life below a tenth (owner, 6 November: "when my life gets less than 10%, create a warning"): the edges of the field
   // pulse red, your bar flashes, a heartbeat every few seconds, and a line says what you can do, for as long as it lasts.
   function lowLife(p) {
@@ -507,6 +514,34 @@
     } else if (a.sparkAt && performance.now() - a.sparkAt < 250) sparkAt(a);
     a.sparkAt = 0;
     if (K.Sound) K.Sound.play(clash ? "clang" : "hit");
+  }
+  // Blade on blade (the parry, RT.P.parry): the one whose blow is met swings on into the other's weapon; sparks fly where
+  // they meet, a clang, and he reels back. byFoe: a champion met your blow (you reel). part: a dagger could only half stop it.
+  function parried(a, b, part, byFoe) {
+    if (!a || !b || !V) return;
+    a.swingOn = null;
+    if (!byFoe) { pose(b, "guard", 700, 0.6); if (b.rig) { b.rig.t.dx = 0; b.rig.t.dy = 0; } } // your blade comes up to meet it
+    else pose(b, "guard", 500, 0.6);
+    swing(a, b, "weapon", byFoe ? b.blowArc : a.atkArc);
+    const sw = a.swing, wait = Math.max(0, (sw ? sw.t0 : performance.now()) + IMPACT - performance.now());
+    setTimeout(() => {
+      if (!V || !a.el.isConnected || !b.el.isConnected) return;
+      const res = sw && sw.aim && a.swing === sw ? U.blowImpact(sw.aim) : null, wr = V.world.getBoundingClientRect();
+      let pt;
+      if (res) pt = { x: res.x - wr.left, y: res.y - wr.top };
+      else { const w = b.svg.querySelector(".foreF .it-w") || b.svg.querySelector(".pp-torso") || b.svg, r = w.getBoundingClientRect(); pt = { x: r.left + r.width / 2 - wr.left, y: r.top + r.height * 0.3 - wr.top }; }
+      const fl = document.createElement("i"); fl.className = "impact clash parryhit"; fl.style.left = pt.x + "px"; fl.style.top = pt.y + "px";
+      V.world.appendChild(fl); setTimeout(() => fl.remove(), 420);
+      if (U.flingBits) U.flingBits(V.world, "spark", pt, part ? 8 : 16, 16, null, true);
+      if (U.rigFreeze) U.rigFreeze(part ? 50 : 110);
+      if (K.Sound) K.Sound.play("clang");
+      if (part) { pop(b, K.tr("Too heavy to stop"), "miss"); home(a, 250); home(b, 400); return; }
+      pop(byFoe ? b : a, K.tr("Parried!"), "miss");
+      pose(a, "strain", 700, 0.45); if (a.rig) a.rig.kick({ rot: 170 * (a.u.rt ? -a.u.rt.face : 1), tx: 22 });
+      home(a, byFoe ? 500 : 950); home(b, 350);
+    }, wait);
+    if (byFoe && !part) toast(K.tr("{n} parries your blow", { n: b.name || K.tr("He") }));
+    else if (!part) toast(K.tr("Parried"));
   }
   function sparkAt(a) { // sparks from the middle of the shield (an arrow on it)
     const wr = V.world.getBoundingClientRect(), sh = a.svg.querySelector(".it-s") || a.svg.querySelector(".pp-body"), r = sh.getBoundingClientRect();
@@ -811,6 +846,7 @@
     const p = C.player();
     if (Math.floor(R.t / 10) !== V.tagTick && V.actors.size) { V.tagTick = Math.floor(R.t / 10); nameTagsAll(2); } // at the start and every 10 s, for 2 s
     const pleading = C.spareable(), inReach = RT.spareable(R); // a kneeling foe asks for mercy (C.spare)
+    const canParry = RT.canParry() && !R.noStrike;
     for (const u of B.units) {
       if (!u.rt) continue;
       const a = actorFor(u);
@@ -823,6 +859,8 @@
       // A foe glows only the first time it winds up; after that only its pose and its mark.
       if (u.rt.atk && u.side === "enemy" && !a.warned) a.warned = u.rt.atk;
       a.el.classList.toggle("windup", !!u.rt.atk && u.side === "enemy" && a.warned === u.rt.atk);
+      // The parry's moment (RT.P.parryCue before it lands): the blade coming down on you is lit white; Strike then meets it.
+      if (u.side === "enemy") { const cue = canParry && u.hp > 0 && RT.parryable(R, u, RT.P.parryCue); if (cue !== !!a.cue) { a.cue = cue; a.el.classList.toggle("parry-cue", cue); if (cue) parryTip(); } }
       if (u.rt.atk !== a.atk) {
         if (u.rt.atk) a.atkArc = !u.rt.atk.ranged && !u.rt.atk.area && U.arcFor ? u.rt.atk.arc || U.arcFor(u.rt.weapon, a.blowN = (a.blowN || 0) + 1) : null; // which way this weapon's blow comes
         if (u.rt.atk) { pose(a, u.rt.atk.ranged ? "draw" : a.atkArc && U.ARCS[a.atkArc] ? U.ARCS[a.atkArc].up : "windup", a.atkArc && U.MACE_ARCS[a.atkArc] ? 500 : 700, 0.5); const t = V.actors.get(u.rt.atk.on); if (t) nameTag(t, 1.5); }
@@ -936,6 +974,8 @@
         break; }
       case "miss": { const a = A(f.uid); if (a) pop(a, K.tr("Missed"), "miss"); break; }
       case "feint": { const a = A(f.uid); if (a && a.u.hp > 0) { pop(a, K.tr("Feint!"), "miss"); pose(a, "guard", 300, 0.4); } break; } // the wind-up stops short (item 19): it comes again
+      case "parry": parried(A(f.uid), me, f.part, false); break; // your blade met his (owner, 6 November)
+      case "parried": parried(me, A(f.uid), false, true); break; // a champion met yours
       case "perfect": toast(K.tr("Perfect roll")); break;
       case "perfectblock": { toast(K.tr("Perfect block")); const a = A(f.uid); if (a && a.u.hp > 0) { setTimeout(() => { if (V && a.u.hp > 0) { pose(a, "strain", 700, 0.45); if (a.rig) a.rig.kick({ rot: 160 * (a.u.rt ? -a.u.rt.face : 1), tx: 20 }); home(a, 900); } }, 120); } break; } // the one who struck staggers back off the shield
       case "winded": if (blocker()) toast(K.tr("Winded")); break;

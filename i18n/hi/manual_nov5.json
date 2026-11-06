@@ -134,5 +134,11 @@
   "War cry: they come at you": "रणघोष: वे तुम पर टूट पड़ते हैं",
   "Rally: your side hits harder": "जोश: तुम्हारा पक्ष ज़ोर से मारता है",
   "Swerve: the next blow misses": "मोड़: अगला वार चूकेगा",
-  "Stunned: they cannot strike": "सुन्न: वे वार नहीं कर सकते"
+  "Stunned: they cannot strike": "सुन्न: वे वार नहीं कर सकते",
+  "Parried!": "वार रोका!",
+  "Parried": "वार रोका",
+  "Too heavy to stop": "रोकने के लिए बहुत भारी",
+  "{n} parries your blow": "{n} तुम्हारा वार रोक लेता है",
+  "He": "वह",
+  "A blade lit white is coming down on you: Strike now to parry it.": "सफ़ेद चमकता हथियार तुम पर गिर रहा है: अभी वार करो और उसे रोक लो।"
 }

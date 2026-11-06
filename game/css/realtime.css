@@ -744,3 +744,8 @@ html[lang="hi"] #rt .lowwarn b, html[lang="hi"] #rt .lowwarn span { font-family:
 #rt.lowlife .bar.hp i { animation: rt-lowbar .55s steps(2) infinite; }
 @keyframes rt-lowbar { 50% { box-shadow: 0 0 0 2px #ff5a46; } }
 @media (prefers-reduced-motion: reduce) { #rt.lowlife .stage::after { animation: none; opacity: .8; } #rt.lowlife .bar.hp i, #rt .actor.dazed .fl, #rt .actor.me.roared::after, #rt .cl-open { animation: none; } }
+/* The parry (owner, 6 November): the blade coming down on you is lit white while a Strike would meet it; blade on blade,
+   a larger flash where they meet */
+#rt .actor.parry-cue .fl { filter: drop-shadow(0 0 2px #ffffff) drop-shadow(0 0 7px rgba(255, 255, 255, .95)); }
+html.calm #rt .actor.parry-cue .fl { filter: drop-shadow(0 0 3px #ffffff) brightness(1.25); }
+#rt .impact.parryhit { width: 54px; height: 54px; margin: -27px 0 0 -27px; animation-duration: .4s; }

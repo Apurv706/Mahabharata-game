@@ -67,7 +67,14 @@
     // The mace (owner, 4 November: heavy and slow): foes' mace blows wind up longer (an overhead smash, then a side sweep
     // that pushes you back), a little harder to keep their weight about the same.
     maceSmash: 0.8, maceSweep: 0.7, maceHit: 1.1, maceShove: 0.3,
-    cap: 240           // a fight that has run this long is stopped (it never should)
+    // The parry (owner, 6 November: "when both of us fight with hand-held weapons, should the weapons strike each other if
+    // used at the right time?"). Strike pressed this close before a foe's blade lands on you (less on Hard: R.D.perfect)
+    // meets it: neither blow lands, the moment slows, and he reels back (parryStag; off a mace, parryStagMace). A dagger or
+    // empty hands cannot stop a heavy blow or a mace's smash: half of it still lands (parryPart). Arrows cannot be parried.
+    // The screen lights the blade for parryCue before it lands. A named champion meets some of your blows with his own
+    // (R.D.parryFoe, RT.LEVELS): you are thrown off for parriedBusy and he answers soon after; not twice in parryFoeCd.
+    parry: 0.15, parryStag: 1.0, parryStagMace: 1.4, parryPart: 0.5, parryCue: 0.4, parriedBusy: 0.45, parryFoeCd: 2.5,
+    cap: 240          // a fight that has run this long is stopped (it never should)
   };
   // Per-fight tuning: RT.TUNE[encId] = { hp, atk } multiplies that fight's foes' health and blows. Only the
   // outliers are tuned (owner, 3 and 4 November), each to within about 8 points of the same fight on the turns
@@ -100,9 +107,9 @@
   //   feint   the chance a melee wind-up stops just short and comes again (a roll or a shield spent on nothing)
   //   pair    the least time between two foes' blows landing (smaller: pairs strike together)
   RT.LEVELS = {
-    easy: { atk: [1, 1], rest: [1, 1], wind: [1, 1], perfect: [1, 1], glance: [1, 1], feint: [0, 0], pair: [1, 1] },
-    normal: { atk: [1, 1.42], rest: [1, 0.72], wind: [1, 0.86], perfect: [1, 0.85], glance: [1, 1.7], feint: [0, 0.22], pair: [1, 0.6] },
-    hard: { atk: [1.25, 1.6], rest: [0.8, 0.6], wind: [0.9, 0.76], perfect: [0.8, 0.68], glance: [1.4, 2.2], feint: [0.1, 0.32], pair: [0.7, 0.4] }
+    easy: { atk: [1, 1], rest: [1, 1], wind: [1, 1], perfect: [1, 1], glance: [1, 1], feint: [0, 0], pair: [1, 1], parryFoe: [0.04, 0.08] },
+    normal: { atk: [1, 1.42], rest: [1, 0.72], wind: [1, 0.86], perfect: [1, 0.85], glance: [1, 1.7], feint: [0, 0.22], pair: [1, 0.6], parryFoe: [0.1, 0.22] },
+    hard: { atk: [1.25, 1.6], rest: [0.8, 0.6], wind: [0.9, 0.76], perfect: [0.8, 0.68], glance: [1.4, 2.2], feint: [0.1, 0.32], pair: [0.7, 0.4], parryFoe: [0.18, 0.32] }
   };
   // How far along the ramp each act is: the early acts teach, the war is the hardest.
   RT.HEAT = { 1: 0, 2: 0.1, 3: 0.3, 4: 0.45, 5: 0.6, 6: 0.9, 7: 1 };
@@ -279,7 +286,7 @@
   RT.begin = function (B, opts = {}) {
     const R = { B, scale: opts.scale || RT.SCALE, t: 0, n: 0, seen: 0, sideSeen: {}, over: null, tries: opts.tries || 0, marks: [], fx: [], slow: 0, round: 1, doT: ROUND,
       orders: { friend: "balanced", soldiers: "defend" }, breath: RT.P.breathMax, combo: 0, comboT: -9, buffer: false, roll: 0, rollT: -9, rollDir: 1, block: false, blockT: -9, winded: false,
-      kneel: 0, skillCd: 0, salve: null, unseen: 0, double: false, haste: 0, frozen: 0, assist: !!opts.assist, stats: { blows: 0, hits: 0, rolls: 0, dodged: 0, perfect: 0, maxAtk: 0, blocks: 0, blocked: 0, perfectBlocks: 0 },
+      kneel: 0, skillCd: 0, salve: null, unseen: 0, double: false, haste: 0, frozen: 0, assist: !!opts.assist, stats: { blows: 0, hits: 0, rolls: 0, dodged: 0, perfect: 0, maxAtk: 0, blocks: 0, blocked: 0, perfectBlocks: 0, parries: 0, partParries: 0, parried: 0 },
       skill: null, shots: [], shotN: 0, D: RT.level(K.S), noStrike: !!opts.noStrike };
     B.rt = R;
     B.units.forEach((u) => initUnit(R, u));
@@ -415,9 +422,60 @@
     if (R.noStrike) { a.strike = false; a.skill = false; } // a storm's clash (weather): nothing to strike at; block, roll and live
     if (a.skill && RT.can(R, "skill") && R.roll <= 0 && !R.block && p.rt.busy <= 0.05) skill(R);
     if (a.strike && R.roll <= 0 && R.kneel <= 0 && !R.block) { // no blow with the shield up
-      if (p.rt.busy > 0) R.buffer = true; // a press during a blow is kept for the next
+      if (parry(R)) { /* your blade met his */ }
+      else if (p.rt.busy > 0) R.buffer = true; // a press during a blow is kept for the next
       else blow(R);
     }
+  }
+  // The parry (RT.P.parry): Strike pressed as a foe's blade comes down on you. The soonest such blow is met: with a blade, a
+  // mace, a spear, a staff, it stops dead and he reels back; with a dagger or empty hands a heavy blow (or a mace's smash) is
+  // only half stopped. Not an arrow, not a blow that sweeps all around him, not a feint still to come, and not while your
+  // own blow is half swung.
+  const PARRY_WITH = new Set(["sword", "woodsword", "mace", "spear", "staff", "club", "hammer", "dagger", "fist"]), LIGHT = new Set(["dagger", "fist"]);
+  RT.canParry = () => { const p = C.player(); return !!(p && p.rt && PARRY_WITH.has(p.rt.weapon)); };
+  RT.parryable = function (R, e, win) {
+    const a = e.rt.atk, p = C.player();
+    if (!a || a.ranged || a.area || a.feint || e.hp <= 0) return false;
+    const left = a.land - R.t;
+    if (left < -STEP || left > win) return false;
+    const m = RT.markOf(R, e);
+    return !!(m && inside(m, p) && rowGap(e, p) <= RT.P.blockRows && dist(e, p) <= Math.max(p.rt.reach, e.rt.reach) + LUNGE + 0.2 * BODY);
+  };
+  function parry(R) {
+    const p = C.player();
+    if (!RT.canParry() || p.rt.busy > 0.1 || R.noStrike) return false;
+    const win = RT.P.parry * R.D.perfect + STEP;
+    const e = living(R.B, "enemy").filter((x) => RT.parryable(R, x, win)).sort((x, y) => x.rt.atk.land - y.rt.atk.land)[0];
+    if (!e) return false;
+    const a = e.rt.atk, P = RT.P;
+    p.rt.face = sign(e.rt.x - p.rt.x) || p.rt.face;
+    p.rt.blow = null; p.rt.busy = 0.3; R.combo = 0; R.buffer = false;
+    if (LIGHT.has(p.rt.weapon) && (a.heavy || a.arc === "smash")) { // too heavy for a dagger to stop: half of it lands
+      a.part = P.parryPart; R.stats.partParries++;
+      R.fx.push({ k: "parry", uid: e.uid, part: true });
+      return true;
+    }
+    R.stats.parries++; R.parryT = R.t;
+    cancel(R, e);
+    e.rt.stag = Math.max(e.rt.stag, p.rt.weapon === "mace" ? P.parryStagMace : P.parryStag); e.rt.rec = 0;
+    R.slow = Math.max(R.slow, 0.6);
+    R.fx.push({ k: "parry", uid: e.uid, arc: a.arc || null });
+    return true;
+  }
+  // A named champion (a hero, or one of the epic's people) meets some of your blows with his own weapon: not with a bow or
+  // bare hands, not while he winds up a blow of his own, reels or kneels, and not twice in a row (RT.P.parryFoeCd). A heavy
+  // blow is met half as often. You are thrown off a moment; he answers soon after.
+  function foeParries(R, t, heavy) {
+    if (!(t.hero || t.person) || t.rt.atk || t.rt.stag > 0 || t.rt.down > 0 || t.rt.beaten || t.still) return false;
+    if (!PARRY_WITH.has(t.rt.weapon) || t.rt.weapon === "fist" || t.rt.archer) return false;
+    if (R.t - (t.rt.parriedAt || -99) < RT.P.parryFoeCd) return false;
+    const p = C.player(); if (t.rt.face !== -p.rt.face) return false;
+    if (K.rng() >= (R.D.parryFoe || 0) * (heavy ? 0.5 : 1)) return false;
+    t.rt.parriedAt = R.t; R.stats.parried++;
+    p.rt.busy = Math.max(p.rt.busy, RT.P.parriedBusy); R.combo = 0; R.buffer = false;
+    t.rt.cool = Math.min(t.rt.cool, 0.25);
+    R.fx.push({ k: "parried", uid: t.uid });
+    return true;
   }
   // Your blows: three quick ones, the third heavy and knocking back; with the mace (owner, 4 November: heavy and slow) two
   // big ones, each with a long wind-up: an overhead smash (over the shoulder, down onto the head and shoulders; it
@@ -476,6 +534,7 @@
     const t = foesNear(R, p.rt.x, p.rt.face, p.rt.reach + LUNGE)[0]; // your blow carries a step forward, as a foe's does
     R.stats.blows++;
     if (!t) return;
+    if (foeParries(R, t, b.c.heavy)) return;
     let m = b.c.m;
     if (R.double) { m *= 2; R.double = false; }
     // A shield-bearer facing you turns some of your blows on his shield: half spent, a spark (PRD §18.15).
@@ -787,6 +846,7 @@
     } else if (t !== p && isSoldiers(t) && R.orders.soldiers === "defend" && a.on === t.uid) sh = P.shieldSoldiers;
     else if (t === p && R.shield && frontal) sh = P.shieldYou;
     if (a.arc) sh *= P.maceHit; // a mace blow: slower, a little harder
+    if (a.part && t === p) sh *= a.part; // half stopped by your parry (a dagger against a heavy blow)
     if (blocked || sh < (a.arc ? P.maceHit : 1)) R.fx.push({ k: "spark", uid: t.uid, block: blocked, arrow: !!a.ranged });
     if (sh <= 0) { /* a perfect block: nothing gets through */ }
     else if (sh !== 1) { const atk = e.atk; e.atk = Math.round(atk * sh * 10) / 10; try { doHit(); } finally { e.atk = atk; } }
