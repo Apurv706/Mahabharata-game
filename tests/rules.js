@@ -1574,4 +1574,21 @@ require(G + "content/war_fights.js");
   ok(lv(1, "hard").atk > lv(1, "normal").atk && lv(6, "hard").rest < lv(6, "normal").rest, "Hard is harder from the start");
   S.storyMode = true; ok(K.RT.difficulty(S) === "easy" || !!process.env.DIFF, "story mode keeps Easy whatever the setting"); S.storyMode = false;
 }
+// Orders for the day (owner, 6 November; content/war_orders.js): the day's commander, once a battle day, what happened
+// since the last orders, and none for one who fights on no side.
+{
+  require(G + "content/war_orders.js"); const O = K.ORDERS;
+  const S = fresh({ act: 6, age: 44, side: "pandava" }); S.alive = true;
+  ok(O.due(K.SCENES.a6_day1, S) === 1 && O.chief("pandava", 1) === "dhrishtadyumna" && O.chief("kaurava", 10) === "bhishma" && O.chief("kaurava", 12) === "drona" && O.chief("kaurava", 17) === "karna" && O.chief("kaurava", 18) === "shalya", "orders: the day's commander on each side");
+  O.given(6, S);
+  ok(!O.due(K.SCENES.a6_day1, S) && O.due(K.SCENES.bh_day9, S) === 9, "orders come once a day (none for the fighting of days 1 to 9, told after day 6)");
+  const i = O.info(9, S);
+  ok(i.head === "Since your last orders" && i.since.length === 3 && !!i.aim && !!i.you && i.chief.name === "Dhrishtadyumna", "since your last orders: what happened on days 6, 7 and 8, then the day's aim and your orders");
+  O.given(9, S); ok(O.info(10, S).head === "Yesterday" && O.info(10, S).since.length === 1 && /Bhishma/.test(O.info(10, S).since[0]), "the day after: yesterday");
+  S.side = "kaurava"; ok(O.info(10, S).chief.name === "Bhishma" && /Shikhandi/.test(O.info(10, S).you), "a Kaurava's orders on the tenth day come from Bhishma");
+  S.side = "neutral"; ok(!O.due(K.SCENES.a6_day18, S), "no orders for one who fights on no side");
+  const missing = Object.keys(O.at).filter((id) => !K.SCENES[id]);
+  ok(!missing.length, "every scene that brings orders exists" + (missing.length ? ": " + missing.join(", ") : ""));
+  ok([1, 2, 3, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].every((d) => O.DAYS[d].p && O.DAYS[d].k && O.DAYS[d].p.you && O.DAYS[d].k.you) && Object.values(O.at).every((d) => O.DAYS[d] && O.DAYS[d].p), "orders written for both sides on every day that brings them");
+}
 console.log(fails ? fails + " FAILED" : "all passed"); process.exit(fails ? 1 : 0);

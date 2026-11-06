@@ -68,12 +68,14 @@
     // that pushes you back), a little harder to keep their weight about the same.
     maceSmash: 0.8, maceSweep: 0.7, maceHit: 1.1, maceShove: 0.3,
     // The parry (owner, 6 November: "when both of us fight with hand-held weapons, should the weapons strike each other if
-    // used at the right time?"). Strike pressed this close before a foe's blade lands on you (less on Hard: R.D.perfect)
+    // used at the right time?"). Strike pressed this close before a foe's blade lands on you (less on Hard: R.D.perfect;
+    // 0.15 at first: played like a person on a phone, who strikes a quarter to a third of a second after the blade lights,
+    // 1 parry in 7 tries, the rest too early or too late; 0.22 catches a reaction of 0.2-0.4 s after the light)
     // meets it: neither blow lands, the moment slows, and he reels back (parryStag; off a mace, parryStagMace). A dagger or
     // empty hands cannot stop a heavy blow or a mace's smash: half of it still lands (parryPart). Arrows cannot be parried.
     // The screen lights the blade for parryCue before it lands. A named champion meets some of your blows with his own
     // (R.D.parryFoe, RT.LEVELS): you are thrown off for parriedBusy and he answers soon after; not twice in parryFoeCd.
-    parry: 0.15, parryStag: 1.0, parryStagMace: 1.4, parryPart: 0.5, parryCue: 0.4, parriedBusy: 0.45, parryFoeCd: 2.5,
+    parry: 0.22, parryStag: 1.0, parryStagMace: 1.4, parryPart: 0.5, parryCue: 0.4, parriedBusy: 0.45, parryFoeCd: 2.5,
     cap: 240          // a fight that has run this long is stopped (it never should)
   };
   // Per-fight tuning: RT.TUNE[encId] = { hp, atk } multiplies that fight's foes' health and blows. Only the
