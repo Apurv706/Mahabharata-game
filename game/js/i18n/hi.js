@@ -4927,6 +4927,7 @@
     "Break what is left of their line, and do not let their king slip away.": "उनकी बची हुई पंक्ति तोड़ दो, और उनके राजा को निकलने मत देना।",
     "Shalya leads us today. We are fewer, but the king is alive, and while he lives the war goes on.": "आज शल्य हमारा नेतृत्व कर रहे हैं। हम कम हैं, पर राजा जीवित हैं, और जब तक वे जीवित हैं युद्ध चलता रहेगा।",
     "Hold together around the king.": "राजा के चारों ओर एक साथ डटे रहो।",
+    "He took it on his shield. While he lowers it he cannot strike: hit him again.": "उसने वार ढाल पर रोक लिया। ढाल नीचे करते हुए वह वार नहीं कर सकता: फिर से वार करो।",
     "Whip ×2": "चाबुक ×2",
     "Space": "स्पेस",
     "Change lanes to miss what is in the road: up and down, or the buttons. Space cracks the whip.": "रास्ते की रुकावटों से बचने के लिए पंक्ति बदलो: ऊपर और नीचे, या बटन। स्पेस से चाबुक चलाओ।",

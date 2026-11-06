@@ -223,6 +223,13 @@
     V.parryTold = true; try { K.prefs({ tipParry: true }); } catch (e) { /* no store */ }
     toast(T("A blade lit white is coming down on you: Strike now to parry it."));
   }
+  // The first time a foe catches your blow on his shield (on this device), a line says what it means.
+  function fblockTip() {
+    let seen = false; try { seen = !!(K.prefs && K.prefs().tipFblock); } catch (e) { /* no store */ }
+    if (seen || V.fblockTold) return;
+    V.fblockTold = true; try { K.prefs({ tipFblock: true }); } catch (e) { /* no store */ }
+    toast(T("He took it on his shield. While he lowers it he cannot strike: hit him again."));
+  }
   // Life below a fifth (owner, 6 November: "when my life gets less than 10%, create a warning"; then 20%: played like a
   // person, a blow of 15-25% of your life could skip the tenth): the edges of the field pulse red, your bar flashes, a
   // heartbeat every few seconds, and a line says what you can do, for as long as it lasts.
@@ -564,9 +571,9 @@
     t.style.bottom = (a.gy + a.fh * (a.u.rt && a.u.rt.beaten ? 0.3 : 0.4)) + "px"; t.style.left = (a.x - (a.u.rt ? a.u.rt.face : 1) * a.fh * 0.05) + "px";
   }
   function nameTagsAll(s) { V.actors.forEach((a) => nameTag(a, s)); }
-  function pop(a, text, cls) {
+  function pop(a, text, cls, lift) {
     const el = document.createElement("span"); el.className = "pop " + (cls || ""); el.textContent = text;
-    el.style.left = a.x + "px"; el.style.bottom = (a.gy + a.fh * 1.08) + "px"; V.world.appendChild(el);
+    el.style.left = a.x + "px"; el.style.bottom = (a.gy + a.fh * (1.08 + (lift || 0))) + "px"; V.world.appendChild(el);
     if (U.calm()) { setTimeout(() => el.remove(), 700); return; }
     el.animate([{ transform: "translate(-50%,4px)", opacity: 0 }, { transform: "translate(-50%,-4px)", opacity: 1, offset: 0.15 }, { transform: "translate(-50%,-38px)", opacity: 0 }], { duration: 900, easing: "ease-out" }).onfinish = () => el.remove();
   }
@@ -882,6 +889,8 @@
       }
       // A rally carried in from the turns: your side glows gold while it lasts; a stunned foe sways (the clash's opening).
       if (u.hp > 0) { a.el.classList.toggle("inspired", u.side !== "enemy" && (u.rt.st.inspired || 0) > 0); a.el.classList.toggle("dazed", u.side === "enemy" && (u.rt.st.stun || 0) > 0); }
+      // A foe lowering his shield after catching your blow cannot strike yet: lit gold while the opening lasts.
+      a.el.classList.toggle("opened", u.side === "enemy" && u.hp > 0 && !!u.rt.opening && !u.rt.atk);
       a.el.classList.toggle("beaten", !!u.rt.beaten);
       if (u.side === "enemy") U.pleaTag(a.el, u.spared ? "spared" : u.hp > 0 && pleading.includes(u) ? (inReach.includes(u) ? "ask" : "far") : "", () => { V.queue.spare = u.uid; });
       const m = a.el.querySelector(".mini b"); if (m) m.style.width = Math.max(0, u.hp / u.maxHp * 100) + "%";
@@ -972,6 +981,16 @@
         if (a.u.side === "player" && f.block && f.arrow) pop(a, K.tr("Blocked"), "miss"); // an arrow snapping on the raised shield
         if (a.u.side === "player" && R.block) break; // already behind the raised shield
         if (a.u.side !== "player" || !f.glance) { pose(a, "guard", 1400, 0.55); if (!a.shieldUp) home(a, 500); }
+        break; }
+      case "fblock": { // a foe catches your blow on his shield (owner, 6 November): raised to meet it, then lowered, and while he
+        // lowers it he cannot strike (RT.P.fblockRec): he is lit gold as long as that lasts (the update: "opened")
+        const a = A(f.uid); if (!a || a.u.hp <= 0) break;
+        a.sparkAt = performance.now(); a.fblockUp = true;
+        if (a.rig) { a.rig.t.dx = 0; a.rig.t.dy = 0; }
+        pose(a, "shieldUp", 1500, 0.6); U.guardFlash(a.svg, 700); // (the shield brought round in front, as yours is)
+        pop(a, K.tr("Blocked"), "miss", 0.22); // above the number that got through
+        setTimeout(() => { if (!V || !a.u || a.u.hp <= 0) return; a.fblockUp = false; pose(a, "strain", 650, 0.45); if (a.rig) a.rig.kick({ rot: 120 * (a.u.rt ? -a.u.rt.face : 1), tx: 12 }); home(a, Math.max(200, f.rec * 1000 - 420)); }, 380);
+        fblockTip();
         break; }
       case "miss": { const a = A(f.uid); if (a) pop(a, K.tr("Missed"), "miss"); break; }
       case "feint": { const a = A(f.uid); if (a && a.u.hp > 0) { pop(a, K.tr("Feint!"), "miss"); pose(a, "guard", 300, 0.4); } break; } // the wind-up stops short (item 19): it comes again

@@ -1389,6 +1389,27 @@ require(G + "content/war_fights.js");
     e.hero = true; e.rt.weapon = "sword"; e.rt.archer = false; e.rt.entered = true; e.rt.lane = p.rt.lane; p.rt.x = 0.4; e.rt.x = p.rt.x + p.rt.reach * 0.7; e.rt.cool = 99; e.rt.face = -1;
     const h0 = e.hp; RT.step(R, { strike: true }); const t1 = R.t + 0.8; while (R.t < t1 && !R.over) RT.step(R, {});
     ok(R.stats.parried === 1 && e.hp === h0, "a named champion can meet your blow with his own (" + R.stats.parried + ", " + (h0 - e.hp) + " lost)"); C.settle("win"); C.end(); }
+  // Foes use their shields (owner, 6 November: "if a foe uses their shield, allow some time before they can strike"): a foe
+  // with a shield, facing you and not winding up, catches your blow on it (only a part gets through); while he lowers it he
+  // cannot strike, and your next blow in that time is not caught. Winding up a blow of his own, he cannot raise it.
+  { const shieldDuel = (glance, o) => { K.seed(37); life({ path: o.path || "mace" }); const B = C.start("e_guard"); const R = RT.begin(B), p = C.player(); R.D.glance = glance;
+      const e = B.units.find((u) => u.side === "enemy"); B.units.forEach((u) => { if (u !== p && u !== e) { u.still = true; if (u.side === "enemy") { u.rt.entered = false; u.rt.x = 1.1; } } });
+      e.shield = !o.drawn; e.shieldDrawn = !!o.drawn; e.hero = false; e.person = false; e.rt.entered = true; e.rt.lane = p.rt.lane; p.rt.x = 0.4; p.rt.face = 1; e.rt.x = p.rt.x + p.rt.reach * 0.7; e.rt.cool = 99; e.rt.face = -1;
+      if (o.winding) e.rt.atk = { id: "strike", on: p.uid, t0: R.t, land: R.t + 3, ranged: false, area: false, lane: p.rt.x, locked: false, heavy: false, arc: null };
+      const h0 = e.hp; RT.step(R, { strike: true }); let t1 = R.t + 0.8; while (R.t < t1 && !R.over) RT.step(R, {});
+      const out = { lost: h0 - e.hp, fblocks: R.stats.fblocks, struck: false, second: null };
+      if (o.opening && out.fblocks === 1) {
+        e.rt.cool = 0; let n = 0; while (e.rt.opening && !R.over && n++ < 400) { if (e.rt.atk) out.struck = true; RT.step(R, {}); } out.openFor = n;
+        const h1 = e.hp; e.rt.cool = 99; e.rt.atk = null; e.rt.x = p.rt.x + p.rt.reach * 0.7; e.rt.face = -1; e.rt.stag = 0;
+        RT.step(R, { strike: true }); t1 = R.t + 0.8; while (R.t < t1 && !R.over) RT.step(R, {});
+        out.second = { lost: h1 - e.hp, fblocks: R.stats.fblocks };
+      }
+      C.settle("win"); C.end(); return out; };
+    const plain = shieldDuel(0, {}), caught = shieldDuel(99, { opening: true }), drawn = shieldDuel(99, { drawn: true }), busy = shieldDuel(99, { winding: true });
+    ok(plain.fblocks === 0 && caught.fblocks === 1 && caught.lost > 0 && caught.lost <= plain.lost * 0.6, "a foe catches your blow on his shield: only a part gets through (" + caught.lost + " of " + plain.lost + ")");
+    ok(caught.second && !caught.struck && caught.second.fblocks === 1 && caught.second.lost > caught.lost, "while he lowers it he cannot strike, and your next blow is not caught (" + JSON.stringify(caught.second) + ")");
+    ok(drawn.fblocks === 1, "a sword or spear foe's shield (drawn on every one since 6 November) catches blows too");
+    ok(busy.fblocks === 0, "a foe winding up a blow of his own cannot raise his shield"); }
   // You step between rows (a short step); not into a row where a foe stands right beside you; your side makes room.
   { K.seed(21); life(); const B = C.start("e_guard"); const R = RT.begin(B); const p = C.player();
     B.units.filter((u) => u.side === "enemy").forEach((u) => { u.rt.x = 0.97; u.rt.cool = 99; u.rt.wave = 1; u.rt.entered = false; });

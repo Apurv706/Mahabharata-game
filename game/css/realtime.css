@@ -751,4 +751,9 @@ html[lang="hi"] #rt .lowwarn b, html[lang="hi"] #rt .lowwarn span { font-family:
    a larger flash where they meet */
 #rt .actor.parry-cue .fl { filter: drop-shadow(0 0 2px #ffffff) drop-shadow(0 0 7px rgba(255, 255, 255, .95)); }
 html.calm #rt .actor.parry-cue .fl { filter: drop-shadow(0 0 3px #ffffff) brightness(1.25); }
+/* A foe lowering his shield after catching your blow: he cannot strike yet (owner, 6 November). Lit gold, pulsing, while it lasts. */
+#rt .actor.opened .fl { filter: drop-shadow(0 0 2px rgba(255, 214, 110, 1)) drop-shadow(0 0 8px rgba(255, 190, 60, .9)); animation: rt-open .45s ease-in-out infinite alternate; }
+@keyframes rt-open { from { opacity: 1; } to { opacity: .86; } }
+html.calm #rt .actor.opened .fl { animation: none; }
+@media (prefers-reduced-motion: reduce) { #rt .actor.opened .fl { animation: none; } }
 #rt .impact.parryhit { width: 54px; height: 54px; margin: -27px 0 0 -27px; animation-duration: .4s; }

@@ -79,7 +79,14 @@
     // light then falls inside the window). A named champion meets some of your blows with his own
     // (R.D.parryFoe, RT.LEVELS): you are thrown off for parriedBusy and he answers soon after; not twice in parryFoeCd.
     parry: 0.22, parryStag: 1.0, parryStagMace: 1.4, parryPart: 0.5, parryCue: 0.45, parriedBusy: 0.45, parryFoeCd: 2.5,
-    cap: 240          // a fight that has run this long is stopped (it never should)
+    // Foes use their shields (owner, 6 November: "let's have foes use their shields as well. If a foe uses their shield,
+    // allow some time before they can strike"). A foe carrying one (the line's soldiers and guards, and every foe with a
+    // sword or a spear), facing you and not winding up a blow of his own, catches some of your blows on it (fblock x
+    // R.D.glance; a heavy blow or an arrow less often): only fblockLight of a blow gets through (fblockHeavy of a heavy one).
+    // Then he must lower the shield before he can come again: fblockRec x R.D.rest seconds with no blow from him, and none
+    // of yours caught again for fblockCd. That is the opening: strike again.
+    fblock: 0.18, fblockLight: 0.15, fblockHeavy: 0.45, fblockRec: 1.0, fblockCd: 1.8,
+    cap: 240         // a fight that has run this long is stopped (it never should)
   };
   // Per-fight tuning: RT.TUNE[encId] = { hp, atk } multiplies that fight's foes' health and blows. Only the
   // outliers are tuned (owner, 3 and 4 November), each to within about 8 points of the same fight on the turns
@@ -294,7 +301,7 @@
   RT.begin = function (B, opts = {}) {
     const R = { B, scale: opts.scale || RT.SCALE, t: 0, n: 0, seen: 0, sideSeen: {}, over: null, tries: opts.tries || 0, marks: [], fx: [], slow: 0, round: 1, doT: ROUND,
       orders: { friend: "balanced", soldiers: "defend" }, breath: RT.P.breathMax, combo: 0, comboT: -9, buffer: false, roll: 0, rollT: -9, rollDir: 1, block: false, blockT: -9, winded: false,
-      kneel: 0, skillCd: 0, salve: null, unseen: 0, double: false, haste: 0, frozen: 0, assist: !!opts.assist, stats: { blows: 0, hits: 0, rolls: 0, dodged: 0, perfect: 0, maxAtk: 0, blocks: 0, blocked: 0, perfectBlocks: 0, parries: 0, partParries: 0, parried: 0 },
+      kneel: 0, skillCd: 0, salve: null, unseen: 0, double: false, haste: 0, frozen: 0, assist: !!opts.assist, stats: { blows: 0, hits: 0, rolls: 0, dodged: 0, perfect: 0, maxAtk: 0, blocks: 0, blocked: 0, perfectBlocks: 0, parries: 0, partParries: 0, parried: 0, fblocks: 0 },
       skill: null, shots: [], shotN: 0, D: RT.level(K.S), noStrike: !!opts.noStrike, clash: !!opts.clash };
     B.rt = R;
     B.units.forEach((u) => initUnit(R, u));
@@ -490,6 +497,20 @@
     R.fx.push({ k: "parried", uid: t.uid });
     return true;
   }
+  // A foe's shield (RT.P.fblock*): returns how much of your blow gets through (1: not caught). Not while he winds up,
+  // reels, kneels or is beaten; only facing you; not again until fblockCd has passed. Caught, he holds the shield and
+  // then lowers it (rt.rec: no step and no blow from him), and waits a breath more before he winds up (rt.cool).
+  function foeBlocks(R, t, heavy, arrow) {
+    if (!(t.shield || t.shieldDrawn) || t.hp <= 0 || t.rt.atk || t.rt.stag > 0 || t.rt.down > 0 || t.rt.beaten || t.still) return 1;
+    if (R.t - (t.rt.fblockAt == null ? -99 : t.rt.fblockAt) < RT.P.fblockCd) return 1;
+    const p = C.player(); if (t.rt.face !== -p.rt.face) return 1;
+    if (K.rng() >= RT.P.fblock * (R.D.glance || 1) * (heavy ? 0.7 : 1) * (arrow ? 0.7 : 1)) return 1;
+    const rec = RT.P.fblockRec * (R.D.rest || 1);
+    t.rt.fblockAt = R.t; t.rt.opening = true; R.stats.fblocks = (R.stats.fblocks || 0) + 1; // (the opening: until he is free to act again)
+    t.rt.rec = Math.max(t.rt.rec || 0, rec); t.rt.cool = Math.max(t.rt.cool || 0, 0.25);
+    R.fx.push({ k: "fblock", uid: t.uid, heavy: !!heavy, arrow: !!arrow, rec });
+    return heavy ? RT.P.fblockHeavy : RT.P.fblockLight;
+  }
   // Your blows: three quick ones, the third heavy and knocking back; with the mace (owner, 4 November: heavy and slow) two
   // big ones, each with a long wind-up: an overhead smash (over the shoulder, down onto the head and shoulders; it
   // staggers) and a side sweep that knocks back. About the same weight a second either way (2.29 in 1.30 s; 2.3 in 1.36 s).
@@ -550,8 +571,8 @@
     if (foeParries(R, t, b.c.heavy)) return;
     let m = b.c.m;
     if (R.double) { m *= 2; R.double = false; }
-    // A shield-bearer facing you turns some of your blows on his shield: half spent, a spark (PRD §18.15).
-    if (t.shield && t.rt.face === -p.rt.face && K.rng() < RT.P.glance * R.D.glance) { m *= 0.5; R.fx.push({ k: "spark", uid: t.uid, glance: true }); }
+    // A foe with a shield catches some of your blows on it, and must lower it before he can strike (foeBlocks).
+    m *= foeBlocks(R, t, b.c.heavy, false);
     const d = B.hit(p, t, m);
     R.stats.hits++;
     hitFx(R, t, d, b.c.heavy, p, true, b.c.arc);
@@ -793,8 +814,8 @@
     const t = ts[0];
     R.fx.push({ k: "arrive", shot: s, uid: t ? t.uid : null });
     if (!t) return;
-    if (s.m) { // an arrow of your Strike combo: a plain hit, the third knocking him back
-      const d = B.hit(p, t, s.m); if (p.side === "player") R.stats.hits++; hitFx(R, t, d, s.heavy, p.side === "player" ? null : p); t.rt.hits.push(R.t); // (an archer beside you: his own hit)
+    if (s.m) { // an arrow of your Strike combo: a plain hit, the third knocking him back (or caught on a shield: foeBlocks)
+      const d = B.hit(p, t, s.m * (p.side === "player" ? foeBlocks(R, t, s.heavy, true) : 1)); if (p.side === "player") R.stats.hits++; hitFx(R, t, d, s.heavy, p.side === "player" ? null : p); t.rt.hits.push(R.t); // (an archer beside you: his own hit)
       if (s.knock && t.hp > 0) knock(R, t, sign(t.rt.x - p.rt.x), s.knock * BODY, false);
       return;
     }
@@ -883,6 +904,7 @@
     if (held(e)) { if (u.atk) cancel(R, e); return; }
     if (e.still) return;
     if (u.rec > 0) { u.rec -= dt; return; }
+    if (u.opening) u.opening = false; // free to act again after his shield caught your blow (foeBlocks)
     // Waiting off the field: the next pack comes in as the field thins.
     if (!u.entered) {
       const onNow = living(B, "enemy").filter((x) => x.rt.entered).length;
