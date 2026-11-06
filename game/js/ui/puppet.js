@@ -430,8 +430,9 @@
       (gear("earrings") ? EARRING : "") + (gear("browgem") ? BROWGEM : "");
     // Behind everything: Arjuna's second quiver, once he carries the Gandiva.
     const behind = gear("quivers") && grown ? QUIVER2 : "";
-    // On the back arm: a round hide shield, or a horseman's small one.
-    const shieldR = gear("shield") ? 19 : gear("buckler") ? 13 : 0;
+    // On the back arm: a round hide shield, or a horseman's small one (larger since 6 November, owner: "increase the
+    // size of the shields, they are too small": 19 -> 26, the buckler 13 -> 17).
+    const shieldR = gear("shield") ? 26 : gear("buckler") ? 17 : 0;
     // Fallen, the shield and the weapon are no longer held: they lie on the ground beside the body.
     const dead = pose === "dead", ldir = o.fwd ? 1 : -1, laid = dead && spec.item && LIE[spec.item];
     const backHand = shieldR && !dead ? '<g class="it-s" data-r="' + shieldR + '">' + shieldSvg(shieldR, trim) + "</g>" : "";
@@ -514,7 +515,7 @@
     svg.querySelectorAll(".gflash").forEach((g) => g.remove());
     let rim = null;
     if (sh) {
-      const r = +sh.getAttribute("data-r") || 19, NS = "http://www.w3.org/2000/svg";
+      const r = +sh.getAttribute("data-r") || 26, NS = "http://www.w3.org/2000/svg";
       rim = document.createElementNS(NS, "g"); rim.setAttribute("class", "gflash");
       rim.innerHTML = '<circle cx="58" cy="112" r="' + (r + 1.5) + '" fill="none" stroke="#fff3c4" stroke-width="3.2"/>' +
         '<path d="M' + (58 - r * 0.62) + " " + (112 - r * 0.45) + " A" + r * 0.78 + " " + r * 0.78 + " 0 0 1 " + (58 + r * 0.2) + " " + (112 - r * 0.76) + '" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>';
