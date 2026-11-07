@@ -31,6 +31,8 @@
   const KEYS_BLOCK = "A / D move · W / S change row · J strike · hold K or Space to block · L skill · H herbs · C call · U divine weapon · O orders · P pause · E spare";
   const blocker = () => !!(V && V.R && V.R.blocker);
   const mace = () => !!(V && V.R && RT.comboOf(V.R).length === 2);
+  const dagger = () => !!(V && V.R && RT.comboOf(V.R).length === 5); // (Build D: four quick stabs and a heavy fifth)
+  const COMBO_LABEL = { 2: "×2 combo", 3: "×3 combo", 5: "×5 combo" };
   const WEAPON = {
     spear: '<svg viewBox="0 0 100 12" aria-hidden="true"><path d="M3 6 H80" stroke="#5a3418" stroke-width="3" stroke-linecap="round"/><path d="M79 2 L98 6 L79 10 Z" fill="#dcd7c8" stroke="#1d0f08" stroke-width="1"/></svg>',
     bow: '<svg viewBox="0 0 100 24" aria-hidden="true"><path d="M4 20 Q50 -10 96 20" fill="none" stroke="#5a3418" stroke-width="3.4" stroke-linecap="round"/><path d="M4 20 L96 20" stroke="#efe2c0" stroke-width="1"/></svg>',
@@ -218,6 +220,27 @@
     }
   }
   // The first time a blade is lit for you (on this device), a line says what it means.
+  // A tip shown once on this device (Build D): its key in the prefs, its line.
+  function tipOnce(key, line) {
+    let seen = false; try { seen = !!(K.prefs && K.prefs()[key]); } catch (e) { /* no store */ }
+    if (seen || (V.told = V.told || {})[key]) return;
+    V.told[key] = true; try { K.prefs({ [key]: true }); } catch (e) { /* no store */ }
+    toast(T(line));
+  }
+  // A shield cracks at half its points and splits at none (Build D, row 49): the crack drawn across it, then it is gone
+  // (a foe's for the fight; yours for RT.P.shieldBack seconds, then a fresh one).
+  function shieldCrack(a) {
+    if (!a || !a.svg) return;
+    a.el.classList.add("shield-cracked");
+    const s = a.svg.querySelector(".it-s"); if (!s || s.querySelector(".crack")) return;
+    const r = +(s.dataset.r || 26);
+    s.insertAdjacentHTML("beforeend", '<path class="crack" d="M' + (58 - r * 0.7) + " " + (112 - r * 0.5) + " L" + (58 - r * 0.15) + " " + (112 - r * 0.05) + " L" + (58 + r * 0.1) + " " + (112 + r * 0.3) + " L" + (58 + r * 0.55) + " " + (112 + r * 0.7) + " M" + (58 - r * 0.15) + " " + (112 - r * 0.05) + " L" + (58 + r * 0.45) + " " + (112 - r * 0.45) + '" fill="none" stroke="#2a1608" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>');
+  }
+  function shieldGone(a, gone) {
+    if (!a || !a.el) return;
+    a.el.classList.toggle("shield-broken", gone);
+    if (!gone) { a.el.classList.remove("shield-cracked"); const c = a.svg && a.svg.querySelector(".it-s .crack"); if (c) c.remove(); }
+  }
   function parryTip() {
     let seen = false; try { seen = !!(K.prefs && K.prefs().tipParry); } catch (e) { /* no store */ }
     if (seen || V.parryTold) return;
@@ -322,9 +345,9 @@
       '<div class="ctl" id="rt-ctl"><div class="pad"><button type="button" class="mv" data-hold="l" aria-label="' + T("Move left") + '">◀' + kb("A") + '</button><button type="button" class="mv" data-hold="r" aria-label="' + T("Move right") + '">▶' + kb("D") + "</button></div>" +
         '<ul class="keys">' + T(R.blocker ? KEYS_BLOCK : KEYS_ALL).split(" · ").map((x) => "<li>" + U.esc(x) + "</li>").join("") + "</ul>" +
         '<div class="acts"><button type="button" class="skill" data-act="skill"' + (R.skill ? "" : " disabled") + '><svg class="ring" viewBox="0 0 40 40" aria-hidden="true"><circle class="bg" cx="20" cy="20" r="18"/><circle class="fg" cx="20" cy="20" r="18" stroke-dasharray="113.1" stroke-dashoffset="0"/></svg><span>' + skill + "</span>" + kb("L") + "</button>" +
-          (R.blocker ? '<button type="button" class="roll block" data-hold="block" aria-label="' + T("Block") + '">' + T("Block") + kb("K") + "</button>"
-            : '<button type="button" class="roll" data-act="roll">' + T("Roll") + kb("K") + "</button>") +
-          '<button type="button" class="strike" data-act="strike">' + T("Strike") + "<small>" + T(RT.comboOf(R).length === 2 ? "×2 combo" : "×3 combo") + "</small>" + kb("J") + "</button></div></div>" +
+          (R.blocker ? '<button type="button" class="roll block" data-hold="block" aria-label="' + T("Block") + '"><span class="rl">' + T("Block") + "</span>" + kb("K") + "</button>"
+            : '<button type="button" class="roll" data-act="roll"><span class="rl">' + T("Roll") + "</span>" + kb("K") + "</button>") +
+          '<button type="button" class="strike" data-act="strike"><svg class="ring lockring" viewBox="0 0 40 40" aria-hidden="true"><circle class="fg" cx="20" cy="20" r="18" stroke-dasharray="113.1" stroke-dashoffset="0"/></svg>' + T("Strike") + "<small>" + T(COMBO_LABEL[RT.comboOf(R).length] || "×3 combo") + "</small>" + kb("J") + "</button></div></div>" +
       '<div class="sheet orders-sheet" role="dialog" aria-label="' + T("Orders") + '" hidden></div>' +
       '<div class="sheet aid-sheet dropdown" role="dialog" aria-label="' + T("Aid") + '" hidden></div>' +
       '<div class="sheet pause-sheet" role="dialog" aria-label="' + T("Paused") + '" hidden></div></div>');
@@ -756,6 +779,9 @@
       else V.walk = null;
     }
     if (V.held.block && V.R.blocker && !RT.can(V.R, "block") && V.R.winded && !V.windTold) { V.windTold = true; toast(K.tr("Winded")); }
+    // Your shield broken (Build D): the Block button (or K) rolls instead, once a press, until a fresh shield comes.
+    if (V.R.spOff > 0) { if (V.held.block && !V.rollEdge) { q.roll = true; V.rollEdge = true; } }
+    if (!V.held.block) V.rollEdge = false;
     if (!V.held.block) V.windTold = false;
     return Object.assign({ move, block: !!V.held.block }, q);
   }
@@ -917,8 +943,20 @@
       sk.querySelector(".ring .fg").style.strokeDashoffset = (113.1 * (1 - f)).toFixed(1); sk.classList.toggle("ready", R.skillCd <= 0);
       ks.querySelector(".fg").style.strokeDashoffset = (100.5 * (1 - f)).toFixed(1); ks.classList.toggle("ready", R.skillCd <= 0); }
     $("#ksherbs").textContent = String(K.S.items.herbs || 0);
-    $(".acts .roll").classList.toggle("off", R.blocker ? !R.block && !RT.can(R, "block") : R.breath < RT.P.rollMin);
-    if (R.blocker) $(".acts .roll").classList.toggle("held", !!R.block);
+    // Block, or Roll while your shield is broken (Build D): the ring fills as the fresh shield comes.
+    const rb = $(".acts .roll"), asRoll = R.blocker && R.spOff > 0;
+    if (R.blocker && rb.classList.contains("as-roll") !== asRoll) {
+      rb.classList.toggle("as-roll", asRoll);
+      rb.querySelector(".rl").textContent = T(asRoll ? "Roll" : "Block"); rb.setAttribute("aria-label", T(asRoll ? "Roll" : "Block"));
+      if (!rb.querySelector(".backring")) rb.insertAdjacentHTML("afterbegin", '<svg class="ring backring" viewBox="0 0 40 40" aria-hidden="true"><circle class="fg" cx="20" cy="20" r="18" stroke-dasharray="113.1" stroke-dashoffset="0"/></svg>');
+    }
+    if (asRoll) rb.querySelector(".backring .fg").style.strokeDashoffset = (113.1 * (R.spOff / RT.P.shieldBack)).toFixed(1);
+    rb.classList.toggle("off", asRoll ? !RT.can(R, "roll") : R.blocker ? !R.block && !RT.can(R, "block") : !RT.can(R, "roll"));
+    if (R.blocker) rb.classList.toggle("held", !!R.block);
+    // Strike locked: the clash's opening after Shield wall or Guard (its ring counts the seconds down), and in a swing.
+    const sb = $(".acts .strike"), locked = R.strikeLock > 0;
+    sb.classList.toggle("locked", locked);
+    if (locked) sb.querySelector(".lockring .fg").style.strokeDashoffset = (113.1 * (1 - R.strikeLock / RT.P.strikeLock)).toFixed(1);
     $(".hb.withdraw").hidden = !C.canFlee();
     $(".edgefx.l").classList.toggle("on", !!R.pushing && p.rt.face < 0);
     $(".edgefx.r").classList.toggle("on", !!R.pushing && p.rt.face > 0);
@@ -966,9 +1004,17 @@
           const arc = f.arc || (U.arcFor ? U.arcFor(p.rt.weapon, f.n) : null), A = arc && U.ARCS[arc];
           if (A) { me.blowArc = arc; pose(me, A.up, 1500, 0.55); setTimeout(() => { if (V && me && !V.R.block && p.rt.blow) swing(me, inFront(p), null, arc); }, Math.max(0, f.land * 1000 - IMPACT)); /* (not a blow broken off to parry) */ if (K.Sound) K.Sound.play("tap"); break; }
         }
-        if (f.n === 2) { pose(me, "windup", 1700, 0.55); setTimeout(() => { if (V && me) swing(me, inFront(p), null); }, 120); } else swing(me, inFront(p), null); if (K.Sound) K.Sound.play("tap"); break;
+        if (f.heavy || f.n === 2) { pose(me, "windup", 1700, 0.55); setTimeout(() => { if (V && me) swing(me, inFront(p), null); }, 120); } else swing(me, inFront(p), null); if (K.Sound) K.Sound.play("tap"); break;
       case "roll": pose(me, "duck", 1400, 0.6); home(me, 400); break;
       case "kneel": pose(me, "kneel", 600, 0.6); home(me, 1100); break;
+      // Build D (row 49): a shield cracked at half its points, split at none; yours comes back after RT.P.shieldBack seconds.
+      case "shieldcrack": { const a = A(f.uid); shieldCrack(a); if (a) pop(a, K.tr("Cracked"), f.mine ? "me" : ""); if (K.Sound) K.Sound.play("clang");
+        if (f.mine) tipOnce("tipShieldCrack", "Your shield is cracking: heavy blows and maces wear it down. Roll clear of the strongest."); break; }
+      case "shieldbreak": { const a = A(f.uid); shieldGone(a, true); if (a) { pop(a, K.tr("Shield broken!"), f.mine ? "me" : "crit"); shake(false); } if (K.Sound) { K.Sound.play("clang"); K.Sound.play("hit"); }
+        if (f.mine) { if (a && a.shieldUp) { a.shieldUp = false; a.el.classList.remove("shield-up"); home(a, 0); } tipOnce("tipShieldBroken", "Your shield is broken. Roll until a fresh one comes up (the ring on the button)."); }
+        else tipOnce("tipFoeShieldBroken", "His shield is broken: he fights on without it, and nothing turns your blows."); break; }
+      case "shieldback": { const a = A(f.uid); shieldGone(a, false); if (a) pop(a, K.tr("A fresh shield"), "me"); break; }
+      case "strikeback": { if (K.Sound) K.Sound.play("bell"); const sb = $(".acts .strike"); if (sb) { sb.classList.add("back"); setTimeout(() => sb.classList.remove("back"), 700); } break; }
       case "toast": toast(K.tr(f.s)); break;
       case "skill": pose(me, R.skill === "aimed" ? "loose" : R.skill === "salve" ? "kneel" : R.skill === "song" || R.skill === "command" ? "cheer" : "strike", 900, 0.55); home(me, 500);
         if (R.skill === "quake") shake(true); toast(K.tr(SKILL_NAME[R.skill])); break;
@@ -1043,8 +1089,10 @@
     const k = keysOnly(), list = [];
     const add = (ic, name, words) => list.push([ic, name, words]);
     add("move", T("Move"), T(k ? "A / D to walk; W / S to change row" : "Hold ◀ ▶ to walk; swipe up or down to change row"));
-    if (mace()) add("strike", T("Strike"), T(k ? "J, or click a foe: an overhead smash, then a side sweep" : "An overhead smash, then a side sweep"));
-    else add("strike", T("Strike"), T(k ? "J, or click a foe; three in a row for a combo" : "Three in a row for a combo"));
+    // (Build D, row 48: each weapon its own rhythm, and its line here; a swing is yours until it ends.)
+    if (mace()) add("strike", T("Strike"), T(k ? "J, or click a foe: an overhead smash, then a side sweep" : "An overhead smash, then a side sweep") + " · " + T("Mace: heavy, slow to recover"));
+    else if (dagger()) add("strike", T("Strike"), T(k ? "J, or click a foe: four quick stabs, then a heavy fifth" : "Four quick stabs, then a heavy fifth") + " · " + T("Dagger: quick and light"));
+    else add("strike", T("Strike"), T(k ? "J, or click a foe; three in a row for a combo" : "Three in a row for a combo") + " · " + T(C.player().rt.weapon === "bow" ? "Bow: from range; roll to defend" : "Sword: balanced"));
     if (R.blocker) add("block", T("Block"), T(k ? "Hold K or Space to raise your shield; it costs breath" : "Hold to raise your shield; it costs breath"));
     else add("roll", T("Roll"), T(k ? "K or Space, through a marked blow; it costs breath" : "Through a marked blow; it costs breath"));
     if (R.skill) add("skill", T(SKILL_NAME[R.skill]), T("Your path's skill; its ring fills as it gets ready"));
@@ -1071,8 +1119,9 @@
     const R = V.R, k = keysOnly(), has = (sel) => !!V.el.querySelector(sel);
     const steps = [
       [k ? ".kstrip .ks-keys" : ".pad", k ? "Press A or D, or click the ground, to walk. You can pass your own people, never a foe." : "Hold ◀ ▶ to walk. You can pass your own people, never a foe."],
-      mace() ? [k ? ".kstrip .ks-keys" : ".acts .strike", k ? "Press J, or click a foe, to strike: an overhead smash, then a side sweep that knocks him back." : "Strike: an overhead smash, then a side sweep that knocks a foe back."]
-        : [k ? ".kstrip .ks-keys" : ".acts .strike", k ? "Press J, or click a foe, to strike. The third in a row knocks him back." : "Strike three times for a combo. The third blow knocks a foe back."],
+      mace() ? [k ? ".kstrip .ks-keys" : ".acts .strike", k ? "Press J, or click a foe, to strike: an overhead smash, then a side sweep that knocks him back. Once you swing, you cannot block or roll until the blow is done." : "Strike: an overhead smash, then a side sweep that knocks a foe back. Once you swing, you cannot block or roll until the blow is done."]
+        : dagger() ? [k ? ".kstrip .ks-keys" : ".acts .strike", k ? "Press J, or click a foe, to strike: four quick stabs, then a heavy fifth that knocks him back. Once you strike, you cannot roll until the blow is done." : "Strike five times for a combo: four quick stabs, then a heavy fifth that knocks a foe back. Once you strike, you cannot roll until the blow is done."]
+        : [k ? ".kstrip .ks-keys" : ".acts .strike", k ? "Press J, or click a foe, to strike. The third in a row knocks him back. Once you swing, you cannot block or roll until the blow is done." : "Strike three times for a combo. The third blow knocks a foe back. Once you swing, you cannot block or roll until the blow is done."],
       R.blocker ? [k ? ".kstrip .ks-keys" : ".acts .roll", k ? "A blow is marked on the ground. Hold K or Space (or the right mouse button) to raise your shield before the mark fills. Raised just in time, it staggers him. Holding it costs breath." : "A blow is marked on the ground. Hold Block to raise your shield before the mark fills to its rim. Raised just in time, it staggers him. Holding it costs breath."]
         : [k ? ".kstrip .ks-keys" : ".acts .roll", k ? "A blow is marked on the ground. Press K or Space (or right-click) to roll through it before the mark fills. Each roll costs breath." : "A blow is marked on the ground. Roll through it before the mark fills to its rim. Each roll costs breath."],
       R.skill ? [k ? ".kstrip .ks-skill" : ".acts .skill", k ? "L is your path's skill. The ring in the strip fills as it gets ready." : "Your path's skill. The ring fills as it gets ready again."] : null,

@@ -396,7 +396,9 @@
     const order = ["strike", "wall", "rally_line", "guard"];
     const rows = all.filter((a) => !isAstra(a) && a.id !== "herbs" && a.id !== "call" && !(wall && a.id === "guard"))
       .sort((a, b) => (order.indexOf(a.id) < 0 ? 9 : order.indexOf(a.id)) - (order.indexOf(b.id) < 0 ? 9 : order.indexOf(b.id)));
-    const out = rows.map((a) => ({ id: a.id, name: K.tr(CARD_NAME[a.id] ? CARD_NAME[a.id] : K.ABILITIES[a.id].name), small: a.why || K.tr(SHORT[a.id] || ""), why: a.why, target: a.target }));
+    // Build D (row 50): in a war day that plays clashes, Shield wall and Guard lock Strike for the clash's first seconds.
+    const lock = B.clashMode && !B.enc.dream ? K.tr("In the clash: shield up, no strikes for {n} s", { n: RT.P.strikeLock }) : "";
+    const out = rows.map((a) => ({ id: a.id, name: K.tr(CARD_NAME[a.id] ? CARD_NAME[a.id] : K.ABILITIES[a.id].name), small: a.why || K.tr(SHORT[a.id] || ""), why: a.why, target: a.target, also: !a.why && (a.id === "wall" || a.id === "guard") ? lock : "" }));
     C.spareable().slice(0, 1).forEach((e) => out.push({ id: "spare", uid: e.uid, name: K.tr("Spare"), small: K.text(e.src || e.name) }));
     C.fallen().slice(0, 1).forEach((u) => out.push({ id: "pull", uid: u.uid, name: K.tr("Pull out"), small: K.text(u.src || u.name).split(",")[0] }));
     if (!B.units.some((u) => u.side === "enemy" && u.hp > 0 && !u.away)) return out.filter((m) => m.id !== "strike");
@@ -405,10 +407,10 @@
   function cards() {
     const box = $("#wd-moves"); if (!box) return;
     const list = moves(), wide = V.el.classList.contains("wide");
-    const key = list.map((m) => m.id + "|" + m.name + "|" + m.small + "|" + !!m.why).join(";") + (wide ? "w" : "u") + K.lang;
+    const key = list.map((m) => m.id + "|" + m.name + "|" + m.small + "|" + !!m.why + "|" + (m.also || "")).join(";") + (wide ? "w" : "u") + K.lang;
     if (box.dataset.key !== key) {
       box.dataset.key = key;
-      box.innerHTML = list.map((m, i) => '<button type="button" class="mv-' + m.id + '" data-move="' + m.id + '"' + (m.uid ? ' data-uid="' + m.uid + '"' : "") + (m.why ? " disabled" : "") + ' title="' + esc(m.small) + '"><kbd>' + (i + 1) + "</kbd><b>" + esc(m.name) + "</b><small>" + esc(m.small) + "</small></button>").join("");
+      box.innerHTML = list.map((m, i) => '<button type="button" class="mv-' + m.id + '" data-move="' + m.id + '"' + (m.uid ? ' data-uid="' + m.uid + '"' : "") + (m.why ? " disabled" : "") + ' title="' + esc(m.small + (m.also ? " · " + m.also : "")) + '"><kbd>' + (i + 1) + "</kbd><b>" + esc(m.name) + "</b><small>" + esc(m.small) + "</small>" + (m.also ? '<small class="also">' + esc(m.also) + "</small>" : "") + "</button>").join("");
       box.querySelectorAll("[data-move]").forEach((b) => b.addEventListener("click", () => move(b.dataset.move, b.dataset.uid)));
       // Rows so that no card sits alone: 3+2 or 3+3 on a phone, 2+2 for four; one row on a laptop.
       const n = list.length, cols = wide ? n : n <= 3 ? n : n === 4 ? 2 : n <= 6 ? 3 : 4;

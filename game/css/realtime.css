@@ -757,3 +757,23 @@ html.calm #rt .actor.parry-cue .fl { filter: drop-shadow(0 0 3px #ffffff) bright
 html.calm #rt .actor.opened .fl { animation: none; }
 @media (prefers-reduced-motion: reduce) { #rt .actor.opened .fl { animation: none; } }
 #rt .impact.parryhit { width: 54px; height: 54px; margin: -27px 0 0 -27px; animation-duration: .4s; }
+
+/* Build D (feedback rows 48-50, 7 November). Strike locked for the clash's first seconds after Shield wall or Guard: greyed,
+   its ring counting down, a glow when it comes back. Your shield broken: Block turns Roll, its ring filling as a fresh shield
+   comes. A shield cracked at half its points shows the crack; broken, it is gone from the figure. */
+#rt .acts .strike, #rt .acts .roll { position: relative; }
+#rt .acts .lockring, #rt .acts .backring { display: none; position: absolute; left: 50%; top: 50%; width: calc(min(100%, var(--bh)) - 4px); aspect-ratio: 1; transform: translate(-50%, -50%) rotate(-90deg); pointer-events: none; }
+#rt .acts .lockring circle, #rt .acts .backring circle { fill: none; stroke-width: 3; }
+#rt .acts .lockring .fg { stroke: #4a2a10; stroke-linecap: round; transition: stroke-dashoffset 0.1s linear; }
+#rt .acts .backring .fg { stroke: var(--data); stroke-linecap: round; transition: stroke-dashoffset 0.1s linear; }
+#rt .acts .strike.locked { filter: grayscale(0.85); opacity: 0.55; }
+#rt .acts .strike.locked .lockring, #rt .acts .roll.as-roll .backring { display: block; }
+#rt .acts .strike.back { animation: rt-strike-back 0.7s ease-out; }
+@keyframes rt-strike-back { from { box-shadow: 0 0 0 0 rgba(255, 214, 110, 0.9); } to { box-shadow: 0 0 0 14px rgba(255, 214, 110, 0); } }
+html.calm #rt .acts .strike.back { animation: none; }
+#rt .acts .roll.as-roll { border-color: var(--gold-line); }
+#rt .acts .roll > .rl, #rt .acts .strike > small { position: relative; z-index: 1; }
+#rt .actor.shield-broken .it-s { display: none; }
+/* (Build D, row 50) Shield wall and Guard on a war day that plays clashes: the lock they bring, a line in gold. */
+#rt .moves button small.also { color: var(--accent); font-size: 12.5px; line-height: 1.15; }
+#rt.wide.war .moves button small.also { grid-column: 2; }
