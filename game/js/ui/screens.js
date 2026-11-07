@@ -64,8 +64,7 @@
     row.appendChild(U.button("ghost", U.tr("Load a save code"), load));
     keys.push(load);
     if (K.lives().length) { row.appendChild(U.button("ghost", U.tr("Book of Lives"), U.openLives, "btn-lives")); keys.push(U.openLives); }
-    // The start of each act the current (or last) life reached (ui/ending.js).
-    if (U.openActs && U.actsKept && U.actsKept(null)) { row.appendChild(U.button("ghost", U.tr("Start again from an act"), U.openActs, "btn-acts")); keys.push(U.openActs); }
+    // (No "Start again from an act" here (owner, 7 November): it is in the Menu and on the ending screen, ui/ending.js.)
     U.keys(keys);
     // The introduction is written in, like every other page.
     // Shown again (a language switch), it is there whole at once (ui/dom.js U.pageAgain).
@@ -92,6 +91,7 @@
   let crResize = null;
 
   U.renderCreate = function () {
+    const fresh = !draft; // a new life begun from the title (not a redraw: a language switch, a turned phone)
     draft = draft || newDraft();
     if (draft.pronoun && draft.pronoun !== "she" && draft.pronoun !== "he") draft.pronoun = null; // (she or he, owner 6 November)
     U.redraw = U.renderCreate;
@@ -289,6 +289,37 @@
     [...Object.keys(K.TEMPERAMENTS).map((k) => "temper_" + k), ...Object.keys(K.HEIRLOOMS).map((k) => "heir_" + k)].forEach((k) => { const im = new Image(); im.src = U.artUrl(k); });
     U.pageShown && U.pageShown("create");
     requestAnimationFrame(() => cr.classList.add("in"));
+    if (fresh && draft.step === "land" && !draft.look && !K.headless && !/jsdom/i.test(navigator.userAgent || "")) intro();
+
+    // The opening (owner, 7 November): before the map, the two lines alone on a dark screen ("a life the epic never
+    // wrote down", "where were you born?"); they move up to where they sit, then the map comes in. A tap or a key goes
+    // straight to the map. Calm motion: the lines, then the page, with nothing moving.
+    function intro() {
+      const kick = cr.querySelector(".cr-head .cr-kick"), title = U.$("cr-title");
+      if (!kick || !title || !kick.getBoundingClientRect) return;
+      const calm = U.calm(), timers = [], later = (f, ms) => timers.push(setTimeout(f, ms));
+      const ov = U.el('<div class="cr-intro" aria-hidden="true"><p class="cr-kick">' + U.esc(kick.textContent) + '</p><p class="cr-title">' + U.esc(title.textContent) + "</p></div>");
+      cr.appendChild(ov); cr.classList.add("intro");
+      let done = false;
+      const finish = () => {
+        if (done) return; done = true; timers.forEach(clearTimeout);
+        document.removeEventListener("pointerdown", finish, true); removeEventListener("keydown", finish, true);
+        ov.remove(); cr.classList.remove("intro"); cr.classList.add("intro-out"); later(() => cr.classList.remove("intro-out"), 900);
+      };
+      document.addEventListener("pointerdown", finish, true); addEventListener("keydown", finish, true);
+      requestAnimationFrame(() => requestAnimationFrame(() => ov.classList.add("on"))); // the two lines come up
+      later(() => {
+        if (done || !cr.isConnected) return;
+        if (calm) return finish();
+        // Each line to its place: the same words at the size and spot they keep on the page.
+        const to = (el, at) => {
+          const a = el.getBoundingClientRect(), b = at.getBoundingClientRect(), s = parseFloat(getComputedStyle(at).fontSize) / parseFloat(getComputedStyle(el).fontSize);
+          el.style.transform = "translate(" + (b.left - a.left).toFixed(1) + "px," + (b.top - a.top).toFixed(1) + "px) scale(" + s.toFixed(4) + ")";
+        };
+        ov.classList.add("moving"); to(ov.querySelector(".cr-kick"), kick); to(ov.querySelector(".cr-title"), title);
+        later(finish, 950);
+      }, calm ? 1300 : 2000);
+    }
   };
 
   U.beginLife = function (d) {

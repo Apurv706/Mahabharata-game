@@ -1607,8 +1607,8 @@ require(G + "content/war_fights.js");
   w.document.querySelector('.endscreen .actback[data-act="2"]').click();
   ok(!w.document.querySelector(".endscreen") && WK.S.alive && WK.S.age === 16 && !WK.S.deathAct && WK.lives().some((r) => r.title === "The burnt house" && !r.alive), "Go back: the ending leaves, the life is the copy kept at the start of Act II, the death is in the Book of Lives (" + [!w.document.querySelector(".endscreen"), WK.S.alive, WK.S.age, WK.lives().length] + ")");
   WK.UI.renderTitle();
-  ok(w.document.querySelector("#btn-acts"), "the title screen offers Start again from an act");
-  w.document.querySelector("#btn-acts").click();
+  ok(!w.document.querySelector("#btn-acts"), "the title screen has no Start again from an act (owner, 7 November: it is in the Menu)");
+  WK.UI.openActs();
   ok(w.document.querySelectorAll(".modal .actback").length === 2, "the list: each act reached by the life as it stands");
   w.close();
 }
