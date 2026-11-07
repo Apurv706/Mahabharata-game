@@ -359,6 +359,10 @@ async function runCombo(pw, bname, d, base, fights, report) {
     const page = await ctx.newPage();
     const errors = [];
     page.on("pageerror", (e) => errors.push(e.message + " @ " + String(e.stack || "").split("\n").slice(1, 3).map((l) => l.trim().replace(/^at /, "").replace(/http:\/\/127.0.0.1:\d+\//, "")).join(" < ")));
+    // No web fonts, as in the other fit checks (rtfit, warfit, blowfit). On GitHub's runner they come over the network
+    // and can land mid-fight, re-flowing the page under the figures: the nightly run there found the fallen player 6 px
+    // below the stage (hold_arjuna, iPhone 15, as you lose), which never showed on a machine with the fonts installed.
+    await page.route(/fonts\.(googleapis|gstatic)/, (r) => r.abort());
     await page.goto(base + "/");
     await page.waitForFunction(() => window.K && K.UI && K.UI.renderScene);
     await page.addStyleTag({ content: `:root{--sat:${d.sat}px!important;--sab:${d.sab}px!important}` });
