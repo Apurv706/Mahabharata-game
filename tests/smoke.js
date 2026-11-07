@@ -159,7 +159,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const CASES = {
     "part1-opening": async () => {
       const { ctx, pg, bad } = await session(1);
-      if (!(await pg.evaluate(() => /Part One/.test((document.querySelector(".part-note") || {}).textContent || "")))) bad.push("the title does not say Part One");
+      if (!(await pg.evaluate(() => window.K_PART && window.K_PART.n === 1))) bad.push("the page is not Part One");
+      if (await pg.evaluate(() => !!document.querySelector(".part-note"))) bad.push("the title still has the note about the two parts");
       await tapSel(pg, "#btn-new"); await sleep(800);
       // The one-page creation (owner, 6 November): a land on the map, its card, then one question at a time.
       await tapSel(pg, ".cr-map .m-home .hit"); await sleep(700); await tapSel(pg, "#land-ok"); await sleep(800);

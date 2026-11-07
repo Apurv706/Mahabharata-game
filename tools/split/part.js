@@ -145,12 +145,8 @@
       // the old "Load a save code" button does the same as Continue from Part One
       [...row.querySelectorAll("button")].filter((b) => !b.id && b.textContent === K.tr("Load a save code")).forEach((b) => b.remove());
     }
-    const note = document.createElement("p");
-    note.className = "part-note";
-    note.innerHTML = "<b>" + tr(P.n === 1 ? "Part One · Acts I–IV" : "Part Two · Acts V–VII") + "</b> " +
-      tr(P.n === 1 ? "This part holds Acts I–IV. Acts V–VII are in Part Two." : "This part holds Acts V–VII. Start here with your save code from Part One, or with a ready-made life.") +
-      (P.other ? ' <a href="' + U.esc(P.other) + '" target="_blank" rel="noopener">' + tr(P.n === 1 ? "Open Part Two" : "Open Part One") + "</a>" : "");
-    row.after(note);
+    // (No note on the title about the two parts (owner, 7 November): the title is one screen. Part One hands a life
+    // to Part Two at the end of Act IV, with the link, and Part Two's buttons say where to begin.)
   };
   const css = document.createElement("style");
   css.textContent = "@keyframes partIn{from{opacity:0}to{opacity:.9}}.part-note{animation:partIn .6s 3.4s both;margin:10px 0 0;font-size:.92rem;opacity:.9;max-width:34em}.part-note a{color:inherit}#part-code{width:100%;min-height:96px;font-size:.8rem}.part-lives{flex-direction:column;align-items:stretch}.part-side{margin:12px 0 4px}a.cta{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}";
