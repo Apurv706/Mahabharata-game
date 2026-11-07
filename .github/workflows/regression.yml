@@ -2,7 +2,10 @@
 #   quick: pushes to main and every pull request (under a minute on the runner): engine rules and random lives, content integrity,
 #          golden lives, balance bands on a small sample, the engine bug checks, one light browser check.
 #   full:  nightly and by hand (Actions > Regression > Run workflow): everything, in Chromium (the browser can be chosen
-#          when run by hand: chromium, webkit, firefox or all, for the checks that run in several).
+#          when run by hand: chromium, webkit, firefox or all, for the checks that run in several). In two jobs side by
+#          side, each well inside GitHub's limit (in one it ran past two hours): "battles" (the person-like play of
+#          lives, fights and battles, battlefit, the story read-through and the story playthroughs) and "rest"
+#          (everything else). By hand, "checks" runs only the named ones (as tests/run.js --only) in one job.
 # Scheduled runs only fire from the repository's default branch (main): the nightly full tier starts once this file is
 # on main. Until then, run it by hand on any branch.
 # Reports (JSON), logs and the images of any visual difference are uploaded as artifacts.
@@ -25,6 +28,10 @@ on:
         default: chromium
         type: choice
         options: [chromium, webkit, firefox, all]
+      checks:
+        description: "full tier only: run just these checks (comma-separated, as tests/run.js --only), e.g. visual"
+        default: ""
+        type: string
 concurrency:
   group: regression-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
@@ -53,7 +60,12 @@ jobs:
   full:
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.tier != 'quick')
     runs-on: ubuntu-24.04 # webkit needs 24.04 packages
-    timeout-minutes: 120
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(inputs.checks && '["picked"]' || '["battles", "rest"]') }}
+    name: full (${{ matrix.shard }})
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -65,11 +77,23 @@ jobs:
         run: |
           B="${{ inputs.browser || 'chromium' }}"
           if [ "$B" = all ]; then npx playwright install --with-deps chromium webkit firefox; elif [ "$B" = chromium ]; then npx playwright install --with-deps chromium; else npx playwright install --with-deps chromium "$B"; fi
-      - run: node tests/run.js full --browser "${{ inputs.browser || 'chromium' }}" --out regress-out
+      - name: Checks
+        env:
+          SHARD: ${{ matrix.shard }}
+          CHECKS: ${{ inputs.checks }}
+          BROWSER: ${{ inputs.browser || 'chromium' }}
+        run: |
+          BATTLES=review-play,review-fights,review-battle,battlefit,review-story,playthrough-story
+          case "$SHARD" in
+            battles) PICK="--only $BATTLES" ;;
+            rest) PICK="--skip $BATTLES" ;;
+            *) PICK="--only $CHECKS" ;;
+          esac
+          node tests/run.js full --browser "$BROWSER" $PICK --out regress-out
       - uses: actions/upload-artifact@v5
         if: always()
         with:
-          name: regression-full
+          name: regression-full-${{ matrix.shard }}
           path: |
             regress-out/report-full.json
             regress-out/logs

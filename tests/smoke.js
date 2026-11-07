@@ -43,7 +43,10 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
   async function session(part) {
     const ctx = await b.newContext(Object.assign({}, pw.devices["iPhone 15"]));
-    await ctx.route(/fonts\.googleapis\.com/, (rt) => rt.fulfill({ status: 200, contentType: "text/css", body: fontCss }));
+    // fonts.css names its files /__fonts/<file>, which the browser asks of fonts.googleapis.com (the stylesheet's
+    // origin): answer those with the fixture font itself (until 7 Nov they got the CSS back and every face failed).
+    await ctx.route(/fonts\.googleapis\.com/, (rt) => { const m = rt.request().url().match(/\/__fonts\/([^?#]+)$/);
+      return m ? rt.fulfill({ status: 200, contentType: "font/woff2", body: fs.readFileSync(path.join(FONTS, path.basename(m[1]))) }) : rt.fulfill({ status: 200, contentType: "text/css", body: fontCss }); });
     await ctx.route(/fonts\.gstatic\.com/, (rt) => rt.abort());
     const pg = await ctx.newPage(), bad = [];
     pg.on("pageerror", (e) => bad.push("page error: " + e.message));
