@@ -73,6 +73,7 @@ add("golden", ["tests/golden.js", "--json", J("golden")], ["tests/golden.js", "-
 add("bands", ["tests/bands.js", "--tier", "quick", "--json", J("bands")], ["tests/bands.js", "--tier", "full", "--json", J("bands")], { timeout: 45, heavy: "full" });
 add("bugs", ["tests/bugs.js", "--engine-only", "--json", J("bugs")], ["tests/bugs.js", "--json", J("bugs")], { browser: "full", retryJson: "bugs", timeout: 20 });
 add("weapons", ["tests/weapons.js"], ["tests/weapons.js"]);
+add("traits", ["tests/traits.js", "--json", J("traits")], ["tests/traits.js", "--json", J("traits")]); // Build D: the fight traits (rows 48-50)
 add("facefit", ["tests/facefit.js"], ["tests/facefit.js"], { browser: true });
 add("saves", ["tests/saves.js", "--json", J("saves")], ["tests/saves.js", "--browser", "--json", J("saves")], { browser: "full", retryJson: "saves", timeout: 15 });
 // The jsdom checks keep about 25 MB per finished life (heavy: one of them at a time, so two never exhaust the memory).

@@ -137,14 +137,15 @@
   // Later on 4 November, with foes kneeling only at 5% (C.PLEAD) and fighting at their weapons' reach: the Gandharva
   // (1.22 -> 1.0), Jayadratha's road (e_jaya, 1.08 -> 0.81) and the road fight (e_road, 1.11 -> 0.75), on seed 11.
   RT.TUNE = {
-    cross_e_duel: { hp: 1.15, atk: 1.15 }, // eased 4 November (1.36), still the hardest duel
+    cross_e_duel: { hp: 1.15, atk: 1.3 }, // eased 4 November (1.36), still the hardest duel; 1.15 -> 1.3 (Build D: a light blow now flinches a soldier, and this duel is one soldier: 82% -> 89%)
     cross_e_called: { hp: 0.85, atk: 0.85 },
     e_ep_ugra: { hp: 0.7, atk: 0.7 },
-    e_raid: { hp: 1.1, atk: 1.1 },
+    e_raid: { hp: 1.1, atk: 0.95 }, // (Build D, 7 November: 1.1 -> 0.95 with Ashwatthama a great champion, his blows through your shield harder: 82% -> back toward 90%)
     e_gandharva: { hp: 0.85, atk: 0.85 }, // a hard fight, not a deadly one (canon: Duryodhana is carried off whatever you do); eased 4 November
     e_jaya: { hp: 0.81, atk: 0.81 },
     e_kings: { hp: 0.64, atk: 0.64 },
     e_road: { hp: 0.9, atk: 0.9 },
+    e_cattle_k: { atk: 0.9 }, // (Build D: the Kaurava cattle raid's captains, now stronger through the shield: 89% -> 83%, eased back)
     // With Block, the heavy mace and archers that only shoot (later on 4 November): the road fight (e_road, 0.75 -> 0.9: 67%
     // vs 46% on the turns at 0.75), and the two mace duels, whose champion now swings a mace (0.8: back to where they were).
     fs_sk_mace: { hp: 0.8, atk: 0.8 },
