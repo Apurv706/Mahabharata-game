@@ -149,7 +149,13 @@ async function one(c) {
       fs.writeFileSync(path.join(LOGS, c.name.replace(/#/g, "-") + ".retry.txt"), "$ node " + a2.join(" ") + (env ? " (" + JSON.stringify(env) + ")" : "") + "\n\n" + r2.out);
       res.retry = { cmd: "node " + a2.join(" ") + (env ? " " + JSON.stringify(env) : ""), seconds: Math.round(r2.ms / 100) / 10, passed: r2.code === 0 };
       res.seconds = Math.round((res.seconds + res.retry.seconds) * 10) / 10;
-      if (r2.code === 0) { res.status = "FLAKY"; res.note = "passed on the re-run of " + (again ? "its failing cases" : "the whole check"); return res; }
+      if (r2.code === 0) {
+        // Name what failed the first time, so a flaky case can be followed from the summary alone (the logs are in the run's artifacts).
+        const first = c.items ? c.items(r.out) : [];
+        res.status = "FLAKY"; res.note = "passed on the re-run of " + (again ? "its failing cases" : "the whole check") + (first.length ? "; first run: " + first.slice(0, 3).join("; ").slice(0, 160) : "");
+        if (first.length) res.flaked = first;
+        return res;
+      }
       r = r2;
     }
     // Known failures: every failure the check names is listed for it.
