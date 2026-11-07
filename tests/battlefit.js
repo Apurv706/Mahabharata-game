@@ -148,7 +148,13 @@ function pageHelpers() {
           const dt = performance.now() - t0;
           for (const a of s.list) {
             if (skip && skip.includes(a.uid) && shiftOf(a.uid) > 6) continue; // coming on from the edge
+            // A body still toppling (its rig falling, not yet at rest) is let off the stage's foot: its slack limbs
+            // and weapon swing past the ground for a moment and come to rest on the stage (on GitHub's slower runner,
+            // hold_bhima and hold_arjuna on an iPhone 15: 6-12 px mid-fall, then at rest 16 px inside; here, once in 71 fights).
+            // Once it lies still it is held to the foot again.
+            const rig = window.K && K.UI.battleRigs && K.UI.battleRigs().get(a.uid), toppling = !!(rig && rig.falling && rig.fallV);
             for (const [where, d] of strays(a, s)) {
+              if (toppling && where === "below the stage") continue;
               const k = a.uid + "|" + where;
               if (!worst[k] || worst[k].d < d) worst[k] = { uid: a.uid, side: a.side, down: a.down, where, d: Math.round(d), at: Math.round(dt), box: a.box, host: s.host };
             }
