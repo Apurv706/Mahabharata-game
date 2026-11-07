@@ -52,7 +52,10 @@ const READ = () => {
     return { mode: "war", clashing: !!W.clashing, over: !!W.over, round: B.round, hp: p.hp / p.maxHp, hpN: p.hp,
       end: !!document.querySelector("#rt .endcard button"), brief: !!document.querySelector("#rt .fb-go"), tour: !!document.querySelector("#rt .tc-skip"), written: !!document.querySelector("#rt .written .go"),
       place: [...document.querySelectorAll("#rt [data-place]")].filter((b) => b.offsetParent !== null).length, read: !!document.querySelector("#rt .wd-read [data-rd]"),
-      moves: [...document.querySelectorAll("#rt #wd-moves [data-move]:not([disabled])")].map((b) => b.dataset.move), sheet: W.sheet || null, herbs: K.S.items.herbs || 0 };
+      moves: [...document.querySelectorAll("#rt #wd-moves [data-move]:not([disabled])")].map((b) => b.dataset.move), sheet: W.sheet || null, herbs: K.S.items.herbs || 0,
+      // (herbs cool down after use: a person sees them greyed in Aid and leaves them; reaching for them every turn kept
+      // Aid's menu over the move cards on a phone, so every Strike tap landed on the menu: a war day that never ended)
+      herbsReady: (() => { const a = K.Combat.available().find((x) => x.id === "herbs"); return !!a && !a.why; })() };
   }
   return { mode: "gone" };
 };
@@ -151,7 +154,7 @@ async function playLikeAPerson(enc, dev, pathId, side, seed) {
     if (s.read) { await sleep(between(500, 900)); const opts = await pg.$$("#rt .wd-read [data-rd]"); const pick = opts[Math.floor(rnd() * opts.length)]; if (pick) await (TOUCH ? pick.tap() : pick.click()).catch(() => {}); await sleep(700); continue; }
     if (s.moves.length) {
       await sleep(between(900, 2000)); // a person reads the cards
-      if (s.hp < 0.3 && s.herbs > 0) { await tapSel('[data-wact="aid"]'); await sleep(400); if (await tapSel('.aid-sheet [data-aid="herbs"]:not([disabled])')) { await sleep(900); continue; } await tapSel(".sheet:not([hidden]) [data-resume]"); }
+      if (s.hp < 0.3 && s.herbs > 0 && s.herbsReady) { await tapSel('[data-wact="aid"]'); await sleep(400); if (await tapSel('.aid-sheet [data-aid="herbs"]:not([disabled])')) { await sleep(900); continue; } await tapSel(".sheet:not([hidden]) [data-resume]"); }
       const m = firstMove == null && s.moves.includes("wall") ? "wall" : s.moves.includes("wall") && rnd() < 0.25 ? "wall" : s.moves.includes("strike") && rnd() < 0.7 ? "strike" : s.moves.filter((x) => x !== "guard")[0] || s.moves[0];
       if (firstMove == null) firstMove = m;
       say("turns: round " + s.round + ", life " + Math.round(s.hp * 100) + "%: " + m);
