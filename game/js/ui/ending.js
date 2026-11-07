@@ -9,7 +9,7 @@
    painting with everything at once. Shown again (a language switch, Continue onto it), it is there
    whole at once (ui/dom.js U.pageAgain).
    The act checkpoints: on a death, "Go back to the start of Act N" and the earlier acts; on any
-   ending, and from the title screen and the menu, "Start again from an act". */
+   ending, and from the menu, "Start again from an act" (not the title screen, owner 7 November). */
 (function (K) {
   "use strict";
   const U = K.UI;

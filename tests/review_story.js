@@ -220,10 +220,10 @@ browser("checkpoints", "act checkpoints, the Book of Lives keeps a death after g
   if (!g.alive || g.act !== 3 || !/^a3_/.test(g.scene) || g.path !== "spy") bad.push("going back to Act III opened " + JSON.stringify(g));
   if (g.end) bad.push("the ending stayed on screen after going back");
   if (g.book !== 1) bad.push("the Book of Lives lost the death after going back (" + g.book + ")");
-  // From the title, Start again from an act lists the kept acts.
+  // The title has no Start again from an act (owner, 7 November); it keeps the Book of Lives.
   await pg.evaluate(() => K.UI.renderTitle()); await sleep(500);
   const t = await pg.evaluate(() => ({ btn: !!document.getElementById("btn-acts"), lives: !!document.getElementById("btn-lives") }));
-  if (!t.btn) bad.push("the title screen has no Start again from an act");
+  if (t.btn) bad.push("the title screen still offers Start again from an act (owner, 7 November: the Menu and the ending have it)");
   if (!t.lives) bad.push("the title screen has no Book of Lives");
   await close(); return bad.concat(errs);
 });

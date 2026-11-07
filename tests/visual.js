@@ -41,7 +41,7 @@ const fightLife = (o) => `(() => { const S = (K.S = Object.assign(K.newLife(), $
 // Each screen: a function run in the page that brings it up (it may return a promise), and how long to let it settle.
 const SCREENS = [
   { id: "title", go: () => { K.UI.renderTitle(); } },
-  { id: "create", go: () => { document.getElementById("btn-new").click(); } },
+  { id: "create", go: () => { document.getElementById("btn-new").click(); }, wait: 2600 }, // (past the opening: owner, 7 November)
   { id: "story", go: new Function(`const S = (K.S = Object.assign(K.newLife(), ${JSON.stringify(LIFE)})); K.apply(K.ORIGINS[S.origin].fx); K.apply({ flag: ["origin_panchala", "temper_bold", "heir_amulet"] }); K.seed(5); K.go("a1_home");`) },
   { id: "fight", go: new Function(`${fightLife()}; K.seed(3); K.UI.startBattle("e_bandits", () => {}); const V = K.UI.rtScreen(); V.paused = true; for (let i = 0; i < 180 && !V.R.over; i++) { K.Combat.player().hp = K.Combat.player().maxHp; K.RT.step(V.R, K.RT.bot(V.R)); }`), wait: 900 },
   { id: "warday", go: new Function(`${fightLife({ age: 44, act: 6, path: "archer" })}; K.seed(3); K.UI.startBattle("e_day16", () => {}); return new Promise((ok) => setTimeout(() => { const b = document.querySelector('#rt [data-place="front"]'); if (b) b.click(); setTimeout(ok, 700); }, 1500));`), wait: 900 },

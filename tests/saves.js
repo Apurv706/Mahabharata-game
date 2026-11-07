@@ -7,7 +7,7 @@
      - load: K.importCode(code) gives a life (cleaned), and K.loadSlot("auto") the stored one;
      - continue: resumed, the life plays on for 150 choices (or to its end) without a throw or a dead end;
      - go back to an act: every act checkpoint the storage lists opens (K.checkpointLife) and plays on;
-     - in the browser (--browser, the full tier): the title screen offers Continue (and Start again from an act where
+     - in the browser (--browser, the full tier): the title screen offers Continue (and the Menu's Start again from an act where
        there are checkpoints), Continue opens a scene with a way forward, an act opens, and "Load a save code" takes
        the code; no page error.
    Usage: node tests/saves.js [--browser] [--case id,id] [--json FILE]
@@ -172,10 +172,9 @@ for (const k of cases) {
           else { await cont.click(); const r = await forward("Continue"); if (k.e.alive && r.scene !== k.e.scene) bad.push("Continue opened " + r.scene + ", not " + k.e.scene); }
         }
         if (k.e.storage["kurukshetra.v2.acts"]) {
-          await pg.evaluate(() => K.UI.renderTitle()); await pg.waitForTimeout(300);
-          const acts = await pg.$("#btn-acts");
-          if (!acts) bad.push("no Start again from an act on the title screen");
-          else { await acts.click(); await pg.waitForTimeout(500); const btn = await pg.$(".actlist [data-act]"); if (!btn) bad.push("the acts list is empty"); else { await btn.click(); await forward("an act"); } }
+          // (From the Menu since 7 November: the title screen no longer offers it.)
+          await pg.evaluate(() => { K.UI.renderTitle(); K.UI.openActs(); }); await pg.waitForTimeout(500);
+          const btn = await pg.$(".actlist [data-act]"); if (!btn) bad.push("the acts list is empty"); else { await btn.click(); await forward("an act"); }
         }
         await pg.evaluate(() => { K.UI.renderTitle(); K.UI.openLoad(); }); await pg.waitForTimeout(300);
         await pg.fill("#code-in", k.e.code); await pg.click("#code-load"); await pg.waitForTimeout(300);
