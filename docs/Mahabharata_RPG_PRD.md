@@ -784,6 +784,15 @@ Proposed and built on 2 November, and on the public site the same day after the 
 - The Hindi Block label: रोको or ढाल.
 - An easy / hard toggle (later).
 
+**Build B (5–6 November; on GitHub main and the live site 6 November) [78–91].**
+- *War days as rounds that play out:* Orders (paused, as before), then a 15-second real-time clash with the real-time controls, then Orders again. *Fall back* ends a clash early; it ends at once when the pack is down; a named comrade may call for help once a battle. Your move carries in (Shield wall: your side closes up behind you, shields raised, striking no one for its 4 s; Guard, a war cry, a rally, a stun each shown). Every turn-based fight kind has its clash (storms 12 s with nothing to strike, the escort 12 s, break-throughs 15 s), the holds, the wheel and the dream too; the menu's *turn-based* choice keeps pure turns. The divine weapon's impact on the war day is the real-time one.
+- *Difficulty:* foes grow act by act (shorter wind-ups, feints, pairs, flanking, more packs, parries and shields); a Menu setting Easy / Normal (default) / Hard. Eased on 6 November from the owner's play: foes' blows 0.5 → 0.425 → 0.36 of the turns' weight, 0.8 of that in war-day clashes, your health 1.35 → 1.5. Bot win rate in real time 94%.
+- *The parry:* Strike within 0.22 s of a foe's blade landing on you meets it (the blade lit white 0.45 s before); a dagger or bare hands half stop a heavy blow; arrows, sweeps and feints cannot be parried. Named champions parry some of your blows (Normal 6–14% by act).
+- *Foes use their shields:* a sword or spear foe, or a soldier or guard of the line, facing you and not winding up, catches some of your blows (15% gets through, 45% of a heavy one); then he must lower it, about a second with no step and no blow, lit gold, and your next blows are not caught for 1.8 s.
+- *Archers:* two arrows a press (the second at the next foe in front, 0.8 of a blow), and every arrow that lands pushes its foe back a little, without a stagger.
+- *Also:* the low-life warning below 20%; bigger shields (the player on the mace and sword paths, the dream's fighter); the commander's orders at each battle day; fighter mode (*Just fight*); the wheel opened as a chariot dash; the Ugra bout always in real time; the blow's cue an orange-red arc.
+- *Next build:* the mid-fight announcements drawn as animations on the field.
+
 ### 18.16 Less to read (decided and built 2 November)
 The owner's decisions of 2 November on how much a player has to read [69, 70]:
 - **Every question cut to the bare minimum,** and scene-setting to a line. Canon boxes ("As it is written") are one sentence; test rules one line. No screen holds more than half a phone of text (36 screens did before, none after). Ekalavya and the swayamvara show only the choices.
