@@ -1,5 +1,7 @@
 # Art brief: the homeland map, painted (7 November)
 
+> **Delivered and in the game (7 November):** the artistic version is `game/art/map_bharat.webp`, and its source, the native 1159 × 1358 painting, is `assets/art_src/map_bharat.png` (the "master" sent later is that painting enlarged 2.2×, so it adds no detail). The review and the asks for a second pass (a full-size render, lighter stains) are in the project doc `Art_Review_Homeland_Map.md`.
+
 *Kurukshetra: A Life.* A new life begins on a map: "where were you born?" The map fills the screen, and the player taps one of eight homelands. Today the map is drawn in code: a parchment subcontinent, rivers, and (since 7 November) mountains with snow, forests, dunes, waves, a small drawing at each homeland, boats, birds, a compass rose and a title panel. The owner asked whether a painted background would work. It would. This brief asks for **one painting of the land and seas**, laid under the game's own pins and names.
 
 ## What is painted, and what stays in the game's code

@@ -103,6 +103,9 @@ const SCREENS = [
         if (S.arg === null) throw new Error("no save fixture for this screen (tests/fixtures/saves/current.json.gz)");
         await pg.evaluate(S.go, S.arg);
         await pg.evaluate(() => document.fonts.ready.then(() => true));
+        // A painting inside an SVG (the creation page's map) has no load state to wait on: the same file is fetched and
+        // decoded here (from the cache), so it is on screen before the shot rather than the drawn stand-in.
+        await pg.evaluate(() => Promise.all([...document.querySelectorAll("svg image")].map((i) => { const im = new Image(); im.src = i.getAttribute("href"); return im.decode().catch(() => null); })));
         await pg.waitForTimeout(S.wait || 1500);
         const png = (await pg.screenshot({ animations: "disabled", caret: "hide", type: "png" })).toString("base64");
         shot = await enc(png, dev.store && dev.store.width, dev.store && dev.store.height);

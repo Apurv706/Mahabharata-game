@@ -28,6 +28,8 @@ function parts(f) {
   if (!isAsset(f)) return [1, 2];
   if (f.startsWith("music/")) return [1, 2];
   const k = keyOf(f);
+  // The painted homeland map is only on the creation page, and only Part One begins a new life.
+  if (k === "map_bharat") return [1];
   if (always(k)) return [1, 2];
   const acts = use[k] || use[k + "_wide"] || use[k + "_tall"];
   const p = new Set();

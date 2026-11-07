@@ -2270,7 +2270,7 @@ html[lang="hi"] .ord h3, html[lang="hi"] .ord-who small { letter-spacing: 0; tex
 .cr-dots li { width: 10px; height: 2px; border-radius: 1px; background: var(--track); transition: background-color .3s, width .3s; }
 .cr-dots li.done { background: var(--gold-line); }
 .cr-dots li.on { width: 18px; background: var(--data); }
-.cr-mid { position: relative; flex: 1; min-height: 0; overflow: hidden; background: #a9c0bb; }
+.cr-mid { position: relative; flex: 1; min-height: 0; overflow: hidden; background: #c0975d; } /* the painted map's paper edge */
 .cr-map { position: absolute; inset: 0; transition: opacity .5s ease; }
 .cr-map .bmap { width: 100%; height: 170%; border-radius: 0; transition: transform .6s cubic-bezier(.2, .8, .2, 1); }
 .cr-map .m-home { cursor: pointer; }
@@ -2328,6 +2328,10 @@ html[lang="hi"] .ord h3, html[lang="hi"] .ord-who small { letter-spacing: 0; tex
 .bmap .dress .cp .cp-n { font-size: 9px; font-weight: 700; fill: #3b2414; stroke: none; }
 .bmap .dress .ct .ct-b { fill: rgba(239, 226, 192, .92); stroke: #7a5634; stroke-width: 1.2; vector-effect: non-scaling-stroke; }
 .bmap .dress .ct .ct-i { fill: none; stroke: #b2432a; stroke-width: .6; vector-effect: non-scaling-stroke; }
+/* The painted map (7 November): its own aged-paper edge round it, and a light halo so the small names read on the
+   painted paper. */
+.bmap.painted { background: #c0975d; }
+.bmap.painted .m-water, .bmap.painted .m-region { paint-order: stroke; stroke: rgba(240, 226, 190, .72); stroke-width: 2.6px; stroke-linejoin: round; }
 .bmap .dress .ct .ct-t { font-size: 13px; font-weight: 700; letter-spacing: .06em; fill: #3b2414; stroke: none; }
 .bmap .dress .ct .ct-s { font-size: 7.5px; font-style: italic; fill: #7a5634; stroke: none; }
 .bmap .dress text { paint-order: stroke; }

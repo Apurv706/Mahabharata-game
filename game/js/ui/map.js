@@ -2,7 +2,8 @@
    A scene's place is matched to a point on the map. When the place changes, a short journey
    plays over the scene: a path draws from where you were to where you are going. The whole
    road can be opened from the menu bar, and the ending shows it once more. Drawn in code
-   (no art file), so the labels translate and it stays sharp on any screen. */
+   (no art file), so the labels translate and it stays sharp on any screen. The one exception is
+   the creation page's homeland map: a painting (art/map_bharat.webp) under drawn names and pins. */
 (function (K) {
   "use strict";
   const U = K.UI;
@@ -111,21 +112,28 @@
   const T = (t) => U.esc(K.tr(t));
   const at = (lo, la) => proj(lo, la).join('" y="');
 
+  // The painted map (owner, 7 November): one painting of the land, its relief, rivers, forests and seas, laid under
+  // the pins on the creation page. It covers map units -60…930 across and -60…1100 down (2574 × 3016 px, 2.6 px a
+  // unit; the art brief is docs/art_brief_map/). Only Part One carries the file (tools/split/build.js).
+  const PAINTED = { file: "map_bharat", box: [-60, -60, 990, 1160] };
+  const painting = () => '<image class="m-paint" href="' + U.esc(U.artUrl(PAINTED.file)) + '" x="' + PAINTED.box[0] + '" y="' + PAINTED.box[1] + '" width="' + PAINTED.box[2] + '" height="' + PAINTED.box[3] + '" preserveAspectRatio="none"/>';
+  // Warm the painting while the title is up, so the map is ready when a new life begins.
+  U.warmHomeMap = () => { if (U.preloadArt) U.preloadArt([PAINTED.file]); };
+
   // The ground: the subcontinent, its seas, rivers and mountains. The same for every life.
   // z scales lettering and marks, so they read the same size however far the map is zoomed.
-  function ground(z, bare) {
+  // over: drawn above the land and rivers and below the names (the creation page's painting, and what it covers).
+  function ground(z, bare, over) {
     const fs = (n) => ' style="font-size:' + Math.round(n * z * 10) / 10 + 'px"';
+    const name = (cls, t, lo, la, n, rot) => '<text class="' + cls + '" x="' + at(lo, la) + '"' + (rot ? ' transform="rotate(' + rot + " " + proj(lo, la).join(" ") + ')"' : "") + fs(n) + ">" + T(t) + "</text>";
     return '<rect class="m-sea" x="-200" y="-200" width="1300" height="1300"/><path class="m-land" d="' + LAND + '"/>' +
       (bare ? "" :
         '<path class="m-hills" d="' + peaks(HILLS, 1) + '"/><path class="m-hills low" d="' + peaks(LOW, 0.7) + '"/>' +
         RIVERS.map(([c, pts]) => '<path class="m-river ' + c + '" d="' + smooth(pts) + '"/>').join("") +
-        '<text class="m-region" x="' + at(84.5, 31.6) + '" transform="rotate(16 ' + proj(84.5, 31.6).join(" ") + ')"' + fs(15) + ">" + T("Himalaya") + "</text>" +
-        '<text class="m-region" x="' + at(71.6, 26.6) + '"' + fs(14) + ">" + T("Desert") + "</text>" +
-        '<text class="m-water" x="' + at(66, 17) + '"' + fs(16) + ">" + T("Western sea") + "</text>" +
-        '<text class="m-water" x="' + at(87.5, 16) + '"' + fs(16) + ">" + T("Eastern sea") + "</text>" +
-        '<text class="m-water" x="' + at(69.6, 29.6) + '" transform="rotate(-58 ' + proj(69.6, 29.6).join(" ") + ')"' + fs(12) + ">" + T("Indus") + "</text>" +
-        '<text class="m-water" x="' + at(79.6, 26.0) + '" transform="rotate(28 ' + proj(79.6, 26.0).join(" ") + ')"' + fs(12) + ">" + T("Yamuna") + "</text>" +
-        '<text class="m-water" x="' + at(83.6, 24.9) + '"' + fs(12) + ">" + T("Ganga") + "</text>");
+        (over || "") +
+        name("m-region", "Himalaya", 84.5, 31.6, 15, 16) + name("m-region", "Desert", 71.6, 26.6, 14) +
+        name("m-water", "Western sea", 66, 17, 16) + name("m-water", "Eastern sea", 87.5, 16, 16) +
+        name("m-water", "Indus", 69.6, 29.6, 12, -58) + name("m-water", "Yamuna", 79.6, 26.0, 12, 28) + name("m-water", "Ganga", 83.6, 24.9, 12));
   }
 
   // Emblems beside the names, invented for the game (no real flags survive): Matsya's fish, Anga's
@@ -324,6 +332,7 @@
   // seas, a small drawing at each homeland, boats on the Ganga, birds, the rivers catching the light, a compass rose
   // and a title cartouche. k sizes them for the screen; vis is the part of the map in the box (the drawing runs on
   // below it). The moving pieces are CSS animations, so Calm motion stills them like everything else.
+  // Since the painting came (7 November) the drawn relief is only its stand-in while it loads: { under, over }.
   function homeDressing(k, vis) {
     let seed = 7;
     const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
@@ -377,18 +386,22 @@
     const boats = [[83.35, 25.33], [85.75, 25.55], [80.9, 25.7]].map(([lo, la], i) => { const [x, y] = pt(lo, la); return '<g class="m-boat" style="animation-delay:' + (-i * 7) + 's">' + g(x, y - 2 * k, k, LM.boat, "lm") + "</g>"; }).join("");
     const birds = [[81.5, 30.2], [83.4, 30.9], [79.6, 31.6]].map(([lo, la], i) => { const [x, y] = pt(lo, la); return '<g class="m-bird" style="animation-delay:' + (-i * 11) + 's">' + g(x, y, k, '<path d="M-6 0 Q-3 -3 0 0 Q3 -3 6 0 M6 -6 Q8 -8 10 -6 Q12 -8 14 -6"/>', "bd") + "</g>"; }).join("");
     const shine = RIVERS.filter((r) => !r[0]).slice(1).map(([, pts]) => '<path class="m-shine" d="' + smooth(pts) + '"/>').join("");
-    // More names: the Vindhyas, the dry Sarasvati, the Narmada.
+    // More names: the Vindhyas, the dry Sarasvati, the Narmada. (The painting has the Narmada but neither the
+    // Vindhyas' hills nor the Sarasvati's bed, and trees where the Vindhyas' name went: those two names go with the
+    // drawn relief, under it.)
     const fs = (n) => ' style="font-size:' + Math.round(n * k * 10) / 10 + 'px"';
-    const names = '<text class="m-region" x="' + at(78.6, 22.85) + '"' + fs(12) + ">" + T("Vindhya") + "</text>" +
-      '<text class="m-water dry" x="' + at(73.4, 29.15) + '" transform="rotate(24 ' + proj(73.4, 29.15).join(" ") + ')"' + fs(10.5) + ">" + T("Sarasvati") + "</text>" +
-      '<text class="m-water" x="' + at(76.6, 22.15) + '"' + fs(10.5) + ">" + T("Narmada") + "</text>";
+    const drawnNames = '<text class="m-region" x="' + at(78.6, 22.85) + '"' + fs(12) + ">" + T("Vindhya") + "</text>" +
+      '<text class="m-water dry" x="' + at(73.4, 29.15) + '" transform="rotate(24 ' + proj(73.4, 29.15).join(" ") + ')"' + fs(10.5) + ">" + T("Sarasvati") + "</text>";
+    const names = '<text class="m-water" x="' + at(76.6, 22.15) + '"' + fs(10.5) + ">" + T("Narmada") + "</text>";
     // The compass rose (lower right of the box) and the title cartouche (lower left).
     const [vx, vy, vw, vh] = vis, cs = k * 1.35;
     const compass = g(vx + vw - 34 * cs, vy + vh - 40 * cs, cs, '<circle class="cp-r" r="18"/><circle class="cp-r2" r="13"/><path class="cp-s" d="M0 -22 L4 -4 L0 0 Z M0 22 L-4 4 L0 0 Z M-22 0 L-4 -4 L0 0 Z M22 0 L4 4 L0 0 Z"/><path class="cp-d" d="M0 -22 L-4 -4 L0 0 Z M0 22 L4 4 L0 0 Z M-22 0 L-4 4 L0 0 Z M22 0 L4 -4 L0 0 Z"/><text class="cp-n" x="0" y="-26" text-anchor="middle">N</text>', "cp");
     const cw = 150, cx0 = vx + vw - (cw + 16) * cs, cy0 = vy + 14 * cs;
     const cart = g(cx0, cy0, cs, '<path class="ct-b" d="M6 0 H' + (cw - 6) + ' Q' + cw + ' 0 ' + cw + ' 6 V30 Q' + cw + ' 36 ' + (cw - 6) + ' 36 H6 Q0 36 0 30 V6 Q0 0 6 0 Z"/><path class="ct-i" d="M5 4 H' + (cw - 5) + " V32 H5 Z\"/>" +
       '<text class="ct-t" x="' + cw / 2 + '" y="18" text-anchor="middle">' + T("Bharatavarsha") + '</text><text class="ct-s" x="' + cw / 2 + '" y="28.5" text-anchor="middle">' + T("The lands of the epic") + "</text>", "ct");
-    return '<g class="dress">' + dunes + waves + trees + mts + shine + marks + boats + birds + names + cart + compass + "</g>";
+    // The drawn relief, forests, dunes, waves and drawings go under the painting (seen only until it has loaded);
+    // the moving pieces, names, cartouche and compass go on top of it.
+    return { under: '<g class="dress under">' + dunes + waves + trees + mts + marks + drawnNames + "</g>", over: '<g class="dress">' + shine + boats + birds + names + cart + compass + "</g>" };
   }
 
   // aspect: the frame's width over its height (the creation page asks for its own box's, so the map fills it).
@@ -427,7 +440,10 @@
         (kind ? emblem(kind, tx, ty, anchor, fs, name) : "") +
         '<text x="' + (tx + shiftFor(kind, anchor, fs)) + '" y="' + ty + '" text-anchor="' + anchor + '" style="font-size:' + fs + 'px">' + U.esc(name) + "</text></g>";
     }).join("");
-    return svg(ground(z) + (vis ? homeDressing(z * Math.pow(big, 0.55), vis) : "") + pins, K.tr("Map of the homelands"), vb, "zoom homes" + (vis ? " dressed" : ""));
+    if (!vis) return svg(ground(z) + pins, K.tr("Map of the homelands"), vb, "zoom homes");
+    // The creation page's map is the painting, dressed with the moving pieces and names (owner, 7 November).
+    const d = homeDressing(z * Math.pow(big, 0.55), vis);
+    return svg(ground(z, false, d.under + painting()) + d.over + pins, K.tr("Map of the homelands"), vb, "zoom homes dressed painted");
   };
   EMBLEM.wheel = '<circle class="e-line" cx="0" cy="0" r="8"/><path class="e-line" d="M0 -8 V8 M-8 0 H8 M-5.6 -5.6 L5.6 5.6 M5.6 -5.6 L-5.6 5.6"/><circle cx="0" cy="0" r="2"/>';
 

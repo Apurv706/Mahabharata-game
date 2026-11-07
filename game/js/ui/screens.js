@@ -57,6 +57,9 @@
     const fresh = () => U.renderCreate();
     row.appendChild(U.button(auto ? "cta secondary" : "cta", U.tr("Begin a new life"), fresh, "btn-new"));
     keys.push(fresh);
+    // The painted map, on its way while the title is up (once the page is built: Part Two takes this button away and
+    // has no creation page, nor the painting).
+    setTimeout(() => { if (U.$("btn-new") && U.warmHomeMap) U.warmHomeMap(); }, 0);
     const load = () => U.openLoad();
     row.appendChild(U.button("ghost", U.tr("Load a save code"), load));
     keys.push(load);

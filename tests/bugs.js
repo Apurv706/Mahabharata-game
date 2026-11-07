@@ -34,6 +34,10 @@ engine("split-homeland", "93709a3", "Part Two of the split build has every homel
   const homes = fs.readdirSync(path.join(H.GAME, "art")).filter((f) => /^home_/.test(f));
   for (const o of Object.keys(E().ORIGINS)) if (!homes.some((f) => f.startsWith("home_" + o))) bad.push("no painting at all for the homeland " + o);
   for (const n of [1, 2]) { const m = JSON.parse(fs.readFileSync(path.join(out, "part" + n + ".files.json"), "utf8")); for (const f of homes) if (!m["art/" + f]) bad.push("part " + n + " lacks art/" + f); }
+  // The painted homeland map (7 November): Part One, which begins new lives; not Part Two, which has no creation page.
+  const p1 = JSON.parse(fs.readFileSync(path.join(out, "part1.files.json"), "utf8")), p2 = JSON.parse(fs.readFileSync(path.join(out, "part2.files.json"), "utf8"));
+  if (!p1["art/map_bharat.webp"]) bad.push("part 1 lacks the painted homeland map art/map_bharat.webp");
+  if (p2["art/map_bharat.webp"]) bad.push("part 2 carries the painted homeland map, which it never shows");
   return bad;
 });
 engine("spare-5pct", "36bcb19", "a foe can be spared only below 5% of his health (kneeling), or asleep or bound; sparing him lets the fight go on", () => {

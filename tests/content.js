@@ -310,7 +310,9 @@ if (maps) {
   });
   for (const [f, acts] of need) {
     if (!fs.existsSync(path.join(GAME, f))) continue; // already reported
-    const parts = new Set(); for (const a of acts) { if (a === 0) { parts.add(1); parts.add(2); } else parts.add(a <= 4 ? 1 : 2); }
+    // (The title and creation pages are in both parts, but the painted homeland map is only on the creation page, which
+    // only Part One opens: tools/split/build.js gives it to Part One alone.)
+    const parts = new Set(); for (const a of acts) { if (a === 0) { parts.add(1); if (!/^art\/map_bharat\./.test(f)) parts.add(2); } else parts.add(a <= 4 ? 1 : 2); }
     for (const p of parts) if (!maps[p - 1][f]) add("split part " + (p === 1 ? "One" : "Two") + " lacks a file it shows", f + " (acts " + [...acts].sort().join(",") + "; e.g. " + (whyNeed.get(f + "@" + p) || whyNeed.get(f + "@0") || whyNeed.get(f)) + ")");
   }
 }
