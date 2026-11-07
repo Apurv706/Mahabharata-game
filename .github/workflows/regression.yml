@@ -90,6 +90,10 @@ jobs:
             *) PICK="--only $CHECKS" ;;
           esac
           node tests/run.js full --browser "$BROWSER" $PICK --out regress-out
+      - name: Debug shots (temporary)
+        if: always() && matrix.shard == 'picked'
+        run: |
+          for f in regress-out/visual/*.new.jpg regress-out/visual/*.diff.jpg; do if [ -f "$f" ]; then echo "BEGIN $f"; base64 -w0 "$f"; echo; echo "END $f"; fi; done
       - uses: actions/upload-artifact@v5
         if: always()
         with:
