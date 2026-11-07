@@ -6293,6 +6293,8 @@
     "Heavy: slow to recover": "भारी: सँभलने में धीमी",
     "Balanced; blocks": "संतुलित; ढाल से रोकता है",
     "Quick and light; rolls": "तेज़ और हल्की; लुढ़ककर बचता है",
+    "No strikes yet: shield up": "अभी वार नहीं: ढाल ऊपर",
+    "No strikes yet": "अभी वार नहीं",
     "the enemy's soldiers": "शत्रु के सैनिक",
     "You are still shouting for the banner when the enemy's second rank reaches you. They take you alive, which is more than they do for most.": "तुम अब भी ध्वज के लिए पुकार {g:रहे होते|रही होती} हो जब शत्रु की दूसरी पंक्ति तुम तक पहुँचती है। वे तुम्हें जीवित पकड़ लेते हैं, जो वे ज़्यादातर के साथ नहीं करते।",
     "Rallying a broken division, you were taken by the enemy.": "टूटे सेना-खंड को जुटाते हुए तुम शत्रु के हाथ {g:पकड़े गए|पकड़ी गईं}।",

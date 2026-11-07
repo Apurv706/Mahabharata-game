@@ -142,9 +142,12 @@
     { s: "taunt", side: "player", t: "War cry: they come at you" },
     { s: "inspired", side: "friends", t: "Rally: your side hits harder" },
     { s: "evade", side: "player", t: "Swerve: the next blow misses" },
-    { s: "stun", side: "enemy", t: "Stunned: they cannot strike" }
+    { s: "stun", side: "enemy", t: "Stunned: they cannot strike" },
+    // (Build D, row 50) Shield wall or Guard chosen on the turns: Strike locked for the clash's first seconds.
+    { s: "_lock", side: "player", t: "No strikes yet: shield up", roll: "No strikes yet" }
   ];
   const stLeft = (s, side) => {
+    if (s === "_lock") return V.R.strikeLock || 0;
     let m = 0;
     for (const u of V.R.B.units) {
       if (u.hp <= 0 || !u.rt || !u.status[s]) continue;
@@ -159,7 +162,7 @@
     for (const o of OPENERS) {
       const left = stLeft(o.s, o.side);
       if (left <= 0) continue;
-      const el = U.el('<div class="cl-open k-' + o.s + '"><span>' + U.esc(T(o.t)) + "</span><b>" + Math.ceil(left) + "</b></div>");
+      const el = U.el('<div class="cl-open k-' + o.s + '"><span>' + U.esc(T(o.roll && !V.R.blocker ? o.roll : o.t)) + "</span><b>" + Math.ceil(left) + "</b></div>");
       box.appendChild(el); c.opens.push({ o, el });
     }
     V.openFx = c.opens.length > 0; // the figures are made on the first frame: their poses then (openFx)

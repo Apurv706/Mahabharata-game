@@ -768,6 +768,9 @@ html.calm #rt .actor.opened .fl { animation: none; }
 #rt .acts .backring .fg { stroke: var(--data); stroke-linecap: round; transition: stroke-dashoffset 0.1s linear; }
 #rt .acts .strike.locked { filter: grayscale(0.85); opacity: 0.55; }
 #rt .acts .strike.locked .lockring, #rt .acts .roll.as-roll .backring { display: block; }
+/* The Strike lock's ring sits in the button's corner, clear of its name. */
+#rt .acts .strike .lockring { left: auto; top: 6px; right: 6px; width: 26px; transform: rotate(-90deg); }
+#rt .acts .strike .lockring circle { stroke-width: 5; }
 #rt .acts .strike.back { animation: rt-strike-back 0.7s ease-out; }
 @keyframes rt-strike-back { from { box-shadow: 0 0 0 0 rgba(255, 214, 110, 0.9); } to { box-shadow: 0 0 0 14px rgba(255, 214, 110, 0); } }
 html.calm #rt .acts .strike.back { animation: none; }
@@ -775,5 +778,7 @@ html.calm #rt .acts .strike.back { animation: none; }
 #rt .acts .roll > .rl, #rt .acts .strike > small { position: relative; z-index: 1; }
 #rt .actor.shield-broken .it-s { display: none; }
 /* (Build D, row 50) Shield wall and Guard on a war day that plays clashes: the lock they bring, a line in gold. */
-#rt .moves button small.also { color: var(--accent); font-size: 12.5px; line-height: 1.15; }
+#rt .moves button small.also { color: var(--accent); font-size: 12.5px; line-height: 1.15; white-space: normal; overflow: visible; text-overflow: clip; }
 #rt.wide.war .moves button small.also { grid-column: 2; }
+/* (Build D) On an upright phone the war day's cards have no room for the lock's line: the clash's opening says it instead. */
+#rt.upright .moves button small.also { display: none; }
