@@ -70,13 +70,17 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       trial: !!document.querySelector(".trial"), trialBegin: [...document.querySelectorAll(".trial button.cta")].some(vis), trialPlaying: !!document.querySelector(".trial.playing"),
       choices: choices.map((e) => "#" + e.id), plain: plain.map((e) => "#" + e.id),
       cta: [...document.querySelectorAll("#leaf .cta, .endscreen button")].filter(vis).length,
-      end: !!document.querySelector(".endscreen"), written: !!document.querySelector("#rt .written"), endcard: !!document.querySelector("#rt .endcard button")
+      end: !!document.querySelector(".endscreen"), written: !!document.querySelector("#rt .written"), endcard: !!document.querySelector("#rt .endcard button"),
+      // Build B: the commander's orders over a battle day's first page, and the mode asked on waking from the dream
+      orders: !!document.querySelector(".moment.orders .ord-go"), fmode: !!document.querySelector('.fmode [data-mode="story"]')
     };
   });
   // One step forward with a real tap (or key), the way a player would; returns what was done, or null when nothing can be.
   async function step(pg, o = {}) {
     for (let tries = 0; tries < 20; tries++) {
       const s = await look(pg);
+      if (s.orders) { await tapSel(pg, ".moment.orders .ord-go"); await sleep(700); return "orders for the day at " + s.scene; }
+      if (s.fmode) { await tapSel(pg, '.fmode [data-mode="story"]'); await sleep(900); return "Live the story, on waking"; }
       if (s.beat) { await pg.touchscreen.tap(196, 420); await sleep(400); return "card"; }
       if (s.brief) { await tapSel(pg, ".fb-go"); await sleep(400); return "rules card"; }
       if (s.tour) { await tapSel(pg, "#rt .tc-skip"); await sleep(400); return "tour"; }
