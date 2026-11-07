@@ -292,6 +292,19 @@ Following `Quality_Review_2026-11-02.md` and its "Decided 2 November" section. T
 93. **The dream is 10 seconds (feedback 46).** In real time the dream is one clash of 10 seconds against the warrior in the dented helmet and his two soldiers, all three on the field at once, with no orders before it and no help; when it ends, however it ends, the field goes white and you wake. (The Menu's turn-based fights keep its three rounds.)
 94. **The nightly checks finish (7 Nov).** The full tier ran past GitHub's two-hour limit every night; it now runs as two jobs side by side (the battle checks, and the rest), and can be run for chosen checks by hand. The screenshot check now draws in the game's own fonts (the fixture fonts had never loaded) with the same text rendering on every machine, and allows text a fraction of a pixel aside, so it passes on GitHub's runners.
 
+## Building 7 Nov: Build D, the fights' traits (branch `build-d`; stage 1 in the Build D preview pages, not yet on main)
+Feedback 48–50, with the numbers in `Fight_Traits_Draft.md`, in three stages, each with its checks, balance, Hindi and a preview.
+95. **Stage 1: weapons, shields and strength (7 Nov).**
+    - **The swing lock (feedback 48):** once you swing a mace, sword or club, no Block and no Roll until the blow ends (a mace about 0.7 s, a sword about 0.3 s); with a dagger only the roll waits. No parry mid-swing, for you or for foes.
+    - **The dagger's own blows:** four quick stabs, then a heavy fifth that knocks a foe back (×5).
+    - **Foes are open after a blow:** a mace foe longest (0.7 s), a sword or spear 0.35 s, a dagger 0.2 s (a heavy blow a little longer); his shield and his parry do not save him then.
+    - **Shields wear down (feedback 49):** every blow caught on a shield costs it; a mace costs most, by its wielder's tier, so Bhima breaks one in 4–5 blows and a soldier's mace in about 10. It cracks at half. Your broken shield is gone for 10 s (Block becomes Roll, and a ring on the button fills until a fresh one comes up); a foe's is gone for the rest of the fight.
+    - **Four tiers of strength:** Soldier, Captain, Great champion (Karna, Arjuna, Bhishma, Drona, Kripa, Duryodhana, Ashwatthama, Abhimanyu, Satyaki, Ghatotkacha, Supratika) and Bhima. A stronger fighter's blow gets more through your raised shield, drains more breath and throws you further; great champions shrug off your light blows.
+    - **Shield wall and Guard lock Strike in the clash (feedback 50):** 4 s with a ring counting down, your shield held up for you (the roll paths keep their roll). The Orders cards say so; on an upright phone, where the cards have no room, the clash's opening line does.
+    - **Each weapon's feel** on the weapon pick and the rules card ("Mace: heavy, slow to recover", "Dagger: quick and light").
+    - **Balance held:** each path within about a point of its win rate before (1500 lives each: archer 93%, bard 95%, charioteer 96%, mace 95%, spy 94%, strategist 90%), with foes' blows eased per path to make up for the lock and three fights retuned. Hindi for every new line. New engine checks (`tests/traits.js`, 13) in the quick tier.
+    - Tuned from the draft: a mace's shield cost by tier is 1, 1.4, 1.8, 2.2 of a shield's 10 points, and a heavy blow costs half as much again. With the draft's 2 and 2.5, Bhima's heavy blows broke a shield in 3.
+
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**
 - **Batches and patch:** batches 3–6f, and the 6-file patch (sun banners on the war field, sunset and camp gate).
