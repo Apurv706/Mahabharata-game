@@ -4,13 +4,17 @@
    card), the map, and an ending. Devices: iPhone SE, iPhone 15 and a 1440x900 laptop; English and Hindi.
    Held still so two runs match: a seeded Math.random and K.seed, Calm motion (no live rigs or effects), no living
    paintings, CSS animations run to their end (Playwright's animations: "disabled"), the fonts served from
-   tests/fixtures/fonts (never Google's, so every machine draws the same text), a fixed life or a save code from
+   tests/fixtures/fonts (never Google's, so every machine draws the same text) and drawn unhinted in grey
+   (tests/fixtures/fonts/render.conf, whatever the machine's own font settings), a fixed life or a save code from
    tests/fixtures/saves.
    A shot differs when more than --tolerance of its pixels (default 1.5%) move by more than --delta (default 48 of 255)
-   in any channel; the baseline, the new shot and a map of the changed pixels go to <out>/visual/ for each difference.
+   in any channel from every pixel within --radius (default 2) of them in the other shot, either way (so text drawn a
+   fraction of a pixel aside by another machine is not a difference: on GitHub's runners the dense Hindi text moved
+   up to 4.8% of a shot's pixels that way, 0.7% with the radius; a card with its lines gone still moves 3.6%); the
+   baseline, the new shot and a map of the changed pixels go to <out>/visual/ for each difference.
    Baselines are JPEGs at CSS pixels (the laptop's scaled to 960x600) to keep the folder small.
    Usage: node tests/visual.js [--accept] [--case id,id] [--device se,15,laptop] [--lang en,hi] [--tolerance 0.015]
-          [--delta 48] [--json FILE]      (--accept rewrites the baselines it takes; case ids: <screen>-<device>-<lang>)
+          [--delta 48] [--radius 2] [--json FILE]      (--accept rewrites the baselines it takes; case ids: <screen>-<device>-<lang>)
    Exits 1 on any difference or missing baseline. */
 "use strict";
 const fs = require("fs");
@@ -21,7 +25,7 @@ const { arg, has } = H;
 const BASE = path.join(__dirname, "baselines", "shots");
 const OUT = path.join(H.SCRATCH, "visual");
 const FONTS = path.join(__dirname, "fixtures", "fonts");
-const TOL = parseFloat(arg("--tolerance", "0.015")), DELTA = parseInt(arg("--delta", "48"), 10);
+const TOL = parseFloat(arg("--tolerance", "0.015")), DELTA = parseInt(arg("--delta", "48"), 10), RAD = parseInt(arg("--radius", "2"), 10);
 const ACCEPT = has("--accept");
 const only = arg("--case", "") ? new Set(arg("--case").split(",")) : null;
 const DEVS = { se: { name: "iPhone SE", pw: "iPhone SE" }, 15: { name: "iPhone 15", pw: "iPhone 15" }, laptop: { name: "Laptop 1440x900", viewport: { width: 1440, height: 900 }, store: { width: 960, height: 600 } } };
@@ -54,27 +58,41 @@ const SCREENS = [
   fs.mkdirSync(OUT, { recursive: true }); fs.mkdirSync(BASE, { recursive: true });
   const fontCss = fs.readFileSync(path.join(FONTS, "fonts.css"), "utf8");
   const srv = await H.serve(H.GAME, { extra: (rel) => (rel.startsWith("__fonts/") ? path.join(FONTS, path.basename(rel)) : null) });
-  const b = await pw.chromium.launch();
+  // The same text rendering on every machine (tests/fixtures/fonts/render.conf): GitHub's runners hint text, this does not.
+  const b = await pw.chromium.launch({ env: Object.assign({}, process.env, { FONTCONFIG_FILE: path.join(FONTS, "render.conf") }) });
   const cmp = await (await b.newContext()).newPage();
   // Scale a PNG to its stored size and encode it as a JPEG; compare two JPEGs; draw what changed. All in a canvas.
   await cmp.setContent("<canvas></canvas>");
   const enc = (png, w, h) => cmp.evaluate(async ([png, w, h]) => { const im = new Image(); im.src = "data:image/png;base64," + png; await im.decode(); const c = document.createElement("canvas"); c.width = w || im.width; c.height = h || im.height; const g = c.getContext("2d"); g.imageSmoothingQuality = "high"; g.drawImage(im, 0, 0, c.width, c.height); return c.toDataURL("image/jpeg", 0.72).split(",")[1]; }, [png, w, h]);
-  const diff = (a, bb, delta) => cmp.evaluate(async ([a, bb, delta]) => {
+  const diff = (a, bb, delta, rad) => cmp.evaluate(async ([a, bb, delta, rad]) => {
     const load = async (s) => { const im = new Image(); im.src = "data:image/jpeg;base64," + s; await im.decode(); const c = document.createElement("canvas"); c.width = im.width; c.height = im.height; const g = c.getContext("2d"); g.drawImage(im, 0, 0); return { w: im.width, h: im.height, d: g.getImageData(0, 0, im.width, im.height).data }; };
     const A = await load(a), B = await load(bb);
     if (A.w !== B.w || A.h !== B.h) return { size: A.w + "x" + A.h + " vs " + B.w + "x" + B.h, frac: 1 };
     const c = document.createElement("canvas"); c.width = A.w * 3; c.height = A.h; const g = c.getContext("2d");
     const out = g.createImageData(A.w, A.h); let n = 0;
+    // A pixel has changed when nothing within `rad` pixels of it in the other shot is within `delta`, both ways:
+    // text drawn a fraction of a pixel aside (another machine's glyph rasteriser) is not a change; a moved,
+    // missing or recoloured element is.
+    const W = A.w, H = A.h;
+    const far = (X, Y, x, y) => {
+      const i = (y * W + x) * 4;
+      for (let dy = -rad; dy <= rad; dy++) { const yy = y + dy; if (yy < 0 || yy >= H) continue;
+        for (let dx = -rad; dx <= rad; dx++) { const xx = x + dx; if (xx < 0 || xx >= W) continue;
+          const j = (yy * W + xx) * 4;
+          if (Math.abs(X[i] - Y[j]) <= delta && Math.abs(X[i + 1] - Y[j + 1]) <= delta && Math.abs(X[i + 2] - Y[j + 2]) <= delta) return false; } }
+      return true;
+    };
     for (let i = 0; i < A.d.length; i += 4) {
+      const x = (i / 4) % W, y = Math.floor(i / 4 / W);
       const m = Math.max(Math.abs(A.d[i] - B.d[i]), Math.abs(A.d[i + 1] - B.d[i + 1]), Math.abs(A.d[i + 2] - B.d[i + 2]));
-      const hit = m > delta; if (hit) n++;
+      const hit = m > delta && (far(A.d, B.d, x, y) || far(B.d, A.d, x, y)); if (hit) n++;
       const grey = (B.d[i] + B.d[i + 1] + B.d[i + 2]) / 3 * 0.35;
       out.data[i] = hit ? 255 : grey; out.data[i + 1] = hit ? 0 : grey; out.data[i + 2] = hit ? 0 : grey; out.data[i + 3] = 255;
     }
     const ia = new Image(); ia.src = "data:image/jpeg;base64," + a; await ia.decode(); const ib = new Image(); ib.src = "data:image/jpeg;base64," + bb; await ib.decode();
     g.drawImage(ia, 0, 0); g.drawImage(ib, A.w, 0); g.putImageData(out, A.w * 2, 0);
     return { frac: n / (A.w * A.h), img: n ? c.toDataURL("image/jpeg", 0.8).split(",")[1] : null };
-  }, [a, bb, delta]);
+  }, [a, bb, delta, rad]);
 
   const results = [];
   for (const dk of devList) for (const lang of langs) {
@@ -92,7 +110,10 @@ const SCREENS = [
         let s = 12345; Math.random = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
         try { localStorage.clear(); localStorage.setItem("kurukshetra.v2.prefs", JSON.stringify({ lang, calm: true, living: false, gradual: false, beats: false })); } catch (e) { /* a page without storage */ }
       }, [lang]);
-      await ctx.route(/fonts\.googleapis\.com/, (r) => r.fulfill({ status: 200, contentType: "text/css", body: fontCss }));
+      // fonts.css names its files /__fonts/<file>, which the browser asks of fonts.googleapis.com (the stylesheet's
+      // origin): answer those with the fixture font itself (until 7 Nov they got the CSS back and every face failed).
+      await ctx.route(/fonts\.googleapis\.com/, (r) => { const m = r.request().url().match(/\/__fonts\/([^?#]+)$/);
+        return m ? r.fulfill({ status: 200, contentType: "font/woff2", body: fs.readFileSync(path.join(FONTS, path.basename(m[1]))) }) : r.fulfill({ status: 200, contentType: "text/css", body: fontCss }); });
       await ctx.route(/fonts\.gstatic\.com/, (r) => r.abort());
       const pg = await ctx.newPage(), errs = [];
       pg.on("pageerror", (e) => errs.push("page error: " + e.message));
@@ -114,7 +135,7 @@ const SCREENS = [
       else if (ACCEPT) { fs.writeFileSync(file, Buffer.from(shot, "base64")); r.status = "accepted"; }
       else if (!fs.existsSync(file)) { r.status = "fail"; r.problems = ["no baseline (node tests/visual.js --accept --case " + id + ")"]; fs.writeFileSync(path.join(OUT, id + ".new.jpg"), Buffer.from(shot, "base64")); }
       else {
-        const d = await diff(fs.readFileSync(file).toString("base64"), shot, DELTA);
+        const d = await diff(fs.readFileSync(file).toString("base64"), shot, DELTA, RAD);
         r.frac = Math.round(d.frac * 10000) / 10000;
         if (d.size || d.frac > TOL) {
           r.status = "fail"; r.problems = [d.size ? "size changed: " + d.size : Math.round(d.frac * 1000) / 10 + "% of the pixels changed (tolerance " + TOL * 100 + "%)"];
