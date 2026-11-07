@@ -1380,7 +1380,8 @@ require(G + "content/war_fights.js");
     const a = duel("mace", {}), b = duel("mace", { land: 0.5 }), c = duel("spy", { atk: { heavy: true, id: "heavy" } }), d = duel("charioteer", { atk: { ranged: true, id: "arrows" } });
     ok(a.parries === 1 && a.lost === 0, "Strike just before his blade lands meets it: nothing lands (" + JSON.stringify(a) + ")");
     const sw = duel("mace", { swing: true });
-    ok(sw.parries === 1 && sw.lost === 0, "a mace blow still in the air is broken off to meet his blade (" + JSON.stringify(sw) + ")");
+    // (Build D, row 48: a swing is locked until it ends; until 7 November a mace blow in the air was broken off to meet his blade.)
+    ok(sw.parries === 0 && sw.lost > 0, "a mace blow still in the air cannot meet his blade: the swing is yours until it ends (" + JSON.stringify(sw) + ")");
     ok(b.parries === 0 && b.lost > 0, "too early, it is an ordinary blow and his lands (" + JSON.stringify(b) + ")");
     ok(c.part === 1 && c.lost > 0, "a dagger only half stops a heavy blow (" + JSON.stringify(c) + ")");
     ok(d.parries === 0 && d.part === 0, "an arrow is never parried (" + JSON.stringify(d) + ")");
