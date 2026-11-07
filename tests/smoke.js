@@ -162,7 +162,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       if (!(await pg.evaluate(() => /Part One/.test((document.querySelector(".part-note") || {}).textContent || "")))) bad.push("the title does not say Part One");
       await tapSel(pg, "#btn-new"); await sleep(800);
       // The one-page creation (owner, 6 November): a land on the map, its card, then one question at a time.
-      await tapSel(pg, ".cr-map .m-home"); await sleep(700); await tapSel(pg, "#land-ok"); await sleep(800);
+      await tapSel(pg, ".cr-map .m-home .hit"); await sleep(700); await tapSel(pg, "#land-ok"); await sleep(800);
       await pg.fill("#pname", "Ira"); await tapSel(pg, "#cr-next"); await sleep(500);
       for (const sel of ["#pron .opt", "#temps .pick", "#heirs .pick"]) { await tapSel(pg, sel); await sleep(650); }
       if (await pg.evaluate(() => document.querySelector(".cr") && document.querySelector(".cr").scrollHeight > innerHeight + 1)) bad.push("the creation page scrolls");

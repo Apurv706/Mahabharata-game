@@ -2246,7 +2246,7 @@ html[lang="hi"] .ord h3, html[lang="hi"] .ord-who small { letter-spacing: 0; tex
 .cr-map .m-home.on text { font-weight: 700; }
 .cr-map .m-home:focus-visible { outline: none; }
 .cr-map .m-home:focus-visible text { text-decoration: underline; }
-.cr-art { position: absolute; inset: 0; background: var(--img, none) center 40% / cover no-repeat, var(--surface); opacity: 0; transform: scale(1.04); transition: opacity .7s ease, transform 1.4s cubic-bezier(.2, .8, .2, 1); }
+.cr-art { position: absolute; inset: 0; pointer-events: none; background: var(--img, none) center 40% / cover no-repeat, var(--surface); opacity: 0; transform: scale(1.04); transition: opacity .7s ease, transform 1.4s cubic-bezier(.2, .8, .2, 1); }
 .cr-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(var(--ground-rgb), .82), rgba(var(--ground-rgb), .15) 46%, rgba(var(--ground-rgb), 0) 70%); } /* taste-skill-ignore: scrim under the answers on a picture */
 .cr.asking .cr-art { opacity: 1; transform: none; }
 .cr.asking .cr-map { opacity: 0; pointer-events: none; }
@@ -2337,7 +2337,4 @@ html[lang="hi"] .ord h3, html[lang="hi"] .ord-who small { letter-spacing: 0; tex
   .cr-picks .pick i { width: 44px; height: 44px; }
   .cr-picks .pick.round i { width: 44px; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .cr-card, .cr-art, .cr-map, .cr-map .bmap, .cr-dots li { transition: none; }
-  .cr-panel, .cr-row { animation: none; }
-}
+/* (Calm motion, html.calm in base.css, stills the card, the map and the steps like everything else) */

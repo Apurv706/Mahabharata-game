@@ -142,7 +142,7 @@ async function playLife(pg, cdp, L, R, o) {
   const keys = await pg.evaluate(() => [...document.querySelectorAll(".cr-map .m-home")].map((g) => g.dataset.home));
   const land = LAND ? keys.indexOf(LAND) : Math.floor(R() * lands.length);
   if (LAND && land < 0) { L.bad.push("no homeland " + LAND); return; }
-  for (let i = 0; i < 4 && !(await pg.$("#land-ok:visible")); i++) { await tap('.cr-map .m-home[data-home="' + keys[land] + '"]'); await sleep(1200); }
+  for (let i = 0; i < 4 && !(await pg.$("#land-ok:visible")); i++) { await tap('.cr-map .m-home[data-home="' + keys[land] + '"] .hit'); await sleep(1200); }
   for (let i = 0; i < 4 && !(await pg.$("#pname:visible")); i++) { await tap("#land-ok"); await sleep(1200); }
   if (!(await pg.$("#pname:visible"))) { L.bad.push("the homeland card did not lead to the name"); await shot(pg, L, "create"); return; }
   await pg.fill("#pname", ["Ira", "Vasav", "Tara", "Kirit"][Math.floor(R() * 4)]); await tap("#cr-next"); await sleep(700);
