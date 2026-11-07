@@ -1009,10 +1009,10 @@
       case "kneel": pose(me, "kneel", 600, 0.6); home(me, 1100); break;
       // Build D (row 49): a shield cracked at half its points, split at none; yours comes back after RT.P.shieldBack seconds.
       case "shieldcrack": { const a = A(f.uid); shieldCrack(a); if (a) pop(a, K.tr("Cracked"), f.mine ? "me" : ""); if (K.Sound) K.Sound.play("clang");
-        if (f.mine) tipOnce("tipShieldCrack", "Your shield is cracking: heavy blows and maces wear it down. Roll clear of the strongest."); break; }
+        if (f.mine) tipOnce("tipShieldCrack", "Your shield is cracking: every blow from a mace wears it down. Step back from the strongest."); break; }
       case "shieldbreak": { const a = A(f.uid); shieldGone(a, true); if (a) { pop(a, K.tr("Shield broken!"), f.mine ? "me" : "crit"); shake(false); } if (K.Sound) { K.Sound.play("clang"); K.Sound.play("hit"); }
         if (f.mine) { if (a && a.shieldUp) { a.shieldUp = false; a.el.classList.remove("shield-up"); home(a, 0); } tipOnce("tipShieldBroken", "Your shield is broken. Roll until a fresh one comes up (the ring on the button)."); }
-        else tipOnce("tipFoeShieldBroken", "His shield is broken: he fights on without it, and nothing turns your blows."); break; }
+        else tipOnce("tipFoeShieldBroken", "His shield is broken: he fights on without it, and it will not turn your blows again."); break; }
       case "shieldback": { const a = A(f.uid); shieldGone(a, false); if (a) pop(a, K.tr("A fresh shield"), "me"); break; }
       case "strikeback": { if (K.Sound) K.Sound.play("bell"); const sb = $(".acts .strike"); if (sb) { sb.classList.add("back"); setTimeout(() => sb.classList.remove("back"), 700); } break; }
       case "toast": toast(K.tr(f.s)); break;
