@@ -1,4 +1,4 @@
-# Change list (29 Oct – 6 Nov 2026)
+# Change list (29 Oct – 7 Nov 2026)
 
 Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct); see PRD §18.11 for the full description of each. **Items 22–25 are built** (30 Oct); see PRD §18.12. **Items 26–31 are built** (31 Oct); see PRD §18.1–18.9. **Item 32** (1 Nov) fixes the 18 critical issues from the code review (`Code_Review_2026-10-31.md`). Item 5 (art) is done.
 
@@ -277,8 +277,8 @@ Following `Quality_Review_2026-11-02.md` and its "Decided 2 November" section. T
 90. **Checks (6 Nov):** a new review of Build B's battles in the full tier (`tests/review_battle.js`): a war day and the night raid played like a person on a phone and a laptop, the commander's orders on three screens in English and Hindi, the low-life warning, foes' shields. The war-day checks follow the clash after each move. The life test's player no longer leaves a clash with no one at the controls (a tap that waited 30 s for the hidden war day).
 91. **Next build (not today):** the mid-fight announcements (the horse wedge, Bhishma's arrows, the elephant's charge) drawn as animations on the field; an Angry Birds-like throwing test (the target shown, then the camera on you); the opening page redesigned (the map first, a place's painting and words as you choose it, then name, gender and heirloom one question at a time, never a scroll).
 
-## In progress 6–7 Nov: Build C (on the `next-build` branch; not on the public site)
-92. **The opening page on one screen (feedback 43; owner's answers, 6 Nov).** Character creation is one page that never scrolls, on a phone or a laptop; the title screen is unchanged.
+## Built 6–7 Nov: Build C (on GitHub main 7 Nov after the full test pass; the play pages not yet updated)
+92. **The opening page on one screen (feedback 43; owner's answers, 6 Nov).** Character creation is one page that never scrolls, on a phone or a laptop (the title followed, below).
     - **The map first:** the homeland map fills the screen ("where were you born?"). Tap a land: a card rises over the map with its painting, name, region, a short description and what you begin with, and "be born here". The map slides so the land stays in view above the card.
     - **Then one question at a time**, on the same page over the land's painting: your name, how the bards speak of you (she or he), your temperament, your heirloom, and a last step with story mode and a past life (when the Book of Lives has one) before "begin this life". Each choice moves on by itself.
     - **What is answered stays on screen** as label and value ("the land — panchala", "the name — ira"); tapping one goes back to that question.
@@ -289,6 +289,7 @@ Following `Quality_Review_2026-11-02.md` and its "Decided 2 November" section. T
     - **The painted map (7 Nov):** the homeland map is now a hand-painted old map of Bharatavarsha (gouache on aged paper: the Himalaya with snow, the Thar's dunes, forests, the rivers in blue ink), from the art brief in `docs/art_brief_map/` (the artistic version of the two delivered). The game's names, pins, boats, birds, river light, cartouche and compass sit on it, the small names with a light halo. The drawn map stands in until the painting has loaded; the title loads it ahead. Only Part One carries it (about 0.9 MB).
     - **Fixed on the way:** under Calm motion every picture drawn in an `<i>` lost its width and size (the steady test's meter shared the class "calm" with the page itself; the meter is "calmbar" now).
 93. **The dream is 10 seconds (feedback 46).** In real time the dream is one clash of 10 seconds against the warrior in the dented helmet and his two soldiers, all three on the field at once, with no orders before it and no help; when it ends, however it ends, the field goes white and you wake. (The Menu's turn-based fights keep its three rounds.)
+94. **The nightly checks finish (7 Nov).** The full tier ran past GitHub's two-hour limit every night; it now runs as two jobs side by side (the battle checks, and the rest), and can be run for chosen checks by hand. The screenshot check now draws in the game's own fonts (the fixture fonts had never loaded) with the same text rendering on every machine, and allows text a fraction of a pixel aside, so it passes on GitHub's runners.
 
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**
