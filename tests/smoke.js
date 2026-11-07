@@ -161,9 +161,11 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       const { ctx, pg, bad } = await session(1);
       if (!(await pg.evaluate(() => /Part One/.test((document.querySelector(".part-note") || {}).textContent || "")))) bad.push("the title does not say Part One");
       await tapSel(pg, "#btn-new"); await sleep(800);
-      await tapSel(pg, "#origins .origin"); await sleep(600); await tapSel(pg, "#land-ok"); await sleep(800);
-      await pg.fill("#pname", "Ira");
-      for (const sel of ["#pron .opt", "#temps .pick", "#heirs .pick"]) { await tapSel(pg, sel); await sleep(150); }
+      // The one-page creation (owner, 6 November): a land on the map, its card, then one question at a time.
+      await tapSel(pg, ".cr-map .m-home"); await sleep(700); await tapSel(pg, "#land-ok"); await sleep(800);
+      await pg.fill("#pname", "Ira"); await tapSel(pg, "#cr-next"); await sleep(500);
+      for (const sel of ["#pron .opt", "#temps .pick", "#heirs .pick"]) { await tapSel(pg, sel); await sleep(650); }
+      if (await pg.evaluate(() => document.querySelector(".cr") && document.querySelector(".cr").scrollHeight > innerHeight + 1)) bad.push("the creation page scrolls");
       await tapSel(pg, "#begin"); await sleep(1500);
       if (!(await pg.evaluate(() => K.S && K.S.scene === K.FIRST_SCENE || (K.S && K.S.seen.includes(K.FIRST_SCENE))))) bad.push("the new life did not begin at the first scene");
       const d = await walk(pg, bad, 80, { until: async (p) => (await p.evaluate(() => K.S.seen.length)) >= 12 });

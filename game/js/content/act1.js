@@ -372,11 +372,13 @@
     }
   ]);
 
-  // The prologue's fight: you as the warrior you will be, three rounds, then the dream breaks.
+  // The prologue's fight: you as the warrior you will be. In real time (owner, 6 November) one clash of clashSecs
+  // against the warrior and both soldiers at once, no orders and no help; on the turns (the Menu's choice), three
+  // rounds. Then the dream breaks.
   K.encounter({
     id: "e_dream", title: "The thirteenth day", art: "war_day14", stage: "fight_war_field", caption: "Kurukshetra, the thirteenth day", lethal: false, callHelp: null,
     dream: { hp: 95, atk: 9, def: 3, abilities: ["strike", "guard", "crush", "quake", "feint"] },
-    rounds: 3, roundsText: "Your blades meet, and the whole field goes white.", winLine: "The dream breaks.", loseLine: "The dream breaks.",
+    rounds: 3, clashSecs: 10, atOnce: 3, roundsText: "Your blades meet, and the whole field goes white.", winLine: "The dream breaks.", loseLine: "The dream breaks.",
     intro: "Two foot soldiers come in at your sides. The warrior in the dented helmet waits behind them, watching how you move.",
     enemies: [K.foe("The warrior in the dented helmet", 4, { hp: 150, person: null }), K.foe("The soldier on your left", 1), K.foe("The soldier on your right", 1)],
     win: { fx: { flag: "dreamt_the_field" }, text: "The field goes white. Far away, someone is calling your name." },

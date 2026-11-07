@@ -76,135 +76,201 @@
     U.stage([q(".title"), q(".tagline"), q(".hero .btnrow"), q(".slide-cap"), q(".life-head h2"), q(".life-head p"), ...leaf.querySelectorAll(".acts li"), q(".life .note")], null, again);
   };
 
-  // ---------- Character creation ----------
-  // Step one is the homeland: a picture of each land, then a page about the chosen region written
-  // out by the quill. Step two is the rest of the character.
+  // ---------- Character creation (owner, 6 November: one page, never a scroll) ----------
+  // The map fills the screen. Tap a land and its painting and words come up in a card over the map, with "Be born
+  // here". Then, on the same page and over the land's painting, one question at a time: your name, how the bards
+  // speak of you (she or he), your temperament, your heirloom, and a last step (story mode, a past life, Begin).
+  // What is answered stays above the card as label and value ("the land — Panchala") and takes you back to its
+  // question. The look borrows from the owner's reference (a big picture, quiet lowercase heads, em-dash labels).
+  // Every step's controls are in the page at once (only the current one shows), so a test can answer in any order.
   let draft = null;
+  const STEPS = ["land", "name", "pronoun", "temperament", "heirloom", "last"];
   const newDraft = () => ({ step: "land", look: null, name: "", pronoun: null, origin: null, temperament: null, heirloom: null, storyMode: false, past: null });
-  const writeAll = (els) => els.forEach((el) => el && el.classList.add("write"));
+  const STEP_NO = { en: ["i", "ii", "iii", "iv", "v", "vi"], hi: ["१", "२", "३", "४", "५", "६"] };
+  const SUM = { land: "The land", name: "The name", pronoun: "The bards say", temperament: "The child", heirloom: "The heirloom" };
+  let crResize = null;
 
   U.renderCreate = function () {
     draft = draft || newDraft();
+    if (draft.pronoun && draft.pronoun !== "she" && draft.pronoun !== "he") draft.pronoun = null; // (she or he, owner 6 November)
     U.redraw = U.renderCreate;
     U.setNav(false);
     U.where("<b>" + U.tr("A new life") + "</b><span>" + U.tr("Age {n}", { n: 6 }) + "</span>");
-    if (draft.step === "land") return draft.look ? landPage(draft.look) : landList();
-    return selfPage();
-  };
+    const leaf = U.$("leaf"), T = U.tr, num = (i) => (STEP_NO[K.lang] || STEP_NO.en)[i];
+    const q = (i, text) => '<p class="cr-n">' + num(i) + '</p><h2 class="cr-q" tabindex="-1">' + T(text) + "</h2>";
+    leaf.innerHTML = '<div class="cr" id="create">' +
+      '<header class="cr-top"><button type="button" class="cr-home" id="cr-home" aria-label="' + T("Back to the title") + '">‹</button>' +
+        '<div class="cr-head"><p class="cr-kick">' + T("A life the epic never wrote down") + '</p><h1 class="cr-title" id="cr-title"></h1></div>' +
+        '<ol class="cr-dots" aria-hidden="true">' + STEPS.map((s) => '<li data-s="' + s + '"></li>').join("") + "</ol></header>" +
+      '<div class="cr-mid"><div class="cr-map" id="cr-map"></div><div class="cr-art" id="cr-art"></div><div class="cr-sum" id="cr-sum"></div>' +
+        '<p class="cr-hint" id="cr-hint">' + T("Tap a land on the map.") + "</p>" +
+        '<div class="sr-only" id="origins"></div></div>' +
+      '<section class="cr-card" id="cr-card" aria-live="polite">' +
+        '<div class="cr-panel" data-for="land" id="cr-land"></div>' +
+        '<div class="cr-panel" data-for="name">' + q(1, "What will they call you?") +
+          '<div class="cr-namerow"><input id="pname" type="text" maxlength="24" autocomplete="off" spellcheck="false" aria-label="' + T("Your name") + '" placeholder="' + U.esc(K.tr(K.ORIGINS[draft.origin || draft.look || "hastinapura"].defaultName || "Ira")) + '" value="' + U.esc(draft.name) + '">' +
+          '<button type="button" class="cta cr-go" id="cr-next">' + T("Next") + "</button></div></div>" +
+        '<div class="cr-panel" data-for="pronoun">' + q(2, "How should the bards speak of you?") + '<div class="opts cr-two" id="pron"></div></div>' +
+        '<div class="cr-panel" data-for="temperament">' + q(3, "What kind of child were you?") + '<div class="picks cr-picks" id="temps"></div></div>' +
+        '<div class="cr-panel" data-for="heirloom">' + q(4, "What was handed down to you?") + '<div class="picks cr-picks" id="heirs"></div></div>' +
+        '<div class="cr-panel" data-for="last">' + q(5, "Before you are born") +
+          '<label class="toggle"><input type="checkbox" id="story"' + (draft.storyMode ? " checked" : "") + "><span>" + T("Story mode") + "<small>" +
+            T("You cannot die in battle, so you can see every chapter. Death stays a choice the story can still offer.") + "</small></span></label>" +
+          (K.lives().length ? '<div class="cr-past"><span class="cr-lbl">' + T("Remember a past life?") + '</span><div class="picks pasts" id="pasts"></div></div>' : "") +
+          '<button type="button" class="cta cr-go" id="begin">' + T("Begin this life") + "</button></div>" +
+        '<p class="err" id="need"></p>' +
+        '<button type="button" class="cr-back" id="back">' + T("Back") + "</button>" +
+      "</section></div>";
+    const cr = U.$("create");
 
-  function landList() {
-    const leaf = U.$("leaf");
-    // On wider screens the map comes first and the pictures wait behind a button; phones get the list.
-    leaf.innerHTML = '<div class="text"><h1>' + U.tr("Where were you born?") + "</h1>" +
-      "<p>" + U.tr("Your homeland shapes how the world treats you. It never limits what you can become. Choose a land to read about it.") + "</p>" +
-      (U.homeMap ? '<div class="homes-wrap">' + U.homeMap(draft.origin, window.matchMedia && matchMedia("(max-width: 720px)").matches ? 1.55 : 1) + '<button type="button" class="ghost" id="as-list">' + U.tr("See the lands as pictures") + "</button></div>" : "") +
-      '<div class="lands under-map' + (draft.asList ? " shown" : "") + '" id="origins"></div><p class="err" id="need"></p></div>';
-    if (U.fitEmblems) U.fitEmblems(leaf);
-    const pickHome = (id) => { draft.look = id; U.renderCreate(); };
-    leaf.querySelectorAll(".m-home").forEach((g) => {
-      g.addEventListener("click", () => pickHome(g.dataset.home));
-      g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pickHome(g.dataset.home); } });
-    });
-    const asList = U.$("as-list");
-    if (asList) asList.addEventListener("click", () => { draft.asList = true; U.$("origins").classList.add("shown"); asList.hidden = true; U.$("origins").scrollIntoView({ behavior: "smooth", block: "start" }); });
-    if (asList && draft.asList) asList.hidden = true;
-    const box = U.$("origins");
+    // The lands: pins on the map (drawn once the box is measured, below), and the same as plain buttons for
+    // screen readers and the keyboard.
     for (const [id, v] of Object.entries(K.ORIGINS)) {
-      const b = U.button("origin land", '<i style="--img:url(\'' + U.artUrl("home_" + id) + '\')" aria-hidden="true"></i><div><b>' + U.tr(v.name) + "</b><span>" + U.tr(v.region) + "</span><small>" + U.tr(v.blurb) + "</small></div>",
-        () => { draft.look = id; U.renderCreate(); });
-      b.setAttribute("aria-pressed", String(draft.origin === id));
-      box.appendChild(b);
+      const b = U.button("origin", U.tr(v.name), () => look(id));
+      b.dataset.home = id; U.$("origins").appendChild(b);
     }
-    U.keys([]);
-    const t = leaf.querySelector(".text");
-    writeAll([t.children[1]]);
-    [...box.children].forEach((c) => { c.dataset.hold = 140; });
-    U.stage([t.children[0], t.children[1], leaf.querySelector(".homes-wrap"), ...box.children].filter(Boolean));
-  }
-
-  function landPage(id) {
-    const v = K.ORIGINS[id];
-    const gives = K.preview({ fx: v.fx }).map(([cls, txt]) => '<span class="chip ' + (cls === "down" ? "bad" : "good") + '">' + U.esc(txt) + "</span>").join("");
-    const leaf = U.$("leaf");
-    leaf.innerHTML = '<div class="land-hero" style="--img:url(\'' + U.artUrl("home_" + id) + '\')"><span class="cap"><span class="kind">' + U.tr("Your homeland") + "</span><b>" + U.tr(v.name) + "</b><small>" + U.tr(v.region) + "</small></span></div>" +
-      '<div class="text">' + (v.context || [v.detail]).map((pp) => "<p>" + U.t(pp) + "</p>").join("") +
-      '<div class="field"><span class="lbl">' + U.tr("You begin with") + '</span><div class="chips">' + gives + "</div></div>" +
-      '<div class="btnrow"><button class="cta" id="land-ok" type="button">' + U.tr("Be born here") + '</button><button class="ghost" id="land-back" type="button">' + U.tr("See the other lands") + "</button></div></div>";
-    const ok = () => { draft.origin = id; draft.look = null; draft.step = "self"; U.renderCreate(); };
-    const back = () => { draft.look = null; U.renderCreate(); };
-    U.$("land-ok").addEventListener("click", ok);
-    U.$("land-back").addEventListener("click", back);
-    U.keys([]);
-    U.scrollTop();
-    const hero = leaf.querySelector(".land-hero"); hero.dataset.hold = 900;
-    const t = leaf.querySelector(".text");
-    const paras = [...t.querySelectorAll(":scope > p")];
-    writeAll(paras);
-    U.stage([hero, ...paras, t.querySelector(".field"), t.querySelector(".btnrow")], () => U.keys([ok, back]));
-  }
-
-  function selfPage() {
-    const o = K.ORIGINS[draft.origin];
-    const leaf = U.$("leaf");
-    leaf.innerHTML = U.plate({ art: "home_" + draft.origin, title: o.name, small: o.region, tag: "yours", tagText: K.tr("Your homeland") }) +
-      '<div class="text"><h1>' + U.tr("Who were you?") + "</h1>" +
-      "<p>" + U.tr("Now give the child a name, a nature and something handed down.") + "</p>" +
-      '<div class="field"><label class="lbl" for="pname">' + U.tr("Your name") + '</label><input id="pname" type="text" maxlength="24" autocomplete="off" placeholder="' + U.tr("Name your character") + '" value="' + U.esc(draft.name) + '"></div>' +
-      '<div class="field"><span class="lbl">' + U.tr("How should the bards speak of you?") + '</span><div class="opts" id="pron"></div></div>' +
-      '<div class="field"><span class="lbl">' + U.tr("Childhood temperament") + '</span><div class="picks" id="temps"></div></div>' +
-      '<div class="field"><span class="lbl">' + U.tr("Family heirloom") + '</span><div class="picks" id="heirs"></div></div>' +
-      (K.lives().length ? '<div class="field"><span class="lbl">' + U.tr("Remember a past life?") + '</span><p class="note">' + U.tr("A life from your Book of Lives can be born again in this one, and bring its karma with it.") + '</p><div class="picks pasts" id="pasts"></div></div>' : "") +
-      '<label class="toggle"><input type="checkbox" id="story"' + (draft.storyMode ? " checked" : "") + "><span>" + U.tr("Story mode") + "<small>" +
-        U.tr("You cannot die in battle, so you can see every chapter. Death stays a choice the story can still offer.") + "</small></span></label>" +
-      '<div class="btnrow"><button class="cta" id="begin" type="button">' + U.tr("Begin this life") + '</button><button class="ghost" id="back" type="button">' + U.tr("Choose another homeland") + '</button></div><p class="err" id="need"></p></div>';
-
-    const opts = (elId, list, key) => list.forEach(([id, label]) => {
-      const b = U.button("opt", U.tr(label), () => { draft[key] = id; refresh(); });
-      b.dataset.id = id;
-      b.setAttribute("aria-pressed", String(draft[key] === id));
-      U.$(elId).appendChild(b);
+    // she or he; the temperaments; the heirlooms; a past life.
+    const pick = (key, id) => {
+      draft[key] = id; refresh();
+      if (draft.step === key) setTimeout(() => { if (U.$("create") === cr) go(next(key)); }, U.calm() ? 60 : 260);
+    };
+    [["she", "She"], ["he", "He"]].forEach(([id, label]) => {
+      const b = U.button("opt", U.tr(label), () => pick("pronoun", id));
+      b.dataset.key = "pronoun"; b.dataset.id = id; U.$("pron").appendChild(b);
     });
-    // Picking updates the buttons in place, so the page does not re-stage on every click.
-    const refresh = () => leaf.querySelectorAll("[data-key]").forEach((b) => b.setAttribute("aria-pressed", String(String(draft[b.dataset.key]) === b.dataset.id)));
-    opts("pron", [["she", "She"], ["he", "He"], ["they", "They"]], "pronoun");
-    U.$("pron").querySelectorAll(".opt").forEach((b) => { b.dataset.key = "pronoun"; });
     const cards = (elId, map, key, prefix, round) => Object.entries(map).forEach(([id, v]) => {
       const name = K.tr(v.name);
       const b = U.button("pick" + (round ? " round" : ""), '<i role="img" aria-label="' + U.esc(name) + '" style="background-image:url(\'' + U.artUrl(prefix + id) + '\')"></i><b>' + U.esc(name) + "</b><small>" + U.tr(v.short) + "</small>",
-        () => { draft[key] = id; refresh(); });
+        () => pick(key, id));
       b.dataset.key = key; b.dataset.id = id;
-      b.setAttribute("aria-pressed", String(draft[key] === id));
       U.$(elId).appendChild(b);
     });
     cards("temps", K.TEMPERAMENTS, "temperament", "temper_", true);
     cards("heirs", K.HEIRLOOMS, "heirloom", "heir_", false);
     if (U.$("pasts")) {
-      const lives = K.lives().slice(0, 4);
       const past = (idx, html) => {
         const b = U.button("pick past", html, () => { draft.past = idx; refresh(); });
         b.dataset.key = "past"; b.dataset.id = String(idx);
-        b.setAttribute("aria-pressed", String(String(draft.past) === String(idx)));
         U.$("pasts").appendChild(b);
       };
       past(null, '<i class="none" aria-hidden="true"></i><b>' + U.tr("No") + "</b><small>" + U.tr("Begin with nothing remembered") + "</small>");
-      lives.forEach((r, i) => past(i, '<i style="background-image:url(\'' + U.artUrl(r.art) + '\')" aria-hidden="true"></i><b>' + U.esc(r.me.name) + "</b><small>" +
-        U.tr(r.title) + "</small><small class=\"karma\">" + K.karmaOf(r).map(([label]) => U.tr(label)).join(" · ") + "</small>"));
+      K.lives().slice(0, 3).forEach((r, i) => past(i, '<i style="background-image:url(\'' + U.artUrl(r.art) + '\')" aria-hidden="true"></i><b>' + U.esc(r.me.name) + "</b><small>" + U.tr(r.title) + "</small>"));
     }
+    function refresh() { cr.querySelectorAll("[data-key]").forEach((b) => b.setAttribute("aria-pressed", String(String(draft[b.dataset.key]) === b.dataset.id))); }
+    refresh();
+
+    // ---- Moving between the steps ----
+    const answered = (s) => (s === "land" ? !!draft.origin : s === "name" ? !!draft.named || !!draft.name.trim() : s === "last" ? false : !!draft[s]);
+    function next(s) { const i = STEPS.indexOf(s); return STEPS.slice(i + 1).find((x) => !answered(x)) || "last"; }
+    function go(s) {
+      if (s !== "land" && !draft.origin) s = "land";
+      if (STEPS.indexOf(s) > 1) draft.named = true;
+      draft.step = s; if (s !== "land") draft.look = null;
+      paint();
+      const h = cr.querySelector('.cr-panel[data-for="' + s + '"] .cr-q');
+      if (s === "name") { const inp = U.$("pname"); if (inp && !(window.matchMedia && matchMedia("(hover: none)").matches)) inp.focus({ preventScroll: true }); } // (not on a phone: its keyboard would cover the card)
+      else if (h) h.focus({ preventScroll: true });
+    }
+    function paint() {
+      const s = draft.step, land = draft.origin && K.ORIGINS[draft.origin];
+      cr.dataset.step = s;
+      cr.classList.toggle("looking", s === "land" && !!draft.look);
+      cr.classList.toggle("asking", s !== "land");
+      U.$("cr-title").textContent = s === "land" ? K.tr("Where were you born?") : land ? K.tr(land.name) : "";
+      cr.querySelectorAll(".cr-dots li").forEach((li) => { li.className = li.dataset.s === s ? "on" : answered(li.dataset.s) ? "done" : ""; });
+      cr.querySelectorAll(".cr-panel").forEach((p) => { p.hidden = p.dataset.for !== s || (s === "land" && !draft.look); });
+      U.$("back").hidden = s === "land";
+      U.$("need").textContent = "";
+      if (land) U.$("cr-art").style.setProperty("--img", "url('" + U.artUrl("home_" + draft.origin + (innerWidth > innerHeight ? "_wide" : "")) + "')");
+      // What is answered, label and value; each takes you back to its question.
+      const val = { land: land && K.tr(land.name), name: draft.name.trim() || (draft.named && land ? K.tr(land.defaultName || "Ira") : ""), pronoun: draft.pronoun && K.tr(draft.pronoun === "she" ? "She" : "He"),
+        temperament: draft.temperament && K.tr(K.TEMPERAMENTS[draft.temperament].name), heirloom: draft.heirloom && K.tr(K.HEIRLOOMS[draft.heirloom].name) };
+      const sum = U.$("cr-sum"); sum.innerHTML = "";
+      if (s !== "land") Object.keys(SUM).forEach((k) => {
+        if (!val[k] || k === s) return;
+        const b = U.button("cr-row", '<span class="k">' + U.tr(SUM[k]) + '</span><b>' + U.esc(val[k]) + "</b>", () => go(k));
+        sum.appendChild(b);
+      });
+      keysFor(s);
+      if (s === "land") pan(); else if (U.$("cr-map").firstChild) U.$("cr-map").firstChild.style.transform = "";
+    }
+    function keysFor(s) {
+      const btns = (sel) => [...cr.querySelectorAll(sel)].map((b) => () => b.click());
+      U.keys(s === "land" ? (draft.look ? [() => U.$("land-ok").click()] : []) : s === "pronoun" ? btns("#pron .opt") : s === "temperament" ? btns("#temps .pick") :
+        s === "heirloom" ? btns("#heirs .pick") : s === "last" ? [() => U.$("begin").click()] : []);
+    }
+
+    // ---- The map, and a land looked at ----
+    function drawMap() {
+      const box = U.$("cr-map"), w = box.clientWidth || innerWidth, h = box.clientHeight || innerHeight * 0.7;
+      const phone = Math.min(innerWidth, innerHeight) < 600;
+      // (drawn 1.7 times the box's height, the rest below it, so sliding the map up shows more map, never an edge)
+      box.innerHTML = U.homeMap ? U.homeMap(draft.look || draft.origin, phone ? 2.05 : 1.15, Math.max(0.55, Math.min(2.4, w / h)), 1.7) : "";
+      const svg = box.firstChild; if (svg && svg.style) svg.style.height = "170%";
+      if (U.fitEmblems) U.fitEmblems(box);
+      box.querySelectorAll(".m-home").forEach((g) => {
+        g.addEventListener("click", () => look(g.dataset.home));
+        g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); look(g.dataset.home); } });
+      });
+    }
+    // With the card up, the map slides so the land looked at sits in the strip above it.
+    function pan() {
+      const svg = U.$("cr-map").firstChild; if (!svg || !svg.style || typeof DOMMatrix === "undefined") return;
+      const pin = draft.look && svg.querySelector('.m-home[data-home="' + draft.look + '"] circle:not(.hit)');
+      if (!pin) { svg.style.transform = ""; return; }
+      requestAnimationFrame(() => {
+        const box = U.$("cr-map"); if (!box) return;
+        const br = box.getBoundingClientRect(), crb = cr.getBoundingClientRect(), cardH = U.$("cr-card").offsetHeight, cur = new DOMMatrix(getComputedStyle(svg).transform).m42 || 0;
+        // (only as far as it must: a pin already clear of the card stays where it is)
+        const py = pin.getBoundingClientRect().top + 6 - br.top - cur, room = Math.max(60, crb.bottom - cardH - br.top - 8);
+        const want = Math.min(room - 34, Math.max(room / 2, 40));
+        svg.style.transform = py <= room - 34 ? "" : "translateY(" + Math.round(Math.max(-br.height * 0.68, want - py)) + "px)";
+      });
+    }
+    function look(id) {
+      draft.look = id; draft.step = "land";
+      const v = K.ORIGINS[id];
+      const gives = K.preview({ fx: v.fx }).map(([cls, txt]) => '<span class="chip ' + (cls === "down" ? "bad" : "good") + '">' + U.esc(txt) + "</span>").join("");
+      U.$("cr-land").innerHTML = '<div class="cr-plate" style="--img:url(\'' + U.artUrl("home_" + id + "_wide") + '\')"><button type="button" class="cr-x" id="land-back" aria-label="' + U.tr("See the other lands") + '">×</button></div>' +
+        '<p class="cr-lbl">' + U.tr("Your homeland") + '</p><h2 class="cr-q cr-name" tabindex="-1">' + U.tr(v.name) + '</h2><p class="cr-region">' + U.tr(v.region) + "</p>" +
+        '<p class="cr-text">' + U.t(v.detail) + "</p>" +
+        '<div class="cr-gives"><span class="cr-lbl">' + U.tr("You begin with") + '</span><span class="chips">' + gives + "</span></div>" +
+        '<button type="button" class="cta cr-go" id="land-ok">' + U.tr("Be born here") + "</button>";
+      U.$("land-ok").addEventListener("click", () => { draft.origin = id; draft.look = null; const inp = U.$("pname"); if (inp) inp.placeholder = K.tr(v.defaultName || "Ira"); go(next("land")); });
+      U.$("land-back").addEventListener("click", () => { draft.look = null; paint(); });
+      U.$("cr-map").querySelectorAll(".m-home").forEach((g) => g.classList.toggle("on", g.dataset.home === id));
+      paint();
+    }
+
+    // ---- The rest of the controls ----
+    U.$("cr-home").addEventListener("click", () => { draft = null; leave(); U.renderTitle(); });
     U.$("pname").addEventListener("input", (e) => { draft.name = e.target.value; });
+    U.$("pname").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); U.$("cr-next").click(); } });
+    U.$("cr-next").addEventListener("click", () => { const inp = U.$("pname"); if (inp) inp.blur(); draft.named = true; go(next("name")); });
     U.$("story").addEventListener("change", (e) => { draft.storyMode = e.target.checked; });
-    U.$("back").addEventListener("click", () => { draft.step = "land"; U.renderCreate(); });
+    U.$("back").addEventListener("click", () => { const i = STEPS.indexOf(draft.step); go(STEPS[Math.max(0, i - 1)]); });
     U.$("begin").addEventListener("click", () => {
-      const missing = [!draft.pronoun && "how the bards speak of you", !draft.temperament && "a temperament", !draft.heirloom && "an heirloom"].filter(Boolean).map(K.tr);
-      if (missing.length) { U.$("need").textContent = K.tr("Choose {list} to begin.", { list: K.list(missing) }); return; }
-      U.beginLife(draft);
-      draft = null;
+      const miss = [["land", "a homeland"], ["pronoun", "how the bards speak of you"], ["temperament", "a temperament"], ["heirloom", "an heirloom"]].filter(([k]) => (k === "land" ? !draft.origin : !draft[k]));
+      if (miss.length) { const msg = K.tr("Choose {list} to begin.", { list: K.list(miss.map(([, w]) => K.tr(w))) }); go(miss[0][0]); U.$("need").textContent = msg; return; }
+      const d = draft; draft = null; leave();
+      U.beginLife(d);
     });
-    U.keys([]);
-    const plate = leaf.querySelector(".plate"); if (plate) plate.dataset.hold = 600;
-    const t = leaf.querySelector(".text");
-    writeAll([t.children[1]]);
-    U.stage([plate, ...t.children]);
-  }
+    cr.addEventListener("keydown", (e) => { if (e.key === "Escape" && draft && draft.look) { draft.look = null; paint(); } });
+
+    // A turned phone or a resized window draws the map again for its new shape.
+    const leave = () => { if (crResize) { removeEventListener("resize", crResize); crResize = null; } };
+    leave();
+    let rt = 0;
+    crResize = () => { clearTimeout(rt); rt = setTimeout(() => { if (U.$("create") !== cr) return leave(); drawMap(); paint(); }, 180); };
+    addEventListener("resize", crResize);
+
+    drawMap();
+    if (draft.look) look(draft.look); else paint();
+    // The pictures of the questions to come, fetched now so they are there when their step is.
+    [...Object.keys(K.TEMPERAMENTS).map((k) => "temper_" + k), ...Object.keys(K.HEIRLOOMS).map((k) => "heir_" + k)].forEach((k) => { const im = new Image(); im.src = U.artUrl(k); });
+    U.pageShown && U.pageShown("create");
+    requestAnimationFrame(() => cr.classList.add("in"));
+  };
 
   U.beginLife = function (d) {
     const S = (K.S = K.newLife());

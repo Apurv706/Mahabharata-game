@@ -98,11 +98,24 @@
     dom();
     if (K.Sound && K.Sound.mood) K.Sound.mood("battle");
     U.redraw = () => { if (V) { dom(); V.low = null; idle(); } }; // (a fresh screen: the low-life warning set again if it is due)
+    // The dream (owner, 6 November): one clash of 10 seconds in real time against the warrior and his two soldiers,
+    // with no orders before it and no help; when it ends, however it ends, the field goes white and you wake.
+    if (B.enc.dream && B.clashMode) return dreamClash(B);
     // Before the first blow: the card that says how this fight goes (or one line), then the tour on a life's first fight.
     if (U.fightBriefWanted && U.fightBriefWanted(B.enc.id)) brief();
     idle();
     // A champion in the first pack: his arrival is a moment.
     setTimeout(() => champion(), 350);
+  }
+  function dreamClash(B) {
+    V.clashing = true; V.el.style.visibility = "hidden"; V.el.id = "rt-war";
+    const ctl = V.el.querySelector(".wctl"), hud = V.el.querySelector(".hud"); [ctl, hud].forEach((e) => { if (e) e.style.visibility = "hidden"; }); // (the field alone shows as the white comes up)
+    setTimeout(() => { if (!V || V.B !== B) return; U.startClash(B, { secs: B.enc.clashSecs || 10, atk: 0.8, noBack: true }, () => {
+      if (!V || V.B !== B) return;
+      V.el.id = "rt"; V.el.style.visibility = ""; V.clashing = false;
+      C.settle("win"); // (the dream is not won or lost: it breaks)
+      end();
+    }); }, 120);
   }
   function dom() {
     const B = V.B, enc = B.enc;

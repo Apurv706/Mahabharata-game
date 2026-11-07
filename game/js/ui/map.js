@@ -319,9 +319,20 @@
   // charioteer family lives in Champa, beside Anga, so its pin sits just below Anga's.
   const HOMES = { hastinapura: "hastinapura", panchala: "panchala", matsya: "matsya", mathura: "mathura", anga: "anga", suta: "anga", nishada: "nishada", gandhara: "gandhara" };
   // On a phone the map is drawn small, so its names and pins are drawn bigger (big = 1.5).
-  U.homeMap = function (chosen, big = 1) {
+  // aspect: the frame's width over its height (the creation page asks for its own box's, so the map fills it).
+  // extend: the drawing runs on below the box by that much of its height (so the creation page can slide it up).
+  U.homeMap = function (chosen, big = 1, aspect = 1.55, extend = 1) {
     const keys = Object.keys(K.ORIGINS).filter((k) => HOMES[k]);
-    const vb = frame(keys.map((k) => HOMES[k]), 1.55, 360), z = vb[2] / FULL[2];
+    let vb = frame(keys.map((k) => HOMES[k]), aspect, 360);
+    // A box of its own shape (the creation page): kept on the drawn map, never past its edges into blank sea.
+    if (aspect !== 1.55) {
+      let [x, y, w, h] = vb; const cx = x + w / 2, cy = y + h / 2;
+      if (h > FULL[3]) { h = FULL[3]; w = h * aspect; }
+      if (w > FULL[2]) { w = FULL[2]; h = w / aspect; }
+      x = Math.min(Math.max(cx - w / 2, FULL[0]), FULL[0] + FULL[2] - w); y = Math.min(Math.max(cy - h / 2, FULL[1]), FULL[1] + FULL[3] - h);
+      vb = [x, y, w, h * extend].map(Math.round);
+    }
+    const z = vb[2] / FULL[2];
     // Where each label sits: [dx, dy, anchor], in map units before zoom.
     const LBL = { gandhara: [12, 6, "start"], hastinapura: [12, 6, "start"], panchala: [12, 6, "start"], matsya: [-12, 6, "end"], mathura: [10, 26, "start"], anga: [-12, 6, "end"], suta: [-12, 6, "end"], nishada: [-12, 6, "end"] };
     const pins = keys.map((k) => {

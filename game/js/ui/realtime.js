@@ -122,6 +122,7 @@
       '<button type="button" class="cl-back">' + T("Fall back") + "</button></div>");
     V.stage.appendChild(bar);
     bar.querySelector(".cl-back").addEventListener("click", () => clashEnd("fallback"));
+    if (opts && opts.noBack) bar.querySelector(".cl-back").hidden = true; // (the dream: nothing to fall back to)
     V.clash.bar = bar;
     toast(R.noStrike ? T("Nothing to strike at: block, roll and live. {n} seconds", { n: V.clash.secs }) : T("The clash: {n} seconds", { n: V.clash.secs }));
     if (R.noStrike) V.el.classList.add("nostrike");

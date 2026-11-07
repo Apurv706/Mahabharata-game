@@ -277,6 +277,15 @@ Following `Quality_Review_2026-11-02.md` and its "Decided 2 November" section. T
 90. **Checks (6 Nov):** a new review of Build B's battles in the full tier (`tests/review_battle.js`): a war day and the night raid played like a person on a phone and a laptop, the commander's orders on three screens in English and Hindi, the low-life warning, foes' shields. The war-day checks follow the clash after each move. The life test's player no longer leaves a clash with no one at the controls (a tap that waited 30 s for the hidden war day).
 91. **Next build (not today):** the mid-fight announcements (the horse wedge, Bhishma's arrows, the elephant's charge) drawn as animations on the field; an Angry Birds-like throwing test (the target shown, then the camera on you); the opening page redesigned (the map first, a place's painting and words as you choose it, then name, gender and heirloom one question at a time, never a scroll).
 
+## In progress 6–7 Nov: Build C (on the `next-build` branch; not on the public site)
+92. **The opening page on one screen (feedback 43; owner's answers, 6 Nov).** Character creation is one page that never scrolls, on a phone or a laptop; the title screen is unchanged.
+    - **The map first:** the homeland map fills the screen ("where were you born?"). Tap a land: a card rises over the map with its painting, name, region, a short description and what you begin with, and "be born here". The map slides so the land stays in view above the card.
+    - **Then one question at a time**, on the same page over the land's painting: your name, how the bards speak of you (she or he), your temperament, your heirloom, and a last step with story mode and a past life (when the Book of Lives has one) before "begin this life". Each choice moves on by itself.
+    - **What is answered stays on screen** as label and value ("the land — panchala", "the name — ira"); tapping one goes back to that question.
+    - **The look, from the owner's reference** (ihaveasecrettosharewithyou.com): a big picture, quiet lowercase heads, em-dash labels, a small "i —, ii —" count for the questions.
+    - Hindi for every new line. "They" is no longer offered (lives already begun keep it).
+93. **The dream is 10 seconds (feedback 46).** In real time the dream is one clash of 10 seconds against the warrior in the dented helmet and his two soldiers, all three on the field at once, with no orders before it and no help; when it ends, however it ends, the field goes white and you wake. (The Menu's turn-based fights keep its three rounds.)
+
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**
 - **Batches and patch:** batches 3–6f, and the 6-file patch (sun banners on the war field, sunset and camp gate).

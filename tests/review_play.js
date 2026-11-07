@@ -135,17 +135,19 @@ async function playLife(pg, cdp, L, R, o) {
     return walk(pg, cdp, L, R, o, tap);
   }
   // A new life, on the creation pages.
+  // The one-page creation (owner, 6 November): a land's pin on the map, its card, then one question at a time.
   await tap("#btn-new"); await sleep(900);
-  if (await pg.$("#as-list")) { await tap("#as-list"); await sleep(600); }
-  const lands = await pg.$$("#origins .origin");
+  const lands = await pg.$$(".cr-map .m-home");
   if (!lands.length) { L.bad.push("no homelands to choose"); return; }
-  const land = LAND ? await pg.evaluate((k) => Object.keys(K.ORIGINS).indexOf(k), LAND) : Math.floor(R() * lands.length);
+  const keys = await pg.evaluate(() => [...document.querySelectorAll(".cr-map .m-home")].map((g) => g.dataset.home));
+  const land = LAND ? keys.indexOf(LAND) : Math.floor(R() * lands.length);
   if (LAND && land < 0) { L.bad.push("no homeland " + LAND); return; }
-  for (let i = 0; i < 4 && !(await pg.$("#land-ok")); i++) { const ls = await pg.$$("#origins .origin"); if (ls[land]) await tap(ls[land]); await sleep(1200); }
-  for (let i = 0; i < 4 && !(await pg.$("#pname")); i++) { await tap("#land-ok"); await sleep(1200); }
-  if (!(await pg.$("#pname"))) { L.bad.push("the homeland page did not lead to the name page"); await shot(pg, L, "create"); return; }
-  await pg.fill("#pname", ["Ira", "Vasav", "Tara", "Kirit"][Math.floor(R() * 4)]);
-  for (const s of ["#pron .opt", "#temps .pick", "#heirs .pick"]) { const all = await pg.$$(s); await tap(all[Math.floor(R() * all.length)]); await sleep(200); }
+  for (let i = 0; i < 4 && !(await pg.$("#land-ok:visible")); i++) { await tap('.cr-map .m-home[data-home="' + keys[land] + '"]'); await sleep(1200); }
+  for (let i = 0; i < 4 && !(await pg.$("#pname:visible")); i++) { await tap("#land-ok"); await sleep(1200); }
+  if (!(await pg.$("#pname:visible"))) { L.bad.push("the homeland card did not lead to the name"); await shot(pg, L, "create"); return; }
+  await pg.fill("#pname", ["Ira", "Vasav", "Tara", "Kirit"][Math.floor(R() * 4)]); await tap("#cr-next"); await sleep(700);
+  for (const s of ["#pron .opt", "#temps .pick", "#heirs .pick"]) { const all = await pg.$$(s + ":visible"); if (!all.length) { L.bad.push("creation: nothing to choose at " + s); await shot(pg, L, "create"); return; } await tap(all[Math.floor(R() * all.length)]); await sleep(800); }
+  if (await pg.evaluate(() => document.querySelector(".cr") && document.querySelector(".cr").scrollHeight > innerHeight + 1)) L.bad.push("the creation page scrolls");
   if (o.story) await tap("#story");
   await tap("#begin"); await sleep(1500);
   const s0 = await pg.evaluate(() => K.S && { scene: K.S.scene, story: K.S.storyMode, origin: K.S.origin });

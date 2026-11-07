@@ -2218,3 +2218,126 @@ html.calm .sneakway .beam .pool2.warn, html.calm .sneakway .walllamp.warn { anim
 html[lang="hi"] .ord-who b, html[lang="hi"] .ord .ord-today p, html[lang="hi"] .ord .ord-you p { line-height: 1.5; }
 html[lang="hi"] .ord h3, html[lang="hi"] .ord-who small { letter-spacing: 0; text-transform: none; font-size: 14px; }
 @media (max-width: 420px) { .ord { padding: 18px 16px 14px; } .ord-face { width: 60px; height: 60px; } .ord li, .ord p { font-size: 15px; } .ord .ord-today p { font-size: 17px; } .ord .ord-you p { font-size: 18px; } }
+
+/* ---------- Character creation: one page, never a scroll (owner, 6 November) ----------
+   The map fills the screen; a land's card rises over it; then one question at a time over the land's painting.
+   From the owner's reference: a big picture, quiet lowercase heads, em-dash labels ("the land — Panchala"). */
+.cr { position: fixed; inset: 0; z-index: 45; display: flex; flex-direction: column; background: var(--ground); color: var(--ink); overflow: hidden; }
+.cr-top { position: relative; z-index: 3; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: "home kick dots" "home title title"; align-items: end; gap: 2px 12px;
+  padding: calc(max(10px, var(--sat, 0px)) + 4px) max(16px, var(--sar, 0px)) 12px max(10px, var(--sal, 0px)); background: var(--ground); }
+.cr-home { grid-area: home; align-self: center; width: 40px; height: 40px; border: 0; border-radius: 50%; background: transparent; color: var(--muted); font-size: 28px; line-height: 1; cursor: pointer; }
+.cr-home:hover { background: var(--raised); color: var(--ink); }
+.cr-head { display: contents; }
+.cr-kick { grid-area: kick; margin: 0; font-size: 13px; letter-spacing: .06em; color: var(--faint); text-transform: lowercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cr-kick::after { content: "\00a0\2014"; }
+.cr-title { grid-area: title; min-width: 0; margin: 2px 0 0; font-family: var(--display); font-weight: 600; font-size: clamp(30px, 7.4vw, 50px); line-height: 1.02; text-transform: lowercase; letter-spacing: -.005em; }
+.cr[data-step="land"] .cr-title::after { content: none; }
+.cr.asking .cr-title::after { content: "."; }
+:lang(hi) .cr.asking .cr-title::after, :lang(hi) .cr-name::after { content: none; }
+.cr-dots { grid-area: dots; display: flex; gap: 5px; margin: 0 0 6px; padding: 0; list-style: none; align-self: end; }
+.cr-dots li { width: 14px; height: 2px; border-radius: 1px; background: var(--track); transition: background-color .3s, width .3s; }
+.cr-dots li.done { background: var(--gold-line); }
+.cr-dots li.on { width: 22px; background: var(--data); }
+.cr-mid { position: relative; flex: 1; min-height: 0; overflow: hidden; background: #a9c0bb; }
+.cr-map { position: absolute; inset: 0; transition: opacity .5s ease; }
+.cr-map .bmap { width: 100%; height: 170%; border-radius: 0; transition: transform .6s cubic-bezier(.2, .8, .2, 1); }
+.cr-map .m-home { cursor: pointer; }
+.cr-map .m-home.on circle:not(.hit) { fill: #c8471f; }
+.cr-map .m-home.on text { font-weight: 700; }
+.cr-map .m-home:focus-visible { outline: none; }
+.cr-map .m-home:focus-visible text { text-decoration: underline; }
+.cr-art { position: absolute; inset: 0; background: var(--img, none) center 40% / cover no-repeat, var(--surface); opacity: 0; transform: scale(1.04); transition: opacity .7s ease, transform 1.4s cubic-bezier(.2, .8, .2, 1); }
+.cr-art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(var(--ground-rgb), .82), rgba(var(--ground-rgb), .15) 46%, rgba(var(--ground-rgb), 0) 70%); } /* taste-skill-ignore: scrim under the answers on a picture */
+.cr.asking .cr-art { opacity: 1; transform: none; }
+.cr.asking .cr-map { opacity: 0; pointer-events: none; }
+.cr-sum { position: absolute; z-index: 2; top: 6px; left: max(10px, var(--sal, 0px)); right: 12px; display: grid; justify-items: start; gap: 0; }
+.cr-row { display: inline-flex; align-items: baseline; gap: 8px; border: 0; background: transparent; color: var(--ink); padding: 3px 6px; border-radius: var(--r-control); cursor: pointer; text-align: left; animation: cr-in .4s ease both; }
+.cr-row:hover { background: rgba(var(--ground-rgb), .55); }
+.cr-row .k { font-size: clamp(12.5px, 1.3vw, 15px); letter-spacing: .05em; color: var(--muted); text-transform: lowercase; white-space: nowrap; }
+.cr-row .k::after { content: "\00a0\2014"; }
+.cr-row b { font-family: var(--display); font-size: clamp(17px, 2.2vw, 24px); font-weight: 600; text-transform: lowercase; text-shadow: 0 1px 8px rgba(0, 0, 0, .7); }
+.cr-hint { position: absolute; z-index: 2; left: 50%; bottom: max(16px, var(--sab, 0px)); transform: translateX(-50%); margin: 0; padding: 7px 14px; border-radius: 999px; background: rgba(var(--ground-rgb), .86); color: var(--ink);
+  font-size: 14px; letter-spacing: .04em; text-transform: lowercase; white-space: nowrap; transition: opacity .3s; pointer-events: none; }
+.cr-hint::after { content: "\00a0\2014"; }
+.cr.looking .cr-hint, .cr.asking .cr-hint { opacity: 0; }
+.cr .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* The card: over the map when a land is looked at, and under each question after. */
+.cr-card { position: absolute; z-index: 4; left: 0; right: 0; bottom: 0; margin: 0 auto; width: 100%; max-width: 560px; max-height: calc(100% - 64px); overflow: auto; overscroll-behavior: contain;
+  display: grid; gap: 10px; padding: 16px max(18px, var(--sar, 0px)) calc(max(14px, var(--sab, 0px)) + 4px) max(18px, var(--sal, 0px));
+  background: var(--surface); border-top: 1px solid var(--gold-line); border-radius: 16px 16px 0 0; box-shadow: 0 -18px 40px rgba(0, 0, 0, .35);
+  transform: translateY(calc(100% + 40px)); visibility: hidden; transition: transform .5s cubic-bezier(.2, .8, .2, 1), visibility 0s .5s; }
+.cr.looking .cr-card, .cr.asking .cr-card { transform: none; visibility: visible; transition: transform .5s cubic-bezier(.2, .8, .2, 1), visibility 0s; }
+@media (min-width: 700px) and (min-height: 560px) { .cr-card { bottom: 22px; border-radius: 16px; border: 1px solid var(--gold-line); } }
+.cr-panel { display: grid; gap: 10px; align-content: start; animation: cr-in .45s ease both; }
+.cr-panel[hidden] { display: none; }
+@keyframes cr-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.cr-n { margin: 0; font-family: var(--display); font-size: 15px; color: var(--data); letter-spacing: .08em; }
+.cr-n::after { content: "\00a0\2014"; }
+.cr-q { margin: -4px 0 2px; font-family: var(--display); font-weight: 600; font-size: clamp(25px, 6.4vw, 32px); line-height: 1.08; text-transform: lowercase; }
+.cr-q:focus { outline: none; }
+.cr-lbl { font-size: 13px; letter-spacing: .05em; color: var(--muted); text-transform: lowercase; }
+.cr-lbl::after { content: "\00a0\2014"; }
+.cr-go { justify-self: stretch; text-transform: lowercase; letter-spacing: .02em; }
+.cr-go::after { content: "\00a0\00a0\2192"; }
+.cr-back { position: absolute; top: 12px; right: 12px; border: 0; background: transparent; color: var(--muted); font-size: 14px; text-transform: lowercase; padding: 6px 8px; cursor: pointer; border-radius: var(--r-control); }
+.cr-back::before { content: "\2039\00a0"; }
+.cr-back:hover { color: var(--ink); background: var(--raised); }
+.cr-back[hidden] { display: none; }
+.cr .err { margin: 0; }
+.cr .err:empty { display: none; }
+
+/* A land, looked at */
+.cr-plate { position: relative; margin: -16px -18px 2px; aspect-ratio: 16 / 7; max-height: min(24vh, 210px); width: calc(100% + 36px); border-radius: 16px 16px 0 0; background: var(--img) center / cover no-repeat, var(--raised); }
+@media (min-width: 700px) and (min-height: 560px) { .cr-plate { border-radius: 15px 15px 0 0; } }
+.cr-x { position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border: 0; border-radius: 50%; background: rgba(var(--ground-rgb), .78); color: var(--ink); font-size: 22px; line-height: 1; cursor: pointer; }
+.cr-name { margin: -6px 0 0; font-size: clamp(32px, 8vw, 44px); line-height: 1; }
+.cr-name::after { content: "."; }
+.cr-region { margin: -6px 0 0; font-size: 14px; color: var(--data); }
+.cr-text { margin: 0; font-size: 15.5px; line-height: 1.45; }
+.cr-gives { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 8px; }
+.cr-gives .chip { font-size: 13px; padding: 2px 8px; }
+
+/* The questions */
+.cr-namerow { display: grid; gap: 12px; }
+.cr #pname { width: 100%; font-family: var(--display); font-size: 30px; font-weight: 600; color: var(--ink); background: transparent; border: 0; border-bottom: 1px solid var(--gold-line); border-radius: 0; padding: 4px 2px 6px; }
+.cr #pname::placeholder { color: var(--faint); opacity: .7; }
+.cr #pname:focus { outline: none; border-bottom-color: var(--accent); }
+.cr-two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cr-two .opt { min-height: 64px; font-family: var(--display); font-size: 24px; font-weight: 600; text-transform: lowercase; border-radius: var(--r-card); }
+.cr-picks { grid-template-columns: 1fr 1fr; gap: 8px; }
+.cr-picks .pick { grid-template-columns: 52px 1fr; grid-template-rows: auto auto; justify-items: start; align-items: center; text-align: left; gap: 0 10px; padding: 8px 10px; }
+.cr-picks .pick i { grid-row: span 2; width: 52px; height: 52px; border-radius: var(--r-control); }
+.cr-picks .pick.round i { width: 52px; border-radius: 50%; }
+.cr-picks .pick b { font-size: 19px; align-self: end; text-transform: lowercase; }
+.cr-picks .pick small { font-size: 13px; align-self: start; line-height: 1.25; }
+.cr-picks .pick:hover { transform: none; }
+.cr .toggle { font-size: 16px; }
+.cr-past { display: grid; gap: 6px; }
+.cr .pasts { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px; }
+.cr .pasts .pick { grid-template-columns: 34px 1fr; justify-items: start; text-align: left; gap: 0 8px; padding: 6px 8px; }
+.cr .pasts .pick i { grid-row: span 2; width: 34px; height: 34px; aspect-ratio: 1; border-radius: 50%; }
+.cr .pasts .pick b { font-size: 16px; }
+.cr .pasts .pick small { font-size: 12px; }
+@media (max-width: 400px) {
+  .cr-picks { grid-template-columns: 1fr; gap: 6px; }
+  .cr-picks .pick { grid-template-columns: 40px 1fr; grid-template-rows: auto; padding: 5px 10px; gap: 0 10px; }
+  .cr-picks .pick i, .cr-picks .pick.round i { width: 40px; height: 40px; }
+  .cr-picks .pick b { font-size: 18px; align-self: center; }
+  .cr-picks .pick small { grid-column: 2; margin-top: -2px; }
+}
+@media (max-height: 700px) { .cr-plate { max-height: 17vh; } .cr-row { padding: 1px 6px; } .cr-row b { font-size: 16.5px; } }
+@media (max-height: 640px) {
+  .cr-title { font-size: clamp(26px, 7vw, 40px); }
+  .cr-q { font-size: 24px; }
+  .cr-text { font-size: 14.5px; line-height: 1.4; }
+  .cr-plate { max-height: 15vh; }
+  .cr-card { gap: 8px; padding-top: 14px; }
+  .cr-picks .pick { padding: 6px 8px; }
+  .cr-picks .pick i { width: 44px; height: 44px; }
+  .cr-picks .pick.round i { width: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cr-card, .cr-art, .cr-map, .cr-map .bmap, .cr-dots li { transition: none; }
+  .cr-panel, .cr-row { animation: none; }
+}

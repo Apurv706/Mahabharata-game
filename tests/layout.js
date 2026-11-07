@@ -379,15 +379,32 @@ const PAGE = {
     if (!go || go.getBoundingClientRect().bottom > innerHeight + 1) out.push("Continue off screen on the journey page");
     return out;
   },
+  // The one-page creation (owner, 6 November): the map fills the screen, every pin on it.
   homeland(o) {
     const out = [];
-    const map = document.querySelector(".homes-wrap .bmap");
+    const map = document.querySelector(".cr-map .bmap");
     if (!map || !map.getBoundingClientRect().height) out.push("homeland map not shown");
-    else if (map.getBoundingClientRect().width < Math.min(innerWidth - 60, 300)) out.push("homeland map too narrow (" + Math.round(map.getBoundingClientRect().width) + "px)");
-    const pins = [...document.querySelectorAll(".bmap.homes .m-home")];
+    else if (map.getBoundingClientRect().width < innerWidth - 2) out.push("homeland map narrower than the screen (" + Math.round(map.getBoundingClientRect().width) + "px)");
+    const pins = [...document.querySelectorAll(".cr-map .m-home")];
     if (pins.length < 6) out.push("only " + pins.length + " homeland pins");
-    const list = document.querySelector(".lands.under-map");
-    if (o.kind === "phone" && o.orient === "portrait" && (!list || !list.offsetParent)) out.push("lands list missing under the map on a phone");
+    const top = document.querySelector(".cr-top").getBoundingClientRect().bottom;
+    const off = pins.filter((g) => { const r = g.getBoundingClientRect(); return r.top < top - 2 || r.bottom > innerHeight + 2 || r.left < -2 || r.right > innerWidth + 2; }).map((g) => g.dataset.home);
+    if (off.length) out.push("homeland pins off the screen: " + off.join(", "));
+    return out;
+  },
+  // Each step of the creation page on one screen: no scroll, the card whole and under the heading.
+  createfit(o) {
+    const out = [], cr = document.querySelector(".cr");
+    if (!cr) return ["no creation page"];
+    if (document.scrollingElement.scrollHeight > innerHeight + 1) out.push("the page scrolls (" + document.scrollingElement.scrollHeight + "px on " + innerHeight + ")");
+    const card = document.querySelector(".cr-card");
+    if (!card || getComputedStyle(card).visibility === "hidden") return out;
+    const r = card.getBoundingClientRect(), head = document.querySelector(".cr-top").getBoundingClientRect();
+    if (card.scrollHeight > card.clientHeight + 2) out.push("the card scrolls inside (" + card.scrollHeight + " of " + card.clientHeight + "px)");
+    if (r.top < head.bottom - 2) out.push("the card covers the heading (" + Math.round(head.bottom - r.top) + "px)");
+    if (r.bottom > innerHeight + 1) out.push("the card runs off the bottom");
+    const panel = document.querySelector(".cr-panel:not([hidden])");
+    if (panel) [...panel.querySelectorAll("button, input")].forEach((b) => { const q = b.getBoundingClientRect(); if (q.height && (q.bottom > innerHeight + 1 || q.top < 0)) out.push("off the screen: " + (b.id || b.textContent.trim().slice(0, 24))); });
     return out;
   },
 };
@@ -511,7 +528,19 @@ async function runDevice(browser, base, o, report) {
   await check("title", []);
   await page.evaluate(() => K.UI.renderCreate());
   await page.waitForTimeout(500);
-  await check("homeland map", ["homeland"]);
+  await check("homeland map", ["homeland", "createfit"]);
+  // Every land's card, then each question in turn.
+  for (const land of await page.evaluate(() => Object.keys(K.ORIGINS))) {
+    await page.evaluate((k) => document.querySelector('#origins .origin[data-home="' + k + '"]').click(), land);
+    await page.waitForTimeout(650);
+    await check("homeland card: " + land, ["createfit"]);
+  }
+  for (const [name, js] of [["creation: name", () => document.getElementById("land-ok").click()], ["creation: she or he", () => document.getElementById("cr-next").click()],
+    ["creation: temperament", () => document.querySelector("#pron .opt").click()], ["creation: heirloom", () => document.querySelector("#temps .pick").click()],
+    ["creation: last step", () => document.querySelector("#heirs .pick").click()]]) {
+    await page.evaluate(js); await page.waitForTimeout(800);
+    await check(name, ["createfit"]);
+  }
 
   // Scenes: a short one, the longest canon scene, the scene with the most choices, a war scene.
   await fresh(page, url, o);

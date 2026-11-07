@@ -283,10 +283,11 @@
     // ended at once, "the pack is broken", before they had walked on; 6 November).
     B.units.filter((u) => u.side === "enemy" && u.hp <= 0).forEach((e) => { e.rt.wave = 0; e.rt.x = 1.2; e.rt.entered = false; e.rt.lane = backRow(e); });
     const foes = B.units.filter((u) => u.side === "enemy" && u.hp > 0);
+    // More than two come in packs: two on the field, the rest waiting off it (enc.atOnce: more at once; the dream's three).
+    const atOnce = Math.max(2, B.enc.atOnce || 2), gap = atOnce > 2 ? 0.26 / (atOnce - 1) : 0.16;
     foes.forEach((e, i) => {
-      // More than two come in packs: two on the field, the rest waiting off it.
-      e.rt.wave = i < 2 ? 0 : 1;
-      e.rt.x = e.rt.wave ? 1.12 + (i - 2) * 0.05 : 0.72 + i * 0.16;
+      e.rt.wave = i < atOnce ? 0 : 1;
+      e.rt.x = e.rt.wave ? 1.12 + (i - atOnce) * 0.05 : (atOnce > 2 ? 0.62 : 0.72) + i * gap;
       e.rt.entered = !e.rt.wave && e.rt.x <= 0.97;
       e.rt.lane = backRow(e);
     });
