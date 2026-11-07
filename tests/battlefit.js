@@ -150,7 +150,7 @@ function pageHelpers() {
             if (skip && skip.includes(a.uid) && shiftOf(a.uid) > 6) continue; // coming on from the edge
             for (const [where, d] of strays(a, s)) {
               const k = a.uid + "|" + where;
-              if (!worst[k] || worst[k].d < d) worst[k] = { uid: a.uid, side: a.side, down: a.down, where, d: Math.round(d), at: Math.round(dt), box: a.box };
+              if (!worst[k] || worst[k].d < d) worst[k] = { uid: a.uid, side: a.side, down: a.down, where, d: Math.round(d), at: Math.round(dt), box: a.box, host: s.host };
             }
           }
         }
@@ -247,7 +247,10 @@ async function runFight(page, id, o, rec, shot) {
     if (!(await ev(() => !!K.Combat.state() && !document.querySelector(".dream-white")))) { moments.push({ moment: name + ": no fight on screen (over)", frames: 0, problems: [], worstPx: 0, skipped: true }); return null; }
     const r = await ev(([ms, skip]) => window.__fit.watch(ms, skip), [ms, skip || null]);
     const probs = [];
-    for (const w of r.worst) if (w.d > TOL) probs.push(w.uid + " (" + w.side + (w.down ? ", fallen" : "") + ") " + w.d + "px " + w.where + " at " + w.at + "ms");
+    // Where it was then, against the stage, and where it lay once all had come to rest (a figure the game puts back
+    // on the stage, as a fallen body is lifted onto its foot, ends inside it).
+    const xy = (b) => b ? "x " + Math.round(b.l) + "–" + Math.round(b.r) + ", y " + Math.round(b.t) + "–" + Math.round(b.b) : "none";
+    for (const w of r.worst) if (w.d > TOL) { const L = r.last && r.last.list.find((a) => a.uid === w.uid); probs.push(w.uid + " (" + w.side + (w.down ? ", fallen" : "") + ") " + w.d + "px " + w.where + " at " + w.at + "ms (figure " + xy(w.box) + "; stage " + xy(w.host) + "; at rest " + (L ? xy(L.box) : "gone") + ")"); }
     if (r.last) {
       for (const a of r.last.list) if (!a.down && a.side !== "prop" && (!a.box || a.op < 0.2)) probs.push(a.uid + " (" + a.side + ") cannot be seen" + (a.box ? " (opacity " + a.op.toFixed(2) + ")" : " (no size)"));
       const ov = await ev((s) => window.__fit.overlaps(s), r.last);

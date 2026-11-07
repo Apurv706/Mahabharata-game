@@ -154,6 +154,7 @@ async function one(c) {
         const first = c.items ? c.items(r.out) : [];
         res.status = "FLAKY"; res.note = "passed on the re-run of " + (again ? "its failing cases" : "the whole check") + (first.length ? "; first run: " + first.slice(0, 3).join("; ").slice(0, 160) : "");
         if (first.length) res.flaked = first;
+        res.tail = tail(r.out, 12); // the first run's own words, printed under the line as a failure's are
         return res;
       }
       r = r2;
@@ -187,7 +188,7 @@ async function one(c) {
         one(q.c).then((r) => {
           results[q.i] = r; q.done = true; if (q.browser) browserBusy--; if (q.c.heavy) heavyBusy--; running--;
           console.log(r.status.padEnd(6) + " " + r.name.padEnd(22) + String(r.seconds).padStart(7) + " s" + (r.note ? "  " + r.note : ""));
-          if (r.status === "FAIL" && r.tail) console.log(r.tail.split("\n").map((l) => "         | " + l.slice(0, 200)).join("\n"));
+          if ((r.status === "FAIL" || r.status === "FLAKY") && r.tail) console.log(r.tail.split("\n").map((l) => "         | " + l.slice(0, 200)).join("\n"));
           if (queue.every((x) => x.done)) finish(); else pump();
         });
       }
