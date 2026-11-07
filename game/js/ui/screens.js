@@ -26,8 +26,14 @@
     U.closeModal();
     const auto = K.loadSlot("auto");
     const leaf = U.$("leaf");
+    // On one screen (owner, 7 November): the painting, the name, one line, the buttons, and the seven acts drifting
+    // slowly left to right along the foot, each its painting and its name. (The list is drawn twice for the loop.)
+    const card = ([n, art], hide) => {
+      const [act, name] = K.tr(K.ACT_TITLES[n]).split(" · ");
+      return "<li" + (hide ? ' aria-hidden="true"' : "") + '><i style="--img:url(\'' + U.artUrl(art) + '\')" aria-hidden="true"></i><div><span>' + U.esc(act) + "</span><b>" + U.esc(name || act) + "</b></div></li>";
+    };
     leaf.innerHTML =
-      '<section class="hero" aria-labelledby="title-h">' +
+      '<section class="hero one" aria-labelledby="title-h">' +
         '<div class="slides" aria-hidden="true"><i class="slide on' + (HERO.mirror ? " mirror" : "") + '" style="--img:url(\'' + U.artUrl(HERO.art) + '\')"></i></div>' +
         '<div class="hero-bar" id="hero-bar"></div>' +
         '<div class="hero-copy">' +
@@ -35,16 +41,8 @@
           '<p class="tagline">' + U.tr("You cannot change the Mahabharata. You can decide who you were inside it.") + "</p>" +
           '<div class="btnrow" id="title-btns"></div>' +
         "</div>" +
-        '<p class="slide-cap">' + U.t(HERO.caption) + "</p>" +
-      "</section>" +
-      '<section class="life" aria-labelledby="life-h">' +
-        '<div class="life-head"><h2 id="life-h">' + U.tr("One life, seven acts") + "</h2>" +
-          "<p>" + U.tr("Create someone the epic never mentions and live their whole life, from a childhood beside the young princes to the eighteen days of war and what comes after. The great events are written. Where you stand, what you swear, who you love and how you die are unwritten, and yours.") + "</p></div>" +
-        '<ol class="acts">' + ACTS.map(([n, art, ages, line]) => {
-          const [act, name] = K.tr(K.ACT_TITLES[n]).split(" · ");
-          return '<li><i style="--img:url(\'' + U.artUrl(art) + '\')" aria-hidden="true"></i><div><span>' + U.esc(act) + " · " + U.tr(ages) + "</span><b>" + U.esc(name || act) + "</b><small>" + U.tr(line) + "</small></div></li>";
-        }).join("") + "</ol>" +
-        '<p class="note">' + U.tr("Pre-production build. All story text is a working draft and still needs review by scholars and community advisors.") + "</p>" +
+        '<div class="acts-run" role="group" aria-label="' + U.tr("One life, seven acts") + '"><ol class="acts drift">' + ACTS.map((a) => card(a)).join("") + ACTS.map((a) => card(a, true)).join("") + "</ol></div>" +
+        '<p class="hero-note">' + U.tr("Pre-production build. All story text is a working draft and still needs review by scholars and community advisors.") + "</p>" +
       "</section>";
 
     U.$("hero-bar").appendChild(U.langSwitch((id) => U.setLang(id)));
@@ -70,10 +68,10 @@
     // Shown again (a language switch), it is there whole at once (ui/dom.js U.pageAgain).
     const q = (sel) => leaf.querySelector(sel);
     const again = U.pageAgain("title");
-    if (!again) { q(".tagline").classList.add("write"); q(".life-head p").classList.add("write"); }
+    if (!again) q(".tagline").classList.add("write");
     q(".title").dataset.hold = 700;
     U.pageShown("title");
-    U.stage([q(".title"), q(".tagline"), q(".hero .btnrow"), q(".slide-cap"), q(".life-head h2"), q(".life-head p"), ...leaf.querySelectorAll(".acts li"), q(".life .note")], null, again);
+    U.stage([q(".title"), q(".tagline"), q(".hero .btnrow"), q(".acts-run"), q(".hero-note")], null, again);
   };
 
   // ---------- Character creation (owner, 6 November: one page, never a scroll) ----------
@@ -102,7 +100,7 @@
       '<header class="cr-top"><button type="button" class="cr-home" id="cr-home" aria-label="' + T("Back to the title") + '">‹</button>' +
         '<div class="cr-head"><p class="cr-kick">' + T("A life the epic never wrote down") + '</p><h1 class="cr-title" id="cr-title"></h1></div>' +
         '<ol class="cr-dots" aria-hidden="true">' + STEPS.map((s) => '<li data-s="' + s + '"></li>').join("") + "</ol></header>" +
-      '<div class="cr-mid"><div class="cr-map" id="cr-map"></div><div class="cr-art" id="cr-art"></div><div class="cr-sum" id="cr-sum"></div>' +
+      '<div class="cr-mid"><div class="cr-map" id="cr-map"></div><div class="cr-art" id="cr-art"></div><div class="cr-kid" id="cr-kid" aria-hidden="true"></div><div class="cr-sum" id="cr-sum"></div>' +
         '<p class="cr-hint" id="cr-hint">' + T("Tap a land on the map.") + "</p>" +
         '<div class="sr-only" id="origins"></div></div>' +
       '<section class="cr-card" id="cr-card" aria-live="polite">' +
@@ -156,7 +154,24 @@
       past(null, '<i class="none" aria-hidden="true"></i><b>' + U.tr("No") + "</b><small>" + U.tr("Begin with nothing remembered") + "</small>");
       K.lives().slice(0, 3).forEach((r, i) => past(i, '<i style="background-image:url(\'' + U.artUrl(r.art) + '\')" aria-hidden="true"></i><b>' + U.esc(r.me.name) + "</b><small>" + U.tr(r.title) + "</small>"));
     }
-    function refresh() { cr.querySelectorAll("[data-key]").forEach((b) => b.setAttribute("aria-pressed", String(String(draft[b.dataset.key]) === b.dataset.id))); }
+    function refresh() { cr.querySelectorAll("[data-key]").forEach((b) => b.setAttribute("aria-pressed", String(String(draft[b.dataset.key]) === b.dataset.id))); kid(); }
+    // You, as the child of six (owner, 7 November): the puppet stands in the land's painting and changes with each
+    // choice: she or he, the homeland's dress, the temperament's bearing, the heirloom in hand.
+    const HELD = { bow: "bow", manuscript: "scroll" };
+    let kidKey = "";
+    function kid() {
+      const box = U.$("cr-kid"); if (!box || !U.puppet || !K.puppetSpec || !draft || !draft.origin) return;
+      const spec = K.puppetSpec({ age: 6, pronoun: draft.pronoun || "they", origin: draft.origin, temperament: draft.temperament, heirloom: draft.heirloom, flags: [], injuries: [], boons: [], astras: [] });
+      if (!spec) return;
+      spec.item = HELD[draft.heirloom] || null;
+      const h = Math.round(Math.max(120, Math.min(420, (box.parentNode.clientHeight || 300) * 0.8)));
+      const key = [draft.origin, draft.pronoun, draft.temperament, draft.heirloom, h].join("|");
+      if (key === kidKey) return;
+      const changed = !!kidKey && kidKey.split("|").slice(0, 4).join("|") !== key.split("|").slice(0, 4).join("|");
+      kidKey = key;
+      box.innerHTML = U.puppet(spec, { h, pose: "stand", fit: true }) + '<i class="cr-shadow"></i>';
+      if (changed) { box.classList.remove("pop"); void box.offsetWidth; box.classList.add("pop"); }
+    }
     refresh();
 
     // ---- Moving between the steps ----
@@ -182,6 +197,7 @@
       U.$("back").hidden = s === "land";
       U.$("need").textContent = "";
       if (land) U.$("cr-art").style.setProperty("--img", "url('" + U.artUrl("home_" + draft.origin + (innerWidth > innerHeight ? "_wide" : "")) + "')");
+      if (s !== "land") requestAnimationFrame(kid); // (once the page has its new shape)
       // What is answered, label and value; each takes you back to its question.
       const val = { land: land && K.tr(land.name), name: draft.name.trim() || (draft.named && land ? K.tr(land.defaultName || "Ira") : ""), pronoun: draft.pronoun && K.tr(draft.pronoun === "she" ? "She" : "He"),
         temperament: draft.temperament && K.tr(K.TEMPERAMENTS[draft.temperament].name), heirloom: draft.heirloom && K.tr(K.HEIRLOOMS[draft.heirloom].name) };

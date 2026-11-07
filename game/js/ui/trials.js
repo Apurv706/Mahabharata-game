@@ -702,8 +702,8 @@
     return frame(box, done, c, "steady", ({ host, power, t, finish, onAct, cue }) => {
       const band = clamp(0.11 + power * 0.015, 0.1, 0.2), LIMIT = t.secs || 15;
       let pos = 0.5, vel = 0, holding = false, mood = 0.5, moodV = 0, calm = 0, last = 0;
-      host.innerHTML = '<p class="score" aria-live="polite"></p><div class="steady"><div class="mood" style="width:' + band * 100 + '%"></div><div class="hand"></div></div><div class="calm"><i></i></div><p class="game-note">' + U.trSpan(t.help || "Hold to move your hand right; let go and it drifts back. Keep it over the glow.") + '</p><div class="btnrow"></div>';
-      const moodEl = host.querySelector(".mood"), hand = host.querySelector(".hand"), bar = host.querySelector(".calm i"), score = host.querySelector(".score"), clock = U.countdown(host);
+      host.innerHTML = '<p class="score" aria-live="polite"></p><div class="steady"><div class="mood" style="width:' + band * 100 + '%"></div><div class="hand"></div></div><div class="calmbar"><i></i></div><p class="game-note">' + U.trSpan(t.help || "Hold to move your hand right; let go and it drifts back. Keep it over the glow.") + '</p><div class="btnrow"></div>';
+      const moodEl = host.querySelector(".mood"), hand = host.querySelector(".hand"), bar = host.querySelector(".calmbar i"), score = host.querySelector(".score"), clock = U.countdown(host);
       // A frightened horse (trial.horse): a leather puppet horse instead of the glow. Its head is
       // where your hand must be; it tosses its head and rears when frightened, lowers it as it calms.
       let horse = null;

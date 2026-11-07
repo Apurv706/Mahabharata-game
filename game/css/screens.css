@@ -114,6 +114,36 @@ body.titling header.top { display: none; }
 }
 html[lang="hi"] .tagline { font-style: normal; line-height: 1.5; }
 
+/* The title on one screen (owner, 7 November): the painting, the name, one line, the buttons, and the seven acts
+   drifting slowly left to right along the foot (still under Calm motion; held while a pointer rests on them). */
+.hero.one { position: fixed; inset: 0; z-index: 40; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; }
+.hero.one .hero-copy { position: relative; z-index: 1; padding-bottom: clamp(14px, 3vh, 26px); gap: clamp(8px, 1.6vh, 14px); }
+.hero.one .btnrow { margin-top: 2px; }
+.acts-run { position: relative; z-index: 1; flex: none; overflow: hidden; padding: 0 0 6px;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent); mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent); }
+.acts.drift { display: flex; gap: 10px; width: max-content; margin: 0; padding: 0 10px 0 0; list-style: none; grid-template-columns: none; overflow: visible; animation: acts-drift 96s linear infinite; }
+.acts-run:hover .acts.drift { animation-play-state: paused; }
+@keyframes acts-drift { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+.acts.drift li { position: relative; display: block; width: clamp(148px, 15vw, 230px); aspect-ratio: 16 / 9; border-radius: var(--r-card); overflow: hidden; background: var(--raised); scroll-snap-align: none; }
+.acts.drift i { position: absolute; inset: 0; aspect-ratio: auto; background: var(--img) center / cover no-repeat; }
+.acts.drift li::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(var(--ground-rgb), .95), rgba(var(--ground-rgb), .35) 55%, rgba(var(--ground-rgb), 0) 80%); } /* taste-skill-ignore: scrim under the act's name */
+.acts.drift div { position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; padding: 6px 10px 8px; display: grid; gap: 0; }
+.acts.drift span { font-size: 11.5px; letter-spacing: .06em; color: var(--data); text-transform: lowercase; text-shadow: 0 1px 4px rgba(0, 0, 0, .9); }
+.acts.drift b { text-shadow: 0 1px 6px rgba(0, 0, 0, .8); }
+.acts.drift b { font-family: var(--display); font-size: clamp(16px, 1.3vw, 19px); line-height: 1.1; }
+.hero-note { position: relative; z-index: 1; margin: 0; padding: 4px clamp(20px, 5vw, 60px) calc(max(8px, var(--sab, 0px)) + 2px); font-size: 12px; line-height: 1.35; color: var(--faint); }
+@media (max-aspect-ratio: 5/4) {
+  .hero.one .slides { flex: 1 1 auto; aspect-ratio: auto; min-height: 96px; }
+  .hero.one .acts-run { order: 4; } .hero.one .hero-note { order: 5; }
+  .hero.one .hero-copy { padding-top: 0; }
+}
+@media (max-height: 620px) {
+  .hero.one .title .logo { width: min(320px, 80%); } .hero.one .title .logo.hi { height: 96px; }
+  .hero.one .tagline { font-size: 19px; }
+  .acts.drift li { width: 128px; }
+  .hero-note { display: none; }
+}
+
 .langs { display: inline-flex; gap: 2px; padding: 3px; border-radius: var(--r-control); background: var(--raised); }
 .hero .langs { background: rgba(var(--ground-rgb), 0.78); }
 .lang { border: 0; background: transparent; color: var(--muted); font-size: 15px; padding: 6px 14px; min-height: 36px; border-radius: 4px; cursor: pointer; transition: background-color 0.15s, color 0.15s; }
@@ -393,8 +423,10 @@ html.calm .bmap .m-ring, html.calm .journey { animation: none; }
 .steady .mood { position: absolute; top: 8px; bottom: 8px; border-radius: 8px; background: rgba(240, 148, 63, .22); border: 2px solid rgba(240, 148, 63, .5); transition: background .2s; }
 .steady .mood.on { background: rgba(127, 207, 166, .35); border-color: var(--positive); }
 .steady .hand { position: absolute; top: 6px; bottom: 6px; width: 8px; margin-left: -4px; border-radius: 3px; background: var(--ink); box-shadow: 0 0 8px rgba(247, 234, 211, .6); }
-.calm { height: 14px; border-radius: 5px; background: var(--track); overflow: hidden; }
-.calm i { display: block; height: 100%; width: 0; background: var(--positive); }
+/* (calmbar, not "calm": the html element carries "calm" under Calm motion, and ".calm i" caught every <i> on the
+   page then: no width, no picture size; found 7 November) */
+.calmbar { height: 14px; border-radius: 5px; background: var(--track); overflow: hidden; }
+.calmbar i { display: block; height: 100%; width: 0; background: var(--positive); }
 
 /* Retort: the taunt, a burning lamp, three replies. */
 .taunt { margin: 0; padding: 12px 16px; border-left: 3px solid var(--accent); font-family: var(--display); font-size: 25px; line-height: 1.35; }
@@ -1315,7 +1347,7 @@ html.calm .trial.jolt > .cast.face { animation: none; }
    Shared: the play pieces lose their dark boxes and sit on the painting on soft glass where they
    need to be read; the figures stand on the ground; top-down games hide the standing figures. */
 .trial.immersive .game-note, .trial.immersive .score { max-width: min(92%, 520px); }
-.trial.immersive .calm, .trial.immersive .sus { align-self: center; width: min(78%, 420px); height: 6px; background: rgba(var(--surface-rgb), 0.55); border: 1px solid var(--gold-line); }
+.trial.immersive .calmbar, .trial.immersive .sus { align-self: center; width: min(78%, 420px); height: 6px; background: rgba(var(--surface-rgb), 0.55); border: 1px solid var(--gold-line); }
 .trial.immersive .glass, .trial.immersive .taunt, .trial.immersive .table li, .trial.immersive .replies .cta, .trial.immersive .drill .tile {
   background: rgba(var(--surface-rgb), 0.62); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border: 1px solid var(--gold-line); color: var(--ink); }
 .trial.immersive.trial-race > .cast, .trial.immersive.trial-herd > .cast, .trial.immersive.trial-rings > .cast, .trial.immersive.trial-dash > .cast, .trial.immersive.trial-sneak > .cast, .trial.immersive.trial-formation > .cast { display: none; }
@@ -2234,10 +2266,10 @@ html[lang="hi"] .ord h3, html[lang="hi"] .ord-who small { letter-spacing: 0; tex
 .cr[data-step="land"] .cr-title::after { content: none; }
 .cr.asking .cr-title::after { content: "."; }
 :lang(hi) .cr.asking .cr-title::after, :lang(hi) .cr-name::after { content: none; }
-.cr-dots { grid-area: dots; display: flex; gap: 5px; margin: 0 0 6px; padding: 0; list-style: none; align-self: end; }
-.cr-dots li { width: 14px; height: 2px; border-radius: 1px; background: var(--track); transition: background-color .3s, width .3s; }
+.cr-dots { grid-area: dots; display: flex; gap: 4px; margin: 0 0 6px; padding: 0; list-style: none; align-self: end; }
+.cr-dots li { width: 10px; height: 2px; border-radius: 1px; background: var(--track); transition: background-color .3s, width .3s; }
 .cr-dots li.done { background: var(--gold-line); }
-.cr-dots li.on { width: 22px; background: var(--data); }
+.cr-dots li.on { width: 18px; background: var(--data); }
 .cr-mid { position: relative; flex: 1; min-height: 0; overflow: hidden; background: #a9c0bb; }
 .cr-map { position: absolute; inset: 0; transition: opacity .5s ease; }
 .cr-map .bmap { width: 100%; height: 170%; border-radius: 0; transition: transform .6s cubic-bezier(.2, .8, .2, 1); }
@@ -2261,6 +2293,44 @@ html[lang="hi"] .ord h3, html[lang="hi"] .ord-who small { letter-spacing: 0; tex
 .cr-hint::after { content: "\00a0\2014"; }
 .cr.looking .cr-hint, .cr.asking .cr-hint { opacity: 0; }
 .cr .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* The homeland map, dressed (owner, 7 November): mountains, forests, dunes, waves, a drawing at each land, boats,
+   birds, the rivers' light, a compass rose and a cartouche; an old map's double rule round the box. */
+.cr-map::after { content: ""; position: absolute; inset: 7px; border: 3px double rgba(90, 58, 34, .55); border-radius: 3px; pointer-events: none; }
+.bmap.dressed .m-land { fill: #ead9b0; }
+.bmap.dressed .m-hills { opacity: .35; }
+.bmap .dress .mt-l { fill: #e6d3a8; stroke: #7a5634; stroke-width: .8; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.bmap .dress .mt-r { fill: #b99a6a; stroke: #7a5634; stroke-width: .8; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.bmap .dress .mt-snow { fill: #fbf6ea; }
+.bmap .dress .mt.far { opacity: .7; }
+.bmap .dress .tr .tr-c { fill: #6d8a52; stroke: #3f5a2c; stroke-width: .8; vector-effect: non-scaling-stroke; }
+.bmap .dress .tr .tr-t { stroke: #5a3a22; stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+.bmap .dress .dn path { fill: none; stroke: #b98d4e; stroke-width: 1.2; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+.bmap .dress .wv path { fill: none; stroke: #6f9493; stroke-width: 1.1; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+.bmap .dress .lm .lm-f { fill: #8a5a32; stroke: #3b2414; stroke-width: .9; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.bmap .dress .lm .lm-l { fill: none; stroke: #3b2414; stroke-width: 1; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+.bmap .dress .lm-palace .lm-f { fill: #efdcb0; }
+.bmap .dress .lm .lm-roof { fill: #a87a40; stroke: #3b2414; stroke-width: .9; vector-effect: non-scaling-stroke; }
+.bmap .dress .lm .lm-cloth { fill: #b2432a; stroke: #3b2414; stroke-width: .8; vector-effect: non-scaling-stroke; }
+.bmap .dress .lm .lm-fire { fill: #e2742a; } .bmap .dress .lm .lm-fire2 { fill: #f6c64e; }
+.bmap .dress .lm .lm-sail { fill: #f3e7c6; stroke: #3b2414; stroke-width: .8; vector-effect: non-scaling-stroke; }
+.bmap .dress .bd path { fill: none; stroke: #3b2414; stroke-width: 1; vector-effect: non-scaling-stroke; stroke-linecap: round; }
+.bmap .dress .m-shine { fill: none; stroke: #e9f4f2; stroke-width: 1.4; vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-dasharray: 3 26; opacity: .8; animation: m-shine 9s linear infinite; }
+@keyframes m-shine { to { stroke-dashoffset: -116; } }
+.bmap .dress .m-boat { animation: m-boat 16s ease-in-out infinite alternate; }
+@keyframes m-boat { from { transform: translate(-6px, 0); } to { transform: translate(8px, 1px); } }
+.bmap .dress .m-bird { animation: m-bird 34s linear infinite; }
+@keyframes m-bird { 0% { transform: translate(-60px, 6px); opacity: 0; } 10% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translate(140px, -10px); opacity: 0; } }
+.bmap .dress .m-water.dry { fill: #8a7a5a; }
+.bmap .dress .cp .cp-r { fill: rgba(236, 220, 182, .85); stroke: #7a5634; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.bmap .dress .cp .cp-r2 { fill: none; stroke: #7a5634; stroke-width: .6; vector-effect: non-scaling-stroke; }
+.bmap .dress .cp .cp-s { fill: #b2432a; } .bmap .dress .cp .cp-d { fill: #3b2414; }
+.bmap .dress .cp .cp-n { font-size: 9px; font-weight: 700; fill: #3b2414; stroke: none; }
+.bmap .dress .ct .ct-b { fill: rgba(239, 226, 192, .92); stroke: #7a5634; stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+.bmap .dress .ct .ct-i { fill: none; stroke: #b2432a; stroke-width: .6; vector-effect: non-scaling-stroke; }
+.bmap .dress .ct .ct-t { font-size: 13px; font-weight: 700; letter-spacing: .06em; fill: #3b2414; stroke: none; }
+.bmap .dress .ct .ct-s { font-size: 7.5px; font-style: italic; fill: #7a5634; stroke: none; }
+.bmap .dress text { paint-order: stroke; }
 
 /* The card: over the map when a land is looked at, and under each question after. */
 .cr-card { position: absolute; z-index: 4; left: 0; right: 0; bottom: 0; margin: 0 auto; width: 100%; max-width: 560px; max-height: calc(100% - 64px); overflow: auto; overscroll-behavior: contain;
@@ -2286,6 +2356,27 @@ html[lang="hi"] .ord h3, html[lang="hi"] .ord-who small { letter-spacing: 0; tex
 .cr-back[hidden] { display: none; }
 .cr .err { margin: 0; }
 .cr .err:empty { display: none; }
+
+/* The questions (owner, 7 November): the land's painting in half the page with you in it as the child of six, the
+   questions in the other half; on a phone top and bottom, on a wide screen left and right. */
+.cr-kid { position: absolute; z-index: 1; left: 70%; bottom: 3%; transform: translateX(-50%); display: grid; justify-items: center; opacity: 0; pointer-events: none; transition: opacity .5s ease, left .5s ease; }
+.cr.asking .cr-kid { opacity: 1; }
+.cr-kid svg { display: block; overflow: visible; filter: drop-shadow(0 8px 12px rgba(0, 0, 0, .5)); }
+.cr-kid .cr-shadow { display: block; width: 70%; height: 12px; margin-top: -10px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0, 0, 0, .5), rgba(0, 0, 0, 0)); }
+.cr-kid.pop svg { animation: cr-pop .55s cubic-bezier(.2, .8, .2, 1); }
+@keyframes cr-pop { from { transform: translateY(8px) scale(.95); opacity: .5; } to { transform: none; opacity: 1; } }
+.cr.asking .cr-mid { flex: 0 1 50%; min-height: 26%; }
+.cr.asking .cr-card { position: relative; bottom: auto; flex: 1 0 auto; max-height: none; margin: -14px auto 0; align-content: start; }
+@media (min-width: 900px) and (min-aspect-ratio: 1/1) {
+  .cr.asking { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto minmax(0, 1fr); }
+  .cr.asking .cr-top { grid-column: 1 / -1; }
+  .cr.asking .cr-mid { grid-column: 1; grid-row: 2; min-height: 0; }
+  .cr.asking .cr-card { grid-column: 2; grid-row: 2; width: auto; max-width: none; margin: 0; border: 0; border-left: 1px solid var(--gold-line); border-radius: 0; box-shadow: none;
+    align-content: center; justify-items: center; padding: clamp(28px, 4vw, 64px); }
+  .cr.asking .cr-card > .cr-panel, .cr.asking .cr-card > .err { width: min(100%, 520px); }
+  .cr.asking .cr-kid { left: 56%; }
+  .cr.asking .cr-q { font-size: clamp(30px, 2.6vw, 40px); }
+}
 
 /* A land, looked at */
 .cr-plate { position: relative; margin: -16px -18px 2px; aspect-ratio: 16 / 7; max-height: min(24vh, 210px); width: calc(100% + 36px); border-radius: 16px 16px 0 0; background: var(--img) center / cover no-repeat, var(--raised); }
@@ -2320,11 +2411,11 @@ html[lang="hi"] .ord h3, html[lang="hi"] .ord-who small { letter-spacing: 0; tex
 .cr .pasts .pick b { font-size: 16px; }
 .cr .pasts .pick small { font-size: 12px; }
 @media (max-width: 400px) {
-  .cr-picks { grid-template-columns: 1fr; gap: 6px; }
-  .cr-picks .pick { grid-template-columns: 40px 1fr; grid-template-rows: auto; padding: 5px 10px; gap: 0 10px; }
-  .cr-picks .pick i, .cr-picks .pick.round i { width: 40px; height: 40px; }
-  .cr-picks .pick b { font-size: 18px; align-self: center; }
-  .cr-picks .pick small { grid-column: 2; margin-top: -2px; }
+  .cr-picks { gap: 6px; }
+  .cr-picks .pick { grid-template-columns: 38px 1fr; padding: 6px 8px; gap: 0 8px; }
+  .cr-picks .pick i, .cr-picks .pick.round i { width: 38px; height: 38px; }
+  .cr-picks .pick b { font-size: 16.5px; line-height: 1.1; }
+  .cr-picks .pick small { font-size: 12px; }
 }
 @media (max-height: 700px) { .cr-plate { max-height: 17vh; } .cr-row { padding: 1px 6px; } .cr-row b { font-size: 16.5px; } }
 @media (max-height: 640px) {

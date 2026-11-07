@@ -319,17 +319,97 @@
   // charioteer family lives in Champa, beside Anga, so its pin sits just below Anga's.
   const HOMES = { hastinapura: "hastinapura", panchala: "panchala", matsya: "matsya", mathura: "mathura", anga: "anga", suta: "anga", nishada: "nishada", gandhara: "gandhara" };
   // On a phone the map is drawn small, so its names and pins are drawn bigger (big = 1.5).
+  // ---------- The homeland map, dressed (owner, 7 November) ----------
+  // On the creation page only: shaded mountains with snow, forests of little trees, the desert's dunes, waves on the
+  // seas, a small drawing at each homeland, boats on the Ganga, birds, the rivers catching the light, a compass rose
+  // and a title cartouche. k sizes them for the screen; vis is the part of the map in the box (the drawing runs on
+  // below it). The moving pieces are CSS animations, so Calm motion stills them like everything else.
+  function homeDressing(k, vis) {
+    let seed = 7;
+    const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    const pt = (lo, la) => proj(lo, la);
+    const g = (x, y, s, inner, cls) => '<g class="' + (cls || "lm") + '" transform="translate(' + x.toFixed(1) + " " + y.toFixed(1) + ") scale(" + s.toFixed(3) + ')">' + inner + "</g>";
+    // Mountains: a range along the Himalaya, each a peak with a sunlit face, a shaded face and snow.
+    const RANGE = [[72.6, 35.4], [74.2, 34.8], [75.8, 34.0], [77.4, 32.9], [78.9, 31.6], [80.4, 30.5], [82, 29.8], [83.6, 29.3], [85.2, 28.95], [86.8, 28.7], [88.4, 28.55], [90, 28.5], [91.6, 28.65], [93.2, 29.0]];
+    let mts = "";
+    for (let row = 1; row >= 0; row--) {
+      for (let i = 0; i < RANGE.length - 1; i++) {
+        const [a, b] = [pt(...RANGE[i]), pt(...RANGE[i + 1])];
+        for (let t = 0; t < 1; t += 0.5) {
+          const x = a[0] + (b[0] - a[0]) * t + (row ? 9 : 0), y = a[1] + (b[1] - a[1]) * t - (row ? 16 : 0) * k + (rnd() - 0.5) * 6 * k;
+          const h = (row ? 15 : 22 + rnd() * 9) * k, w = h * (1.25 + rnd() * 0.3);
+          mts += '<g class="mt' + (row ? " far" : "") + '"><path class="mt-l" d="M' + (x - w / 2).toFixed(1) + "," + y.toFixed(1) + " L" + x.toFixed(1) + "," + (y - h).toFixed(1) + " L" + (x + w * 0.06).toFixed(1) + "," + y.toFixed(1) + ' Z"/>' +
+            '<path class="mt-r" d="M' + x.toFixed(1) + "," + (y - h).toFixed(1) + " L" + (x + w / 2).toFixed(1) + "," + y.toFixed(1) + " L" + (x + w * 0.06).toFixed(1) + "," + y.toFixed(1) + ' Z"/>' +
+            '<path class="mt-snow" d="M' + (x - w * 0.15).toFixed(1) + "," + (y - h * 0.7).toFixed(1) + " L" + x.toFixed(1) + "," + (y - h).toFixed(1) + " L" + (x + w * 0.15).toFixed(1) + "," + (y - h * 0.7).toFixed(1) + " L" + (x + w * 0.04).toFixed(1) + "," + (y - h * 0.62).toFixed(1) + ' Z"/></g>';
+        }
+      }
+    }
+    // Forests: little trees in clusters (the Nishadas' forests, the foothills, the Vindhyas, the east, the ghats).
+    const FORESTS = [[79.2, 23.3, 0.9, 16], [81.3, 23.3, 0.8, 12], [77.4, 23.5, 0.8, 10], [80.6, 28.95, 0.5, 7], [82.6, 28.35, 0.6, 8], [84.6, 27.85, 0.5, 6], [86.2, 23.5, 0.7, 9], [74.4, 16.4, 0.6, 7], [75.6, 13.4, 0.5, 6], [76.25, 30.05, 0.28, 5]];
+    let trees = "";
+    FORESTS.forEach(([lo, la, r, n]) => {
+      const list = [];
+      for (let i = 0; i < n; i++) { const a = rnd() * Math.PI * 2, d = Math.sqrt(rnd()) * r; list.push(pt(lo + Math.cos(a) * d * 1.3, la + Math.sin(a) * d * 0.8)); }
+      list.sort((p, q) => p[1] - q[1]).forEach(([x, y]) => { const s = k * (0.8 + rnd() * 0.45); trees += g(x, y, s, '<path class="tr-t" d="M0 0 V5"/><path class="tr-c" d="M-5 1 Q-7 -5 -2 -7 Q0 -11 3 -7 Q8 -5 5 1 Z"/>', "tr"); });
+    });
+    // The desert's dunes, and waves on the seas.
+    let dunes = "";
+    for (let i = 0; i < 14; i++) { const [x, y] = pt(70.2 + rnd() * 3.4, 25.3 + rnd() * 3.1); if (Math.abs(x - pt(71.6, 26.6)[0]) < 50 * k && Math.abs(y - pt(71.6, 26.6)[1]) < 12 * k) continue; dunes += g(x, y, k, '<path d="M-9 2 Q-4 -3 0 0 Q4 -4 9 2"/>', "dn"); }
+    let waves = "";
+    [[63.5, 14, 6.5, 8, 12], [84.8, 13.5, 6, 6.5, 12], [62.5, 23, 4, 3, 5]].forEach(([lo, la, w, h, n]) => {
+      for (let i = 0; i < n; i++) { const [x, y] = pt(lo + rnd() * w, la + rnd() * h); waves += g(x, y, k, '<path d="M-8 0 Q-4 -3 0 0 T8 0"/>', "wv"); }
+    });
+    // A drawing at each homeland, beside its pin and clear of its name.
+    const LM = {
+      palace: '<path class="lm-f" d="M-16 10 V2 H16 V10 Z"/><path class="lm-f" d="M-6 2 V-5 Q0 -15 6 -5 V2 Z"/><path class="lm-f" d="M-15 2 V-6 Q-12.5 -11 -10 -6 V2 Z M10 2 V-6 Q12.5 -11 15 -6 V2 Z"/><path class="lm-l" d="M0 -14 V-21 L6 -19 L0 -17 M-3 10 V5 Q0 2 3 5 V10"/>',
+      altar: '<path class="lm-f" d="M-12 10 V5 H12 V10 Z M-8 5 V1 H8 V5 Z"/><path class="lm-fire" d="M-5 1 Q-8 -6 -3 -11 Q-2 -6 0 -14 Q3 -7 4 -10 Q8 -4 4 1 Z"/><path class="lm-fire2" d="M-2 1 Q-3 -4 0 -7 Q2 -3 2 1 Z"/>',
+      horses: '<path class="lm-f" d="M-17 6 L-15 0 Q-11 -3 -4 -2 L-1 -7 L2 -6 L0 -2 Q1 2 -1 4 L-2 9 L-4 9 L-4 4 L-12 4 L-13 9 L-15 9 Z"/><path class="lm-f" d="M2 7 L4 1 Q8 -2 15 -1 L18 -5 L20 -4 L18 0 Q19 4 17 5 L16 10 L14 10 L14 5 L7 5 L6 10 L4 10 Z"/><path class="lm-l" d="M-17 1 Q-20 3 -19 7 M2 2 Q-1 4 0 8"/>',
+      cow: '<path class="lm-f" d="M-12 4 Q-12 -4 -5 -4 H5 L7 -7 L9 -4 L12 -3 L11 0 L7 1 L6 4 V9 H4 V5 H-6 V9 H-8 V5 Q-11 6 -12 4 Z"/><path class="lm-l" d="M7 -7 Q6 -10 3 -10 M9 -4 Q12 -8 14 -7 M-12 -1 Q-15 1 -14 6"/>',
+      elephant: '<path class="lm-f" d="M-14 10 V1 Q-14 -8 -4 -8 H5 Q12 -9 13 -3 Q15 3 13 8 Q12 12 9 11 Q11 8 10 4 L9 4 V10 H5 V4 H-6 V10 H-10 V4 Z"/><path class="lm-cloth" d="M-9 -8 L-8 -14 H5 L6 -8 Z"/><path class="lm-l" d="M-8 -14 L-1 -19 L6 -14 M2 -7 Q-2 -1 3 3"/>',
+      chariot: '<circle class="lm-f" cx="-4" cy="5" r="7"/><path class="lm-l" d="M-4 -2 V12 M-11 5 H3 M-9 0 L1 10 M1 0 L-9 10 M-1 -2 H14 M10 -2 L14 -9"/><path class="lm-cloth" d="M-12 -2 V-11 H4 L2 -2 Z"/>',
+      huts: '<path class="lm-f" d="M-15 10 V2 H-5 V10 Z M3 10 V0 H15 V10 Z"/><path class="lm-roof" d="M-17 3 L-10 -7 L-3 3 Z M1 1 L9 -10 L17 1 Z"/><path class="lm-l" d="M-11 10 V6 H-9 V10 M8 10 V5 H10 V10"/>',
+      camel: '<path class="lm-f" d="M-14 7 L-12 0 Q-10 -3 -8 0 Q-6 -8 -2 0 Q0 -7 4 -1 L7 -6 L11 -5 L9 -1 L8 2 L7 8 H5 V3 H-4 V8 H-6 V3 Q-9 3 -11 7 Z"/><path class="lm-l" d="M-12 1 Q-15 3 -14 6"/>',
+      boat: '<path class="lm-f" d="M-12 1 Q0 8 12 1 Z"/><path class="lm-l" d="M0 1 V-13"/><path class="lm-sail" d="M1 -12 L10 -1 H1 Z"/>'
+    };
+    const marks = [["palace", 77.15, 29.75], ["altar", 80.25, 28.35], ["horses", 75.25, 26.55], ["cow", 76.85, 26.35], ["elephant", 87.85, 26.05], ["chariot", 88.05, 23.95], ["huts", 81.55, 23.75], ["camel", 71.6, 32.75]]
+      .map(([n, lo, la]) => { const [x, y] = pt(lo, la); return g(x, y, k * 1.15, LM[n], "lm lm-" + n); }).join("");
+    // Boats on the Ganga, drifting; birds over the plain; the rivers catching the light.
+    const boats = [[83.35, 25.33], [85.75, 25.55], [80.9, 25.7]].map(([lo, la], i) => { const [x, y] = pt(lo, la); return '<g class="m-boat" style="animation-delay:' + (-i * 7) + 's">' + g(x, y - 2 * k, k, LM.boat, "lm") + "</g>"; }).join("");
+    const birds = [[81.5, 30.2], [83.4, 30.9], [79.6, 31.6]].map(([lo, la], i) => { const [x, y] = pt(lo, la); return '<g class="m-bird" style="animation-delay:' + (-i * 11) + 's">' + g(x, y, k, '<path d="M-6 0 Q-3 -3 0 0 Q3 -3 6 0 M6 -6 Q8 -8 10 -6 Q12 -8 14 -6"/>', "bd") + "</g>"; }).join("");
+    const shine = RIVERS.filter((r) => !r[0]).slice(1).map(([, pts]) => '<path class="m-shine" d="' + smooth(pts) + '"/>').join("");
+    // More names: the Vindhyas, the dry Sarasvati, the Narmada.
+    const fs = (n) => ' style="font-size:' + Math.round(n * k * 10) / 10 + 'px"';
+    const names = '<text class="m-region" x="' + at(78.6, 22.85) + '"' + fs(12) + ">" + T("Vindhya") + "</text>" +
+      '<text class="m-water dry" x="' + at(73.4, 29.15) + '" transform="rotate(24 ' + proj(73.4, 29.15).join(" ") + ')"' + fs(10.5) + ">" + T("Sarasvati") + "</text>" +
+      '<text class="m-water" x="' + at(76.6, 22.15) + '"' + fs(10.5) + ">" + T("Narmada") + "</text>";
+    // The compass rose (lower right of the box) and the title cartouche (lower left).
+    const [vx, vy, vw, vh] = vis, cs = k * 1.35;
+    const compass = g(vx + vw - 34 * cs, vy + vh - 40 * cs, cs, '<circle class="cp-r" r="18"/><circle class="cp-r2" r="13"/><path class="cp-s" d="M0 -22 L4 -4 L0 0 Z M0 22 L-4 4 L0 0 Z M-22 0 L-4 -4 L0 0 Z M22 0 L4 4 L0 0 Z"/><path class="cp-d" d="M0 -22 L-4 -4 L0 0 Z M0 22 L4 4 L0 0 Z M-22 0 L-4 4 L0 0 Z M22 0 L4 -4 L0 0 Z"/><text class="cp-n" x="0" y="-26" text-anchor="middle">N</text>', "cp");
+    const cw = 150, cx0 = vx + vw - (cw + 16) * cs, cy0 = vy + 14 * cs;
+    const cart = g(cx0, cy0, cs, '<path class="ct-b" d="M6 0 H' + (cw - 6) + ' Q' + cw + ' 0 ' + cw + ' 6 V30 Q' + cw + ' 36 ' + (cw - 6) + ' 36 H6 Q0 36 0 30 V6 Q0 0 6 0 Z"/><path class="ct-i" d="M5 4 H' + (cw - 5) + " V32 H5 Z\"/>" +
+      '<text class="ct-t" x="' + cw / 2 + '" y="18" text-anchor="middle">' + T("Bharatavarsha") + '</text><text class="ct-s" x="' + cw / 2 + '" y="28.5" text-anchor="middle">' + T("The lands of the epic") + "</text>", "ct");
+    return '<g class="dress">' + dunes + waves + trees + mts + shine + marks + boats + birds + names + cart + compass + "</g>";
+  }
+
   // aspect: the frame's width over its height (the creation page asks for its own box's, so the map fills it).
   // extend: the drawing runs on below the box by that much of its height (so the creation page can slide it up).
   U.homeMap = function (chosen, big = 1, aspect = 1.55, extend = 1) {
     const keys = Object.keys(K.ORIGINS).filter((k) => HOMES[k]);
-    let vb = frame(keys.map((k) => HOMES[k]), aspect, 360);
+    let vb = frame(keys.map((k) => HOMES[k]), aspect, 360), vis = null;
     // A box of its own shape (the creation page): kept on the drawn map, never past its edges into blank sea.
+    if (aspect !== 1.55) {
+      // closer in than the plain frame: the homelands' own spread and room for their names (owner, 7 November)
+      const ps = keys.map((k) => P(HOMES[k])), xs = ps.map((p) => p.x), ys = ps.map((p) => p.y);
+      const bw = Math.max(...xs) - Math.min(...xs) + 130, bh = Math.max(...ys) - Math.min(...ys) + 150;
+      let w = Math.max(bw, bh * aspect), h = w / aspect;
+      vb = [(Math.min(...xs) + Math.max(...xs)) / 2 - w / 2, (Math.min(...ys) + Math.max(...ys)) / 2 - h / 2 + 18, w, h];
+    }
     if (aspect !== 1.55) {
       let [x, y, w, h] = vb; const cx = x + w / 2, cy = y + h / 2;
       if (h > FULL[3]) { h = FULL[3]; w = h * aspect; }
       if (w > FULL[2]) { w = FULL[2]; h = w / aspect; }
       x = Math.min(Math.max(cx - w / 2, FULL[0]), FULL[0] + FULL[2] - w); y = Math.min(Math.max(cy - h / 2, FULL[1]), FULL[1] + FULL[3] - h);
+      vis = [x, y, w, h];
       vb = [x, y, w, h * extend].map(Math.round);
     }
     const z = vb[2] / FULL[2];
@@ -347,7 +427,7 @@
         (kind ? emblem(kind, tx, ty, anchor, fs, name) : "") +
         '<text x="' + (tx + shiftFor(kind, anchor, fs)) + '" y="' + ty + '" text-anchor="' + anchor + '" style="font-size:' + fs + 'px">' + U.esc(name) + "</text></g>";
     }).join("");
-    return svg(ground(z) + pins, K.tr("Map of the homelands"), vb, "zoom homes");
+    return svg(ground(z) + (vis ? homeDressing(z * Math.pow(big, 0.55), vis) : "") + pins, K.tr("Map of the homelands"), vb, "zoom homes" + (vis ? " dressed" : ""));
   };
   EMBLEM.wheel = '<circle class="e-line" cx="0" cy="0" r="8"/><path class="e-line" d="M0 -8 V8 M-8 0 H8 M-5.6 -5.6 L5.6 5.6 M5.6 -5.6 L-5.6 5.6"/><circle cx="0" cy="0" r="2"/>';
 
