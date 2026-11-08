@@ -231,7 +231,7 @@
     toast(T(line));
   }
   // A shield cracks at half its points and splits at none (Build D, row 49): the crack drawn across it, then it is gone
-  // (a foe's for the fight; yours for RT.P.shieldBack seconds, then a fresh one).
+  // (a foe's for the fight; yours until you take up another off the ground).
   function shieldCrack(a) {
     if (!a || !a.svg) return;
     a.el.classList.add("shield-cracked");
@@ -243,6 +243,49 @@
     if (!a || !a.el) return;
     a.el.classList.toggle("shield-broken", gone);
     if (!gone) { a.el.classList.remove("shield-cracked"); const c = a.svg && a.svg.querySelector(".it-s .crack"); if (c) c.remove(); }
+  }
+  // ---------- Shields on the ground (owner, 7 November: "a place to pick up a new shield where the player has to go") ----------
+  // A fallen soldier's shield, or the one a comrade throws in at your side's edge (RT dropShield, throwIn): the round hide
+  // shield lying on the ground, lit gold while you have none, with an arrow at your feet toward the nearest; walking to it
+  // takes it up (RT takeUp). Over the fallen (who lie at 4), under the living.
+  // (One of your side the screen draws with a shield drops it too: the company's soldiers.)
+  RT.allyShield = (u) => { const sp = U.battleSpecFor ? U.battleSpecFor(u) : null; return !!(sp && !sp.thing && (sp.gear || []).includes("shield")); };
+  const GSHIELD = () => '<svg viewBox="30 99 56 26" aria-hidden="true"><g transform="translate(58 112) scale(1 0.42) translate(-58 -112)">' + (U.shieldSvg ? U.shieldSvg(26, "#c9a24a") : "") + "</g></svg>";
+  function groundShield(g) {
+    const map = V.ground || (V.ground = new Map());
+    if (map.has(g.id)) return map.get(g.id);
+    const el = document.createElement("div"); el.className = "gshield" + (g.kind === "thrown" ? " thrown" : ""); el.dataset.id = g.id;
+    el.innerHTML = '<i class="glint"></i>' + GSHIELD();
+    V.world.appendChild(el);
+    const sh = { el, id: g.id, x: g.x, lane: g.lane || 0, w: 0 };
+    map.set(g.id, sh); placeGround(sh);
+    return sh;
+  }
+  function placeGround(sh) {
+    const G = V.G; if (!G) return;
+    const w = G.ph * (1 - G.dk * Math.max(0, sh.lane)) * 0.34; sh.w = w;
+    sh.el.style.width = w.toFixed(1) + "px";
+    sh.el.style.left = (G.fx0 + sh.x * G.FW - w / 2).toFixed(1) + "px"; sh.el.style.bottom = (G.gl + sh.lane * G.dstep - w * 0.08).toFixed(1) + "px";
+  }
+  function groundGone(id, to) {
+    const sh = V.ground && V.ground.get(id); if (!sh) return;
+    V.ground.delete(id);
+    if (!to || U.calm()) { sh.el.style.transition = "opacity .3s"; sh.el.style.opacity = "0"; setTimeout(() => sh.el.remove(), 320); return; }
+    // Taken up: it rises to your arm.
+    const x0 = parseFloat(sh.el.style.left) + sh.w / 2, dx = to.x - x0, dy = -(to.fh * 0.42);
+    sh.el.classList.remove("want");
+    sh.el.animate([{ transform: "translate(0,0)", opacity: 1 }, { transform: "translate(" + dx.toFixed(1) + "px," + dy.toFixed(1) + "px) scale(0.8, 1.6)", opacity: 0 }], { duration: 260, easing: "ease-out", fill: "forwards" }).onfinish = () => sh.el.remove();
+  }
+  function groundDraw(R, p) {
+    if (V.ground) V.ground.forEach((sh) => { placeGround(sh); const g = R.ground.find((o) => o.id === sh.id); sh.el.classList.toggle("want", !!(R.broken && g && R.t >= g.at)); });
+    // The arrow at your feet: toward the nearest shield on the ground while you have none and are not over it.
+    const me = V.actors.get(p.uid), g = R.broken && me && p.hp > 0 ? RT.nearestShield(R, p.rt.x) : null;
+    let ar = V.shPtr;
+    if (!g || Math.abs(g.x - p.rt.x) <= RT.P.pickupR * RT.BODY) { if (ar) ar.hidden = true; return; }
+    if (!ar) { ar = V.shPtr = U.el('<div class="shptr" aria-hidden="true"><svg viewBox="0 0 26 16"><path d="M2 8 L12 1.5 L12 5.5 L24 5.5 L24 10.5 L12 10.5 L12 14.5 Z"/></svg></div>'); V.world.appendChild(ar); }
+    const dir = g.x < p.rt.x ? -1 : 1;
+    ar.hidden = false; ar.classList.toggle("r", dir > 0);
+    ar.style.left = (me.x + dir * me.bw * 0.95).toFixed(1) + "px"; ar.style.bottom = (me.gy + me.fh * 0.04).toFixed(1) + "px";
   }
   function parryTip() {
     let seen = false; try { seen = !!(K.prefs && K.prefs().tipParry); } catch (e) { /* no store */ }
@@ -315,6 +358,8 @@
     c.ended = true;
     const R = V.R, B = R.B;
     if (R.over === "retry") RT.accept(R);
+    // Your shield broken and none taken up: the company hands you a fresh one at the orders (owner, 7 November).
+    if (R.blocker && R.broken && R.over !== "lose") B.say("Your shield was broken: your company hands you a fresh one.");
     B.status = c.status; B.rt = null; B.round = c.round; // the real-time rounds inside the clash do not count as the war day's rounds
     (c.stilled || []).forEach((u) => { u.still = false; });
     RT.unscale(B); // health and blows back on the turns' scale
@@ -782,8 +827,8 @@
       else V.walk = null;
     }
     if (V.held.block && V.R.blocker && !RT.can(V.R, "block") && V.R.winded && !V.windTold) { V.windTold = true; toast(K.tr("Winded")); }
-    // Your shield broken (Build D): the Block button (or K) rolls instead, once a press, until a fresh shield comes.
-    if (V.R.spOff > 0) { if (V.held.block && !V.rollEdge) { q.roll = true; V.rollEdge = true; } }
+    // Your shield broken (Build D): the Block button (or K) rolls instead, once a press, until you take up another.
+    if (V.R.broken) { if (V.held.block && !V.rollEdge) { q.roll = true; V.rollEdge = true; } }
     if (!V.held.block) V.rollEdge = false;
     if (!V.held.block) V.windTold = false;
     return Object.assign({ move, block: !!V.held.block }, q);
@@ -807,7 +852,7 @@
     }
     V.raf = requestAnimationFrame(loop);
   }
-  function retry() { V.R = RT.retry(V.R); V.actors.forEach((a) => { a.el.remove(); if (a.tag) a.tag.remove(); if (a.weaponEl) a.weaponEl.remove(); }); $$(".scorch, .ax", V.el).forEach((e) => e.remove()); V.ax = null; V.actors.clear(); if (U.rigs) U.rigs.clear(); V.logAt = V.R.B.log.length; toast(K.tr("One more time.")); }
+  function retry() { V.R = RT.retry(V.R); V.actors.forEach((a) => { a.el.remove(); if (a.tag) a.tag.remove(); if (a.weaponEl) a.weaponEl.remove(); }); $$(".scorch, .ax, .gshield, .shptr", V.el).forEach((e) => e.remove()); V.ax = null; V.ground = null; V.shPtr = null; V.actors.clear(); if (U.rigs) U.rigs.clear(); V.logAt = V.R.B.log.length; toast(K.tr("One more time.")); }
   // Beaten, but the story goes on (owner, 4 November): you slump where you stand, the foes turn and walk off the field, and a
   // line says you tried and what is written held. A tap (Enter or Space) goes on.
   // A deadly fight lost the first time: you are down, not dead, while the second try is offered.
@@ -928,6 +973,7 @@
     V.actors.forEach((a, uid) => { if (!B.units.includes(a.u)) { if (a.tag) a.tag.remove(); a.el.style.transition = "opacity .6s"; a.el.style.opacity = "0"; setTimeout(() => a.el.remove(), 600); V.actors.delete(uid); } });
     if (V.openFx) { V.openFx = false; openFx(); }
     if (V.wallMen) wallMenDraw(p);
+    groundDraw(R, p);
     for (const f of R.fx) fx(f);
     R.fx.length = 0;
     // A blow that struck no one (dodged, a whiff) still swings at whom it was meant for.
@@ -946,14 +992,14 @@
       sk.querySelector(".ring .fg").style.strokeDashoffset = (113.1 * (1 - f)).toFixed(1); sk.classList.toggle("ready", R.skillCd <= 0);
       ks.querySelector(".fg").style.strokeDashoffset = (100.5 * (1 - f)).toFixed(1); ks.classList.toggle("ready", R.skillCd <= 0); }
     $("#ksherbs").textContent = String(K.S.items.herbs || 0);
-    // Block, or Roll while your shield is broken (Build D): the ring fills as the fresh shield comes.
-    const rb = $(".acts .roll"), asRoll = R.blocker && R.spOff > 0;
+    // Block, or Roll while your shield is broken (Build D): the ring fills until a comrade throws you one.
+    const rb = $(".acts .roll"), asRoll = R.blocker && !!R.broken;
     if (R.blocker && rb.classList.contains("as-roll") !== asRoll) {
       rb.classList.toggle("as-roll", asRoll);
       rb.querySelector(".rl").textContent = T(asRoll ? "Roll" : "Block"); rb.setAttribute("aria-label", T(asRoll ? "Roll" : "Block"));
       if (!rb.querySelector(".backring")) rb.insertAdjacentHTML("afterbegin", '<svg class="ring backring" viewBox="0 0 40 40" aria-hidden="true"><circle class="fg" cx="20" cy="20" r="18" stroke-dasharray="113.1" stroke-dashoffset="0"/></svg>');
     }
-    if (asRoll) rb.querySelector(".backring .fg").style.strokeDashoffset = (113.1 * (R.spOff / RT.P.shieldBack)).toFixed(1);
+    if (asRoll) rb.querySelector(".backring .fg").style.strokeDashoffset = (113.1 * (Math.max(0, R.spOff) / RT.P.shieldBack)).toFixed(1);
     rb.classList.toggle("off", asRoll ? !RT.can(R, "roll") : R.blocker ? !R.block && !RT.can(R, "block") : !RT.can(R, "roll"));
     if (R.blocker) rb.classList.toggle("held", !!R.block);
     // Strike locked: the clash's opening after Shield wall or Guard (its ring counts the seconds down), and in a swing.
@@ -1010,13 +1056,22 @@
         if (f.heavy || f.n === 2) { pose(me, "windup", 1700, 0.55); setTimeout(() => { if (V && me) swing(me, inFront(p), null); }, 120); } else swing(me, inFront(p), null); if (K.Sound) K.Sound.play("tap"); break;
       case "roll": pose(me, "duck", 1400, 0.6); home(me, 400); break;
       case "kneel": pose(me, "kneel", 600, 0.6); home(me, 1100); break;
-      // Build D (row 49): a shield cracked at half its points, split at none; yours comes back after RT.P.shieldBack seconds.
+      // Build D (row 49): a shield cracked at half its points, split at none; yours replaced off the ground (a fallen soldier's, or a comrade's throw).
       case "shieldcrack": { const a = A(f.uid); shieldCrack(a); if (a) pop(a, K.tr("Cracked"), f.mine ? "me" : ""); if (K.Sound) K.Sound.play("clang");
         if (f.mine) tipOnce("tipShieldCrack", "Your shield is cracking: every blow from a mace wears it down. Step back from the strongest."); break; }
       case "shieldbreak": { const a = A(f.uid); shieldGone(a, true); if (a) { pop(a, K.tr("Shield broken!"), f.mine ? "me" : "crit"); shake(false); } if (K.Sound) { K.Sound.play("clang"); K.Sound.play("hit"); }
-        if (f.mine) { if (a && a.shieldUp) { a.shieldUp = false; a.el.classList.remove("shield-up"); home(a, 0); } tipOnce("tipShieldBroken", "Your shield is broken. Roll until a fresh one comes up (the ring on the button)."); }
+        if (f.mine) { if (a && a.shieldUp) { a.shieldUp = false; a.el.classList.remove("shield-up"); home(a, 0); } tipOnce("tipShieldFetch", "Your shield is broken: roll for now. Take up a fallen soldier's shield, or go back for the one a comrade throws in when the ring on the button fills."); }
         else tipOnce("tipFoeShieldBroken", "His shield is broken: he fights on without it, and it will not turn your blows again."); break; }
-      case "shieldback": { const a = A(f.uid); shieldGone(a, false); if (a) pop(a, K.tr("A fresh shield"), "me"); break; }
+      // Shields on the ground (owner, 7 November): one falls from a fallen soldier's arm; a comrade throws one in at your
+      // side's edge; you take one up by going to it.
+      case "shielddrop": { const a = A(f.uid), sh = groundShield(f);
+        if (a) { a.el.classList.add("shield-dropped"); if (!U.calm()) sh.el.animate([{ transform: "translateY(" + (-a.fh * 0.4).toFixed(1) + "px) rotate(" + (RT.fallDir(a.u) * 35) + "deg)", opacity: 0.9 }, { transform: "translateY(0) rotate(0deg)", opacity: 1 }], { duration: 480, easing: "ease-in" }); }
+        break; }
+      case "shieldthrown": { const sh = groundShield(f), G = V.G;
+        if (!U.calm() && G) { const from = -(parseFloat(sh.el.style.left) + sh.w + 30); sh.el.animate([{ transform: "translate(" + from.toFixed(1) + "px," + (-G.H * 0.32).toFixed(1) + "px) rotate(-200deg)" }, { transform: "translate(" + (from * 0.45).toFixed(1) + "px," + (-G.H * 0.42).toFixed(1) + "px) rotate(-100deg)", offset: 0.45 }, { transform: "translate(0,0) rotate(0deg)" }], { duration: 600, easing: "cubic-bezier(.35,.4,.6,1)" }); }
+        toast(T("A comrade throws you a shield!")); if (K.Sound) setTimeout(() => { if (V && K.Sound) K.Sound.play("tap"); }, 560); break; }
+      case "shieldup": { const a = A(f.uid); groundGone(f.id, a); shieldGone(a, false); if (a) pop(a, K.tr("Shield taken up"), "me"); if (K.Sound) K.Sound.play("clang"); break; }
+      case "shieldgone": groundGone(f.id, null); break;
       case "strikeback": { if (K.Sound) K.Sound.play("bell"); const sb = $(".acts .strike"); if (sb) { sb.classList.add("back"); setTimeout(() => sb.classList.remove("back"), 700); } break; }
       case "toast": toast(K.tr(f.s)); break;
       case "skill": pose(me, R.skill === "aimed" ? "loose" : R.skill === "salve" ? "kneel" : R.skill === "song" || R.skill === "command" ? "cheer" : "strike", 900, 0.55); home(me, 500);

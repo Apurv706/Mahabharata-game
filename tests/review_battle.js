@@ -44,6 +44,7 @@ const READ = () => {
       cue: [...V.el.querySelectorAll(".actor.parry-cue")].length, thId: thE ? thE.uid + ":" + thE.rt.atk.t0.toFixed(2) : null, thRanged: !!(thE && thE.rt.atk.ranged), low: !!V.el.querySelector(".lowwarn:not([hidden])"),
       walled: !!V.walled, wallMen: (V.wallMen || []).length,
       canRoll: RT.can(R, "roll"), canBlock: RT.can(R, "block"), canHerbs: RT.can(R, "herbs"), herbs: K.S.items.herbs || 0,
+      broken: !!R.broken, shieldAt: (() => { const g = RT.nearestShield ? RT.nearestShield(R, p.rt.x) : null; return g ? g.x - p.rt.x : null; })(), // a shield on the ground, while yours is broken
       call: call ? (ally ? ally.rt.x - p.rt.x : null) : null, stats: Object.assign({}, R.stats),
       btn: { strike: box(".acts .strike"), block: box('.acts [data-hold="block"]'), roll: box(".acts .roll"), l: box('.pad [data-hold="l"]'), r: box('.pad [data-hold="r"]'), retry: box("[data-retry]") } };
   }
@@ -121,6 +122,8 @@ async function playLikeAPerson(enc, dev, pathId, side, seed) {
         if (TOUCH) { await tapSel("#rt .hb.aid"); await sleep(300); await tapSel('#rt .aid-sheet [data-aid="herbs"]:not([disabled])'); } else await press("h"); gap(); continue;
       }
       if (s.call != null && Math.abs(s.call) > 0.05) { const k = s.call > 0 ? "r" : "l"; await hold(k, s.btn[k]); await sleep(160); await release(); continue; }
+      // Your shield broken: go and take up the one lying nearest.
+      if (s.broken && s.shieldAt != null && Math.abs(s.shieldAt) > 0.02 && Math.abs(s.shieldAt) < 0.45) { const k = s.shieldAt > 0 ? "r" : "l"; await hold(k, s.btn[k]); await sleep(160); await release(); continue; }
       if (s.near != null) {
         if (Math.abs(s.near) <= s.reach * 1.05) { if (s.busy <= 0.05) { await press("j", s.btn.strike); gap(); } else await sleep(30); continue; }
         const k = s.near > 0 ? "r" : "l"; await hold(k, s.btn[k]); await sleep(between(120, 200)); await release(); continue;

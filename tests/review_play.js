@@ -517,6 +517,7 @@ const READ_RT = () => {
     near: near ? { uid: near.uid, x: near.rt.x, d: near.rt.x - p.rt.x } : null, foes: foes.length,
     threat: th.length ? Math.min(...th.map((t) => t.land - R.t)) : null,
     canRoll: RT.can(R, "roll"), canBlock: RT.can(R, "block"), canSkill: RT.can(R, "skill"), canHerbs: RT.can(R, "herbs"), canCall: RT.can(R, "call"),
+    broken: !!R.broken, shieldAt: (() => { const g = p && RT.nearestShield ? RT.nearestShield(R, p.rt.x) : null; return g ? g.x - p.rt.x : null; })(), // a shield on the ground, while yours is broken
     astra: RT.astras().some((a) => !a.why), spare: RT.spareable(R).map((u) => u.uid), plea: !!V.el.querySelector(".plea i"),
     friend: R.B.units.some((u) => u.side === "ally" && u.hp > 0 && (u.called || u.person)), soldiers: R.B.units.some((u) => u.side === "ally" && u.hp > 0 && u.plural && !u.person && !u.called),
     held: Object.assign({}, V.held), ax: !!V.ax,
@@ -552,10 +553,12 @@ async function rtFight(pg, cdp, L, R, o, tap, clash) {
     // A blow coming at you: the shield up, or a roll away, just before it lands.
     if (s.threat != null && s.threat < 0.5) {
       if (s.blocker && s.canBlock) { await hold("block", s.btn.block); await sleep(120); continue; }
-      if (!s.blocker && s.canRoll && s.threat < 0.25) { await press("roll", s.btn.roll, "k"); await sleep(120); continue; }
+      if ((!s.blocker || s.broken) && s.canRoll && s.threat < 0.25) { await press("roll", s.btn.roll, "k"); await sleep(120); continue; }
     }
     if (holding === "block" && (s.threat == null || s.threat < -0.05)) await release();
     if (holding === "block") { await sleep(80); continue; }
+    // Your shield broken: go and take up the one lying nearest (a fallen soldier's, or the one a comrade threw in).
+    if (s.broken && s.shieldAt != null && Math.abs(s.shieldAt) > 0.02 && Math.abs(s.shieldAt) < 0.45) { if (!did.fetch) { did.fetch = true; F.used.push("fetch shield"); } const k = s.shieldAt > 0 ? "r" : "l"; await hold(k, s.btn[k]); await sleep(160); continue; }
     // Once a fight: pause and resume; open Orders and pick another order; call for help; the divine weapon.
     const T = (Date.now() - t0) / 1000;
     if (clash) { did.pause = true; did.orders = true; }

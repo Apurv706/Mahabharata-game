@@ -290,6 +290,7 @@
   // A round hide shield with a gold boss, on the back forearm.
   const shieldSvg = (r, t) => '<circle cx="58" cy="112" r="' + r + '" fill="#8a5a2c"' + OUT + '/><circle cx="58" cy="112" r="' + (r - 3.5) + '" fill="none" stroke="' + t + '" stroke-width="2"/><circle cx="58" cy="112" r="4" fill="' + GOLD + '"' + OUT + "/>" +
     holeRow("M" + (58 - r + 6.5) + " 112 a" + (r - 6.5) + " " + (r - 6.5) + " 0 1 0 " + 2 * (r - 6.5) + " 0 a" + (r - 6.5) + " " + (r - 6.5) + " 0 1 0 " + -2 * (r - 6.5) + " 0", "#8a5a2c", 3);
+  U.shieldSvg = shieldSvg; // (a shield lying on the fight's ground: ui/realtime.js)
 
   // A fallen figure's weapon lies on the ground beside it (a live figure lets go of it as it falls:
   // puppet-anim.js). For each kind: the top and foot of the weapon along its length (in the hand's

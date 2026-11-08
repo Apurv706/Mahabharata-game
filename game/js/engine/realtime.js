@@ -92,10 +92,13 @@
     arrowPush: 0.12,   // every arrow of yours that lands pushes the foe back this much of a body (half on a named champion): no stagger, he walks in against it
     cap: 240,        // a fight that has run this long is stopped (it never should)
     // Build D (owner, 7 November; feedback rows 48-50, Fight_Traits_Draft.md). A shield has shieldPts points; each blow caught
-    // on it takes some by the striker's tier and weapon (RT.SHIELD_HIT). Yours broken: no Block for shieldBack seconds (you
-    // roll), then a fresh one; a foe's broken: gone for the fight. Shield wall or Guard chosen on the turns: Strike is
-    // locked for strikeLock seconds of the clash, the shield held up for you. A light blow of yours flinches a foe lightStag.
-    shieldPts: 10, shieldBack: 10, strikeLock: 4, lightStag: 0.18,
+    // on it takes some by the striker's tier and weapon (RT.SHIELD_HIT). Yours broken: you roll, and take up a new one off
+    // the ground (owner, 7 November: "a place to pick up a new shield where the player has to go"): a fallen soldier's,
+    // where he fell, or the one a comrade throws in at your side's edge (throwX) shieldBack seconds after the break; walking
+    // within pickupR of a body over it takes it up. A foe's broken: gone for the fight. Shield wall or Guard chosen on the
+    // turns: Strike is locked for strikeLock seconds of the clash, the shield held up for you. A light blow of yours
+    // flinches a foe lightStag.
+    shieldPts: 10, shieldBack: 10, throwX: 0.13, pickupR: 0.45, groundMax: 5, strikeLock: 4, lightStag: 0.18,
     swingLock: 1, strength: 1, // (the balance runs: 0 turns the swing lock, or strength's effects, off to measure what each costs)
     // What the swing lock costs each path, given back (owner, 7 November: "balance held at today's win rates per path"): the
     // foes' blows on you this much lighter, by your path. Measured with tests/lives.js (RT=1 RTSTATS=1 COMPARE=1, 1500 lives,
@@ -354,7 +357,10 @@
     if (opts.hp) p.hp = Math.max(1, Math.round(p.maxHp * opts.hp));
     R.shield = !!(C.hasShield && C.hasShield());
     R.blocker = R.shield; // a shield-carrier blocks (RT.P.block*) where the others roll
-    R.sp = RT.P.shieldPts; R.spOff = 0; R.cracked = false; // your shield's points; broken, the seconds until a fresh one (Build D)
+    R.sp = RT.P.shieldPts; R.spOff = 0; R.cracked = false; // your shield's points; broken, the seconds until a comrade throws one in (Build D)
+    R.broken = false; R.ground = []; R.gid = 0; // your shield broken (until you take one up); the shields lying on the field
+    // (A war day's clash begins with a whole one: a shield lost in the last clash, the company handed you a fresh one at the
+    // orders: ui/realtime.js clashEnd says so.)
     // Shield wall or Guard chosen on the turns (Build D, row 50): no strikes for the clash's first seconds, the shield held up for you.
     R.strikeLock = R.clash && !R.noStrike && (p.status.wall || p.status.guard) ? RT.P.strikeLock : 0;
     const id = RT.SKILL[K.S.path];
@@ -421,14 +427,14 @@
   // In a swing (Build D, row 48): from the press until the blow's full length has passed, no Block, no Roll, no parry.
   const swinging = (p) => !!(RT.P.swingLock && p && p.rt && (p.rt.busy > 0 || p.rt.blow));
   RT.swinging = () => swinging(C.player());
-  // Shield-carriers block; the others, and a shield-carrier whose shield is broken (RT.P.shieldBack), roll.
-  RT.rolls = (R) => !R.blocker || R.spOff > 0;
+  // Shield-carriers block; the others, and a shield-carrier whose shield is broken (until he takes up another), roll.
+  RT.rolls = (R) => !R.blocker || !!R.broken;
   RT.can = function (R, what) {
     const p = C.player();
     if (!p || R.over || p.hp <= 0) return false;
     switch (what) {
       case "roll": return RT.rolls(R) && R.roll <= 0 && R.kneel <= 0 && R.breath >= RT.P.rollMin && !held(p) && !swinging(p);
-      case "block": return R.blocker && R.spOff <= 0 && (R.block || (R.roll <= 0 && R.kneel <= 0 && !R.winded && R.breath >= RT.P.blockMin && !swinging(p))) && !held(p) && R.frozen <= 0;
+      case "block": return R.blocker && !R.broken && (R.block || (R.roll <= 0 && R.kneel <= 0 && !R.winded && R.breath >= RT.P.blockMin && !swinging(p))) && !held(p) && R.frozen <= 0;
       case "skill": return !R.noStrike && !(R.strikeLock > 0) && !!R.skill && R.skillCd <= 0 && R.kneel <= 0 && !held(p);
       case "strike": return !R.noStrike && !(R.strikeLock > 0);
       case "herbs": return R.kneel <= 0 && (R.herbCd || 0) <= 0 && p.abilities.includes("herbs") && (K.S.items.herbs || 0) > 0 && p.hp < p.maxHp && !swinging(p);
@@ -454,7 +460,7 @@
     }
     if (a.withdraw && C.canFlee()) { C.flee(); return; }
     // The clash's opening after Shield wall or Guard (Build D): no strikes; a shield-carrier's shield is held up for him.
-    if (R.strikeLock > 0) { a = Object.assign({}, a, { strike: false, skill: false }); if (R.blocker && R.spOff <= 0) a.block = true; }
+    if (R.strikeLock > 0) { a = Object.assign({}, a, { strike: false, skill: false }); if (R.blocker && !R.broken) a.block = true; }
     // Block: held up while the input holds it (and breath lasts); lowered when let go.
     if (R.block && (!a.block || !RT.can(R, "block"))) lowerShield(R);
     else if (!R.block && a.block && RT.can(R, "block")) raiseShield(R);
@@ -568,8 +574,8 @@
     if (pts > 0) shieldTakes(R, t, pts);
     return heavy ? RT.P.fblockHeavy : RT.P.fblockLight;
   }
-  // A shield takes a blow's points (Build D): cracked at half, broken at none. Yours comes back after RT.P.shieldBack
-  // seconds (you roll meanwhile); a foe fights on without his for the rest of the fight.
+  // A shield takes a blow's points (Build D): cracked at half, broken at none. Yours broken, you roll until you take up
+  // another off the ground (takeUp); a foe fights on without his for the rest of the fight.
   function shieldTakes(R, u, pts) {
     const P = RT.P, mine = u.side === "player";
     const before = mine ? R.sp : u.sp == null ? P.shieldPts : u.sp, after = Math.max(0, before - pts);
@@ -577,12 +583,53 @@
     R.stats.shieldPts = (R.stats.shieldPts || 0) + pts;
     if (after <= 0) {
       R.stats.shieldsBroken = (R.stats.shieldsBroken || 0) + 1;
-      if (mine) { R.spOff = P.shieldBack; R.cracked = false; if (R.block) lowerShield(R); R.stats.myShieldBroken = (R.stats.myShieldBroken || 0) + 1; }
+      if (mine) { R.broken = true; R.spOff = P.shieldBack; R.cracked = false; if (R.block) lowerShield(R); R.stats.myShieldBroken = (R.stats.myShieldBroken || 0) + 1; }
       else { u.shield = false; u.shieldDrawn = false; u.shieldBroken = true; }
       R.fx.push({ k: "shieldbreak", uid: u.uid, mine });
     } else if (after <= P.shieldPts / 2 && before > P.shieldPts / 2) R.fx.push({ k: "shieldcrack", uid: u.uid, mine });
   }
   RT.shieldTakes = shieldTakes;
+  // ---------- Shields on the ground (owner, 7 November) ----------
+  // Who lets a shield fall when he falls: a foe whose shield is whole; one of your side the screen draws with one (RT.allyShield,
+  // set by ui/realtime.js: the company's soldiers). Not you: your fight is over.
+  RT.allyShield = null;
+  RT.dropsShield = (u) => !!u && u.side !== "player" && (u.side === "enemy" ? !!(u.shield || u.shieldDrawn) && !u.shieldBroken : !!(RT.allyShield && RT.allyShield(u)));
+  // A shield put on the ground: where it lies (inside the edges you can walk to), whose it was, from when it can be taken up
+  // (at: once it has landed). Too many lying about: the oldest that fell from a soldier goes (a comrade's throw stays).
+  function lay(R, g) {
+    g.id = ++R.gid; g.x = clamp(g.x, EDGE + 0.005, 1 - EDGE - 0.005); g.t = R.t;
+    R.ground.push(g);
+    while (R.ground.length > RT.P.groundMax) { const i = R.ground.findIndex((o) => o.kind === "fallen"); if (i < 0) break; R.fx.push({ k: "shieldgone", id: R.ground[i].id }); R.ground.splice(i, 1); }
+    return g;
+  }
+  // A fallen soldier's shield slides off his arm and lies just behind where he fell (his weapon falls the other way).
+  function dropShield(R, u) {
+    if (!RT.dropsShield(u) || !u.rt) return;
+    const g = lay(R, { kind: "fallen", from: u.uid, x: u.rt.x - RT.fallDir(u) * 0.3 * BODY, lane: u.rt.lane, at: R.t + 0.5 });
+    R.fx.push({ k: "shielddrop", uid: u.uid, id: g.id, x: g.x, lane: g.lane });
+  }
+  // shieldBack seconds after yours broke (and none taken up since): a comrade throws one in at your side's edge.
+  function throwIn(R) {
+    if (R.ground.some((g) => g.kind === "thrown")) return;
+    const g = lay(R, { kind: "thrown", x: RT.P.throwX, lane: 0, at: R.t + 0.6 });
+    R.fx.push({ k: "shieldthrown", id: g.id, x: g.x, lane: g.lane, kind: "thrown" });
+  }
+  // The nearest shield that has landed, for the bot and the screen's pointer.
+  RT.nearestShield = function (R, x) {
+    let best = null;
+    for (const g of R.ground || []) if (R.t >= g.at && (!best || Math.abs(g.x - x) < Math.abs(best.x - x))) best = g;
+    return best;
+  };
+  // Without a shield, walking (or rolling) within pickupR of a body over one that has landed takes it up: a whole one.
+  function takeUp(R, p) {
+    if (!R.broken || held(p)) return;
+    const g = (R.ground || []).find((o) => R.t >= o.at && Math.abs(o.x - p.rt.x) <= RT.P.pickupR * BODY);
+    if (!g) return;
+    R.ground.splice(R.ground.indexOf(g), 1);
+    R.broken = false; R.spOff = 0; R.sp = RT.P.shieldPts; R.cracked = false;
+    R.stats.shieldsTaken = (R.stats.shieldsTaken || 0) + 1;
+    R.fx.push({ k: "shieldup", uid: p.uid, id: g.id, kind: g.kind });
+  }
   // Your blows: three quick ones, the third heavy and knocking back; with the mace (owner, 4 November: heavy and slow) two
   // big ones, each with a long wind-up: an overhead smash (over the shoulder, down onto the head and shoulders; it
   // staggers) and a side sweep that knocks back. About the same weight a second either way (2.29 in 1.30 s; 2.3 in 1.36 s).
@@ -760,8 +807,9 @@
       if (R.winded && R.breath >= P.rollMin) R.winded = false;
     }
     if (R.unseen > 0) R.unseen -= dt;
-    // Build D: the shield comes back; Strike comes back after the wall's opening.
-    if (R.spOff > 0) { R.spOff -= dt; if (R.spOff <= 0) { R.spOff = 0; R.sp = P.shieldPts; R.fx.push({ k: "shieldback", uid: p.uid }); } }
+    // Build D: without a shield, a comrade throws one in after shieldBack seconds, and you take one up by going to it;
+    // Strike comes back after the wall's opening.
+    if (R.broken) { if (R.spOff > 0) { R.spOff -= dt; if (R.spOff <= 0) { R.spOff = 0; throwIn(R); } } takeUp(R, p); }
     if (R.strikeLock > 0) { R.strikeLock -= dt; if (R.strikeLock <= 0) { R.strikeLock = 0; R.fx.push({ k: "strikeback" }); } }
     if (R.rowTo != null) { const d = R.rowTo - p.rt.lane; p.rt.lane += sign(d) * Math.min(Math.abs(d), dt / 0.25); if (Math.abs(R.rowTo - p.rt.lane) < 1e-6) { p.rt.lane = R.rowTo; R.rowTo = null; } }
     if (R.skillCd > 0) R.skillCd -= dt;
@@ -1241,7 +1289,7 @@
     if (R.frozen > 0) { R.frozen -= STEP; if (act.orders) Object.assign(R.orders, act.orders); if (R.frozen <= 0) astraThrow(R); return R; }
     joined(R);
     // ... and a shield-carrier raises the shield against them by himself.
-    if (R.assist && R.blocker && R.spOff <= 0 && !act.block && RT.wantBlock(R, 0.14, 0.3)) act = Object.assign({}, act, { block: true });
+    if (R.assist && R.blocker && !R.broken && !act.block && RT.wantBlock(R, 0.14, 0.3)) act = Object.assign({}, act, { block: true });
     playerAct(R, act);
     joined(R); // a friend who answered the call, or one a beat brought in
     if (B.over) { R.over = B.over; return R; }
@@ -1260,7 +1308,7 @@
     spread(R);
     shotsStep(R);
     clocks(R);
-    for (const u of B.units) if (u.rt && u.hp <= 0 && u.rt.fell == null) { u.rt.fell = R.t; u.rt.atk = null; R.fx.push({ k: "fall", uid: u.uid }); }
+    for (const u of B.units) if (u.rt && u.hp <= 0 && u.rt.fell == null) { u.rt.fell = R.t; u.rt.atk = null; R.fx.push({ k: "fall", uid: u.uid }); dropShield(R, u); }
     const out = overNow(R);
     if (out) end(R, out);
     return R;
@@ -1341,7 +1389,7 @@
       if (!bs.read[key]) continue;
       if (R.t - t.t0 < bs.react) continue;
       const left = t.land - R.t;
-      if (R.blocker && R.spOff <= 0) { // a shield-carrier raises the shield just before the blow, and holds it until it has landed (broken: he rolls)
+      if (R.blocker && !R.broken) { // a shield-carrier raises the shield just before the blow, and holds it until it has landed (broken: he rolls)
         const lead = bs.lead[key] != null ? bs.lead[key] : (bs.lead[key] = RT.P.botLead[0] + K.rng() * (RT.P.botLead[1] - RT.P.botLead[0])); // how early it gets the shield up for this one
         if (left <= (R.block ? 0.45 : lead) && RT.can(R, "block")) { a.block = true; return a; }
         continue;
@@ -1366,6 +1414,11 @@
     if (ast.length && !soon && (foes.length >= 2 || p.hp < p.maxHp * 0.5) && !foes.every((e) => e.hero)) { a.astra = ast[0].id; return a; }
     if (opt.spare && C.spareable().length) { const t = RT.spareable(R)[0]; if (t && K.rng() < opt.spare) { a.spare = t.uid; return a; } }
     const f = nearestFoe(R, p.rt.x);
+    // Without a shield: to the nearest one lying on the field, when it is not far and no foe stands in the way.
+    if (R.blocker && R.broken && !soon) {
+      const g = RT.nearestShield(R, p.rt.x);
+      if (g && Math.abs(g.x - p.rt.x) <= (opt.shieldFar != null ? opt.shieldFar : 0.4) && !foes.some((e) => rowGap(e, p) < 1.5 && (e.rt.x - p.rt.x) * (e.rt.x - g.x) < 0)) { a.move = sign(g.x - p.rt.x); return a; }
+    }
     if (!f) return a;
     const d = f.rt.x - p.rt.x, ad = Math.abs(d);
     // The path's skill, where it does something.

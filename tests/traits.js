@@ -1,7 +1,8 @@
 /* Build D (feedback rows 48-50, Fight_Traits_Draft.md): the fight traits, checked on the engine.
    Stage 1: the swing lock (no Block, Roll or parry until a swing ends), the dagger's five blows, foes open after their
    swing by weapon, shields that crack and break by the striker's tier and weapon, strength through the shield, and the
-   clash's Strike lock after Shield wall or Guard.
+   clash's Strike lock after Shield wall or Guard; a broken shield replaced off the ground (a fallen soldier's, or one a comrade
+   throws in at your side's edge after 10 s).
    Usage: node tests/traits.js [--case id,id] [--json FILE]. Exits 1 when a check fails. */
 "use strict";
 const fs = require("fs");
@@ -111,10 +112,10 @@ function blowsToBreak(enc, who, path, seed) {
     const before = R.stats.blocked;
     RT.step(R, { block: true });
     if (R.stats.blocked > before) caught++;
-    if (R.spOff > 0) break;
+    if (R.broken) break;
     if (foe.rt.atk && !seen.has(foe.rt.atk.t0)) seen.add(foe.rt.atk.t0);
   }
-  const out = { caught, broken: R.spOff > 0, tier: RT.tierOf(foe), weapon: foe.rt.weapon };
+  const out = { caught, broken: !!R.broken, tier: RT.tierOf(foe), weapon: foe.rt.weapon };
   close(); return out;
 }
 check("shield-bhima", "Bhima's mace breaks your raised shield in 4 or 5 blows (the owner's ask, row 49)", () => {
@@ -140,15 +141,80 @@ check("shield-tiers", "points off a shield by tier and weapon: a soldier's mace 
   if (RT.tierOf({ side: "ally", person: "charu" }) !== 0) bad.push("Charu is not a soldier");
   return bad;
 });
-check("shield-yours-back", "your broken shield: Block greyed and roll instead for 10 s, then a fresh shield", () => {
-  const F = fight("e_bandits", { path: "mace" }), { R } = F, bad = [];
+// Shields on the ground (owner, 7 November: "a place to pick up a new shield where the player has to go").
+// A fight with the foes held off the field, so nothing but the shield happens.
+function quiet(path, o) {
+  const F = fight("e_bandits", { path }, Object.assign({ before: (B) => { B.units.filter((u) => u.side === "enemy").forEach((u) => { u.still = true; }); B.units.filter((u) => u.side === "ally").forEach((u) => { u.still = true; }); } }, o || {}));
+  F.B.units.filter((u) => u.side === "enemy").forEach((u) => { u.rt.entered = false; u.rt.x = 1.1; u.rt.atk = null; });
+  return F;
+}
+const walkTo = (F, x, max) => { let n = 0; while (!F.R.over && Math.abs(F.p.rt.x - x) > 0.004 && n++ < (max || 600)) RT.step(F.R, { move: Math.sign(x - F.p.rt.x) }); };
+check("shield-thrown", "your broken shield: Block greyed and roll instead; no shield comes back by itself; after 10 s a comrade throws one in at your side's edge, and walking to it takes it up", () => {
+  const F = quiet("mace"), { R, p } = F, bad = [];
   steps(R, 30);
-  RT.shieldTakes(R, F.p, 99);
-  if (!(R.spOff > 0)) bad.push("not broken");
+  p.rt.x = 0.6;
+  RT.shieldTakes(R, p, 99);
+  if (!R.broken) bad.push("not broken");
   if (RT.can(R, "block")) bad.push("Block allowed with the shield broken");
   if (!RT.rolls(R)) bad.push("no roll with the shield broken");
-  steps(R, Math.ceil(RT.P.shieldBack * 60) + 2, () => { F.p.hp = F.p.maxHp; return {}; });
-  if (R.spOff > 0 || R.sp !== RT.P.shieldPts) bad.push("no fresh shield after " + RT.P.shieldBack + " s");
+  steps(R, Math.ceil(RT.P.shieldBack * 60) - 30);
+  if (R.ground.length) bad.push("a shield on the ground before " + RT.P.shieldBack + " s");
+  steps(R, 30 + 60);
+  if (!R.broken || R.sp === RT.P.shieldPts && !R.broken) bad.push("the shield came back by itself");
+  const g = R.ground.find((o) => o.kind === "thrown");
+  if (!g) bad.push("no shield thrown in after " + RT.P.shieldBack + " s");
+  else {
+    if (Math.abs(g.x - RT.P.throwX) > 0.01) bad.push("thrown in at " + g.x.toFixed(2) + ", not your side's edge");
+    if (RT.nearestShield(R, p.rt.x) !== g) bad.push("not the nearest shield");
+    walkTo(F, g.x);
+    if (R.broken) bad.push("walked to it (at " + p.rt.x.toFixed(3) + ") but did not take it up");
+    if (R.sp !== RT.P.shieldPts) bad.push("the shield taken up has " + R.sp + " points");
+    if (R.ground.includes(g)) bad.push("the shield is still on the ground");
+    if (!RT.can(R, "block")) bad.push("Block not back with a shield in hand");
+  }
+  close(); return bad;
+});
+check("shield-fallen", "a shield-bearer who falls drops his shield where he fell: taken up by walking to it while yours is broken (before any throw), left lying while yours is whole", () => {
+  const F = quiet("mace", { before: (B) => { B.units.filter((u) => u.side === "enemy").forEach((u) => { u.still = true; u.shield = true; }); B.units.filter((u) => u.side === "ally").forEach((u) => { u.still = true; }); } }), { R, B, p } = F, bad = [];
+  steps(R, 10);
+  const foes = B.units.filter((u) => u.side === "enemy");
+  const a = foes[0], b = foes[1];
+  if (!a || !b) return ["e_bandits has fewer than two foes"];
+  // the first falls at 0.62 while your shield is whole
+  a.rt.entered = true; a.rt.x = 0.62; a.hp = 0; steps(R, 2);
+  const g1 = R.ground.find((o) => o.from === a.uid);
+  if (!g1) bad.push("no shield dropped by a fallen shield-bearer");
+  else {
+    if (Math.abs(g1.x - 0.62) > 0.06) bad.push("his shield lies at " + g1.x.toFixed(2) + ", far from where he fell (0.62)");
+    steps(R, 40); walkTo(F, g1.x);
+    if (!R.ground.includes(g1)) bad.push("taken up with your shield whole");
+  }
+  // yours breaks: the fallen soldier's is taken up at once, and no comrade throws one in after
+  p.rt.x = 0.35; RT.shieldTakes(R, p, 99);
+  if (g1) { walkTo(F, g1.x); if (R.broken) bad.push("did not take up the fallen soldier's shield"); }
+  steps(R, Math.ceil(RT.P.shieldBack * 60) + 60);
+  if (R.ground.some((o) => o.kind === "thrown")) bad.push("a comrade threw one in after you had taken one up");
+  // a foe whose shield is broken drops none (the last foe: the fight ends)
+  b.shieldBroken = true; b.shield = false; b.shieldDrawn = false; b.rt.entered = true; b.rt.x = 0.75; b.hp = 0; steps(R, 2);
+  if (R.ground.some((o) => o.from === b.uid)) bad.push("a broken shield dropped as a whole one");
+  close(); return bad;
+});
+check("shield-clash-rearm", "a war day: a shield broken in one clash and not replaced, the next clash begins with a whole one", () => {
+  const F = fight("e_bandits", { path: "mace" }, { clash: true }), { R, B, p } = F, bad = [];
+  RT.shieldTakes(R, p, 99);
+  if (!R.broken) bad.push("not broken");
+  const R2 = RT.begin(B, { clash: true });
+  if (R2.broken || R2.sp !== RT.P.shieldPts || !RT.can(R2, "block")) bad.push("the next clash began without a whole shield");
+  if (R2.ground.length) bad.push("shields left on the ground from the last clash");
+  close(); return bad;
+});
+check("shield-bot-fetch", "the fight bot, its shield broken, goes to a shield lying near (the balance runs play it like a person)", () => {
+  const F = quiet("mace"), { R, p } = F, bad = [];
+  steps(R, 30);
+  p.rt.x = 0.45; RT.shieldTakes(R, p, 99);
+  steps(R, Math.ceil(RT.P.shieldBack * 60) + 60);
+  let n = 0; while (R.broken && n++ < 600) RT.step(R, RT.bot(R, {}));
+  if (R.broken) bad.push("the bot did not take up the shield thrown in (at " + p.rt.x.toFixed(2) + ")");
   close(); return bad;
 });
 check("shield-foe-gone", "a foe's broken shield is gone for the fight: he catches no more blows on it", () => {
