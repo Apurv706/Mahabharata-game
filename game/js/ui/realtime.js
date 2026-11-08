@@ -228,7 +228,7 @@
     let seen = false; try { seen = !!(K.prefs && K.prefs()[key]); } catch (e) { /* no store */ }
     if (seen || (V.told = V.told || {})[key]) return;
     V.told[key] = true; try { K.prefs({ [key]: true }); } catch (e) { /* no store */ }
-    toast(T(line));
+    toast(K.tr(line)); // (plain text: T escapes for markup, and a toast is text)
   }
   // A shield cracks at half its points and splits at none (Build D, row 49): the crack drawn across it, then it is gone
   // (a foe's for the fight; yours until you take up another off the ground).
@@ -645,7 +645,7 @@
   function nameTagsAll(s) { V.actors.forEach((a) => nameTag(a, s)); }
   function pop(a, text, cls, lift) {
     const el = document.createElement("span"); el.className = "pop " + (cls || ""); el.textContent = text;
-    el.style.left = a.x + "px"; el.style.bottom = (a.gy + a.fh * (1.08 + (lift || 0))) + "px"; V.world.appendChild(el);
+    el.style.left = (V.G ? Math.min(Math.max(a.x, 64), V.G.W - 64) : a.x) + "px"; el.style.bottom = (a.gy + a.fh * (1.08 + (lift || 0))) + "px"; V.world.appendChild(el); // (kept off the edges)
     if (U.calm()) { setTimeout(() => el.remove(), 700); return; }
     el.animate([{ transform: "translate(-50%,4px)", opacity: 0 }, { transform: "translate(-50%,-4px)", opacity: 1, offset: 0.15 }, { transform: "translate(-50%,-38px)", opacity: 0 }], { duration: 900, easing: "ease-out" }).onfinish = () => el.remove();
   }
@@ -1060,7 +1060,7 @@
       case "shieldcrack": { const a = A(f.uid); shieldCrack(a); if (a) pop(a, K.tr("Cracked"), f.mine ? "me" : ""); if (K.Sound) K.Sound.play("clang");
         if (f.mine) tipOnce("tipShieldCrack", "Your shield is cracking: every blow from a mace wears it down. Step back from the strongest."); break; }
       case "shieldbreak": { const a = A(f.uid); shieldGone(a, true); if (a) { pop(a, K.tr("Shield broken!"), f.mine ? "me" : "crit"); shake(false); } if (K.Sound) { K.Sound.play("clang"); K.Sound.play("hit"); }
-        if (f.mine) { if (a && a.shieldUp) { a.shieldUp = false; a.el.classList.remove("shield-up"); home(a, 0); } tipOnce("tipShieldFetch", "Your shield is broken: roll for now. Take up a fallen soldier's shield, or go back for the one a comrade throws in when the ring on the button fills."); }
+        if (f.mine) { if (a && a.shieldUp) { a.shieldUp = false; a.el.classList.remove("shield-up"); home(a, 0); } tipOnce("tipShieldFetch", "Shield broken: roll for now, and walk to a shield on the ground to take it up."); }
         else tipOnce("tipFoeShieldBroken", "His shield is broken: he fights on without it, and it will not turn your blows again."); break; }
       // Shields on the ground (owner, 7 November): one falls from a fallen soldier's arm; a comrade throws one in at your
       // side's edge; you take one up by going to it.
