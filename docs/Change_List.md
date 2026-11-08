@@ -1,4 +1,4 @@
-# Change list (29 Oct – 7 Nov 2026)
+# Change list (29 Oct – 8 Nov 2026)
 
 Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct); see PRD §18.11 for the full description of each. **Items 22–25 are built** (30 Oct); see PRD §18.12. **Items 26–31 are built** (31 Oct); see PRD §18.1–18.9. **Item 32** (1 Nov) fixes the 18 critical issues from the code review (`Code_Review_2026-10-31.md`). Item 5 (art) is done.
 
