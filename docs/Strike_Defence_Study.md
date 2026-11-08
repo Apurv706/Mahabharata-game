@@ -2,7 +2,7 @@
 
 **Feedback row 56** (owner, 7 Nov, 22:57): *"Let's do a study of mechanics of all strikes and defend movements we currently have. See what all needs improvements."* Then (22:59): *"Compare the movements against actual human pictures or from animations."*
 
-**Scope (owner's answers):** the real-time fights (story fights, fighter mode, the dream), judged on **feel and readability**. Measured play and frame captures on a phone and a laptop, compared with how people really move and with animation practice. Section 4 is a ranked list to choose from. **Items 1–3, 8 and 9 were built on 8 Nov** (the owner's "Yes"); see *Built* at the end of section 4.
+**Scope (owner's answers):** the real-time fights (story fights, fighter mode, the dream), judged on **feel and readability**. Measured play and frame captures on a phone and a laptop, compared with how people really move and with animation practice. Section 4 is a ranked list to choose from. **All thirteen items were built on 8 Nov** (1–3, 8 and 9 first, the owner's "Yes"; the rest that afternoon, "Lets start building the other things too", with the owner's choices for 4, 5, 12 and 13); see *Built* at the end of section 4.
 
 **How it was done:**
 - **The code:** `game/js/engine/realtime.js` for the rules and `game/js/ui/realtime.js` and `ui/puppet-anim.js` for the drawing, on the `build-d` branch (Build D stage 1 and the shields off the ground).
@@ -316,6 +316,21 @@ Ranked by how much each helps feel and readability for what it costs. Each item 
 | 3 | A blow on a raised shield: a pale steel rim, the shield arm jolted, a small muted number; no red edge, no shake unless heavy | Frame strips: a perfect block shows the steel rim 12 ms after the blow counts, with no number |
 | 8 | Falls away from the striker (back over him only if more than 30% of the body would lie off the field), knees first, then over with the knees bent; arms flung past the head face down, at the sides on the back | Frame strips: the soldier struck from the left sinks on his knees and goes over to the right, his shield dropping on your side |
 | 9 | The string drawn to the corner of the jaw, the drawing hand on the nock for a straight, raised or lowered shot; on the loose the hand flies back past the ear and the bow arm stays up | Pose captures of all six bow poses |
+
+### Built (8 Nov, afternoon): items 4–7 and 10–13
+
+The owner's choices: item 4 "tighten as proposed"; item 5 "warn only" (the lock stays as decided in row 48); item 12's names "only when it matters"; item 13 "yes, fix it".
+
+| # | What changed | Measured after |
+|---|---|---|
+| 4 | Perfect block within 0.12 s (was 0.2), perfect roll within 0.15 s (was 0.24); the test bot rolls with a person's spread, 0.06–0.32 s before the blow | 1,500 lives on two seeds: all real-time fights 94% → 94% won, hard fights 88/87% → 90/90%, each path within about a point except the strategist +3 and the bard −1.5 |
+| 5 | The Strike button (the key strip on a laptop) edged in ember and a ! over your head while a blow begun now would still lock you when a blow marked on you lands; a tip the first time you are hit mid-swing | Engine check (`swing-risk`) |
+| 6 | The smash drives down through the target (no lower than about 50° below level), the sweep winds behind the back hip and carries on round and up, a fading trail behind the mace head, the mace held low at the hip behind the shield. A return home that reset the sweep's wind-up is dropped | Frame strips: the sweep's mace now goes behind the back before it swings |
+| 7 | The cut wound to the shoulder, stepping in only so far that the blade comes down diagonally; it carries on past the body; the shield stays forward | Frame strips; the blow-fit check passes (every tip on its target) |
+| 10 | The roll is a step back out of the blow (a duck when it carries you forward), 0.8 opacity, a ghost streak | Frame strips |
+| 11 | The shield raised to the eyes for a cut or a smash, at the chest for the rest, punched out to the blow; a parry overhead for a cut or a smash, across the chest for the rest | Frame strips |
+| 12 | The dagger's fifth a drive up from a crouch; a heavy blow reels a foe; a champion's shrug (a dull puff, a tip); a larger "Feint!" with a hitch; the foe's opening a breathing rim; names at the start, on a champion's arrival, on a helper and on the foe you turn to | Frame strips |
+| 13 | **Worn down** instead of a plain floor: after two minutes an ordinary foe tires and every blow of yours on him takes at least 3% of his health by its weight; champions never tire. (1% of health on every blow eased the hard fights to 94%; 5 points left the healer capped) | The weak healer at the supply carts: 32 of 32 bouts finished in 168–231 s (all 32 hit the 4-minute cap before); the known failure is off the list |
 
 ---
 
