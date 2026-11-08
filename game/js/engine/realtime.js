@@ -224,6 +224,7 @@
   RT.SKILL = { archer: "aimed", mace: "quake", charioteer: "ridedown", strategist: "command", healer: "salve", spy: "vanish", bard: "song" };
   RT.RECHARGE = { aimed: 7, quake: 11, ridedown: 10, command: 9, salve: 13, vanish: 10, song: 13 };
   const MELEE = new Set(["strike", "heavy", "crush", "breaker", "disarm", "hamstring", "nerve", "ridedown"]);
+  RT.MELEE = MELEE; // (the screen: a comrade's blow it swings ahead of the land)
   const RANGED = new Set(["arrows", "aimed", "pin", "volley"]);
   const HEAVY = new Set(["heavy", "crush", "breaker", "aimed"]);
 
@@ -711,7 +712,7 @@
     m *= caught;
     const d = B.hit(p, t, m);
     R.stats.hits++;
-    hitFx(R, t, d, b.c.heavy, p, true, b.c.arc);
+    hitFx(R, t, d, b.c.heavy, p, true, b.c.arc, caught < 1);
     if (b.c.knock && t.hp > 0) knock(R, t, p.rt.face, b.c.knock * BODY, false);
     if (b.c.stag && t.hp > 0 && !t.rt.atk) t.rt.stag = Math.max(t.rt.stag, b.c.stag);
     // A light blow flinches a soldier, a captain sometimes, a champion never (only heavy blows stagger him: Build D).
@@ -734,9 +735,29 @@
       R.fx.push({ k: "thrown", uid: id, dx: u.rt.x - x0 });
     }
   }
-  // Which way a figure falls: toward the middle of the field (never out of the stage).
-  RT.fallDir = (u) => (u.rt && u.rt.x > 0.5 ? -1 : 1);
-  function hitFx(R, t, d, heavy, by, melee, arc) { R.fx.push({ k: "hit", uid: t.uid, n: d, heavy: !!heavy, by: by ? by.uid : null, melee: !!melee, arc: arc || null }); }
+  // Which way a figure falls (owner, 8 November, the strike and defence study: the fallen toppled toward the middle of the field,
+  // so a foe cut down by you fell onto you and lay under your feet): away from the blow that felled him (with no blow
+  // remembered, toward the middle), if the field has room for him lying (RT.fallLen, field widths: the screen sets it from the
+  // figures' size). Decided once, at the fall (his shield drops on the other side: dropShield).
+  RT.fallLen = 0.3;
+  RT.fallDir = (u) => {
+    if (!u || !u.rt) return 1;
+    if (u.rt.fdir) return u.rt.fdir;
+    const mid = u.rt.x > 0.5 ? -1 : 1;
+    const away = u.rt.lastFrom != null && Math.abs(u.rt.x - u.rt.lastFrom) > 1e-4 ? sign(u.rt.x - u.rt.lastFrom) : mid;
+    // (room: how much of him, lying, would be on the field that way; on a phone a body is nearly half the field long, so
+    // he falls away unless that leaves more than 30% of him off it, and only then back over the one who struck him)
+    const room = (dir) => { const end = u.rt.x + dir * RT.fallLen, over = Math.max(0, end - 1, -end); return 1 - over / RT.fallLen; };
+    const dir = room(away) >= 0.7 ? away : room(-away) >= 0.999 ? -away : room(away) >= room(-away) ? away : -away;
+    if (u.hp <= 0) u.rt.fdir = dir;
+    return dir;
+  };
+  // A blow that lands. blocked: taken on a raised shield (yours, or a foe's): the screen shows a clang, not a wound. The one struck
+  // remembers where it came from (lastFrom: the striker, or you for a blow with no striker named), so he falls away from it.
+  function hitFx(R, t, d, heavy, by, melee, arc, blocked) {
+    if (t.rt) t.rt.lastFrom = by && by.rt ? by.rt.x : C.player() && C.player().rt ? C.player().rt.x : null;
+    R.fx.push({ k: "hit", uid: t.uid, n: d, heavy: !!heavy, by: by ? by.uid : null, melee: !!melee, arc: arc || null, blocked: !!blocked });
+  }
   function skill(R) {
     const B = R.B, p = C.player(), id = R.skill, ab = K.ABILITIES[id];
     R.skillCd = RT.RECHARGE[id] || 10;
@@ -959,7 +980,8 @@
     R.fx.push({ k: "arrive", shot: s, uid: t ? t.uid : null });
     if (!t) return;
     if (s.m) { // an arrow of your Strike combo: a plain hit, the third knocking him back (or caught on a shield: foeBlocks)
-      const d = B.hit(p, t, s.m * (p.side === "player" ? foeBlocks(R, t, s.heavy, true) : 1)); if (p.side === "player") R.stats.hits++; hitFx(R, t, d, s.heavy, p.side === "player" ? null : p); t.rt.hits.push(R.t); // (an archer beside you: his own hit)
+      const caught = p.side === "player" ? foeBlocks(R, t, s.heavy, true) : 1;
+      const d = B.hit(p, t, s.m * caught); if (p.side === "player") R.stats.hits++; hitFx(R, t, d, s.heavy, p.side === "player" ? null : p, false, null, caught < 1); t.rt.hits.push(R.t); // (an archer beside you: his own hit)
       if (s.knock && t.hp > 0) knock(R, t, sign(t.rt.x - p.rt.x), s.knock * BODY, false);
       else if (p.side === "player" && t.hp > 0 && d > 0) t.rt.x = clamp(t.rt.x + sign(t.rt.x - p.rt.x) * RT.P.arrowPush * (t.hero || t.person ? 0.5 : 1) * BODY, 0.07, 0.93); // pushed back a little
       return;
@@ -1041,7 +1063,7 @@
       if (a.id === "arrows") B.hit(e, t, 1, { verb: "Arrows rain on {t} for {n}." });
       else ab.use(B, e, ab.target === "enemies" ? [t] : t);
     }
-    hitFx(R, t, before - t.hp, a.heavy, e, !a.ranged, a.arc);
+    hitFx(R, t, before - t.hp, a.heavy, e, !a.ranged, a.arc, blocked);
     if (t === p && before > t.hp) { R.kneel = 0; R.salveStop = true; if (a.heavy && !blocked) { p.rt.busy = Math.max(p.rt.busy, 0.25 * STR.knock[tier]); p.rt.blow = null; } }
     // A mace's side sweep shoves the one struck back (a step less behind a raised shield; further from a stronger arm).
     if (a.arc === "sweep" && t.hp > 0 && !perfectBlock) { const dir = sign(t.rt.x - e.rt.x), dx = P.maceShove * BODY * (blocked ? 0.5 : 1) * STR.knock[tier]; t.rt.x = t === p ? clamp(t.rt.x + dir * dx, EDGE, 1 - EDGE) : clamp(t.rt.x + dir * dx, 0.07, 0.93); }

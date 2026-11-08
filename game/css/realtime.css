@@ -54,13 +54,17 @@ html[lang="hi"] #rt .fname b { line-height: 1.35; }
 #rt .actor.face-l .fl { transform: translateX(-50%) scaleX(-1); }
 #rt .actor svg.pp { display: block; width: auto; overflow: visible; filter: drop-shadow(0 0 8px rgba(255, 196, 110, 0.4)) drop-shadow(0 5px 5px rgba(0, 0, 0, 0.6)); }
 #rt .actor .shadow { position: absolute; left: 0; bottom: calc(var(--fh) * -0.03); width: calc(var(--fh) * 0.46); height: calc(var(--fh) * 0.07); transform: translateX(-50%); border-radius: 50%; background: radial-gradient(closest-side, rgba(10, 4, 2, 0.7), rgba(10, 4, 2, 0)); }
+/* A foe winding up: an ember rim round the figure, pulsing twice; the figure itself keeps its own colours (the strike and
+   defence study, 8 November: brightened and browned all over, the raised arm and weapon, the pose to read, washed out) */
 #rt .actor.windup svg.pp { animation: rtl-wind 0.3s ease-in-out 2 alternate; }
-@keyframes rtl-wind { from { filter: brightness(1.15) sepia(0.3) drop-shadow(0 0 6px rgba(255, 122, 60, 0.7)); } to { filter: brightness(1.55) sepia(0.6) saturate(1.4) drop-shadow(0 0 14px rgba(255, 122, 60, 1)); } }
-html.calm #rt .actor.windup svg.pp { animation: none; filter: brightness(1.5) sepia(0.6) drop-shadow(0 0 12px rgba(255, 122, 60, 1)); }
+@keyframes rtl-wind { from { filter: drop-shadow(0 0 1.5px rgba(255, 140, 60, 0.9)) drop-shadow(0 0 5px rgba(255, 110, 40, 0.6)); } to { filter: drop-shadow(0 0 2px rgba(255, 150, 70, 1)) drop-shadow(0 0 11px rgba(255, 110, 40, 0.95)); } }
+html.calm #rt .actor.windup svg.pp { animation: none; filter: drop-shadow(0 0 2px rgba(255, 150, 70, 1)) drop-shadow(0 0 9px rgba(255, 110, 40, 0.9)); }
 /* Struck: a short flash (6 November, owner: brightness 2.1 washed the figure out pale yellow) - a foe brightens a little with a
    white edge; you, a red edge */
 #rt .actor.hit svg.pp { filter: brightness(1.35) drop-shadow(0 0 4px rgba(255, 246, 228, .95)) !important; animation: none; }
 #rt .actor.me.hit svg.pp { filter: brightness(1.08) drop-shadow(0 0 3px rgba(255, 60, 40, 1)) drop-shadow(0 0 9px rgba(255, 60, 40, .85)) !important; }
+/* A blow taken on a shield: a pale steel rim, not the wound's flash (the strike and defence study, 8 November) */
+#rt .actor.clang svg.pp { filter: drop-shadow(0 0 2px rgba(236, 244, 255, 1)) drop-shadow(0 0 7px rgba(190, 214, 255, .8)) !important; animation: none; }
 #rt .actor.beaten svg.pp { filter: grayscale(0.55) brightness(0.8) drop-shadow(0 4px 4px rgba(0, 0, 0, 0.6)); }
 #rt .actor.unseen svg.pp { opacity: 0.5; }
 #rt .actor .mini { position: absolute; left: 0; bottom: calc(var(--fh) * var(--barh, 1.04)); /* --barh: above a crown, never across the face */ width: 46px; height: 6px; transform: translateX(-50%); border-radius: 3px; background: rgba(0, 0, 0, 0.5); overflow: hidden; }
@@ -577,6 +581,7 @@ body.in-rt { overflow: hidden; }
 #rt .rt-scorch.k-varuna { background: radial-gradient(ellipse at 70% 90%, rgba(60, 110, 180, 0.5), rgba(0, 0, 0, 0) 70%); }
 #rt .rt-scorch.k-sammohana { background: radial-gradient(ellipse at 70% 90%, rgba(120, 60, 170, 0.5), rgba(0, 0, 0, 0) 70%); }
 #rt .pop.ally { color: #ffb08a; } #rt .pop.miss { color: #fff; font-size: 14px; }
+#rt .pop.chip { color: #d8c79a; font-size: 14px; opacity: 0.9; } /* what gets through a shield: small and muted */
 #rt .stage.bigshake { animation: rtl-bigshake 0.6s linear; }
 html.calm #rt .stage.bigshake { animation: none; }
 #rt .actor.beaten { pointer-events: auto; }
@@ -763,8 +768,14 @@ html[lang="hi"] #rt .lowwarn b, html[lang="hi"] #rt .lowwarn span { font-family:
 @media (prefers-reduced-motion: reduce) { #rt.lowlife .stage::after { animation: none; opacity: .8; } #rt.lowlife .bar.hp i, #rt .actor.dazed .fl, #rt .actor.me.roared::after, #rt .cl-open { animation: none; } }
 /* The parry (owner, 6 November): the blade coming down on you is lit white while a Strike would meet it; blade on blade,
    a larger flash where they meet */
-#rt .actor.parry-cue .fl { filter: drop-shadow(0 0 2px #ffffff) drop-shadow(0 0 7px rgba(255, 255, 255, .95)); }
-html.calm #rt .actor.parry-cue .fl { filter: drop-shadow(0 0 3px #ffffff) brightness(1.25); }
+/* (the strike and defence study, 8 November: the white outline went round the whole figure; now the light runs along the
+   blade itself, from its middle to its point, with a star at the point) */
+#rt .glint-blade { position: absolute; z-index: 11; height: 3px; margin-top: -1.5px; transform-origin: 0 50%; pointer-events: none; border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, .95) 55%, #fff); box-shadow: 0 0 6px 1px rgba(255, 255, 255, .9), 0 0 14px 2px rgba(200, 225, 255, .6); }
+#rt .glint-blade::after { content: ""; position: absolute; right: -6px; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%;
+  background: radial-gradient(closest-side, #fff, rgba(255, 255, 255, .7) 40%, rgba(255, 255, 255, 0)); animation: rt-glint .22s ease-in-out infinite alternate; }
+@keyframes rt-glint { from { transform: scale(.75); } to { transform: scale(1.25); } }
+html.calm #rt .glint-blade::after { animation: none; }
 /* A foe lowering his shield after catching your blow: he cannot strike yet (owner, 6 November). Lit gold, pulsing, while it lasts. */
 #rt .actor.opened .fl { filter: drop-shadow(0 0 2px rgba(255, 214, 110, 1)) drop-shadow(0 0 8px rgba(255, 190, 60, .9)); animation: rt-open .45s ease-in-out infinite alternate; }
 @keyframes rt-open { from { opacity: 1; } to { opacity: .86; } }

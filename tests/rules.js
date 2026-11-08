@@ -1516,6 +1516,14 @@ require(G + "content/war_fights.js");
     C.settle("lose"); C.end(); }
   // A figure falls toward the middle of the stage, never off its edge.
   ok(RT.fallDir({ rt: { x: 0.85 } }) === -1 && RT.fallDir({ rt: { x: 0.15 } }) === 1, "the fallen fall toward the middle of the stage");
+  // Struck down, he falls away from the one who struck him (the strike and defence study, 8 November), even where his body is
+  // nearly half the field long (a phone); back over the striker only when most of him would lie off the field.
+  { const len = RT.fallLen;
+    const away = [0.3, 0.47].every((L) => { RT.fallLen = L; return RT.fallDir({ rt: { x: 0.55, lastFrom: 0.36 } }) === 1 && RT.fallDir({ rt: { x: 0.45, lastFrom: 0.64 } }) === -1; });
+    RT.fallLen = 0.3; const edge = RT.fallDir({ rt: { x: 0.92, lastFrom: 0.7 } }) === -1;
+    const once = { rt: { x: 0.55, lastFrom: 0.36 }, hp: 0 }; RT.fallDir(once); once.rt.lastFrom = 0.8; const kept = RT.fallDir(once) === 1;
+    RT.fallLen = len;
+    ok(away && edge && kept, "the fallen fall away from the blow that felled them, unless that would put most of them off the field; decided once"); }
   RT.force = false;
 }
 // 120. Act checkpoints (engine/flow.js): a copy of the life at the start of every act, kept compactly;

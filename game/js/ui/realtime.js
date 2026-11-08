@@ -287,6 +287,18 @@
     ar.hidden = false; ar.classList.toggle("r", dir > 0);
     ar.style.left = (me.x + dir * me.bw * 0.95).toFixed(1) + "px"; ar.style.bottom = (me.gy + me.fh * 0.04).toFixed(1) + "px";
   }
+  // The parry's cue (owner, 6 November: "the blade coming at you is lit white"): drawn along the blade itself, from the middle
+  // of the weapon to its tip, not round the whole figure (the strike and defence study: that turned him into a pale silhouette).
+  function bladeGlint(a, on) {
+    if (!on || !a.svg) { if (a.glint) a.glint.hidden = true; return; }
+    const tipEl = a.svg.querySelector(".pp-body .foreF .it-tip"), wEl = a.svg.querySelector(".pp-body .foreF .it-w, .pp-body .foreF .it-tmp");
+    if (!tipEl || !wEl) { if (a.glint) a.glint.hidden = true; return; }
+    const wr = V.world.getBoundingClientRect(), t = tipEl.getBoundingClientRect(), w = wEl.getBoundingClientRect();
+    const x1 = t.left + t.width / 2 - wr.left, y1 = t.top + t.height / 2 - wr.top, x0 = w.left + w.width / 2 - wr.left, y0 = w.top + w.height / 2 - wr.top;
+    let g = a.glint; if (!g) { g = a.glint = U.el('<i class="glint-blade" aria-hidden="true"></i>'); V.world.appendChild(g); }
+    g.hidden = false;
+    Object.assign(g.style, { left: x0.toFixed(1) + "px", top: y0.toFixed(1) + "px", width: Math.max(6, Math.hypot(x1 - x0, y1 - y0)).toFixed(1) + "px", transform: "rotate(" + Math.atan2(y1 - y0, x1 - x0).toFixed(3) + "rad)" });
+  }
   function parryTip() {
     let seen = false; try { seen = !!(K.prefs && K.prefs().tipParry); } catch (e) { /* no store */ }
     if (seen || V.parryTold) return;
@@ -472,6 +484,7 @@
     const FIELD = 1 / RT.BODY;
     const ph = wide ? Math.min(H * 0.3, W / (FIELD * 0.36)) : Math.min(H * 0.3, W * 0.52); // a tall phone: the front row's figure about 29% of the stage
     const FW = wide ? Math.min(W, ph * 0.36 * FIELD) : W;
+    RT.fallLen = Math.max(0.12, Math.min(0.5, ph * 0.9 / FW)); // a figure lying, in field widths (RT.fallDir)
     V.G = { W, H, ph, FW, fx0: (W - FW) / 2, dk: 0.12, gl: wide && !scr.classList.contains("touch") ? Math.max(H * 0.06, 46) : H * (wide ? 0.06 : 0.05), dstep: H * (wide ? 0.1 : 0.11), wide };
     // The fight's scale: a front-row figure's width in the field's body widths (about 1.8 on a phone, 1 on a laptop), so
     // that two who fight stand where their weapons reach, as drawn (engine RT.setScale).
@@ -580,11 +593,15 @@
     }, wait);
   }
   function struck(a, f, pt) {
-    a.el.classList.add("hit"); setTimeout(() => a.el.classList.remove("hit"), 90);
-    if (a.rig) a.rig.kick(a.u.side === "enemy" ? { rot: 220, head: 180 } : { rot: -260, head: -200, armF: 160 });
-    if (f.n) pop(a, String(f.n), a.u.side === "player" ? "me" : a.u.side === "ally" ? "ally" : "");
+    // Taken on a raised shield (yours, or his): a clang, not a wound (the strike and defence study, 8 November: a perfect
+    // block flashed the red "you were hit" edge, and "Blocked" came with a damage number like any wound): a pale rim, the
+    // shield arm jolted, and what little gets through as a small gold number.
+    const cls = f.blocked ? "clang" : "hit";
+    a.el.classList.add(cls); setTimeout(() => a.el.classList.remove(cls), f.blocked ? 160 : 90);
+    if (a.rig) a.rig.kick(f.blocked ? (a.u.side === "enemy" ? { rot: 90, armB: -160 } : { rot: -90, armB: -160 }) : a.u.side === "enemy" ? { rot: 220, head: 180 } : { rot: -260, head: -200, armF: 160 });
+    if (f.n) pop(a, String(f.n), f.blocked ? "chip" : a.u.side === "player" ? "me" : a.u.side === "ally" ? "ally" : "");
     if (U.rigFreeze) U.rigFreeze(f.heavy ? 80 : 50);
-    if (f.heavy || a.u.side === "player") shake(false);
+    if (f.heavy || (a.u.side === "player" && !f.blocked)) shake(false);
     if (f.heavy) nameTag(a, 1.2);
     const clash = pt && pt.on !== "body";
     if (pt) {
@@ -654,9 +671,12 @@
   function fell(a) {
     a.el.classList.add("dead"); a.el.classList.remove("windup"); a.el.style.zIndex = "4";
     if (a.tag) a.tag.classList.remove("on");
-    // Toward the middle of the stage (RT.fallDir): forward when it faces the middle, else backward.
+    // Away from the blow that felled him, where there is room (RT.fallDir): forward when that is the way he faces, else
+    // backward. Knees first (the strike and defence study, 8 November: they toppled stiff as planks): the legs give, then
+    // the body goes over with them bent.
     const toward = RT.fallDir(a.u), fwd = toward === (a.u.rt ? a.u.rt.face : 1) ? 1 : -1;
-    if (a.rig) a.rig.fallDown(-86, fwd); else pose(a, "fall");
+    if (a.rig && !U.calm()) { a.rig.set("buckle", 2400, 0.55); const r = a.rig; setTimeout(() => { if (r.svg.isConnected) r.fallDown(-86, fwd, null, true); }, 170); }
+    else if (a.rig) a.rig.fallDown(-86, fwd, null, true); else pose(a, "fall");
     const flung = a.u.rt && a.u.rt.flung != null && V.R.t - a.u.rt.flung < 3; // thrown by a divine weapon: the weapon flies
     const item = a.svg.querySelector(".it"), kind = a.spec && a.spec.item, svgW = WEAPON[kind] || (kind ? WEAPON.sword : null);
     if (item && svgW && !a.dropped) {
@@ -852,7 +872,7 @@
     }
     V.raf = requestAnimationFrame(loop);
   }
-  function retry() { V.R = RT.retry(V.R); V.actors.forEach((a) => { a.el.remove(); if (a.tag) a.tag.remove(); if (a.weaponEl) a.weaponEl.remove(); }); $$(".scorch, .ax, .gshield, .shptr", V.el).forEach((e) => e.remove()); V.ax = null; V.ground = null; V.shPtr = null; V.actors.clear(); if (U.rigs) U.rigs.clear(); V.logAt = V.R.B.log.length; toast(K.tr("One more time.")); }
+  function retry() { V.R = RT.retry(V.R); V.actors.forEach((a) => { a.el.remove(); if (a.tag) a.tag.remove(); if (a.weaponEl) a.weaponEl.remove(); }); $$(".scorch, .ax, .gshield, .shptr, .glint-blade", V.el).forEach((e) => e.remove()); V.ax = null; V.ground = null; V.shPtr = null; V.actors.clear(); if (U.rigs) U.rigs.clear(); V.logAt = V.R.B.log.length; toast(K.tr("One more time.")); }
   // Beaten, but the story goes on (owner, 4 November): you slump where you stand, the foes turn and walk off the field, and a
   // line says you tried and what is written held. A tap (Enter or Space) goes on.
   // A deadly fight lost the first time: you are down, not dead, while the second try is offered.
@@ -943,7 +963,23 @@
       if (u.rt.atk && u.side === "enemy" && !a.warned) a.warned = u.rt.atk;
       a.el.classList.toggle("windup", !!u.rt.atk && u.side === "enemy" && a.warned === u.rt.atk);
       // The parry's moment (RT.P.parryCue before it lands): the blade coming down on you is lit white; Strike then meets it.
-      if (u.side === "enemy") { const cue = canParry && u.hp > 0 && RT.parryable(R, u, RT.P.parryCue); if (cue !== !!a.cue) { a.cue = cue; a.el.classList.toggle("parry-cue", cue); if (cue) parryTip(); } }
+      if (u.side === "enemy") { const cue = canParry && u.hp > 0 && RT.parryable(R, u, RT.P.parryCue); if (cue !== !!a.cue) { a.cue = cue; a.el.classList.toggle("parry-cue", cue); if (cue) parryTip(); } bladeGlint(a, cue); }
+      // Foes' blows drawn on time (the strike and defence study, 8 November: the swing began only when the blow had landed
+      // in the rules, so the weapon reached you about 0.1 s after it counted): the swing starts IMPACT ms before it lands,
+      // as your own do, and in the 140 ms before that the wind-up coils a little further back, the moment to react to.
+      if (u.side === "player" && a.nextSwing) { // your own blow wound up (fx "blow"), not one broken off to parry
+        const b = u.rt.blow, left = b ? (b.at - R.t) / (V.slowUntil && performance.now() < V.slowUntil ? 0.3 : 1) * 1000 : 0;
+        if (!b || b.at !== a.nextSwing.at || R.block || u.hp <= 0) a.nextSwing = null;
+        else if (left <= IMPACT + 8) { const arc = a.nextSwing.arc; a.nextSwing = null; swing(a, inFront(u), null, arc); }
+      }
+      // (a comrade's blows the same; only foes are slowed by a perfect roll's slow motion, R.slow)
+      if (u.hp > 0 && u.rt.atk && !u.rt.atk.ranged && !u.rt.atk.area && a.rig && (u.side === "enemy" || (u.side === "ally" && RT.MELEE && RT.MELEE.has(u.rt.atk.id)))) {
+        const at = u.rt.atk, rate = (u.side === "enemy" && R.slow > 0 ? 0.45 : 1) * (V.slowUntil && performance.now() < V.slowUntil ? 0.3 : 1);
+        const left = (at.land - R.t) / rate * 1000; // ms on the screen's clock
+        const feinting = at.feint && R.t < at.feint;
+        if (!feinting && a.coiled !== at.land && left <= IMPACT + 140 && left > IMPACT) { a.coiled = at.land; a.rig.kick({ rot: -70, armF: -120, head: -40 }); }
+        if (!feinting && a.preSwung !== at.land && left <= IMPACT + 8) { a.preSwung = at.land; const ta = V.actors.get(at.on); if (ta && ta.u.hp > 0) swing(a, ta, guardOf(ta), a.atkArc); }
+      }
       if (u.rt.atk !== a.atk) {
         if (u.rt.atk) a.atkArc = !u.rt.atk.ranged && !u.rt.atk.area && U.arcFor ? u.rt.atk.arc || U.arcFor(u.rt.weapon, a.blowN = (a.blowN || 0) + 1) : null; // which way this weapon's blow comes
         if (u.rt.atk) { pose(a, u.rt.atk.ranged ? "draw" : a.atkArc && U.ARCS[a.atkArc] ? U.ARCS[a.atkArc].up : "windup", a.atkArc && U.MACE_ARCS[a.atkArc] ? 500 : 700, 0.5); const t = V.actors.get(u.rt.atk.on); if (t) nameTag(t, 1.5); }
@@ -1051,9 +1087,14 @@
     switch (f.k) {
       case "blow": { // the wind-up of this weapon's blow, then the swing so the weapon arrives as the blow lands
           const arc = f.arc || (U.arcFor ? U.arcFor(p.rt.weapon, f.n) : null), A = arc && U.ARCS[arc];
-          if (A) { me.blowArc = arc; pose(me, A.up, 1500, 0.55); setTimeout(() => { if (V && me && !V.R.block && p.rt.blow) swing(me, inFront(p), null, arc); }, Math.max(0, f.land * 1000 - IMPACT)); /* (not a blow broken off to parry) */ if (K.Sound) K.Sound.play("tap"); break; }
+          // (the swing is begun from the frame loop, IMPACT ms before the blow lands on the fight's own clock (the strike and
+          // defence study, 8 November): a timer could fire after a slow frame, or a heavy blow's swing begin so early that it
+          // had to be begun again when the blow landed, 0.1 s late)
+          const at = p.rt.blow ? p.rt.blow.at : R.t + f.land;
+          if (A) { me.blowArc = arc; pose(me, A.up, 1500, 0.55); me.nextSwing = { at, arc }; if (K.Sound) K.Sound.play("tap"); break; }
+          if (f.heavy || f.n === 2 || f.land * 1000 > IMPACT + 40) { pose(me, "windup", 1700, 0.55); me.nextSwing = { at, arc: null }; } else swing(me, inFront(p), null);
+          if (K.Sound) K.Sound.play("tap"); break;
         }
-        if (f.heavy || f.n === 2) { pose(me, "windup", 1700, 0.55); setTimeout(() => { if (V && me) swing(me, inFront(p), null); }, 120); } else swing(me, inFront(p), null); if (K.Sound) K.Sound.play("tap"); break;
       case "roll": pose(me, "duck", 1400, 0.6); home(me, 400); break;
       case "kneel": pose(me, "kneel", 600, 0.6); home(me, 1100); break;
       // Build D (row 49): a shield cracked at half its points, split at none; yours replaced off the ground (a fallen soldier's, or a comrade's throw).
@@ -1113,7 +1154,7 @@
         const to = { x: G.fx0 + s.lane * G.FW, y: G.H - ((tgt ? tgt.gy : G.gl) + (tgt ? tgt.fh : G.fh) * 0.55) };
         const v = V, go = () => U.flyArrow && U.flyArrow(v.world, from, to, Math.abs(to.x - from.x) * 0.05, Math.max(90, (s.arrive - s.t0) * 1000), false, Math.max(26, G.fh * 0.36));
         if (a.u.side === "player" && f.second) { setTimeout(() => { if (V === v) go(); }, Math.max(0, (s.t0 - V.R.t) * 1000)); break; } // the second arrow of a press: off the same draw, a moment later
-        if (a.u.side === "player") { pose(a, "draw", 900, 0.6); setTimeout(() => { if (V !== v) return; pose(a, "loose", 1200, 0.5); home(a, 450); go(); }, Math.max(0, (s.t0 - V.R.t) * 1000)); } // (a clash may end while the bow is drawn)
+        if (a.u.side === "player") { pose(a, "draw", 1400, 0.6); setTimeout(() => { if (V !== v) return; pose(a, "loose", 1200, 0.5); home(a, 450); go(); }, Math.max(0, (s.t0 - V.R.t) * 1000)); } // (a clash may end while the bow is drawn)
         else { pose(a, "loose", 1200, 0.5); home(a, 450); go(); }
         break; }
       case "blocked": toast(K.tr("A foe stands in your way")); break;

@@ -2,7 +2,7 @@
 
 **Feedback row 56** (owner, 7 Nov, 22:57): *"Let's do a study of mechanics of all strikes and defend movements we currently have. See what all needs improvements."* Then (22:59): *"Compare the movements against actual human pictures or from animations."*
 
-**Scope (owner's answers):** the real-time fights (story fights, fighter mode, the dream), judged on **feel and readability**. Measured play and frame captures on a phone and a laptop, compared with how people really move and with animation practice. Section 4 is a ranked list to choose from. Nothing is changed yet.
+**Scope (owner's answers):** the real-time fights (story fights, fighter mode, the dream), judged on **feel and readability**. Measured play and frame captures on a phone and a laptop, compared with how people really move and with animation practice. Section 4 is a ranked list to choose from. **Items 1–3, 8 and 9 were built on 8 Nov** (the owner's "Yes"); see *Built* at the end of section 4.
 
 **How it was done:**
 - **The code:** `game/js/engine/realtime.js` for the rules and `game/js/ui/realtime.js` and `ui/puppet-anim.js` for the drawing, on the `build-d` branch (Build D stage 1 and the shields off the ground).
@@ -306,6 +306,16 @@ Ranked by how much each helps feel and readability for what it costs. Each item 
 | 13 | **A weak healer can't finish the supply carts** (the 4-minute cap): a floor on a blow's damage against the scaled health | the full check of 7 Nov (`tests/known_failures.json`) | Small | Yes |
 
 **Suggested first build:** items 1–3 and 8–9. They change nothing in the rules, fix what a player sees in every fight, and are quick. Items 4–5 need a decision and the balance run, and items 6–7 and 10–11 are a session of posing each.
+
+### Built (8 Nov, branch `build-d`): items 1–3, 8 and 9
+
+| # | What changed | Measured after |
+|---|---|---|
+| 1 | A foe's swing (and a comrade's) starts 95 ms before the blow lands, with a short coil back in the 140 ms before; your heavy and mace blows are begun from the frame loop on the fight's own clock, not a timer | The timing probe: a foe's blow now shows on screen **4–30 ms** after it counts (was 96–106 ms) on sword, spear, mace smash and sweep, phone and laptop; yours 3–15 ms on sword, mace and dagger |
+| 2 | The first wind-up is an ember rim round the figure, his own colours kept; the parry's cue is white light along the blade, middle to point, with a star at the point | Frame strips: the raised arm and weapon read through the whole wind-up; the light sits on the blade only |
+| 3 | A blow on a raised shield: a pale steel rim, the shield arm jolted, a small muted number; no red edge, no shake unless heavy | Frame strips: a perfect block shows the steel rim 12 ms after the blow counts, with no number |
+| 8 | Falls away from the striker (back over him only if more than 30% of the body would lie off the field), knees first, then over with the knees bent; arms flung past the head face down, at the sides on the back | Frame strips: the soldier struck from the left sinks on his knees and goes over to the right, his shield dropping on your side |
+| 9 | The string drawn to the corner of the jaw, the drawing hand on the nock for a straight, raised or lowered shot; on the loose the hand flies back past the ear and the bow arm stays up | Pose captures of all six bow poses |
 
 ---
 

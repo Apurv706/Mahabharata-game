@@ -10,9 +10,11 @@
    rig.set(pose, stiffness, damping, snap)  aim every joint at a pose from POSES
    rig.home()                               back to its own resting pose
    rig.kick({ joint: velocity })            a push on some joints (an impact)
-   rig.fallDown(floor, dir, onRest)         the joints go slack and it topples about its feet, backward (dir 1: forward) (to the
+   rig.fallDown(floor, dir, onRest, bent)   the joints go slack and it topples about its feet, backward (dir 1: forward) (to the
                                             ground, or held at floor degrees: Bhishma on the arrows), letting go of its
-                                            weapon, which drops and lies beside it; onRest once it lies still
+                                            weapon, which drops and lies beside it; onRest once it lies still; bent: from the
+                                            "buckle" pose, on bent knees, lying face down with the arms past the head or on
+                                            its back with the knees up
    U.rigFreeze(ms)                          hold every live figure still for a moment (hit-stop)
    U.rigs.clear()                           forget every figure (a new screen)
 
@@ -77,8 +79,49 @@
     defeated: { rot: 5, ty: 30, head: 40, legF: -84, shinF: 98, legB: 6, shinB: 100, armF: 14, foreF: 4, armB: 8, foreB: 6, item: 165 },
     // Walking away: two strides, the weapon carried low.
     stepA: { rot: 3, legF: -24, shinF: 12, legB: 20, shinB: 8, armF: 16, foreF: -10, armB: -14, item: 150 },
-    stepB: { rot: 3, legF: 18, shinF: 6, legB: -22, shinB: 14, armF: -10, foreF: -16, armB: 14, item: 150 }
+    stepB: { rot: 3, legF: 18, shinF: 6, legB: -22, shinB: 14, armF: -10, foreF: -16, armB: 14, item: 150 },
+    // Struck down: the knees give first and the body sinks on them, the arms going loose (the strike and defence study,
+    // 8 November: the fallen toppled stiff as planks); then rig.fallDown(..., bent) takes him over with them still bent.
+    buckle: { rot: 10, ty: 18, head: 20, legF: -50, shinF: 64, legB: -12, shinB: 60, armF: 24, foreF: -10, armB: 12, foreB: -8, item: 150 }
   };
+  // The bow drawn to the face (the strike and defence study, 8 November: the string came back only to the chest, the drawing
+  // hand stopped there, and on the loose it pushed forward): the string drawn back to the corner of the jaw, the drawing
+  // hand put on the nock by a reach from the back shoulder (two links, in figure units: the shoulder at 58,73, the upper
+  // arm 25 long, the forearm 26 to the hand), wherever the bow arm holds the bow and however the bow is tilted. On the loose
+  // the hand flies back past the ear along the line of the arrow and the bow arm stays up, as an archer follows through.
+  const RAD = Math.PI / 180, SH = [58, 73], UPPER = 25, FORE = 26;
+  const dirOf = (a) => [-Math.sin(a * RAD), Math.cos(a * RAD)]; // a joint turned a degrees: the way its limb points
+  function nockAt(p, back) { // where the nock is (back: and then this much further back along the arrow), in the body's frame
+    const rot = p.rot || 0, a1 = p.armF || 0, a2 = a1 + (p.foreF || 0), u = dirOf(a1), f = dirOf(a2);
+    // the grip: the fist (28 down the forearm) and the bow's pivot 2.5 beside it
+    const gx = SH[0] + UPPER * u[0] + 28 * f[0] + 2.5 * Math.cos(a2 * RAD), gy = SH[1] + UPPER * u[1] + 28 * f[1] + 2.5 * Math.sin(a2 * RAD);
+    // the bow is kept upright on the screen (tilted by tilt), so the arrow's line, in the body's frame, is turned by -rot
+    const along = (p.tilt || 0) - rot, L = 10.5 + 30 * (p.draw || 0) + (back || 0);
+    return [gx - L * Math.cos(along * RAD), gy - L * Math.sin(along * RAD)];
+  }
+  function reach(p, x, y) { // the back arm's two angles that put its hand at x,y (the elbow out behind)
+    const dx = x - SH[0], dy = y - SH[1], d = Math.min(UPPER + FORE - 0.5, Math.max(Math.abs(UPPER - FORE) + 0.5, Math.hypot(dx, dy)));
+    const toH = Math.atan2(dy, dx), al = Math.acos((UPPER * UPPER + d * d - FORE * FORE) / (2 * UPPER * d));
+    const e = toH - al; // the elbow on the far side from the bow: behind and up
+    const ex = SH[0] + UPPER * Math.cos(e), ey = SH[1] + UPPER * Math.sin(e);
+    const ang = (vx, vy) => Math.atan2(-vx, vy) / RAD; // the joint angle that points a limb along vx,vy
+    const armB = ang(ex - SH[0], ey - SH[1]), fore = ang(x - ex, y - ey);
+    let foreB = fore - armB; while (foreB > 180) foreB -= 360; while (foreB < -180) foreB += 360;
+    return { armB: +armB.toFixed(1), foreB: +foreB.toFixed(1) };
+  }
+  // draw (to the jaw) and loose (the hand flown back past the ear) for each of the three aims; the head turned to sight down
+  // the arrow
+  // (each bow arm and draw solved so that the nock comes to the corner of the jaw, 62,60, at that lean and tilt)
+  for (const [d, l, o, legs] of [
+    ["draw", "loose", { rot: -3, head: 6, armF: -96.5, foreF: -4, tilt: 0, draw: 1.25 }, { legF: -14, legB: 14, shinB: 6 }],
+    ["drawUp", "looseUp", { rot: -14, head: -8, armF: -113.5, foreF: -4, tilt: -30, draw: 1.13 }, { legF: -18, legB: 16, shinB: 8 }],
+    ["drawLow", "looseLow", { rot: 8, head: 12, armF: -90, foreF: -4, tilt: 18, draw: 1.3 }, { legF: -16, legB: 16, shinB: 8 }]]) {
+    const pd = Object.assign({}, o, legs), n = nockAt(pd);
+    POSES[d] = Object.assign(pd, reach(pd, n[0], n[1]));
+    const pl = Object.assign({}, o, legs, { rot: o.rot + 2, draw: 0 }), m = nockAt(pd, 16); // the hand on from where the nock was
+    POSES[l] = Object.assign(pl, reach(pl, m[0], m[1] - 2));
+  }
+  U.nockAt = nockAt; // (for the pose checks)
   const KEYS = ["rot", "tx", "ty", "head", "armF", "foreF", "armB", "foreB", "legF", "shinF", "legB", "shinB", "item", "draw", "tilt", "dx", "dy"];
   const JOINTS = ["head", "armF", "foreF", "armB", "foreB", "legF", "shinF", "legB", "shinB"];
   // How each kind of figure stands at rest (spec.stance in puppet.js, as data-stance on the figure):
@@ -191,8 +234,13 @@
   Rig.prototype.home = function (k) { this.unwield(); return this.set(this.baseName, k || 520, 0.42); };
   Rig.prototype.base = function (name) { if (POSES[name]) this.baseName = name; return this; };
   Rig.prototype.kick = function (o) { for (const k in o) this.v[k] += o[k]; wake(); return this; };
-  Rig.prototype.fallDown = function (floor, dir, onRest) {
+  Rig.prototype.fallDown = function (floor, dir, onRest, bent) {
     this.set("slack"); this.falling = true; this.fallV = 140; this.floor = floor || -86; this.fdir = dir || -1; this.onRest = onRest || null;
+    // (bent: he goes over on bent knees, from where he sank on them; the sink is taken up as he goes over)
+    this.bentTy = bent ? Math.max(0, this.x.ty) : 0;
+    // Lying: face down, the arms flung out past the head and the legs nearly straight; on his back, the arms loose at his sides
+    // and the knees up (the slack pose's arms, hung backward, went up in the air on a face-down fall).
+    if (bent) Object.assign(this.t, this.fdir > 0 ? { armF: -168, foreF: -12, armB: -150, foreB: -20, legF: -8, shinF: 20, legB: 12, shinB: 16 } : { armF: -6, foreF: -10, armB: 6, foreB: -10, legF: -40, shinF: 56, legB: -10, shinB: 42 });
     // A blow's push dies with the fall: it topples from where it stands, not on along the push.
     this.v.rot = 0; this.v.tx = 0; this.v.dx = 0; this.t.dx = 0; this.v.dy = 0; this.t.dy = 0;
     if (!floor || floor <= -80) this.letGo();
@@ -257,6 +305,7 @@
     for (const k of KEYS) {
       let tgt = this.t[k];
       if (k === "rot") tgt += sway * 1.1 + tug; else if (k === "foreB") tgt += sway * 4; else if (k === "head") tgt += sway * 1.5;
+      if (k === "ty" && this.falling && this.bentTy) tgt = this.bentTy * Math.max(0, 1 - Math.abs(this.fall) / 60);
       if (k === "armF" || k === "armB") tgt += shiver;
       let kk, cc;
       if (k === "draw") { kk = this.t.draw ? 260 : 2600; cc = this.t.draw ? 2 * 0.9 * Math.sqrt(260) : 2 * 0.12 * Math.sqrt(2600); } // the string snaps back
