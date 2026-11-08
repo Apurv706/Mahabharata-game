@@ -62,6 +62,22 @@ check("no-parry-mid-swing", "a lit blade coming down while your own blow is in t
   close(); return bad;
 });
 
+check("herbs-after-swing", "herbs chosen in the middle of a swing (or a skill) are taken as soon as it ends, not refused", () => {
+  const F = fight("e_bandits", { path: "mace" }), { R, p } = F, bad = [];
+  steps(R, 90);
+  const f = R.B.units.find((u) => u.side === "enemy" && u.hp > 0); if (f) { f.rt.entered = true; f.rt.x = p.rt.x + p.rt.face * p.rt.reach * 0.8; f.rt.atk = null; f.rt.cool = 99; }
+  p.hp = Math.round(p.maxHp * 0.4);
+  RT.step(R, { strike: true });
+  if (!RT.swinging()) bad.push("no swing began");
+  if (RT.can(R, "herbs")) bad.push("herbs allowed at once mid-swing");
+  if (!RT.can(R, "herbsSoon")) bad.push("herbs not offered mid-swing (the Aid sheet would grey them)");
+  RT.step(R, { herbs: true });
+  let n = 0; while (RT.swinging() && n++ < 120) RT.step(R, {});
+  RT.step(R, {});
+  if (!(R.kneel > 0)) bad.push("no kneel for the herbs once the swing had ended");
+  close(); return bad;
+});
+
 // ---------- The dagger ----------
 check("dagger-five", "the dagger strikes four quick blows and a heavy fifth that knocks back; the sword and mace keep theirs", () => {
   const bad = [];

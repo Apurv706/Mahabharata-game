@@ -7,6 +7,13 @@
    "bug": "Not a game bug: test sampling. tests/command.js fails when one of the four holding-fight offers is never met in its lives; they are rare (0-7 in 120 lives) and which one is missed moves with every balance change (60 lives on 3e2854d missed hold_bhima_offer; 120 lives on cd454b0 missed hold_arjuna_offer). tests/content.js shows all four reachable. More lives would settle it, but jsdom keeps about 25 MB per finished life and 200 lives run out of memory.",
    "file": "tests/command.js",
    "steps": "node tests/command.js 60, or node --max-old-space-size=4096 tests/command.js 120"
+  },
+  {
+   "test": "lives",
+   "match": "real-time fight ran out of time: e_ep_carts",
+   "bug": "A weak healer (the dagger, low Might) against the supply carts' sentries (e_ep_carts): about 1 point a blow against 400-560 points of health, while the salve and perfect rolls keep the healer alive, so the fight runs to the 4-minute cap (RT.P.cap) and is stopped. Latent on main too (the same healer capped there in a direct probe); Build D's changed random draws put one such life into seed 1's 600 (7 November). To settle: a floor on a blow's damage against the scaled health, or a stalemate rule. See claude/Strike_Defence_Study.md.",
+   "file": "game/js/engine/realtime.js",
+   "steps": "node tests/lives.js 600 1 (Build D, 7 November); or RT.autoplay('e_ep_carts') for a healer at Might 3"
   }
  ]
 }

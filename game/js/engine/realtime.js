@@ -437,7 +437,9 @@
       case "block": return R.blocker && !R.broken && (R.block || (R.roll <= 0 && R.kneel <= 0 && !R.winded && R.breath >= RT.P.blockMin && !swinging(p))) && !held(p) && R.frozen <= 0;
       case "skill": return !R.noStrike && !(R.strikeLock > 0) && !!R.skill && R.skillCd <= 0 && R.kneel <= 0 && !held(p);
       case "strike": return !R.noStrike && !(R.strikeLock > 0);
-      case "herbs": return R.kneel <= 0 && (R.herbCd || 0) <= 0 && p.abilities.includes("herbs") && (K.S.items.herbs || 0) > 0 && p.hp < p.maxHp && !swinging(p);
+      case "herbs": return RT.can(R, "herbsSoon") && !swinging(p);
+      // Herbs as soon as your swing (or the skill) has ended: chosen mid-swing, they wait for it (the Aid sheet offers them).
+      case "herbsSoon": return R.kneel <= 0 && (R.herbCd || 0) <= 0 && p.abilities.includes("herbs") && (K.S.items.herbs || 0) > 0 && p.hp < p.maxHp;
       case "call": return p.abilities.includes("call") && ready("call");
       case "withdraw": return C.canFlee();
       default: return false;
@@ -494,7 +496,7 @@
       p.rt.busy = 0; R.buffer = false; R.combo = 0; R.kneel = 0;
       R.fx.push({ k: "roll" });
     }
-    if (a.herbs && RT.can(R, "herbs") && R.roll <= 0 && !R.block) { R.kneel = 1.1; R.buffer = false; R.fx.push({ k: "kneel" }); }
+    if (a.herbs && R.roll <= 0 && !R.block) { if (RT.can(R, "herbs")) { R.kneel = 1.1; R.buffer = false; R.herbsLater = false; R.fx.push({ k: "kneel" }); } else if (RT.can(R, "herbsSoon")) R.herbsLater = true; }
     if (R.noStrike) { a.strike = false; a.skill = false; } // a storm's clash (weather): nothing to strike at; block, roll and live
     if (a.skill && RT.can(R, "skill") && R.roll <= 0 && !R.block && p.rt.busy <= 0.05) skill(R);
     if (a.strike && R.roll <= 0 && R.kneel <= 0 && !R.block) { // no blow with the shield up
@@ -836,6 +838,8 @@
       p.rt.busy -= dt;
       if (p.rt.busy <= 0 && R.buffer) { R.buffer = false; if (!p.rt.blow) blow(R); }
     }
+    // Herbs chosen in the middle of a swing or a skill (Build D's swing lock): taken as soon as it has ended.
+    if (R.herbsLater && !swinging(p)) { R.herbsLater = false; if (RT.can(R, "herbs") && R.roll <= 0 && !R.block) { R.kneel = 1.1; R.buffer = false; R.fx.push({ k: "kneel" }); return; } }
     if (held(p) || R.roll > 0) return;
     const mv = a.move || 0;
     if (mv && p.rt.busy <= 0) {

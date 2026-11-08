@@ -55,7 +55,9 @@ const items = {
   layout: (out) => fromLines(out, /^✗ (.+)$/gm),
   warfit: (out) => fromLines(out, /^✗ (.+)$/gm),
   rtfit: (out) => fromLines(out, /^✗ (.+)$/gm),
-  playthrough: (out) => fromLines(out, /^(CRASH at .+|STUCK at .+|Ending spread: .+too narrow.+)$/gm)
+  playthrough: (out) => fromLines(out, /^(CRASH at .+|STUCK at .+|Ending spread: .+too narrow.+)$/gm),
+  // tests/lives.js: "✗ <problem> (n kinds)", then "    n× <what>" under it: each as "<problem>: <what>"
+  lives: (out) => { const its = []; let cur = null; for (const line of out.split("\n")) { const h = line.match(/^✗ (.+?) \(\d+ kinds?\)$/); if (h) { cur = h[1]; continue; } const w = line.match(/^\s+\d+× (.+)$/); if (w && cur) its.push(cur + ": " + w[1]); else if (!/^\s/.test(line)) cur = null; } return its; }
 };
 
 // ---------- The checks ----------
@@ -65,7 +67,7 @@ const browsers = BROWSER === "all" ? "chromium,webkit,firefox" : BROWSER;
 const C = [];
 const add = (name, quick, full, o = {}) => C.push(Object.assign({ name, quick, full }, o));
 add("rules", ["tests/rules.js"], ["tests/rules.js"]);
-add("lives", ["tests/lives.js", "200", "1"], ["tests/lives.js", "600", "1"], { heavy: "full" });
+add("lives", ["tests/lives.js", "200", "1"], ["tests/lives.js", "600", "1"], { heavy: "full", items: items.lives });
 add("lives-turns", ["tests/lives.js", "300", "2", "--turns"], ["tests/lives.js", "1500", "2", "--turns"], { heavy: "full" });
 add("crossing", ["tests/crossing.js", "200", "1"], ["tests/crossing.js", "400", "1"]);
 add("content", ["tests/content.js", "--lives", "300", "--ui", "2", "--json", J("content")], ["tests/content.js", "--lives", "2000", "--ui", "24", "--json", J("content")], { timeout: 25, heavy: "full" });

@@ -712,7 +712,7 @@
     if (a === "spare") { const t = RT.spareable(R)[0]; if (t) V.queue.spare = t.uid; else if (C.spareable().length) toast(K.tr("Step closer to spare him")); return; }
     if (a === "roll" && !RT.can(R, "roll") && R.roll <= 0) toast(K.tr("Winded"));
     if (a === "skill" && R.skill && !RT.can(R, "skill")) toast(K.tr("Not ready yet"));
-    if (a === "herbs" && !RT.can(R, "herbs")) toast(K.tr((K.S.items.herbs || 0) > 0 ? "Not now" : "No herbs left"));
+    if (a === "herbs" && !RT.can(R, "herbsSoon")) toast(K.tr((K.S.items.herbs || 0) > 0 ? "Not now" : "No herbs left"));
     if (a === "call" && !RT.can(R, "call")) toast(K.tr("Used this battle"));
     V.queue[a] = true;
   }
@@ -751,7 +751,7 @@
     } else if (kind === "aid") {
       const el = $(".aid-sheet"), ast = RT.astras(), aReady = ast.find((x) => !x.why);
       const it = (k, label, note, off, key) => '<button type="button" data-aid="' + k + '"' + (off ? ' disabled aria-disabled="true"' : "") + "><b>" + U.esc(label) + "</b><small>" + U.esc(note) + "</small><kbd>" + key + "</kbd></button>";
-      el.innerHTML = it("herbs", K.tr("Herbs"), K.tr("{n} left", { n: K.S.items.herbs || 0 }), !RT.can(R, "herbs"), "H") +
+      el.innerHTML = it("herbs", K.tr("Herbs"), K.tr("{n} left", { n: K.S.items.herbs || 0 }), !RT.can(R, "herbsSoon"), "H") +
         (K.S && K.S.fighter ? "" : ast.filter((x) => !x.why).length > 1 ? ast.filter((x) => x.id !== "astra" || !x.why).map((x) => it("astra:" + x.id, K.tr(x.name), x.why ? K.tr(x.why) : K.tr("Divine weapon"), !!x.why, "")).join("") : it("astra", K.tr(aReady ? aReady.name : "Divine weapon"), aReady ? K.tr("Divine weapon") : ast[0] ? (B_used(ast) ? K.tr("used") : ast[0].why || "") : K.tr("not given"), !aReady, "U")) + // two or more ready: one row each (item 12)
         (p.abilities.includes("call") ? it("call", K.tr("Call for help"), RT.can(R, "call") ? K.tr("once a fight") : K.tr("called"), !RT.can(R, "call"), "C") : "");
       el.querySelectorAll("[data-aid]").forEach((b) => (b.onclick = () => { closeSheet(); act(b.dataset.aid); }));
