@@ -148,9 +148,15 @@ function pageHelpers() {
           const dt = performance.now() - t0;
           for (const a of s.list) {
             if (skip && skip.includes(a.uid) && shiftOf(a.uid) > 6) continue; // coming on from the edge
+            // A body still toppling (its rig falling, not yet at rest) is let off the stage's foot: its slack limbs
+            // and weapon swing past the ground for a moment and come to rest on the stage (on GitHub's slower runner,
+            // hold_bhima and hold_arjuna on an iPhone 15: 6-12 px mid-fall, then at rest 16 px inside; here, once in 71 fights).
+            // Once it lies still it is held to the foot again.
+            const rig = window.K && K.UI.battleRigs && K.UI.battleRigs().get(a.uid), toppling = !!(rig && rig.falling && rig.fallV);
             for (const [where, d] of strays(a, s)) {
+              if (toppling && where === "below the stage") continue;
               const k = a.uid + "|" + where;
-              if (!worst[k] || worst[k].d < d) worst[k] = { uid: a.uid, side: a.side, down: a.down, where, d: Math.round(d), at: Math.round(dt), box: a.box };
+              if (!worst[k] || worst[k].d < d) worst[k] = { uid: a.uid, side: a.side, down: a.down, where, d: Math.round(d), at: Math.round(dt), box: a.box, host: s.host };
             }
           }
         }
@@ -247,7 +253,10 @@ async function runFight(page, id, o, rec, shot) {
     if (!(await ev(() => !!K.Combat.state() && !document.querySelector(".dream-white")))) { moments.push({ moment: name + ": no fight on screen (over)", frames: 0, problems: [], worstPx: 0, skipped: true }); return null; }
     const r = await ev(([ms, skip]) => window.__fit.watch(ms, skip), [ms, skip || null]);
     const probs = [];
-    for (const w of r.worst) if (w.d > TOL) probs.push(w.uid + " (" + w.side + (w.down ? ", fallen" : "") + ") " + w.d + "px " + w.where + " at " + w.at + "ms");
+    // Where it was then, against the stage, and where it lay once all had come to rest (a figure the game puts back
+    // on the stage, as a fallen body is lifted onto its foot, ends inside it).
+    const xy = (b) => b ? "x " + Math.round(b.l) + "–" + Math.round(b.r) + ", y " + Math.round(b.t) + "–" + Math.round(b.b) : "none";
+    for (const w of r.worst) if (w.d > TOL) { const L = r.last && r.last.list.find((a) => a.uid === w.uid); probs.push(w.uid + " (" + w.side + (w.down ? ", fallen" : "") + ") " + w.d + "px " + w.where + " at " + w.at + "ms (figure " + xy(w.box) + "; stage " + xy(w.host) + "; at rest " + (L ? xy(L.box) : "gone") + ")"); }
     if (r.last) {
       for (const a of r.last.list) if (!a.down && a.side !== "prop" && (!a.box || a.op < 0.2)) probs.push(a.uid + " (" + a.side + ") cannot be seen" + (a.box ? " (opacity " + a.op.toFixed(2) + ")" : " (no size)"));
       const ov = await ev((s) => window.__fit.overlaps(s), r.last);
@@ -359,6 +368,10 @@ async function runCombo(pw, bname, d, base, fights, report) {
     const page = await ctx.newPage();
     const errors = [];
     page.on("pageerror", (e) => errors.push(e.message + " @ " + String(e.stack || "").split("\n").slice(1, 3).map((l) => l.trim().replace(/^at /, "").replace(/http:\/\/127.0.0.1:\d+\//, "")).join(" < ")));
+    // No web fonts, as in the other fit checks (rtfit, warfit, blowfit). On GitHub's runner they come over the network
+    // and can land mid-fight, re-flowing the page under the figures: the nightly run there found the fallen player 6 px
+    // below the stage (hold_arjuna, iPhone 15, as you lose), which never showed on a machine with the fonts installed.
+    await page.route(/fonts\.(googleapis|gstatic)/, (r) => r.abort());
     await page.goto(base + "/");
     await page.waitForFunction(() => window.K && K.UI && K.UI.renderScene);
     await page.addStyleTag({ content: `:root{--sat:${d.sat}px!important;--sab:${d.sab}px!important}` });

@@ -336,8 +336,10 @@
   // A point on a figure that an arrow follows as it flies: measured at the loosing, then carried along
   // with the figure (stepping in, knocked back, its pose changing) by measuring again every few frames.
   function follow(uid, where, ox, oy) {
-    let last = point(uid, where), n = 0;
-    return () => { if (++n % 3 === 0) { const q = point(uid, where); if (q.x || q.y) last = q; } return { x: last.x + (ox || 0), y: last.y + (oy || 0) }; };
+    // Asked every frame: an aimed shot flies in 170 ms, only a few frames on a slow machine, and a point read every third
+    // frame can be a stale one (on GitHub's runner an aimed shot as a fight opened landed 146 px under its target's body).
+    let last = point(uid, where);
+    return () => { const q = point(uid, where); if (q.x || q.y) last = q; return { x: last.x + (ox || 0), y: last.y + (oy || 0) }; };
   }
   // Points on a figure, inside the arena: the drawing hand, the chest, the front foot.
   function point(uid, where) {

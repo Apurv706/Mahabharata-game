@@ -88,7 +88,7 @@ body.titling header.top { display: none; }
 .title { margin: 0; line-height: 0; }
 .title .logo { display: block; width: min(560px, 100%); height: auto; }
 .title .logo.hi { width: auto; height: clamp(150px, 22vw, 250px); max-width: 100%; }
-.tagline { font-family: var(--display); font-style: italic; font-size: clamp(22px, 2.4vw, 28px); line-height: 1.25; color: var(--ink); max-width: 32ch; margin: 0; }
+.tagline { font-family: var(--display); font-style: italic; font-size: clamp(22px, 2.4vw, 28px); line-height: 1.25; color: var(--ink); max-width: 36ch; margin: 0; } /* a line a sentence (ui/screens.js); 32ch left the second one 4% to spare */
 .hero .btnrow { margin-top: 6px; }
 .slide-cap { position: absolute; right: clamp(20px, 5vw, 60px); bottom: clamp(28px, 6vh, 60px); margin: 0; max-width: 28ch; text-align: right; font-size: 14px; color: var(--muted); }
 /* Portrait screens (phones, upright tablets): a tall hero would crop the 3:1 painting to its middle

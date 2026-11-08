@@ -38,7 +38,9 @@
         '<div class="hero-bar" id="hero-bar"></div>' +
         '<div class="hero-copy">' +
           '<h1 class="title" id="title-h"><img class="logo ' + K.lang + '" src="brand/logo_' + (K.lang === "hi" ? "hi" : "en") + '_dark.svg" alt="' + U.tr("Kurukshetra: A Life") + '"></h1>' +
-          '<p class="tagline">' + U.tr("You cannot change the Mahabharata. You can decide who you were inside it.") + "</p>" +
+          // Each sentence starts its own line (it did only by the width of a few letters: on an iPhone SE "it." went
+          // down to a third line wherever the text is drawn a little wider, as on GitHub's runner, 7 November).
+          '<p class="tagline">' + U.tr("You cannot change the Mahabharata. You can decide who you were inside it.").split(/(?<=[.।!?])\s+/).join("<br>") + "</p>" +
           '<div class="btnrow" id="title-btns"></div>' +
         "</div>" +
         '<div class="acts-run" role="group" aria-label="' + U.tr("One life, seven acts") + '"><ol class="acts drift">' + ACTS.map((a) => card(a)).join("") + ACTS.map((a) => card(a, true)).join("") + "</ol></div>" +

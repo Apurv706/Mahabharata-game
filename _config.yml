@@ -1,0 +1,15 @@
+# GitHub Pages (owner, 7 November): publish the game, not the art sources and reviews. The whole repository came to
+# about 976 MB, at GitHub's 1 GB limit for a site, and its deploys timed out while copying files. The game is all in
+# game/ (its paintings, clips, music and code) and the root index.html sends the site's address there; nothing in it
+# loads from the folders below.
+exclude:
+  - art_review
+  - assets
+  - docs
+  - store
+  - tests
+  - tools
+  - i18n
+  - node_modules
+  - package.json
+  - package-lock.json
