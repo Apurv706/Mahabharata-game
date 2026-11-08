@@ -270,6 +270,55 @@ check("strike-lock", "Shield wall or Guard on the turns: in the clash Strike is 
 
 // ---------- Run ----------
 const only = arg("--case", "") ? new Set(arg("--case").split(",")) : null;
+// ---------- The strike and defence study's rules (owner, 8 November) ----------
+check("perfect-earned", "a perfect block is raised within 0.12 s of the blow and a perfect roll begun within 0.15 s (a late press no longer always perfect)", () => {
+  const bad = [];
+  if (Math.abs(RT.P.blockPerfect - 0.12) > 1e-9) bad.push("perfect block window " + RT.P.blockPerfect);
+  if (Math.abs(RT.P.perfect - 0.15) > 1e-9) bad.push("perfect roll window " + RT.P.perfect);
+  if (!(RT.P.botRollLead[0] < RT.P.perfect && RT.P.botRollLead[1] > RT.P.perfect && RT.P.botRollLead[1] < RT.P.roll)) bad.push("the bot's roll lead " + RT.P.botRollLead + " should straddle the perfect window and stay inside the roll");
+  return bad;
+});
+check("swing-risk", "warned when a blow marked on you would land inside your swing: now (mid-swing) and next (a blow begun now)", () => {
+  const F = fight("e_bandits", { path: "charioteer" }), { R, p } = F, bad = [];
+  steps(R, 90);
+  const f = R.B.units.find((u) => u.side === "enemy" && u.hp > 0);
+  if (!f) return ["no foe"];
+  f.rt.entered = true; f.rt.x = p.rt.x + p.rt.face * p.rt.reach * 0.8; f.rt.atk = null; f.rt.cool = 9;
+  R.B.units.forEach((u) => { if (u.side === "enemy" && u !== f) { u.rt.atk = null; u.rt.cool = 99; } });
+  if (RT.swingRisk(R).next) bad.push("warned with no blow marked");
+  // a blow on you that lands sooner than the next blow's lock would end
+  const len = RT.nextBlow(R).len;
+  f.rt.face = -p.rt.face; f.rt.atk = { id: "strike", on: p.uid, t0: R.t, land: R.t + len * 0.6, lane: p.rt.lane };
+  const th = RT.threats(R);
+  if (!th.length) return ["the test blow is not a threat (" + JSON.stringify(f.rt.atk) + ")"];
+  if (!RT.swingRisk(R).next) bad.push("not warned: a blow lands " + (len * 0.6).toFixed(2) + " s from now, inside a " + len + " s swing");
+  f.rt.atk.land = R.t + len + 0.3;
+  if (RT.swingRisk(R).next) bad.push("warned for a blow landing after the swing would end");
+  close();
+  return bad;
+});
+check("worn-down", "after two minutes an ordinary foe tires: every blow of yours on him takes at least 3% of his health by its weight; not before, and never a champion", () => {
+  const F = fight("e_ep_carts", { path: "healer" }), { R, p } = F, bad = [];
+  steps(R, 90);
+  const f = R.B.units.find((u) => u.side === "enemy" && u.hp > 0);
+  if (!f) return ["no foe"];
+  f.rt.entered = true; f.rt.x = p.rt.x + p.rt.face * p.rt.reach * 0.8; f.status = {}; f.shield = null; f.rt.shield = 0;
+  R.B.units.forEach((u) => { if (u.side === "enemy") { u.rt.atk = null; u.rt.cool = 999; } });
+  const blows = (k) => { let n = 0; const hp0 = f.hp; for (let i = 0; i < 60 && !R.over && n < k; i++) { const before = f.hp; f.rt.x = p.rt.x + p.rt.face * p.rt.reach * 0.8; f.rt.atk = null; f.rt.cool = 999; RT.step(R, { strike: true }); for (let j = 0; j < 40 && !R.over; j++) RT.step(R, {}); if (f.hp < before) n++; } return n ? (hp0 - f.hp) / n : 0; };
+  const want = Math.round(f.maxHp * RT.P.wornFloor * 0.48) - 0.5;
+  const early = blows(4);
+  if (!(early > 0)) bad.push("no blow landed");
+  else if (early >= want) bad.push("a floor before two minutes: " + early.toFixed(1) + " a blow");
+  R.t = Math.max(R.t, RT.P.wornAfter + 1);
+  const late = blows(6);
+  if (late < want) bad.push("after two minutes a blow took " + late.toFixed(1) + " of " + f.maxHp + ", under " + want.toFixed(1));
+  if (!R.worn) bad.push("not said when it began");
+  f.hero = true; const champ = blows(3); f.hero = false;
+  if (champ >= want) bad.push("a champion tires too: " + champ.toFixed(1) + " a blow");
+  close();
+  return bad;
+});
+
 const results = [];
 let fail = 0;
 for (const c of CASES) {

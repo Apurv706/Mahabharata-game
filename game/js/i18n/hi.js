@@ -6300,6 +6300,8 @@
     "Your shield was broken: your company hands you a fresh one.": "तुम्हारी ढाल टूट गई थी: तुम्हारी टुकड़ी तुम्हें नई ढाल थमाती है।",
     "Shield broken: roll for now, and walk to a shield on the ground to take it up.": "ढाल टूट गई: अभी लुढ़ककर बचो, और ज़मीन पर पड़ी ढाल तक जाकर उसे उठा लो।",
     "A great champion shrugs off your light blows: only the heavy one at the end of your combo staggers him.": "महावीर तुम्हारे हल्के वारों को झटक देता है: उसे केवल तुम्हारे लगातार वारों के अंत का भारी वार ही लड़खड़ाता है।",
+    "Hit in the middle of your own swing. When the ! shows over you, a blow will land before your swing ends: wait, then block or roll.": "अपने ही वार के बीच में चोट लगी। जब तुम्हारे ऊपर ! दिखे, तो तुम्हारा वार पूरा होने से पहले ही शत्रु का वार आ पड़ेगा: रुको, फिर ढाल उठाओ या लुढ़ककर बचो।",
+    "They are tiring: your blows tell more now.": "वे थक रहे हैं: अब तुम्हारे वार ज़्यादा असर करते हैं।",
     "the enemy's soldiers": "शत्रु के सैनिक",
     "You are still shouting for the banner when the enemy's second rank reaches you. They take you alive, which is more than they do for most.": "तुम अब भी ध्वज के लिए पुकार {g:रहे होते|रही होती} हो जब शत्रु की दूसरी पंक्ति तुम तक पहुँचती है। वे तुम्हें जीवित पकड़ लेते हैं, जो वे ज़्यादातर के साथ नहीं करते।",
     "Rallying a broken division, you were taken by the enemy.": "टूटे सेना-खंड को जुटाते हुए तुम शत्रु के हाथ {g:पकड़े गए|पकड़ी गईं}।",

@@ -629,6 +629,7 @@
     // (the shield punched out to meet the blow, then jolted back; a heavy blow on the body reels him back on his heels, so
     // its knock-back shows: the study, 8 November)
     const shrug = !f.heavy && !f.blocked && f.melee && a.u.side === "enemy" && a.u.hp > 0 && RT.tierOf && RT.STRENGTH && RT.STRENGTH.flinch[RT.tierOf(a.u)] === 0;
+    if (a.u.side === "player" && !f.blocked && f.n && a.u.rt && (a.u.rt.busy > 0 || a.u.rt.blow) && RT.P.swingLock) tipOnce("tipCaught", "Hit in the middle of your own swing. When the ! shows over you, a blow will land before your swing ends: wait, then block or roll.");
     if (a.rig) a.rig.kick(f.blocked ? (a.u.side === "enemy" ? { rot: 90, armB: -260, tx: 8 } : { rot: -90, armB: -260, tx: 8 })
       : shrug ? { rot: 50, head: 90 }
       : f.heavy && a.u.hp > 0 ? (a.u.side === "enemy" ? { rot: 420, head: 300, tx: -26 } : { rot: -420, head: -300, armF: 200, tx: -26 })
@@ -1095,6 +1096,12 @@
       sk.querySelector(".ring .fg").style.strokeDashoffset = (113.1 * (1 - f)).toFixed(1); sk.classList.toggle("ready", R.skillCd <= 0);
       ks.querySelector(".fg").style.strokeDashoffset = (100.5 * (1 - f)).toFixed(1); ks.classList.toggle("ready", R.skillCd <= 0); }
     $("#ksherbs").textContent = String(K.S.items.herbs || 0);
+    // Caught in your own swing (RT.swingRisk; the strike and defence study, owner 8 November: warn, keep the lock): the
+    // Strike button (on a laptop, the key strip) edged in ember, and a mark over your head, while a blow begun now (or the
+    // swing you are in) would still hold you when a blow marked on you lands.
+    { const rk = RT.swingRisk ? RT.swingRisk(R) : {}, me = p && V.actors.get(p.uid), on = !R.over && !R.noStrike && !!(rk.next || rk.now);
+      if (V.el.classList.contains("risky") !== on) V.el.classList.toggle("risky", on);
+      if (me) { let mk = me.risk; if (!mk && on) { mk = me.risk = U.el('<i class="riskmark" aria-hidden="true">!</i>'); me.el.appendChild(mk); } if (mk && mk.classList.contains("on") !== on) mk.classList.toggle("on", on); } }
     // Block, or Roll while your shield is broken (Build D): the ring fills until a comrade throws you one.
     const rb = $(".acts .roll"), asRoll = R.blocker && !!R.broken;
     if (R.blocker && rb.classList.contains("as-roll") !== asRoll) {

@@ -73,6 +73,13 @@ html.calm #rt .actor.windup svg.pp { animation: none; filter: drop-shadow(0 0 2p
 html.calm #rt .actor.evading svg.pp { filter: none; }
 #rt .actor .mini { position: absolute; left: 0; bottom: calc(var(--fh) * var(--barh, 1.04)); /* --barh: above a crown, never across the face */ width: 46px; height: 6px; transform: translateX(-50%); border-radius: 3px; background: rgba(0, 0, 0, 0.5); overflow: hidden; }
 #rt .actor .mini b { display: block; height: 100%; background: var(--foe); transition: width 0.2s; }
+/* Caught in your own swing (RT.swingRisk, the strike and defence study): a mark over your head, and the Strike button edged
+   in ember, while a blow begun now would still hold you when a blow marked on you lands */
+#rt .actor .riskmark { position: absolute; left: 0; bottom: calc(var(--fh) * 1.08); width: 20px; height: 20px; margin-left: -10px; border-radius: 50%; display: grid; place-items: center;
+  font: 800 14px/1 var(--text); color: #2a120f; background: #ff9a4a; box-shadow: 0 0 0 2px rgba(42, 18, 15, .6), 0 0 10px rgba(255, 120, 40, .9); opacity: 0; transform: scale(.6); transition: opacity .1s, transform .12s; pointer-events: none; }
+#rt .actor .riskmark.on { opacity: 1; transform: scale(1); }
+#rt.risky .acts .strike { box-shadow: 0 0 0 3px #ff9a4a, 0 0 14px rgba(255, 120, 40, .8); }
+#rt.risky .kstrip .ks-keys { color: #ffb070; }
 #rt .actor.ally .mini b { background: var(--hp); }
 #rt .actor.me .mini, #rt .actor.beaten .mini { display: none; }
 #rt .actor.target .fl::after { content: ""; position: absolute; left: 50%; bottom: calc(var(--fh) * -0.06); width: calc(var(--fh) * 0.5); height: calc(var(--fh) * 0.1); transform: translateX(-50%); border-radius: 50%; border: 2px dashed var(--data); }

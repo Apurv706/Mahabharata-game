@@ -53,10 +53,12 @@
     track: 0.8, lock: 0.35, // an arrow: the lane follows, then locks
     breathMax: 100, rollCost: 32, rollMin: 32, breathRegen: 20,
     roll: 0.42,        // a roll's length (all of it unhurtable)
-    perfect: 0.24,     // a roll begun this close before a blow lands is perfect: the foes slow
+    perfect: 0.15,     // a roll begun this close before a blow lands is perfect: the foes slow (0.24 until the strike and defence
+                       // study, 8 November: about 9 in 10 of a person's late rolls came out perfect; owner: "tighten as proposed")
     retryHp: 0.8,      // a second try starts a little hurt
     botReact: [0.32, 0.55], botMiss: [0.35, 0.6], // the bot's reading, from grace (good to poor): a person's, not a machine's
     botLead: [0, 0.24], // how long before a blow lands the bot raises its shield (a perfect block only when late enough)
+    botRollLead: [0.06, 0.32], // and how long before it rolls: a person's spread (it rolled at 0.2 s every time, so always perfect)
     botGap: [0.12, 0.22], // seconds between one button press and the next (a person's thumb; null: the old frame-perfect bot)
     glance: 0.15,      // shields (PRD §18.15): how often a shield-bearer facing you turns your blow, half spent
     shieldSoldiers: 0.6, shieldYou: 0.85, // your soldiers on Defend, a blow marked on them; you, a frontal blow, with a shield
@@ -66,7 +68,7 @@
     // drops and cannot be raised again until the breath is back to rollMin. Raised just before a blow lands (blockPerfect)
     // it is a perfect block: nothing gets through and the one who struck staggers.
     blockThrough: 0.08, blockHeavy: 0.35, blockBreaker: 0.55, blockMin: 12, blockDrain: 4.5, blockHit: 10, blockHitHeavy: 18,
-    blockPerfect: 0.2, blockStag: 1.0, blockWalk: 0.4,
+    blockPerfect: 0.12, blockStag: 1.0, blockWalk: 0.4, // (0.2 until the study: 89–93% of a person's blocks were perfect)
     blockRows: 1.2,    // a blow from your row or the next is met; one from two rows off comes in from the side
     // The mace (owner, 4 November: heavy and slow): foes' mace blows wind up longer (an overhead smash, then a side sweep
     // that pushes you back), a little harder to keep their weight about the same.
@@ -697,6 +699,22 @@
     if (th && Math.abs(th.from - p.rt.x) > 1e-4) p.rt.face = sign(th.from - p.rt.x);
     else if (f) p.rt.face = sign(f.rt.x - p.rt.x);
   }
+  // Worn down (the strike and defence study, item 13; owner, 8 November: "yes, fix it"): a weak fighter (a healer with a
+  // dagger: about 3 points a blow) against the supply carts' two sentries (695 health each, scaled up from the turns) did not
+  // finish them in the 4-minute cap, however he played. A floor under every blow was tried first: a share of the foe's
+  // health (1%) lifted every blow on the strongest foes too (the hard fights went from 88% won to 94%), and a few points (5)
+  // still left the healer capped in 32 of 32 bouts. So the floor comes only in a fight already long: after two minutes (an
+  // ordinary fight lasts 30-60 s) the ordinary foes tire, and every blow of yours that lands on one takes at least 3% of his
+  // whole health by its weight (a dagger's stab 1.4%, a sword's thrust 3%). A champion never tires; a blow that does more is
+  // unchanged; a blow turned (evaded, parried) does nothing still. Said once, when it begins.
+  RT.P.wornAfter = 120; RT.P.wornFloor = 0.03;
+  function floored(R, t, d, m) {
+    if (!(d > 0) || !t || t.hp <= 0 || !t.maxHp || R.t < RT.P.wornAfter || t.hero || t.person) return d;
+    const f = Math.round(t.maxHp * RT.P.wornFloor * m);
+    if (d >= f) return d;
+    if (!R.worn) { R.worn = true; R.fx.push({ k: "toast", s: "They are tiring: your blows tell more now." }); }
+    const more = Math.min(t.hp, f - d); t.hp -= more; return d + more;
+  }
   function landBlow(R) {
     const B = R.B, p = C.player(), b = p.rt.blow;
     p.rt.blow = null;
@@ -710,7 +728,7 @@
     // takes points off the shield by your tier and weapon (Build D).
     const caught = foeBlocks(R, t, b.c.heavy, false, RT.shieldHit(p, p.rt.weapon, b.c.heavy && !b.c.arc));
     m *= caught;
-    const d = B.hit(p, t, m);
+    const d = floored(R, t, B.hit(p, t, m), m);
     R.stats.hits++;
     hitFx(R, t, d, b.c.heavy, p, true, b.c.arc, caught < 1);
     if (b.c.knock && t.hp > 0) knock(R, t, p.rt.face, b.c.knock * BODY, false);
@@ -981,7 +999,7 @@
     if (!t) return;
     if (s.m) { // an arrow of your Strike combo: a plain hit, the third knocking him back (or caught on a shield: foeBlocks)
       const caught = p.side === "player" ? foeBlocks(R, t, s.heavy, true) : 1;
-      const d = B.hit(p, t, s.m * caught); if (p.side === "player") R.stats.hits++; hitFx(R, t, d, s.heavy, p.side === "player" ? null : p, false, null, caught < 1); t.rt.hits.push(R.t); // (an archer beside you: his own hit)
+      const d = p.side === "player" ? floored(R, t, B.hit(p, t, s.m * caught), s.m * caught) : B.hit(p, t, s.m * caught); if (p.side === "player") R.stats.hits++; hitFx(R, t, d, s.heavy, p.side === "player" ? null : p, false, null, caught < 1); t.rt.hits.push(R.t); // (an archer beside you: his own hit)
       if (s.knock && t.hp > 0) knock(R, t, sign(t.rt.x - p.rt.x), s.knock * BODY, false);
       else if (p.side === "player" && t.hp > 0 && d > 0) t.rt.x = clamp(t.rt.x + sign(t.rt.x - p.rt.x) * RT.P.arrowPush * (t.hero || t.person ? 0.5 : 1) * BODY, 0.07, 0.93); // pushed back a little
       return;
@@ -1352,6 +1370,19 @@
     for (const s of R.shots) if (s.side === "enemy" && Math.abs(p.rt.x - s.lane) <= BODY * 0.65) out.push({ uid: s.by, land: s.arrive, t0: s.at0, from: s.from, lane: true, locked: true, mine: s.on === p.uid, heavy: s.heavy, flying: true });
     return out.sort((a, b) => a.land - b.land);
   };
+  // Caught in your own swing (the strike and defence study, 8 November: 43–77% of the hits on you landed while the swing lock
+  // held you; owner: warn, and keep the lock): now, a blow marked on you lands before the swing you are in has ended; next,
+  // one lands before a blow begun now would end (a press now is kept until the swing you are in ends).
+  RT.swingRisk = function (R) {
+    const p = C.player(), out = { now: false, next: false };
+    if (!RT.P.swingLock || !p || !p.rt || p.hp <= 0) return out;
+    const t = RT.threats(R).find((x) => x.land > R.t + 0.02);
+    if (!t) return out;
+    const left = t.land - R.t, busy = Math.max(0, p.rt.busy || 0), c = RT.nextBlow(R);
+    out.now = busy > 0 && left < busy;
+    out.next = !!c && left < busy + c.len;
+    return out;
+  };
   // Is a blow on you near enough to have the shield up for it: landing within lead (to raise it), or within hold (kept up)?
   RT.wantBlock = function (R, lead, hold, seen) {
     return RT.threats(R).some((t) => (!seen || seen(t)) && t.land - R.t <= (R.block ? hold : lead) && t.land - R.t > -0.05);
@@ -1405,7 +1436,7 @@
     if (!R.botState) {
       const g = clamp((K.attr("grace") || 0) / 6, 0, 1);
       const P = RT.P;
-      R.botState = { react: P.botReact[1] - (P.botReact[1] - P.botReact[0]) * g, miss: P.botMiss[1] - (P.botMiss[1] - P.botMiss[0]) * g, read: {}, lead: {}, called: false };
+      R.botState = { react: P.botReact[1] - (P.botReact[1] - P.botReact[0]) * g, miss: P.botMiss[1] - (P.botMiss[1] - P.botMiss[0]) * g, read: {}, lead: {}, rlead: {}, called: false };
     }
     const bs = R.botState, a = {};
     const th = RT.threats(R);
@@ -1420,7 +1451,8 @@
         if (left <= (R.block ? 0.45 : lead) && RT.can(R, "block")) { a.block = true; return a; }
         continue;
       }
-      if (left <= 0.2 && RT.can(R, "roll")) {
+      const rlead = bs.rlead[key] != null ? bs.rlead[key] : (bs.rlead[key] = RT.P.botRollLead[0] + K.rng() * (RT.P.botRollLead[1] - RT.P.botRollLead[0]));
+      if (left <= rlead && RT.can(R, "roll")) {
         // Away from the blow, unless that corners you at the edge: then through the foe, to open ground.
         let dir = sign(p.rt.x - t.from) || -1;
         const to = p.rt.x + dir * 1.7 * BODY;
