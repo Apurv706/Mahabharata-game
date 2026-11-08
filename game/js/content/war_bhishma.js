@@ -322,8 +322,12 @@
   // The wheel as a living painting (owner, 5 November: war_wheel.mp4, five painted beats, 10 s), where video
   // plays; the puppets staged over the field painting otherwise (calm motion, data saver, a clip that fails).
   const wheelPuppets = { art: "fight_war_field", playAt: 250, ms: 8200, play: (el) => { stageWheel(el).catch(() => {}); } };
+  // (owner, 8 November: "does the Krishna taking the wheel sequence come twice?" It did: the moment opened on the wheel
+  // painting, Krishna with the wheel raised, under the title, and then the clip told it all again from the chariot. Now it
+  // opens on the clip's own first frame, the chariot, with no title (open), the clip plays on from it, and the title comes
+  // once, over the last beat; the moment waits for the clip's end. The wheel painting stays the kept card's picture.)
   const wheelClip = {
-    art: "war_wheel", playAt: 0, ms: 13200, clip: true, // 10 s of clip, then its last beat held under the title
+    art: "war_wheel", open: "war_wheel_open", playAt: 0, ms: 13200, clip: true, // 10 s of clip, then its last beat held under the title
     play: (el) => {
       const art = el.querySelector(".mo-art"); if (!art) return;
       const v = document.createElement("video");
@@ -340,7 +344,7 @@
       };
       v.addEventListener("error", fallback);
       v.addEventListener("playing", () => v.classList.add("on"));
-      v.addEventListener("ended", () => el.classList.add("ended")); // the title over the last beat (Arjuna at his feet)
+      v.addEventListener("ended", () => { el.dataset.endedAt = String(performance.now()); el.classList.add("ended"); }); // the title over the last beat (Arjuna at his feet)
       art.appendChild(v); el.classList.add("clip");
       if (v.src) { try { const p = v.play(); if (p && p.catch) p.catch(fallback); } catch (e) { fallback(); } }
       setTimeout(() => { if (v.isConnected && !v.classList.contains("on")) fallback(); }, 3500); // never started: the puppets

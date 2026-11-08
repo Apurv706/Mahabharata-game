@@ -83,13 +83,14 @@
   // The paintings of moments just earned, loaded at once (the choice that earned them is still being told), so the
   // moment comes up on time (owner, 5 November: the friendship and vow moments came up late).
   U.preloadMoments = function () {
-    for (const m of (K.momentQueue || [])) { try { const info = K.momentInfo(m, K.S); const key = info && (info.art || info.place); if (key) { const im = new Image(); im.src = U.bgUrl(key); } } catch (e) { /* a moment without a painting */ } }
+    for (const m of (K.momentQueue || [])) { try { const info = K.momentInfo(m, K.S); const key = info && (info.open || info.art || info.place); if (key) { const im = new Image(); im.src = U.bgUrl(key); } } catch (e) { /* a moment without a painting */ } }
   };
   function show(m, after) {
     const S = K.S, info = K.momentInfo(m, S);
     if (!info) return after();
     const still = reduced();
-    const bg = info.art ? U.bgUrl(info.art) : U.bgUrl(info.place || (K.SCENES[S.scene] && typeof K.SCENES[S.scene].art === "string" ? K.SCENES[S.scene].art : "scene_vow"));
+    // (info.open: the picture it opens on, when that is not its own painting: a clip's first frame, war_bhishma.js)
+    const bg = info.open || info.art ? U.bgUrl(info.open || info.art) : U.bgUrl(info.place || (K.SCENES[S.scene] && typeof K.SCENES[S.scene].art === "string" ? K.SCENES[S.scene].art : "scene_vow"));
     const big = window.innerWidth >= 900 && window.innerHeight >= 700 ? 260 : 210; // the figures stand taller on a big screen
     // A painting of the moment already shows the people in it (two boys in the river), so the
     // puppets stand only over a framed portrait. The astra keeps its figure: the weapon rises into its hand.
@@ -98,7 +99,8 @@
     const friend = figs && info.with && U.puppetFor ? U.puppet(U.puppetFor(info.with, S), { h: big, pose: "walk", flip: true, cls: "mo-friend" }) : "";
     const frame = !info.art && info.portrait ? '<i class="mo-frame" style="--img:url(\'' + U.artUrl(info.portrait) + '\')" aria-hidden="true"></i>' : "";
     const emblem = info.astra ? '<span class="mo-emblem astra">' + ASTRA_SVG + "</span>" : info.emblem ? '<span class="mo-emblem" style="--img:url(\'' + U.artUrl(info.emblem) + '\')"></span>' : "";
-    const el = U.el('<div class="moment k-' + m.kind + (still ? " still" : "") + (info.grey ? " grey" : "") + (info.art ? " painted" : " framed") + '" role="dialog" aria-modal="true" aria-label="' + U.esc(K.text(info.title)) + '">' +
+    // (a clip's moment keeps its title for the clip's last beat: class clip from the first, until the clip fails)
+    const el = U.el('<div class="moment k-' + m.kind + (still ? " still" : "") + (info.grey ? " grey" : "") + (info.art ? " painted" : " framed") + (info.clip && !still ? " clip" : "") + '" role="dialog" aria-modal="true" aria-label="' + U.esc(K.text(info.title)) + '">' +
       '<div class="mo-art" style="--img:url(\'' + bg + '\')"></div>' + (info.astra ? '<div class="mo-dark"></div><div class="mo-mantra"><i></i></div>' : "") + frame +
       '<div class="mo-figs">' + (me && (info.with || info.astra) ? '<span class="mo-l">' + me + "</span>" : "") + (friend ? '<span class="mo-r">' + friend + "</span>" : "") + (info.astra ? emblem : "") + "</div>" + (info.astra ? "" : emblem) +
       '<div class="mo-text"><span class="mo-orn" aria-hidden="true"></span><b class="mo-title">' + tx(info.title) + "</b>" + (info.line ? '<p class="mo-line">' + tx(info.line) + "</p>" : "") +
@@ -119,7 +121,19 @@
     el.classList.add("wait"); // the dark ground at once, over the page
     const reveal = () => { if (shown || running !== run) return; shown = true; requestAnimationFrame(() => requestAnimationFrame(() => { el.classList.add("in"); el.classList.remove("wait"); plan(); })); };
     const plan = () => {
-      beats.push(setTimeout(close, still ? 6000 : info.ms || (info.astra ? 8200 : 7200))); // info.ms: a staged scene's own length (war_bhishma.js)
+      // A clip's moment stays until the clip has ended and its title has been up 2.6 s (a phone that fetched the clip slowly
+      // would otherwise close it before its end, with the title never shown), at most 30 s; a clip that failed (no longer
+      // class clip) closes on its own length.
+      const t0 = performance.now();
+      const done = () => {
+        if (info.clip && !still && el.classList.contains("clip") && performance.now() - t0 < 30000) {
+          const end = +el.dataset.endedAt || 0;
+          if (!end) { beats.push(setTimeout(done, 250)); return; }
+          if (performance.now() - end < 2600) { beats.push(setTimeout(done, 2600 - (performance.now() - end))); return; }
+        }
+        close();
+      };
+      beats.push(setTimeout(done, still ? 6000 : info.ms || (info.astra ? 8200 : 7200))); // info.ms: a staged scene's own length (war_bhishma.js)
       if (info.play) at(info.playAt || 600, () => info.play(el)); // an effect drawn in code over the painting
       if (info.with) at(1900, () => {
         el.classList.add("met");
