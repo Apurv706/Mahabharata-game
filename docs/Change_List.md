@@ -326,7 +326,7 @@ Feedback 48–50, with the numbers in `Fight_Traits_Draft.md`, in three stages, 
     - **Worn down:** after two minutes an ordinary foe tires, and every blow of yours that lands on him takes at least 3% of his health by its weight (said once: "They are tiring"); champions never tire. The weak healer at the supply carts now finishes in 168–231 s (32 of 32 bouts had run to the 4-minute cap). A floor on every blow was tried first: 1% of a foe's health eased the hard fights from 88% to 94% won; 5 points still left the healer capped.
     - **Balance** (1,500 lives on two seeds, before → after): all real-time fights 94% → 94% won; hard fights 88/87% → 90/90%; each path within about a point, except the strategist +3 and the bard −1.5.
     - **The wheel moment (owner, 8 Nov, 14:09: "Does the Krishna taking the wheel sequence come twice?"):** it did: the moment opened on the wheel painting (Krishna with the wheel raised) under its title, then the clip told it all again from the chariot. It now opens on the clip's own first frame, with no title; the clip plays on from it and the title comes once, over the last frame. The moment waits for the clip's end, so a slow phone still sees the title; where the clip fails, the puppets over the field with the title, as before.
-    - Hindi for the three new lines; new checks in `tests/traits.js` (perfect-earned, swing-risk, worn-down).
+    - Hindi for the three new lines; new checks in `tests/traits.js` (perfect-earned, swing-risk, worn-down). The full check passes; the eight real-time golden lives were re-recorded (the eight turn-based ones unchanged).
 
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**
