@@ -93,6 +93,7 @@
     R.B.units.forEach((u) => { if (u.side === "enemy" && (u.person || u.hero) && u.rt && u.rt.entered) seen.add(u.uid); });
     const full = K.text(h.src || h.name), cut = full.indexOf(","), name = cut > 0 ? full.slice(0, cut) : full, title = cut > 0 ? full.slice(cut + 1).trim() : T("A champion takes the field");
     const el = U.el('<div class="rt-champ" aria-live="assertive"><b>' + U.esc(name) + "</b><small>" + U.esc(title) + "</small></div>");
+    const ha = V.actors.get(h.uid); if (ha) setTimeout(() => nameTag(ha, 3), 300); // and over him, so you know which he is
     V.stage.appendChild(el); V.stage.classList.add("champ");
     if (K.Sound) K.Sound.play("drumCall");
     const calm = U.calm();
@@ -537,7 +538,11 @@
     a.el.style.setProperty("--fh", a.fh.toFixed(1) + "px");
   }
   function pose(a, p, k, z) { if (!a) return; if (a.rig) a.rig.set(p, k || 900, z == null ? 0.5 : z); else a.svg.setAttribute("class", a.svg.getAttribute("class").replace(/\bpose-\S+/, "pose-" + ({ windup: "strike", ready: "brace", bowready: "brace", draw: "aim", duck: "duck", kneel: "kneel", loose: "loose" }[p] || p))); }
-  function home(a, ms) { setTimeout(() => { if (!V || !a.u) return; if (a.swing && performance.now() - a.swing.t0 < 300) return; // a new blow begun meanwhile keeps its swing
+  // (a.windAt: when this figure last began to wind up a blow; a return home that was planned before it is dropped, so a
+  // blow wound up straight after another keeps its wind-up: the strike and defence study, 8 November, found the mace's
+  // sweep reset to the guard mid-wind-up by the smash's return home, so it never went behind the body)
+  function home(a, ms) { const planned = performance.now(); setTimeout(() => { if (!V || !a.u) return; if (a.swing && performance.now() - a.swing.t0 < 300) return; // a new blow begun meanwhile keeps its swing
+    if (a.windAt && a.windAt > planned) return;
     if (a.rig) { a.rig.t.dx = 0; a.rig.t.dy = 0; if (a.armed) { a.rig.unwield(); a.armed = false; } }
     if (a.u.side === "player" && V.R.block && a.u.hp > 0) { pose(a, "shieldUp", 1500, 0.6); return; } // the shield stays up while held
     if (a.walled && a.u.hp > 0) { pose(a, a.u.side === "player" ? "shieldUp" : "guard", 900, 0.6); return; } // and under a shield wall (the clash's opening)
@@ -567,7 +572,9 @@
     const A = arc && U.ARCS ? U.ARCS[arc] : null;
     armFor(a);
     a.swing = { t0: again ? a.swing.t0 : now, on: t ? t.u.uid : null, aim: null, arc };
-    if (a.rig && t && t.u.hp > 0 && t !== a) a.swing.aim = U.aimBlow(a.rig, t.svg, { guard, k: A && U.MACE_ARCS[arc] ? 1500 : 1700, z: 0.55, pose: A ? A.end : undefined, at: A ? A.at : undefined, under: A && A.under != null ? A.under : undefined, straight: A && A.straight });
+    if (a.rig && t && t.u.hp > 0 && t !== a) a.swing.aim = U.aimBlow(a.rig, t.svg, { guard, k: A && U.MACE_ARCS[arc] ? 1500 : 1700, z: 0.55, pose: A ? A.end : undefined, at: A ? A.at : undefined, under: A && A.under != null ? A.under : undefined, straight: A && A.straight, near: A && A.near });
+    // A mace's swing leaves a short trail behind its head, so its arc reads (the strike and defence study, 8 November)
+    if (A && U.MACE_ARCS[arc] && a.rig && !U.calm()) a.trailUntil = a.swing.t0 + IMPACT + 300;
     if (!a.swing.aim) pose(a, A ? (U.MACE_ARCS[arc] ? "sweep" : A.end) : "strike", 1600, 0.55); // (a mace blow that finds no one follows through level, not into the ground)
     home(a, A && U.MACE_ARCS[arc] ? 560 : 460);
   }
@@ -589,8 +596,29 @@
       (V.impacts = V.impacts || []).push({ by: bu.uid, on: au.uid, res, guard, apart: bu.rt && au.rt ? Math.abs(bu.rt.x - au.rt.x) : null, reach: bu.rt && bu.rt.reach, rows: bu.rt && au.rt ? Math.abs(bu.rt.lane - au.rt.lane) : 0, t: V.R.t });
       if (V.impacts.length > 60) V.impacts.shift();
       struck(a, f, pt);
+      const arc = f.arc || (by.u.side === "player" ? by.blowArc : by.atkArc);
+      const hitAt = performance.now();
+      if (!f.blocked && (!res || res.on === "body")) setTimeout(() => { if (!(by.windAt > hitAt)) followThru(by, arc); }, f.heavy ? 80 : 50); // after the hit-stop (not over a new wind-up)
       home(by, (f.heavy ? 80 : 50) + (f.arc ? 300 : 170)); // a mace's follow-through is held a little longer
     }, wait);
+  }
+  // The blow carries on through (U.ARCS[arc].thru): the arm and the weapon turn on from where they struck, the body leans
+  // into it; the step it took is kept. A blow on a shield or a weapon stops where it met them.
+  // Whether the next blow coming at u comes high (a cut, a smash; the soonest of those marked on him).
+  const HIGH = new Set(["cut", "smash"]);
+  function threatHigh(R, u) {
+    let best = null;
+    for (const e of R.B.units) { if (e.side === "player" || e.side === u.side || e.hp <= 0 || !e.rt || !e.rt.atk || e.rt.atk.on !== u.uid || e.rt.atk.ranged || e.rt.atk.area) continue; if (!best || e.rt.atk.land < best.rt.atk.land) best = e; }
+    const ba = best && V.actors.get(best.uid);
+    return !!(ba && HIGH.has(ba.atkArc || "cut"));
+  }
+  function followThru(a, arc) {
+    const T = arc && U.ARCS && U.ARCS[arc] && U.ARCS[arc].thru, r = a && a.rig;
+    if (!T || !r || a.u.hp <= 0 || U.calm() || r.falling) return;
+    const arm = r.t.armF, item = r.t.item, dx = r.t.dx, dy = r.t.dy;
+    r.set(T.pose, 700, 0.62);
+    r.t.armF = T.arm > 0 ? Math.min(arm + T.arm, T.lim) : Math.max(arm + T.arm, T.lim);
+    r.t.item = item + T.item; r.t.dx = dx; r.t.dy = dy;
   }
   function struck(a, f, pt) {
     // Taken on a raised shield (yours, or his): a clang, not a wound (the strike and defence study, 8 November: a perfect
@@ -598,16 +626,24 @@
     // shield arm jolted, and what little gets through as a small gold number.
     const cls = f.blocked ? "clang" : "hit";
     a.el.classList.add(cls); setTimeout(() => a.el.classList.remove(cls), f.blocked ? 160 : 90);
-    if (a.rig) a.rig.kick(f.blocked ? (a.u.side === "enemy" ? { rot: 90, armB: -160 } : { rot: -90, armB: -160 }) : a.u.side === "enemy" ? { rot: 220, head: 180 } : { rot: -260, head: -200, armF: 160 });
+    // (the shield punched out to meet the blow, then jolted back; a heavy blow on the body reels him back on his heels, so
+    // its knock-back shows: the study, 8 November)
+    const shrug = !f.heavy && !f.blocked && f.melee && a.u.side === "enemy" && a.u.hp > 0 && RT.tierOf && RT.STRENGTH && RT.STRENGTH.flinch[RT.tierOf(a.u)] === 0;
+    if (a.rig) a.rig.kick(f.blocked ? (a.u.side === "enemy" ? { rot: 90, armB: -260, tx: 8 } : { rot: -90, armB: -260, tx: 8 })
+      : shrug ? { rot: 50, head: 90 }
+      : f.heavy && a.u.hp > 0 ? (a.u.side === "enemy" ? { rot: 420, head: 300, tx: -26 } : { rot: -420, head: -300, armF: 200, tx: -26 })
+      : a.u.side === "enemy" ? { rot: 220, head: 180 } : { rot: -260, head: -200, armF: 160 });
+    // A great champion takes a light blow without a flinch (Build D: only a heavy one staggers him): a dull puff where it
+    // landed and a shrug, so you see it land and see him shrug it off; the first time, a tip.
+    if (shrug) { a.el.classList.add("shrug"); setTimeout(() => a.el.classList.remove("shrug"), 260); if (f.by != null && V.actors.get(f.by) && V.actors.get(f.by).u.side === "player") tipOnce("tipShrug", "A great champion shrugs off your light blows: only the heavy one at the end of your combo staggers him."); }
     if (f.n) pop(a, String(f.n), f.blocked ? "chip" : a.u.side === "player" ? "me" : a.u.side === "ally" ? "ally" : "");
     if (U.rigFreeze) U.rigFreeze(f.heavy ? 80 : 50);
     if (f.heavy || (a.u.side === "player" && !f.blocked)) shake(false);
-    if (f.heavy) nameTag(a, 1.2);
     const clash = pt && pt.on !== "body";
     if (pt) {
-      const fl = document.createElement("i"); fl.className = "impact" + (clash ? " clash" : ""); fl.style.left = pt.x + "px"; fl.style.top = pt.y + "px";
+      const fl = document.createElement("i"); fl.className = "impact" + (clash ? " clash" : shrug ? " shrug" : ""); fl.style.left = pt.x + "px"; fl.style.top = pt.y + "px";
       V.world.appendChild(fl); setTimeout(() => fl.remove(), 320);
-      if (U.flingBits) { if (clash) U.flingBits(V.world, "spark", pt, 10, 12, null, true); else U.flingBits(V.world, "flake", pt, 6, Math.max(8, a.bw * 0.2), "#8a3a2a"); }
+      if (U.flingBits) { if (clash) U.flingBits(V.world, "spark", pt, 10, 12, null, true); else U.flingBits(V.world, "flake", pt, shrug ? 4 : 6, Math.max(8, a.bw * (shrug ? 0.12 : 0.2)), shrug ? "#a39684" : "#8a3a2a"); }
     } else if (a.sparkAt && performance.now() - a.sparkAt < 250) sparkAt(a);
     a.sparkAt = 0;
     if (K.Sound) K.Sound.play(clash ? "clang" : "hit");
@@ -617,8 +653,10 @@
   function parried(a, b, part, byFoe) {
     if (!a || !b || !V) return;
     a.swingOn = null;
-    if (!byFoe) { pose(b, "guard", 700, 0.6); if (b.rig) { b.rig.t.dx = 0; b.rig.t.dy = 0; } } // your blade comes up to meet it
-    else pose(b, "guard", 500, 0.6);
+    // (met where the blow comes, the strike and defence study: overhead for a cut or a smash, across the chest for the rest)
+    const metArc = byFoe ? a.blowArc : a.atkArc, gp = HIGH.has(metArc || "cut") ? "guard" : "guardMid";
+    if (!byFoe) { pose(b, gp, 700, 0.6); if (b.rig) { b.rig.t.dx = 0; b.rig.t.dy = 0; } } // your blade comes up to meet it
+    else pose(b, gp, 500, 0.6);
     swing(a, b, "weapon", byFoe ? b.blowArc : a.atkArc);
     const sw = a.swing, wait = Math.max(0, (sw ? sw.t0 : performance.now()) + IMPACT - performance.now());
     setTimeout(() => {
@@ -872,7 +910,7 @@
     }
     V.raf = requestAnimationFrame(loop);
   }
-  function retry() { V.R = RT.retry(V.R); V.actors.forEach((a) => { a.el.remove(); if (a.tag) a.tag.remove(); if (a.weaponEl) a.weaponEl.remove(); }); $$(".scorch, .ax, .gshield, .shptr, .glint-blade", V.el).forEach((e) => e.remove()); V.ax = null; V.ground = null; V.shPtr = null; V.actors.clear(); if (U.rigs) U.rigs.clear(); V.logAt = V.R.B.log.length; toast(K.tr("One more time.")); }
+  function retry() { V.R = RT.retry(V.R); V.actors.forEach((a) => { a.el.remove(); if (a.tag) a.tag.remove(); if (a.weaponEl) a.weaponEl.remove(); }); $$(".scorch, .ax, .gshield, .shptr, .glint-blade, .rt-trails", V.el).forEach((e) => e.remove()); V.trails = null; V.tagTick = null; V.ax = null; V.ground = null; V.shPtr = null; V.actors.clear(); if (U.rigs) U.rigs.clear(); V.logAt = V.R.B.log.length; toast(K.tr("One more time.")); }
   // Beaten, but the story goes on (owner, 4 November): you slump where you stand, the foes turn and walk off the field, and a
   // line says you tried and what is written held. A tap (Enter or Space) goes on.
   // A deadly fight lost the first time: you are down, not dead, while the second try is offered.
@@ -944,10 +982,33 @@
   }
 
   // ---------- Drawing ----------
+  // A mace's trail (swing above): the last 150 ms of its head's path, fading and thinning toward the tail.
+  function trails() {
+    const now = performance.now(); let svg = V.trails;
+    V.actors.forEach((a) => {
+      if (!a.trailUntil || now > a.trailUntil + 160 || !a.svg || a.u.hp <= 0) { if (a.trail) { a.trail = null; if (a.trailG) a.trailG.innerHTML = ""; } return; }
+      if (!svg) { svg = V.trails = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.setAttribute("class", "rt-trails"); svg.setAttribute("aria-hidden", "true"); V.world.appendChild(svg); }
+      if (!a.trailG) { a.trailG = document.createElementNS("http://www.w3.org/2000/svg", "g"); svg.appendChild(a.trailG); }
+      const pts = a.trail || (a.trail = []);
+      if (now <= a.trailUntil) { const t = U.blowTip(a.svg), wr = V.world.getBoundingClientRect(); if (t) pts.push({ t: now, x: t.x - wr.left, y: t.y - wr.top }); }
+      while (pts.length && now - pts[0].t > 150) pts.shift();
+      let h = "";
+      for (let i = 1; i < pts.length; i++) {
+        const k = 1 - (now - pts[i].t) / 150;
+        if (Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y) < 0.5) continue;
+        h += '<line x1="' + pts[i - 1].x.toFixed(1) + '" y1="' + pts[i - 1].y.toFixed(1) + '" x2="' + pts[i].x.toFixed(1) + '" y2="' + pts[i].y.toFixed(1) + '" stroke-width="' + (2 + 7 * k).toFixed(1) + '" stroke-opacity="' + (0.55 * k).toFixed(2) + '"/>';
+      }
+      a.trailG.innerHTML = h;
+    });
+  }
   function draw() {
     const R = V.R, B = R.B, G = V.G; if (!G) return;
     const p = C.player();
-    if (Math.floor(R.t / 10) !== V.tagTick && V.actors.size) { V.tagTick = Math.floor(R.t / 10); nameTagsAll(2); } // at the start and every 10 s, for 2 s
+    // Names: at the start of the fight only (the strike and defence study, owner 8 November: "only when it matters"; they
+    // came up every 10 s, at every blow marked on someone and every heavy blow, across the fighters' chests); after that on
+    // a champion's arrival, on one who comes to help, and on the foe you turn to strike.
+    if (V.tagTick == null && V.actors.size) { V.tagTick = 0; nameTagsAll(2); }
+    trails();
     const pleading = C.spareable(), inReach = RT.spareable(R); // a kneeling foe asks for mercy (C.spare)
     const canParry = RT.canParry() && !R.noStrike;
     for (const u of B.units) {
@@ -982,15 +1043,21 @@
       }
       if (u.rt.atk !== a.atk) {
         if (u.rt.atk) a.atkArc = !u.rt.atk.ranged && !u.rt.atk.area && U.arcFor ? u.rt.atk.arc || U.arcFor(u.rt.weapon, a.blowN = (a.blowN || 0) + 1) : null; // which way this weapon's blow comes
-        if (u.rt.atk) { pose(a, u.rt.atk.ranged ? "draw" : a.atkArc && U.ARCS[a.atkArc] ? U.ARCS[a.atkArc].up : "windup", a.atkArc && U.MACE_ARCS[a.atkArc] ? 500 : 700, 0.5); const t = V.actors.get(u.rt.atk.on); if (t) nameTag(t, 1.5); }
+        if (u.rt.atk) { a.windAt = performance.now(); pose(a, u.rt.atk.ranged ? "draw" : a.atkArc && U.ARCS[a.atkArc] ? U.ARCS[a.atkArc].up : "windup", a.atkArc && U.MACE_ARCS[a.atkArc] ? 500 : 700, 0.5); }
         else if (a.atk && !a.atk.ranged && u.hp > 0) { if (a.atk.area || a.atk.id === "salve") { pose(a, "strike", 1600, 0.55); home(a, 380); } else { a.swingOn = a.atk.on; a.swingArc = a.atkArc || null; } }
         a.atk = u.rt.atk;
       }
-      a.el.classList.toggle("unseen", u.side === "player" && (R.unseen > 0 || R.roll > 0));
+      a.el.classList.toggle("unseen", u.side === "player" && R.unseen > 0); // (vanished; a roll is drawn as "evading", above)
       // Your shield, up while you hold Block.
       if (u.side === "player" && R.blocker && u.hp > 0 && !!R.block !== !!a.shieldUp) {
-        a.shieldUp = !!R.block; a.el.classList.toggle("shield-up", a.shieldUp);
-        if (a.shieldUp) { if (a.rig) { a.rig.t.dx = 0; a.rig.t.dy = 0; } pose(a, "shieldUp", 1500, 0.6); } else home(a, 0);
+        a.shieldUp = !!R.block; a.el.classList.toggle("shield-up", a.shieldUp); a.shieldH = null;
+        if (a.shieldUp) { if (a.rig) { a.rig.t.dx = 0; a.rig.t.dy = 0; } } else home(a, 0);
+      }
+      // Held where the next blow on you comes (the strike and defence study: at the chest for every blow): raised to the eyes
+      // for a cut or a smash, at the chest for a thrust, a stab, a sweep or an arrow.
+      if (u.side === "player" && a.shieldUp && u.hp > 0) {
+        const h = threatHigh(R, u) ? "shieldHigh" : "shieldUp";
+        if (h !== a.shieldH) { a.shieldH = h; pose(a, h, 1500, 0.6); }
       }
       // Your soldiers on Defend raise their shields while a blow is marked on them (PRD §18.15); under a shield wall they
       // are up already (wallUp).
@@ -1086,16 +1153,24 @@
     const A = (uid) => V.actors.get(uid);
     switch (f.k) {
       case "blow": { // the wind-up of this weapon's blow, then the swing so the weapon arrives as the blow lands
-          const arc = f.arc || (U.arcFor ? U.arcFor(p.rt.weapon, f.n) : null), A = arc && U.ARCS[arc];
+          // (the dagger's heavy fifth has its own move: a drive up from a crouch, the study, 8 November)
+          const arc = f.arc || (f.heavy && p.rt.weapon === "dagger" ? "drive" : U.arcFor ? U.arcFor(p.rt.weapon, f.n) : null), A = arc && U.ARCS[arc];
+          { const tg = inFront(p); if (tg && tg !== me.lastTarget) { me.lastTarget = tg; nameTag(tg, 1.6); } } // the foe you turn to: his name
           // (the swing is begun from the frame loop, IMPACT ms before the blow lands on the fight's own clock (the strike and
           // defence study, 8 November): a timer could fire after a slow frame, or a heavy blow's swing begin so early that it
           // had to be begun again when the blow landed, 0.1 s late)
           const at = p.rt.blow ? p.rt.blow.at : R.t + f.land;
+          me.windAt = performance.now();
           if (A) { me.blowArc = arc; pose(me, A.up, 1500, 0.55); me.nextSwing = { at, arc }; if (K.Sound) K.Sound.play("tap"); break; }
           if (f.heavy || f.n === 2 || f.land * 1000 > IMPACT + 40) { pose(me, "windup", 1700, 0.55); me.nextSwing = { at, arc: null }; } else swing(me, inFront(p), null);
           if (K.Sound) K.Sound.play("tap"); break;
         }
-      case "roll": pose(me, "duck", 1400, 0.6); home(me, 400); break;
+      case "roll": { // (the strike and defence study: a squat at half opacity) a step back out of the blow, or a duck under it when it carries you forward
+        const fwd = (R.rollDir || 0) === (p.rt.face || 1);
+        pose(me, fwd ? "duck" : "backstep", 1400, 0.6); home(me, 400);
+        me.el.style.setProperty("--ev", String(R.rollDir || -1)); me.el.classList.add("evading"); clearTimeout(me.evOff); me.evOff = setTimeout(() => me.el.classList.remove("evading"), 440);
+        break;
+      }
       case "kneel": pose(me, "kneel", 600, 0.6); home(me, 1100); break;
       // Build D (row 49): a shield cracked at half its points, split at none; yours replaced off the ground (a fallen soldier's, or a comrade's throw).
       case "shieldcrack": { const a = A(f.uid); shieldCrack(a); if (a) pop(a, K.tr("Cracked"), f.mine ? "me" : ""); if (K.Sound) K.Sound.play("clang");
@@ -1139,7 +1214,7 @@
         fblockTip();
         break; }
       case "miss": { const a = A(f.uid); if (a) pop(a, K.tr("Missed"), "miss"); break; }
-      case "feint": { const a = A(f.uid); if (a && a.u.hp > 0) { pop(a, K.tr("Feint!"), "miss"); pose(a, "guard", 300, 0.4); } break; } // the wind-up stops short (item 19): it comes again
+      case "feint": { const a = A(f.uid); if (a && a.u.hp > 0) { pop(a, K.tr("Feint!"), "feint"); pose(a, "guard", 300, 0.4); if (a.rig) a.rig.kick({ armF: 260, item: -220, rot: 60 }); a.warned = false; } break; } // the wind-up stops short (item 19): it comes again; a hitch in the weapon as it drops (the study, 8 November), and its wind-up lit again when it comes
       case "parry": parried(A(f.uid), me, f.part, false); break; // your blade met his (owner, 6 November)
       case "parried": parried(me, A(f.uid), false, true); break; // a champion met yours
       case "perfect": toast(K.tr("Perfect roll")); break;

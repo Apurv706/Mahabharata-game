@@ -32,7 +32,18 @@
     bowready: { rot: -2, armF: -40, foreF: -30, armB: -10, foreB: -20, legF: -12, legB: 12, shinB: 8 },
     brace: { rot: -8, armF: -96, foreF: -60, legF: -16, legB: 16, item: 180 },
     windup: { rot: -11, tx: -5, head: -6, armF: -172, foreF: -24, armB: -26, foreB: -20, legF: -20, legB: 18, shinB: 12, item: 180 },
-    strike: { rot: 13, tx: 9, head: 5, armF: -38, foreF: -4, armB: 12, foreB: -10, legF: -30, shinF: 12, legB: 24, shinB: 6, item: 180 },
+    // (the strike and defence study, 8 November: the shield arm dropped to the hip at every cut, leaving the body open; it
+    // stays forward now, rim leading, as a shield fighter keeps it)
+    strike: { rot: 13, tx: 9, head: 5, armF: -38, foreF: -4, armB: -50, foreB: -58, legF: -30, shinF: 12, legB: 24, shinB: 6, item: 180 },
+    // The sword's cut wound up to the shoulder, the blade cocked back over it (the study: straight overhead, then a poke at
+    // the head); the shield forward.
+    cutUp: { rot: -8, tx: -4, head: -4, armF: -106, foreF: -143, armB: -50, foreB: -58, legF: -20, legB: 18, shinB: 12, item: 200 },
+    // Follow-through, after the blow lands on the body: the cut carries on down past the target, the smash drives down
+    // through it with the knees bent and the weight forward, the sweep carries on round and up (the arm and the weapon go on
+    // from where they struck: U.ARCS[arc].thru, ui/realtime.js; these give the body).
+    cutThru: { rot: 18, tx: 12, ty: 6, head: 8, armF: -20, foreF: -10, armB: -50, foreB: -58, legF: -38, shinF: 22, legB: 28, shinB: 8, item: 170 },
+    smashThru: { rot: 26, tx: 14, ty: 12, head: 14, armF: -40, foreF: -6, armB: -30, foreB: -40, legF: -46, shinF: 36, legB: 30, shinB: 16, item: 168 },
+    sweepThru: { rot: 4, tx: 14, ty: 3, head: 2, armF: -130, foreF: -6, armB: 20, foreB: -20, legF: -30, shinF: 12, legB: 30, shinB: 8, item: 165 },
     draw: { rot: -3, head: -2, armF: -84, foreF: -6, armB: -86, foreB: 150, legF: -14, legB: 14, shinB: 6, draw: 1 },
     loose: { rot: 1, armF: -84, foreF: -6, armB: -60, foreB: -10, legF: -14, legB: 14, shinB: 6 },
     drawUp: { rot: -12, head: -14, armF: -118, foreF: -6, armB: -120, foreB: 150, legF: -18, legB: 16, shinB: 8, draw: 1, tilt: -30 },
@@ -40,10 +51,16 @@
     drawLow: { rot: 4, head: 6, armF: -62, foreF: -6, armB: -64, foreB: 150, legF: -16, legB: 16, shinB: 8, draw: 1, tilt: 18 },
     looseLow: { rot: 6, head: 6, armF: -62, foreF: -6, armB: -40, foreB: -10, legF: -16, legB: 16, shinB: 8, tilt: 18 },
     guard: { rot: -8, ty: 6, head: 4, armF: -112, foreF: -70, armB: -60, foreB: -50, legF: -24, shinF: 14, legB: 22, shinB: 14, item: 180 },
+    // The parry met where the blow comes (the study: every parry met the blade overhead, a sweep at the ribs too): guard for
+    // a cut or a smash, guardMid, the blade up across the chest, for a thrust, a stab or a sweep.
+    guardMid: { rot: -6, ty: 4, head: 2, armF: -75, foreF: -40, armB: -50, foreB: -58, legF: -20, shinF: 8, legB: 20, shinB: 10, item: 150 },
     block: { rot: -6, armF: -112, foreF: -70, item: 180 },
     // The shield held up (Block, owner 4 November): the back arm brings the shield round in front of the chest, the weapon
     // held back and low behind it, the knees bent.
     shieldUp: { rot: -4, ty: 5, head: 6, armB: -50, foreB: -58, armF: 24, foreF: -64, legF: -24, shinF: 14, legB: 22, shinB: 14, item: 180 },
+    // Raised to the eyes for a blow at the head (a cut, a smash), the knees deeper (the study: the shield came to the chest
+    // for every blow).
+    shieldHigh: { rot: -6, ty: 9, head: 12, armB: -104, foreB: -56, armF: 24, foreF: -64, legF: -30, shinF: 22, legB: 24, shinB: 20, item: 180 },
     // The mace's two blows (owner, 4 November: heavy and slow): the overhead smash wound up over the shoulder, the weight
     // behind the head, and brought down onto the head and shoulders; the side sweep wound back low behind the hip and
     // swung through at the ribs.
@@ -52,17 +69,27 @@
     // (6 November, owner: "the mace is pointing down when I strike": the sweep is wound back at the hip, the mace level behind,
     // no longer hanging; and with the shield up a mace is held raised over the shoulder, not hanging at the side)
     sweepBack: { rot: -14, tx: -8, ty: 3, head: -4, armF: 115, foreF: -55, armB: -50, foreB: -40, legF: -24, shinF: 8, legB: 24, shinB: 12, item: 215 },
-    shieldUpMace: { rot: -4, ty: 5, head: 6, armB: -50, foreB: -58, armF: -150, foreF: -95, legF: -24, shinF: 14, legB: 22, shinB: 14, item: 210 },
+    // (8 November, the strike and defence study: held straight up over the head behind the shield, like a torch; now low at
+    // the hip below the shield, its head forward, ready to answer: not hanging, which the owner did not want, 6 November)
+    shieldUpMace: { rot: -4, ty: 5, head: 6, armB: -50, foreB: -58, armF: 10, foreF: -80, legF: -24, shinF: 14, legB: 22, shinB: 14, item: 150 },
+    shieldHighMace: { rot: -6, ty: 9, head: 12, armB: -104, foreB: -56, armF: 10, foreF: -80, legF: -30, shinF: 22, legB: 24, shinB: 20, item: 150 },
     sweep: { rot: 12, tx: 12, ty: 2, head: 4, armF: -84, foreF: -2, armB: 30, foreB: -12, legF: -32, shinF: 14, legB: 28, shinB: 6, item: 180 },
     // A thrust (a spear, a sword's third blow) and a stab (a dagger): drawn back at the hip, then driven straight in, the
     // weight on the front foot.
     thrustBack: { rot: -10, tx: -7, ty: 2, head: -4, armF: 62, foreF: -62, armB: -40, foreB: -40, legF: -20, shinF: 6, legB: 22, shinB: 12, item: 90 },
     stabBack: { rot: -6, tx: -4, ty: 3, head: -2, armF: 50, foreF: -70, armB: -50, foreB: -50, legF: -18, shinF: 8, legB: 18, shinB: 10, item: 90 },
+    // The dagger's heavy fifth (the study: it looked like the four stabs before it): down low in a crouch, the blade at the
+    // hip, then a step in and a drive up under the guard, rising onto the front foot.
+    stabLow: { rot: 8, tx: -4, ty: 14, head: 6, armF: 35, foreF: -95, armB: -40, foreB: -50, legF: -40, shinF: 40, legB: 26, shinB: 30, item: 90 },
+    drive: { rot: -6, tx: 14, ty: -2, head: -6, armF: -100, foreF: -10, armB: 10, foreB: -20, legF: -36, shinF: 14, legB: 34, shinB: 6, item: 90 },
     thrust: { rot: 14, tx: 13, ty: 2, head: 6, armF: -80, foreF: -6, armB: 24, foreB: -14, legF: -36, shinF: 18, legB: 30, shinB: 6, item: 90 },
     kneel: { ty: 26, head: 14, legF: -84, shinF: 96, legB: 8, shinB: 98, armF: -36, foreF: -84, armB: -30, foreB: -70 },
     strain: { rot: -14, head: -10, armF: -30, foreF: -40, armB: 30, foreB: -20, legB: 28, shinB: 10 },
     slack: { armF: 70, foreF: 30, armB: 40, foreB: 20, head: 22, legF: -14, shinF: 18, legB: 8, shinB: 10, item: 120 },
     duck: { ty: 34, rot: 16, head: 10, legF: -96, shinF: 112, legB: 8, shinB: 104, armF: -44, foreF: -70, armB: -20, foreB: -30, item: 180 },
+    // The roll drawn as a quick step back out of the blow, leaning away from it, the front foot lifting (the study: a squat
+    // at half opacity); the duck only when it carries you forward, under the blow.
+    backstep: { rot: -16, tx: -8, ty: 6, head: -10, armF: -60, foreF: -60, armB: -40, foreB: -50, legF: -46, shinF: 40, legB: 16, shinB: 30, item: 180 },
     jump: { ty: -6, legF: -78, shinF: 104, legB: -48, shinB: 96, armF: -150, armB: -130, item: 180 },
     side: { rot: -16, head: -10, legF: 26, legB: -30, armF: 40 },
     aim: { rot: -2, armF: -84, foreF: -6, armB: -86, foreB: 150 },
@@ -215,7 +242,7 @@
     return this;
   };
   // A mace (or a club) in a fight: its own way of holding it behind the raised shield.
-  const MACE_POSE = { shieldUp: "shieldUpMace" };
+  const MACE_POSE = { shieldUp: "shieldUpMace", shieldHigh: "shieldHighMace" };
   Rig.prototype.set = function (name, k, z, snap) {
     if (this.fight && MACE_POSE[name] && this.itemEl && /^(mace|club)$/.test(this.itemEl.dataset.k || "")) name = MACE_POSE[name];
     let p = POSES[name] || POSES.stand;
@@ -429,7 +456,11 @@
     const Fx = P.x - Lw, dyF = Math.max(-La * 0.95, Math.min(La * 0.95, P.y - S.y));
     // (a target far above or below, or too near for the blade's length: the point turned to it instead)
     const lx = Fx - Math.sqrt(Math.max(0, La * La - dyF * dyF)) - S.x, level = o.straight && Lw && Math.abs(P.y - S.y) <= La * 0.95 && lx >= -back * 3 && lx <= maxL;
+    // (o.near: a cut steps in only so far that the target is this fraction of the arm and blade away, so the blade comes
+    // down onto it from above, diagonally, and not straight out at it like a poke: the strike and defence study)
+    const Lnear = o.near && Lw ? Math.max(Lmin * 1.05, (La + Lw) * o.near) : 0;
     if (level) dx = lx;
+    else if (Lnear && d > Lnear) dx = Math.min(maxL, need(Lnear));
     else if (d > Lmax) dx = Math.min(maxL, need(Lmax)); // too far: a lunge
     else if (d < Lmin) dx = Math.max(-back, need(Lmin)); // too near: a lean back
     const Sx = S.x + dx; d = Math.max(1e-3, Math.hypot(P.x - Sx, dy));
@@ -476,13 +507,20 @@
   };
   // The mace's two blows, for every screen that draws one (ui/realtime.js, ui/warday.js): the wind-up pose, the pose the
   // blow ends in (aimed by U.aimBlow), and where on the body it falls.
-  U.MACE_ARCS = { smash: { up: "smashUp", end: "smash", at: "high" }, sweep: { up: "sweepBack", end: "sweep", at: "mid" } };
+  // thru: the follow-through once the blow has landed on the body (the strike and defence study: the smash stopped level
+  // and was held there like a push): its pose, how much further the arm and the weapon turn on from where they struck, and
+  // how far the arm may go (the smash no further down than about 50 degrees below level: the owner, 6 November, did not
+  // want a mace pointing into the ground).
+  U.MACE_ARCS = { smash: { up: "smashUp", end: "smash", at: "high", thru: { pose: "smashThru", arm: 40, item: 12, lim: -40 } },
+    sweep: { up: "sweepBack", end: "sweep", at: "mid", thru: { pose: "sweepThru", arm: -45, item: -12, lim: -150 } } };
   U.POSES = POSES; // (for the pose checks: tests and screenshots)
   // Every weapon's blows (owner, 4 November): a sword cuts down from a raised wind-up twice and thrusts the third time; a
   // spear thrusts; a dagger stabs; a club, a hammer or a staff comes down overhead; a fist punches. U.arcFor(weapon, n)
   // names the arc of a weapon's n-th blow (the mace's own two come from the engine).
-  U.ARCS = Object.assign({ cut: { up: "windup", end: "strike" }, thrust: { up: "thrustBack", end: "thrust", at: "mid", under: true, straight: true },
-    stab: { up: "stabBack", end: "thrust", at: "mid", under: true, straight: true }, punch: { up: "stabBack", end: "thrust", at: "mid", straight: true } }, U.MACE_ARCS);
+  U.ARCS = Object.assign({ cut: { up: "cutUp", end: "strike", at: "high", near: 0.82, thru: { pose: "cutThru", arm: 40, item: 14, lim: -25 } },
+    thrust: { up: "thrustBack", end: "thrust", at: "mid", under: true, straight: true },
+    stab: { up: "stabBack", end: "thrust", at: "mid", under: true, straight: true }, drive: { up: "stabLow", end: "drive", at: "mid", under: true },
+    punch: { up: "stabBack", end: "thrust", at: "mid", straight: true } }, U.MACE_ARCS);
   U.arcFor = function (w, n) {
     n = n || 0;
     if (w === "sword" || w === "woodsword") return n % 3 === 2 ? "thrust" : "cut";
