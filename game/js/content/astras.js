@@ -115,16 +115,32 @@
 
   // ---------- The quests: five weapons, at most two offered in a life ----------
   const offers = (S) => (S.astraOffers || 0);
-  // And only with room for another weapon (two at most in a life, years apart: core.js K.astraRoom), or a weaker one
-  // held that it could replace (K.astraSwapFor; then winning it offers the swap, scene w_swap below).
-  const open = (id) => (S) => S.act === 5 && offers(S) < 2 && !(S.astras || []).some((a) => a.id === id) && (K.astraRoom(S) || K.astraSwapFor(id, S).length > 0);
+  // A quest that can give its weapon: room for another (two at most in a life, years apart: core.js K.astraRoom), or a
+  // weaker one held that it could replace (K.astraSwapFor; winning it then offers the swap, scene w_swap below). Such a
+  // quest is one of the two a life is offered. One that cannot is still offered, for tapas only (owner, 9 Nov), and does
+  // not count among the two.
+  const can = (id) => (S) => K.astraRoom(S) || K.astraSwapFor(id, S).length > 0;
+  const open = (id) => (S) => S.act === 5 && !(S.astras || []).some((a) => a.id === id) && (!can(id)(S) || offers(S) < 2);
   const take = (S) => ({ set: { astraOffers: offers(S) + 1 } });
   // The lake and the mountain are both on the road to Matsya: the strong are sent diving, the nimble climbing.
   const SPLIT = { varuna: (S) => S.attrs.might >= S.attrs.grace, vayavya: (S) => S.attrs.grace > S.attrs.might };
+  const BLESSED = (id) => "quest_blessed_" + id;
   const quest = (o) => {
-    // Won with no room: the weapon is offered in place of a weaker one, before the road goes on (w_swap).
-    o.scene.choices.forEach((c) => { if (c.win) c.win.next = (S) => (S.astraOffer ? ((S.astraNext = o.then), "w_swap") : null); });
-    return Object.assign({ act: 5, away: true, enter: take, next: o.then, skipTo: o.then, when: (S) => open(o.astra)(S) && (!SPLIT[o.astra] || SPLIT[o.astra](S)) }, o.scene);
+    const may = can(o.astra);
+    o.scene.choices.forEach((c) => {
+      if (!c.win) return;
+      const w = c.win, fx0 = w.fx, text0 = w.text;
+      // Won with no room: the weapon is offered in place of a weaker one, before the road goes on (w_swap).
+      w.next = (S) => (S.astraOffer ? ((S.astraNext = o.then), "w_swap") : null);
+      // Won when it cannot give its weapon: the giver's blessing, one tapas more in the weapon's place.
+      w.fx = (S) => { if (may(S)) return fx0; const f = Object.assign({}, fx0); delete f.astraGrant; f.tapas = (f.tapas || 0) + 1; f.flag = BLESSED(o.astra); return f; };
+      w.text = (S) => (S.flags.includes(BLESSED(o.astra)) ? "The mantra is not given to one who already carries all they can. You are blessed instead, and come away steadier." : K.val(text0, S));
+      if (c.trial && c.trial.stakes) { const st = c.trial.stakes; c.trial.stakes = [(S) => (may(S) ? K.val(st[0], S) : "No weapon: you carry all you can. A blessing, and tapas."), st[1]]; }
+    });
+    const sc = Object.assign({ act: 5, away: true, enter: (S) => (may(S) ? take(S) : {}), next: o.then, skipTo: o.then, when: (S) => open(o.astra)(S) && (!SPLIT[o.astra] || SPLIT[o.astra](S)) }, o.scene);
+    const body0 = sc.body;
+    sc.body = (S) => (may(S) ? K.val(body0, S) : [].concat(K.val(body0, S) || [], ["You already carry all the divine weapons you can. What is given here will be a blessing, not a weapon."]));
+    return sc;
   };
 
   // Agneya: a season of penance at a fire altar, through the storms.
@@ -208,12 +224,14 @@
     choices: (S) => K.astraSwapFor(S.astraOffer ? S.astraOffer.id : "", S).map((h) => ({ id: "give_" + h,
       t: h === "astra" ? ["Keep the {name} and give up the astra you were given", { name: offered(S) }] : ["Keep the {name} and give up the {old}", { name: offered(S), old: K.ASTRAS[h].name }],
       hint: "Three fresh uses; the one you give up is gone for good", fx: { astraSwap: h }, text: "The old mantra goes quiet in you, like a lamp put out in another room. The new one is bright." }))
-      .concat([{ id: "keep", t: ["Let the {name} go", { name: offered(S) }], fx: { astraSwap: null }, text: "You give the mantra back. What you carry is enough." }]) });
+      .concat([{ id: "keep", t: ["Let the {name} go", { name: offered(S) }], fx: { astraSwap: null, tapas: 1 }, text: "You give the mantra back. What you carry is enough." }]) });
 
   // Other ways: a year serving a sage; a stolen temple offering; the shrine of light on the mountain.
-  push("a5_forest_boon", { id: "year", t: "Serve the sage a whole year", req: { rep: ["sages", 4], noAstra: "vayavya", astraRoom: true }, locked: "The sages do not know you yet.",
-    fx: { tapas: 3, astraGrant: { id: "vayavya", from: "hermitage" }, rep: { pandava: -1 }, flag: "served_a_year", journal: "You served a sage for a year in the exile, and he gave you the mantra of the wind." },
-    hint: "A year of your life: tapas +3, and a divine weapon", text: "After a year of silence the sage gives you the mantra of the wind. Never turn your back on a fight you chose." });
+  push("a5_forest_boon", { id: "year", t: "Serve the sage a whole year", req: { rep: ["sages", 4], noAstra: "vayavya" }, locked: "The sages do not know you yet.",
+    // With no room for another weapon (core.js K.astraRoom), a tapas more in its place.
+    fx: (S) => (K.astraRoom(S) ? { tapas: 3, astraGrant: { id: "vayavya", from: "hermitage" }, rep: { pandava: -1 }, flag: "served_a_year", journal: "You served a sage for a year in the exile, and he gave you the mantra of the wind." }
+      : { tapas: 4, rep: { pandava: -1 }, flag: "served_a_year", journal: "You served a sage for a year in the exile. You carried enough weapons already; he gave you his blessing." }),
+    hint: "A year of your life: tapas +3, and a divine weapon", text: (S) => ((S.astras || []).some((a) => a.id === "vayavya" && a.from === "hermitage" && a.age === S.age) ? "After a year of silence the sage gives you the mantra of the wind. Never turn your back on a fight you chose." : "After a year of silence the sage blesses you, and sends you back into the world lighter than you came.") });
   const OFFERING = { t: "Steal it back by night", game: "sneak", hint: "A test of stealth",
     trial: { twist: "dog", attr: "grace", skill: "stealth", stage: art("scene_temple_offering"),
       rules: "Cross the robber's house, in and out. Do not be seen twice.",

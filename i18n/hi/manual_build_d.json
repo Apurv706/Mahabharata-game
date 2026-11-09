@@ -62,8 +62,6 @@
   "below half health": "आधे जीवन से नीचे",
   "only near death": "केवल मृत्यु के निकट",
   "again in {n} s": "{n} सेकंड में फिर",
-  "You already carry two divine weapons.": "तुम्हारे पास पहले से दो दिव्यास्त्र हैं।",
-  "A divine weapon came to you only lately. Another must wait some years.": "एक दिव्यास्त्र तुम्हें अभी हाल में मिला है। दूसरे को कुछ वर्ष प्रतीक्षा करनी होगी।",
   "Mauni gave you medicine for the village.": "मौनी ने तुम्हें गाँव के लिए औषधि दी।",
   "Mauni gives you roots for the fever. \"You kept my secret,\" he says, and goes back into the trees.": "मौनी तुम्हें ज्वर के लिए जड़ें देते हैं। \"तुमने मेरा रहस्य रखा,\" वे कहते हैं, और पेड़ों में लौट जाते हैं।",
   "You spared a beaten Gandharva, and he taught you the art of vanishing.": "तुमने एक हारे हुए गंधर्व को छोड़ दिया, और उसने तुम्हें ओझल होने की कला सिखाई।",
@@ -81,5 +79,16 @@
   "You give the mantra back. What you carry is enough.": "तुम मंत्र लौटा देते हो। जो तुम्हारे पास है, वही पर्याप्त है।",
   "You let the {name} go, and kept the weapons you had.": "तुमने {name} जाने दिया, और अपने अस्त्र अपने पास रखे।",
   "You gave up the astra you were given, and took the {name}.": "तुमने वह अस्त्र छोड़ा जो तुम्हें दिया गया था, और {name} लिया।",
-  "You gave up the {old}, and took the {name}.": "तुमने {old} छोड़ा, और {name} लिया।"
+  "You gave up the {old}, and took the {name}.": "तुमने {old} छोड़ा, और {name} लिया।",
+  "Do a season of penance": "एक ऋतु तपस्या करो",
+  "You kept a season of penance at the ashram. No weapon came; something steadier did.": "तुमने आश्रम में एक ऋतु तपस्या की। कोई अस्त्र नहीं आया; उससे स्थिर कुछ आया।",
+  "On the last night of the season the fire speaks, but not a mantra: you carry enough already. You come away steadier than any weapon could make you.": "ऋतु की अंतिम रात अग्नि बोलती है, पर मंत्र नहीं: तुम्हारे पास पहले ही पर्याप्त है। तुम उससे अधिक स्थिर होकर लौटते हो जितना कोई अस्त्र तुम्हें बना सकता।",
+  "Ask {teacher} for the mantra's discipline": "{teacher} से मंत्र का अनुशासन माँगो",
+  "{teacher} gave you no weapon, and taught you the discipline of the mantra instead.": "{teacher} ने तुम्हें कोई अस्त्र नहीं दिया, और उसके स्थान पर मंत्र का अनुशासन सिखाया।",
+  "{teacher} looks at the weapons you already carry. \"Enough. Learn to hold what you have.\" He teaches you instead how to keep a mantra still in you until the hour it is needed.": "{teacher} तुम्हारे पास पहले से रखे अस्त्रों को देखते हैं। \"बहुत है। जो तुम्हारे पास है, उसे सँभालना सीखो।\" वे तुम्हें इसके बदले सिखाते हैं कि मंत्र को अपने भीतर तब तक शांत कैसे रखें जब तक उसकी घड़ी न आए।",
+  "The mantra is not given to one who already carries all they can. You are blessed instead, and come away steadier.": "जो पहले ही जितने हो सकते हैं उतने अस्त्र रखता है, उसे मंत्र नहीं दिया जाता। उसके बदले तुम्हें आशीर्वाद मिलता है, और तुम अधिक स्थिर होकर लौटते हो।",
+  "No weapon: you carry all you can. A blessing, and tapas.": "कोई अस्त्र नहीं: तुम्हारे पास जितने हो सकते हैं उतने हैं। एक आशीर्वाद, और तप।",
+  "You already carry all the divine weapons you can. What is given here will be a blessing, not a weapon.": "तुम्हारे पास पहले ही जितने हो सकते हैं उतने दिव्यास्त्र हैं। यहाँ जो मिलेगा, वह आशीर्वाद होगा, अस्त्र नहीं।",
+  "You served a sage for a year in the exile. You carried enough weapons already; he gave you his blessing.": "तुमने वनवास में एक वर्ष एक ऋषि की सेवा की। तुम्हारे पास पहले ही पर्याप्त अस्त्र थे; उन्होंने तुम्हें अपना आशीर्वाद दिया।",
+  "After a year of silence the sage blesses you, and sends you back into the world lighter than you came.": "एक वर्ष के मौन के बाद ऋषि तुम्हें आशीर्वाद देते हैं, और तुम्हें संसार में उससे हल्का लौटाते हैं जितना तुम आए थे।"
 }
