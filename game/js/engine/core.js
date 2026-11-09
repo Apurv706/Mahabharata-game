@@ -154,7 +154,9 @@
   K.astraRoom = (S = K.S) => !K.astraWhyNot(S);
   // A stronger weapon may be taken in place of a weaker one when there is no room (owner, 9 Nov): a fixed order,
   // weakest first, and only upward. The swap adds nothing, so it does not wait; the new one comes with three fresh uses.
-  K.ASTRA_RANK = ["astra", "nagapasha", "sammohana", "varuna", "vayavya", "agneya"];
+  // The order as measured (700 lives each, the weapon held alone; fights lost in a life fall by): sleep 33%, the noose
+  // 35%, the plain astra 41%, water 39% and its stun, wind 42%, fire 44%. The two that do no harm are the weakest.
+  K.ASTRA_RANK = ["sammohana", "nagapasha", "astra", "varuna", "vayavya", "agneya"];
   K.astraHeld = (S = K.S) => ((S.boons || []).includes("astra") ? ["astra"] : []).concat((S.astras || []).map((a) => a.id));
   K.astraSwapFor = (id, S = K.S) => (K.astraWhyNot(S) ? K.astraHeld(S).filter((h) => K.ASTRA_RANK.indexOf(h) < K.ASTRA_RANK.indexOf(id)) : []);
   const TESTS = {

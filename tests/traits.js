@@ -442,10 +442,13 @@ check("astra-earn", "divine weapons are earned, not collected: at most two in a 
     if (S.boons.includes("astra") || K.astraHeld(S).join() !== "agneya" || K.astraLeft("agneya", S) !== 3 || S.astraOffer) bad.push("after the swap: " + K.astraHeld(S) + ", " + K.astraLeft("agneya", S) + " uses");
     if (K.val(K.SCENES.w_swap.next, S) !== "a5_jayadratha") bad.push("the swap does not go on to the road's next scene");
   }
-  // Only upward: two held, the Nagapasha (ranked low) is not offered over them; a refused swap keeps what you had.
+  // Only upward (sleep < noose < plain astra < water < wind < fire): over sleep and water the noose may replace sleep only,
+  // fire either; over water and fire the noose is not offered at all. A refused swap keeps what you had.
   S = S5(); K.apply({ astraGrant: { id: "sammohana", from: "gandharva" } }); S.age = 40; K.apply({ astraGrant: { id: "varuna", from: "lake_sage" } });
-  if (K.astraSwapFor("nagapasha", S).length) bad.push("the noose offered in place of stronger weapons");
+  if (K.astraSwapFor("nagapasha", S).join() !== "sammohana") bad.push("the noose's swaps over sleep and water: " + K.astraSwapFor("nagapasha", S));
   if (K.astraSwapFor("agneya", S).join() !== "sammohana,varuna") bad.push("the Agneyastra's swaps: " + K.astraSwapFor("agneya", S));
+  { const T = S5(); K.apply({ astraGrant: { id: "varuna", from: "lake_sage" } }); T.age = 40; K.apply({ astraGrant: { id: "agneya", from: "fire_altar" } });
+    if (K.astraSwapFor("nagapasha", T).length) bad.push("the noose offered in place of stronger weapons"); K.S = S; }
   S.astraOffer = { id: "agneya", from: "fire_altar" }; K.apply({ astraSwap: null });
   if (K.astraHeld(S).join() !== "sammohana,varuna" || S.astraOffer) bad.push("a refused swap changed the weapons: " + K.astraHeld(S));
   // The teacher two years after another weapon: the mantra's discipline, no weapon (teacher's regard and a tapas).
