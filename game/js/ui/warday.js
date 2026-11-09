@@ -468,7 +468,21 @@
     if (k === "herbs") { if (!C.act("herbs", B0().units[0].uid)) toast(K.tr((K.S.items.herbs || 0) > 0 ? "Not now" : "No herbs left")); return; }
     if (k === "call") { if (!C.act("call", null)) toast(K.tr("Used this battle")); return; }
     const row = C.available().find((a) => a.id === k);
-    if (row && !row.why) C.act(k, row.target === "enemy" ? V.target : null);
+    if (!row || row.why) return;
+    // A divine weapon: its mantra traced first (ui/fx.js U.mantra). Traced, it is loosed; broken, nothing happens, no use
+    // is spent, and it waits a turn (C.astraFizzle); Escape lets it go.
+    if (K.isAstra(k) && U.mantra) {
+      if (V.tracing) return;
+      V.tracing = true;
+      U.mantra(k, { free: K.astraChampion(V.B.units) }, (ok, cancel) => {
+        if (!V) return;
+        V.tracing = false;
+        if (cancel || !canMove()) return;
+        if (ok) C.act(k, row.target === "enemy" ? V.target : null); else C.astraFizzle(k);
+      });
+      return;
+    }
+    C.act(k, row.target === "enemy" ? V.target : null);
   }
   const B0 = () => V.B;
   function choosePlace(k) {
@@ -901,11 +915,13 @@
       const el = $(".aid-sheet"), p = B.units[0], av = C.available();
       const ast = av.filter((a) => a.id === "astra" || (K.ABILITIES[a.id] && K.ABILITIES[a.id].group === "astra")), ready = ast.filter((a) => !a.why);
       const herbs = av.find((a) => a.id === "herbs"), call = av.find((a) => a.id === "call");
+      // A ready weapon's note: its uses left (three in a life), or free against a champion (abilities.js K.astraWhy).
+      const anote = (a) => (K.astraChampion(B.units) ? K.tr("free against a champion") : K.tr("{n} of 3 left", { n: K.astraLeft(a.id) }));
       const it = (k, label, note, off, key) => '<button type="button" data-aid="' + k + '"' + (off ? ' disabled aria-disabled="true"' : "") + "><b>" + esc(label) + "</b><small>" + esc(note) + "</small>" + (key ? "<kbd>" + key + "</kbd>" : "") + "</button>";
       const near = call && B.enc.callHelp === undefined && K.friendsNear ? K.friendsNear(K.S, B.enc) : [];
       el.innerHTML = (herbs ? it("herbs", K.tr("Herbs"), K.tr("{n} left", { n: K.S.items.herbs || 0 }), !!herbs.why || p.hp >= p.maxHp, "H") : "") +
-        (ready.length > 1 && V.astraPick ? ready.map((a) => it(a.id, a.name, K.tr("Divine weapon"), false, "")).join("") :
-          it(ready.length > 1 ? "astra-pick" : ready[0] ? ready[0].id : "astra", ready[0] ? (ready.length > 1 ? K.tr("Invoke astra") : ready[0].name) : K.tr("Divine weapon"), ready[0] ? K.tr("once a battle") : ast[0] ? ast[0].why || "" : K.tr("not given"), !ready.length, "U")) +
+        (ready.length > 1 && V.astraPick ? ready.map((a) => it(a.id, a.name, anote(a), false, "")).join("") :
+          it(ready.length > 1 ? "astra-pick" : ready[0] ? ready[0].id : "astra", ready[0] ? (ready.length > 1 ? K.tr("Invoke astra") : ready[0].name) : K.tr("Divine weapon"), ready[0] ? (ready.length > 1 ? K.tr("once a battle") : anote(ready[0])) : ast[0] ? ast[0].why || "" : K.tr("not given"), !ready.length, "U")) +
         (call ? it("call", K.tr("Call for help"), call.why ? K.tr("called") : near[0] === "charu" ? K.tr("Charu has no armour") : K.tr("once a fight"), !!call.why, "C") : "") +
         (!B.order && C.canFlee() ? it("withdraw", K.tr("Withdraw"), C.fleeBreaks().length ? K.tr("breaks your vow never to retreat") : K.tr("Leave the fight"), false, "") : "");
       el.querySelectorAll("[data-aid]").forEach((b) => b.addEventListener("click", () => {
@@ -951,7 +967,7 @@
 
   // ---------- Keys (laptops) ----------
   function onKey(e) {
-    if (!V || V.qte) return;
+    if (!V || V.qte || V.tracing) return; // (a mantra being traced has the keys: ui/fx.js U.mantra)
     if (document.querySelector(".fbrief-wrap, .ftour")) return;
     const k = e.key;
     if (/^[1-9]$/.test(k)) {

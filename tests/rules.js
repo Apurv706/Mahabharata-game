@@ -1498,14 +1498,16 @@ require(G + "content/war_fights.js");
     ok(a.dealt > 0 && a.ahead > 0, "soldiers on all-out pass you and strike a foe (" + a.dealt + " dealt, " + a.ahead.toFixed(2) + " of the field ahead of you)");
     ok(d.dealt > 0 && d.far <= 2, "soldiers on defend stay by you (within " + d.far.toFixed(1) + " bodies) and strike what comes in reach (" + d.dealt + " dealt)");
     ok(st.dealt === 0 && st.ahead < 0, "soldiers on stay out keep behind you and do not strike"); }
-  // A divine weapon in real time takes the share of a foe's health it takes on the turns (foes have hpFoe times the health).
+  // A divine weapon in real time takes the share of a foe's health it takes on the turns: 70-100% of each ordinary foe's
+  // (owner, 9 November: "most of the pack"). Outside the war it is spoken only under a tenth of your life.
   { const share = (rt) => { K.seed(52); const S = life(); S.astras = [{ id: "agneya", from: "x" }]; const B = C.start("e_bandits"); const R = rt ? RT.begin(B) : null;
+      const p = C.player(); p.hp = Math.max(1, Math.floor(p.maxHp * 0.08));
       const foes = B.units.filter((u) => u.side === "enemy"); foes.forEach((u) => { if (rt) { u.rt.entered = true; u.rt.x = 0.6; } });
       const hp0 = foes.map((u) => u.hp);
       if (rt) { RT.step(R, { astra: "agneya" }); } else C.core.use(C.player(), "agneya", null);
       const f = foes.reduce((n, u, i) => n + (hp0[i] - u.hp) / u.maxHp, 0) / foes.length; C.settle("win"); C.end(); return f; };
     const turns = share(false), real = share(true);
-    ok(turns > 0 && Math.abs(real - turns) <= turns * 0.35 + 0.01, "a divine weapon in real time takes about the share of health it takes on the turns (" + Math.round(real * 100) + "% / " + Math.round(turns * 100) + "%)"); }
+    ok(turns >= 0.7 && real >= 0.7 && Math.abs(real - turns) <= 0.3, "a divine weapon takes 70-100% of each ordinary foe's health, in real time as on the turns (" + Math.round(real * 100) + "% / " + Math.round(turns * 100) + "%)"); }
   // Try again: what is used once a battle (the divine weapon, the call for help) stays used in the second try.
   { K.seed(53); const S = life(); S.astras = [{ id: "agneya", from: "x" }]; const B = C.start("e_raid"); const R = RT.begin(B);
     B.units.filter((u) => u.side === "enemy").forEach((u) => { u.rt.entered = true; u.rt.x = 0.6; });

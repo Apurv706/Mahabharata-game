@@ -108,4 +108,93 @@
     // The enemy reels from wind; the foes slump under the haze.
     if (!o.clash && o.to && (kind === "vayavya" || kind === "sammohana")) setTimeout(() => o.to.classList.add(kind === "vayavya" ? "ax-pushed" : "ax-slump"), BOLT);
   };
+
+  // ---------- The mantra, traced (owner, 9 November: User Feedback 58) ----------
+  // Invoking a divine weapon: the tap that chose it opens its sign over the stilled fight, a few glowing dots to join in
+  // order with a finger or the mouse, or, on a keyboard, each stroke's arrow key. About 3 s (story mode and Easy: 4.5 s,
+  // and the dots take a looser touch). done(true): traced, the weapon comes. done(false): time ran out and the mantra
+  // breaks (no use spent; the weapon waits). done(false, true): Escape, nothing happens. Each weapon has its own sign.
+  const SIGNS = {
+    agneya: [[0.30, 0.88], [0.62, 0.66], [0.38, 0.46], [0.66, 0.26], [0.48, 0.08]], // a rising flame
+    varuna: [[0.08, 0.56], [0.29, 0.32], [0.50, 0.56], [0.71, 0.80], [0.92, 0.56]], // a wave
+    vayavya: [[0.50, 0.52], [0.66, 0.42], [0.56, 0.24], [0.30, 0.32], [0.26, 0.62], [0.54, 0.80], [0.84, 0.62]], // a whirlwind
+    sammohana: [[0.66, 0.08], [0.38, 0.22], [0.28, 0.50], [0.38, 0.78], [0.66, 0.92]], // the crescent moon
+    nagapasha: [[0.76, 0.12], [0.36, 0.18], [0.42, 0.46], [0.68, 0.56], [0.62, 0.86], [0.24, 0.88]], // the coiled serpent
+    astra: [[0.50, 0.92], [0.50, 0.50], [0.50, 0.10], [0.28, 0.32]] // an arrow
+  };
+  U.MANTRA_SIGNS = SIGNS;
+  // The arrow keys for each stroke: the main direction, or either one on a slant.
+  const strokeKeys = (a, b) => {
+    const dx = b[0] - a[0], dy = b[1] - a[1], h = dx > 0 ? "ArrowRight" : "ArrowLeft", v = dy > 0 ? "ArrowDown" : "ArrowUp";
+    if (Math.abs(dx) > 2 * Math.abs(dy)) return [h];
+    if (Math.abs(dy) > 2 * Math.abs(dx)) return [v];
+    return [h, v];
+  };
+  const ARROW = { ArrowUp: "↑", ArrowDown: "↓", ArrowLeft: "←", ArrowRight: "→" };
+  U.mantra = function (id, o, done) {
+    o = o || {};
+    const pts = SIGNS[id] || SIGNS.astra;
+    if (K.headless || /jsdom/i.test(navigator.userAgent || "") || U.mantraAuto) { setTimeout(() => done(true), 0); return; } // (tests: U.mantraAuto)
+    const easy = !!(K.S && K.S.storyMode) || (K.RT && K.RT.difficulty && K.RT.difficulty() === "easy");
+    const secs = o.secs || (easy ? 4.5 : 3), hitR = easy ? 12.5 : 9.5, calm = U.calm(), T = (s, p) => U.esc(K.tr(s, p));
+    const keys = pts.slice(1).map((q, i) => strokeKeys(pts[i], q));
+    const name = K.tr((K.ABILITIES[id] && K.ABILITIES[id].name) || "Divine weapon");
+    const left = K.astraLeft ? K.astraLeft(id) : 3;
+    const lamps = '<span class="mn-lamps" aria-hidden="true">' + [0, 1, 2].map((i) => '<i class="' + (o.free || i < left ? "lit" : "") + '"></i>').join("") + "</span>";
+    const sub = o.free ? T("Against a champion: no use spent") : T("{n} of 3 uses left", { n: left });
+    const dots = pts.map((q, i) => '<circle class="mn-dot" data-i="' + i + '" cx="' + q[0] * 100 + '" cy="' + q[1] * 100 + '" r="4.2"/>').join("");
+    const el = U.el('<div class="mantra' + (calm ? " calm" : "") + '" role="dialog" aria-modal="true" aria-label="' + U.esc(name) + '" data-keys="' + keys.map((k) => k[0]).join(" ") + '">' +
+      '<div class="mn-card"><b class="mn-name">' + U.esc(name) + "</b>" + '<p class="mn-sub">' + lamps + sub + "</p>" +
+      '<svg class="mn-sign" viewBox="0 0 100 100"><polyline class="mn-done" points=""/><line class="mn-live" x1="0" y1="0" x2="0" y2="0" display="none"/>' + dots + "</svg>" +
+      '<p class="mn-how">' + T("Trace the sign: join the lights in order") + '<span class="mn-keys"> · ' + T("or press the arrows") + " " + keys.map((k) => k.map((x) => ARROW[x]).join("/")).join(" ") + "</span></p>" +
+      '<span class="mn-time"><i></i></span><p class="mn-broke" hidden>' + T("The mantra breaks") + "</p></div></div>");
+    document.body.appendChild(el);
+    const svg = el.querySelector(".mn-sign"), done1 = el.querySelector(".mn-done"), live = el.querySelector(".mn-live"), bar = el.querySelector(".mn-time i");
+    const dotEls = [...el.querySelectorAll(".mn-dot")];
+    let next = 0, over = false, tracking = false, t0 = 0, raf = 0;
+    const mark = () => { dotEls.forEach((d, i) => { d.classList.toggle("on", i < next); d.classList.toggle("next", i === next); }); done1.setAttribute("points", pts.slice(0, next).map((q) => q[0] * 100 + "," + q[1] * 100).join(" ")); };
+    const reach = () => { next++; if (K.Sound) K.Sound.play("tap"); mark(); if (next >= pts.length) finish(true); };
+    const finish = (ok, cancel) => {
+      if (over) return; over = true; cancelAnimationFrame(raf);
+      window.removeEventListener("keydown", key, true);
+      live.setAttribute("display", "none");
+      el.classList.add(ok ? "traced" : "broke");
+      if (!ok && !cancel) el.querySelector(".mn-broke").hidden = false;
+      setTimeout(() => { el.remove(); done(ok, !!cancel); }, cancel ? 0 : calm ? 250 : ok ? 420 : 900);
+    };
+    // Where the pointer is, in the sign's own units (0–100).
+    const at = (e) => { const r = svg.getBoundingClientRect(); return [((e.clientX - r.left) / r.width) * 100, ((e.clientY - r.top) / r.height) * 100]; };
+    const near = (q) => { const d = pts[next]; return d && Math.hypot(q[0] - d[0] * 100, q[1] - d[1] * 100) <= hitR; };
+    const move = (e) => {
+      if (over || !tracking) return;
+      const q = at(e);
+      if (near(q)) reach();
+      if (next > 0 && !over) { const a = pts[next - 1]; live.setAttribute("x1", a[0] * 100); live.setAttribute("y1", a[1] * 100); live.setAttribute("x2", q[0]); live.setAttribute("y2", q[1]); live.removeAttribute("display"); }
+    };
+    el.addEventListener("pointerdown", (e) => { if (over) return; e.preventDefault(); tracking = true; try { el.setPointerCapture(e.pointerId); } catch (x) { /* older browsers */ } move(e); });
+    el.addEventListener("pointermove", move);
+    el.addEventListener("pointerup", () => { tracking = false; live.setAttribute("display", "none"); });
+    const key = (e) => {
+      if (over) return;
+      if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); return finish(false, true); }
+      if (!ARROW[e.key]) { e.stopPropagation(); return; }
+      e.preventDefault(); e.stopPropagation();
+      if (next === 0) return reach(); // the first light: any arrow begins
+      if (keys[next - 1].includes(e.key)) reach();
+      else if (!calm) { el.classList.remove("miss"); void el.offsetWidth; el.classList.add("miss"); }
+    };
+    window.addEventListener("keydown", key, true);
+    mark();
+    // The clock: a moment to see the sign, then the time runs.
+    const tick = (now) => {
+      if (over) return;
+      if (!t0) t0 = now + 450;
+      const f = Math.max(0, Math.min(1, (now - t0) / (secs * 1000)));
+      bar.style.transform = "scaleX(" + (1 - f) + ")";
+      if (f >= 1) return finish(false);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return el;
+  };
 })(window.K = window.K || {});

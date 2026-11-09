@@ -319,6 +319,90 @@ check("worn-down", "after two minutes an ordinary foe tires: every blow of yours
   return bad;
 });
 
+// ---------- The divine weapons (owner, 9 November: User Feedback 58) ----------
+const weapons = (ids) => ids.map((id) => ({ id, from: "fire_altar", age: 30 }));
+const ready = (R, id) => { const r = RT.astras(R).find((a) => a.id === id); return r ? r.why : "not offered"; };
+check("astra-uses", "three uses of each divine weapon in a life, counted per weapon; a use is spent only on ordinary foes; against a champion it stays free once all three are gone", () => {
+  const bad = [];
+  let F = fight("e_guard", { astras: weapons(["agneya", "varuna"]) });
+  F.p.hp = Math.floor(F.p.maxHp * 0.4);
+  for (let n = 3; n >= 1; n--) { if (K.astraLeft("agneya") !== n) bad.push("agneya: " + K.astraLeft("agneya") + " left, wanted " + n); K.astraSpeak(F.B.api || { enc: F.B.enc, living: (s) => F.B.units.filter((u) => u.hp > 0 && (s === "friends" ? u.side !== "enemy" : u.side === s)), say: () => {}, tell: () => {}, status: () => {} }, F.p, "agneya", null); }
+  if (K.astraLeft("agneya") !== 0) bad.push("agneya not spent after three uses: " + K.astraLeft("agneya"));
+  if (K.astraLeft("varuna") !== 3) bad.push("using the Agneyastra spent the Varunastra: " + K.astraLeft("varuna") + " left");
+  const w = ready(F.R, "agneya"); if (!w || !/three uses/i.test(w)) bad.push("agneya with none left: " + w);
+  if (ready(F.R, "varuna")) bad.push("varuna with three left, below half health in the war, not ready: " + ready(F.R, "varuna"));
+  close();
+  F = fight("e_raid", { astras: weapons(["agneya"]), charges: { astra_used_agneya: 3 } });
+  if (ready(F.R, "agneya")) bad.push("against Ashwatthama with no uses left: " + ready(F.R, "agneya"));
+  const ash = F.B.units.find((u) => u.hero); ash.rt.entered = true; const h0 = ash.hp;
+  RT.step(F.R, { astra: "agneya" });
+  if (!F.B.used.astra) bad.push("against the champion the weapon was not spoken");
+  if (K.astraLeft("agneya") !== 0 || (K.S.charges.astra_used_agneya || 0) !== 3) bad.push("a use was spent on a champion: " + K.S.charges.astra_used_agneya);
+  if (ash.hp < h0) bad.push("the champion was hurt by it (he answers with the counter-weapon)");
+  close();
+  return bad;
+});
+check("astra-when", "when it may be spoken: in the war below half health or once one of yours falls; outside the war only under a tenth of your life, at a price; never in a practice bout", () => {
+  const bad = [];
+  let F = fight("e_guard", { astras: weapons(["agneya"]) });
+  if (!ready(F.R, "agneya")) bad.push("war, full health, no one fallen: ready");
+  F.p.hp = Math.floor(F.p.maxHp * 0.49); if (ready(F.R, "agneya")) bad.push("war, 49% health: not ready (" + ready(F.R, "agneya") + ")");
+  F.p.hp = F.p.maxHp; const co = F.B.units.find((u) => u.side === "ally"); if (!co) bad.push("e_guard has no one beside you"); else { co.hp = co.plural ? co.maxHp - 1 : 0; if (ready(F.R, "agneya")) bad.push("war, one of yours fallen: not ready (" + ready(F.R, "agneya") + ")"); }
+  close();
+  F = fight("e_bandits", { side: null, act: 5, astras: weapons(["agneya"]) });
+  F.p.hp = Math.floor(F.p.maxHp * 0.4); if (!ready(F.R, "agneya")) bad.push("outside the war at 40% health: ready");
+  F.p.hp = Math.floor(F.p.maxHp * 0.08); if (ready(F.R, "agneya")) bad.push("outside the war under a tenth: not ready (" + ready(F.R, "agneya") + ")");
+  const c0 = K.S.duty.conscience, s0 = K.S.rep.sages;
+  F.B.units.filter((u) => u.side === "enemy").forEach((u) => { u.rt.entered = true; });
+  RT.step(F.R, { astra: "agneya" });
+  if (!F.B.used.astra) bad.push("outside the war under a tenth: not spoken");
+  if (!(K.S.duty.conscience < c0) || !(K.S.rep.sages < s0)) bad.push("outside the war it cost nothing (conscience " + c0 + " -> " + K.S.duty.conscience + ", sages " + s0 + " -> " + K.S.rep.sages + ")");
+  close();
+  F = fight("e_spar", { side: null, act: 2, astras: weapons(["agneya"]) });
+  F.p.hp = 1; if (!ready(F.R, "agneya")) bad.push("offered in a sparring bout");
+  close();
+  return bad;
+});
+check("astra-pack", "against ordinary foes it falls on the whole pack: the wounding weapons take 70-100% of each foe's health, sleep and the noose last twice as long; a champion on the field answers it and nothing lands", () => {
+  const bad = [];
+  for (const id of ["astra", "agneya", "varuna", "vayavya", "sammohana", "nagapasha"]) {
+    const F = fight("e_guard", id === "astra" ? { boons: ["astra"], astra: { from: "fire_altar" } } : { astras: weapons([id]) });
+    F.p.hp = Math.floor(F.p.maxHp * 0.4);
+    const foes = F.B.units.filter((u) => u.side === "enemy"); foes.forEach((u) => { u.rt.entered = true; });
+    const hp0 = foes.map((u) => u.hp);
+    RT.step(F.R, { astra: id });
+    if (!F.B.used.astra) { bad.push(id + ": not spoken (" + ready(F.R, id) + ")"); close(); continue; }
+    if (id === "sammohana" || id === "nagapasha") {
+      const st = id === "sammohana" ? "asleep" : "bound", want = id === "sammohana" ? 4 : 6;
+      const held = foes.filter((u) => u.status[st] >= want - 1).length;
+      if (held !== foes.length) bad.push(id + ": " + held + " of " + foes.length + " foes " + st + " for about " + want + " turns (" + foes.map((u) => u.status[st] || 0).join(",") + ")");
+    } else {
+      const shares = foes.map((u, i) => (hp0[i] - u.hp) / u.maxHp);
+      if (shares.some((f) => f < 0.69 || f > 1.001)) bad.push(id + ": shares of health " + shares.map((f) => Math.round(f * 100) + "%").join(", ") + " (want 70-100% each)");
+    }
+    close();
+  }
+  return bad;
+});
+check("astra-fizzle", "a mantra traced wrong: nothing happens, no use is spent, and the weapon waits (10 s in real time, a turn on the turns)", () => {
+  const bad = [];
+  const F = fight("e_guard", { astras: weapons(["agneya"]) });
+  F.p.hp = Math.floor(F.p.maxHp * 0.4);
+  RT.step(F.R, { astraFail: "agneya" });
+  if (F.B.used.astra || K.astraLeft("agneya") !== 3) bad.push("the broken mantra spent the weapon");
+  if (!ready(F.R, "agneya")) bad.push("ready again at once after a broken mantra");
+  steps(F.R, 60 * 10 + 5, () => { F.p.hp = Math.floor(F.p.maxHp * 0.4); return {}; });
+  if (ready(F.R, "agneya")) bad.push("not ready again 10 s after a broken mantra: " + ready(F.R, "agneya"));
+  close();
+  RT.force = false; K.seed(7); life({ astras: weapons(["agneya"]) });
+  const B = C.start("e_day1", null); C.player().hp = Math.floor(C.player().maxHp * 0.4);
+  C.astraFizzle("agneya");
+  const row = C.available().find((a) => a.id === "agneya");
+  if (!row || !row.why || B.used.astra || K.astraLeft("agneya") !== 3) bad.push("on the turns a broken mantra: " + JSON.stringify(row && row.why) + ", used " + !!B.used.astra);
+  try { C.settle("win"); } catch (e) { /* over */ } C.end(); RT.force = true;
+  return bad;
+});
+
 const results = [];
 let fail = 0;
 for (const c of CASES) {

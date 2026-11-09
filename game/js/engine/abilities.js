@@ -24,36 +24,26 @@
         if (h.run) h.run(B);
       }
     },
+    // The divine weapons (owner, 9 November, User Feedback 58): against ordinary foes each falls on the whole pack and fells
+    // most of it (K.astraFell); a champion meets it with his counter-weapon and nothing lands. Three uses of each in a life,
+    // when it may be spoken (K.astraWhy), and the price outside the war: K.astraSpeak.
     astra: {
-      name: "Invoke astra", target: "enemy", cd: 99, once: true, group: "astra", desc: "A divine weapon. Once per battle. Using it on an unarmed or helpless foe is a grave wrong.",
-      use: (B, u, t) => {
-        // A weapon won by penance whose condition you broke: in a deadly fight, the mantra fails once.
-        const broken = B.enc.lethal && K.S.curses.find((c) => c.id === "astra_condition" && !c.fired);
-        if (broken) { K.apply({ fireCurse: "astra_condition", journal: K.CURSES.astra_condition.fireText }); B.say(K.CURSES.astra_condition.fireText); return; }
-        if (!t.armed) {
-          B.say("You loose the astra at a foe who cannot defend himself. The sky goes dark. Somewhere, a sage has seen.");
-          K.apply({ curse: "astra_misuse", duty: { conscience: -3 }, rep: { sages: -2 }, journal: "You used a divine weapon on someone who could not fight back." });
-        }
-        // The epic's heroes know the counter to every astra: it is met in mid-air. The clash staggers
-        // them for a moment, and that is all it buys.
-        B.astraOut = { uid: t.uid, kind: B.enc.astraKind || "generic", clash: !!t.hero };
-        if (t.hero) { B.tell("{t} answers with the counter-weapon. The two meet in the air in a blaze of light, and both are gone.", { t }); B.status(t, "stun", 1); return; }
-        B.hit(u, t, 3, { pierce: true, verb: "The astra strikes {t} for {n}." });
-      }
+      name: "Invoke astra", target: "enemies", once: true, group: "astra", desc: "A divine weapon: it falls on every ordinary foe. Three uses in a life, once a battle.",
+      use: (B, u, ts) => { if (!K.astraSpeak(B, u, "astra", ts[0])) return; K.astraFell(B, u, ts, "The astra strikes {t} for {n}."); }
     },
 
     // The named divine weapons (§18.7, content/astras.js fills K.ASTRAS). One mantra a battle, whichever is
     // spoken (group "astra"); against one of the epic's heroes it is met by its counter-weapon in mid-air.
     agneya: { name: "Agneyastra", target: "enemies", once: true, group: "astra", desc: "Fire falls on every foe, and burns on. Once per battle.",
-      use: (B, u, ts) => { if (!K.astraSpeak(B, u, "agneya", ts[0])) return; ts.forEach((t) => { if (!t.hero) { B.hit(u, t, 1.6, { pierce: true, verb: "Fire falls on {t} for {n}." }); B.status(t, "burn", 3); } }); } },
-    varuna: { name: "Varunastra", target: "enemy", once: true, group: "astra", desc: "Water: puts out fire, cures burns, and stuns one foe. Once per battle.",
-      use: (B, u, t) => { if (!K.astraSpeak(B, u, "varuna", t)) return; B.living("friends").forEach((f) => { delete f.status.burn; }); if (!t.hero) { B.hit(u, t, 1.8, { pierce: true, verb: "The water strikes {t} like a falling wall, for {n}." }); B.status(t, "stun", 1); } } },
-    vayavya: { name: "Vayavyastra", target: "enemies", once: true, group: "astra", desc: "Wind scatters the line: guards broken, every foe pushed back and weakened. Once per battle.",
-      use: (B, u, ts) => { if (!K.astraSpeak(B, u, "vayavya", ts[0])) return; ts.forEach((t) => { delete t.status.guard; if (!t.hero) { B.hit(u, t, 0.8, { pierce: true, verb: "The wind throws {t} back for {n}." }); B.status(t, "weakened", 2); B.status(t, "stun", 1); } }); B.bought = (B.bought || 0) + 2; } },
-    sammohana: { name: "Sammohana", target: "enemies", once: true, group: "astra", desc: "Every foe falls asleep for two turns. A sleeping foe can be spared, not killed. Once per battle.",
-      use: (B, u, ts) => { if (!K.astraSpeak(B, u, "sammohana", ts[0])) return; ts.forEach((t) => { if (!t.hero) B.status(t, "asleep", 2, "slumps down asleep"); }); } },
-    nagapasha: { name: "Nagapasha", target: "enemy", once: true, group: "astra", desc: "The serpent-noose binds one foe for three turns, alive: capture, not a kill. Once per battle.",
-      use: (B, u, t) => { if (!K.astraSpeak(B, u, "nagapasha", t)) return; if (!t.hero) B.status(t, "bound", 3, "is bound in the serpent-noose"); } },
+      use: (B, u, ts) => { if (!K.astraSpeak(B, u, "agneya", ts[0])) return; K.astraFell(B, u, ts, "Fire falls on {t} for {n}.", (t) => B.status(t, "burn", 3)); } },
+    varuna: { name: "Varunastra", target: "enemies", once: true, group: "astra", desc: "Water: puts out fire, cures burns, and falls on every foe like a wall. Once per battle.",
+      use: (B, u, ts) => { if (!K.astraSpeak(B, u, "varuna", ts[0])) return; B.living("friends").forEach((f) => { delete f.status.burn; }); K.astraFell(B, u, ts, "The water strikes {t} like a falling wall, for {n}.", (t) => B.status(t, "stun", 1)); } },
+    vayavya: { name: "Vayavyastra", target: "enemies", once: true, group: "astra", desc: "Wind scatters the line: guards broken, every foe thrown back and weakened. Once per battle.",
+      use: (B, u, ts) => { if (!K.astraSpeak(B, u, "vayavya", ts[0])) return; ts.forEach((t) => { delete t.status.guard; }); K.astraFell(B, u, ts, "The wind throws {t} back for {n}.", (t) => { B.status(t, "weakened", 2); B.status(t, "stun", 1); }); B.bought = (B.bought || 0) + 2; } },
+    sammohana: { name: "Sammohana", target: "enemies", once: true, group: "astra", desc: "Every foe falls asleep for four turns. A sleeping foe can be spared, not killed. Once per battle.",
+      use: (B, u, ts) => { if (!K.astraSpeak(B, u, "sammohana", ts[0])) return; ts.forEach((t) => { if (!t.hero) B.status(t, "asleep", 4, "slumps down asleep"); }); } },
+    nagapasha: { name: "Nagapasha", target: "enemies", once: true, group: "astra", desc: "The serpent-noose binds every foe for six turns, alive: capture, not a kill. Once per battle.",
+      use: (B, u, ts) => { if (!K.astraSpeak(B, u, "nagapasha", ts[0])) return; ts.forEach((t) => { if (!t.hero) B.status(t, "bound", 6, "is bound in the serpent-noose"); }); } },
 
     // Archer
     aimed: { name: "Aimed shot", target: "enemy", cd: 2, desc: "Take your time. A heavy, precise hit.", use: (B, u, t) => B.hit(u, t, 1.8, { verb: "A long, careful shot hits {t} for {n}." }) },
@@ -110,19 +100,54 @@
     inspired: "Inspired", bleed: "Bleeding", crit: "Ready to strike", taunt: "Drawing fire", cursed: "Cursed",
     burn: "Burning", asleep: "Asleep", bound: "Bound", wall: "Shield wall"
   };
-  // Speaking a named mantra: the condition's curse, the misuse curse, the hero's counter-weapon.
+  // ---------- The divine weapons' rules (owner, 9 November: User Feedback 58) ----------
+  // Three uses of each weapon in a life (kept in S.charges as "astra_used_<id>"). Free against a champion, who answers it
+  // with his counter-weapon (nothing lands, as before). Against ordinary foes: in the war, ready below half your health or
+  // once one of yours has fallen in this fight (a company that has lost men counts); outside the war, only under a tenth
+  // of your life, and at the price of conscience and the sages' regard. Never in a practice bout. Still once a battle.
+  K.ASTRA_USES = 3;
+  const usedKey = (id) => "astra_used_" + id;
+  K.astraLeft = (id, S = K.S) => Math.max(0, K.ASTRA_USES - ((((S && S.charges) || {})[usedKey(id)]) || 0));
+  K.astraSpend = (id, S = K.S) => { S.charges = S.charges || {}; S.charges[usedKey(id)] = (S.charges[usedKey(id)] || 0) + 1; };
+  K.astraWar = (S = K.S) => !!S && (S.side === "pandava" || S.side === "kaurava");
+  K.astraSpar = (enc) => !!(enc && (enc.bout || /^x_/.test(enc.id || "")));
+  K.isAstra = (id) => id === "astra" || !!(K.ABILITIES[id] && K.ABILITIES[id].group === "astra");
+  const up = (u) => u.hp > 0 && !u.away;
+  K.astraChampion = (units) => units.some((u) => u.side === "enemy" && up(u) && u.hero);
+  K.astraFallen = (units) => units.some((u) => u.side !== "enemy" && u.side !== "player" && (u.hp <= 0 || (u.plural && u.hp < u.maxHp)));
+  // Why the weapon cannot be spoken now (null: it can). units: the fight's; p: you.
+  K.astraWhy = function (units, enc, p, id, S = K.S) {
+    if (K.astraSpar(enc)) return "Not in a practice bout";
+    if (K.astraChampion(units)) return null; // a champion: free, at any health
+    if (!K.astraLeft(id, S)) return "All three uses spent";
+    if (K.astraWar(S)) return p.hp < p.maxHp * 0.5 || K.astraFallen(units) ? null : "Ready below half your health, or once one of yours falls";
+    return p.hp < p.maxHp * 0.1 ? null : "Outside the war: only when your life is nearly gone";
+  };
+  // Against the ordinary foes it reaches (all of them): 70–100% of each one's health; then(t) for the weapon's own effect.
+  K.astraFell = function (B, u, ts, verb, then) {
+    ts.forEach((t) => { if (t.hero || t.hp <= 0) return; B.hit(u, t, 1, { frac: 0.7 + 0.3 * K.rng(), pierce: true, verb }); if (then && t.hp > 0) then(t); });
+  };
+  // Speaking a mantra: the condition's curse, the misuse curse, the hero's counter-weapon, the use spent and the price.
   // Returns false when the weapon did nothing more (the clash, or the failed mantra).
   K.astraSpeak = function (B, u, id, t) {
     const broken = B.enc.lethal && K.S.curses.find((c) => c.id === "astra_condition" && !c.fired);
     if (broken) { K.apply({ fireCurse: "astra_condition", journal: K.CURSES.astra_condition.fireText }); B.say(K.CURSES.astra_condition.fireText); return false; }
     const ts = B.living("enemy");
-    if (t && !t.armed && !ts.some((e) => e.armed)) {
-      B.say("You loose a divine weapon at foes who cannot defend themselves. The sky goes dark. Somewhere, a sage has seen.");
-      K.apply({ curse: "astra_misuse", duty: { conscience: -3 }, rep: { sages: -2 }, journal: "You used a divine weapon on someone who could not fight back." });
-    }
     const hero = ts.find((e) => e.hero);
-    B.astraOut = { uid: (hero || t || ts[0] || {}).uid, kind: id, clash: !!hero };
+    B.astraOut = { uid: (hero || t || ts[0] || {}).uid, kind: id === "astra" ? B.enc.astraKind || "generic" : id, clash: !!hero };
     if (hero) { B.tell("{t} answers with the counter-weapon. The two meet in the air in a blaze of light, and both are gone.", { t: hero }); B.status(hero, "stun", 1); return false; }
+    if (u.side === "player") {
+      K.astraSpend(id);
+      const left = K.astraLeft(id);
+      B.say(left ? ["The mantra holds. {n} of 3 uses left.", { n: left }] : "The mantra holds. That was its last use.");
+      if (t && !t.armed && !ts.some((e) => e.armed)) {
+        B.say("You loose a divine weapon at foes who cannot defend themselves. The sky goes dark. Somewhere, a sage has seen.");
+        K.apply({ curse: "astra_misuse", duty: { conscience: -3 }, rep: { sages: -2 }, journal: "You used a divine weapon on someone who could not fight back." });
+      } else if (!K.astraWar()) {
+        B.say("A weapon of the gods, loosed on common men to save your own life. The sages will hear of it.");
+        K.apply({ duty: { conscience: -3 }, rep: { sages: -2 }, journal: "Outside the war, you loosed a divine weapon on common men to save your life." });
+      }
+    }
     return true;
   };
 })(window.K = window.K || {});

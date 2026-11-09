@@ -253,6 +253,7 @@ engine("astra", "a divine weapon in real time: the moment, the throw, and a cham
   const { R, RT, B } = F;
   const hp0 = new Map(B.units.map((u) => [u.uid, u.hp]));
   for (let i = 0; i < 30; i++) RT.step(R, {});
+  { const p = B.units[0]; p.hp = Math.max(1, Math.floor(p.maxHp * 0.08)); } // (outside the war it is spoken only under a tenth of your life)
   const f0 = R.fx.length;
   RT.step(R, { astra: "agneya" });
   const ax = R.fx.slice(f0).find((f) => f.k === "astra");
@@ -265,7 +266,7 @@ engine("astra", "a divine weapon in real time: the moment, the throw, and a cham
   if (frames / 60 < 2) bad.push("the moment lasted only " + (frames / 60).toFixed(2) + " s");
   const hurt = B.units.filter((u) => u.side === "enemy" && u.hp < hp0.get(u.uid)).length;
   if (!hurt) bad.push("the Agneyastra hurt no foe");
-  if (!B.used.astra && !RT.astras().every((a) => a.why)) bad.push("the divine weapon can be used again in the same fight");
+  if (!B.used.astra && !RT.astras(R).every((a) => a.why)) bad.push("the divine weapon can be used again in the same fight");
   done(F);
   // The night raid: Ashwatthama answers.
   for (const enc of ["e_raid", "e_ash"]) {

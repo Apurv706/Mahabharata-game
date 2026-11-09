@@ -868,11 +868,21 @@
     // chooser in place of the moves (each weapon, and Back). One mantra a battle, whichever is spoken.
     const isAstra = (a) => a.id === "astra" || (K.ASTRAS && K.ASTRAS[a.id]);
     const astras = all.filter((a) => isAstra(a) && !a.idle);
+    // A divine weapon: its mantra traced first (ui/fx.js U.mantra); traced, it is loosed; broken, it waits a turn and no
+    // use is spent (C.astraFizzle); Escape lets it go.
+    const speak = (a) => {
+      if (!U.mantra) return C.act(a.id, a.target === "enemy" ? target : null);
+      U.mantra(a.id, { free: K.astraChampion(B.units) }, (ok, cancel) => {
+        if (C.state() !== B || B.over) return;
+        if (cancel) return U.renderBattle(B);
+        if (ok) C.act(a.id, a.target === "enemy" ? target : null); else C.astraFizzle(a.id);
+      });
+    };
     if (astraPick && astras.filter((a) => !a.why).length > 1) {
       const pick = U.el('<div class="actions astra-pick"></div>');
       astras.filter((a) => !a.why).forEach((a, i) => {
         const b = U.button("act special", "<b>" + (i + 1) + ". " + U.esc(a.name) + "</b><small>" + U.esc(a.desc) + "</small>");
-        const run = () => { astraPick = false; C.act(a.id, a.target === "enemy" ? target : null); };
+        const run = () => { astraPick = false; speak(a); };
         b.addEventListener("click", run); keys.push(run); pick.appendChild(b);
       });
       const back = () => { astraPick = false; U.renderBattle(B); };
@@ -896,7 +906,7 @@
       b.disabled = !!a.why;
       b.dataset.move = a.id;
       b.title = a.why || a.desc; // on phones the card shows only the name
-      const run = a.id === "astra-pick" ? () => { const ready = astras.filter((x) => !x.why); if (ready.length === 1) C.act(ready[0].id, ready[0].target === "enemy" ? target : null); else { astraPick = true; U.renderBattle(B); } } : () => { if (!C.act(a.id, a.target === "enemy" ? target : null)) U.renderBattle(C.state() || B); };
+      const run = a.id === "astra-pick" ? () => { const ready = astras.filter((x) => !x.why); if (ready.length === 1) speak(ready[0]); else { astraPick = true; U.renderBattle(B); } } : isAstra(a) ? () => speak(a) : () => { if (!C.act(a.id, a.target === "enemy" ? target : null)) U.renderBattle(C.state() || B); };
       b.addEventListener("click", run);
       keys.push(a.why ? null : run);
       acts.appendChild(b);
@@ -1069,7 +1079,7 @@
     rows.forEach((r) => {
       if (r.id === "call" || seen.has(r.id)) return;
       if (/^lane\d$/.test(r.id)) { if (!seen.has("lanes")) { seen.add("lanes"); add("lanes", "Choose your way", "Left, centre or right"); } return; }
-      if (isAstraId(r.id)) { if (!seen.has("astra")) { seen.add("astra"); add("astra", "Invoke astra", "A divine weapon, once a battle"); } return; }
+      if (isAstraId(r.id)) { if (!seen.has("astra")) { seen.add("astra"); add("astra", "Invoke astra", "A divine weapon: trace its sign. Three uses in a life, once a battle"); } return; }
       if (words[r.id]) { seen.add(r.id); out.push([r.id === "lay_down" ? "lay" : r.id, r.name, K.tr(words[r.id])]); return; }
     });
     const orders = rows.filter((r) => ORDERS(r.id)), special = rows.filter((r) => !words[r.id] && !ORDERS(r.id) && !isAstraId(r.id) && r.id !== "call" && !/^lane\d$/.test(r.id));
@@ -1138,7 +1148,7 @@
     add(q("#battle-actions .actions"), "Your moves. Choose one each turn, or press its number.");
     const orders = [...document.querySelectorAll("#battle-actions .act[data-move]")].find((b) => ORDERS(b.dataset.move) && !b.disabled);
     add(orders, "Orders to the soldiers beside you.");
-    add([...document.querySelectorAll("#battle-actions .act[data-move]")].find((b) => isAstraId(b.dataset.move) || b.dataset.move === "astra-pick"), "Your divine weapon. Once a battle.");
+    add([...document.querySelectorAll("#battle-actions .act[data-move]")].find((b) => isAstraId(b.dataset.move) || b.dataset.move === "astra-pick"), "Your divine weapon: trace its sign to loose it. Three uses in a life, once a battle.");
     add(q("#battle-actions .call-help"), "Shout for a friend. Once a battle.");
     add([...document.querySelectorAll("#battle-actions .battle-tools .ghost:not(.call-help)")].find((b) => b.offsetParent), "Withdraw: leave the fight. It has a cost.");
     return steps;

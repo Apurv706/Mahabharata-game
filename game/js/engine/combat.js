@@ -145,6 +145,15 @@
         api.tell("You turn {a}'s blow aside and strike back.", { a: u }); B.lastDef = "counter";
         const p = t; B.defNow = null; api.hit(p, u, 0.7); return 0;
       }
+      // A divine weapon's share of an ordinary foe's health (abilities.js K.astraFell): no armour, shield or roll of the die.
+      if (o.frac) {
+        const n = Math.max(1, Math.round(t.maxHp * o.frac));
+        t.hp = Math.max(0, t.hp - n);
+        B.lastHit = { by: u.uid, on: t.uid, n, crit: false };
+        api.tell(o.verb || "You hit {t} for {n}.", { a: u, t }, { n });
+        if (t.hp === 0) api.tell(t.side === "enemy" ? "{t} falls." : "{t} is down.", { t });
+        return n;
+      }
       let dmg = (u.atk + K.roll(4)) * mult;
       // A vow of vengeance: +1 against the one you swore against.
       if (u.side === "player" && t.person && K.hasVow("vengeance") && Object.entries(K.VENGEANCE || {}).some(([f, who]) => K.S.flags.includes(f) && who.includes(t.person))) dmg += mult;
@@ -295,6 +304,8 @@
       if (ab.group && B.used[ab.group]) why = K.tr("Used this battle"); // one mantra a battle, whichever weapon
       if (ab.item && !(S.items[ab.item] > 0)) why = K.tr("None left");
       if (id === "astra" && !S.boons.includes("astra")) why = K.tr("You were never given a divine weapon");
+      // The divine weapons' rules: three uses each in a life, when it may be spoken (abilities.js K.astraWhy).
+      if (!why && K.isAstra(id)) { const w = K.astraWhy(B.units, B.enc, p, id, S); if (w) why = K.tr(w); }
       // Moves that need allies do nothing when you fight alone: the screen tucks them away.
       const idle = (ab.needsAlly || ab.target === "allies") && friendsOf(p).length < 2;
       if (idle) why = K.tr("No ally to command");
@@ -586,6 +597,13 @@
     return true;
   };
   // After a clash: the round closes as a round of turns would (statuses, packs, the champion), unless the fight is over.
+  // A mantra traced wrong (ui/mantra.js) on the turns: nothing happens, no use is spent, and the weapon waits a turn.
+  C.astraFizzle = function (id) {
+    const p = C.player(); if (!B || !p) return;
+    p.cds[id] = Math.max(p.cds[id] || 0, 1);
+    api.say("The mantra breaks on your tongue. The weapon does not come.");
+    K.emit("combat", B);
+  };
   C.clashDone = function () { if (!B) return; B.clashPending = false; if (!over()) roundEnd(); K.emit("combat", B); };
   // A friend who falls can be dragged out of the press. It costs your turn.
   C.fallen = () => (B && !B.over ? B.units.filter((u) => u.side === "ally" && u.person && u.hp <= 0 && !B.pulled[u.uid]) : []);

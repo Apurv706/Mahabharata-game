@@ -99,8 +99,8 @@
     // where he fell, or the one a comrade throws in at your side's edge (throwX) shieldBack seconds after the break; walking
     // within pickupR of a body over it takes it up. A foe's broken: gone for the fight. Shield wall or Guard chosen on the
     // turns: Strike is locked for strikeLock seconds of the clash, the shield held up for you. A light blow of yours
-    // flinches a foe lightStag.
-    shieldPts: 10, shieldBack: 10, throwX: 0.13, pickupR: 0.45, groundMax: 5, strikeLock: 4, lightStag: 0.18,
+    // flinches a foe lightStag. A mantra traced wrong (ui/mantra.js): the divine weapons wait mantraRest seconds.
+    shieldPts: 10, shieldBack: 10, throwX: 0.13, pickupR: 0.45, groundMax: 5, strikeLock: 4, lightStag: 0.18, mantraRest: 10,
     swingLock: 1, strength: 1, // (the balance runs: 0 turns the swing lock, or strength's effects, off to measure what each costs)
     // What the swing lock costs each path, given back (owner, 7 November: "balance held at today's win rates per path"): the
     // foes' blows on you this much lighter, by your path. Measured with tests/lives.js (RT=1 RTSTATS=1 COMPARE=1, 1500 lives,
@@ -448,7 +448,13 @@
       default: return false;
     }
   };
-  RT.astras = function () { const p = C.player(); return p ? C.available().filter((a) => (a.id === "astra" || (K.ABILITIES[a.id] && K.ABILITIES[a.id].group === "astra"))) : []; };
+  // The divine weapons on offer, each with why it cannot be spoken now (C.available, abilities.js K.astraWhy); R: after a
+  // mantra traced wrong (ui/mantra.js) the weapons wait RT.P.mantraRest seconds.
+  RT.astras = function (R) {
+    const p = C.player(); if (!p) return [];
+    const rest = R && R.astraRest > R.t ? Math.ceil(R.astraRest - R.t) : 0;
+    return C.available().filter((a) => K.isAstra(a.id)).map((a) => (rest && !a.why ? Object.assign({}, a, { why: K.tr("The mantra broke: again in {n} s", { n: rest }) }) : a));
+  };
   RT.spareable = (R) => { const p = C.player(); return C.spareable().filter((e) => dist(p, e) <= Math.max(BODY * 1.6, p.rt.reach + 0.2 * BODY)); };
 
   // ---------- The player ----------
@@ -472,8 +478,10 @@
     if (a.spare) { const t = RT.spareable(R).find((e) => e.uid === a.spare); if (t) { if (t.rt.atk) cancel(R, t); C.spare(t.uid); R.fx.push({ k: "spared", uid: t.uid }); return; } }
     if (held(p) || R.frozen > 0) return;
     if (a.call && RT.can(R, "call")) { C.core.use(p, "call", null); R.fx.push({ k: "call" }); }
+    // A mantra traced wrong (ui/mantra.js): nothing happens, no use is spent, and the weapons wait a while.
+    if (a.astraFail) { R.astraRest = R.t + RT.P.mantraRest; B.say("The mantra breaks on your tongue. The weapon does not come."); R.fx.push({ k: "fizzle", id: a.astraFail }); }
     if (a.astra) {
-      const row = RT.astras().find((x) => x.id === a.astra && !x.why);
+      const row = RT.astras(R).find((x) => x.id === a.astra && !x.why);
       if (row) {
         const ab = K.ABILITIES[row.id];
         const t = ab.target === "enemy" ? nearestFoe(R, p.rt.x) : null;
@@ -482,10 +490,9 @@
           const before = new Map(B.units.map((u) => [u.uid, u.hp]));
           C.core.use(p, row.id, t ? t.uid : null);
           R.frozen = 2.4; // the moment: the fight stands still
-          // Its blow is the turn-based share of a foe's health: foes here have hpFoe (and the fight's RT.TUNE) times as much.
-          const struck = B.units.filter((u) => u.side === "enemy" && u.rt && before.get(u.uid) > u.hp);
-          const hk = RT.P.hpFoe * ((RT.TUNE[B.enc.id] || {}).hp || 1), dealt = {};
-          struck.forEach((u) => { const d = before.get(u.uid) - u.hp; u.hp = Math.max(0, before.get(u.uid) - Math.round(d * hk)); dealt[u.uid] = before.get(u.uid) - u.hp; });
+          // (Its blow is a share of each foe's health here as on the turns: abilities.js K.astraFell. No rescaling.)
+          const struck = B.units.filter((u) => u.side === "enemy" && u.rt && before.get(u.uid) > u.hp), dealt = {};
+          struck.forEach((u) => { dealt[u.uid] = before.get(u.uid) - u.hp; });
           // Ordinary foes struck by it are thrown off their feet (knocked flying, and down a while) when the moment ends.
           R.astraKnock = struck.map((u) => u.uid);
           R.fx.push({ k: "astra", id: row.id, out: B.astraOut, struck: struck.map((u) => u.uid), dealt });
@@ -1468,7 +1475,7 @@
     // Call for help when it is worth it.
     if (!bs.called && RT.can(R, "call") && (p.hp < p.maxHp * 0.6 || foes.length >= 2)) { bs.called = true; a.call = true; }
     // A divine weapon, on a crowd or when hurt, never at a foe who could answer it in a fight it wins anyway.
-    const ast = RT.astras().filter((x) => !x.why);
+    const ast = RT.astras(R).filter((x) => !x.why);
     if (ast.length && !soon && (foes.length >= 2 || p.hp < p.maxHp * 0.5) && !foes.every((e) => e.hero)) { a.astra = ast[0].id; return a; }
     if (opt.spare && C.spareable().length) { const t = RT.spareable(R)[0]; if (t && K.rng() < opt.spare) { a.spare = t.uid; return a; } }
     const f = nearestFoe(R, p.rt.x);
