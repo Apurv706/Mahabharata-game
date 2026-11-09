@@ -28,7 +28,7 @@
     // most of it (K.astraFell); a champion meets it with his counter-weapon and nothing lands. Three uses of each in a life,
     // when it may be spoken (K.astraWhy), and the price outside the war: K.astraSpeak.
     astra: {
-      name: "Invoke astra", target: "enemies", once: true, group: "astra", desc: "A divine weapon: it falls on every ordinary foe. Three uses in a life, once a battle.",
+      name: "Aindrastra", target: "enemies", once: true, group: "astra", desc: "Indra's weapon, his thunder: it falls on every ordinary foe. Three uses in a life, once a battle.", // (the plain astra, named 9 Nov)
       use: (B, u, ts) => { if (!K.astraSpeak(B, u, "astra", ts[0])) return; K.astraFell(B, u, ts, "The astra strikes {t} for {n}."); }
     },
 

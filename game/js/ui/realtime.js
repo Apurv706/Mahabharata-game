@@ -1354,13 +1354,13 @@
   // its element sweeps the field, a white-hot flash, a heavy shake and a ring; every foe it struck is thrown
   // (the engine's "thrown"), its damage in big numbers, weapons flying as they fall; scorches stay on the
   // ground with embers rising. Calm motion: one soft flash, no shake, nothing thrown.
-  const AX_SUB = { agneya: "The fire weapon", varuna: "The water weapon", vayavya: "The wind weapon", sammohana: "The weapon of sleep" };
+  const AX_SUB = { agneya: "The fire weapon", varuna: "The water weapon", vayavya: "The wind weapon", sammohana: "The weapon of sleep", generic: "Indra's thunder" };
   function axStart(f) {
     const o = f.out || {}, me = V.actors.get(C.player().uid), to = o.uid && V.actors.get(o.uid), ab = K.ABILITIES[f.id] || {};
     const kind = o.kind || { agneya: "agneya", varuna: "varuna", vayavya: "vayavya", sammohana: "sammohana" }[f.id] || "generic";
     if (U.astraFx) U.astraFx({ kind, clash: !!o.clash, from: me && me.svg, to: to && to.svg, into: V.el, noFlash: true }); // the weapon's weather, over the stage
     const old = $(".ax", V.stage); if (old) old.remove();
-    const title = f.id === "astra" ? K.tr("Divine weapon") : K.tr(ab.name || "Divine weapon"), sub = f.id === "astra" ? "" : K.tr(AX_SUB[kind] || "Divine weapon");
+    const title = K.tr(ab.name || "Divine weapon"), sub = K.tr(AX_SUB[f.id === "astra" ? "generic" : kind] || "Divine weapon");
     const line = !o.clash && ab.target === "enemies" ? K.tr("Every foe before you takes the blow.") : "";
     const ax = document.createElement("div"); ax.className = "ax k-" + kind;
     ax.innerHTML = '<i class="ax-fire"></i><i class="ax-edges"></i><i class="ax-blink"></i><div class="ax-title" aria-live="assertive"><b>' + U.esc(title) + "</b>" + (sub ? "<small>" + U.esc(sub) + "</small>" : "") + (line ? "<p>" + U.esc(line) + "</p>" : "") + "</div>";

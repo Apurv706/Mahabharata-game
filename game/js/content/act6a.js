@@ -99,7 +99,7 @@
         fx: (S) => (S.storyMode ? { injury: "scar", flag: "dragged_from_wheel", journal: "You fell in the heart of the wheel beside Abhimanyu, and woke in the healers' tents. Someone had dragged you out." }
           : { die: true, flag: "died_with_abhimanyu", deathText: "{They} fell beside Abhimanyu in the heart of the wheel, on the thirteenth day, holding the ring open to the last." }),
         text: (S) => (S.storyMode ? "Something strikes you from behind. You wake in the healers' tents, and no one will say who dragged you out."
-          : S.boons.includes("astra") ? "The astra you were given is spent, and its light is gone. There is only the boy at your back, and the wheel in his hands, and then nothing."
+          : S.boons.includes("astra") ? "The Aindrastra is spent, and its light is gone. There is only the boy at your back, and the wheel in his hands, and then nothing."
           : "There is only the boy at your back, and the wheel in his hands, and then nothing.") }],
       next: "a6_day14"
     },

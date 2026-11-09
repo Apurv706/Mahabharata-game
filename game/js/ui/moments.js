@@ -37,7 +37,7 @@
       case "teacher": return { theme: "milestone", title: ["Your teacher: {who}", { who: (K.TEACHERS[m.who] || {}).short || m.who }], line: TEACHER_LINE[m.who] || "", art: "moment_teacher" };
       case "marriage": return { theme: "milestone", title: ["Married: {who}", { who: K.PEOPLE[m.who] ? K.PEOPLE[m.who].name : (m.who ? K.personName(m.who, S) : "") }], line: "Seven steps around the fire, and the rest of your life to keep them.", art: "moment_marriage" };
       case "astra": {
-        const g = (K.ASTRA_GIVERS || {})[m.from] || {}, A = m.which && K.ASTRAS && K.ASTRAS[m.which];
+        const g = (K.ASTRA_GIVERS || {})[m.from] || {}, A = (m.which ? K.ASTRAS && K.ASTRAS[m.which] : K.AINDRA) || K.AINDRA; // the plain astra: the Aindrastra
         return { theme: "astra", title: A ? ["The {name}", { name: A.name }] : "A divine weapon", line: g.cond ? ["Given by {who}, on one condition: “{cond}”", { who: g.who, cond: g.cond }] : "The mantra is yours now, and so is every place it lands.",
           sub: A ? A.mantra : "The mantra is yours now, and so is every place it lands.", art: "moment_astra", astra: true };
       }

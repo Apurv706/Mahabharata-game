@@ -48,8 +48,8 @@
         // With no room for another weapon (core.js K.astraRoom: two at most, years apart), the penance earns tapas instead.
         { id: "astra", t: (S) => (K.astraRoom(S) ? "Do penance for a divine weapon" : "Do a season of penance"),
           check: { attr: "wisdom", skill: "lore", dc: 8,
-            pass: { fx: (S) => (K.astraRoom(S) ? { boon: "astra", astraFrom: "penance", journal: "After a season of penance you were granted a divine weapon." } : { tapas: 2, flag: "penance_blessed", journal: "You kept a season of penance at the ashram. No weapon came; something steadier did." }),
-              text: (S) => (S.flags.includes("penance_blessed") ? "On the last night of the season the fire speaks, but not a mantra: you carry enough already. You come away steadier than any weapon could make you." : "On the last night of the season, a voice in the fire gives you a mantra. You can call an astra once in any battle.") },
+            pass: { fx: (S) => (K.astraRoom(S) ? { boon: "astra", astraFrom: "penance", journal: "After a season of penance you were granted the Aindrastra, Indra's weapon." } : { tapas: 2, flag: "penance_blessed", journal: "You kept a season of penance at the ashram. No weapon came; something steadier did." }),
+              text: (S) => (S.flags.includes("penance_blessed") ? "On the last night of the season the fire speaks, but not a mantra: you carry enough already. You come away steadier than any weapon could make you." : "On the last night of the season, a voice in the fire gives you the mantra of the Aindrastra, Indra's thunder. You can call it once in any battle.") },
             fail: { fx: { attr: { wisdom: 1 } }, text: "No weapon comes. But you leave the ashram quieter and clearer than you arrived." } } },
         { id: "heal", t: "Learn from the healers", fx: { boon: "healing_hands", skill: { healing: 1 }, journal: "The ashram's healers taught you their remedies." } },
         { id: "serve", t: "Serve the sages", req: { any: [{ flag: "kind_to_sage" }, { rep: ["sages", 5] }] }, locked: "The sages do not know you yet.", fx: { boon: "foresight", rep: { sages: 1 }, journal: "An old sage blessed you with foresight." },
@@ -126,8 +126,8 @@
         // With no room for another weapon (core.js K.astraRoom), the teacher gives the mantra's discipline instead: regard and tapas.
         { id: "astra", t: (S) => (K.astraRoom(S) ? "Ask {teacher} for the promised weapon" : "Ask {teacher} for the mantra's discipline"), req: { teacher: ["drona", "kripa"], duty: ["teacher", 5] },
           locked: "Your teacher must think you have earned it.",
-          fx: (S) => (K.astraRoom(S) ? { boon: "astra", astraFrom: "teacher", duty: { teacher: 1 }, journal: "{teacher} taught you to call a divine weapon." } : { duty: { teacher: 1 }, tapas: 1, journal: "{teacher} gave you no weapon, and taught you the discipline of the mantra instead." }),
-          text: (S) => (S.astra && S.astra.from === S.teacher && S.astra.age === S.age && S.boons.includes("astra") ? "{teacher} weighs you up in silence, then teaches you the mantra in a whisper. \"Never against someone who cannot fight back,\" he says."
+          fx: (S) => (K.astraRoom(S) ? { boon: "astra", astraFrom: "teacher", duty: { teacher: 1 }, journal: "{teacher} taught you to call the Aindrastra, Indra's weapon." } : { duty: { teacher: 1 }, tapas: 1, journal: "{teacher} gave you no weapon, and taught you the discipline of the mantra instead." }),
+          text: (S) => (S.astra && S.astra.from === S.teacher && S.astra.age === S.age && S.boons.includes("astra") ? "{teacher} weighs you up in silence, then teaches you the mantra of the Aindrastra in a whisper. \"Never against someone who cannot fight back,\" he says."
             : "{teacher} looks at the weapons you already carry. \"Enough. Learn to hold what you have.\" He teaches you instead how to keep a mantra still in you until the hour it is needed.") }
       ],
       next: "a5_charu"
@@ -167,8 +167,8 @@
         { id: "grain", t: "Ride for grain", fx: { skill: { chariot: 1 }, rep: { common: 2 } } },
         { id: "mauni", t: "Find Mauni in the forest", req: { teacher: "hermit", noFlag: "betrayed_hermit" }, locked: "",
           // The mantra only when there is room for another weapon (core.js K.astraRoom); the medicine always.
-          fx: (S) => (K.astraRoom(S) ? { boon: "astra", astraFrom: "mauni", rep: { common: 1 }, journal: "Mauni gave you medicine for the village, and a divine weapon for what was coming." } : { rep: { common: 1 }, tapas: 1, journal: "Mauni gave you medicine for the village." }),
-          text: (S) => (S.astra && S.astra.from === "mauni" && S.boons.includes("astra") ? "Mauni gives you roots for the fever and, before you leave, a mantra. \"You kept my secret. Keep this one too.\"" : "Mauni gives you roots for the fever. \"You kept my secret,\" he says, and goes back into the trees.") }
+          fx: (S) => (K.astraRoom(S) ? { boon: "astra", astraFrom: "mauni", rep: { common: 1 }, journal: "Mauni gave you medicine for the village, and the Aindrastra for what was coming." } : { rep: { common: 1 }, tapas: 1, journal: "Mauni gave you medicine for the village." }),
+          text: (S) => (S.astra && S.astra.from === "mauni" && S.boons.includes("astra") ? "Mauni gives you roots for the fever and, before you leave, the mantra of the Aindrastra. \"You kept my secret. Keep this one too.\"" : "Mauni gives you roots for the fever. \"You kept my secret,\" he says, and goes back into the trees.") }
       ],
       next: "a5_charu"
     },

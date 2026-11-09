@@ -19,6 +19,8 @@
   const art = (k) => STANDIN[k] || k;
 
   // ---------- The weapons ----------
+  // The plain astra (boon "astra": from the teacher, the penance or Mauni) has a name too: Indra's thunder (owner, 9 Nov).
+  K.AINDRA = { name: "Aindrastra", mantra: "The mantra of thunder: Indra, who rides the storm and splits the clouds open." };
   K.ASTRAS = {
     agneya: { name: "Agneyastra", mantra: "The mantra of fire: Agni, who eats everything and is never full.", kind: "agneya" },
     varuna: { name: "Varunastra", mantra: "The mantra of water: Varuna, who holds the oceans in a cupped hand.", kind: "varuna" },
@@ -222,7 +224,7 @@
     body: (S) => [K.astraWhyNot(S) === "full" ? ["No one can carry more than two divine weapons. To keep the {name}, you must give one up.", { name: offered(S) }]
       : ["A divine weapon came to you only lately, and another cannot follow it so soon. To keep the {name}, you must give up the one you have.", { name: offered(S) }]],
     choices: (S) => K.astraSwapFor(S.astraOffer ? S.astraOffer.id : "", S).map((h) => ({ id: "give_" + h,
-      t: h === "astra" ? ["Keep the {name} and give up the astra you were given", { name: offered(S) }] : ["Keep the {name} and give up the {old}", { name: offered(S), old: K.ASTRAS[h].name }],
+      t: ["Keep the {name} and give up the {old}", { name: offered(S), old: K.astraName(h) }],
       hint: "Three fresh uses; the one you give up is gone for good", fx: { astraSwap: h }, text: "The old mantra goes quiet in you, like a lamp put out in another room. The new one is bright." }))
       .concat([{ id: "keep", t: ["Let the {name} go", { name: offered(S) }], fx: { astraSwap: null, tapas: 1 }, text: "You give the mantra back. What you carry is enough." }]) });
 

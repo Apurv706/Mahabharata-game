@@ -157,6 +157,8 @@
   // The order as measured (700 lives each, the weapon held alone; fights lost in a life fall by): sleep 33%, the noose
   // 35%, the plain astra 41%, water 39% and its stun, wind 42%, fire 44%. The two that do no harm are the weakest.
   K.ASTRA_RANK = ["sammohana", "nagapasha", "astra", "varuna", "vayavya", "agneya"];
+  // A weapon's name: the plain astra (the teacher's, the penance's, Mauni's) is the Aindrastra (owner, 9 Nov).
+  K.astraName = (id) => (id === "astra" ? "Aindrastra" : (K.ASTRAS && K.ASTRAS[id] && K.ASTRAS[id].name) || id);
   K.astraHeld = (S = K.S) => ((S.boons || []).includes("astra") ? ["astra"] : []).concat((S.astras || []).map((a) => a.id));
   K.astraSwapFor = (id, S = K.S) => (K.astraWhyNot(S) ? K.astraHeld(S).filter((h) => K.ASTRA_RANK.indexOf(h) < K.ASTRA_RANK.indexOf(id)) : []);
   const TESTS = {
@@ -339,7 +341,7 @@
       S.astras.push({ id: o.id, from: o.from, age: S.age });
       S.charges = S.charges || {}; S.charges["astra_used_" + o.id] = 0; // three fresh uses
       d.astraGranted = o.id;
-      FX.journal(give === "astra" ? { src: "You gave up the astra you were given, and took the {name}.", p: { name } } : { src: "You gave up the {old}, and took the {name}.", p: { old: K.ASTRAS[give].name, name } }, S);
+      FX.journal({ src: "You gave up the {old}, and took the {name}.", p: { old: K.astraName(give), name } }, S);
     },
     // A charge of magic or a shield (once-only things): charges.sanjivani = 1, charges.kavacha = 1...
     charge: (o, S, d) => { S.charges = S.charges || {}; for (const [k, n] of Object.entries(o)) { S.charges[k] = n; d["charge." + k] = n; } },
