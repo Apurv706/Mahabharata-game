@@ -157,8 +157,8 @@
   // The order as measured (700 lives each, the weapon held alone; fights lost in a life fall by): sleep 33%, the noose
   // 35%, the plain astra 41%, water 39% and its stun, wind 42%, fire 44%. The two that do no harm are the weakest.
   K.ASTRA_RANK = ["sammohana", "nagapasha", "astra", "varuna", "vayavya", "agneya"];
-  // A weapon's name: the plain astra (the teacher's, the penance's, Mauni's) is the Aindrastra (owner, 9 Nov).
-  K.astraName = (id) => (id === "astra" ? "Aindrastra" : (K.ASTRAS && K.ASTRAS[id] && K.ASTRAS[id].name) || id);
+  // A weapon's name: the plain astra (the teacher's, the penance's, Mauni's) is the Indrastra (owner, 9 Nov).
+  K.astraName = (id) => (id === "astra" ? "Indrastra" : (K.ASTRAS && K.ASTRAS[id] && K.ASTRAS[id].name) || id);
   K.astraHeld = (S = K.S) => ((S.boons || []).includes("astra") ? ["astra"] : []).concat((S.astras || []).map((a) => a.id));
   K.astraSwapFor = (id, S = K.S) => (K.astraWhyNot(S) ? K.astraHeld(S).filter((h) => K.ASTRA_RANK.indexOf(h) < K.ASTRA_RANK.indexOf(id)) : []);
   const TESTS = {

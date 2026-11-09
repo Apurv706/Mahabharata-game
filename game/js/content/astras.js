@@ -20,7 +20,7 @@
 
   // ---------- The weapons ----------
   // The plain astra (boon "astra": from the teacher, the penance or Mauni) has a name too: Indra's thunder (owner, 9 Nov).
-  K.AINDRA = { name: "Aindrastra", mantra: "The mantra of thunder: Indra, who rides the storm and splits the clouds open." };
+  K.INDRA = { name: "Indrastra", mantra: "The mantra of thunder: Indra, who rides the storm and splits the clouds open." };
   K.ASTRAS = {
     agneya: { name: "Agneyastra", mantra: "The mantra of fire: Agni, who eats everything and is never full.", kind: "agneya" },
     varuna: { name: "Varunastra", mantra: "The mantra of water: Varuna, who holds the oceans in a cupped hand.", kind: "varuna" },

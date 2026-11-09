@@ -44,7 +44,7 @@
     // A divine weapon's condition, named by the one who gave it.
     const g = S.astra && K.ASTRA_GIVERS[S.astra.from];
     const astraNote = g ? '<p class="sub">' + (S.astra.broken ? U.tr(g.takes ? "You broke {who}'s condition, and the weapon was taken back." : "You broke the condition. The mantra will fail you at the worst hour.", { who: K.tr(g.who) })
-      : U.tr("Your Aindrastra was given by {who}, on one condition: “{cond}”", { who: K.tr(g.who), cond: K.tr(g.cond) }) + (K.astraLeft ? " " + U.tr("{n} of 3 uses left", { n: K.astraLeft("astra", S) }) : "")) + "</p>" : "";
+      : U.tr("Your Indrastra was given by {who}, on one condition: “{cond}”", { who: K.tr(g.who), cond: K.tr(g.cond) }) + (K.astraLeft ? " " + U.tr("{n} of 3 uses left", { n: K.astraLeft("astra", S) }) : "")) + "</p>" : "";
     // Tapas (§18.8), the named weapons and their conditions, and the charges of magic and shields (§18.7).
     const tapas = (S.tapas || 0) > 0 || (S.vows && S.vows.length) ? meter(K.tr("Tapas"), S.tapas || 0, "tapas", 20) + '<p class="sub">' + U.tr("Spiritual merit: earned by vows kept through an act, penance and hard right choices; spent on the mantras and rites of the sages.") + "</p>" : "";
     const weapons = (S.astras || []).map((a) => { const A = K.ASTRAS[a.id], g = K.ASTRA_GIVERS[a.from] || {}; return '<div class="vowcard' + (a.broken ? " broken" : "") + '">' + U.thumb("path_archer", "emblem") + "<b>" + U.tr(A.name) + "</b><small>" + U.tr(A.mantra) + (g.cond ? "<br>" + U.tr("Given by {who}, on one condition: “{cond}”", { who: K.tr(g.who), cond: K.tr(g.cond) }) : "") + (K.astraLeft ? "<br>" + U.tr("{n} of 3 uses left", { n: K.astraLeft(a.id, S) }) : "") + "</small></div>"; }).join("");

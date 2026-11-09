@@ -70,7 +70,7 @@
     charu: "Charu puts the hammer down. \"We were ten,\" Charu says. \"I thought that meant something to you too.\""
   };
   Object.assign(K.BOONS, {
-    astra: { name: "The Aindrastra", text: "Indra's weapon, his thunder: it falls on every ordinary foe. Three uses in a life, once a battle. Turning it on someone who cannot fight back brings a curse." },
+    astra: { name: "The Indrastra", text: "Indra's weapon, his thunder: it falls on every ordinary foe. Three uses in a life, once a battle. Turning it on someone who cannot fight back brings a curse." },
     foresight: { name: "Foresight", text: "A sage's blessing: you sense danger a moment before it comes." },
     healing_hands: { name: "Healing hands", text: "An ashram's teaching. You never run short of healing herbs before a battle." }
   });
