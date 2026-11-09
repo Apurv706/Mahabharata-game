@@ -120,7 +120,7 @@
     vayavya: [[0.50, 0.52], [0.66, 0.42], [0.56, 0.24], [0.30, 0.32], [0.26, 0.62], [0.54, 0.80], [0.84, 0.62]], // a whirlwind
     sammohana: [[0.66, 0.08], [0.38, 0.22], [0.28, 0.50], [0.38, 0.78], [0.66, 0.92]], // the crescent moon
     nagapasha: [[0.76, 0.12], [0.36, 0.18], [0.42, 0.46], [0.68, 0.56], [0.62, 0.86], [0.24, 0.88]], // the coiled serpent
-    astra: [[0.50, 0.92], [0.50, 0.50], [0.50, 0.10], [0.28, 0.32]] // an arrow
+    astra: [[0.66, 0.06], [0.38, 0.48], [0.62, 0.48], [0.34, 0.94]] // the Aindrastra: Indra's lightning bolt
   };
   U.MANTRA_SIGNS = SIGNS;
   // The arrow keys for each stroke: the main direction, or either one on a slant.
