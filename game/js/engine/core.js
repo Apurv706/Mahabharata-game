@@ -144,6 +144,14 @@
 
   // ---------- Conditions ----------
   const FIELDS = ["origin", "teacher", "path", "court", "side", "friend", "spouse", "child", "temperament", "heirloom", "pronoun", "exile", "endChoice"];
+  // Divine weapons are earned, not collected (owner, 9 Nov): at most two in a life, the plain astra counted, and
+  // never two close together: after one, the next waits K.ASTRA_GAP years (in the exile, that is the last year's
+  // quests at the earliest). Every road to a weapon asks K.astraRoom (content/act5.js, content/astras.js).
+  K.ASTRA_MAX = 2; K.ASTRA_GAP = 4;
+  K.astraCount = (S = K.S) => ((S.boons || []).includes("astra") ? 1 : 0) + (S.astras || []).length;
+  K.astraLastAge = (S = K.S) => { const ages = (S.astras || []).map((a) => a.age).concat(S.astra && S.astra.age != null ? [S.astra.age] : []).filter((n) => n != null); return ages.length ? Math.max(...ages) : null; };
+  K.astraWhyNot = (S = K.S) => { if (K.astraCount(S) >= K.ASTRA_MAX) return "full"; const a = K.astraLastAge(S); return a != null && S.age - a < K.ASTRA_GAP ? "soon" : null; };
+  K.astraRoom = (S = K.S) => !K.astraWhyNot(S);
   const TESTS = {
     all: (v, S) => v.every((x) => K.test(x, S)),
     any: (v, S) => v.some((x) => K.test(x, S)),
@@ -173,6 +181,7 @@
     tapas: (n, S) => (S.tapas || 0) >= n,
     astra: (id, S) => (S.astras || []).some((a) => a.id === id),
     noAstra: (id, S) => !(S.astras || []).some((a) => a.id === id),
+    astraRoom: (v, S) => K.astraRoom(S) === v,
     charge: (k, S) => !!(S.charges || {})[k]
   };
   K.test = function (c, S = K.S) {
@@ -306,7 +315,7 @@
     astraGrant: (v, S, d) => {
       const id = typeof v === "string" ? v : v.id, from = typeof v === "string" ? null : v.from;
       S.astras = S.astras || [];
-      if (S.astras.some((a) => a.id === id)) return;
+      if (S.astras.some((a) => a.id === id) || K.astraCount(S) >= K.ASTRA_MAX) return; // (the cap: every road asks first)
       S.astras.push({ id, from, age: S.age });
       d.astraGranted = id;
       FX.journal({ src: "You were granted the {name}.", p: { name: (K.ASTRAS && K.ASTRAS[id] && K.ASTRAS[id].name) || id } }, S);

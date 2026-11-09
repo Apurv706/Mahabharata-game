@@ -10,7 +10,8 @@
    - The Brahmastra is offered once, on the last night of the war, at a terrible price, and can be refused.
    Art comes later: STANDIN maps each picture the brief asks for to a painting the game already has.
    Scenes here come before scenes every road reaches (K.BEFORE), each only when it applies, and a
-   life is offered at most two of the five quests. */
+   life is offered at most two of the five quests. Every road to a weapon asks core.js K.astraRoom: at most two
+   weapons in a life (the plain astra counted), and the second at least K.ASTRA_GAP years after the first. */
 (function (K) {
   "use strict";
   const STANDIN = {
@@ -80,8 +81,11 @@
   // The vanishing comes from the Gandharvas (the ambush in the exile years), or from a naga.
   const gand = K.ENCOUNTERS.e_gandharva;
   if (gand) {
-    gand.spare = { fx: { astraGrant: { id: "sammohana", from: "gandharva" }, boon: "antardhana", rep: { sages: 1 }, journal: "You spared a beaten Gandharva, and he taught you the mantra of sleep and the art of vanishing." },
-      text: "The Gandharva laughs and teaches you two things before dawn: the mantra that puts a host to sleep, and how not to be where you are looked for." };
+    // The mantra of sleep only with room for another weapon (core.js K.astraRoom); the vanishing always.
+    gand.spare = { fx: (S) => (K.astraRoom(S) ? { astraGrant: { id: "sammohana", from: "gandharva" }, boon: "antardhana", rep: { sages: 1 }, journal: "You spared a beaten Gandharva, and he taught you the mantra of sleep and the art of vanishing." }
+        : { boon: "antardhana", rep: { sages: 1 }, journal: "You spared a beaten Gandharva, and he taught you the art of vanishing." }),
+      text: (S) => ((S.astras || []).some((a) => a.id === "sammohana" && a.from === "gandharva" && a.age === S.age) ? "The Gandharva laughs and teaches you two things before dawn: the mantra that puts a host to sleep, and how not to be where you are looked for."
+        : "The Gandharva laughs and teaches you one thing before dawn: how not to be where you are looked for.") };
   }
   // Soma at the Rajasuya: its own small scene before the sacrifice, for those with the merit to be offered it.
   K.scene({ id: "w_soma", act: 3, age: 29, away: true, when: (S) => (S.tapas || 0) >= 2 && !S.flags.includes("drank_soma"), enter: { flag: "soma_offered" }, next: "a3_rajasuya", skipTo: "a3_rajasuya",
@@ -111,7 +115,8 @@
 
   // ---------- The quests: five weapons, at most two offered in a life ----------
   const offers = (S) => (S.astraOffers || 0);
-  const open = (id) => (S) => S.act === 5 && offers(S) < 2 && !(S.astras || []).some((a) => a.id === id);
+  // And only with room for another weapon: two at most in a life, years apart (core.js K.astraRoom).
+  const open = (id) => (S) => S.act === 5 && offers(S) < 2 && !(S.astras || []).some((a) => a.id === id) && K.astraRoom(S);
   const take = (S) => ({ set: { astraOffers: offers(S) + 1 } });
   // The lake and the mountain are both on the road to Matsya: the strong are sent diving, the nimble climbing.
   const SPLIT = { varuna: (S) => S.attrs.might >= S.attrs.grace, vayavya: (S) => S.attrs.grace > S.attrs.might };
@@ -188,7 +193,7 @@
     choices: [K.testChoice("w_naga", "heal", NAGA), { id: "no", t: "Leave him", fx: { duty: { conscience: -1 } } }] } }));
 
   // Other ways: a year serving a sage; a stolen temple offering; the shrine of light on the mountain.
-  push("a5_forest_boon", { id: "year", t: "Serve the sage a whole year", req: { rep: ["sages", 4], noAstra: "vayavya" }, locked: "The sages do not know you yet.",
+  push("a5_forest_boon", { id: "year", t: "Serve the sage a whole year", req: { rep: ["sages", 4], noAstra: "vayavya", astraRoom: true }, locked: "The sages do not know you yet.",
     fx: { tapas: 3, astraGrant: { id: "vayavya", from: "hermitage" }, rep: { pandava: -1 }, flag: "served_a_year", journal: "You served a sage for a year in the exile, and he gave you the mantra of the wind." },
     hint: "A year of your life: tapas +3, and a divine weapon", text: "After a year of silence the sage gives you the mantra of the wind. Never turn your back on a fight you chose." });
   const OFFERING = { t: "Steal it back by night", game: "sneak", hint: "A test of stealth",
@@ -206,7 +211,8 @@
       tally: "Stillness: {c}% · {s} seconds", wonLine: "The light goes through you, and the voice says one word, and you do not remember it afterwards.", nearLine: "The light wavers, and so do you.", lostLine: "You step out of the light, shaking, and it is only snow.",
       rules: "Hold to keep still in the light as the cold and the fear push you.",
       stakes: ["Something is given to you: a weapon, or a kavacha against one death in the war.", "You come down, and never tell anyone what you saw."] },
-    win: { resolve: (S) => (S.rep.sages >= 6 ? { charge: { kavacha: 1 }, boon: "kavacha", tapas: 2 } : { astraGrant: { id: "vayavya", from: "mountain" }, tapas: 2 }), fx: { flag: "stood_in_the_light" },
+    // The kavacha to the sages' own (or to one with no room for another weapon, core.js K.astraRoom), else the wind.
+    win: { resolve: (S) => (S.rep.sages >= 6 || !K.astraRoom(S) || (S.astras || []).some((a) => a.id === "vayavya") ? { charge: { kavacha: 1 }, boon: "kavacha", tapas: 2 } : { astraGrant: { id: "vayavya", from: "mountain" }, tapas: 2 }), fx: { flag: "stood_in_the_light" },
       text: "You kneel in the snow, and something is yours that was not before. You will not lie about what happened here." },
     lose: { fx: { attr: { wisdom: 1 } }, text: "You come down the mountain and do not speak for three days. Something was there, and it did not stay." } };
   K.scene(Object.assign({ act: 5, away: true, when: (S) => S.act === 5 && S.exile === "forest" && S.rep.sages >= 4 && !S.flags.includes("mountain_tried"), enter: { flag: "mountain_tried" }, next: "a5_yaksha", skipTo: "a5_yaksha" }, {

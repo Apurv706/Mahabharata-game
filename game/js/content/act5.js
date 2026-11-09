@@ -45,7 +45,7 @@
       title: "A season at the ashram", hideLocked: true,
       body: ["You spend a season at a forest ashram. What do you ask of it?"],
       choices: [
-        { id: "astra", t: "Do penance for a divine weapon",
+        { id: "astra", t: "Do penance for a divine weapon", req: { astraRoom: true }, // (core.js K.astraRoom: two at most, years apart)
           check: { attr: "wisdom", skill: "lore", dc: 8,
             pass: { fx: { boon: "astra", astraFrom: "penance", journal: "After a season of penance you were granted a divine weapon." }, text: "On the last night of the season, a voice in the fire gives you a mantra. You can call an astra once in any battle." },
             fail: { fx: { attr: { wisdom: 1 } }, text: "No weapon comes. But you leave the ashram quieter and clearer than you arrived." } } },
@@ -121,7 +121,8 @@
         { id: "warn", t: "Warn Karna it is a trick", fx: { bond: { karna: 2 }, memory: ["karna", "You tried to save his armour."] },
           text: "Karna knows who the brahmin is and cuts the armour from his body anyway. In return he gets a spear that can kill anyone, once." },
         { id: "watch", t: "Watch in silence", fx: {} },
-        { id: "astra", t: "Ask {teacher} for the promised weapon", req: { teacher: ["drona", "kripa"], duty: ["teacher", 5] }, locked: "Your teacher must think you have earned it.", fx: { boon: "astra", astraFrom: "teacher", duty: { teacher: 1 }, journal: "{teacher} taught you to call a divine weapon." },
+        { id: "astra", t: "Ask {teacher} for the promised weapon", req: { teacher: ["drona", "kripa"], duty: ["teacher", 5], astraRoom: true },
+          locked: (S) => (K.astraWhyNot(S) === "full" ? "You already carry two divine weapons." : K.astraWhyNot(S) === "soon" ? "A divine weapon came to you only lately. Another must wait some years." : "Your teacher must think you have earned it."), fx: { boon: "astra", astraFrom: "teacher", duty: { teacher: 1 }, journal: "{teacher} taught you to call a divine weapon." },
           text: "{teacher} weighs you up in silence, then teaches you the mantra in a whisper. \"Never against someone who cannot fight back,\" he says." }
       ],
       next: "a5_charu"
@@ -159,8 +160,10 @@
             pass: { fx: { rep: { common: 3 }, duty: { conscience: 1 }, journal: "You nursed your village through the fever year." }, text: "You lose eleven people. Without you it would have been many more." },
             fail: { fx: { rep: { common: 1 } }, text: "You do everything you can. The fever takes its own count." } } },
         { id: "grain", t: "Ride for grain", fx: { skill: { chariot: 1 }, rep: { common: 2 } } },
-        { id: "mauni", t: "Find Mauni in the forest", req: { teacher: "hermit", noFlag: "betrayed_hermit" }, locked: "", fx: { boon: "astra", astraFrom: "mauni", rep: { common: 1 }, journal: "Mauni gave you medicine for the village, and a divine weapon for what was coming." },
-          text: "Mauni gives you roots for the fever and, before you leave, a mantra. \"You kept my secret. Keep this one too.\"" }
+        { id: "mauni", t: "Find Mauni in the forest", req: { teacher: "hermit", noFlag: "betrayed_hermit" }, locked: "",
+          // The mantra only when there is room for another weapon (core.js K.astraRoom); the medicine always.
+          fx: (S) => (K.astraRoom(S) ? { boon: "astra", astraFrom: "mauni", rep: { common: 1 }, journal: "Mauni gave you medicine for the village, and a divine weapon for what was coming." } : { rep: { common: 1 }, journal: "Mauni gave you medicine for the village." }),
+          text: (S) => (S.astra && S.astra.from === "mauni" && S.boons.includes("astra") ? "Mauni gives you roots for the fever and, before you leave, a mantra. \"You kept my secret. Keep this one too.\"" : "Mauni gives you roots for the fever. \"You kept my secret,\" he says, and goes back into the trees.") }
       ],
       next: "a5_charu"
     },

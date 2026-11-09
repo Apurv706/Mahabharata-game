@@ -61,5 +61,11 @@
   "all used": "सब प्रयोग हो चुके",
   "below half health": "आधे जीवन से नीचे",
   "only near death": "केवल मृत्यु के निकट",
-  "again in {n} s": "{n} सेकंड में फिर"
+  "again in {n} s": "{n} सेकंड में फिर",
+  "You already carry two divine weapons.": "तुम्हारे पास पहले से दो दिव्यास्त्र हैं।",
+  "A divine weapon came to you only lately. Another must wait some years.": "एक दिव्यास्त्र तुम्हें अभी हाल में मिला है। दूसरे को कुछ वर्ष प्रतीक्षा करनी होगी।",
+  "Mauni gave you medicine for the village.": "मौनी ने तुम्हें गाँव के लिए औषधि दी।",
+  "Mauni gives you roots for the fever. \"You kept my secret,\" he says, and goes back into the trees.": "मौनी तुम्हें ज्वर के लिए जड़ें देते हैं। \"तुमने मेरा रहस्य रखा,\" वे कहते हैं, और पेड़ों में लौट जाते हैं।",
+  "You spared a beaten Gandharva, and he taught you the art of vanishing.": "तुमने एक हारे हुए गंधर्व को छोड़ दिया, और उसने तुम्हें ओझल होने की कला सिखाई।",
+  "The Gandharva laughs and teaches you one thing before dawn: how not to be where you are looked for.": "गंधर्व हँसता है और भोर से पहले तुम्हें एक चीज़ सिखाता है: जहाँ तुम्हें ढूँढ़ा जाए, वहाँ न होने की युक्ति।"
 }
