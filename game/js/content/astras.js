@@ -115,12 +115,17 @@
 
   // ---------- The quests: five weapons, at most two offered in a life ----------
   const offers = (S) => (S.astraOffers || 0);
-  // And only with room for another weapon: two at most in a life, years apart (core.js K.astraRoom).
-  const open = (id) => (S) => S.act === 5 && offers(S) < 2 && !(S.astras || []).some((a) => a.id === id) && K.astraRoom(S);
+  // And only with room for another weapon (two at most in a life, years apart: core.js K.astraRoom), or a weaker one
+  // held that it could replace (K.astraSwapFor; then winning it offers the swap, scene w_swap below).
+  const open = (id) => (S) => S.act === 5 && offers(S) < 2 && !(S.astras || []).some((a) => a.id === id) && (K.astraRoom(S) || K.astraSwapFor(id, S).length > 0);
   const take = (S) => ({ set: { astraOffers: offers(S) + 1 } });
   // The lake and the mountain are both on the road to Matsya: the strong are sent diving, the nimble climbing.
   const SPLIT = { varuna: (S) => S.attrs.might >= S.attrs.grace, vayavya: (S) => S.attrs.grace > S.attrs.might };
-  const quest = (o) => Object.assign({ act: 5, away: true, enter: take, next: o.then, skipTo: o.then, when: (S) => open(o.astra)(S) && (!SPLIT[o.astra] || SPLIT[o.astra](S)) }, o.scene);
+  const quest = (o) => {
+    // Won with no room: the weapon is offered in place of a weaker one, before the road goes on (w_swap).
+    o.scene.choices.forEach((c) => { if (c.win) c.win.next = (S) => (S.astraOffer ? ((S.astraNext = o.then), "w_swap") : null); });
+    return Object.assign({ act: 5, away: true, enter: take, next: o.then, skipTo: o.then, when: (S) => open(o.astra)(S) && (!SPLIT[o.astra] || SPLIT[o.astra](S)) }, o.scene);
+  };
 
   // Agneya: a season of penance at a fire altar, through the storms.
   const FIRE = { t: "Keep the fire through the storms", game: "steady", hint: "A long test of stillness",
@@ -191,6 +196,19 @@
     id: "w_naga", age: 35, place: "The riverbank below the village", art: art("stage_naga_bank"), caption: "A stranger on the bank", title: "The wounded naga",
     body: ["On the riverbank lies a wounded naga, an arrow through his shoulder."],
     choices: [K.testChoice("w_naga", "heal", NAGA), { id: "no", t: "Leave him", fx: { duty: { conscience: -1 } } }] } }));
+
+  // A weapon won with no room for it (two held, or the last one too new: core.js K.astraRoom): keep it in place of a
+  // weaker one (K.ASTRA_RANK, only upward), with three fresh uses, or let it go. The road then goes on (S.astraNext).
+  const GROUND = { fire_altar: "stage_fire_altar", lake_sage: "stage_deep_lake", hermitage: "stage_mountain_path", gandharva: "stage_gandharva_grove", naga: "stage_naga_bank" };
+  const offered = (S) => (S.astraOffer && K.ASTRAS[S.astraOffer.id] ? K.ASTRAS[S.astraOffer.id].name : "");
+  K.scene({ id: "w_swap", act: 5, away: true, when: (S) => !!S.astraOffer, next: (S) => S.astraNext || "a5_matsya", skipTo: (S) => S.astraNext || "a5_matsya",
+    place: "Where the mantra was given", art: (S) => art(GROUND[S.astraOffer && S.astraOffer.from] || "stage_fire_altar"), caption: "One mantra too many", title: "Two weapons at most",
+    body: (S) => [K.astraWhyNot(S) === "full" ? ["No one can carry more than two divine weapons. To keep the {name}, you must give one up.", { name: offered(S) }]
+      : ["A divine weapon came to you only lately, and another cannot follow it so soon. To keep the {name}, you must give up the one you have.", { name: offered(S) }]],
+    choices: (S) => K.astraSwapFor(S.astraOffer ? S.astraOffer.id : "", S).map((h) => ({ id: "give_" + h,
+      t: h === "astra" ? ["Keep the {name} and give up the astra you were given", { name: offered(S) }] : ["Keep the {name} and give up the {old}", { name: offered(S), old: K.ASTRAS[h].name }],
+      hint: "Three fresh uses; the one you give up is gone for good", fx: { astraSwap: h }, text: "The old mantra goes quiet in you, like a lamp put out in another room. The new one is bright." }))
+      .concat([{ id: "keep", t: ["Let the {name} go", { name: offered(S) }], fx: { astraSwap: null }, text: "You give the mantra back. What you carry is enough." }]) });
 
   // Other ways: a year serving a sage; a stolen temple offering; the shrine of light on the mountain.
   push("a5_forest_boon", { id: "year", t: "Serve the sage a whole year", req: { rep: ["sages", 4], noAstra: "vayavya", astraRoom: true }, locked: "The sages do not know you yet.",

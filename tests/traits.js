@@ -405,7 +405,7 @@ check("astra-fizzle", "a mantra traced wrong: nothing happens, no use is spent, 
   return bad;
 });
 
-check("astra-earn", "divine weapons are earned, not collected: at most two in a life (the plain astra counted), the second at least four years after the first; every road asks (penance, teacher, Mauni, the quests, a year with the sage, the mountain, the spared Gandharva)", () => {
+check("astra-earn", "divine weapons are earned, not collected: at most two in a life (the plain astra counted), the second at least four years after the first; every road asks (penance, teacher, Mauni, the quests, a year with the sage, the mountain, the spared Gandharva); a quest with no room is offered in place of a weaker weapon, only upward, with three fresh uses", () => {
   const bad = [];
   const S5 = (o) => life(Object.assign({ act: 5, side: null, age: 33 }, o));
   const ok = (sc, id) => { const r = K.choiceList(K.SCENES[sc]).find((x) => x.c.id === id); return !!(r && r.ok); };
@@ -415,10 +415,31 @@ check("astra-earn", "divine weapons are earned, not collected: at most two in a 
   S.age = 37; if (!K.astraRoom(S)) bad.push("no room 4 years after the first");
   K.apply({ astraGrant: { id: "varuna", from: "lake_sage" } }); S.age = 50; if (K.astraRoom(S) || K.astraWhyNot(S) !== "full") bad.push("room with two weapons");
   K.apply({ astraGrant: { id: "agneya", from: "fire_altar" } }); if (K.astraCount(S) !== 2) bad.push("a third weapon granted past the cap: " + K.astraCount(S));
-  // The quests close: one weapon at 33, the fire altar (34) and the gandharva's pool (36) are not offered; the lake (42) is.
-  S = S5({ exile: "forest", flags: [] }); K.apply({ boon: "astra", astraFrom: "penance" });
-  S.age = 34; if (K.SCENES.w_fire.when(S)) bad.push("the fire altar offered a year after a weapon");
-  S.age = 42; S.attrs.might = 6; S.attrs.grace = 4; if (!K.SCENES.w_dive.when(S)) bad.push("the lake not offered nine years after a weapon");
+  // The quests: a year after the Agneyastra (the strongest), the Gandharva's pool (36) is not offered; the lake (42) is.
+  S = S5({ exile: "forest", flags: [] }); S.age = 34; K.apply({ astraGrant: { id: "agneya", from: "fire_altar" } });
+  S.age = 36; if (K.SCENES.w_riddle.when(S)) bad.push("the Gandharva's pool offered two years after the Agneyastra");
+  S.age = 42; S.attrs.might = 6; S.attrs.grace = 4; if (!K.SCENES.w_dive.when(S)) bad.push("the lake not offered eight years after a weapon");
+  // A stronger weapon in place of a weaker one (owner, 9 Nov): the plain astra at 33, the fire altar at 34 is offered as a
+  // swap; won, the swap scene; giving the astra up leaves one weapon, the Agneyastra, with three fresh uses.
+  S = S5({ exile: "forest", flags: [] }); K.apply({ boon: "astra", astraFrom: "penance" }); S.age = 34;
+  if (!K.SCENES.w_fire.when(S)) bad.push("the fire altar not offered as a swap for the plain astra");
+  const sit = K.SCENES.w_fire.choices.find((c) => c.id === "sit");
+  K.apply(sit.win.fx); const nx = K.val(sit.win.next, S);
+  if (nx !== "w_swap" || !S.astraOffer || S.astraNext !== "a5_jayadratha") bad.push("won with no room: not sent to the swap: " + nx + " " + JSON.stringify(S.astraOffer));
+  else {
+    const rows = K.choiceList(K.SCENES.w_swap).filter((x) => x.ok).map((x) => x.c.id);
+    if (rows.join() !== "give_astra,keep") bad.push("the swap's choices: " + rows);
+    S.charges.astra_used_agneya = 2;
+    K.apply(K.val(K.SCENES.w_swap.choices, S).find((c) => c.id === "give_astra").fx);
+    if (S.boons.includes("astra") || K.astraHeld(S).join() !== "agneya" || K.astraLeft("agneya", S) !== 3 || S.astraOffer) bad.push("after the swap: " + K.astraHeld(S) + ", " + K.astraLeft("agneya", S) + " uses");
+    if (K.val(K.SCENES.w_swap.next, S) !== "a5_jayadratha") bad.push("the swap does not go on to the road's next scene");
+  }
+  // Only upward: two held, the Nagapasha (ranked low) is not offered over them; a refused swap keeps what you had.
+  S = S5(); K.apply({ astraGrant: { id: "sammohana", from: "gandharva" } }); S.age = 40; K.apply({ astraGrant: { id: "varuna", from: "lake_sage" } });
+  if (K.astraSwapFor("nagapasha", S).length) bad.push("the noose offered in place of stronger weapons");
+  if (K.astraSwapFor("agneya", S).join() !== "sammohana,varuna") bad.push("the Agneyastra's swaps: " + K.astraSwapFor("agneya", S));
+  S.astraOffer = { id: "agneya", from: "fire_altar" }; K.apply({ astraSwap: null });
+  if (K.astraHeld(S).join() !== "sammohana,varuna" || S.astraOffer) bad.push("a refused swap changed the weapons: " + K.astraHeld(S));
   // The teacher's promised weapon: locked with the reason while the first is new.
   S = S5({ teacher: "drona", court: "hastinapura" }); S.duty.teacher = 8; S.age = 38;
   K.apply({ astraGrant: { id: "sammohana", from: "gandharva" } }); S.astras[0].age = 36;
@@ -432,7 +453,7 @@ check("astra-earn", "divine weapons are earned, not collected: at most two in a 
   if (S.boons.includes("astra")) bad.push("Mauni gave a weapon two years after another");
   if (/mantra/.test(K.val(mauni.text, S))) bad.push("Mauni's text speaks of a mantra he did not give");
   // The mountain with two weapons: the kavacha. The spared Gandharva with no room: the vanishing only.
-  S = S5(); S.rep.sages = 4; K.apply({ boon: "astra", astraFrom: "penance" }); K.apply({ astraGrant: { id: "agneya", from: "fire_altar" } }); S.age = 42;
+  S = S5(); S.rep.sages = 4; K.apply({ boon: "astra", astraFrom: "penance" }); S.age = 38; K.apply({ astraGrant: { id: "agneya", from: "fire_altar" } }); S.age = 42;
   const stand = K.SCENES.w_mountain.choices.find((c) => c.id === "stand"), wfx = stand && stand.win && stand.win.fx;
   const mfx = typeof wfx === "function" ? wfx(S) : wfx;
   if (!mfx || mfx.astraGrant || mfx.boon !== "kavacha") bad.push("the mountain with two weapons: " + JSON.stringify(mfx));

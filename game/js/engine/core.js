@@ -152,6 +152,11 @@
   K.astraLastAge = (S = K.S) => { const ages = (S.astras || []).map((a) => a.age).concat(S.astra && S.astra.age != null ? [S.astra.age] : []).filter((n) => n != null); return ages.length ? Math.max(...ages) : null; };
   K.astraWhyNot = (S = K.S) => { if (K.astraCount(S) >= K.ASTRA_MAX) return "full"; const a = K.astraLastAge(S); return a != null && S.age - a < K.ASTRA_GAP ? "soon" : null; };
   K.astraRoom = (S = K.S) => !K.astraWhyNot(S);
+  // A stronger weapon may be taken in place of a weaker one when there is no room (owner, 9 Nov): a fixed order,
+  // weakest first, and only upward. The swap adds nothing, so it does not wait; the new one comes with three fresh uses.
+  K.ASTRA_RANK = ["astra", "nagapasha", "sammohana", "varuna", "vayavya", "agneya"];
+  K.astraHeld = (S = K.S) => ((S.boons || []).includes("astra") ? ["astra"] : []).concat((S.astras || []).map((a) => a.id));
+  K.astraSwapFor = (id, S = K.S) => (K.astraWhyNot(S) ? K.astraHeld(S).filter((h) => K.ASTRA_RANK.indexOf(h) < K.ASTRA_RANK.indexOf(id)) : []);
   const TESTS = {
     all: (v, S) => v.every((x) => K.test(x, S)),
     any: (v, S) => v.some((x) => K.test(x, S)),
@@ -315,10 +320,24 @@
     astraGrant: (v, S, d) => {
       const id = typeof v === "string" ? v : v.id, from = typeof v === "string" ? null : v.from;
       S.astras = S.astras || [];
-      if (S.astras.some((a) => a.id === id) || K.astraCount(S) >= K.ASTRA_MAX) return; // (the cap: every road asks first)
+      if (S.astras.some((a) => a.id === id)) return;
+      // No room (two held, or the last one too new): offered in place of a weaker one, if any (content/astras.js w_swap).
+      if (!K.astraRoom(S)) { if (K.astraSwapFor(id, S).length) S.astraOffer = { id, from }; return; }
       S.astras.push({ id, from, age: S.age });
       d.astraGranted = id;
       FX.journal({ src: "You were granted the {name}.", p: { name: (K.ASTRAS && K.ASTRAS[id] && K.ASTRAS[id].name) || id } }, S);
+    },
+    // The weapon offered in place of a weaker one (S.astraOffer): give: the one given up (its id), or null to let the new one go.
+    astraSwap: (give, S, d) => {
+      const o = S.astraOffer; S.astraOffer = null;
+      if (!o || !K.ASTRAS[o.id]) return;
+      const name = K.ASTRAS[o.id].name;
+      if (!give || !K.astraSwapFor(o.id, S).includes(give)) { FX.journal({ src: "You let the {name} go, and kept the weapons you had.", p: { name } }, S); return; }
+      if (give === "astra") { S.boons = S.boons.filter((b) => b !== "astra"); delete S.astra; } else S.astras = S.astras.filter((a) => a.id !== give);
+      S.astras.push({ id: o.id, from: o.from, age: S.age });
+      S.charges = S.charges || {}; S.charges["astra_used_" + o.id] = 0; // three fresh uses
+      d.astraGranted = o.id;
+      FX.journal(give === "astra" ? { src: "You gave up the astra you were given, and took the {name}.", p: { name } } : { src: "You gave up the {old}, and took the {name}.", p: { old: K.ASTRAS[give].name, name } }, S);
     },
     // A charge of magic or a shield (once-only things): charges.sanjivani = 1, charges.kavacha = 1...
     charge: (o, S, d) => { S.charges = S.charges || {}; for (const [k, n] of Object.entries(o)) { S.charges[k] = n; d["charge." + k] = n; } },
