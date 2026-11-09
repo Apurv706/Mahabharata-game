@@ -921,7 +921,7 @@
       const near = call && B.enc.callHelp === undefined && K.friendsNear ? K.friendsNear(K.S, B.enc) : [];
       el.innerHTML = (herbs ? it("herbs", K.tr("Herbs"), K.tr("{n} left", { n: K.S.items.herbs || 0 }), !!herbs.why || p.hp >= p.maxHp, "H") : "") +
         (ready.length > 1 && V.astraPick ? ready.map((a) => it(a.id, a.name, anote(a), false, "")).join("") :
-          it(ready.length > 1 ? "astra-pick" : ready[0] ? ready[0].id : "astra", ready[0] ? (ready.length > 1 ? K.tr("Invoke astra") : ready[0].name) : K.tr("Divine weapon"), ready[0] ? (ready.length > 1 ? K.tr("once a battle") : anote(ready[0])) : ast[0] ? ast[0].why || "" : K.tr("not given"), !ready.length, "U")) +
+          it(ready.length > 1 ? "astra-pick" : ready[0] ? ready[0].id : "astra", ready[0] ? (ready.length > 1 ? K.tr("Invoke astra") : ready[0].name) : K.tr("Divine weapon"), ready[0] ? (ready.length > 1 ? K.tr("once a battle") : anote(ready[0])) : ast[0] ? K.astraShort(ast[0].why) || "" : K.tr("not given"), !ready.length, "U")) +
         (call ? it("call", K.tr("Call for help"), call.why ? K.tr("called") : near[0] === "charu" ? K.tr("Charu has no armour") : K.tr("once a fight"), !!call.why, "C") : "") +
         (!B.order && C.canFlee() ? it("withdraw", K.tr("Withdraw"), C.fleeBreaks().length ? K.tr("breaks your vow never to retreat") : K.tr("Leave the fight"), false, "") : "");
       el.querySelectorAll("[data-aid]").forEach((b) => b.addEventListener("click", () => {

@@ -453,7 +453,7 @@
   RT.astras = function (R) {
     const p = C.player(); if (!p) return [];
     const rest = R && R.astraRest > R.t ? Math.ceil(R.astraRest - R.t) : 0;
-    return C.available().filter((a) => K.isAstra(a.id)).map((a) => (rest && !a.why ? Object.assign({}, a, { why: K.tr("The mantra broke: again in {n} s", { n: rest }) }) : a));
+    return C.available().filter((a) => K.isAstra(a.id)).map((a) => (rest && !a.why ? Object.assign({}, a, { why: K.tr("The mantra broke: again in {n} s", { n: rest }), short: K.tr("again in {n} s", { n: rest }) }) : a));
   };
   RT.spareable = (R) => { const p = C.player(); return C.spareable().filter((e) => dist(p, e) <= Math.max(BODY * 1.6, p.rt.reach + 0.2 * BODY)); };
 

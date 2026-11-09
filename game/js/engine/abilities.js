@@ -123,6 +123,9 @@
     if (K.astraWar(S)) return p.hp < p.maxHp * 0.5 || K.astraFallen(units) ? null : "Ready below half your health, or once one of yours falls";
     return p.hp < p.maxHp * 0.1 ? null : "Outside the war: only when your life is nearly gone";
   };
+  // The same reasons, short, for the small Aid buttons (a phone's Aid row has room for a few words).
+  const WHY_SHORT = [["Not in a practice bout", "not in practice"], ["All three uses spent", "all used"], ["Ready below half your health, or once one of yours falls", "below half health"], ["Outside the war: only when your life is nearly gone", "only near death"]];
+  K.astraShort = (why) => { if (!why) return why; for (const [l, s] of WHY_SHORT) if (why === l || why === K.tr(l)) return K.tr(s); return why; };
   // Against the ordinary foes it reaches (all of them): 70–100% of each one's health; then(t) for the weapon's own effect.
   K.astraFell = function (B, u, ts, verb, then) {
     ts.forEach((t) => { if (t.hero || t.hp <= 0) return; B.hit(u, t, 1, { frac: 0.7 + 0.3 * K.rng(), pierce: true, verb }); if (then && t.hp > 0) then(t); });
