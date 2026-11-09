@@ -530,7 +530,8 @@
     spare: { fx: { duty: { conscience: 1 } }, text: "You leave the last of them in the mud and go over the horse lines." }
   });
   K.encounter({
-    id: "e_ep_ugra", title: "Ugra, the last time", art: "war_day17", caption: "A captain of levies, and his hundred", lethal: true, curse: true,
+    // Fought on a clean battle ground (owner, 9 Nov: not the still of Karna's wheel in the mud).
+    id: "e_ep_ugra", title: "Ugra, the last time", art: "fight_war_chariot", caption: "A captain of levies, and his hundred", lethal: true, curse: true,
     allies: (S) => K.warAllies(S), spare: true, flee: { tags: ["retreat"] },
     enemies: [K.foe("Ugra, the miller's son", 6, { abilities: ["strike", "heavy"], person: "ugra", hp: 90, atk: 11 }), K.foe("Ugra's levies", 3, { plural: true, abilities: ["strike", "arrows"] })],
     intro: "Ugra comes on the way he did at the fair, head down, and his levies behind him.",
@@ -538,6 +539,8 @@
     spare: { fx: { bond: { ugra: 3 }, flag: "spared_ugra", duty: { conscience: 1 }, journal: "On the seventeenth day you had Ugra, the miller's son, at your mercy, and let him go." }, text: "\"Go home to your mill,\" you say. He looks at you a long time, and goes." },
     lose: { deathText: "{They} fell on the seventeenth day to Ugra, the miller's son, whom {they} first fought at a spring fair." }
   });
+
+  Object.assign(K.COMMAND_FIGHT_BG = K.COMMAND_FIGHT_BG || {}, { e_ep_ugra: "fight_war_chariot" }); // its ground, and the tall one on a phone (ui/battle.js FIGHT_BG)
 
   // ---------- Where the scenes come ----------
   const before = (id, list) => { K.BEFORE[id] = (K.BEFORE[id] || []).concat(list); };
