@@ -134,7 +134,9 @@
   U.mantra = function (id, o, done) {
     o = o || {};
     const pts = SIGNS[id] || SIGNS.astra;
-    if (K.headless || /jsdom/i.test(navigator.userAgent || "") || U.mantraAuto) { setTimeout(() => done(true), 0); return; } // (tests: U.mantraAuto)
+    // Under the bots (K.headless, jsdom) the mantra holds at once, in step: their loops never yield to a timer.
+    if (K.headless || /jsdom/i.test(navigator.userAgent || "")) return void done(true);
+    if (U.mantraAuto) { setTimeout(() => done(true), 0); return; } // (browser tests: U.mantraAuto)
     const easy = !!(K.S && K.S.storyMode) || (K.RT && K.RT.difficulty && K.RT.difficulty() === "easy");
     const secs = o.secs || (easy ? 4.5 : 3), hitR = easy ? 12.5 : 9.5, calm = U.calm(), T = (s, p) => U.esc(K.tr(s, p));
     const keys = pts.slice(1).map((q, i) => strokeKeys(pts[i], q));
