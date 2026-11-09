@@ -33,7 +33,7 @@
    Usage: node tests/review_fights.js [--case id,id] [--list] [--json FILE] [--game DIR]   Exits 1 when a case fails. */
 "use strict";
 const L = require("./review_lib");
-const { open, fight, keepAlive, endFight, touchHold, waitFight, holdFight, sleep } = L;
+const { open, fight, keepAlive, keepLow, endFight, touchHold, waitFight, holdFight, traceMantra, sleep } = L;
 const T = L.suite("review_fights", "tests/review_fights.js: the fight screens in the browser");
 const { browser } = T;
 
@@ -275,10 +275,13 @@ async function controlChecks(dev, bad) {
   await waitFight(pg, 1);
   const c1 = await pg.evaluate(ST);
   if (!c1.allies.includes("bhima")) bad.push(tag + "the call for help brought no one (" + c1.allies.join(",") + ")");
+  await keepLow(pg); await sleep(150); // (outside the war a divine weapon only under a tenth of your life: owner, 9 November)
   if (touch) { await pg.tap('#rt [data-act="aid"]'); await sleep(400); await pg.tap('#rt .aid-sheet [data-aid="astra"]'); } else await pg.keyboard.press("u");
+  if (!(await traceMantra(pg, touch ? "tap" : "keys"))) bad.push(tag + "no mantra to trace came up for the divine weapon");
   await waitFight(pg, 0.1, 3000);
   const a1 = await pg.evaluate(ST);
   if (!(a1.frozen > 0) && !a1.used.astra) bad.push(tag + "the divine weapon was not loosed");
+  await keepAlive(pg);
   await sleep(1000); await waitFight(pg, 0.5);
   // Orders: the friend's preset. (The panel burns out by itself after 6 s; on a slow machine it is opened again.)
   let setHold = false;
@@ -661,7 +664,9 @@ browser("retry-ui", "Try again: once, at 80%, the call still used, you slump und
   await fight(pg, "e_guard", { life: { path: "charioteer" }, S: { boons: ["astra"] } });
   const lethal = await pg.evaluate(() => !!K.Combat.state().enc.lethal);
   if (!lethal) bad.push("e_guard is not deadly: pick another fight for this check");
-  await pg.keyboard.press("u"); await sleep(3200);
+  await pg.evaluate(() => { const p = K.Combat.player(); p.hp = Math.round(p.maxHp * 0.4); }); // (in the war: below half your health)
+  await pg.keyboard.press("u"); await traceMantra(pg, "tap"); await sleep(3200);
+  if (!(await pg.evaluate(() => !!K.Combat.state().used.astra))) bad.push("the divine weapon was not loosed before the loss");
   await pg.evaluate(() => { K.Combat.player().hp = 0; });
   await sleep(1200);
   const r = await pg.evaluate(() => { const V = K.UI.rtScreen(); const me = V && V.actors.get(K.Combat.player().uid); return V && { over: V.R.over, sheet: V.sheet, slumped: !!(me && me.el.classList.contains("slumped")), fell: !!(me && me.el.classList.contains("down")), text: (document.querySelector("#rt .pause-sheet") || {}).innerText || "" }; });
@@ -670,7 +675,7 @@ browser("retry-ui", "Try again: once, at 80%, the call still used, you slump und
     if (!r.slumped) bad.push("you are not drawn slumped while Try again is offered");
     if (!/Try again/.test(r.text) || !/Accept the loss/.test(r.text)) bad.push("the Try again sheet reads " + JSON.stringify(r.text.slice(0, 120)));
     await pg.tap("#rt [data-retry]"); await sleep(1000);
-    const r2 = await pg.evaluate(() => { const V = K.UI.rtScreen(), p = K.Combat.player(); return { hp: p.hp / p.maxHp, used: Object.assign({}, V.R.B.used), astraReady: K.RT.astras().some((a) => !a.why), tries: V.R.tries, slumped: [...V.actors.values()].some((a) => a.el.classList.contains("slumped")) }; });
+    const r2 = await pg.evaluate(() => { const V = K.UI.rtScreen(), p = K.Combat.player(), hp = p.hp / p.maxHp; p.hp = Math.round(p.maxHp * 0.4); return { hp, used: Object.assign({}, V.R.B.used), astraReady: K.RT.astras(V.R).some((a) => !a.why), tries: V.R.tries, slumped: [...V.actors.values()].some((a) => a.el.classList.contains("slumped")) }; });
     if (Math.abs(r2.hp - 0.8) > 0.02) bad.push("the second try starts at " + Math.round(r2.hp * 100) + "% health, not 80%");
     if (r2.astraReady) bad.push("the divine weapon used before the loss is ready again on the second try");
     if (r2.slumped) bad.push("still drawn slumped on the second try");
@@ -693,14 +698,24 @@ browser("astra-ui", "a divine weapon in real time plays its full moment, and a c
   const { pg, errs, close } = await open({ device: "iPhone 15" });
   const bad = [];
   // A plain fight: the Agneyastra on the bandits.
-  await fight(pg, "e_bandits", { life: { act: 5, age: 38, path: "archer" }, S: { astras: ["agneya"] } });
-  await keepAlive(pg);
+  await fight(pg, "e_bandits", { life: { act: 5, age: 38, path: "archer", side: null }, S: { astras: ["agneya"] } });
+  await keepLow(pg); // (outside the war: only under a tenth of your life)
   await pg.evaluate(() => { window.__ax = []; const st = document.getElementById("rt-stage"); const mo = new MutationObserver(() => { const cls = st.className + " | " + [...st.querySelectorAll(".ax, .ax *")].map((e) => e.className && e.className.baseVal != null ? e.className.baseVal : e.className).join(" "); window.__ax.push([performance.now(), cls]); }); mo.observe(st, { subtree: true, childList: true, attributes: true, attributeFilter: ["class"] }); window.__axMo = mo; });
   await pg.tap('#rt [data-act="aid"]'); await sleep(350);
   const t0 = await pg.evaluate(() => performance.now());
   const b = await pg.$('#rt .aid-sheet [data-aid="astra"]:not([disabled])');
   if (!b) { bad.push("the Agneyastra is not offered in Aid"); } else {
     await b.tap();
+    // Its mantra first: the fight stands still while the sign is traced.
+    if (!(await pg.$(".mantra")) && !(await pg.waitForSelector(".mantra", { timeout: 1500 }).catch(() => null))) bad.push("no mantra to trace came up");
+    else {
+      const st = await pg.evaluate(() => ({ paused: K.UI.rtScreen().paused, t: K.UI.rtScreen().R.t, dots: document.querySelectorAll(".mantra .mn-dot").length, text: document.querySelector(".mantra").innerText }));
+      await sleep(500);
+      if (!st.paused || (await pg.evaluate(() => K.UI.rtScreen().R.t)) !== st.t) bad.push("the fight did not stand still while the mantra was traced");
+      if (st.dots < 4) bad.push("the Agneyastra's sign has " + st.dots + " lights");
+      if (!/2 of 3|3 of 3/.test(st.text)) bad.push("the mantra does not say the uses left: " + JSON.stringify(st.text.slice(0, 80)));
+      await traceMantra(pg, "tap");
+    }
     const f = []; for (let i = 0; i < 16; i++) { f.push(await pg.evaluate(() => { const V = K.UI.rtScreen(); return V && { frozen: V.R.frozen, ax: !!V.ax, t: V.R.t }; })); await sleep(200); }
     const log = await pg.evaluate(() => { window.__axMo.disconnect(); return window.__ax; });
     const joined = log.map((x) => x[1]).join(" ");
@@ -723,7 +738,7 @@ browser("astra-ui", "a divine weapon in real time plays its full moment, and a c
     await pg.evaluate(() => { window.__clash = false; window.__axMo2 = new MutationObserver(() => { const V = K.UI.rtScreen(); if (document.body.classList.contains("ax-shake") && V && V.ax && V.ax.clash) window.__clash = true; }); window.__axMo2.observe(document.body, { attributes: true, attributeFilter: ["class"] }); });
     // Up to the champion first.
     await pg.evaluate(() => { const B = K.Combat.state(), h = B.units.find((u) => u.side === "enemy" && u.hero && u.hp > 0); if (h) { h.rt.entered = true; K.Combat.player().rt.x = Math.max(0.12, h.rt.x - 0.15); } });
-    await pg.keyboard.press("u"); await sleep(3200);
+    await pg.keyboard.press("u"); await traceMantra(pg, "tap"); await sleep(3200);
     const r = await pg.evaluate(() => ({ out: K.Combat.state().astraOut, clash: window.__clash, log: K.Combat.state().log.slice(-12).map((l) => K.Combat.line(l)).join(" | ") }));
     if (!r.out || !r.out.clash) bad.push(enc + ": the champion did not answer the divine weapon (" + JSON.stringify(r.out) + "; " + r.log.slice(0, 200) + ")");
     else if (!r.clash) bad.push(enc + ": the counter-weapon's clash was not drawn");

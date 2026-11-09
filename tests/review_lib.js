@@ -124,4 +124,19 @@ function suite(name, header) {
   return { engine, browser, run, CASES };
 }
 
-module.exports = { suite, open, fight, keepAlive, stopAlive, endFight, touchHold, waitFight, holdFight, sleep, H, srv: () => SRV, pw: () => PW, browser: () => BROWSER };
+// A divine weapon's mantra (ui/fx.js U.mantra), traced once it is up: "tap" each light in turn, "drag" the mouse through
+// them, or "keys" (any arrow, then each stroke's). Returns false when no mantra came up.
+async function traceMantra(pg, how) {
+  for (let i = 0; i < 10 && !(await pg.$(".mantra")); i++) await sleep(100);
+  if (!(await pg.$(".mantra"))) return false;
+  const pts = await pg.evaluate(() => [...document.querySelectorAll(".mantra .mn-dot")].map((d) => { const r = d.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }));
+  if (how === "tap") for (const q of pts) { await pg.touchscreen.tap(q[0], q[1]); await sleep(60); }
+  else if (how === "drag") { await pg.mouse.move(pts[0][0], pts[0][1]); await pg.mouse.down(); for (const q of pts.slice(1)) await pg.mouse.move(q[0], q[1], { steps: 4 }); await pg.mouse.up(); }
+  else { const keys = await pg.evaluate(() => document.querySelector(".mantra").dataset.keys || ""); await pg.keyboard.press("ArrowUp"); for (const k of keys.split(" ").filter(Boolean)) await pg.keyboard.press(k); }
+  for (let i = 0; i < 20 && (await pg.$(".mantra")); i++) await sleep(100);
+  return true;
+}
+// Outside the war a divine weapon is spoken only under a tenth of your life (owner, 9 November): held there, alive.
+const keepLow = (pg) => pg.evaluate(() => { clearInterval(window.__alive); window.__alive = setInterval(() => { const p = K.Combat.player(); if (p && p.hp > 0) p.hp = Math.max(1, Math.round(p.maxHp * 0.08)); }, 50); });
+
+module.exports = { suite, open, fight, keepAlive, keepLow, stopAlive, endFight, touchHold, waitFight, holdFight, traceMantra, sleep, H, srv: () => SRV, pw: () => PW, browser: () => BROWSER };

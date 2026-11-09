@@ -646,6 +646,7 @@ async function runDevice(browser, base, o, report) {
   await page.evaluate((life) => { K.S = K.newLife({ name: "Asha" }); Object.assign(K.S, life, { age: 44, act: 6, side: "pandava", astras: [{ id: "agneya", from: "fire_altar" }, { id: "varuna", from: "lake_sage" }], tapas: 9 }); K.go("a6_capture"); K.UI.startBattle("e_guard", () => {}); }, LIFE);
   await page.waitForTimeout(900);
   await passBrief(page);
+  await page.evaluate(() => { const p = K.Combat.player(); p.hp = Math.round(p.maxHp * 0.4); }); // (in the war a divine weapon is ready below half your health)
   await check("fight: two astras", ["rt"]);
   {
     // The divine weapon is in Aid (the real-time screen): the sheet opens over the controls with a ready weapon in it.

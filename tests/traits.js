@@ -2,7 +2,9 @@
    Stage 1: the swing lock (no Block, Roll or parry until a swing ends), the dagger's five blows, foes open after their
    swing by weapon, shields that crack and break by the striker's tier and weapon, strength through the shield, and the
    clash's Strike lock after Shield wall or Guard; a broken shield replaced off the ground (a fallen soldier's, or one a comrade
-   throws in at your side's edge after 10 s).
+   throws in at your side's edge after 10 s). The divine weapons (owner, 9 November, feedback row 58): three uses of each in
+   a life, free against a champion; in the war below half health or once one of yours falls, outside it only under a tenth
+   and at a price, never in a practice bout; the whole pack at 70-100%; a mantra traced wrong spends nothing.
    Usage: node tests/traits.js [--case id,id] [--json FILE]. Exits 1 when a check fails. */
 "use strict";
 const fs = require("fs");

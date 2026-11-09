@@ -518,7 +518,7 @@ const READ_RT = () => {
     threat: th.length ? Math.min(...th.map((t) => t.land - R.t)) : null,
     canRoll: RT.can(R, "roll"), canBlock: RT.can(R, "block"), canSkill: RT.can(R, "skill"), canHerbs: RT.can(R, "herbs"), canCall: RT.can(R, "call"),
     broken: !!R.broken, shieldAt: (() => { const g = p && RT.nearestShield ? RT.nearestShield(R, p.rt.x) : null; return g ? g.x - p.rt.x : null; })(), // a shield on the ground, while yours is broken
-    astra: RT.astras().some((a) => !a.why), spare: RT.spareable(R).map((u) => u.uid), plea: !!V.el.querySelector(".plea i"),
+    astra: RT.astras(R).some((a) => !a.why), spare: RT.spareable(R).map((u) => u.uid), plea: !!V.el.querySelector(".plea i"),
     friend: R.B.units.some((u) => u.side === "ally" && u.hp > 0 && (u.called || u.person)), soldiers: R.B.units.some((u) => u.side === "ally" && u.hp > 0 && u.plural && !u.person && !u.called),
     held: Object.assign({}, V.held), ax: !!V.ax,
     clash: !!V.clash, noStrike: !!R.noStrike, call: V.clash && V.clash.call && !V.clash.call.over ? V.clash.call.a.rt.x - p.rt.x : null, // a war day's clash; a comrade calling, and how far
@@ -619,12 +619,26 @@ async function rtFight(pg, cdp, L, R, o, tap, clash) {
 }
 async function sheetAid(pg, o, what, s, F) {
   const KEY = { herbs: "h", call: "c", astra: "u" };
-  if (!o.touch && Math.random() < 0.5) { await pg.keyboard.press(KEY[what]); F.used.push(what + "(key)"); return; }
+  if (!o.touch && Math.random() < 0.5) { await pg.keyboard.press(KEY[what]); F.used.push(what + "(key)"); if (what === "astra") await traceMantra(pg, o, F); return; }
   if (o.touch) await pg.touchscreen.tap(s.btn.aid.x, s.btn.aid.y); else await pg.mouse.click(s.btn.aid.x, s.btn.aid.y);
   await sleep(350);
   const b = await pg.$('#rt .aid-sheet [data-aid="' + what + '"]:not([disabled])');
-  if (b) { await (o.touch ? b.tap({ timeout: 1500 }) : b.click({ timeout: 1500 })).catch(() => {}); F.used.push(what); } else { await pg.evaluate(() => { const r = document.querySelector("#rt .aid-sheet [data-resume]"); if (r) r.click(); }); F.used.push(what + "(not offered)"); }
+  if (b) { await (o.touch ? b.tap({ timeout: 1500 }) : b.click({ timeout: 1500 })).catch(() => {}); F.used.push(what); if (what === "astra") await traceMantra(pg, o, F); } else { await pg.evaluate(() => { const r = document.querySelector("#rt .aid-sheet [data-resume]"); if (r) r.click(); }); F.used.push(what + "(not offered)"); }
   await sleep(300);
+}
+
+// A divine weapon's mantra, traced as a person would (owner, 9 November: ui/fx.js U.mantra): on a phone each light tapped in
+// turn; on a laptop dragged through with the mouse, or the arrows pressed. Now and then a person freezes and it breaks.
+async function traceMantra(pg, o, F) {
+  for (let i = 0; i < 8 && !(await pg.$(".mantra")); i++) await sleep(100);
+  if (!(await pg.$(".mantra"))) return;
+  if (Math.random() < 0.1) { F.used.push("mantra(broken)"); await sleep(5600); return; }
+  const pts = await pg.evaluate(() => [...document.querySelectorAll(".mantra .mn-dot")].map((d) => { const r = d.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; }));
+  if (o.touch) { for (const q of pts) { await pg.touchscreen.tap(q[0], q[1]); await sleep(90 + Math.random() * 120); } F.used.push("mantra(tap)"); }
+  else if (Math.random() < 0.5) { await pg.mouse.move(pts[0][0], pts[0][1]); await pg.mouse.down(); for (const q of pts.slice(1)) await pg.mouse.move(q[0], q[1], { steps: 5 }); await pg.mouse.up(); F.used.push("mantra(drag)"); }
+  else { const keys = await pg.evaluate(() => (document.querySelector(".mantra") || { dataset: {} }).dataset.keys || ""); await pg.keyboard.press("ArrowUp"); for (const k of keys.split(" ").filter(Boolean)) { await pg.keyboard.press(k); await sleep(110); } F.used.push("mantra(keys)"); }
+  await sleep(600);
+  if (await pg.$(".mantra")) F.used.push("mantra(still open)");
 }
 
 // The outcome a fight handed back to the story (recorded by watch(), which only listens).
