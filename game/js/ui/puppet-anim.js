@@ -372,6 +372,9 @@
   // given back its plain CSS pose instead, and null is returned.
   U.rig = function (svg, el, base, o) {
     if (!svg) return null;
+    // A fight's figure: an arm in a sling (an arm wound) is let out of it to strike, the strap still worn (screens.css
+    // .sling:not(.fighting); the 14 lives, 10 November: the arm and weapon stayed bound and no blow reached the foe).
+    if (o && o.fight && !/\bfighting\b/.test(svg.getAttribute("class"))) svg.setAttribute("class", svg.getAttribute("class") + " fighting");
     if (reduced() || typeof requestAnimationFrame !== "function") {
       svg.setAttribute("class", svg.getAttribute("class").replace(/pose-live\b/, "pose-" + ({ ready: "brace", bowready: "brace" }[base] || base || "stand")));
       return null;

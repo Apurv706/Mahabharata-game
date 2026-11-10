@@ -514,7 +514,7 @@ html.calm .range .t-lamp { animation: none; }
 /* A weapon rests up along a hanging arm; with the arm raised or reaching it carries on past the fist. */
 .pp .it-w { transform-box: view-box; transform-origin: 58px 126px; transition: transform 0.3s ease; }
 .pp:not(.pose-stand):not(.pose-walk):not(.pose-slump):not(.pose-tremble):not(.pose-side):not(.pose-dead):not(.pose-fall) .it-w,
-.pp.pose-stand.t-thoughtful .it-w, .pp.pose-stand.t-devoted .it-w, .pp.pose-stand.chained .it-w, .pp.sling .it-w { transform: rotate(180deg); }
+.pp.pose-stand.t-thoughtful .it-w, .pp.pose-stand.t-devoted .it-w, .pp.pose-stand.chained .it-w, .pp.sling:not(.fighting) .it-w { transform: rotate(180deg); }
 .pp.dead { filter: grayscale(0.85) brightness(0.8) drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.45)); }
 /* Standing, breathing; bearing from temperament and age. */
 .pose-stand .armF { transform: rotate(8deg); } .pose-stand .foreF { transform: rotate(-16deg); } .pose-stand .armB { transform: rotate(-6deg); }
@@ -540,7 +540,8 @@ html.calm .range .t-lamp { animation: none; }
 .pp.pose-stand.sx-haughty .pp-body { transform: rotate(-7deg); } .pp.pose-stand.sx-haughty .head { transform: rotate(-12deg); } .pp.pose-stand.sx-haughty .armF { transform: rotate(-58deg); } .pp.pose-stand.sx-haughty .foreF { transform: rotate(-46deg); } .pp.pose-stand.sx-haughty .armB { transform: rotate(-60deg); } .pp.pose-stand.sx-haughty .foreB { transform: rotate(-120deg); } .pp.pose-stand.sx-haughty .legF { transform: rotate(-18deg); } .pp.pose-stand.sx-haughty .legB { transform: rotate(16deg); }
 .pp.pose-stand.sx-broad .pp-body { transform: rotate(-2deg); } .pp.pose-stand.sx-broad .head { transform: rotate(-4deg); } .pp.pose-stand.sx-broad .armF { transform: rotate(-6deg); } .pp.pose-stand.sx-broad .foreF { transform: rotate(-4deg); } .pp.pose-stand.sx-broad .armB { transform: rotate(-36deg); } .pp.pose-stand.sx-broad .foreB { transform: rotate(-40deg); } .pp.pose-stand.sx-broad .legF { transform: rotate(-22deg); } .pp.pose-stand.sx-broad .legB { transform: rotate(22deg); } .pp.pose-stand.sx-broad .shinB { transform: rotate(4deg); } .pp.pose-stand.sx-broad .it-w { transform: rotate(180deg); }
 .pp.pose-stand.sx-sage .pp-body { transform: rotate(3deg); } .pp.pose-stand.sx-sage .head { transform: rotate(4deg); } .pp.pose-stand.sx-sage .armF { transform: rotate(-14deg); } .pp.pose-stand.sx-sage .foreF { transform: rotate(-12deg); } .pp.pose-stand.sx-sage .armB { transform: rotate(-8deg); } .pp.pose-stand.sx-sage .foreB { transform: rotate(-30deg); } .pp.pose-stand.sx-sage .legF { transform: rotate(-8deg); } .pp.pose-stand.sx-sage .legB { transform: rotate(8deg); }
-.sling .armF { transform: rotate(-24deg) !important; animation: none !important; } .sling .foreF { transform: rotate(-96deg) !important; animation: none !important; }
+/* An arm in a sling, bound; in a fight (.fighting: ui/puppet-anim.js U.rig) it comes out of the sling to strike. */
+.sling:not(.fighting) .armF { transform: rotate(-24deg) !important; animation: none !important; } .sling:not(.fighting) .foreF { transform: rotate(-96deg) !important; animation: none !important; }
 /* Walking: legs and arms swing against each other. */
 .pose-walk .legF { animation: pp-legF 0.7s ease-in-out infinite alternate; } .pose-walk .legB { animation: pp-legB 0.7s ease-in-out infinite alternate; }
 .pose-walk .shinB { animation: pp-shin 0.7s ease-in-out infinite alternate; }
