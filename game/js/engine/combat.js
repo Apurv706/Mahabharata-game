@@ -591,7 +591,9 @@
     use(C.player(), id, uid);
     // The clash (prototype, owner 5 November): on a war day the round's blows are fought out in real time for a few
     // seconds (ui/realtime.js U.startClash) instead of the foes' turns; your move above still lands first.
-    if (B.clashMode) { if (!over()) B.clashPending = true; K.emit("combat", B); return true; }
+    // No foe left to come at you (a break-through's lane whose foe is already down): no clash, the round closes as turns
+    // (the 14 lives, 10 November: an empty clash opened and shut in a second).
+    if (B.clashMode && acting().length) { if (!over()) B.clashPending = true; K.emit("combat", B); return true; }
     if (!over()) others();
     K.emit("combat", B);
     return true;
