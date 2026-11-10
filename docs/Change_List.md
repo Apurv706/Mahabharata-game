@@ -295,7 +295,7 @@ Following `Quality_Review_2026-11-02.md` and its "Decided 2 November" section. T
     - **The GitHub site publishes the game only (7 Nov, evening):** the whole repository came to 976 MB, at GitHub's 1 GB limit for a site, and three deploys of the opening timed out. The art sources, art reviews, docs, store pages and checks are left out of the site (`_config.yml`); the game loads nothing from them.
     - **The title's line, a sentence to a line (7 Nov, night):** the first full check on GitHub found the title's line on three lines on an iPhone SE, "it." alone at the end: the second sentence fitted the 32-letter column by 10 px, and GitHub's runner draws the text a little wider. Each sentence now starts its own line and the column is 36 letters, so the English reads as before with room to spare on every screen; in Hindi the first sentence now stands alone on its line (the three Hindi title shots re-recorded).
 
-## Building 7 Nov: Build D, the fights' traits (branch `build-d`; stage 1 in the Build D preview pages, not yet on main)
+## Built 7–10 Nov: Build D, the fights' traits (stage 1) and the owner's play (on GitHub main 10 Nov after the full test pass; the play pages not yet updated)
 Feedback 48–50, with the numbers in `Fight_Traits_Draft.md`, in three stages, each with its checks, balance, Hindi and a preview.
 95. **Stage 1: weapons, shields and strength (7 Nov).**
     - **The swing lock (feedback 48):** once you swing a mace, sword or club, no Block and no Roll until the blow ends (a mace about 0.7 s, a sword about 0.3 s); with a dagger only the roll waits. No parry mid-swing, for you or for foes.
