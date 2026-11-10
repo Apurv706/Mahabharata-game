@@ -370,6 +370,7 @@ Feedback 48–50, with the numbers in `Fight_Traits_Draft.md`, in three stages, 
     - It now asks **"Which path do you choose?"**, and under each name is what that path fights with: the bow "Bow"; the mace "Mace and shield"; the reins "Spear and shield"; statecraft "Sword or spear"; healing, secrets and the vina "Dagger".
     - On a phone the seven pictures are a little smaller when they carry that line (46 px, were 58), so the grid still fits an iPhone 15 without scrolling (the iPhone SE in Hindi scrolls 26 px, 17 before); the names sit level across a row (on a laptop the longer lines take two).
     - Hindi for both new lines; a new check (`tests/traits.js` path-arms) keeps each line true to what the path fights with.
+    - **Checked (build-d):** the layouts on phone, tablet and desktop, the screenshots, the Hindi strings, the screens review, content, lives, golden, rules, traits, smoke and saves pass; the bug checks needed one re-run (`sling-strikes`: 1 of 11 blows short on an iPhone 15, a fight's timing that this change does not touch). In the Build D preview pages 10 Nov.
 
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**
