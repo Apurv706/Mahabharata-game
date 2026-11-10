@@ -566,6 +566,28 @@ browser("stealth-upright", "42873f9", "stealth: the sneak pose and the creep in 
   await close(); return bad.concat(errs);
 });
 
+browser("sling-strikes", "f260616", "an arm wound: in a fight the arm comes out of the sling and your blows reach the foe (it stayed bound, the weapon upside down, and every blow fell short); the strap is still worn", async () => {
+  const bad = [];
+  for (const device of ["laptop", "iPhone 15"]) {
+    const { pg, errs, close } = await open({ device });
+    await fight(pg, "e_bandits", { path: "mace", injuries: ["arm"] });
+    const me = await pg.evaluate(() => { const a = K.UI.rtScreen().actors.get(K.Combat.player().uid), c = a && a.svg.getAttribute("class"); return a ? { sling: /\bsling\b/.test(c), fighting: /\bfighting\b/.test(c), strap: !!a.svg.querySelector('path[stroke="#efe2c0"]') } : null; });
+    if (!me || !me.sling) bad.push(device + ": the wounded arm is not drawn in a sling (" + JSON.stringify(me) + ")");
+    else { if (!me.fighting) bad.push(device + ": the fight's figure is not marked .fighting"); if (!me.strap) bad.push(device + ": the sling's strap is gone"); }
+    // Walk up to the nearest foe and strike, as tests/blowfit.js does; then every blow of yours measured lands inside what it strikes.
+    await pg.evaluate(() => { const V = K.UI.rtScreen(), R = V.R, p = K.Combat.player(); clearInterval(window.__drv);
+      window.__drv = setInterval(() => { if (!K.UI.rtScreen() || R.over) return clearInterval(window.__drv); p.hp = p.maxHp;
+        const foes = R.B.units.filter((u) => u.side === "enemy" && u.hp > 0 && u.rt && u.rt.entered); foes.forEach((u) => { u.hp = Math.max(u.hp, Math.ceil(u.maxHp * 0.5)); });
+        const reach = (u) => (p.rt.reach - 0.25 * K.RT.BODY * Math.abs(u.rt.lane - p.rt.lane)) * 0.9, f = foes.sort((a, b) => Math.abs(a.rt.x - p.rt.x) - reach(a) - (Math.abs(b.rt.x - p.rt.x) - reach(b)))[0]; if (!f) return;
+        if (Math.abs(f.rt.x - p.rt.x) <= reach(f)) { V.held.l = V.held.r = false; V.walk = null; V.queue.strike = true; } else if (!V.walk) V.walk = { foe: f.uid }; }, 50); });
+    await pg.waitForTimeout(8000);
+    const r = await pg.evaluate(() => { clearInterval(window.__drv); const p = K.Combat.player(), mine = (K.UI.rtScreen().impacts || []).filter((m) => m.by === p.uid && m.res); return { n: mine.length, out: mine.filter((m) => !m.res.inside).map((m) => m.res.on + " at " + m.t.toFixed(1) + "s") }; });
+    if (r.n < 2) bad.push(device + ": too few of your blows measured (" + r.n + ")");
+    if (r.out.length) bad.push(device + ": " + r.out.length + " of your " + r.n + " blows fell short of what they struck (" + r.out.slice(0, 4).join(", ") + ")");
+    bad.push(...errs.map((e) => device + ": " + e)); await close();
+  }
+  return bad;
+});
 browser("retry-slump", "40d1128", "a deadly real-time fight lost the first time: you slump (not fall) while Try again is offered; giving up falls you, or in story mode the foes leave and the line shows", async () => {
   const bad = [];
   for (const story of [false, true]) {
