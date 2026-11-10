@@ -14,7 +14,10 @@
    never ends or a fight screen left behind.
    Usage: node tests/review_play.js [--lives N=2] [--seed S=1] [--device "iPhone SE"|"iPhone 15"|laptop|all]
           [--lang en|hi|both] [--story on|off|mix] [--start new|war|act5] [--turns] [--steps N=3000 [--partial]] [--shots DIR] [--json FILE]
-          [--human] [--audit] [--land KEY] [--path PATH] [--side pandava|kaurava]
+          [--human] [--audit] [--land KEY] [--path PATH] [--side pandava|kaurava] [--checkpoint FILE]
+   --checkpoint FILE: at each new story page the life's save code and its record so far are written to FILE; run again with
+   the same FILE (one life) and it goes on from there instead of a new life (a machine that restarts mid-life loses no more
+   than a page).
    Each life alternates device, language and story mode from the seed (with all/both/mix). Exits 1 on any problem. */
 "use strict";
 const fs = require("fs");
@@ -30,6 +33,7 @@ const LIVES = parseInt(arg("--lives", "2"), 10), SEED = parseInt(arg("--seed", "
 const TURNS = has("--turns");
 const DEVSEL = arg("--device", "all"), LANGSEL = arg("--lang", "both"), STORYSEL = arg("--story", "mix"), START = arg("--start", "new");
 const FONTS = path.join(__dirname, "fixtures", "fonts");
+const CKPT = arg("--checkpoint", ""); // (see the usage: a life that goes on after a restart)
 const HUMAN = has("--human"), AUDIT = has("--audit") || HUMAN, LAND = arg("--land", ""), PATHSEL = arg("--path", ""), SIDESEL = arg("--side", "");
 const sleep = (ms) => new Promise((r) => setTimeout(r, HUMAN ? ms * 1.6 : ms)); // --human: a person's pace between actions
 // --audit: on every page, how much of the screen text covers and whether anything sits off the screen; in every
@@ -114,10 +118,18 @@ async function playLife(pg, cdp, L, R, o) {
     return true;
   };
   const vis = (sel) => pg.evaluate((s) => [...document.querySelectorAll(s)].some((e) => e.offsetParent !== null || getComputedStyle(e).position === "fixed"), sel);
-  await pg.goto(o.url(START === "new" ? 1 : 2));
+  const ck = CKPT && fs.existsSync(CKPT) ? JSON.parse(fs.readFileSync(CKPT, "utf8")) : null; // a life that goes on after a restart
+  await pg.goto(o.url(ck ? ck.part : START === "new" ? 1 : 2));
   await pg.waitForFunction(() => window.K && K.UI && document.querySelector("#title-btns button"), null, { timeout: 30000 });
   await watch(pg);
   if (o.lang === "hi") { await tap('#hero-bar .langs button[lang="hi"]'); await sleep(1500); if (!(await pg.evaluate(() => K.lang === "hi"))) L.bad.push("the title's language switch did not switch to Hindi"); }
+  if (ck) {
+    Object.assign(L, ck.L, { tag: L.tag });
+    const at = await pg.evaluate((code) => { const s = K.importCode(code); s.lifeId = K.newLifeId(); K.resume(s); K.checkpoint(K.S); return K.S.scene; }, ck.code);
+    L.events.push("went on after a restart at " + at + " (part " + ck.part + ", step " + ck.steps + ")");
+    await sleep(2000);
+    return walk(pg, cdp, L, R, o, tap, ck);
+  }
   if (START !== "new") {
     // Part Two's ready-made lives: Begin at the war, or Begin at Act V.
     L.part = 2;
@@ -193,8 +205,8 @@ const LOOK = () => {
   };
 };
 
-async function walk(pg, cdp, L, R, o, tap) {
-  let last = null, idle = 0, steps = 0, wentBack = false, saved = false, prevSig = "";
+async function walk(pg, cdp, L, R, o, tap, ck) {
+  let last = null, idle = 0, steps = ck ? ck.steps : 0, wentBack = false, saved = !!(ck && ck.saved), prevSig = "";
   const sceneSeen = new Set();
   for (; steps < MAXSTEPS; steps++) {
     const s = await pg.evaluate(LOOK);
@@ -203,6 +215,10 @@ async function walk(pg, cdp, L, R, o, tap) {
     if (s.scene && !s.rt && !s.war && !s.oldBattle && !s.trial && s.inScene && (s.choices.length || s.ctas.length)) {
       if (!sceneSeen.has(s.scene)) {
         sceneSeen.add(s.scene);
+        if (CKPT && s.choices.length && !s.end && !s.partEnd) { // the life so far, to go on from after a restart
+          const code = await pg.evaluate(() => { try { return K.exportCode({ acts: true, here: true }); } catch (e) { return null; } });
+          if (code) fs.writeFileSync(CKPT, JSON.stringify({ part: L.part, code, steps, saved, scene: s.scene, L }));
+        }
         await sleep(500);
         const art = await pg.evaluate(async () => {
           const bd = document.querySelector("#backdrop .bdl.on"); if (!bd) return { none: "no backdrop layer" };
