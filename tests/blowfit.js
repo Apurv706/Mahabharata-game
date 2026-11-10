@@ -3,7 +3,8 @@
    the weapon's tip lies within the body it strikes (the torso), or on the shield or the weapon that meets it when the
    one struck is guarding (a weapon held behind the body parries nothing); and two who fight stand at least 0.8 of the striker's reach apart (no side by side; a
    blow across a row reaches a quarter body less).
-   Fights: guards and soldiers with spears (you with a sword), bandits with clubs (you with a mace).
+   Fights: guards and soldiers with spears (you with a spear, the charioteer's), a sword and a bow-bearer (you with a sword, the
+   strategist's), bandits with clubs (you with a mace, or a dagger).
    Usage: node tests/blowfit.js [--shots DIR]   (needs Playwright) */
 "use strict";
 const http = require("http"), fs = require("fs"), path = require("path");
@@ -13,8 +14,9 @@ const SHOTS = (process.argv.indexOf("--shots") > 0 && process.argv[process.argv.
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".webp": "image/webp", ".png": "image/png", ".svg": "image/svg+xml", ".jpg": "image/jpeg", ".json": "application/json", ".mp3": "audio/mpeg" };
 const DEVICES = [{ name: "iPhone 15", w: 393, h: 852, mobile: true }, { name: "Laptop 1366x657", w: 1366, h: 657, mobile: false }];
 // Every weapon a blow is struck with (owner, 4 November): your sword (cuts and a thrust) on a sword and a bow-bearer, your mace
-// (smash and sweep) and your dagger (stabs) on clubs, your soldiers' spear thrusts (e_guard), a foe's mace on you.
-const FIGHTS = [{ enc: "e_guard", path: "charioteer" }, { enc: "e_bandits", path: "mace" }, { enc: "e_bandits", path: "healer", noClash: true }, { enc: "fs_sk_mace", path: "charioteer" }].filter((F) => !process.env.FIGHT || process.env.FIGHT.split(",").includes(F.enc + ":" + F.path));
+// (smash and sweep) and your dagger (stabs) on clubs, your spear and your soldiers' spear thrusts (e_guard), a foe's mace on you.
+// The charioteer holds a spear (10 November); the sword is the strategist's (unless the spear was chosen at a2_weapon).
+const FIGHTS = [{ enc: "e_guard", path: "charioteer" }, { enc: "e_bandits", path: "mace" }, { enc: "e_bandits", path: "healer", noClash: true }, { enc: "fs_sk_mace", path: "strategist" }].filter((F) => !process.env.FIGHT || process.env.FIGHT.split(",").includes(F.enc + ":" + F.path));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // In the page: keep you standing, and (phase 2) walk you up to the nearest foe and strike, a foe now and then guarding.
 function drive(phase) {

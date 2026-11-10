@@ -139,7 +139,10 @@ async function playLife(pg, cdp, L, R, o) {
     const rows = await pg.$$(START === "war" ? ".part-lives [data-w]" : ".part-lives [data-i]");
     if (!rows.length) { L.bad.push("Begin at " + START + " lists no lives"); return; }
     const WL = arg("--war-life", ""); // one ready-made life by its place in the list (SPLIT_WAR may give the list)
-    const row = WL !== "" && START === "war" ? await pg.$('.part-lives [data-w="' + WL + '"]') : rows[Math.floor(R() * rows.length)];
+    // --path: the ready-made life on that path, if the list has one (a charioteer life that keeps its path past Karna's
+    // race, which the bot cannot steer: the 14 lives, 10 November).
+    const onPath = PATHSEL && !(WL !== "" && START === "war") ? await pg.evaluate((p) => { const n = K.PATHS && K.PATHS[p] && K.tr(K.PATHS[p].name); return n ? [...document.querySelectorAll(".part-lives button")].findIndex((b) => b.textContent.includes(n)) : -1; }, PATHSEL) : -1;
+    const row = WL !== "" && START === "war" ? await pg.$('.part-lives [data-w="' + WL + '"]') : onPath >= 0 ? rows[onPath] : rows[Math.floor(R() * rows.length)];
     if (!row) { L.bad.push("no ready-made war life " + WL); return; }
     await tap(row); await sleep(2000);
     const s = await pg.evaluate(() => K.S && { scene: K.S.scene, act: K.S.act, side: K.S.side, path: K.S.path });
@@ -376,8 +379,11 @@ async function trial(pg, cdp, L, R, o, tap, s) {
   const kind = s.trialKind, t0 = Date.now();
   if (!s.trialPlaying) { await sleep(400); return; }
   L.tests.push(kind + "@" + s.scene);
-  // Played until it ends (the frame's .done, or the trial gone), at most 150 s.
-  while (Date.now() - t0 < 150000) {
+  // Played until it ends (the frame's .done, or the trial gone), at most 150 s; a board game 240 s: chaupar runs
+  // up to 34 rounds of about 3 s of throws and moves each, plus the bot's own pauses (the 14 lives, 10 November:
+  // a game called at the 34th round ran past 150 s).
+  const limit = kind === "board" ? 240000 : 150000;
+  while (Date.now() - t0 < limit) {
     const st = await pg.evaluate(() => ({ on: !!document.querySelector(".trial.playing"), done: !!document.querySelector(".trial.done") || !document.querySelector(".trial") }));
     if (!st.on || st.done) break;
     if (kind === "escape") { await escapeStep(pg, cdp, o); continue; }
@@ -409,7 +415,7 @@ async function trial(pg, cdp, L, R, o, tap, s) {
     await pg.keyboard.down(" "); await sleep(hold); await pg.keyboard.up(" ");
     await sleep(150 + R() * 700);
   }
-  if (await pg.evaluate(() => !!document.querySelector(".trial.playing"))) { L.bad.push("the test " + kind + " at " + s.scene + " did not end in 150 s of play"); await shot(pg, L, "test-" + kind); await pg.evaluate(() => { const b = document.querySelector(".trial.playing"); if (b) b.classList.remove("playing"); }); }
+  if (await pg.evaluate(() => !!document.querySelector(".trial.playing"))) { L.bad.push("the test " + kind + " at " + s.scene + " did not end in " + limit / 1000 + " s of play"); await shot(pg, L, "test-" + kind); await pg.evaluate(() => { const b = document.querySelector(".trial.playing"); if (b) b.classList.remove("playing"); }); }
   await sleep(1200);
 }
 // The lamp game (U.games.sneak): watch the light and keep out of it, as the card says, with a look every 90-140 ms.
