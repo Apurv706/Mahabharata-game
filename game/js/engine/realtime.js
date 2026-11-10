@@ -142,6 +142,7 @@
   // Later on 4 November, with foes kneeling only at 5% (C.PLEAD) and fighting at their weapons' reach: the Gandharva
   // (1.22 -> 1.0), Jayadratha's road (e_jaya, 1.08 -> 0.81) and the road fight (e_road, 1.11 -> 0.75), on seed 11.
   RT.TUNE = {
+    cross_e_escape: { hp: 0.75 }, // the crossing fight (owner, 10 November: "Make it a fight"): two of your own line, a short fight
     cross_e_duel: { hp: 1.15, atk: 1.3 }, // eased 4 November (1.36), still the hardest duel; 1.15 -> 1.3 (Build D: a light blow now flinches a soldier, and this duel is one soldier: 82% -> 89%)
     cross_e_called: { hp: 0.85, atk: 0.85 },
     e_ep_ugra: { hp: 0.7, atk: 0.7 },
@@ -191,7 +192,7 @@
   RT.FIGHTER = { e_road: 0.75, e_night: 0.7, e_dushasana: 0.8 };
   // The fights played in real time (PRD §18.15 "Which fights are which"); every other fight stays on the turns.
   RT.IDS = new Set(["e_ugra", "e_spar", "e_bandits", "e_kings", "e_panchala", "e_border", "e_gandharva", "e_sudatta", "e_jayadratha", "e_cattle", "e_cattle_k",
-    "e_guard", "e_hunt", "e_gate", "e_road", "e_jaya", "e_dushasana", "e_night", "e_ep_carts", "e_ep_ugra", "e_raid", "e_ash", "cross_e_duel", "cross_e_called", "x_practice"]);
+    "e_guard", "e_hunt", "e_gate", "e_road", "e_jaya", "e_dushasana", "e_night", "e_ep_carts", "e_ep_ugra", "e_raid", "e_ash", "cross_e_escape", "cross_e_duel", "cross_e_called", "x_practice"]);
   RT.isRealtime = (enc) => {
     if (typeof enc === "string") enc = K.ENCOUNTERS[enc];
     if (!enc || enc.dream) return false;

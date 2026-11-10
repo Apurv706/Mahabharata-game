@@ -2,7 +2,11 @@
    Before the first arrow Yudhishthira calls across the field that anyone may still change sides, and
    Yuyutsu, Dhritarashtra's son, crosses to the Pandavas. Every life at the war meets the call on the
    first morning (cross_call, before a6_day1):
-   - on the Kaurava side you may cross with him. S.side becomes "pandava" and everything keyed by side
+   - on the Kaurava side you may cross with him, if you get out of your own line: the men beside you (from the
+     tents, the tent guards) try to stop you, a fight (cross_e_escape, owner 10 November: "Make it a fight").
+     Beaten, you are dragged back and stay a Kaurava, marked (tried_to_cross, watched_by_own): no rank, the
+     front rank, a spearman of your own side at your back, court duty and Kuru standing down. Not deadly.
+     Won: S.side becomes "pandava" and everything keyed by side
      follows it (the war days, letters, the map's camp). Every bond on the side you left falls by 3 and
      a friend for life there ends at once; crossing counts as retreat. The new side gives you a place,
      not trust: no rank (every role_ and council_ flag goes, a commander's company with them, and you
@@ -94,14 +98,25 @@
   const SPY_THINGS = ["A groom's bucket", "Ink on his fingers", "Sandals too good for a groom", "A cloak worn inside out", "A burn on his left hand", "Mud to the knees",
     "A tally-stick at his belt", "A shaved head", "A torn ear", "A copper armlet", "A limp in the right leg"];
 
+  // Out of your own line: the men beside you try to stop you (cross_e_escape); this is told once you are free of them.
+  const fromTents = (S) => has(S, "role_healer") || has(S, "role_bard");
   const crossText = (S) => {
     const v = S.child === "vasu" && !S.dead.includes("vasu");
-    if (v && has(S, "vasu_with_you")) return "You walk out of the line. Nobody stops you. Vasu catches up before you are halfway and walks beside you, and the whole field watches the two of you cross.";
-    if (v && has(S, "vasu_in_camp")) return "You walk out of the line. Nobody stops you. The whole field watches you cross. That night Vasu finds his way over from the Kaurava camp and does not ask why.";
-    if (v && has(S, "vasu_away")) return "You walk out of the line. Nobody stops you. You pass the division Vasu went to last night, and he does not look at you.";
-    if (has(S, "role_healer") || has(S, "role_bard")) return "You leave the tents and walk out onto the empty ground. Nobody stops you. The whole field watches you cross, and the Pandava line opens a gap for you and closes behind you.";
-    return "You walk out of the line, and nobody stops you. The Pandava line opens for you and closes behind you.";
+    if (v && has(S, "vasu_with_you")) return "You leave them in the dust and walk on. Vasu catches up before you are halfway and walks beside you, and the whole field watches the two of you cross.";
+    if (v && has(S, "vasu_in_camp")) return "You leave them in the dust and walk on, and the whole field watches you cross. That night Vasu finds his way over from the Kaurava camp and does not ask why.";
+    if (v && has(S, "vasu_away")) return "You leave them in the dust and walk on. You pass the division Vasu went to last night, and he does not look at you.";
+    if (fromTents(S)) return "You leave the guards in the dust and walk out onto the empty ground. The whole field watches you cross, and the Pandava line opens a gap for you and closes behind you.";
+    return "You leave them in the dust and walk on. The Pandava line opens for you and closes behind you.";
   };
+  // Beaten, dragged back: still a Kaurava, and marked. No rank (the front rank; healers and bards keep their work, under
+  // guard), court duty and Kuru standing down.
+  function dragged(S) {
+    const tents = fromTents(S);
+    const unflag = tents ? [] : S.flags.filter((f) => /^(role_|council_)/.test(f) && !["role_front", "role_healer", "role_bard"].includes(f));
+    return { unflag, flag: ["tried_to_cross", "watched_by_own"].concat(tents ? [] : ["role_front"]), duty: { court: -2 }, rep: { kuru: -2 },
+      memory: ["all", "You tried to cross to the Pandavas on the first morning, and your own side dragged you back."],
+      journal: "On the first morning of the war you tried to cross the field behind Yuyutsu. Your own side dragged you back, and has watched you ever since." };
+  }
 
   K.scenes([
     {
@@ -119,7 +134,7 @@
         : [sibAlive(S) && has(S, "sibling_other_side_set") ? ["Across the field, under the Kaurava banners, is {who}. The call still stands.", { who: sibName(S) }] : null]),
       choices: (S) => (S.side !== "kaurava" && S.side !== "pandava" ? [{ id: "tents", t: "Go back to the tents", text: "You go back to the tents and lay out the bandages." }]
         : S.side === "kaurava" ? [
-        { id: "cross", t: "Cross to the Pandavas", tags: ["retreat"], fx: crossFx(S), hint: "Trust comes later", text: crossText },
+        { id: "cross", t: "Cross to the Pandavas", tags: ["retreat"], combat: "cross_e_escape", hint: "Your own side will try to stop you" },
         { id: "stay", t: "Stay in your place", fx: { duty: { court: 1 } }, text: "You stay. Beside you, someone lets out a breath." }
       ] : [
         sibAlive(S) && has(S, "sibling_other_side_set") ? { id: "call", t: ["Call across the field to {who}", { who: sibName(S) }], hint: "A test of wits",
@@ -229,6 +244,21 @@
   ]);
 
   // ---------- The fights ----------
+  // The first morning: out of your own line (owner, 10 November: "Make it a fight"). The men either side of you, with
+  // the captain of your file shouting at them; from the tents, the tent guards. Not deadly: beaten, you are dragged back.
+  K.encounter({
+    id: "cross_e_escape", title: "Out of the line", art: "fight_between_lines", caption: "Your own side at your back", lethal: false,
+    allies: [], flee: null,
+    callHelp: () => ({ text: "You shout for help. It is your own side holding you back, and the Pandava line is too far away to hear." }),
+    intro: (S) => (fromTents(S) ? "Two of the tent guards run out after you. \"Back! Nobody leaves the tents!\""
+      : "The captain of your file is shouting. The men either side of you turn their spears on you."),
+    enemies: (S) => (fromTents(S)
+      ? [K.foe("Tent guard", 2), K.foe("Tent guard", 2)]
+      : [K.foe("Kaurava spearman", 3), K.foe("Kaurava spearman", 2)]),
+    win: { fx: (S) => crossFx(S), text: crossText },
+    lose: { fx: dragged, text: (S) => (fromTents(S) ? "The guards drag you back to the tents by the arms. From now on one of them sits at the door while you work."
+      : "They drag you back into the line by the arms. The captain puts you in the front rank, with a spearman at your back.") }
+  });
   K.encounter({
     id: "cross_e_duel", title: "Between the lines", art: "fight_between_lines", caption: "Both armies watching", lethal: true, curse: true,
     allies: [], spare: true, flee: null,
@@ -264,7 +294,7 @@
       text: (S) => (S.alive ? ["You go down under the horses. When you wake, you are in the healers' tent, and {who} is sitting beside you.", { who: sibName(S) }] : null) }
   });
   // Their paintings, tall on upright screens (ui/battle.js reads this map).
-  Object.assign(K.COMMAND_FIGHT_BG = K.COMMAND_FIGHT_BG || {}, { cross_e_duel: "fight_between_lines", cross_e_called: "fight_between_lines" });
+  Object.assign(K.COMMAND_FIGHT_BG = K.COMMAND_FIGHT_BG || {}, { cross_e_escape: "fight_between_lines", cross_e_duel: "fight_between_lines", cross_e_called: "fight_between_lines" });
 
   // ---------- Where the scenes come ----------
   K.BEFORE.a6_day1 = (K.BEFORE.a6_day1 || []).concat(["cross_call", "cross_watched", "cross_duel", "cross_explain", "cross_called", "cross_truth", "cross_spy"]);
@@ -284,6 +314,15 @@
   said("a6_capture", (S) => (has(S, "suspected_war") ? "The spearman is still two paces behind you. You have stopped turning round to look." : null));
   said("a6_day16", (S) => (has(S, "suspected_war") ? "Your shadow has stopped pretending to watch anything but you." : null));
   said("a6_day18", "Across the field are men you marched to Kurukshetra with. Eighteen days ago you stood in their line.");
+  // One who tried to cross and was dragged back: the Kauravas watch them.
+  const saidTried = (id, line) => {
+    const sc = K.SCENES[id], body = sc && sc.body;
+    if (!sc) return;
+    sc.body = (S) => [].concat(K.val(body, S) || [], has(S, "tried_to_cross") && !crossed(S) && K.val(line, S) ? [{ memory: K.val(line, S) }] : []);
+  };
+  saidTried("a6_day1", (S) => (fromTents(S) ? "A guard sits at the door of your tent all day. He is not there for the wounded."
+    : "They put you in the front rank, and a spearman of your own side stands two paces behind you all day. He is not there to guard your back."));
+  saidTried("a6_duryodhana", "He knows you. On the first morning you tried to walk out of his line.");
 
   // ---------- What the telling says ----------
   // The bards' name for one who crossed: kindly or not, by conscience and by how the war ended for them.
@@ -297,6 +336,7 @@
       if (h("won_crossing_duel")) t.push(["On the second morning {they} killed {who}, whom {their} old side sent after {them}, between the lines.", { who: foeName(S) }]);
       else if (h("spared_crossing_duel")) t.push(["On the second morning {they} beat {who}, whom {their} old side sent after {them}, and let him walk home.", { who: foeName(S) }]);
     }
+    else if (h("tried_to_cross")) t.push("On the first morning {they} tried to cross to the Pandavas behind Yuyutsu. The Kauravas dragged {them} back, and watched {them} to the end of the war.");
     if (h("vasu_left_behind")) t.push("When {they} crossed, {their} son Vasu stayed in the Kaurava ranks and fought the war on the other side.");
     if (h("proven_spared")) t.push("{They} talked Dhrishtadyumna round, when sparing that man made the Pandavas sure {they} {were} a spy.");
     else if (h("proven_truth")) t.push("Before Yudhishthira {they} told the truth about the army {they} had left, and men died of it.");
