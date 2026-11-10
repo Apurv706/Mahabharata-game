@@ -477,6 +477,18 @@ check("astra-earn", "divine weapons are earned, not collected: at most two in a 
   return bad;
 });
 
+check("spear", "the charioteer fights with the spear and shield (the longest reach: two thrusts and a lunge); the strategist with the sword, or the spear if chosen at fifteen", () => {
+  const bad = [];
+  const one = (o) => { const F = fight("e_guard", o); const p = F.p, w = p.rt.weapon, reach = p.rt.reach, list = RT.comboOf(F.R); close(); return { w, reach, list }; };
+  const ch = one({ path: "charioteer" }), st = one({ path: "strategist" }), sp = one({ path: "strategist", weapon: "spear" });
+  if (ch.w !== "spear") bad.push("the charioteer fights with " + ch.w);
+  if (st.w !== "sword") bad.push("the strategist fights with " + st.w + " by default");
+  if (sp.w !== "spear") bad.push("the strategist who chose the spear fights with " + sp.w);
+  if (!(ch.reach > st.reach)) bad.push("the spear's reach " + ch.reach + " not longer than the sword's " + st.reach);
+  if (ch.list.length !== 3 || !ch.list[2].heavy || !(ch.list[0].len > st.list[0].len)) bad.push("the spear's blows: " + JSON.stringify(ch.list));
+  return bad;
+});
+
 const results = [];
 let fail = 0;
 for (const c of CASES) {

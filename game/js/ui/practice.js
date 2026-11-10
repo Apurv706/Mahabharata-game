@@ -829,9 +829,9 @@
   };
 
   // The weapon, then the run.
-  const WEAPON = { archer: "Bow", mace: "Mace and shield", charioteer: "Sword and shield", strategist: "Sword and shield", healer: "Dagger", spy: "Dagger", bard: "Dagger" };
+  const WEAPON = { archer: "Bow", mace: "Mace and shield", charioteer: "Spear and shield", strategist: "Sword and shield", healer: "Dagger", spy: "Dagger", bard: "Dagger" };
   // Each weapon's rhythm (Build D, row 48): the line on its card.
-  const FEEL = { archer: "From range; roll to defend", mace: "Heavy: slow to recover", charioteer: "Balanced; blocks", strategist: "Balanced; blocks", healer: "Quick and light; rolls", spy: "Quick and light; rolls", bard: "Quick and light; rolls" };
+  const FEEL = { archer: "From range; roll to defend", mace: "Heavy: slow to recover", charioteer: "Long reach; blocks", strategist: "Balanced; blocks", healer: "Quick and light; rolls", spy: "Quick and light; rolls", bard: "Quick and light; rolls" };
   let life = null, story = null;
   U.fighterStart = function (toStory) {
     if (toStory) story = toStory;

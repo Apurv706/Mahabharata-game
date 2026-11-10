@@ -100,11 +100,11 @@
   // asks for (a mace duel is fought with the mace, an archery or chariot duel with the bow). Paths that
   // are not a weapon carry their sign about the story, and in a fight a blade: a sword for the driver and
   // the commander, a short blade for the healer, the spy and the bard. Before the path, nothing.
-  const FIGHT_ITEM = { archer: "bow", mace: "mace", charioteer: "sword", strategist: "sword", healer: "dagger", spy: "dagger", bard: "dagger" };
+  const FIGHT_ITEM = { archer: "bow", mace: "mace", charioteer: "spear", strategist: "sword", healer: "dagger", spy: "dagger", bard: "dagger" }; // (the strategist's spear, if chosen: K.playerWeapon)
   const MODE_ITEM = { mace: "mace", range: "bow", chariot: "bow", carry: null, dream: "sword" }; // (the prologue's dream: you fight grown, with a sword)
   K.fightItem = function (S = K.S, mode) {
     if (mode && mode in MODE_ITEM) return MODE_ITEM[mode];
-    return S && S.path ? FIGHT_ITEM[S.path] || null : null;
+    return S && S.path ? (K.playerWeapon ? K.playerWeapon(S) : FIGHT_ITEM[S.path]) || null : null;
   };
   K.heldNow = undefined; // set while a fight is on screen (ui/battle.js, ui/fightmodes.js): what the player's figure holds
   U.puppetFor = function (id, S = K.S) {

@@ -254,14 +254,17 @@
     for (const u of R.B.units) if (u.rt && u.rt.weapon) u.rt.reach = reachOf(R, u.rt.weapon);
   };
   // An archer fights with the bow, at any range (owner, 4 November: "archers fight as archers"; no sword drawn).
-  const PATH_WEAPON = { archer: "bow", mace: "mace", charioteer: "sword", strategist: "sword", healer: "dagger", spy: "dagger", bard: "dagger" };
+  // The charioteer fights with the spear (owner, 9 Nov); the strategist chooses the sword or the spear at fifteen (S.weapon).
+  const PATH_WEAPON = { archer: "bow", mace: "mace", charioteer: "spear", strategist: "sword", healer: "dagger", spy: "dagger", bard: "dagger" };
+  RT.PATH_WEAPON = PATH_WEAPON;
+  K.playerWeapon = (S = K.S) => (S && S.path ? (S.path === "strategist" && S.weapon === "spear" ? "spear" : PATH_WEAPON[S.path] || "sword") : null);
   const PERSON_WEAPON = { bhima: "mace", duryodhana: "mace", dushasana: "mace", shalya: "mace", balarama: "mace", ghatotkacha: "club", ugra: "club", charu: "hammer",
     karna: "bow", arjuna: "bow", drona: "bow", bhishma: "bow", ashwatthama: "bow", abhimanyu: "bow", kripa: "bow", drupada: "bow", jayadratha: "bow", ekalavya: "bow", shikhandi: "bow", // as their figures are drawn (tests/weapons.js)
     satyaki: "sword", dhrishtadyumna: "sword", nakula: "sword", sahadeva: "sword", yudhishthira: "spear", guard: "spear", soldier: "spear" };
   RT.weaponOf = function (u) {
     if (u.side === "player") {
       const B = C.state && C.state(); if (B && B.enc && B.enc.dream) return "sword"; // the dream: you, grown, with a sword
-      return K.S && K.S.path ? PATH_WEAPON[K.S.path] || "sword" : "fist"; // before a path, empty hands (K.fightItem): the fair's wrestling ring
+      return K.S && K.S.path ? K.playerWeapon(K.S) : "fist"; // before a path, empty hands (K.fightItem): the fair's wrestling ring
     }
     if (u.item) return u.item; // drawn by this fight with another weapon (Ashwatthama in the sleeping camp: a sword)
     if (u.person) return PERSON_WEAPON[u.person] || "sword";
@@ -653,7 +656,11 @@
   // The dagger's own set (Build D, row 48): four quick stabs and a heavy fifth that knocks back; about the sword's weight a
   // second, with a person's gap between presses (more presses, each shorter), and the shortest lock of any weapon.
   const DAGGER_COMBO = [0, 1, 2, 3].map(() => ({ m: 0.48, land: 0.15, len: 0.24 })).concat([{ m: 0.95, land: 0.24, len: 0.48, heavy: true, knock: 0.4 }]);
-  RT.comboOf = (R) => { const w = C.player() && C.player().rt && C.player().rt.weapon; return w === "mace" ? MACE_COMBO : w === "bow" ? BOW_COMBO : w === "dagger" ? DAGGER_COMBO : COMBO; };
+  // The spear's (owner, 9 Nov: the charioteer's, and the strategist's if he chooses it): two thrusts and a heavy lunge that
+  // knocks back, from the longest reach; each a little slower to come back than a sword's, so a little less weight a second
+  // (2.46 in 1.44 s against the sword's 2.29 in 1.30 s).
+  const SPEAR_COMBO = [{ m: 0.68, land: 0.26, len: 0.4 }, { m: 0.68, land: 0.26, len: 0.4 }, { m: 1.1, land: 0.32, len: 0.64, heavy: true, knock: 0.5 }];
+  RT.comboOf = (R) => { const w = C.player() && C.player().rt && C.player().rt.weapon; return w === "mace" ? MACE_COMBO : w === "bow" ? BOW_COMBO : w === "dagger" ? DAGGER_COMBO : w === "spear" ? SPEAR_COMBO : COMBO; };
   // The blow a press would start now (the combo goes on, or begins again after a pause).
   RT.nextBlow = (R) => { const list = RT.comboOf(R); return list[R.t - R.comboT > 0.55 || R.combo >= list.length ? 0 : R.combo]; };
   function blow(R) {

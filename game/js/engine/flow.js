@@ -648,6 +648,7 @@
     s.alive = s.alive !== false; s.storyMode = !!s.storyMode;
     if (s.lifeId !== undefined && !isId(s.lifeId)) delete s.lifeId;
     if (s.tryAgain != null && !(kind(s.tryAgain) === "object" && isId(s.tryAgain.scene) && isId(s.tryAgain.choice))) s.tryAgain = null;
+    if (s.weapon != null && s.weapon !== "sword" && s.weapon !== "spear") s.weapon = null; // the strategist's sword or spear (content/act2.js a2_weapon)
     // A divine weapon offered in place of a weaker one, and the scene the offer returns to (content/astras.js w_swap).
     if (s.astraOffer != null && !(kind(s.astraOffer) === "object" && isId(s.astraOffer.id) && (s.astraOffer.from == null || isId(s.astraOffer.from)))) s.astraOffer = null;
     if (s.astraNext != null && !isId(s.astraNext)) s.astraNext = null;

@@ -11,7 +11,7 @@
      - you hold the weapon of your path, and in a fight the weapon the fight is fought with (a mace duel
        the mace, an archery or chariot duel the bow, a carry nothing; a blade for a path that is not a
        weapon; a sword in the prologue's dream);
-     - you carry a small shield in a fight on the mace and sword paths (mace, charioteer, strategist), none on the
+     - you carry a small shield in a fight on the mace, spear and sword paths (mace, charioteer, strategist), none on the
        archer's or the short blades' (healer, spy, bard);
      - a move matches what is held: arrows from a bow, a heavy blow with a blade or mace. A fighter who
        makes a move with another weapon takes it up for the move (puppet-anim.js Rig.wield); those are
@@ -108,18 +108,18 @@ for (const side of ["pandava", "kaurava"]) {
 }
 // 4. You: your path's weapon, and in a fight the fight's own.
 const PATH_ITEM = { archer: "bow", mace: "mace" };
-const BLADE = ["sword", "dagger"];
+const BLADE = ["sword", "dagger"], FIGHT_ITEM = { charioteer: "spear" }; // (owner, 9 Nov: the charioteer fights with the spear)
 for (const p of Object.keys(K.PATHS)) {
   K.S = K.newLife(); Object.assign(K.S, { name: "T", age: 30, act: 5, path: p });
   const pathItem = K.puppetSpec(K.S).item;
   check("you (" + p + ")", "about the story", pathItem, PATH_ITEM[p]);
   for (const mode of [null, "mace", "range", "chariot", "carry"]) {
     const held = K.fightItem ? K.fightItem(K.S, mode) : (U.battleSpecFor({ side: "player" }) || {}).item || null;
-    const expect = mode === "mace" ? "mace" : mode === "range" || mode === "chariot" ? "bow" : mode === "carry" ? null : PATH_ITEM[p] || BLADE;
+    const expect = mode === "mace" ? "mace" : mode === "range" || mode === "chariot" ? "bow" : mode === "carry" ? null : PATH_ITEM[p] || FIGHT_ITEM[p] || BLADE;
     check("you (" + p + ")", "in " + (mode ? "a " + mode + " fight" : "a fight"), held, expect);
     if (!mode) for (const ab of (K.PATHS[p].abilities || [])) {
       if (SHOT.has(ab) && held !== "bow") bad.push("you (" + p + ") · " + ab + " with " + fmt(held) + ", not a bow");
-      if (BLOW.has(ab) && !["mace", "sword", "club"].includes(held)) bad.push("you (" + p + ") · " + ab + " with " + fmt(held));
+      if (BLOW.has(ab) && !["mace", "sword", "spear", "club"].includes(held)) bad.push("you (" + p + ") · " + ab + " with " + fmt(held));
     }
   }
 }
@@ -133,6 +133,10 @@ for (const p of Object.keys(K.PATHS)) {
   rows.push("you (" + p + ") · shield → " + (has ? "yes" : "no"));
   if (has !== SHIELDED.has(p) || !!(K.Combat.hasShield && K.Combat.hasShield()) !== SHIELDED.has(p)) bad.push("you (" + p + ") · " + (SHIELDED.has(p) ? "should carry a shield in a fight" : "should carry no shield"));
 }
+// The strategist who chose the spear at fifteen (content/act2.js a2_weapon): drawn with it, and fights with it.
+{ K.S = K.newLife(); Object.assign(K.S, { name: "T", age: 30, act: 5, path: "strategist", weapon: "spear" });
+  check("you (strategist, the spear chosen)", "in a fight", K.fightItem ? K.fightItem(K.S, null) : null, "spear");
+  if (K.RT && K.RT.weaponOf && K.RT.weaponOf({ side: "player" }) !== "spear") bad.push("you (strategist, the spear chosen) · fights with " + K.RT.weaponOf({ side: "player" })); }
 // The prologue's dream: grown, with a sword.
 { K.S = K.newLife(); Object.assign(K.S, { name: "T", age: 6, act: 1, scene: "a0_dream" }); check("you (the dream)", "in the dream fight", K.fightItem ? K.fightItem(K.S, "dream") : (U.battleSpecFor({ side: "player" }) || {}).item || null, "sword"); }
 

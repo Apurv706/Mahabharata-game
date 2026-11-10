@@ -1287,6 +1287,7 @@
     // (Build D, row 48: each weapon its own rhythm, and its line here; a swing is yours until it ends.)
     if (mace()) add("strike", T("Strike"), T(k ? "J, or click a foe: an overhead smash, then a side sweep" : "An overhead smash, then a side sweep") + " · " + T("Mace: heavy, slow to recover"));
     else if (dagger()) add("strike", T("Strike"), T(k ? "J, or click a foe: four quick stabs, then a heavy fifth" : "Four quick stabs, then a heavy fifth") + " · " + T("Dagger: quick and light"));
+    else if (C.player().rt.weapon === "spear") add("strike", T("Strike"), T(k ? "J, or click a foe: two thrusts, then a lunge" : "Two thrusts, then a lunge") + " · " + T("Spear: long reach, slower to recover"));
     else add("strike", T("Strike"), T(k ? "J, or click a foe; three in a row for a combo" : "Three in a row for a combo") + " · " + T(C.player().rt.weapon === "bow" ? "Bow: from range; roll to defend" : "Sword: balanced"));
     if (R.blocker) add("block", T("Block"), T(k ? "Hold K or Space to raise your shield; it costs breath" : "Hold to raise your shield; it costs breath"));
     else add("roll", T("Roll"), T(k ? "K or Space, through a marked blow; it costs breath" : "Through a marked blow; it costs breath"));

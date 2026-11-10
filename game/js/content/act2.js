@@ -204,4 +204,18 @@
     win: { fx: { rep: { panchala: 3, kuru: -1, common: 1 }, flag: "defended_panchala", journal: "You defended the Panchala border villages." }, text: "The raiders ride back to the main army. The granary stands." },
     lose: { fx: { rep: { panchala: 1 } }, text: "You are beaten back, but the villagers saw who stood in the road for them." }
   });
+
+  // The strategist's weapon (owner, 9 Nov: "Charioteer spear, strategist choice"): the sword or the spear, each with the round
+  // shield. Asked once, after the path is settled (before the trial); the charioteer always fights with the spear.
+  K.scene({
+    id: "a2_weapon", act: 2, age: 15, when: (S) => S.path === "strategist" && !S.weapon, skipTo: "a2_trial", next: "a2_trial",
+    place: (S) => (S.teacher === "hermit" ? "Mauni's clearing" : S.teacher === "self" ? "A clearing at night" : "Your teacher's school"), art: "scene_armoury", caption: "The rack by the door",
+    title: "A commander's weapon",
+    body: ["A commander fights where the line needs him. What will you carry into it, with your shield?"],
+    choices: [
+      { id: "sword", t: "The sword", fx: { set: { weapon: "sword" } }, hint: "Quick to strike, quick to cover", text: "It sits in your hand as if it had been waiting for it." },
+      { id: "spear", t: "The spear", fx: { set: { weapon: "spear" } }, hint: "The longest reach, slower to come back", text: "Longer than any blade that will come at you. You learn to keep them at its point." }
+    ]
+  });
+  (K.BEFORE.a2_trial = K.BEFORE.a2_trial || []).push("a2_weapon");
 })(window.K = window.K || {});
