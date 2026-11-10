@@ -657,9 +657,10 @@
   // second, with a person's gap between presses (more presses, each shorter), and the shortest lock of any weapon.
   const DAGGER_COMBO = [0, 1, 2, 3].map(() => ({ m: 0.48, land: 0.15, len: 0.24 })).concat([{ m: 0.95, land: 0.24, len: 0.48, heavy: true, knock: 0.4 }]);
   // The spear's (owner, 9 Nov: the charioteer's, and the strategist's if he chooses it): two thrusts and a heavy lunge that
-  // knocks back, from the longest reach; each a little slower to come back than a sword's, so a little less weight a second
-  // (2.46 in 1.44 s against the sword's 2.29 in 1.30 s).
-  const SPEAR_COMBO = [{ m: 0.68, land: 0.26, len: 0.4 }, { m: 0.68, land: 0.26, len: 0.4 }, { m: 1.1, land: 0.32, len: 0.64, heavy: true, knock: 0.5 }];
+  // knocks back, from the longest reach; each thrust a little slower to come back than a sword's cut (0.36 s against
+  // 0.34 s), at about the sword's weight a second (2.42 in 1.34 s against 2.29 in 1.30 s). (Measured: the first try, at
+  // 0.4 s a thrust and 1.70 a second, cost the charioteer 2 points of his win rate over 1,500 lives.)
+  const SPEAR_COMBO = [{ m: 0.66, land: 0.24, len: 0.36 }, { m: 0.66, land: 0.24, len: 0.36 }, { m: 1.1, land: 0.3, len: 0.62, heavy: true, knock: 0.5 }];
   RT.comboOf = (R) => { const w = C.player() && C.player().rt && C.player().rt.weapon; return w === "mace" ? MACE_COMBO : w === "bow" ? BOW_COMBO : w === "dagger" ? DAGGER_COMBO : w === "spear" ? SPEAR_COMBO : COMBO; };
   // The blow a press would start now (the combo goes on, or begins again after a pause).
   RT.nextBlow = (R) => { const list = RT.comboOf(R); return list[R.t - R.comboT > 0.55 || R.combo >= list.length ? 0 : R.combo]; };
