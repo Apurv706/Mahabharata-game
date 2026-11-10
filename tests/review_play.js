@@ -14,7 +14,9 @@
    never ends or a fight screen left behind.
    Usage: node tests/review_play.js [--lives N=2] [--seed S=1] [--device "iPhone SE"|"iPhone 15"|laptop|all]
           [--lang en|hi|both] [--story on|off|mix] [--start new|war|act5] [--turns] [--steps N=3000 [--partial]] [--shots DIR] [--json FILE]
-          [--human] [--audit] [--land KEY] [--path PATH] [--side pandava|kaurava] [--checkpoint FILE]
+          [--human] [--audit] [--land KEY] [--path PATH] [--side pandava|kaurava] [--weapon sword|spear] [--checkpoint FILE]
+   --path, --side, --weapon: when a page offers that choice and it is open, the life takes it (waiting for it to come in: a page's
+   choices arrive one after another, and the first to arrive is not the one asked for).
    --checkpoint FILE: at each new story page the life's save code and its record so far are written to FILE; run again with
    the same FILE (one life) and it goes on from there instead of a new life (a machine that restarts mid-life loses no more
    than a page).
@@ -34,7 +36,7 @@ const TURNS = has("--turns");
 const DEVSEL = arg("--device", "all"), LANGSEL = arg("--lang", "both"), STORYSEL = arg("--story", "mix"), START = arg("--start", "new");
 const FONTS = path.join(__dirname, "fixtures", "fonts");
 const CKPT = arg("--checkpoint", ""); // (see the usage: a life that goes on after a restart)
-const HUMAN = has("--human"), AUDIT = has("--audit") || HUMAN, LAND = arg("--land", ""), PATHSEL = arg("--path", ""), SIDESEL = arg("--side", "");
+const HUMAN = has("--human"), AUDIT = has("--audit") || HUMAN, LAND = arg("--land", ""), PATHSEL = arg("--path", ""), SIDESEL = arg("--side", ""), WEAPONSEL = arg("--weapon", "");
 const sleep = (ms) => new Promise((r) => setTimeout(r, HUMAN ? ms * 1.6 : ms)); // --human: a person's pace between actions
 // --audit: on every page, how much of the screen text covers and whether anything sits off the screen; in every
 // real-time fight, how far apart two fighters stood when a blow landed (against the weapon's reach) and whether it hit.
@@ -270,8 +272,14 @@ async function walk(pg, cdp, L, R, o, tap, ck) {
       if (a && a.off.length) { L.off.push(s.scene + ": " + a.off.slice(0, 4).join("; ")); await shot(pg, L, "off-" + s.scene); }
       if (HUMAN) { const words = await pg.evaluate(() => ((document.querySelector("#leaf") || {}).innerText || "").split(/\s+/).length).catch(() => 0); await sleep(Math.min(4000, 400 + words * 30)); } // reading the page
     }
-    if (PATHSEL && s.choices.includes("#choice-" + PATHSEL)) { await tap("#choice-" + PATHSEL); await sleep(900); continue; } // --path: this life's weapon
-    if (SIDESEL && s.choices.includes("#choice-" + SIDESEL)) { await tap("#choice-" + SIDESEL); L.events.push("chose the side " + SIDESEL + " at " + s.scene); await sleep(900); continue; } // --side: pandava or kaurava
+    // --path, --side, --weapon: this life's path, side and (a strategist's) weapon, when the page offers it and it is open. Asked of
+    // the scene, not of the buttons on screen: they come in one after another, and the bow and the mace come first.
+    const want = s.choices.length ? await pg.evaluate((ids) => { const sc = K.S && K.SCENES[K.S.scene]; const open = sc ? K.choiceList(sc, K.S).filter((x) => x.ok).map((x) => x.c.id) : []; return ids.find((id) => id && open.includes(id)) || null; }, [PATHSEL, SIDESEL, WEAPONSEL]).catch(() => null) : null;
+    if (want) {
+      await pg.waitForSelector("#choice-" + want + ":not([disabled])", { state: "visible", timeout: 8000 }).catch(() => {});
+      await sleep(300); await tap("#choice-" + want);
+      L.events.push("chose " + (want === SIDESEL ? "the side " : want === PATHSEL ? "the path " : "the weapon ") + want + " at " + s.scene); await sleep(900); continue;
+    }
     if (s.choices.length) {
       // A player who likes a fight: a choice that leads to one, more often than not (fights are what this reviews most).
       const fights = await pg.evaluate((ids) => { const sc = K.SCENES[K.S.scene]; return ids.filter((id) => { const c = sc && (K.val(sc.choices) || []).find((x) => "#choice-" + x.id === id); return c && (c.combat || (K.leadsToFight && K.leadsToFight(c))); }); }, s.choices);
