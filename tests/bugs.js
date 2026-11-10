@@ -196,6 +196,31 @@ engine("empty-clash", "b82127f", "a break-through lane whose foe is down brings 
   return bad;
 });
 
+engine("edge-reach", "b6199f9", "your blow lands at its own length when you are backed against the edge of the field: you shove the foe back as you swing (a spear landed with the foe on top of you, 0.01 of the reach apart)", () => {
+  const bad = [];
+  for (const [path0, w] of [["charioteer", "spear"], ["healer", "dagger"]]) for (const side of [1, -1]) {
+    const F = rtFight("e_guard", { path: path0 }, 11), { R, B, RT, p } = F, BODY = RT.BODY;
+    const foes = B.units.filter((u) => u.side === "enemy");
+    const f = foes[0];
+    foes.slice(1).forEach((u) => { u.hp = 0; });
+    if (p.rt.weapon !== w) bad.push(path0 + ": holds " + p.rt.weapon + ", not a " + w);
+    // You at the edge (right, then left), facing in; the foe in your row at 0.4 of your reach, not swinging.
+    p.rt.x = side > 0 ? 1 - RT.EDGE : RT.EDGE; p.rt.face = -side; f.rt.entered = true; f.rt.lane = p.rt.lane; f.rt.x = p.rt.x - side * 0.4 * p.rt.reach; f.rt.atk = null; f.rt.cool = 99; f.rt.stag = 0;
+    let landed = null;
+    for (let i = 0; i < 120 && !R.over && !landed; i++) {
+      p.hp = p.maxHp; f.hp = f.maxHp; f.rt.cool = 99; if (f.rt.atk) f.rt.atk = null;
+      const n0 = R.fx.length;
+      RT.step(R, i === 0 ? { strike: true } : {});
+      const h = R.fx.slice(n0).find((x) => x.k === "hit" && x.by === p.uid && x.melee);
+      if (h) landed = Math.abs(f.rt.x - p.rt.x) / p.rt.reach;
+    }
+    if (landed == null) bad.push(path0 + " at the " + (side > 0 ? "right" : "left") + " edge: the blow never landed");
+    else if (landed < 0.8) bad.push(path0 + " (" + w + ") at the " + (side > 0 ? "right" : "left") + " edge: the blow landed " + landed.toFixed(2) + " of the reach apart");
+    done(F);
+  }
+  return bad;
+});
+
 // ======================= Browser cases =======================
 let PW = null, BROWSER = null, SRV = null;
 const DEV = { "iPhone 15": () => Object.assign({}, PW.devices["iPhone 15"]), "iPhone SE": () => Object.assign({}, PW.devices["iPhone SE"]), laptop: () => ({ viewport: { width: 1440, height: 900 } }) };
