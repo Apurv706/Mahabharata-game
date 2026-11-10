@@ -181,6 +181,20 @@ engine("lose-lived-rule", "42873f9", "K.loseLived: beaten but alive for a fight 
   const dream = Object.values(K.ENCOUNTERS).find((e) => e.dream); if (dream && K.loseLived(dream.id, S)) bad.push("the dream counts as beaten-but-alive");
   return bad;
 });
+engine("empty-clash", "b82127f", "a break-through lane whose foe is down brings no clash (the clash screen opened and shut in a second); a lane with its foe standing still does", () => {
+  const K = E(), C = K.Combat, bad = [];
+  K.lang = "en"; K.seed(3); life({ path: "spy" });
+  if (C.state()) { try { C.settle("win"); C.end(); } catch (e) { /* none */ } }
+  const B = C.start("fs_sk_break", null); B.clashMode = true; // (the clash screen is the browser's; its switch set by hand)
+  const foe = B.units.find((u) => u.uid === "e" + B.enc.lanes[2].foe); foe.hp = 0;
+  const r0 = B.round;
+  if (!C.act("lane2")) bad.push("the right lane could not be taken");
+  if (B.clashPending) bad.push("the right lane, its rider down: a clash is waiting with no foe on the field");
+  if (B.round !== r0 + 1) bad.push("the right lane, its rider down: the round did not close (" + r0 + " → " + B.round + ")");
+  if (!B.over) { C.act("lane1"); if (!B.clashPending) bad.push("the middle lane, its spearmen standing: no clash"); B.clashPending = false; }
+  try { C.settle("win"); C.end(); } catch (e) { /* already over */ }
+  return bad;
+});
 
 // ======================= Browser cases =======================
 let PW = null, BROWSER = null, SRV = null;
