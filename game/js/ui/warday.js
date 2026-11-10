@@ -689,7 +689,21 @@
   }
   function sparkle(list, n) { list.forEach((f, i) => setTimeout(() => { if (V && f.svg.querySelector(".it-s")) spark(f); }, i * 70 + (n || 0))); }
   function shake() { if (U.calm()) return; V.stage.classList.remove("shake"); void V.stage.offsetWidth; V.stage.classList.add("shake"); }
-  function toast(s) { const el = $(".toast", V.stage); if (!el) return; el.textContent = s; el.classList.remove("off"); clearTimeout(V.toastT); V.toastT = setTimeout(() => el.classList.add("off"), 1700); }
+  // Up long enough to read, and the goal line set just below it while both are up (as ui/realtime.js toast; the full check, 10 November).
+  function toast(s) {
+    const el = $(".toast", V.stage); if (!el) return;
+    const hold = Math.min(6000, Math.max(1700, String(s).length * 45)), at = V;
+    el.textContent = s; el.classList.remove("off"); clearTimeout(V.toastT);
+    V.toastT = setTimeout(() => { el.classList.add("off"); if (V === at) clearOfToast(); }, hold);
+    clearOfToast();
+  }
+  function clearOfToast() {
+    const l = $(".wd-fbline", V.stage), t = $(".toast", V.stage); if (!l) return;
+    l.style.top = "";
+    if (!t || t.classList.contains("off")) return;
+    const below = t.offsetTop + t.offsetHeight + 6;
+    if (l.offsetTop < below && l.offsetTop + l.offsetHeight > t.offsetTop) l.style.top = below + "px";
+  }
   function banner(s) { const el = $(".banner", V.stage); if (!el) return; el.textContent = s; el.classList.remove("off"); clearTimeout(V.banT); V.banT = setTimeout(() => el.classList.add("off"), 1900); }
   function nameTag(f, s) {
     if (!f || !f.name || f.dead) return;
@@ -996,7 +1010,7 @@
     if (!full) {
       const line = U.el('<p class="fb-line wd-fbline" aria-live="polite"><b>' + esc(T(MODE_NAME[mode] || "A hold")) + "</b>" + (goal ? " · " + esc(goal) : "") + "</p>");
       const champ = B.units.some((u) => u.side === "enemy" && u.hero && !u.away); // after a champion's moment, not over it
-      setTimeout(() => { if (!V) return; V.stage.appendChild(line); setTimeout(() => line.remove(), 4200); }, champ ? 2400 : 0); return;
+      setTimeout(() => { if (!V) return; V.stage.appendChild(line); clearOfToast(); setTimeout(() => line.remove(), 4200); }, champ ? 2400 : 0); return;
     }
     const acts = U.fightBriefActions(B).filter(([ic]) => ic !== "block");
     const list = [["strike", T("Your moves"), T("A card each turn, or its number")]].concat(acts.filter(([ic]) => !["strike", "guard", "special", "orders"].includes(ic)));

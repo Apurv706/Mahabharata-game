@@ -229,7 +229,7 @@
     let seen = false; try { seen = !!(K.prefs && K.prefs()[key]); } catch (e) { /* no store */ }
     if (seen || (V.told = V.told || {})[key]) return;
     V.told[key] = true; try { K.prefs({ [key]: true }); } catch (e) { /* no store */ }
-    toast(K.tr(line)); // (plain text: T escapes for markup, and a toast is text)
+    toast(K.tr(line), true); // (plain text: T escapes for markup, and a toast is text)
   }
   // A shield cracks at half its points and splits at none (Build D, row 49): the crack drawn across it, then it is gone
   // (a foe's for the fight; yours until you take up another off the ground).
@@ -705,7 +705,25 @@
     if (U.calm()) { setTimeout(() => el.remove(), 700); return; }
     el.animate([{ transform: "translate(-50%,4px)", opacity: 0 }, { transform: "translate(-50%,-4px)", opacity: 1, offset: 0.15 }, { transform: "translate(-50%,-38px)", opacity: 0 }], { duration: 900, easing: "ease-out" }).onfinish = () => el.remove();
   }
-  function toast(s) { const el = $(".toast", V.stage); el.textContent = s; el.classList.remove("off"); clearTimeout(V.toastT); V.toastT = setTimeout(() => el.classList.add("off"), 1600); }
+  // A line across the stage, up long enough to read (the full check, 10 November: a tip shown once, 130 letters, was up
+  // 1.6 s and ran under the fight's goal line on a phone). The goal line sits just below it while both are up, and a
+  // tip (tipOnce) has its first 3 s before a passing line ("Winded", "Parried": those come again; a tip does not) takes its place.
+  function toast(s, tip) {
+    const el = $(".toast", V.stage), now = performance.now();
+    if (!tip && V.tipTill && now < V.tipTill) return;
+    const hold = Math.min(6000, Math.max(1600, String(s).length * 45)), at = V;
+    el.textContent = s; el.classList.remove("off"); clearTimeout(V.toastT);
+    V.tipTill = tip ? now + Math.min(hold, 3000) : 0;
+    V.toastT = setTimeout(() => { el.classList.add("off"); at.tipTill = 0; if (V === at) clearOfToast(); }, hold);
+    clearOfToast();
+  }
+  function clearOfToast() {
+    const l = $(".wd-fbline", V.stage), t = $(".toast", V.stage); if (!l) return;
+    l.style.top = "";
+    if (!t || t.classList.contains("off")) return;
+    const below = t.offsetTop + t.offsetHeight + 6;
+    if (l.offsetTop < below && l.offsetTop + l.offsetHeight > t.offsetTop) l.style.top = below + "px";
+  }
   function shake(big) { if (U.calm()) return; V.stage.classList.remove("shake", "bigshake"); void V.stage.offsetWidth; V.stage.classList.add(big ? "bigshake" : "shake"); }
   function fell(a) {
     a.el.classList.add("dead"); a.el.classList.remove("windup"); a.el.style.zIndex = "4";
@@ -1278,7 +1296,7 @@
     const MODE = { duel: "A duel", melee: "Against several", hold: "A hold", rounds: "Last the rounds" };
     if (!full) {
       const line = U.el('<p class="fb-line wd-fbline" aria-live="polite"><b>' + (T(MODE[mode] || "Against several")) + "</b>" + (goal ? " · " + U.esc(goal) : "") + "</p>");
-      V.stage.appendChild(line); setTimeout(() => line.remove(), 4200);
+      V.stage.appendChild(line); clearOfToast(); setTimeout(() => line.remove(), 4200);
       if (!S.fightTour) { S.fightTour = 1; tour(); }
       return;
     }
