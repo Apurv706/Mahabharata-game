@@ -185,8 +185,9 @@
       case "woodsword": return '<g transform="rotate(16 58 126)">' +
         '<path d="M56.2 119 L55.4 84 Q56 74 62.5 68 Q61.6 78 61 86 L59.8 119 Z" fill="#b5834a"' + OUT + '/><path d="M58 117 L57.8 86 Q58.6 78 61 73" fill="none" stroke="#7a5228" stroke-width="0.8"/>' +
         '<path d="M52 119.5 L64 119.5 L64 122.5 L52 122.5 Z" fill="#8a5a2c"' + OUT + '/><rect x="56.4" y="122.5" width="3.2" height="9" fill="#5a3418"' + OUT + '/><path d="M56.4 125h3.2M56.4 128h3.2" stroke="#d9b26a" stroke-width="0.9"/></g>' + TIP(61.6, 71);
-      // A spear: a long shaft, a leaf-shaped head on a collar, and a red tassel below it.
-      case "spear": return '<path d="M58 176 L58 64" stroke="#5a3418" stroke-width="2.4" stroke-linecap="round"/>' +
+      // A spear: a long shaft, a leaf-shaped head on a collar, and a red tassel below it. The shaft dark wood with the
+      // leather's dark edge (owner, 10 Nov: thin and brown, it was lost against the ground on a phone).
+      case "spear": return '<path d="M58 176 L58 64" stroke="' + EDGE + '" stroke-width="4.6" stroke-linecap="round"/><path d="M58 176 L58 64" stroke="#3f2310" stroke-width="2.2" stroke-linecap="round"/>' +
         '<path d="M58 40 Q63.5 52 60.4 63 L55.6 63 Q52.5 52 58 40 Z" fill="#dcd7c8"' + OUT + '/><path d="M58 44 L58 62" stroke="#9a9484" stroke-width="0.7"/>' +
         '<rect x="55.8" y="62.5" width="4.4" height="3.4" fill="' + GOLD + '"' + OUT + '/><path d="M56.5 66 q-3 5 -1.5 10 M58 66 q-0.5 6 0.5 11 M59.5 66 q2.5 5 1.5 9.5" fill="none" stroke="#b2432a" stroke-width="1.3" stroke-linecap="round"/>' + TIP(58, 42);
       // A bandit's knotted club, thick at the head.
