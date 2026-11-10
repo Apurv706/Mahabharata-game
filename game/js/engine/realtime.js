@@ -885,7 +885,20 @@
     if (p.rt.blow && !p.rt.blow.c.shot) { // your swing keeps its length too: too close to the foe in front, you give ground as you swing
       const f = foesNear(R, p.rt.x, p.rt.face, p.rt.reach + LUNGE)[0];
       if (f) { const want = SPACE * (p.rt.reach - (rowGap(f, p) < 0.5 ? 0 : ROWCUT * rowGap(f, p))), ad = Math.abs(f.rt.x - p.rt.x);
-        if (ad < want) p.rt.x = clamp(p.rt.x - p.rt.face * Math.min(want - ad, BACKSTEP * dt), EDGE, 1 - EDGE); }
+        if (ad < want) {
+          // Away from him (he may stand a hair behind you); backed against the edge of the field, you shove him back
+          // instead as you swing, as a foe does to you (the 14 lives, 10 November: on a small phone a spear or a dagger
+          // backed to the edge landed with the foe on top of you, down to 0.01 of the reach apart).
+          const dir = sign(f.rt.x - p.rt.x) || p.rt.face, step = Math.min(want - ad, BACKSTEP * dt), nx = clamp(p.rt.x - dir * step, EDGE, 1 - EDGE);
+          const short = step - Math.abs(nx - p.rt.x);
+          p.rt.x = nx;
+          if (short > 1e-6) f.rt.x = clamp(f.rt.x + dir * short, 0.07, 0.93);
+        }
+        // Still too close when it should land (he stepped in, or was pushed onto you): the blow waits a moment more while
+        // you give ground, as a foe's does (at most 0.2 s; the swing's lock waits with it).
+        const b = p.rt.blow;
+        if (R.t >= b.at - 1e-6 && Math.abs(f.rt.x - p.rt.x) < want * 0.95 && (b.wait || 0) < 2) { b.at = R.t + 0.1; b.wait = (b.wait || 0) + 1; p.rt.busy += 0.1; }
+      }
     }
     if (p.rt.blow && R.t >= p.rt.blow.at) landBlow(R);
     if (p.rt.busy > 0) {

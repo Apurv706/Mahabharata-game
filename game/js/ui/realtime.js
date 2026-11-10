@@ -1045,7 +1045,8 @@
       // as your own do, and in the 140 ms before that the wind-up coils a little further back, the moment to react to.
       if (u.side === "player" && a.nextSwing) { // your own blow wound up (fx "blow"), not one broken off to parry
         const b = u.rt.blow, left = b ? (b.at - R.t) / (V.slowUntil && performance.now() < V.slowUntil ? 0.3 : 1) * 1000 : 0;
-        if (!b || b.at !== a.nextSwing.at || R.block || u.hp <= 0) a.nextSwing = null;
+        // (the same blow: one that waits a moment more, too close to land, keeps its swing for the new moment: engine/realtime.js)
+        if (!b || (a.nextSwing.b ? b !== a.nextSwing.b : b.at !== a.nextSwing.at) || R.block || u.hp <= 0) a.nextSwing = null;
         else if (left <= IMPACT + 8) { const arc = a.nextSwing.arc; a.nextSwing = null; swing(a, inFront(u), null, arc); }
       }
       // (a comrade's blows the same; only foes are slowed by a perfect roll's slow motion, R.slow)
@@ -1182,8 +1183,8 @@
           // had to be begun again when the blow landed, 0.1 s late)
           const at = p.rt.blow ? p.rt.blow.at : R.t + f.land;
           me.windAt = performance.now();
-          if (A) { me.blowArc = arc; pose(me, A.up, 1500, 0.55); me.nextSwing = { at, arc }; if (K.Sound) K.Sound.play("tap"); break; }
-          if (f.heavy || f.n === 2 || f.land * 1000 > IMPACT + 40) { pose(me, "windup", 1700, 0.55); me.nextSwing = { at, arc: null }; } else swing(me, inFront(p), null);
+          if (A) { me.blowArc = arc; pose(me, A.up, 1500, 0.55); me.nextSwing = { at, arc, b: p.rt.blow }; if (K.Sound) K.Sound.play("tap"); break; }
+          if (f.heavy || f.n === 2 || f.land * 1000 > IMPACT + 40) { pose(me, "windup", 1700, 0.55); me.nextSwing = { at, arc: null, b: p.rt.blow }; } else swing(me, inFront(p), null);
           if (K.Sound) K.Sound.play("tap"); break;
         }
       case "roll": { // (the strike and defence study: a squat at half opacity) a step back out of the blow, or a duck under it when it carries you forward
