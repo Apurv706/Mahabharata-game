@@ -1,4 +1,4 @@
-# Change list (29 Oct – 9 Nov 2026)
+# Change list (29 Oct – 10 Nov 2026)
 
 Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct); see PRD §18.11 for the full description of each. **Items 22–25 are built** (30 Oct); see PRD §18.12. **Items 26–31 are built** (31 Oct); see PRD §18.1–18.9. **Item 32** (1 Nov) fixes the 18 critical issues from the code review (`Code_Review_2026-10-31.md`). Item 5 (art) is done.
 
@@ -343,7 +343,6 @@ Feedback 48–50, with the numbers in `Fight_Traits_Draft.md`, in three stages, 
     - **The plain astra is the Indrastra**, Indra's weapon, his thunder (its card, Aid row, mantra, moment, the character sheet, and the teacher's, penance's and Mauni's lines).
     - In the Aid panel a weapon not yet ready shows its reason in a few words (item 98). Hindi for every new line; `tests/traits.js` astra-earn checks the cap, the wait, every road, the swap and the tapas.
 100. **Ugra, the last time** (the seventeenth day's fight with Ugra and his levies) is fought on a clean battle ground, the chariot lines at sunset (`fight_war_chariot`), not on the still of Karna lifting his wheel from the mud (owner, 9 Nov, with a screenshot). Karna's wheel stays where the story is about it: the seventeenth day's scene and its ending.
-
 101. **The spear for players (owner, 9 Nov: "Do we not offer a spear?"; "Charioteer spear, strategist choice").** The spear was only the foes' and allies' (guards, soldiers, Yudhishthira, the Gandharvas).
     - **The charioteer fights with the spear and round shield**, and blocks: the longest reach of any weapon (2.25 bodies, against the sword's 1.65 and the mace's 1.95); two thrusts and a heavy lunge that knocks back, each thrust a little slower to come back than a sword's cut (0.36 s against 0.34 s), at about the sword's weight a second. Drawn with the spear, thrusting straight in; the rules card says "Two thrusts, then a lunge · Spear: long reach, slower to recover"; in fighter mode "Spear and shield · Long reach; blocks".
     - **The strategist chooses at fifteen**, once the path is settled: "A commander's weapon" (the sword: quick to strike, quick to cover; the spear: the longest reach, slower to come back). Lives begun before keep the sword.
