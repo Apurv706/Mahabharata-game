@@ -372,7 +372,7 @@ Feedback 48–50, with the numbers in `Fight_Traits_Draft.md`, in three stages, 
     - Hindi for both new lines; a new check (`tests/traits.js` path-arms) keeps each line true to what the path fights with.
     - **Checked (build-d):** the layouts on phone, tablet and desktop, the screenshots, the Hindi strings, the screens review, content, lives, golden, rules, traits, smoke and saves pass; the bug checks needed one re-run (`sling-strikes`: 1 of 11 blows short on an iPhone 15, a fight's timing that this change does not touch). In the Build D preview pages 10 Nov; GitHub's runs on main (regression, engine checks, screen fit, the site) pass.
 
-## Built 11 Nov (overnight): Build D stages 2 and 3, and the planned three (branch `build-d`, the Build D preview pages; not on main or the play pages)
+## Built 11 Nov (overnight): Build D stages 2 and 3, and the planned three (on GitHub main and both play pages 11 Nov after the full test pass, with 113)
 105. **The crossing, harder (owner, 10 Nov: "Harder crossing fight").** Choosing to cross at Yuyutsu's call is fought against **three** men, not two: three of your own file (spearmen: one a little stronger, two plain) or, from the tents, three tent guards. Their health ×0.6 and their blows ×1.62 of the plain numbers, and they tire after a minute (then every blow that lands on one takes at least 8% of his health by its weight; elsewhere 3% after two minutes): the healer's dagger had run them to the 4-minute cap in 2 lives of 600. It is won about seven times in ten (2,400 bot lives: 69%, about 59 s, none running out of time), down from 95%. The lines say three: "Three of the tent guards run out after you" and "The men either side of you and the one behind turn their spears on you". Hindi for both.
 106. **Stage 2: the champions' traits (`Fight_Traits_Draft.md` section 2, built as drafted).** Each works whichever side he fights on, in real-time fights and the war days' clashes, and is shown as a second line under his name when he arrives (the real-time, war-day and turn screens), with a one-time tip the first time it fires:
     - **Karna:** before the war (Acts I–V) every blow on him is 30% lighter. On the seventeenth day, below a third of his health, his wheel sinks: he stops 3 s to free it ("The wheel sinks!"). A blow then is remembered (conscience −2, a journal line), and it counts as striking one who cannot fight back, so it breaks a vow or a divine weapon given on that condition.
@@ -440,9 +440,9 @@ Feedback 48–50, with the numbers in `Fight_Traits_Draft.md`, in three stages, 
       - The crossing's three men tire after a minute: the healer's dagger had run them to the cap.
       - A field event's frame could fall a hair before its start, giving the fire's smoke a negative size: a script error on the turn screen.
     - **Re-recorded:** the golden lives (stage 3's flags; a captain no longer staggered by a soldier's heavy blow) and the balance bands (the harder crossing; the archers among the packs).
-    - **In the Build D preview pages 11 Nov**, not on main or the play pages.
+    - **In the Build D preview pages 11 Nov**; on GitHub main and both play pages 11 Nov with 113.
 
-## Built 11 Nov (morning): the captain's arc (branch `build-d`; not on main or the play pages)
+## Built 11 Nov (morning): the captain's arc (on GitHub main and both play pages 11 Nov after the full test pass)
 113. **The captain's arc (owner, 11 Nov: "Why does winning teachers trial make someone captain?"; "Can we add a more interesting captain arc? Teacher test to captain doesn't sit right"; then "1. Both 2. Dented helmet 3. Keep the test, passing should increase points but not make you captain").**
     - **The teacher's test no longer makes you a Captain.** It counts through the skill point its win already teaches. One more point toward the floor (`K.CLIMB.trialPoint`) was tried: it made half of all lives Captains at sixteen and 13% Great champions, so it is 0.
     - **Bhadra, an old soldier,** captain of the gate guard, in three optional scenes, side-free, on paintings already in the game:
@@ -457,6 +457,12 @@ Feedback 48–50, with the numbers in `Fight_Traits_Draft.md`, in three stages, 
     - **The road on the turns (owner, 11 Nov: "Yes"):** on the Menu's turn-based screen the road was won 3% of the time, call for help or not (a friend who came fell within two rounds; no life has a divine weapon at 28). Its raiders are now lighter (levels 2, 1 and 1, were 3, 2 and 2): won 48% there, like the other hard fights on the turns. Real time is tuned back to where it was (`RT.TUNE`: health ×1.3, blows ×1.5): 89%. The bout is won 57% on the turns.
     - **Found by the full check:** Bhadra was drawn with a spear but struck with a sword (now the crested veteran with a sword), and the border road's bowman was drawn with a club (now "Raiders' archer", drawn with his bow).
     - Hindi for all the new lines; `tests/traits.js` checks the arc and the beat-a-captain rule (45 checks). The golden lives and balance bands were recorded again. PRD v0.8 §18.17.
+    - **The full check (11 Nov, on the final code):** 48 checks: 44 pass, 1 known (`hold_arjuna_offer` never reached) and 3 flaky that passed on their re-run:
+      - review-play ran past its 40 minutes once; its re-run played the life clean in 21 minutes.
+      - review-fights: on a laptop, one Strike by key struck no blow; the other 17 cases passed and it passed on its re-run.
+      - battlefit: the same layout flake as before, an ally a moment off the stage's left edge (the hunt, archer, on a laptop).
+      - The run reached the 2-hour limit after 16 checks; the other 32 were run on their own.
+    - **On GitHub main 11 Nov** (Builds 105–113; GitHub's runs on main: regression, engine checks, screen fit and the site pass) **and both play pages 11 Nov** (19 game files; Part One also gains the duel-ground painting, shown behind the Captain moments, which can now come before Act V).
 
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**
