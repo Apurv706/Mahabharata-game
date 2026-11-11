@@ -274,7 +274,7 @@
   // Later on 4 November, with foes kneeling only at 5% (C.PLEAD) and fighting at their weapons' reach: the Gandharva
   // (1.22 -> 1.0), Jayadratha's road (e_jaya, 1.08 -> 0.81) and the road fight (e_road, 1.11 -> 0.75), on seed 11.
   RT.TUNE = {
-    cross_e_escape: { hp: 0.6, atk: 1.55, worn: 60 }, // the crossing fight (owner, 10 November: "Make it a fight"; 23:05 "harder"): three of your own line, a short, hard fight
+    cross_e_escape: { hp: 0.6, atk: 1.55, worn: 60, wornFloor: 0.08 }, // the crossing fight (owner, 10 November: "Make it a fight"; 23:05 "harder"): three of your own line, a short, hard fight
     cross_e_duel: { hp: 1.15, atk: 1.3 }, // eased 4 November (1.36), still the hardest duel; 1.15 -> 1.3 (Build D: a light blow now flinches a soldier, and this duel is one soldier: 82% -> 89%)
     cross_e_called: { hp: 0.85, atk: 0.85 },
     e_ep_ugra: { hp: 0.7, atk: 0.7 },
@@ -872,11 +872,12 @@
   // ordinary fight lasts 30-60 s) the ordinary foes tire, and every blow of yours that lands on one takes at least 3% of his
   // whole health by its weight (a dagger's stab 1.4%, a sword's thrust 3%). A champion never tires; a blow that does more is
   // unchanged; a blow turned (evaded, parried) does nothing still. Said once, when it begins. A fight may say sooner (RT.TUNE
-  // worn: the crossing's three men of your own file, who want you back, not dead, tire after a minute: Build D, 11 November).
+  // worn, wornFloor: the crossing's three men of your own file, who want you back, not dead, tire after a minute, and then
+  // every blow that lands takes at least 8% of one by its weight: the healer's dagger ran them to the cap. Build D, 11 November).
   RT.P.wornAfter = 120; RT.P.wornFloor = 0.03;
   function floored(R, t, d, m) {
     if (!(d > 0) || !t || t.hp <= 0 || !t.maxHp || R.t < ((RT.TUNE[R.B.enc.id] || {}).worn || RT.P.wornAfter) || t.hero || t.person) return d;
-    const f = Math.round(t.maxHp * RT.P.wornFloor * m);
+    const f = Math.round(t.maxHp * ((RT.TUNE[R.B.enc.id] || {}).wornFloor || RT.P.wornFloor) * m);
     if (d >= f) return d;
     if (!R.worn) { R.worn = true; R.fx.push({ k: "toast", s: "They are tiring: your blows tell more now." }); }
     const more = Math.min(t.hp, f - d); t.hp -= more; return d + more;
