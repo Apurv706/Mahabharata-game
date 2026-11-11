@@ -257,7 +257,7 @@
     const embers = Array.from({ length: 60 }, () => ({ x: rnd(0, W), y: rnd(ground - 10, H), v: rnd(30, 90), r: rnd(1, 2.6), ph: rnd(0, 6) }));
     const t0 = performance.now(); let raf = 0;
     function frame(now) {
-      const t = now - t0, f = t / DUR, a = Math.max(0, Math.min(1, t / 220, (DUR - t) / 520));
+      const t = Math.max(0, now - t0), f = t / DUR, a = Math.max(0, Math.min(1, t / 220, (DUR - t) / 520)); // (a frame's time can be a little before t0)
       g.clearRect(0, 0, W, H);
       if (t >= DUR || !el.isConnected) { el.remove(); return; }
       const run = (speed) => x0 + dir * f * speed * W; // across the field at speed fields per run
@@ -313,7 +313,7 @@
             g.fillStyle = grd; g.fillRect(0, ground - H * 0.3, W, H);
             for (const fl of flames) { // tongues of flame along the ground, each its own height and flicker, smoke over them
               const grow = Math.min(1, t / 600), h = H * fl.h * grow * (0.75 + 0.25 * Math.sin(t / 95 + fl.ph)), w = W * fl.w, sway = Math.sin(t / 160 + fl.ph) * w * 0.25;
-              const sm = g.createRadialGradient(fl.x + sway, fl.y - h * 1.6, 0, fl.x + sway, fl.y - h * 1.6, h); sm.addColorStop(0, "rgba(60, 50, 45, " + (0.28 * a).toFixed(3) + ")"); sm.addColorStop(1, "rgba(60, 50, 45, 0)");
+              if (!(h > 0.5)) continue; const sm = g.createRadialGradient(fl.x + sway, fl.y - h * 1.6, 0, fl.x + sway, fl.y - h * 1.6, h); sm.addColorStop(0, "rgba(60, 50, 45, " + (0.28 * a).toFixed(3) + ")"); sm.addColorStop(1, "rgba(60, 50, 45, 0)");
               g.fillStyle = sm; g.beginPath(); g.arc(fl.x + sway, fl.y - h * 1.6, h, 0, Math.PI * 2); g.fill();
               const fg = g.createLinearGradient(0, fl.y, 0, fl.y - h); fg.addColorStop(0, "rgba(255, 240, 170, " + (0.95 * a).toFixed(3) + ")"); fg.addColorStop(0.4, "rgba(255, 150, 40, " + (0.85 * a).toFixed(3) + ")"); fg.addColorStop(0.85, "rgba(230, 60, 10, " + (0.55 * a).toFixed(3) + ")"); fg.addColorStop(1, "rgba(180, 30, 10, 0)");
               g.globalCompositeOperation = "lighter"; g.filter = "blur(1.5px)"; g.fillStyle = fg; g.beginPath(); g.moveTo(fl.x - w / 2, fl.y); g.bezierCurveTo(fl.x - w / 2, fl.y - h * 0.5, fl.x + sway - w * 0.15, fl.y - h * 0.7, fl.x + sway, fl.y - h); g.bezierCurveTo(fl.x + sway + w * 0.15, fl.y - h * 0.7, fl.x + w / 2, fl.y - h * 0.5, fl.x + w / 2, fl.y); g.quadraticCurveTo(fl.x, fl.y + h * 0.12, fl.x - w / 2, fl.y); g.fill();
