@@ -384,7 +384,7 @@ Feedback 48–50, with the numbers in `Fight_Traits_Draft.md`, in three stages, 
     - **Bhima** beside you roars every 15 s and the foes turn on him for 3 s. **Abhimanyu's** blows also strike the next foe at 0.6. **Bhurishravas's** heavy blow knocks you down for 0.6 s. **Supratika's** charge can't be parried and breaks shields at Bhima's rate.
     - Win rates per path unchanged (most traits act in the war days' clashes).
 107. **Stage 3: how you climb (section 1.3).** Your tier now rises during a life and never falls:
-    - **Captain:** Might plus your path's weapon skill reaches 9, or you complete your teacher's trial, or you win a deadly fight in Act IV or later.
+    - **Captain:** Might plus your path's weapon skill reaches 9, or you complete your teacher's trial, or you win a deadly fight in Act IV or later. (The teacher's trial no longer counts, and Bhadra's helmet and a captain brought down do: item 113.)
     - **Great champion:** Might plus weapon skill reaches 11, or two of: a strength boon (Bala, the kavacha, or any divine weapon kept), the tournament won, holding a great champion on a war day, a war feat of your storyline.
     - Each rise is a full-screen moment over an existing painting (no new art): "A captain's strength" over the duel ground, "A great champion" over the chariot lines. Each has a line on what changed.
     - What it does: your blows wear shields down by your tier, and a heavy blow staggers you only from one of your tier or above (a captain shrugs off a soldier's).
@@ -441,6 +441,22 @@ Feedback 48–50, with the numbers in `Fight_Traits_Draft.md`, in three stages, 
       - A field event's frame could fall a hair before its start, giving the fire's smoke a negative size: a script error on the turn screen.
     - **Re-recorded:** the golden lives (stage 3's flags; a captain no longer staggered by a soldier's heavy blow) and the balance bands (the harder crossing; the archers among the packs).
     - **In the Build D preview pages 11 Nov**, not on main or the play pages.
+
+## Built 11 Nov (morning): the captain's arc (branch `build-d`; not on main or the play pages)
+113. **The captain's arc (owner, 11 Nov: "Why does winning teachers trial make someone captain?"; "Can we add a more interesting captain arc? Teacher test to captain doesn't sit right"; then "1. Both 2. Dented helmet 3. Keep the test, passing should increase points but not make you captain").**
+    - **The teacher's test no longer makes you a Captain.** It counts through the skill point its win already teaches. One more point toward the floor (`K.CLIMB.trialPoint`) was tried: it made half of all lives Captains at sixteen and 13% Great champions, so it is 0.
+    - **Bhadra, an old soldier,** captain of the gate guard, in three optional scenes, side-free, on paintings already in the game:
+      1. *The old soldier* (Act III, 26, before the new court; `stage_training_ground`): he takes your measure in a real-time bout, not to the death; or you decline. Win or lose: "Come back when you've seen blood."
+      2. *His men* (Act III, 28, before the Rajasuya; `stage_border_village`): his company is caught on the border road and an arrow takes him in the thigh. Hold the road over him (a real-time fight against three raiders, one an archer, on `fight_border_road`), take his men up the bank (command and statecraft, 7), or carry him out under the arrows. Act IV is one day (the dice hall), so this comes at the end of Act III.
+      3. *The helmet* (Act V, 42, before Matsya; `ev_teacher`), for those who held, led or carried: dying, he gives you his helmet, dented above the left eye, the helmet of the warrior in your dream at six. Put it on and you are a Captain, with a moment of its own ("Bhadra's helmet") over the duel ground; or keep it wrapped ("Some dreams you would rather not walk into").
+      - On the thirteenth day of the war, one who wears it remembers: "You fasten Bhadra's dented helmet. Somewhere, you think, a child of six is dreaming of you."
+    - **Beat a captain:** a captain-tier foe brought down or spared in a real fight you won, once grown (18 or more; not a dream, a bout or the fighter ladder), makes you a Captain; the moment names him ("{foe} is down, and the men around you saw who did it").
+    - **The Captain milestones are now** Bhadra's helmet, a captain brought down, and a deadly fight won from Act IV (fixed on the way: that win was recorded as "fled"). The floor (Might plus weapon skill 9) is as before.
+    - **Retuned:** foes' blows per path in real time, so each path's wins hold: mace 0.73, strategist 0.69, charioteer 0.83, archer 0.84, bard 0.86, spy 0.95, healer 1.
+    - **Measured (2,400 lives):** Captain or above / Great champion, by act: II 36% / 4%, III 39 / 6, IV 40 / 6, V 69 / 12, the war (VI) 78 / 28, VII 93 / 38. Bhadra's bout is won 73% of the time, the road 88%; real-time fights other than Bhadra's: archer 91%, bard 92%, charioteer 92%, mace 95%, spy 89%, strategist 91%.
+    - **To look at:** on the Menu's turn-based screen the road is won 3% of the time (the bout 57%). The carry and the command test still lead to the helmet.
+    - **Found by the full check:** Bhadra was drawn with a spear but struck with a sword (now the crested veteran with a sword), and the border road's bowman was drawn with a club (now "Raiders' archer", drawn with his bow).
+    - Hindi for all the new lines; `tests/traits.js` checks the arc and the beat-a-captain rule (45 checks). The golden lives and balance bands were recorded again. PRD v0.8 §18.17.
 
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**
