@@ -1,4 +1,4 @@
-# Change list (29 Oct – 10 Nov 2026)
+# Change list (29 Oct – 11 Nov 2026)
 
 Collected from playtest feedback. **Items 1–4 and 6–21 are built** (29 Oct); see PRD §18.11 for the full description of each. **Items 22–25 are built** (30 Oct); see PRD §18.12. **Items 26–31 are built** (31 Oct); see PRD §18.1–18.9. **Item 32** (1 Nov) fixes the 18 critical issues from the code review (`Code_Review_2026-10-31.md`). Item 5 (art) is done.
 
@@ -430,6 +430,17 @@ Feedback 48–50, with the numbers in `Fight_Traits_Draft.md`, in three stages, 
     - How it plays: the target shown first, the pan back to you, pull and release, and the view following the shot.
     - Numbers: the arc shown by level, wind in the field, the moving and the blind targets.
     - Five questions to decide.
+
+112. **The full check (build-d, 11 Nov).**
+    - **Engine, content and lives:** 17 pass, 1 known (`hold_arjuna_offer` never reached).
+    - **Browser checks:** 27 pass; battlefit was flaky, passing on its re-run with the same layout flake as on 10 Nov (an ally a moment off the stage's edge in archer fights on a laptop).
+    - **Found and fixed on the way:**
+      - A won fight was recorded as "fled": the late deadly-win milestone sat inside the record's if/else.
+      - The road bandits stay farm hands, with no archer mixed in.
+      - The crossing's three men tire after a minute: the healer's dagger had run them to the cap.
+      - A field event's frame could fall a hair before its start, giving the fire's smoke a negative size: a script error on the turn screen.
+    - **Re-recorded:** the golden lives (stage 3's flags; a captain no longer staggered by a soldier's heavy blow) and the balance bands (the harder crossing; the archers among the packs).
+    - **In the Build D preview pages 11 Nov**, not on main or the play pages.
 
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**
