@@ -598,7 +598,7 @@
   K.encounter({
     id: "e_bhadra_road", title: "His men", art: "stage_border_village", caption: "Raiders on both banks", lethal: false, realtime: true,
     intro: "Bhadra is down behind you, and the raiders know it.",
-    enemies: [K.foe("Border raider", 3), K.foe("Border raider", 2), K.foe("Raiders' archer", 2, { abilities: ["strike", "arrows"] })],
+    enemies: [K.foe("Border raider", 2), K.foe("Border raider", 1), K.foe("Raiders' archer", 1, { abilities: ["strike", "arrows"] })], // lighter on the turns (owner, 11 Nov); real time tuned back up (RT.TUNE)
     win: { fx: { flag: "bhadra_held", bond: { bhadra: 2 }, journal: "On the border road you stood over Bhadra and held it." }, text: "The raiders break on you and go back up the banks. Bhadra, white-faced, says only, \"Good.\"" },
     lose: { fx: { bond: { bhadra: 1 } }, text: "Bhadra's men drag you both out of the cutting. He says nothing about it, then or after." }
   });

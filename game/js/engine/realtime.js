@@ -275,6 +275,7 @@
   // (1.22 -> 1.0), Jayadratha's road (e_jaya, 1.08 -> 0.81) and the road fight (e_road, 1.11 -> 0.75), on seed 11.
   RT.TUNE = {
     e_bhadra: { hp: 1.5, atk: 2.4 }, // Bhadra's bout (the captain's arc, 11 November): an old captain, not a straw man (the bot won 942 of 942)
+    e_bhadra_road: { hp: 1.3, atk: 1.5 }, // the border road (owner, 11 November): its raiders lighter for the turns (1% -> about 45% won there); real time held near 90%
     e_ep_carts: { worn: 90 }, // the supply carts' sentries tire after 90 s (one of 2,400 bot lives ran to the cap with an archer among them, row 47)
     cross_e_escape: { hp: 0.6, atk: 1.62, worn: 60, wornFloor: 0.08 }, // the crossing fight (owner, 10 November: "Make it a fight"; 23:05 "harder"): three of your own line, a short, hard fight
     cross_e_duel: { hp: 1.15, atk: 1.3 }, // eased 4 November (1.36), still the hardest duel; 1.15 -> 1.3 (Build D: a light blow now flinches a soldier, and this duel is one soldier: 82% -> 89%)
