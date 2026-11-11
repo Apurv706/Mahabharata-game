@@ -6520,7 +6520,7 @@
     "Raiders on both banks": "दोनों ढलानों पर लुटेरे",
     "Bhadra is down behind you, and the raiders know it.": "भद्र तुम्हारे पीछे गिरा पड़ा है, और लुटेरे यह जानते हैं।",
     "Border raider": "सीमा का लुटेरा",
-    "Raider with a bow": "धनुषधारी लुटेरा",
+    "Raiders' archer": "लुटेरों का धनुर्धर",
     "On the border road you stood over Bhadra and held it.": "सीमा की सड़क पर तुम भद्र के ऊपर खड़े {g:रहे|रहीं} और सड़क थामे रखी।",
     "The raiders break on you and go back up the banks. Bhadra, white-faced, says only, \"Good.\"": "लुटेरे तुमसे टकराकर टूट जाते हैं और ढलानों पर लौट जाते हैं। पीले चेहरे वाला भद्र बस इतना कहता है, \"ठीक।\"",
     "Bhadra's men drag you both out of the cutting. He says nothing about it, then or after.": "भद्र के आदमी तुम दोनों को घसीटकर घाटी से बाहर निकालते हैं। वह इस बारे में कुछ नहीं कहता, न तब, न बाद में।",

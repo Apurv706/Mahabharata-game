@@ -93,6 +93,7 @@
       return s;
     }
     if (u.person === "ugra") return Object.assign(U.puppetFor("ugra"), { item: "club" }); // Ugra grown, at the war: the club he strikes with
+    if (u.person === "bhadra") return SPECIAL.rider; // Bhadra, captain of the gate guard: a crested veteran with a sword (RT.weaponOf: a sword)
     if (u.person && K.PUPPETS[u.person]) return U.puppetFor(u.person);
     const n = String(u.src || u.name);
     if (/Ketan/.test(n)) return Object.assign(U.puppetFor("boy"), { item: "woodsword" }); // the sparring bout: blunted weapons
