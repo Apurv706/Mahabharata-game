@@ -274,7 +274,7 @@
   // Later on 4 November, with foes kneeling only at 5% (C.PLEAD) and fighting at their weapons' reach: the Gandharva
   // (1.22 -> 1.0), Jayadratha's road (e_jaya, 1.08 -> 0.81) and the road fight (e_road, 1.11 -> 0.75), on seed 11.
   RT.TUNE = {
-    cross_e_escape: { hp: 0.6, atk: 1.55, worn: 60, wornFloor: 0.08 }, // the crossing fight (owner, 10 November: "Make it a fight"; 23:05 "harder"): three of your own line, a short, hard fight
+    cross_e_escape: { hp: 0.6, atk: 1.7, worn: 60, wornFloor: 0.08 }, // the crossing fight (owner, 10 November: "Make it a fight"; 23:05 "harder"): three of your own line, a short, hard fight
     cross_e_duel: { hp: 1.15, atk: 1.3 }, // eased 4 November (1.36), still the hardest duel; 1.15 -> 1.3 (Build D: a light blow now flinches a soldier, and this duel is one soldier: 82% -> 89%)
     cross_e_called: { hp: 0.85, atk: 0.85 },
     e_ep_ugra: { hp: 0.7, atk: 0.7 },
