@@ -606,14 +606,14 @@ check("trait-others", "Supratika cannot be parried and breaks shields at Bhima's
 });
 
 // ---------- Stage 3: how you climb, the boons and the divine weapons' gifts in a fight ----------
-check("tier-climb", "your tier: the floor from might and weapon skill (9, 11; the teacher's test a point toward it), Bhadra's helmet, a captain brought down or a late deadly win lifts you to captain, two strength marks to great champion; never down", () => {
+check("tier-climb", "your tier: the floor from might and weapon skill (9, 11; the teacher's test counts through the skill it teaches), Bhadra's helmet, a captain brought down or a late deadly win lifts you to captain, two strength marks to great champion; never down", () => {
   const bad = [], S = life({ path: "mace" }), sk = K.PATHS.mace.skill;
   const at = (might, skill, o) => { const T = life(Object.assign({ path: "mace" }, o || {})); T.attrs.might = might; T.skills[sk] = skill; T.tier = (o && o.tier) || 0; return K.tierNow(T); };
   if (at(4, 4) !== 0) bad.push("8 gives " + at(4, 4));
   if (at(5, 4) !== 1) bad.push("9 gives " + at(5, 4));
   if (at(6, 5) !== 2) bad.push("11 gives " + at(6, 5));
   if (at(3, 3, { flags: ["teacher_trial_won"] }) !== 0) bad.push("the teacher's test alone makes a captain");
-  if (at(4, 4, { flags: ["teacher_trial_won"] }) !== 1) bad.push("the teacher's test is not a point toward the floor (8 + 1)");
+  if (at(4, 4, { flags: ["teacher_trial_won"] }) !== (K.CLIMB.trialPoint ? 1 : 0)) bad.push("the teacher's test: " + at(4, 4, { flags: ["teacher_trial_won"] }) + " at 8 (its point toward the floor: " + (K.CLIMB.trialPoint || 0) + ")");
   if (at(3, 3, { flags: ["bhadra_helmet"] }) !== 1) bad.push("Bhadra's helmet does not make a captain");
   if (at(3, 3, { flags: ["bhadra_helmet_kept"] }) !== 0) bad.push("a helmet never worn makes a captain");
   if (at(3, 3, { flags: ["felled_captain"] }) !== 1) bad.push("a captain brought down does not make a captain");

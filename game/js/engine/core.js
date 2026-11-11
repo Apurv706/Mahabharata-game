@@ -424,7 +424,7 @@
     // A Captain (owner, 11 November: "Teacher test to captain doesn't sit right"; the teacher's test is a point toward the
     // floor instead): Bhadra's helmet, worn (content/episodes.js, the captain's arc); a captain-tier foe brought down in a
     // real fight, grown (combat.js); a deadly fight won from Act IV.
-    captain: ["bhadra_helmet", "felled_captain", "deadly_won_late"],
+    captain: ["bhadra_helmet", "felled_captain", "deadly_won_late"], trialPoint: 0, // (the teacher's test counts through the skill it already teaches; an extra point made half of lives Captains at sixteen)
     contest: ["ugra_tournament_won", "won_kampilya"],
     held: ["held_karna", "held_arjuna", "held_bhima", "held_duryodhana", "held_for_shikhandi"],
     feat: ["kd_stood", "kd_guard_held", "proven_duel", "lifted_wheel", "kb_held_full", "held_the_gate", "held_the_ring", "held_wheel", "bh_held_line", "held_ring_open"]
@@ -433,7 +433,7 @@
   K.tierNow = function (S = K.S) {
     if (!S || !S.path || S.fighter) return (S && S.tier) || 0;
     const has = (f) => S.flags.includes(f), any = (l) => l.some(has);
-    const P = (K.PATHS || {})[S.path] || {}, sum = (S.attrs.might || 0) + ((P.skill && S.skills[P.skill]) || 0) + (has("teacher_trial_won") ? 1 : 0);
+    const P = (K.PATHS || {})[S.path] || {}, sum = (S.attrs.might || 0) + ((P.skill && S.skills[P.skill]) || 0) + (has("teacher_trial_won") ? (K.CLIMB.trialPoint || 0) : 0);
     let t = sum >= 11 ? 2 : sum >= 9 ? 1 : 0;
     if (K.CLIMB.captain.some(has)) t = Math.max(t, 1);
     if ((K.strengthBoon(S) ? 1 : 0) + (any(K.CLIMB.contest) ? 1 : 0) + (any(K.CLIMB.held) ? 1 : 0) + (any(K.CLIMB.feat) ? 1 : 0) >= 2) t = 2;

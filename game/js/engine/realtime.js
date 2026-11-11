@@ -105,7 +105,7 @@
     // What the swing lock costs each path, given back (owner, 7 November: "balance held at today's win rates per path"): the
     // foes' blows on you this much lighter, by your path. Measured with tests/lives.js (RT=1 RTSTATS=1 COMPARE=1, 1500 lives,
     // seed 11): the slow weapons lost most to the lock.
-    vsPath: { mace: 0.7, strategist: 0.78, charioteer: 0.87, archer: 0.85, spy: 0.95, bard: 0.92, healer: 1 }
+    vsPath: { mace: 0.73, strategist: 0.69, charioteer: 0.83, archer: 0.84, spy: 0.95, bard: 0.86, healer: 1 }
   };
   // ---------- Strength (Build D, feedback row 49) ----------
   // Four tiers: 0 soldier, 1 captain or named warrior, 2 great champion, 3 Bhima alone (the Nagas' drink, Adi Parva).
@@ -274,6 +274,8 @@
   // Later on 4 November, with foes kneeling only at 5% (C.PLEAD) and fighting at their weapons' reach: the Gandharva
   // (1.22 -> 1.0), Jayadratha's road (e_jaya, 1.08 -> 0.81) and the road fight (e_road, 1.11 -> 0.75), on seed 11.
   RT.TUNE = {
+    e_bhadra: { hp: 1.5, atk: 2.4 }, // Bhadra's bout (the captain's arc, 11 November): an old captain, not a straw man (the bot won 942 of 942)
+    e_ep_carts: { worn: 90 }, // the supply carts' sentries tire after 90 s (one of 2,400 bot lives ran to the cap with an archer among them, row 47)
     cross_e_escape: { hp: 0.6, atk: 1.62, worn: 60, wornFloor: 0.08 }, // the crossing fight (owner, 10 November: "Make it a fight"; 23:05 "harder"): three of your own line, a short, hard fight
     cross_e_duel: { hp: 1.15, atk: 1.3 }, // eased 4 November (1.36), still the hardest duel; 1.15 -> 1.3 (Build D: a light blow now flinches a soldier, and this duel is one soldier: 82% -> 89%)
     cross_e_called: { hp: 0.85, atk: 0.85 },
