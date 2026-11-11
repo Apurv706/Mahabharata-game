@@ -857,7 +857,8 @@
     if (K.Sound) K.Sound.play("drumCall");
     V.champSeen.add(h.uid);
     const c = $(".wd-champ", V.stage); if (!c) return;
-    c.innerHTML = "<b>" + esc(K.text(h.src || h.name).split(",")[0]) + "</b><small>" + esc(T("A champion comes at the line")) + "</small>";
+    const trait = K.RT && K.RT.traitLine ? K.RT.traitLine(h) : null; // his trait (stage 2), under the line
+    c.innerHTML = "<b>" + esc(K.text(h.src || h.name).split(",")[0]) + "</b><small>" + esc(T("A champion comes at the line")) + "</small>" + (trait ? "<em>" + esc(T(trait)) + "</em>" : "");
     V.stage.classList.remove("champ"); void V.stage.offsetWidth; V.stage.classList.add("champ");
     figsFriends().forEach((f, i) => setTimeout(() => { if (!V) return; pose(f, "guard", 800, 0.55); home(f, 1300); }, 120 + i * 60));
     sparkle(figsFriends(), 200);

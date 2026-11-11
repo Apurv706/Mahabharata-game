@@ -181,7 +181,9 @@
       let crit = false;
       if (u.status.crit || K.rng() < 0.08) { crit = true; dmg *= 1.5; delete u.status.crit; }
       if (t.status.guard) { dmg *= o.breaks ? 0.85 : 0.5; delete t.status.guard; }
+      if (B.rt && C.traitDmg) dmg *= C.traitDmg(B, u, t); // a champion's trait, in a real-time fight or a clash (engine/realtime.js)
       dmg = Math.max(1, Math.round(dmg));
+      if (B.rt && C.traitCap) dmg = C.traitCap(B, t, dmg);
       // A holding fight (enc.hold): the champion is held, never killed. He is never brought below a tenth.
       if (B.enc.hold && t.hero) dmg = Math.min(dmg, Math.max(0, t.hp - Math.round(t.maxHp * 0.1)));
       // A sage's kavacha: one blow that would have killed you, in the whole war, leaves you standing (§18.7).

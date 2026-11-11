@@ -500,6 +500,242 @@ check("path-arms", "the path screen at fifteen asks for a path, and each tile na
   return bad;
 });
 
+// ---------- The champions' traits (stage 2: Fight_Traits_Draft.md section 2) ----------
+const champ = (B, o) => { const f = B.units.find((u) => u.side === "enemy"); Object.assign(f, { hero: true }, o); return f; };
+check("trait-weight", "Karna's armour lightens blows before the war; Jayadratha's boon halves them on day 13 for a Pandava; Ghatotkacha hits harder at night", () => {
+  const bad = [];
+  let F = fight("e_bandits", { act: 5 }); let k = champ(F.B, { person: "karna" });
+  if (Math.abs(C.traitDmg(F.B, F.p, k) - 0.7) > 1e-9) bad.push("Karna before the war: " + C.traitDmg(F.B, F.p, k)); close();
+  F = fight("e_bandits", { act: 6 }); k = champ(F.B, { person: "karna" });
+  if (C.traitDmg(F.B, F.p, k) !== 1) bad.push("Karna in the war still lighter"); close();
+  F = fight("e_bandits", { act: 6, side: "pandava", scene: "a6_day13" }); k = champ(F.B, { name: "Jayadratha's guard", src: "Jayadratha's guard", hero: false });
+  if (C.traitDmg(F.B, F.p, k) !== 0.5) bad.push("Jayadratha's line on day 13 (Pandava): " + C.traitDmg(F.B, F.p, k));
+  K.S.side = "kaurava"; if (C.traitDmg(F.B, F.p, k) !== 1) bad.push("Jayadratha's boon for a Kaurava life"); close();
+  F = fight("e_bandits", {}); k = champ(F.B, { person: "ghatotkacha" });
+  if (C.traitDmg(F.B, k, F.p) !== 1) bad.push("Ghatotkacha by day hits harder");
+  F.B.enc = Object.assign({}, F.B.enc, { title: "The night battle" });
+  if (Math.abs(C.traitDmg(F.B, k, F.p) - 1.3) > 1e-9) bad.push("Ghatotkacha at night: " + C.traitDmg(F.B, k, F.p)); close();
+  return bad;
+});
+check("trait-bhishma", "Bhishma cannot be brought below a tenth before the tenth day, and can after it", () => {
+  const bad = [];
+  let F = fight("e_bandits", { scene: "a6_day1" }); let b = champ(F.B, { person: "bhishma" });
+  if (C.traitCap(F.B, b, b.hp) !== b.hp - Math.round(b.maxHp * 0.1)) bad.push("day 1: a killing blow is not held at a tenth"); close();
+  F = fight("e_bandits", { scene: "a6_bhishma" }); b = champ(F.B, { person: "bhishma" });
+  if (C.traitCap(F.B, b, b.hp) !== b.hp) bad.push("day 10: still held"); close();
+  return bad;
+});
+check("trait-read", "three whole combos running and Drona reads you (four for Kripa); a roll or a pause and he cannot", () => {
+  const bad = [], F = fight("e_bandits", { path: "charioteer" }), { R } = F;
+  steps(R, 90);
+  R.B.units.forEach((u) => { if (u.side === "enemy") { u.rt.x = 0.93; u.rt.cool = 99; } }); // (nobody near: the blows land on air)
+  const swing = () => { RT.step(R, { strike: true }); let n = 0; while (RT.swinging() && n++ < 120) RT.step(R, {}); };
+  for (let i = 0; i < 9; i++) swing();
+  if (R.readN !== 3) bad.push("after three whole combos the count is " + R.readN);
+  RT.step(R, R.blocker ? { block: true } : { roll: true, rollDir: 1 }); steps(R, 10);
+  if (R.readN !== 0) bad.push("a " + (R.blocker ? "block" : "roll") + " did not break the read");
+  for (let i = 0; i < 3; i++) swing();
+  steps(R, 90); swing();
+  if (R.readN !== 0) bad.push("a pause between combos did not break the read: " + R.readN);
+  close(); return bad;
+});
+check("trait-read-parry", "Drona, having read you, meets your next blow for sure", () => {
+  const bad = [], F = fight("e_bandits", { path: "charioteer" }), { R, p } = F;
+  steps(R, 90);
+  const d = champ(R.B, { person: "drona", name: "Drona" });
+  R.B.units.forEach((u) => { if (u.side === "enemy" && u !== d) { u.rt.x = 0.93; u.rt.cool = 99; } });
+  Object.assign(d.rt, { entered: true, lane: p.rt.lane, x: p.rt.x + p.rt.face * p.rt.reach * 0.8, face: -p.rt.face, cool: 99, atk: null, stag: 0, rec: 0, openUntil: 0, weapon: "sword", archer: false });
+  R.D.parryFoe = 0; R.readN = 3; R.comboEnd = R.t; // (three combos just ended: no pause)
+  const before = R.stats.parried;
+  RT.step(R, { strike: true }); let n = 0; while (RT.swinging() && n++ < 60) RT.step(R, {});
+  if (R.stats.parried !== before + 1) bad.push("not parried after the read");
+  if (R.readN !== 0) bad.push("the read not spent");
+  close(); return bad;
+});
+check("trait-wheel", "on the seventeenth day Karna, below a third, stops 3 s at his sunken wheel; a blow then is remembered", () => {
+  const bad = [], F = fight("e_bandits", { path: "charioteer", scene: "hold_karna_offer" }), { R, p } = F;
+  if (RT.warDay() !== 17) bad.push("the hold before the seventeenth day is day " + RT.warDay());
+  steps(R, 90);
+  const k = champ(R.B, { person: "karna", name: "Karna" });
+  R.B.units.forEach((u) => { if (u.side === "enemy" && u !== k) { u.rt.x = 0.93; u.rt.cool = 99; } });
+  Object.assign(k.rt, { entered: true, lane: p.rt.lane, x: p.rt.x + p.rt.face * p.rt.reach * 0.8, face: -p.rt.face, cool: 99, atk: null });
+  k.hp = Math.floor(k.maxHp * 0.3);
+  RT.step(R, {});
+  if (!(k.rt.wheelUntil > R.t)) bad.push("the wheel did not sink");
+  if (!R.fx.some((f) => f.k === "trait" && f.who === "karnaWheel") && !(R.told || {}).karnaWheel) bad.push("no tip");
+  R.D.parryFoe = 0;
+  RT.step(R, { strike: true }); let n = 0; while (RT.swinging() && n++ < 60) RT.step(R, {});
+  if (!K.S.flags.includes("struck_karna_wheel")) bad.push("a blow at the wheel not remembered");
+  close(); return bad;
+});
+check("trait-maya", "Ghatotkacha below two thirds becomes three for 6 s: a false one vanishes when struck, and none outlives the fight", () => {
+  const bad = [], F = fight("e_bandits", { path: "charioteer" }), { R, p } = F;
+  steps(R, 90);
+  const g = champ(R.B, { person: "ghatotkacha", name: "Ghatotkacha" });
+  Object.assign(g.rt, { entered: true, cool: 99 }); g.hp = Math.floor(g.maxHp * 0.6);
+  RT.step(R, {});
+  const ds = R.B.units.filter((u) => u.decoy);
+  if (ds.length !== 2) bad.push(ds.length + " false figures");
+  else {
+    const d = ds[0];
+    R.B.units.forEach((u) => { if (u.side === "enemy" && u !== d) { u.rt.x = 0.93; u.rt.cool = 99; } });
+    Object.assign(d.rt, { lane: p.rt.lane, x: p.rt.x + p.rt.face * p.rt.reach * 0.8 });
+    RT.step(R, { strike: true }); let n = 0; while (RT.swinging() && n++ < 60) RT.step(R, {});
+    if (R.B.units.includes(d)) bad.push("a struck false figure did not vanish");
+    steps(R, 6.2 * 60);
+    if (R.B.units.some((u) => u.decoy)) bad.push("a false figure outlived its 6 s");
+  }
+  if (R.B.units.filter((u) => u.decoy).length) RT.clearDecoys(R.B);
+  close(); return bad;
+});
+check("trait-others", "Supratika cannot be parried and breaks shields at Bhima's rate; Bhima's war cry beside you; every champion's trait has its line", () => {
+  const bad = [], F = fight("e_bandits", {}), { R, B } = F;
+  const s = champ(B, { name: "Supratika, Bhagadatta's elephant", src: "Supratika, Bhagadatta's elephant" });
+  if (RT.shieldHit(s, "fist", false) !== RT.SHIELD_HIT.mace[3]) bad.push("Supratika's shield points: " + RT.shieldHit(s, "fist", false));
+  s.rt.atk = { id: "strike", on: C.player().uid, t0: R.t, land: R.t + 0.05, ranged: false, area: false };
+  if (RT.parryable(R, s, 1)) bad.push("Supratika's charge parried");
+  for (const w of ["bhima", "duryodhana", "arjuna", "bhishma", "drona", "kripa", "ashwatthama", "ghatotkacha", "abhimanyu", "satyaki", "bhurishravas"]) if (!RT.traitLine({ side: "enemy", person: w })) bad.push("no line for " + w);
+  if (!RT.traitLine({ side: "enemy", name: "Supratika, Bhagadatta's elephant" })) bad.push("no line for Supratika");
+  close();
+  const G = fight("e_bandits", {}, { before: (B2) => B2.units.push({ uid: "bh", name: "Bhima", person: "bhima", side: "ally", hp: 200, maxHp: 200, atk: 6, def: 1, abilities: ["strike"], cds: {}, status: {} }) });
+  steps(G.R, 5 * 60);
+  const bh = G.B.units.find((u) => u.person === "bhima");
+  if (!bh || !(bh.rt.cryNext > 4)) bad.push("Bhima beside you never roared");
+  close(); return bad;
+});
+
+// ---------- Stage 3: how you climb, the boons and the divine weapons' gifts in a fight ----------
+check("tier-climb", "your tier: the floor from might and weapon skill (9, 11), a teacher's trial or a late deadly win lifts you to captain, two strength marks to great champion; never down", () => {
+  const bad = [], S = life({ path: "mace" }), sk = K.PATHS.mace.skill;
+  const at = (might, skill, o) => { const T = life(Object.assign({ path: "mace" }, o || {})); T.attrs.might = might; T.skills[sk] = skill; T.tier = (o && o.tier) || 0; return K.tierNow(T); };
+  if (at(4, 4) !== 0) bad.push("8 gives " + at(4, 4));
+  if (at(5, 4) !== 1) bad.push("9 gives " + at(5, 4));
+  if (at(6, 5) !== 2) bad.push("11 gives " + at(6, 5));
+  if (at(3, 3, { flags: ["teacher_trial_won"] }) !== 1) bad.push("the teacher's trial does not lift you");
+  if (at(3, 3, { flags: ["deadly_won_late"] }) !== 1) bad.push("a late deadly win does not lift you");
+  if (at(3, 3, { boons: ["bala"], flags: ["ugra_tournament_won"] }) !== 2) bad.push("Bala and the tournament do not make a great champion");
+  if (at(3, 3, { boons: ["bala"] }) !== 0) bad.push("one strength mark alone lifts you");
+  if (at(3, 3, { flags: ["held_karna", "kd_stood"] }) !== 2) bad.push("a hold and a war feat do not make a great champion");
+  if (at(3, 3, { tier: 2 }) !== 2) bad.push("a tier was lost");
+  const T = life({ path: null }); T.tier = 0; if (K.tierNow(T) !== 0) bad.push("no path, yet a tier");
+  void S; return bad;
+});
+const withBoons = (enc, boons, o) => { const F = fight(enc, Object.assign({ path: "mace", boons: boons.slice() }, o || {}), { before: (B) => { B.units.filter((u) => u.side !== "player").forEach((u) => { u.still = true; }); } }); return F; };
+check("boon-gifts", "each boon and each kept divine weapon is on in a fight while it should be, and off once spent, used or lost", () => {
+  const bad = [];
+  const ids = (F) => RT.gifts().map((g) => g.id).sort().join(",");
+  let F = withBoons("e_bandits", ["bala", "kavacha", "charm_shield", "foresight", "healing_hands", "sanjivani", "antardhana", "astra"], { charges: { kavacha: 1, sanjivani: 1 }, astras: [{ id: "agneya", from: "fire_altar" }, { id: "varuna", from: "lake_sage", broken: true }] });
+  const want = "agneya,antardhana,bala,charm_shield,foresight,healing_hands,indra,kavacha,sanjivani";
+  if (ids(F) !== want) bad.push("gifts on: " + ids(F));
+  if (Math.abs(RT.kneelT() - 0.7) > 1e-9) bad.push("healing hands: kneel " + RT.kneelT());
+  if (Math.abs(RT.cueLead() - (RT.P.parryCue + 0.15)) > 1e-9) bad.push("foresight: cue " + RT.cueLead());
+  if (Math.abs(RT.parryWin() - RT.P.parry * 1.2) > 1e-9) bad.push("the teacher's eye: parry window " + RT.parryWin());
+  const foe = F.B.units.find((u) => u.side === "enemy");
+  if (Math.abs(C.traitDmg(F.B, foe, F.p) - 0.9) > 1e-9) bad.push("kavacha: " + C.traitDmg(F.B, foe, F.p));
+  K.S.charges.kavacha = 0; K.S.charges.sanjivani = 0;
+  if (C.traitDmg(F.B, foe, F.p) !== 1) bad.push("a spent kavacha still lightens blows");
+  if (/kavacha|sanjivani/.test(ids(F))) bad.push("spent charges still shown: " + ids(F));
+  // Bala's breath: back half again as fast
+  F.R.breath = 0; F.R.winded = false; steps(F.R, 30); const bala = F.R.breath; close();
+  F = withBoons("e_bandits", []); F.R.breath = 0; steps(F.R, 30); const plain = F.R.breath;
+  if (ids(F) !== "") bad.push("no boons, yet: " + ids(F));
+  if (!(bala > plain * 1.4 && bala < plain * 1.6)) bad.push("Bala's breath " + bala.toFixed(1) + " against " + plain.toFixed(1));
+  close();
+  // The charmed shield: a Bhima-strength blow never breaks it
+  F = withBoons("e_bandits", ["charm_shield"]);
+  for (let i = 0; i < 12; i++) { F.R.sp = Math.min(F.R.sp, RT.P.shieldPts); }
+  const sp0 = F.R.sp; F.R.B.units.filter((u) => u.side === "enemy").forEach((u) => { u.hp = 0; });
+  close(); void sp0;
+  return bad;
+});
+check("boon-charm-shield", "the charmed shield is never broken, even by Bhima's mace", () => {
+  const F = fight("hold_bhima", { path: "mace", boons: ["charm_shield"] }), { R, B, p } = F, bad = [];
+  const foe = B.units.find((u) => u.person === "bhima");
+  B.units.filter((u) => u.side === "enemy" && u !== foe).forEach((u) => { u.hp = 0; });
+  foe.rt.entered = true; foe.rt.wave = 0; foe.rt.x = Math.min(0.9, p.rt.x + 0.2);
+  let caught = 0, n = 0;
+  while (!R.over && n++ < 60 * 120) { p.hp = p.maxHp; R.breath = RT.P.breathMax; R.winded = false; foe.hp = foe.maxHp; const b = R.stats.blocked; RT.step(R, { block: true }); if (R.stats.blocked > b) caught++; if (R.broken) break; }
+  if (R.broken) bad.push("broken after " + caught + " blows");
+  if (caught < 6) bad.push("only " + caught + " blows caught");
+  close(); return bad;
+});
+check("boon-herbs", "herbs: quicker with healing hands, half again with the sanjivani root unspent", () => {
+  const bad = [];
+  const heal = (boons, charges) => {
+    const F = withBoons("e_bandits", boons, { charges: charges || {} }), { R, p } = F;
+    R.B.units.filter((u) => u.side === "enemy").forEach((u) => { u.rt.x = 0.93; u.rt.cool = 99; u.still = true; });
+    p.hp = Math.round(p.maxHp * 0.3); const h0 = p.hp;
+    RT.step(R, { herbs: true }); let n = 0; while (R.kneel > 0 && n++ < 200) RT.step(R, {});
+    const out = { gain: p.hp - h0, steps: n }; close(); return out;
+  };
+  const a = heal([]), b = heal(["sanjivani"], { sanjivani: 1 }), c = heal(["healing_hands"]);
+  if (!(a.gain > 0)) bad.push("herbs healed nothing");
+  else if (Math.abs(b.gain - Math.min(Math.round(a.gain * 1.5), b.gain)) > 1 || b.gain <= a.gain) bad.push("sanjivani: " + b.gain + " against " + a.gain);
+  if (!(c.steps < a.steps * 0.75)) bad.push("healing hands: " + c.steps + " steps against " + a.steps);
+  return bad;
+});
+check("boon-antardhana", "Antardhana under Aid: 2 s unseen, the first blow after it half again, once an act (shared with the stories)", () => {
+  const F = withBoons("e_bandits", ["antardhana"]), { R, p } = F, bad = [];
+  if (!RT.vanishOffer(R) || !RT.can(R, "vanish")) bad.push("not offered");
+  RT.step(R, { vanish: true });
+  if (!(R.unseen > 1.9)) bad.push("not unseen: " + R.unseen);
+  if (R.boonBlow !== 1.5) bad.push("no blow ready: " + R.boonBlow);
+  if (K.S.vanishedAct !== K.S.act || K.vanishReady(K.S)) bad.push("the act's use not spent");
+  if (RT.can(R, "vanish")) bad.push("offered twice");
+  steps(R, 2.1 * 60); if (R.unseen > 0) bad.push("still unseen after 2 s");
+  close();
+  const G = withBoons("e_bandits", []);
+  if (RT.vanishOffer(G.R)) bad.push("offered without the boon");
+  close(); return bad;
+});
+// One heavy blow of yours on a foe right in front (the mace's sweep is its second blow).
+const heavyOn = (F) => {
+  const { R, B, p } = F, f = B.units.find((u) => u.side === "enemy" && u.hp > 0);
+  B.units.forEach((u) => { if (u.side === "enemy" && u !== f) { u.rt.x = 0.93; u.rt.cool = 99; } });
+  Object.assign(f.rt, { entered: true, lane: p.rt.lane, x: p.rt.x + p.rt.face * p.rt.reach * 0.7, cool: 99, atk: null, stag: 0 });
+  f.shield = false; f.shieldDrawn = false; f.hp = f.maxHp; f.maxHp = Math.max(f.maxHp, 60); f.hp = f.maxHp; R.D.parryFoe = 0;
+  for (let k = 0; k < 2; k++) { RT.step(R, { strike: true }); let n = 0; while ((RT.swinging() || p.rt.blow) && n++ < 90) RT.step(R, {}); f.rt.cool = 99; f.rt.atk = null; }
+  return f;
+};
+check("weapon-gifts", "the divine weapons' gifts: Agni's fire burns after a heavy blow; the coil holds his feet; the sleep slows his next wind-up; Vayu's feet and Varuna's water", () => {
+  const bad = [];
+  let F = withBoons("e_bandits", [], { astras: [{ id: "agneya", from: "fire_altar" }, { id: "nagapasha", from: "naga" }, { id: "sammohana", from: "gandharva" }] });
+  F.B.units.filter((u) => u.side === "enemy").forEach((u) => { u.still = false; });
+  const f = heavyOn(F);
+  if (!(f.rt.burnUntil > F.R.t)) bad.push("no fire");
+  if (!(f.rt.boundUntil > F.R.t)) bad.push("no coil");
+  if (f.rt.slowNext !== 1.3) bad.push("no sleep in his eyes: " + f.rt.slowNext);
+  const h = f.hp; steps(F.R, 2.2 * 60, () => { f.rt.cool = 99; f.rt.atk = null; return {}; });
+  if (!(f.hp < h)) bad.push("the fire did him no harm");
+  close();
+  F = withBoons("e_bandits", [], { astras: [{ id: "vayavya", from: "hermitage" }, { id: "varuna", from: "lake_sage" }] });
+  if (Math.abs(RT.walkMul() - 1.15) > 1e-9 || Math.abs(RT.rollMul() - 1.2) > 1e-9) bad.push("Vayu's feet: " + RT.walkMul() + ", " + RT.rollMul());
+  F.R.breath = 0; steps(F.R, 30); const cool = F.R.breath; close();
+  F = withBoons("e_bandits", [], { astras: [{ id: "vayavya", from: "hermitage", broken: true }] });
+  if (RT.walkMul() !== 1) bad.push("a lost weapon's gift kept");
+  F.R.breath = 0; steps(F.R, 30); const plain = F.R.breath; close();
+  if (!(cool > plain * 1.15 && cool < plain * 1.25)) bad.push("Varuna's breath " + cool.toFixed(1) + " against " + plain.toFixed(1));
+  return bad;
+});
+check("tier-stagger", "a soldier's heavy blow staggers a soldier but not a captain; a champion's staggers a captain", () => {
+  const bad = [];
+  const hit = (tier, foeTier) => {
+    const F = withBoons("e_bandits", []), { R, B, p } = F; K.S.tier = tier;
+    const f = B.units.find((u) => u.side === "enemy"); B.units.forEach((u) => { if (u.side === "enemy" && u !== f) { u.rt.x = 0.93; u.rt.cool = 99; } });
+    f.tier = foeTier; f.still = false;
+    Object.assign(f.rt, { entered: true, lane: p.rt.lane, x: p.rt.x + 0.08, cool: 99 });
+    p.rt.busy = 0; R.D.parryFoe = 0;
+    f.rt.atk = { id: "strike", on: p.uid, t0: R.t - 0.5, land: R.t + RT.STEP * 0.5, ranged: false, area: false, lane: p.rt.x, locked: true, heavy: true };
+    let n = 0; while (f.rt.atk && n++ < 30) RT.step(R, {});
+    const busy = p.rt.busy; close(); return busy;
+  };
+  if (!(hit(0, 0) > 0.05)) bad.push("a soldier's heavy blow did not stagger a soldier");
+  if (hit(1, 0) > 0.05) bad.push("a soldier's heavy blow staggered a captain");
+  if (!(hit(1, 2) > 0.05)) bad.push("a champion's heavy blow did not stagger a captain");
+  if (hit(2, 1) > 0.05) bad.push("a captain's heavy blow staggered a great champion");
+  return bad;
+});
+
 const results = [];
 let fail = 0;
 for (const c of CASES) {

@@ -982,7 +982,8 @@
     B.units.forEach((u) => { if (u.side === "enemy" && (u.person || u.hero) && u.hp > 0) seen.add(u.uid); });
     const full = K.text(h.src || h.name), cut = full.indexOf(","), name = cut > 0 ? full.slice(0, cut) : full, title = cut > 0 ? full.slice(cut + 1).trim() : K.tr("A champion takes the field");
     const old = document.querySelector(".b-champ"); if (old) old.remove();
-    const el = U.el('<div class="b-champ" aria-live="assertive"><b>' + U.esc(name) + "</b><small>" + U.esc(title) + "</small></div>");
+    const trait = K.RT && K.RT.traitLine ? K.RT.traitLine(h) : null; // his trait (stage 2)
+    const el = U.el('<div class="b-champ" aria-live="assertive"><b>' + U.esc(name) + "</b><small>" + U.esc(title) + "</small>" + (trait ? "<em>" + U.esc(K.tr(trait)) + "</em>" : "") + "</div>");
     document.body.appendChild(el); // over the arena, which is drawn again as the turns go
     if (K.Sound) K.Sound.play("drumCall");
     const a = document.querySelector('#arena .actor[data-uid="' + h.uid + '"]'); if (a) { a.classList.remove("champ-in"); void a.offsetWidth; a.classList.add("champ-in"); }
