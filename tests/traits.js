@@ -606,13 +606,17 @@ check("trait-others", "Supratika cannot be parried and breaks shields at Bhima's
 });
 
 // ---------- Stage 3: how you climb, the boons and the divine weapons' gifts in a fight ----------
-check("tier-climb", "your tier: the floor from might and weapon skill (9, 11), a teacher's trial or a late deadly win lifts you to captain, two strength marks to great champion; never down", () => {
+check("tier-climb", "your tier: the floor from might and weapon skill (9, 11; the teacher's test a point toward it), Bhadra's helmet, a captain brought down or a late deadly win lifts you to captain, two strength marks to great champion; never down", () => {
   const bad = [], S = life({ path: "mace" }), sk = K.PATHS.mace.skill;
   const at = (might, skill, o) => { const T = life(Object.assign({ path: "mace" }, o || {})); T.attrs.might = might; T.skills[sk] = skill; T.tier = (o && o.tier) || 0; return K.tierNow(T); };
   if (at(4, 4) !== 0) bad.push("8 gives " + at(4, 4));
   if (at(5, 4) !== 1) bad.push("9 gives " + at(5, 4));
   if (at(6, 5) !== 2) bad.push("11 gives " + at(6, 5));
-  if (at(3, 3, { flags: ["teacher_trial_won"] }) !== 1) bad.push("the teacher's trial does not lift you");
+  if (at(3, 3, { flags: ["teacher_trial_won"] }) !== 0) bad.push("the teacher's test alone makes a captain");
+  if (at(4, 4, { flags: ["teacher_trial_won"] }) !== 1) bad.push("the teacher's test is not a point toward the floor (8 + 1)");
+  if (at(3, 3, { flags: ["bhadra_helmet"] }) !== 1) bad.push("Bhadra's helmet does not make a captain");
+  if (at(3, 3, { flags: ["bhadra_helmet_kept"] }) !== 0) bad.push("a helmet never worn makes a captain");
+  if (at(3, 3, { flags: ["felled_captain"] }) !== 1) bad.push("a captain brought down does not make a captain");
   if (at(3, 3, { flags: ["deadly_won_late"] }) !== 1) bad.push("a late deadly win does not lift you");
   if (at(3, 3, { boons: ["bala"], flags: ["ugra_tournament_won"] }) !== 2) bad.push("Bala and the tournament do not make a great champion");
   if (at(3, 3, { boons: ["bala"] }) !== 0) bad.push("one strength mark alone lifts you");
@@ -761,6 +765,58 @@ check("field-kinds", "every field event and scripted beat is drawn as something 
     giant: K.BATTLE_EVENTS.ghatotkacha_p.text, fire: K.BATTLE_EVENTS.smoke.text, conch: K.BATTLE_EVENTS.conch.text, water: K.BATTLE_EVENTS.water.text, chariot: "A chariot comes straight at Vasu's shield-wall. He goes down under the wheels and does not get up." };
   for (const [k, line] of Object.entries(want)) if (kind(line) !== k) bad.push(k + " drawn as " + kind(line));
   for (const [id, e] of Object.entries(K.BATTLE_EVENTS)) if (!kind(e.text)) bad.push("nothing for " + id);
+  return bad;
+});
+
+// ---------- The captain's arc (owner, 11 November) ----------
+check("captain-arc", "Bhadra: the bout before the court (Act III), the border road before the Rajasuya, the helmet before Matsya once you stood by him; worn, a Captain's moment of its own; the thirteenth day remembers the dream", () => {
+  const bad = [];
+  const next = (S, id) => { for (let i = 0; i < 30; i++) { const sc = K.resolveScene(id, S); if (sc.id.startsWith("ep_bhadra") || sc.id === id) return sc.id; S.seen.push(sc.id); } return null; };
+  let S = life({ act: 3, age: 25, path: "mace" });
+  if (next(S, "a3_court") !== "ep_bhadra_bout") bad.push("no bout before the court: " + next(S, "a3_court"));
+  const enc = K.ENCOUNTERS.e_bhadra, road = K.ENCOUNTERS.e_bhadra_road;
+  if (!enc || !RT.isRealtime(enc) || !enc.bout || enc.lethal) bad.push("the bout is not a real-time bout");
+  if (!road || !RT.isRealtime(road) || road.lethal) bad.push("the road is not a real-time fight");
+  S = life({ act: 3, age: 28, path: "mace", flags: [] }); S.seen.push("ep_bhadra_bout");
+  if (next(S, "a3_rajasuya") === "ep_bhadra_road") bad.push("the road without having met him");
+  K.apply({ flag: "bhadra_met" });
+  if (next(S, "a3_rajasuya") !== "ep_bhadra_road") bad.push("no border road after meeting him");
+  S = life({ act: 5, age: 41, path: "mace" }); K.apply({ flag: ["bhadra_met"] });
+  if (next(S, "a5_matsya") === "ep_bhadra_helmet") bad.push("the helmet without standing by him");
+  for (const mark of ["bhadra_held", "bhadra_led", "bhadra_carried"]) {
+    S = life({ act: 5, age: 41, path: "mace", flags: ["bhadra_met", mark] }); S.attrs.might = 2; S.skills[K.PATHS.mace.skill] = 2; S.tier = 0;
+    if (next(S, "a5_matsya") !== "ep_bhadra_helmet") { bad.push("no helmet after " + mark); continue; }
+    const sc = K.SCENES.ep_bhadra_helmet, wear = sc.choices.find((c) => c.id === "wear");
+    K.apply(wear.fx);
+    if (S.tier !== 1) bad.push("worn after " + mark + ": tier " + S.tier);
+    const m = (S.moments || []).slice(-1)[0];
+    if (!m || m.kind !== "tier" || m.via !== "helmet") bad.push("no helmet moment: " + JSON.stringify(m));
+    if (!S.dead.includes("bhadra")) bad.push("Bhadra lives on");
+    const d13 = [].concat(K.val(K.SCENES.a6_day13.body, Object.assign(S, { side: "pandava" })) || []).filter(Boolean);
+    if (!d13.some((b) => b && b.memory && /dented helmet/.test(b.memory))) bad.push("the thirteenth day does not remember the helmet");
+  }
+  S = life({ act: 5, age: 41, path: "mace", flags: ["bhadra_met", "bhadra_held"] }); S.attrs.might = 2; S.skills[K.PATHS.mace.skill] = 2; S.tier = 0;
+  K.apply(K.SCENES.ep_bhadra_helmet.choices.find((c) => c.id === "keep").fx);
+  if (S.tier !== 0) bad.push("a helmet kept in its cloth made a captain");
+  return bad;
+});
+check("felled-captain", "a captain-tier foe brought down in a real fight you won, grown, makes a Captain, and the moment names him; not at sixteen, not in a bout, not on the ladder", () => {
+  const bad = [];
+  const play = (o, enc) => {
+    if (C.state()) { try { C.settle("win"); } catch (e) { /* over */ } C.end(); }
+    const S = life(Object.assign({ path: "mace", act: 4, age: 30 }, o)); S.attrs.might = 2; S.skills[K.PATHS.mace.skill] = 2; S.tier = 0;
+    const B = C.start(enc || "e_border", null);
+    const f = B.units.find((u) => u.side === "enemy"); f.name = f.src = "Kaurava raiders' captain"; f.person = null;
+    B.units.filter((u) => u.side === "enemy").forEach((u) => { u.hp = 0; });
+    C.settle("win"); C.end(); return S;
+  };
+  let S = play({});
+  if (!S.flags.includes("felled_captain") || S.tier !== 1) bad.push("a captain brought down at 30: tier " + S.tier);
+  const m = (S.moments || []).slice(-1)[0];
+  if (!m || m.via !== "felled" || !/captain/.test(m.foe || "")) bad.push("the moment does not name him: " + JSON.stringify(m));
+  S = play({ age: 16, act: 2 }); if (S.flags.includes("felled_captain")) bad.push("at sixteen");
+  S = play({ fighter: true }); if (S.flags.includes("felled_captain")) bad.push("on the ladder");
+  S = play({}, "e_bhadra"); if (S.flags.includes("felled_captain")) bad.push("in a bout");
   return bad;
 });
 

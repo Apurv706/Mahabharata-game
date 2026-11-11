@@ -443,6 +443,12 @@
       if (extra > 0 && K.hasVow && K.hasVow("spare_unarmed", K.S)) K.S.spared = (K.S.spared || 0) + extra;
     }
     if (K.friendAfter) K.friendAfter(B);
+    // A captain-tier foe brought down (fallen, or spared at your mercy) in a real fight you won, grown (18 or more): a
+    // Captain's milestone (the captain's arc, owner 11 November; core.js K.CLIMB). Not a dream, a bout or the ladder.
+    if ((outcome === "win" || outcome === "spare") && !B.enc.dream && !B.enc.bout && !K.S.fighter && (K.S.age || 0) >= 18 && K.RT && K.RT.tierOf && !K.S.flags.includes("felled_captain")) {
+      const cap = B.units.find((u) => u.side === "enemy" && (u.hp <= 0 || u.spared || outcome === "spare") && K.RT.tierOf(u) >= 1);
+      if (cap) { K.lastFelled = cap.src || cap.name; K.apply({ flag: "felled_captain" }); }
+    }
     // A fight won on your last legs can leave a mark for life: any wound in a deadly fight, a scar in
     // any other.
     if (outcome === "win" && !B.enc.lethal && p.hp <= p.maxHp * 0.2 && K.rng() < 0.35 && !K.S.injuries.includes("scar")) {

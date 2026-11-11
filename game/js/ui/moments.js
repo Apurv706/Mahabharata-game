@@ -50,6 +50,8 @@
       case "crossed": return { theme: "crossed", title: "The one who crossed", line: "Yudhishthira's call was still in the air when you walked into it.", art: "scene_yuyutsu_crossing" };
       // Your strength rises a tier (Build D stage 3, Fight_Traits_Draft.md 1.3): over an existing painting (no new art).
       case "tier": return m.tier >= 2 ? { theme: "milestone", title: "A great champion", line: "Your blows break shields as a champion's do. Only a champion's heavy blow can stagger you now.", art: "fight_war_chariot" }
+        : m.via === "helmet" ? { theme: "milestone", title: "Bhadra's helmet", line: "Men will look to it now. Your blows wear a shield down faster, and a soldier's heavy blow no longer staggers you.", art: "scene_duel_ground" }
+        : m.via === "felled" && m.foe ? { theme: "milestone", title: "A captain's strength", line: ["{foe} is down, and the men around you saw who did it. A soldier's heavy blow no longer staggers you.", { foe: K.text(m.foe, null, S) }], art: "scene_duel_ground" }
         : { theme: "milestone", title: "A captain's strength", line: "Your blows wear a shield down faster, and a soldier's heavy blow no longer staggers you.", art: "scene_duel_ground" };
       case "company": return { theme: "milestone", title: "A company of your own", line: "They are yours to command, and yours to bring home.", art: "scene_command_banner", place: null, emblem: null };
       default: return K.MOMENT_KINDS && K.MOMENT_KINDS[m.kind] ? K.MOMENT_KINDS[m.kind](m, S) : null; // kinds the content adds (war_child.js)
