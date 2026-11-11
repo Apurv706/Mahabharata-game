@@ -372,6 +372,65 @@ Feedback 48–50, with the numbers in `Fight_Traits_Draft.md`, in three stages, 
     - Hindi for both new lines; a new check (`tests/traits.js` path-arms) keeps each line true to what the path fights with.
     - **Checked (build-d):** the layouts on phone, tablet and desktop, the screenshots, the Hindi strings, the screens review, content, lives, golden, rules, traits, smoke and saves pass; the bug checks needed one re-run (`sling-strikes`: 1 of 11 blows short on an iPhone 15, a fight's timing that this change does not touch). In the Build D preview pages 10 Nov; GitHub's runs on main (regression, engine checks, screen fit, the site) pass.
 
+## Built 11 Nov (overnight): Build D stages 2 and 3, and the planned three (branch `build-d`, the Build D preview pages; not on main or the play pages)
+105. **The crossing, harder (owner, 10 Nov: "Harder crossing fight").** Choosing to cross at Yuyutsu's call is fought against **three** men, not two: three of your own file (spearmen: one a little stronger, two plain) or, from the tents, three tent guards. Their health ×0.6 and their blows ×1.55 of the plain numbers, so it is won about seven times in ten (measured over 2,400 bot lives: 68–71%, about 65 s, none running out of time), down from 95%. The lines say three: "Three of the tent guards run out after you" and "The men either side of you and the one behind turn their spears on you". Hindi for both.
+106. **Stage 2: the champions' traits (`Fight_Traits_Draft.md` section 2, built as drafted).** Each works whichever side he fights on, in real-time fights and the war days' clashes, and is shown as a second line under his name when he arrives (the real-time, war-day and turn screens), with a one-time tip the first time it fires:
+    - **Karna:** before the war (Acts I–V) every blow on him is 30% lighter. On the seventeenth day, below a third of his health, his wheel sinks: he stops 3 s to free it ("The wheel sinks!"). A blow then is remembered (conscience −2, a journal line), and it counts as striking one who cannot fight back, so it breaks a vow or a divine weapon given on that condition.
+    - **Bhishma:** never strikes Shikhandi; with Shikhandi on the field your side's blows on him are 25% heavier. Before the tenth day he can't be brought below a tenth.
+    - **Drona** reads you: the same three-blow combo three times running and he parries the fourth for sure (Block, a roll or a pause breaks the read). **Kripa** the same on the fifth, and he is not staggered below half his health.
+    - **Duryodhana** parries a mace twice as often, and his mace recovers 15% faster. **Satyaki** winds up 15% faster and parries a sword or spear 1.5 times as often. **Arjuna** draws 25% quicker. **Ashwatthama** rests 20% less between blows (36% in the night raid).
+    - **Ghatotkacha:** at night his blows are 30% heavier; below two thirds of his health he becomes three figures for 6 s. The two false ones cast no shadow and vanish when struck.
+    - **Jayadratha:** on the thirteenth day, in a Pandava life, blows on him are half as heavy.
+    - **Bhima** beside you roars every 15 s and the foes turn on him for 3 s. **Abhimanyu's** blows also strike the next foe at 0.6. **Bhurishravas's** heavy blow knocks you down for 0.6 s. **Supratika's** charge can't be parried and breaks shields at Bhima's rate.
+    - Win rates per path unchanged (most traits act in the war days' clashes).
+107. **Stage 3: how you climb (section 1.3).** Your tier now rises during a life and never falls:
+    - **Captain:** Might plus your path's weapon skill reaches 9, or you complete your teacher's trial, or you win a deadly fight in Act IV or later.
+    - **Great champion:** Might plus weapon skill reaches 11, or two of: a strength boon (Bala, the kavacha, or any divine weapon kept), the tournament won, holding a great champion on a war day, a war feat of your storyline.
+    - Each rise is a full-screen moment over an existing painting (no new art): "A captain's strength" over the duel ground, "A great champion" over the chariot lines. Each has a line on what changed.
+    - What it does: your blows wear shields down by your tier, and a heavy blow staggers you only from one of your tier or above (a captain shrugs off a soldier's).
+    - The character sheet gives your strength and its line. The life test reports the tier by act: at the war (Act VI) 85–86% of lives are a captain or above and 28% a great champion, so 57–58% are captains only (the draft's targets: about 60% and 20–30%). The teacher's trial makes about two lives in three captains from Act II.
+108. **Stage 3: boons and the divine weapons' gifts in a fight (sections 3.1 and 3.2).**
+    - **Bala:** breath back half again as fast; rolls and the raised shield cost a quarter less.
+    - **The kavacha**, while unspent: every blow on you 10% lighter.
+    - **The charmed shield** can't be broken.
+    - **Foresight:** the parry light shows 0.15 s earlier. The wind-up marks already show from the start of a wind-up, so they are unchanged.
+    - **Healing hands:** herbs in 0.7 s (were 1.1 s). **The sanjivani root**, while unspent: herbs heal half again.
+    - **The raksha sutra**, while tied: the low-life warning adds "The raksha sutra glows on your wrist".
+    - **Antardhana:** "Vanish" in Aid ▾ (key V): 2 s unseen, and the first blow after it lands ×1.5. It shares the once-an-act use with the stories, and is not offered in a dream, on the ladder or in a hold against a champion.
+    - **Each divine weapon's lasting gift while kept** (shown on its moment and on the character sheet):
+      - Agni's: your heavy blow sets a foe burning 2 s, at 0.15 of the blow a second.
+      - Varuna's: burning, bleeding and curses leave you twice as fast; breath a fifth faster.
+      - Vayu's: walk 15% faster; a roll carries a fifth further.
+      - The sleep: a foe your heavy blow strikes winds up his next blow 30% slower.
+      - The nagas': your heavy blow binds a foe's feet 1.5 s, so he can't step back.
+      - Indra's (the teacher's weapon): the parry window a fifth wider, and a perfect block or roll gives back a quarter of its breath.
+    - The gifts at work in a fight show as small marks under your bars; a tap names them.
+    - Win rates per path within a point of before (2,400 bot lives: archer 93%, bard 93–94%, charioteer 92%, mace 94%, spy 90–91%, strategist 92–93%).
+109. **Field events drawn on the field (row 38).** A field event or a fight's scripted beat is still said in its line, and is now also drawn across the field for about 2.6 s, in code, over the painting and under the figures:
+    - The horse wedge rides across; a chariot with its turning wheel and banner.
+    - The maddened elephant tramples through.
+    - Arrows come down and stand in the ground.
+    - Fire runs along the ground with smoke and embers; the light in Karna's hand (the Shakti).
+    - Dark falls and a cloud crosses the moon.
+    - Dust, wind or smoke sweeps over; a serpent of light crosses the sky.
+    - Ghatotkacha's shadow looms with ember eyes.
+    - Bhishma's palm-tree banner rides the far line.
+    - A conch's or a roar's rings spread from its side.
+    - The water-carrier runs your line.
+    - Otherwise the ranks press in.
+
+    The kind is read from the line's words, so every one of the game's events and beats is drawn. This works on the real-time, war-day and turn screens. Calm motion draws nothing; the line says it.
+110. **Archers among the packs (row 47).** From Act III, in a life's story fights that bring no archer, one plain soldier is his side's archer instead, seven times in ten. One always stays to fight hand to hand, and in a war pack of three or more two may shoot. Named fighters, riders, champions and hosts are never changed.
+    - Not on the young fighter's ladder, in a dream, a bout, a storm, an escort or a break-through, nor in the crossing (its lines say spears).
+    - Most fights from Act III already brought an archer or a chariot-archer; this adds one to the border villages, Dushasana's and Sudatta's men, the supply carts, Bhurishravas over Satyaki, and the holds against Duryodhana and Bhima.
+    - Drawn from the fight's own dice, so the same fight from the same moment plays the same way.
+    - The new archers' names in Hindi. All real-time fights 94% won as before; each path within a point.
+111. **The throw (row 44): a design draft, not built.** `Throw_Test_Draft.md` (project doc) sets out where an Angry Birds-like throw would go, how it plays and numbers to start from:
+    - Where: replace the aim game in the six archery tests, or two of them, or add spear and stone throws for the other paths.
+    - How it plays: the target shown first, the pan back to you, pull and release, and the view following the shot.
+    - Numbers: the arc shown by level, wind in the field, the moving and the blind targets.
+    - Five questions to decide.
+
 ## Art
 **Everything ordered is delivered and in the game (31 Oct); no stand-ins remain.**
 - **Batches and patch:** batches 3–6f, and the 6-file patch (sun banners on the war field, sunset and camp gate).
