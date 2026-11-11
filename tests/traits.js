@@ -14,6 +14,7 @@ const { arg } = H;
 const K = H.engine({});
 K.lang = "en";
 const RT = K.RT, C = K.Combat;
+const MIX_FROM = C.MIX.from; C.MIX.from = 99; // (these checks play early fights at Act VI: no archers mixed in, but in mix-archers)
 const CASES = [];
 const check = (id, what, fn) => CASES.push({ id, what, fn });
 
@@ -733,6 +734,33 @@ check("tier-stagger", "a soldier's heavy blow staggers a soldier but not a capta
   if (hit(1, 0) > 0.05) bad.push("a soldier's heavy blow staggered a captain");
   if (!(hit(1, 2) > 0.05)) bad.push("a champion's heavy blow did not stagger a captain");
   if (hit(2, 1) > 0.05) bad.push("a captain's heavy blow staggered a great champion");
+  return bad;
+});
+
+// ---------- Row 47: archers among the packs from Act III; row 38: field events drawn ----------
+check("mix-archers", "from Act III a plain soldier of a fight with no archer is his side's archer instead (one still fights hand to hand); not before Act III, not on the ladder, not where the fight says no; the same each time from the same moment", () => {
+  const bad = [], keep = C.MIX.one; C.MIX.one = 1; C.MIX.from = MIX_FROM;
+  const start = (id, o) => { if (C.state()) { try { C.settle("win"); } catch (e) { /* over */ } C.end(); } life(Object.assign({ path: "mace", act: 6 }, o || {})); C.start(id, null); const B = C.state(); const f = B.units.filter((u) => u.side === "enemy"); const out = { arch: f.filter((u) => u.mixed), melee: f.filter((u) => !u.mixed) }; close(); return out; };
+  try {
+    let r = start("e_border");
+    if (r.arch.length !== 1 || r.arch[0].src !== "Kaurava archer" || !r.arch[0].abilities.includes("arrows") || r.arch[0].shield) bad.push("e_border at Act VI: " + r.arch.map((u) => u.src).join(", "));
+    if (!r.melee.length) bad.push("no one left to fight hand to hand");
+    r = start("e_border"); if (r.arch.length !== 1) bad.push("the same fight from the same moment drew another pack");
+    r = start("e_border", { act: 2 }); if (r.arch.length) bad.push("an archer before Act III");
+    r = start("e_border", { fighter: true }); if (r.arch.length) bad.push("an archer on the young fighter's ladder");
+    r = start("cross_e_escape", { side: "kaurava" }); if (r.arch.length) bad.push("an archer in the crossing, whose lines say spears");
+    r = start("e_kb_hold"); if (r.arch.some((u) => u.person)) bad.push("a named fighter made an archer");
+  } finally { C.MIX.one = keep; C.MIX.from = 99; }
+  return bad;
+});
+check("field-kinds", "every field event and scripted beat is drawn as something (the horse wedge rides, the elephant charges, arrows fall, the moon is hidden, Ghatotkacha looms, fire runs)", () => {
+  const bad = [], vm = require("vm"), ctx = { window: { K: { UI: {} } } };
+  vm.runInNewContext(fs.readFileSync(require("path").join(__dirname, "..", "game", "js", "ui", "fx.js"), "utf8"), ctx);
+  const kind = ctx.window.K.UI.fieldKind;
+  const want = { horse: "The horse come on in a wedge, with Shakuni's brothers at its point.", elephant: K.BATTLE_EVENTS.elephant.text, arrows: K.BATTLE_EVENTS.arrows.text, dark: K.BATTLE_EVENTS.moon.text,
+    giant: K.BATTLE_EVENTS.ghatotkacha_p.text, fire: K.BATTLE_EVENTS.smoke.text, conch: K.BATTLE_EVENTS.conch.text, water: K.BATTLE_EVENTS.water.text, chariot: "A chariot comes straight at Vasu's shield-wall. He goes down under the wheels and does not get up." };
+  for (const [k, line] of Object.entries(want)) if (kind(line) !== k) bad.push(k + " drawn as " + kind(line));
+  for (const [id, e] of Object.entries(K.BATTLE_EVENTS)) if (!kind(e.text)) bad.push("nothing for " + id);
   return bad;
 });
 

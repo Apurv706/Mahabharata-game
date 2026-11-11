@@ -247,7 +247,7 @@
   // The first morning: out of your own line (owner, 10 November: "Make it a fight"). The men either side of you, with
   // the captain of your file shouting at them; from the tents, the tent guards. Not deadly: beaten, you are dragged back.
   K.encounter({
-    id: "cross_e_escape", title: "Out of the line", art: "fight_between_lines", caption: "Your own side at your back", lethal: false,
+    id: "cross_e_escape", mix: false, title: "Out of the line", art: "fight_between_lines", caption: "Your own side at your back", lethal: false,
     allies: [], flee: null,
     callHelp: () => ({ text: "You shout for help. It is your own side holding you back, and the Pandava line is too far away to hear." }),
     // Three of them (owner, 10 November, 23:05: "Harder crossing fight"; with two the bot crossed 95% of the time).

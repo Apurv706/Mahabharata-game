@@ -751,7 +751,7 @@
       setTimeout(() => champion(), 1000);
     }
     // Lines of the story (a field event, a friend's arrival) as a toast.
-    while (V.logAt < B.log.length) { const e = B.log[V.logAt++]; if (e && (e.raw || e.ev)) toast(C.line(e)); }
+    while (V.logAt < B.log.length) { const e = B.log[V.logAt++]; if (e && (e.raw || e.ev)) toast(C.line(e)); if (e && e.ev && U.fieldFx) U.fieldFx(V.stage, e.key); } // (row 38: drawn on the field too)
     B.units.forEach((u) => { V.hp[u.uid] = u.hp; });
     // Life below a fifth (owner, 6 November: first a tenth, then 20%; K.LOW_LIFE): the edges of the
     // field pulse red, a heartbeat, and a line says what you can do (in the clash the real-time screen says it).

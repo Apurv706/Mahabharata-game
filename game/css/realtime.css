@@ -878,3 +878,6 @@ html.calm #rt .acts .strike.back { animation: none; }
 #rt .actor.burning svg.pp { filter: drop-shadow(0 0 6px rgba(255, 120, 30, 0.95)) drop-shadow(0 -4px 10px rgba(255, 70, 0, 0.6)); }
 #rt .pop.burnt { color: #ff9a4a; font-size: 14px; }
 @media (max-width: 600px) { #rt .gifts .gf { width: 15px; height: 15px; font-size: 9px; } }
+/* Four entries in Aid (Antardhana, Build D stage 3): a little tighter, so each name fits its cell on a phone. */
+#rt .aid-sheet.compact.many button[data-aid] { padding: 2px 5px; }
+#rt .aid-sheet.compact.many button[data-aid] b { font-size: 11px; letter-spacing: -0.01em; }

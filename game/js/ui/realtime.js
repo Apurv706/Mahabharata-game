@@ -318,7 +318,7 @@
   // person, a blow of 15-25% of your life could skip the tenth): the edges of the field pulse red, your bar flashes, a
   // heartbeat every few seconds, and a line says what you can do, for as long as it lasts.
   // Your boons and the divine weapons' gifts at work in this fight (stage 3): a small mark each under your bars; a tap names them.
-  const GIFT_MARK = { bala: "✊", kavacha: "⛨", charm_shield: "◈", foresight: "◉", healing_hands: "✚", sanjivani: "❦", antardhana: "◌", agneya: "🔥", varuna: "≈", vayavya: "➶", sammohana: "☾", nagapasha: "§", indra: "✧" };
+  const GIFT_MARK = { bala: "✊\uFE0E", kavacha: "⛨\uFE0E", charm_shield: "◈", foresight: "◉", healing_hands: "✚\uFE0E", sanjivani: "❦", antardhana: "◌", agneya: "✺", varuna: "≈", vayavya: "➶", sammohana: "☾\uFE0E", nagapasha: "§", indra: "✧" }; // (text, not emoji, on a phone)
   function giftIcons() {
     const g = RT.gifts(), key = g.map((x) => x.id).join(",");
     if (key === V.giftKey) return;
@@ -861,8 +861,9 @@
       el.innerHTML = it("herbs", K.tr("Herbs"), K.tr("{n} left", { n: K.S.items.herbs || 0 }), !RT.can(R, "herbsSoon"), "H") +
         (K.S && K.S.fighter ? "" : ast.filter((x) => !x.why).length > 1 ? ast.filter((x) => x.id !== "astra" || !x.why).map((x) => it("astra:" + x.id, K.tr(x.name), x.why ? x.short || K.astraShort(x.why) : anote(x), !!x.why, "")).join("") : it("astra", K.tr(aReady ? aReady.name : "Divine weapon"), aReady ? anote(aReady) : ast[0] ? (B_used(ast) ? K.tr("used") : ast[0].short || K.astraShort(ast[0].why) || "") : K.tr("not given"), !aReady, "U")) + // two or more ready: one row each (item 12)
         (p.abilities.includes("call") ? it("call", K.tr("Call for help"), RT.can(R, "call") ? K.tr("once a fight") : K.tr("called"), !RT.can(R, "call"), "C") : "") +
-        (RT.vanishOffer(R) ? it("vanish", K.tr("Antardhana: vanish"), RT.can(R, "vanish") ? K.tr("2 s unseen; once an act") : K.tr("used this act"), !RT.can(R, "vanish"), "V") : ""); // (stage 3)
+        (RT.vanishOffer(R) ? it("vanish", K.tr("Vanish"), RT.can(R, "vanish") ? K.tr("Antardhana, 2 s") : K.tr("used this act"), !RT.can(R, "vanish"), "V") : ""); // (stage 3)
       el.querySelectorAll("[data-aid]").forEach((b) => (b.onclick = () => { closeSheet(); act(b.dataset.aid); }));
+      el.classList.toggle("many", el.querySelectorAll("[data-aid]").length >= 4); // (Antardhana makes a fourth: two rows on a phone)
       resumeBtn(el); el.classList.add("compact"); placeDrop(el, $(".hb.aid")); dropTimer(el);
     } else {
       const el = $(".pause-sheet");
@@ -1172,7 +1173,7 @@
     $(".edgefx.r").classList.toggle("on", !!R.pushing && p.rt.face > 0);
     $(".slowtint").classList.toggle("on", R.slow > 0);
     V.el.classList.toggle("frozen", R.frozen > 0);
-    while (V.logAt < B.log.length) { const e = B.log[V.logAt++]; if (e && (e.raw || e.ev)) toast(C.line(e)); }
+    while (V.logAt < B.log.length) { const e = B.log[V.logAt++]; if (e && (e.raw || e.ev)) toast(C.line(e)); if (e && e.ev && U.fieldFx) U.fieldFx(V.stage, e.key); } // (row 38: drawn on the field too)
   }
   // Marks: a ground mark under the one a blow is coming at, filling as it comes; an arrow's lane a thin dashed line.
   function marks() {

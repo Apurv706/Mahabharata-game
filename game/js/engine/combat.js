@@ -93,6 +93,35 @@
   // A foe who fights with a sword or a spear carries the round shield too (owner, 6 November: "let's add shields to foes as
   // well"), the named among them: not an archer, a mace, a club or bare hands, nor a thing (a cart, an elephant, the
   // Narayana weapon) or the Gandharvas. The weapon is the one he fights with (RT.weaponOf, which the screens draw).
+  // ---------- Mixed packs and more archers (Build D, feedback row 47) ----------
+  // From Act III, in a life's story fights (not the young fighter's ladder, a dream, a bout, a storm, an escort or a
+  // break-through, or a fight that says mix: false), most packs bring an archer who holds the back and shoots: one of the
+  // pack's plain soldiers (not a named fighter, a rider, a champion, a host) is his side's archer instead, while at least one
+  // stands to fight hand to hand. In the war a pack of three or more may bring two. Drawn from the fight's own dice, so the
+  // same fight from the same moment plays the same way (replays, the recorded lives); fights already bringing an archer keep theirs.
+  C.MIX = { from: 3, one: 0.7, two: 0.35, twoFrom: 6 };
+  const PLAIN = (u) => u.side === "enemy" && !u.person && !u.hero && !u.plural && !u.still && !u.item && !u.vowTag && !u.mixed &&
+    /\s/.test(u.src || "") && !/\{/.test(u.src || "") && (u.abilities || []).some((a) => a === "strike" || a === "heavy") && !(u.abilities || []).some((a) => /arrows|aimed|pin|volley/.test(a)) &&
+    !/archer|bow|rider|horse|chariot|elephant|champion|helmet|veteran|captain|torch|scout|gandharva|naga|rakshasa|ghost|host|charioteer|lord|king|prince|brother|son\b/i.test(u.src || "");
+  const turnArcher = (u) => {
+    const nm = String(u.src).replace(/\s+\S+$/, "") + " archer";
+    u.src = nm; u.name = K.fmt(nm); u.abilities = ["strike", "arrows"]; u.shield = false; u.shieldDrawn = false; u.mixed = true;
+  };
+  C.mixFoes = function (B, S) {
+    const enc = B.enc;
+    if (!S || S.fighter || (S.act || 0) < C.MIX.from || enc.dream || enc.bout || enc.mix === false || B.rule || B.kind) return;
+    const foes = B.units.filter((u) => u.side === "enemy"), packs = {};
+    foes.forEach((u) => { const k = u.pack || 0; (packs[k] = packs[k] || []).push(u); });
+    const keys = Object.keys(packs).map(Number).sort((a, b) => a - b);
+    keys.forEach((k) => {
+      const pk = packs[k], plain = pk.filter(PLAIN), shooting = pk.filter((u) => (u.abilities || []).some((a) => /arrows|aimed|pin|volley/.test(a))).length;
+      if (shooting || plain.length < 1 || pk.length - 1 < 1) return; // an archer already, or no one plain, or he would stand alone
+      let want = K.rng() < C.MIX.one ? 1 : 0;
+      if (want && plain.length >= 3 && (S.act || 0) >= C.MIX.twoFrom && K.rng() < C.MIX.two) want = 2;
+      want = Math.min(want, pk.length - 1, plain.length);
+      plain.slice(plain.length - want).forEach(turnArcher); // the hindmost of them
+    });
+  };
   C.foeShielded = function (def) {
     const n = String(def.src || def.name || "");
     if (/archer|bow|Gandharva|elephant|\bcart$|Narayana|charioteer/i.test(n) || !K.RT || !K.RT.weaponOf) return false;
@@ -244,6 +273,7 @@
       order.forEach((list, k) => list.forEach((i) => { const u = foes[i]; if (u) { u.pack = k; if (k) u.away = true; } }));
       B.packs = order.length; B.packNow = 0;
     }
+    if (C.mixFoes) C.mixFoes(B, S); // from Act III, archers among the packs (Build D, row 47)
     if (S.boons.includes("healing_hands") && (S.items.herbs || 0) < 2) S.items.herbs = 2;
     B.pulled = {};
     // The screen asks for step mode (each blow aimed at you met in time); with timed moments off the

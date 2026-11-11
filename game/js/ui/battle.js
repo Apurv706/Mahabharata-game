@@ -782,6 +782,8 @@
     body.innerHTML = (roundsLine ? '<p class="holdline">' + roundsLine + "</p>" : "") + '<div class="sides"><div class="side"><span class="lbl">' + U.tr("Your side") + "</span>" + friends.map((u) => unitCard(u, B)).join("") +
       '</div><div class="side"><span class="lbl">' + U.tr(B.kind === "weather" ? "Against you" : C.canMark && C.canMark() ? "Against you · tap to mark" : "Against you · tap to target") + "</span>" + enemies.map((u) => unitCard(u, B)).join("") + "</div></div>" +
       '<div id="battle-actions"></div><ol class="blog" id="blog" aria-live="polite">' + B.log.slice(-8).map((l) => "<li" + (l.ev ? ' class="ev"' : "") + ">" + U.esc(C.line(l)) + "</li>").join("") + "</ol>";
+    // A field event is drawn across the field as well as said (row 38: ui/fx.js U.fieldFx).
+    if (B.log.length > lastLogLen && U.fieldFx) { const ev = B.log.slice(lastLogLen).filter((l) => l.ev).pop(); if (ev) U.fieldFx(U.$("arena"), ev.key); }
     // Blows are heard as well as seen.
     if (K.Sound && B.log.length !== lastLogLen) {
       const fresh = B.log.slice(lastLogLen);
