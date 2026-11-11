@@ -3,8 +3,8 @@
 
 | | |
 |---|---|
-| **Status** | Draft v0.7 (browser edition as it is on 3 November, §16; remaining tasks, §17; storylines, weapons, magic and the puppet, all built, §18; changes from the 29 October playtest, §18.11; moments, the practice ground and vows that matter, §18.12; the war storylines, §18.13; the puppet's look, master leather, §18.14; battles, real-time and turn-based, built 3–4 November, §18.15; less to read, §18.16) |
-| **Last updated** | November 3, 2026 |
+| **Status** | Draft v0.8 (browser edition as it is on 3 November, §16; remaining tasks, §17; storylines, weapons, magic and the puppet, all built, §18; changes from the 29 October playtest, §18.11; moments, the practice ground and vows that matter, §18.12; the war storylines, §18.13; the puppet's look, master leather, §18.14; battles, real-time and turn-based, built 3–4 November, §18.15; less to read, §18.16; fight traits, strength tiers, boons in a fight and the captain's arc, Build D, §18.17) |
+| **Last updated** | November 11, 2026 (§18.17; header, §9.3, §9.7, §16.5, §17) |
 | **Owner** | [Founder / Creative Director] |
 | **Doc type** | Living PRD; sections marked **[OPEN]** still need decisions |
 
@@ -192,6 +192,7 @@ Key choices pit two or more obligations against each other. Honoring one weakens
 - **Boons** are earned through penance, service to sages, or heroic acts. Examples: a divine weapon, protection, foresight.
 - **Curses** come from insulting sages, betraying a teacher or hurting the innocent. They stay hidden and **fire at a scripted worst moment** (as Karna's curses did on day 17).
 - The player always finds out *that* they were cursed, but not necessarily *when* it will strike.
+- In the browser edition every boon also works in a fight, and each divine weapon grants its god's lasting gift while kept (§18.17).
 
 ### 9.4 Aging and the body
 - Life runs from age 6 to as late as 70+.
@@ -212,6 +213,7 @@ Separate reputation tracks for each faction (Kuru court, Pandavas, Panchala, Yad
 - **Personal combat:** Third-person action combat suited to each path. Weapon types: bow, mace, sword, spear, discus. Exact feel **[OPEN]**: options are Souls-like, action-RPG or tactical pause. (The browser edition uses turn-based fights with timed block and dodge; §16.5.) §18.15 moves ordinary fights to real time and keeps the war days turn-based.
 - **Astras:** Divine weapons earned through teachers and boons, with strong limits (cooldowns, conditions, moral cost for misuse).
 - **Chariot combat:** Driving and fighting from a moving chariot on the battlefield, as one player (warrior) or with an NPC charioteer.
+- **Strength and traits (browser edition, §18.17):** four tiers of strength (Soldier, Captain, Great champion, Bhima) set how a fighter's blows wear down a shield, get through it, drain breath and stagger; the epic's champions each carry a trait from the text; the player starts a Soldier and climbs, a Captain by Bhadra's helmet, a captain brought down or a deadly fight won as a grown fighter.
 - **Formation layer (vyuha):** Strategist players set formations for their unit (Chakra, Krauncha, Makara, Garuda and others).
 - **Input abstraction (for the mobile port):** Combat actions (attack, dodge, draw bow, invoke astra, steer chariot) are defined as abstract commands, never hard-wired to buttons, so touch controls can be added later without rewriting combat logic.
 
@@ -412,7 +414,7 @@ Turn-based fights with puppets on a painted stage, timed block and dodge, adapti
 - **Fights of other kinds** in the war's side battles: escort, break through, weather it, chariot duel, archery at range, mace duel, carry the wounded (§18.13) [67]. Hold fights show the round count during the fight [68].
 - 70 encounters; 21 fight backgrounds, each 16:9 for wide screens with a 9:16 version for upright ones, and the test stages.
 - **Balance** (`tests/balance.js`, careful player): the target is about 60–70% won in an even fight and about 40% in a hard one. In October even fights were won about 63% of the time and hard fights about 41%. A short run on 3 November (60 lives) gave about 85% and 56%, above the target; to be looked at again (§17).
-- Changed by §18.15 (built 3–4 November): ordinary fights in real time, war days turn-based with marked blows, company orders and packs.
+- Changed by §18.15 (built 3–4 November): ordinary fights in real time, war days turn-based with marked blows, company orders and packs. Changed again by §18.17 (Build D, 7–11 November): weapons' own timings, shields that wear down, strength tiers, champions' traits, boons in a fight, field events drawn on the field.
 
 ### 16.6 Living paintings
 25 Runway clips (7 key moments, 6 endings, 12 key scenes) play in place of their paintings, silently, once, resting on the last frame; on phones at full width during the scene's opening, on desktops full-screen. MP4 (H.264) only, about 0.2 to 1.4 MB each and 20 MB in all; the VP9 WebM copies were dropped on 31 October so that the published game stays within its file limit. Menu switch; off with reduced motion or data saver. The burning house also has fire drawn in code (embers and a flickering glow), which plays where a phone will not play clips, such as iPhone Low Power Mode [35]. No more clips will be made (decided 29 October); all other motion is drawn in code.
@@ -459,6 +461,8 @@ The private play page holds at most 512 files, fewer than the game now has, so i
 - Art: everything ordered by 31 October is delivered and in the game, with no stand-ins; the war storylines' 31 paintings and the great duel's two arrived on 2 November.
 - Battles (§18.15): real-time fights and turn-based war days, eased for a person, the review's fixes and the regression suite (3–5 Nov) [72–74]; on GitHub main 5 November.
 - Build A (5 Nov) [75–77]: the owner's feedback of 5 November (no horns, moments on time, the lac house's cellar test and closing clip, two divine weapons by name, archers and the shield, blows at their length, Krishna's wheel clip, less to read on a phone, champions announced) and the human-paced playtest's fixes, with a frame-rate counter. On GitHub main 5 November.
+- Build B (5–6 Nov) [78–91]: on GitHub main 6 November (§18.15).
+- Builds C and D (6–11 November) [92–112]: the opening on one screen, the painted map, the 10-second dream; the fights' traits in three stages, the strike and defence study, divine weapons with three uses and a traced mantra, the spear, the crossing as a fight, field events drawn, archers among the packs, and the captain's arc (§18.17).
 
 ### Being built
 1. **Master leather** (§18.14), from 3 November, in `ui/puppet.js` and the puppet section of `css/screens.css`. Then every pose, test stage and fight checked again, and frame rate on a mid-range phone in a three-a-side fight.
@@ -482,7 +486,7 @@ The private play page holds at most 512 files, fewer than the game now has, so i
 
 ## 18. Storylines added (proposed 29 October; built 29 October to 2 November)
 
-Ideas to deepen a life, all inside the canon lock (§4): the epic's events happen as written, so Karna, Duryodhana and the Pandavas cannot die early at the player's hand, and the lac house still burns. The tension comes from what the player risks inside those fixed events. The pictures each needs are in `docs/Art_Brief_New_Storylines.pdf`; all have arrived. Every proposal in §18.1 to §18.9 is built (31 October, Change List 26–31), each described under its "As built" note. §18.13 adds the war storylines (2 November), §18.14 the puppet's new look (decided 3 November), §18.15 the battle mix (decided 3 November, built 3–4 November) and §18.16 the reading cut (2 November).
+Ideas to deepen a life, all inside the canon lock (§4): the epic's events happen as written, so Karna, Duryodhana and the Pandavas cannot die early at the player's hand, and the lac house still burns. The tension comes from what the player risks inside those fixed events. The pictures each needs are in `docs/Art_Brief_New_Storylines.pdf`; all have arrived. Every proposal in §18.1 to §18.9 is built (31 October, Change List 26–31), each described under its "As built" note. §18.13 adds the war storylines (2 November), §18.14 the puppet's new look (decided 3 November), §18.15 the battle mix (decided 3 November, built 3–4 November), §18.16 the reading cut (2 November) and §18.17 the fight traits, strength tiers and the captain's arc (Build D, 7–11 November).
 
 ### 18.1 Friends who come to help (build first)
 - In a fight, a friend with a high bond (about 7 or more) can step in at a turning point: "Bhima comes through the gate." Once per fight, as an ally unit with their own way of fighting: Bhima takes the blows, Arjuna strikes from range, Karna is fierce and unpredictable, Charu has no armour.
@@ -801,6 +805,78 @@ The owner's decisions of 2 November on how much a player has to read [69, 70]:
 - **Hidden locks.** At the teacher and the ashram, choices you cannot take are not shown (if none can be taken, they stay). Elsewhere a locked choice shows its short reason, and a way closed by two failed tests stays on the page, struck through.
 - **The weapon grid.** The weapon choice (§18.11 D3) is a grid of weapon pictures you tap.
 - **The dice hall in five screens:** the invitation; Shakuni's hands (spotting the cheat calls it out); the hall, with the stakes and Draupadi's question together and four choices, and no walking out partway; the robe; the road out. (§6's single long scene of Act IV stands for the full game.)
+
+### 18.17 Fight traits, strength tiers and the captain's arc (Build D; decided 7–11 November)
+From the owner's feedback (rows 38 and 47–50 of `User_Feedback.md`). The numbers are in the project doc `Fight_Traits_Draft.md`, which also lists where the build differs from the draft; what was built and measured is in the Change List [95–112]. Branch `build-d`: stage 1 is on GitHub main and both play pages (10 November); the rest is in the Build D preview pages (11 November), not yet on main.
+
+**Stage 1: weapons, shields and strength (built 7 November) [95].** A swing locks Block, Roll and the parry until the blow ends: a mace about 0.7 s, a sword about 0.3 s, and for a dagger only the roll. The dagger has its own five blows. After his swing a foe stands open (a mace 0.7 s, a sword or spear 0.35 s, a dagger 0.2 s).
+
+Shields have 10 points and wear down by the striker's tier and weapon, so Bhima breaks one in 4–5 blows and a soldier's mace in about 10. Your broken shield is replaced off the ground: a fallen soldier's, or one a comrade throws in after 10 s. A foe's broken shield stays broken.
+
+**Four tiers:** Soldier, Captain / named warrior, Great champion and Bhima. A stronger fighter's blow gets more through a raised shield, drains more breath and throws you further, and great champions shrug off light blows. Shield wall and Guard lock Strike for 4 s in the clash.
+
+**Stage 2: the champions' traits (built 11 November) [106].** One or two traits each, from the epic, whichever side he fights on. Each is shown as a line under his name when he arrives, with a one-time tip:
+- **Karna:** blows on him 30% lighter before the war. On day 17, below a third of his health, his wheel sinks for 3 s. A blow then is remembered (conscience −2), and it counts as striking one who cannot fight back, so it breaks the vow to spare the unarmed and any divine weapon given on that condition (owner, 11 November: keep).
+- **Bhishma:** never strikes Shikhandi; blows on him 25% heavier while Shikhandi is on the field; not below a tenth before day 10.
+- **Drona and Kripa** read a repeated combo and parry the next for sure (Drona on the fourth, Kripa on the fifth). Kripa is not staggered below half his health.
+- **Duryodhana** parries a mace twice as often. **Satyaki** is quicker and parries blades. **Arjuna** draws faster. **Ashwatthama** rests less, least in the night raid.
+- **Ghatotkacha:** 30% heavier at night, and three figures once a fight (the false ones cast no shadow).
+- **Jayadratha:** half as hard to hurt on day 13 in a Pandava life.
+- **Bhima's** war cry beside you, **Abhimanyu's** sweep, **Bhurishravas's** knock-down, **Supratika's** unparryable charge.
+
+**Stage 3: how you climb (decided 7 November; changed 11 November).** You start a Soldier and never drop a tier; only Bhima holds the fourth. Each rise is a full-screen moment over an existing painting, and the character sheet shows your strength.
+- **Your floor:** Might plus your path's weapon skill. At 9 you are a Captain; at 11, a Great champion.
+- **Captain** also comes from:
+  - Bhadra's helmet, worn (the captain's arc, below).
+  - A captain-tier foe brought down in a real fight you won, once grown (18 or more; not a dream, a bout or the fighter ladder). The moment names him.
+  - A deadly fight won from Act IV.
+- **The teacher's test** (Act II) made you a Captain at first. Owner, 11 November: *"Teacher test to captain doesn't sit right … Keep the test, passing should increase points but not make you captain."* It now counts only through the skill point it already teaches. An extra point toward the floor was tried: it made half of all lives Captains at sixteen.
+- **Great champion:** two of a strength boon (Bala, the kavacha, any divine weapon kept), the tournament won, a great champion held through a war-day hold, or a war feat of your storyline.
+- **What a tier does for you:** your blows wear shields down by your tier, and a heavy blow staggers you only from one of your tier or above.
+- **Measured** (2,400 bot lives), Captain or above / Great champion: Act II 36% / 4%, Act IV 40% / 6%, Act V 69% / 12%, the war (Act VI) 76–78% / 28%. The draft's targets for the war were about 60% Captain and 20–30% Great champion.
+
+**The captain's arc (owner, 11 November: "Can we add a more interesting captain arc?"; both the arc and the beat-a-captain rule; the dented helmet tied to the dream).** Three optional scenes with **Bhadra, an old soldier**, captain of the gate guard (a Captain in the tier table), side-free and on existing paintings:
+1. **The old soldier** (Act III, 26, before the new court). He takes your measure in a real-time bout, not to the death, won about seven times in ten. Win or lose: *"Come back when you've seen blood."*
+2. **His men** (Act III, 28, before the Rajasuya). His company is caught on the border road and an arrow takes him in the thigh. You may:
+   - stand over him and hold the road (a real-time fight against three raiders, one with a bow, won about nine times in ten);
+   - take his men up the bank (a test of command);
+   - carry him out under the arrows.
+3. **The helmet** (Act V, 42, before Matsya; only for those who held, led or carried). Dying, he gives you his helmet, dented above the left eye: the helmet of the warrior in the dream at six. **Put it on** and you are a Captain, in a moment of its own (*"Bhadra's helmet. Men will look to it now."*). Or keep it wrapped in cloth: *"Some dreams you would rather not walk into."*
+
+On the thirteenth day of the war, the day of the dream, one who wears it remembers: *"You fasten Bhadra's dented helmet. Somewhere, you think, a child of six is dreaming of you."*
+
+**Boons in a fight (built 11 November) [108].** Every boon now also works in a fight. Small marks under your bars show the ones at work, and a tap names them.
+- **Bala:** breath back half again as fast, and rolls and blocks a quarter cheaper.
+- **The kavacha**, while unspent: every blow on you 10% lighter.
+- **The charmed shield** can't be broken.
+- **Foresight:** the parry light 0.15 s earlier.
+- **Healing hands:** herbs in 0.7 s.
+- **The sanjivani root**, while unspent: herbs heal half again.
+- **The raksha sutra:** a line in the low-life warning.
+- **Antardhana:** *Vanish* under Aid ▾: 2 s unseen, the next blow ×1.5, once an act.
+
+Each divine weapon grants its god's lasting gift while kept, shown on its moment:
+
+| Weapon | Its gift in a fight |
+|---|---|
+| Agni's | your heavy blow sets a foe burning, 2 s |
+| Varuna's | burning, bleeding and curses fall off twice as fast; breath a fifth faster |
+| Vayu's | walk 15% faster; a roll carries a fifth further |
+| The sleep | a foe your heavy blow strikes winds up his next blow 30% slower |
+| The nagas' | your heavy blow binds a foe's feet 1.5 s |
+| Indra's (the teacher's weapon) | the parry window a fifth wider; a perfect block or roll gives back a quarter of its breath |
+
+The boons and gifts act in real-time fights and war-day clashes; the Menu's turn-based fights keep them as before.
+
+**Field events drawn on the field (row 38) [109].** A field event or a scripted beat is still said in a line and is now also drawn across the field for about 2.6 s, in code, over the painting and under the figures. The drawings include horsemen or chariots riding across, the elephant, arrows that stand in the ground, fire, the moon going dark, dust, the serpent, Ghatotkacha's shadow, Bhishma's banner, a conch's rings, the water-carrier, and the ranks pressing in. The kind is read from the line's words, so every one of the game's events and beats is drawn. Calm motion draws nothing.
+
+**Archers among the packs (row 47) [110].** From Act III, in a life's story fights that bring no archer, one plain soldier is his side's archer instead, seven times in ten; one always stays hand to hand. Named fighters, riders and champions are never changed. Excluded: the fighter ladder, dreams, bouts, the turn-based kinds, the road bandits and the crossing. Most fights from Act III already had an archer, so seven fights change. Mixing melee weapons within a pack is not built.
+
+**The crossing (owner, 10 November: "Make it a fight"; then "Harder crossing fight") [103, 105].** Crossing at Yuyutsu's call is fought against three men of your own file, who tire after a minute. It is won about seven times in ten.
+
+**The throw (row 44): a draft, not built [111].** `Throw_Test_Draft.md` covers an Angry Birds-like throw for the archery tests: the target shown first, the pan back, pull and release, and the view following the shot. Five questions wait for the owner.
+
+**Balance.** Each change was measured over 2,400 bot lives. Foes' blows are scaled per path to hold each path's win rate: mace 0.73, strategist 0.69, charioteer 0.83, archer 0.84, bard 0.86, spy 0.95, healer 1. With the arc, real-time fights other than Bhadra's are won: archer 91–93%, bard 92–93%, charioteer 92%, mace 95–96%, spy 89–91%, strategist 90–91%. The run-to-run spread is about two points.
 
 ## 19. Success metrics
 
